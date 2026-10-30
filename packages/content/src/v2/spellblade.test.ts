@@ -117,7 +117,7 @@ describe('the Obsidian Blade (Sovereign Blade)', () => {
     expect(hp - foeHp(s)).toBe(17);
   });
 
-  it('a Sharpen with no Blade anywhere makes none (it is a card of her deck she may have removed); it waits for the next copy', () => {
+  it('a Sharpen with no Blade anywhere makes none (it is a card of her deck she may have removed); it goes on the record only (#441)', () => {
     const s0 = fight(['spoils']);
     for (const pile of ['hand', 'draw', 'discard'] as const)
       s0.sides.a[pile] = s0.sides.a[pile].filter((c) => c.card !== BLADE);

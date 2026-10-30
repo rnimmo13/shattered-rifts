@@ -220,11 +220,15 @@ function specsFrom(
       // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
       const raw = hero
         ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
-        : unitFigure(u.def);
+        : unitFigure(u.def, u.maxHp);
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       const k = figureScale(mode, hero);
       const height =
-        fitHeight(canvas, unitHeight(db.units[u.def], u.kind), !hero && others.length > 1) * k;
+        fitHeight(
+          canvas,
+          unitHeight(db.units[u.def], u.kind, u.maxHp),
+          !hero && others.length > 1,
+        ) * k;
       // every other flyer rides higher, so a swarm stands in two layers instead of one tangle; a big one never rises so
       // far that its head (and the next move shown above it) leaves the screen
       const tier = flies ? 1 + (airSlot++ % 2) : 0;
@@ -1543,8 +1547,7 @@ export function FightView(props: {
   const usesStars = useMemo(() => deckUsesStars(db, mine), [db, mine]);
   const usesRunes = useMemo(() => deckUsesRunes(db, mine), [db, mine]);
   const showStars = usesStars || (me?.stars ?? 0) > 0;
-  // how sharp this deck's weapon is (the Old Twelve Gauge; the Obsidian Blade is enchanted since #417): every copy carries the
-  // same bonus, and the side's running total covers a deck whose copies were all consumed
+  // how sharp this deck's weapon is (the Old Twelve Gauge, the Obsidian Blade): its sharpest copy (a copy made later starts fresh, #441)
   const ownSide = live?.sides[mySide];
   const sharp = sharpOf(db, ownSide);
   // the Trickster's Suits, as a panel in that side's column (it used to float over the hero, under the Auras list)

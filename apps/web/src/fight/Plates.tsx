@@ -231,7 +231,7 @@ export function UnitPlates({
                       kicker: 'Buff',
                       title: `${forgeLabel(sharp.word)} +${sharp.amount}`,
                       tone: 'good',
-                      text: `${sharp.weapon} has permanently gained this much damage this fight, every copy, new ones too. Every ${sharp.word} adds more.`,
+                      text: `Your sharpest ${sharp.weapon} has gained this much damage this fight. Every ${sharp.word} adds more to the copies you have; a copy made later starts fresh.`,
                     })}
                   >
                     <Arrow dir="up" plain />

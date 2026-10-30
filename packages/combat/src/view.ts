@@ -1505,9 +1505,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale) return `${word} ${at(o.amount, o.scale)}.`;
       const target = db.cards[o.card.replace(/\+$/, '')];
       const name = target?.name ?? o.card;
-      // (a weapon is a card of the deck: with none, the Sharpen waits for a copy, DECISIONS #436)
+      // (a weapon is a card of the deck: only the copies there now take it, and with none it does nothing, DECISIONS #436, #441)
       if (target?.weapon)
-        return `${word} ${o.amount} (every ${name} deals ${o.amount} more damage for the rest of the fight).`;
+        return `${word} ${o.amount} (every ${name} you have deals ${o.amount} more damage for the rest of the fight).`;
       // (another card that grows, Gathering Storm grown by Tempest Call: said in full, and that it is made when there is none)
       return `Every ${name} you have deals ${o.amount} more damage for the rest of the fight (with none, one is added to your hand).`;
     }

@@ -124,8 +124,24 @@ export { heroProp };
 
 const unitCache = new Map<string, HTMLCanvasElement>();
 
-export function unitFigure(defId: string): HTMLCanvasElement {
+/**
+ * A companion that grows stands as a bigger figure once it is big enough (DECISIONS #445): every Thrall is one unit whose HP is set by
+ * the card that raised it, so a Grave Colossus (20 HP) or a Thrall fed to 18 stands as the Grave Colossus, not the small skeleton.
+ * Presentation only.
+ */
+const GROWN: Record<string, { atHp: number; as: string }> = {
+  'bone-thrall': { atHp: 18, as: 'grave-colossus' },
+};
+
+/** The figure a unit stands as at this max HP (itself, or its grown form). */
+export function figureId(defId: string, maxHp?: number): string {
   const id = base(defId);
+  const grown = GROWN[id];
+  return grown && maxHp !== undefined && maxHp >= grown.atHp ? grown.as : id;
+}
+
+export function unitFigure(defId: string, maxHp?: number): HTMLCanvasElement {
+  const id = figureId(defId, maxHp);
   const real = realFigure(`unit:${id}`);
   if (real) return real;
   const hit = unitCache.get(id);
@@ -164,9 +180,18 @@ export function hoverOf(defId: string): number {
 }
 
 /** How tall a unit stands on the stage (stage px): companions are small, bosses are big. */
-export function unitHeight(d: UnitDef | undefined, kind: 'ally' | 'enemy' | 'hero'): number {
+export function unitHeight(
+  d: UnitDef | undefined,
+  kind: 'ally' | 'enemy' | 'hero',
+  /** the unit's max HP now, when it differs from its def's (a raised Thrall) */
+  maxHp?: number,
+): number {
   if (kind === 'hero') return 520;
-  if (kind === 'ally') return d && d.maxHp >= 18 ? 340 : 280;
+  if (kind === 'ally') {
+    const hp = maxHp ?? d?.maxHp ?? 0;
+    // (a grown Thrall towers over the rest: the Grave Colossus)
+    return hp >= 30 ? 400 : hp >= 18 ? 340 : 280;
+  }
   const hp = d?.maxHp ?? 30;
   return hp >= 120 ? 600 : hp >= 55 ? 470 : hp >= 20 ? 390 : 300;
 }

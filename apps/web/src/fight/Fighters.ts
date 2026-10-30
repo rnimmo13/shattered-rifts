@@ -249,8 +249,17 @@ export class Fighters {
       if (!f) {
         this.add(spec, x, !opts.instant);
       } else if (!f.dying) {
+        // (a Thrall grown big enough changes figure, DECISIONS #445)
+        const restyled = f.spec.canvas !== spec.canvas;
         const resized =
-          Math.abs(f.spec.height - spec.height) > 0.5 || (f.spec.hover ?? 0) !== (spec.hover ?? 0);
+          restyled ||
+          Math.abs(f.spec.height - spec.height) > 0.5 ||
+          (f.spec.hover ?? 0) !== (spec.hover ?? 0);
+        if (restyled) {
+          const tex = Texture.from(spec.canvas);
+          f.sprite.texture = tex;
+          f.flash.texture = tex;
+        }
         f.spec = spec;
         if (resized) this.resize(f);
         this.showProp(f, opts.instant === true);
