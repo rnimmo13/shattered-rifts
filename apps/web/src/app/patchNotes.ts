@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.129.0',
+    date: '2026-10-29',
+    title: 'Clearer cards',
+    summary:
+      'Element icons on the Shaman’s spells, hovers that explain made cards and totems, and a steady Card library.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The Shaman’s Flame, Frost and Storm spells show their element as a coloured icon in the top right (hover it for what the element does).',
+      },
+      {
+        kind: 'changed',
+        text: 'Hovering a card explains the cards it makes (Daggers, Gravesouls, Buckshot Shells, Trip Lines...) with their real cost and text, and any totem it plants or names. The Totem explanation describes how totems work now, and a totem on the board says so too.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The Card library’s book stays the full width of the screen, with cards the same size, whatever you filter by.',
+      },
+    ],
+  },
+  {
     version: '0.128.0',
     date: '2026-10-29',
     title: 'Play it on your phone',
