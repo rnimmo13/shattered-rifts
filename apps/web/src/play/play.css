@@ -2006,6 +2006,11 @@
 /* the Card library's book: a full screen tall (the page scrolls to it) */
 .lib__book {
   height: clamp(34rem, calc(100dvh - 2rem), 80rem);
+  /* always the page's full width (DECISIONS #446): .setup centres its children, which sized the book by its cards, so a filter
+     with fewer cards (one Riftwalker's) shrank the book, and the cards are sized from the book */
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
 }
 
 .crest--midden {

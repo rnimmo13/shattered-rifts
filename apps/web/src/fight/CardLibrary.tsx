@@ -69,6 +69,14 @@ export function CardLibrary() {
       .map((c) => ({ def: c.def, n: 1 }));
   }, [all, text, pool, hero, path, kind, rarity, show]);
 
+  // the cards are sized for the whole library in this view (base, upgraded or both), whatever the other filters leave
+  const fitCount = useMemo(
+    () =>
+      all.filter((c) => (show === 'base' ? !c.upgraded : show === 'upgraded' ? c.upgraded : true))
+        .length,
+    [all, show],
+  );
+
   const pools: PoolKey[] = [
     'all',
     ...Object.keys(RIFTWALKERS),
@@ -172,6 +180,7 @@ export function CardLibrary() {
           key={bookKey}
           cards={cards}
           size="browse"
+          fitCount={fitCount}
           emptyText="No cards match those filters."
         />
       </div>

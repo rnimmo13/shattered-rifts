@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- The Card library's book stays the full width of the screen, with cards the same size, whatever you filter by.
 - A big Thrall (the Grave Colossus card's, or one you have fed to 18 HP) now stands as the Grave Colossus, and grows into it mid-fight.
 - The hand follows your mouse along the fan: the card you point at is the one that lifts, with no more sticking on the wrong card. The targeting arrow shows as soon as you drag a card out of your hand.
 - **Fight with your phone upright:** enemies stand on a row behind you, your Boons and Auras open from a button, the top bar's buttons sit in a Menu, and a tap on a card shows it big (tap again to play it, then tap a target). On a phone on its side or a tablet, figures, plates and cards are smaller and the board sits higher. The run map runs top to bottom on an upright screen, and reward cards and the card book fit two across on a phone.

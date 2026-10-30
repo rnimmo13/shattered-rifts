@@ -31,6 +31,11 @@ export interface GrimoireProps {
    * 'grow': the book is as tall as its cards (a short starter deck).
    */
   height?: 'fill' | 'grow';
+  /**
+   * Size the cards as if the book held this many (the Card library: every card of the game), so a filter that shows fewer never
+   * makes the cards jump in size (DECISIONS #446). Default: the cards it holds.
+   */
+  fitCount?: number;
 }
 
 export function Grimoire(props: GrimoireProps) {
@@ -57,7 +62,7 @@ export function Grimoire(props: GrimoireProps) {
   const { spread, cols, rows, cardWidth } = fitBook(
     box.w,
     grow ? Infinity : box.h,
-    entries.length,
+    Math.max(entries.length, props.fitCount ?? 0),
     props.size ?? 'read',
     {
       ...(props.spread ? { spread: props.spread } : {}),
