@@ -1,0 +1,240 @@
+[
+  {
+    "id": "still-water",
+    "name": "Still Water",
+    "hero": "monk",
+    "text": "Gain 4 (+6 per Serene) Barrier. Draw 1 card.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "tide-of-peace",
+    "name": "Tide of Peace",
+    "hero": "monk",
+    "text": "Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "the-offering",
+    "name": "The Offering",
+    "hero": "monk",
+    "text": "Gain 5 Fervor. Hold.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "rise-radiant",
+    "name": "Rise Radiant",
+    "hero": "monk",
+    "text": "Enter Radiant. Consume.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "still-flame-ascendant",
+    "name": "Still Flame Ascendant",
+    "hero": "monk",
+    "text": "Enter Radiant. Gain 4 Primed. Draw 2 cards. Consume.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "worship",
+    "name": "Hymn of Embers",
+    "hero": "monk",
+    "text": "Gain 5 Fervor. Gain 8 Barrier.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "last-rites-of-flame",
+    "name": "Last Rites of the Flame",
+    "hero": "monk",
+    "text": "Deal 16 damage to ALL enemies. Gain 5 Fervor.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "foretold-flame",
+    "name": "Foretold Flame",
+    "hero": "monk",
+    "text": "Deal 5 (+1 per Fervor) damage. Foresee 2.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "burning-litany",
+    "name": "Burning Litany",
+    "hero": "monk",
+    "text": "Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "spirit-shield",
+    "name": "Mountain's Stillness",
+    "hero": "monk",
+    "text": "Gain 6 (+3 per card in hand) Barrier.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "held-breath",
+    "name": "Held Breath",
+    "hero": "monk",
+    "text": "Gain 1 Holdfast.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "blood-on-the-sand",
+    "name": "Iron Body",
+    "hero": "monk",
+    "text": "Whenever you enter Fury: Lose 2 HP. Gain 3 Primed.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "poise",
+    "name": "Poise",
+    "hero": "monk",
+    "text": "Gain 3 Bracing for the rest of the fight.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "wreath-of-flame",
+    "name": "Crown of Embers",
+    "hero": "monk",
+    "text": "Gain 6 Primed. Gain 2 Fervor.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "meteor-jab",
+    "name": "Cinderfall",
+    "hero": "spellblade",
+    "text": "Deal 8 damage. Apply 1 Faltering. Apply 1 Exposed.",
+    "note": "Use current obsidian-skinned white-haired spellblade, striking with meteor energy."
+  },
+  {
+    "id": "crowned-fist",
+    "name": "Crowned Fist",
+    "hero": "spellblade",
+    "text": "Deal 8 damage, plus all it has grown. When you draw this: This card deals 4 more damage for the rest of the fight.",
+    "note": "Show a magically armored fist punching, not a sword slash."
+  },
+  {
+    "id": "hammer-and-anvil",
+    "name": "Hammer and Anvil",
+    "hero": "spellblade",
+    "text": "Sharpen 5 (+5 per time the target was hit this turn). Deal 5 damage.",
+    "note": "Use current obsidian-skinned white-haired spellblade commanding a magical forge impact."
+  },
+  {
+    "id": "big-bang",
+    "name": "Magma Surge",
+    "hero": "spellblade",
+    "text": "Draw 1 card. Gain 1 Mana. Gain 1 Arcana. Sharpen 5 (every Obsidian Blade deals 5 more damage for the rest of the fight). Consume.",
+    "note": "Use current obsidian-skinned white-haired spellblade gathering a brilliant new star."
+  },
+  {
+    "id": "cosmic-lance",
+    "name": "Obsidian Lance",
+    "hero": "spellblade",
+    "text": "Deal 8 (+2 per card with an Arcana cost in your deck) damage.",
+    "note": "Use current obsidian-skinned white-haired spellblade firing a long cosmic lance."
+  },
+  {
+    "id": "humble",
+    "name": "Humble",
+    "hero": "spellblade",
+    "text": "Apply 1 Faltering. Apply 1 Exposed. Consume.",
+    "note": "Use current obsidian-skinned white-haired spellblade suppressing a foe with cosmic weight."
+  },
+  {
+    "id": "devastate",
+    "name": "Molten Ruin",
+    "hero": "spellblade",
+    "text": "Deal 35 damage.",
+    "note": "Use current obsidian-skinned white-haired spellblade delivering a massive blow."
+  },
+  {
+    "id": "gamma-burst",
+    "name": "Glass Burst",
+    "hero": "spellblade",
+    "text": "Deal 13 damage. Apply 2 Faltering. Apply 2 Exposed.",
+    "note": "Use current obsidian-skinned white-haired spellblade emitting a concentrated energy burst."
+  },
+  {
+    "id": "eye-of-the-storm",
+    "name": "Eye of the Storm",
+    "hero": "monk",
+    "text": "At the start of your turn: Enter Fury. Deal 4 damage to ALL enemies. Gain 4 Barrier.",
+    "note": "Use exact current bald male Monk, cream teal gold robes, prayer beads, bare feet and golden martial arts; no hair, swords or old female sword dancer. Depict the named action using fists, palms, kicks or inner-fire magic."
+  },
+  {
+    "id": "tolling-bell",
+    "name": "Tolling Bell",
+    "hero": "necromancer",
+    "text": "Curse the target with 13 Fate. Draw 1 card.",
+    "note": "Main subject must be a tolling haunted bronze bell spreading green curse waves, not an hourglass."
+  },
+  {
+    "id": "hammer-swing",
+    "name": "Hammer Swing",
+    "hero": "drunkard",
+    "text": "Deal 6 damage. Apply 1 Brittle.",
+    "note": "Show a hammer swinging and impacting, not gunfire."
+  },
+  {
+    "id": "pane-up",
+    "name": "Pane Up",
+    "hero": "drunkard",
+    "text": "Gain 5 (+1 per 11% HP missing) Barrier.",
+    "note": "The dwarf raises a salvaged window pane as a shield."
+  },
+  {
+    "id": "bottle-tripwire",
+    "name": "Bottle Tripwire",
+    "hero": "drunkard",
+    "text": "When you or an ally is attacked: Deal 7 damage to the attacker. Apply 1 Faltering to the attacker.",
+    "note": "Show a taut low tripwire rigged to bottles shattering at an enemy ankle."
+  },
+  {
+    "id": "pistol-whip",
+    "name": "Pistol Whip",
+    "hero": "drunkard",
+    "text": "Deal 6 damage. Precision 2 (every Old Twelve Gauge deals 2 more damage for the rest of the fight).",
+    "note": "Show a melee blow with the gun grip, no firing."
+  },
+  {
+    "id": "buttstroke",
+    "name": "Buttstroke",
+    "hero": "drunkard",
+    "text": "Deal 5 damage. Apply 1 Faltering. Precision 1 (every Old Twelve Gauge deals 1 more damage for the rest of the fight).",
+    "note": "Show the wooden shotgun butt striking an enemy, no firing."
+  },
+  {
+    "id": "liquid-courage",
+    "name": "Liquid Courage",
+    "hero": "drunkard",
+    "text": "Gain 5 Barrier. Gain 6 Primed.",
+    "note": "Show the dwarf drinking with a protective glow, not ammunition."
+  },
+  {
+    "id": "window-pane",
+    "name": "Window Pane",
+    "hero": "drunkard",
+    "text": "Gain 7 (+1 per 8% HP missing) Barrier.",
+    "note": "Show a broad salvaged window pane as a defensive shield, not a ground spike trap."
+  },
+  {
+    "id": "drunken-swing",
+    "name": "Drunken Swing",
+    "hero": "drunkard",
+    "text": "Deal 14 damage. Gain 3 Hangover.",
+    "note": "Show a staggering wild melee swing striking a foe, not a shield."
+  },
+  {
+    "id": "sob-story",
+    "name": "Sob Story",
+    "hero": "drunkard",
+    "text": "Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume.",
+    "note": "Show the dwarf telling a tearful tavern story and recovering over a drink, not glass windows."
+  },
+  {
+    "id": "hammer-time",
+    "name": "Haymaker",
+    "hero": "drunkard",
+    "text": "Deal 14 (+3 per Hangover) damage.",
+    "note": "Card is named Haymaker: show a broad heavy fist punch, not a hammer."
+  }
+]

@@ -5,7 +5,7 @@
 
 import { writeFileSync } from 'node:fs';
 import { cardText } from '@sr/combat';
-import { COMBAT_DB as db, pathOf, pathName, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { budgetOf, pct, type Price } from './common';
 import { SHAMAN_PRICES } from './shaman';
 
@@ -26,7 +26,6 @@ const cards = Object.values(db.cards)
   .sort(
     (a, b) =>
       order[a.rarity ?? 'common'] - order[b.rarity ?? 'common'] ||
-      (pathOf(a.id) ?? 9) - (pathOf(b.id) ?? 9) ||
       a.cost - b.cost ||
       (a.id < b.id ? -1 : 1),
   );
@@ -51,10 +50,9 @@ for (const c of cards) {
   if (gain > 0.5) problems.push(`${c.id}+ adds ${Math.round(gain * 100)}%`);
   if (gain <= 0) problems.push(`${c.id}+ is not better`);
   if (Math.abs(dev) <= 0.15) within++;
-  const path = pathOf(c.id);
   const cell = (s: string): string => s.replace(/\|/g, '/');
   rows.push(
-    `| \`${c.id}\` | ${c.name} | ${path === undefined ? 'glue' : pathName(hero, path)} | ${c.rarity} | ${c.x ? 'X' : c.cost}${c.kind === 'power' ? ' Aura' : ''} | ${cell(cardText(db, c))} | ${cell(p.how)} | ${p.pts} | ${b} | ${pct(p.pts, b)} | ${up ? `${cell(cardText(db, up))}${up.cost !== c.cost ? ` (cost ${up.cost})` : ''}${up.innate && !c.innate ? ' (Opening hand)' : ''}` : 'none'} | ${p.up} (${gain >= 0 ? '+' : ''}${Math.round(gain * 100)}%) | ${cell(p.role)}${p.why ? ` *Off budget because:* ${cell(p.why)}` : ''} |`,
+    `| \`${c.id}\` | ${c.name} | ${c.rarity} | ${c.x ? 'X' : c.cost}${c.kind === 'power' ? ' Aura' : ''} | ${cell(cardText(db, c))} | ${cell(p.how)} | ${p.pts} | ${b} | ${pct(p.pts, b)} | ${up ? `${cell(cardText(db, up))}${up.cost !== c.cost ? ` (cost ${up.cost})` : ''}${up.innate && !c.innate ? ' (Opening hand)' : ''}` : 'none'} | ${p.up} (${gain >= 0 ? '+' : ''}${Math.round(gain * 100)}%) | ${cell(p.role)}${p.why ? ` *Off budget because:* ${cell(p.why)}` : ''} |`,
   );
 }
 
@@ -65,8 +63,8 @@ const md = [
   '',
   `${cards.length} cards; ${within} within ±15% of budget, the rest explained in the last column.`,
   '',
-  '| Id | Card | Strategy | Rarity | Cost | Text | Price | Points | Budget | Off | Upgrade | Upgrade points | Role, package and notes |',
-  '|---|---|---|---|---|---|---|---|---|---|---|---|---|',
+  '| Id | Card | Rarity | Cost | Text | Price | Points | Budget | Off | Upgrade | Upgrade points | Role, package and notes |',
+  '|---|---|---|---|---|---|---|---|---|---|---|---|',
   ...rows,
   '',
 ].join('\n');

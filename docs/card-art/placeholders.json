@@ -1,0 +1,350 @@
+[
+ {
+  "id": "vow-fulfilled",
+  "name": "Vow Fulfilled",
+  "source": "png:exec-40cfc942-7020-450f-b565-4b38a5fab08d",
+  "why": "sword slamming the ground, golden shockwave (current Knight model)"
+ },
+ {
+  "id": "patient-wall",
+  "name": "Patient Wall",
+  "source": "png:exec-362a068a-b754-44da-84f5-ba50872b2e5f",
+  "why": "the Knight resting (current Knight model)"
+ },
+ {
+  "id": "measured-strike",
+  "name": "Measured Strike",
+  "source": "png:exec-f7e79926-4177-470f-b57a-04aeea039237",
+  "why": "a spinning slash (current Knight model)"
+ },
+ {
+  "id": "cast-the-shield",
+  "name": "Cast the Shield",
+  "source": "png:exec-06900b74-bbe5-4a12-b7b5-ef7c10e8f9c7",
+  "why": "hurling stone and cards (current Knight model)"
+ },
+ {
+  "id": "stand-fast",
+  "name": "Stand Fast",
+  "source": "tower-shield",
+  "why": "a tall shield"
+ },
+ {
+  "id": "unyielding-line",
+  "name": "Unyielding Line",
+  "source": "rampart",
+  "why": "a line of shields"
+ },
+ {
+  "id": "gilded-bulwark",
+  "name": "Gilded Bulwark",
+  "source": "gilded-wall",
+  "why": "gilded barrier panels"
+ },
+ {
+  "id": "vow-kept",
+  "name": "Vow Kept",
+  "source": "sacred-vow",
+  "why": "an altar of vows"
+ },
+ {
+  "id": "blood-oath",
+  "name": "Blood Oath",
+  "source": "the-last-oath",
+  "why": "a sword on an altar, bound in thorns"
+ },
+ {
+  "id": "oath-unbroken",
+  "name": "Oath Unbroken",
+  "source": "radiant-oath",
+  "why": "a sun in thorns"
+ },
+ {
+  "id": "hardened-scars",
+  "name": "Hardened Scars",
+  "source": "briar-heart",
+  "why": "a heart wrapped in thorns"
+ },
+ {
+  "id": "scarred-hide",
+  "name": "Scarred Hide",
+  "source": "thorn-covenant",
+  "why": "a wreath of thorns"
+ },
+ {
+  "id": "dawn-ward",
+  "name": "Dawn Ward",
+  "source": "crystal-ward",
+  "why": "a dome of crystals"
+ },
+ {
+  "id": "hail-chant",
+  "name": "Hail Chant",
+  "source": "cold-snap",
+  "why": "frost bears"
+ },
+ {
+  "id": "consuming-dusk",
+  "name": "Consuming Dusk",
+  "source": "gathering-dusk",
+  "why": "the Shaman with his spirits at dusk"
+ },
+ {
+  "id": "storm-chant",
+  "name": "Storm Chant",
+  "source": "storm-call",
+  "why": "lightning and spirit animals"
+ },
+ {
+  "id": "blighted-chorus",
+  "name": "Blighted Chorus",
+  "source": "splinter-wheel",
+  "why": "a wheel of splinters"
+ },
+ {
+  "id": "swift-strike",
+  "name": "Swift Strike",
+  "source": "gale-strike",
+  "why": "a fast gale strike"
+ },
+ {
+  "id": "shattering-call",
+  "name": "Shattering Call",
+  "source": "skybreaker",
+  "why": "a spirit bird breaking through"
+ },
+ {
+  "id": "thunder-rush",
+  "name": "Thunder Rush",
+  "source": "arc-lightning",
+  "why": "a Thunderbird in lightning"
+ },
+ {
+  "id": "spark-strike",
+  "name": "Spark Strike",
+  "source": "spark-lash",
+  "why": "a Thunderbird and sparks"
+ },
+ {
+  "id": "thunder-beam",
+  "name": "Thunder Beam",
+  "source": "falling-star",
+  "why": "spirit birds raining down"
+ },
+ {
+  "id": "swift-study",
+  "name": "Swift Study",
+  "source": "river-scour",
+  "why": "cards swirling"
+ },
+ {
+  "id": "thunder-chant",
+  "name": "Thunder Chant",
+  "source": "storm-pole",
+  "why": "the Shaman raising his staff"
+ },
+ {
+  "id": "hurried-prayer",
+  "name": "Hurried Prayer",
+  "source": "smoke-offering",
+  "why": "an offering bowl"
+ },
+ {
+  "id": "harmonize",
+  "name": "Harmonize",
+  "source": "elemental-focus",
+  "why": "meditating among three spirits"
+ },
+ {
+  "id": "double-rite",
+  "name": "Double Rite",
+  "source": "inner-flame",
+  "why": "glowing orbs in his hands"
+ },
+ {
+  "id": "burnt-offering",
+  "name": "Burnt Offering",
+  "source": "feed-the-fire",
+  "why": "cards fed to a fire"
+ },
+ {
+  "id": "echoing-spirit",
+  "name": "Echoing Spirit",
+  "source": "spirit-memory",
+  "why": "a glowing card and spirit swirl"
+ },
+ {
+  "id": "hawk-banner",
+  "name": "Hawk Banner",
+  "source": "night-veil",
+  "why": "a spirit bird in flight"
+ },
+ {
+  "id": "wellspring",
+  "name": "Wellspring",
+  "source": "clear-spring",
+  "why": "a spring"
+ },
+ {
+  "id": "doubled-vow",
+  "name": "Doubled Vow",
+  "source": "kindled-rite",
+  "why": "a shrine with spirit animals"
+ },
+ {
+  "id": "free-hand",
+  "name": "Free Hand",
+  "source": "shifting-strike",
+  "why": "quick strikes"
+ },
+ {
+  "id": "chain-of-calls",
+  "name": "Chain of Calls",
+  "source": "wild-call",
+  "why": "the Shaman calling a totem"
+ },
+ {
+  "id": "salvage-spirit",
+  "name": "Salvage Spirit",
+  "source": "carve-a-notch",
+  "why": "carving a totem"
+ },
+ {
+  "id": "snap-back",
+  "name": "Snap Back",
+  "source": "gust-step",
+  "why": "a gust that returns"
+ },
+ {
+  "id": "bitter-lesson",
+  "name": "Bitter Lesson",
+  "source": "prismatic-cascade",
+  "why": "a cascade of strikes"
+ },
+ {
+  "id": "turning-wheel",
+  "name": "Turning Wheel",
+  "source": "whirlpool",
+  "why": "a whirl"
+ },
+ {
+  "id": "ward-of-the-spirits",
+  "name": "Ward of the Spirits",
+  "source": "ironbark",
+  "why": "the Shaman in a spirit dome"
+ },
+ {
+  "id": "wild-vision",
+  "name": "Wild Vision",
+  "source": "tidal-surge",
+  "why": "holding a glowing orb"
+ },
+ {
+  "id": "kindling-ward",
+  "name": "Kindling Ward",
+  "source": "gather-kindling",
+  "why": "a pile of kindling"
+ },
+ {
+  "id": "fresh-start",
+  "name": "Fresh Start",
+  "source": "rapids",
+  "why": "water rushing"
+ },
+ {
+  "id": "thunder-memory",
+  "name": "Thunder Memory",
+  "source": "stormcrown",
+  "why": "a Thunderbird totem"
+ },
+ {
+  "id": "harvest-of-ruin",
+  "name": "Harvest of Ruin",
+  "source": "boulder-fist",
+  "why": "smashed rubble"
+ },
+ {
+  "id": "rubble",
+  "name": "Rubble",
+  "source": "earthen-might",
+  "why": "stones"
+ },
+ {
+  "id": "haze",
+  "name": "Haze",
+  "source": "deep-freeze",
+  "why": "a cold mist"
+ },
+ {
+  "id": "scorch",
+  "name": "Scorch",
+  "source": "ember-toss",
+  "why": "embers"
+ },
+ {
+  "id": "muck",
+  "name": "Muck",
+  "source": "mudslide",
+  "why": "mud and stone"
+ },
+ {
+  "id": "void-drain",
+  "name": "Void",
+  "source": "spiritfont",
+  "why": "a draining shrine"
+ },
+ {
+  "id": "blight",
+  "name": "Blight",
+  "source": "firestorm",
+  "why": "a withering burst"
+ },
+ {
+  "id": "venom",
+  "name": "Venom",
+  "source": "arc-flash",
+  "why": "a shard of ice"
+ },
+ {
+  "id": "smudge",
+  "name": "Smudge",
+  "source": "kindling",
+  "why": "a small flame"
+ },
+ {
+  "id": "scrap",
+  "name": "Scrap",
+  "source": "wild-heart",
+  "why": "broken totem pieces"
+ },
+ {
+  "id": "tinder",
+  "name": "Tinder",
+  "source": "png:kindle",
+  "why": "a flame from the hand (retired Kindle)"
+ },
+ {
+  "id": "dry-tinder",
+  "name": "Dry Tinder",
+  "source": "png:flare",
+  "why": "a flare of fire (retired Flare)"
+ },
+ {
+  "id": "bar-fight",
+  "name": "Bar Fight",
+  "source": "steady-hands",
+  "why": "a dwarf with a shotgun"
+ },
+ {
+  "id": "nurse-the-hangover",
+  "name": "Nurse the Hangover",
+  "source": "spare-change",
+  "why": "a mug, bottles and coins"
+ },
+ {
+  "id": "take-it-on-the-chin",
+  "name": "Take It on the Chin",
+  "source": "stained-glass",
+  "why": "a glass shield"
+ }
+]

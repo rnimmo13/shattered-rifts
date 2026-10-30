@@ -14,7 +14,7 @@
 // Her Doom is his Fate (id doom), Ethereal is Fleeting, Retain is Hold, Exhaust is Consume, Strength is Might (a loss of it is Sapped,
 // since Might cannot go below 0), Weak is Faltering, Vulnerable is Exposed, Block is Barrier, Intangible is Ghostly.
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort:
+// The headings below are only a first sort:
 //   Fate    - curse enemies with Fate, then cash it in
 //   Thralls - raise Thralls, grow them, and command them to strike
 //   Souls   - Gravesouls and Fleeting cards: draw, Mana, and what grows with them

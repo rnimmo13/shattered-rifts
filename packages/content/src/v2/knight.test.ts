@@ -11,7 +11,7 @@ import {
   legalActions,
   type CombatState,
 } from '@sr/combat';
-import { BUILD_PATHS_SHOWN, COMBAT_DB as db, RIFTWALKERS, pathSizes } from './index';
+import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 function fight(hand: string[], deck: string[] = RIFTWALKERS.knight.starter): CombatState {
   const { state } = createCombat(db, {
@@ -51,12 +51,6 @@ describe('the knight is the Ironclad shape', () => {
     expect(STATUS_IDS).not.toContain('devotion');
     expect(Object.values(db.cards).filter((c) => c.statusCost)).toEqual([]);
     expect(RIFTWALKERS.knight.trait.triggers).toBeUndefined();
-  });
-
-  it('keeps four build paths in its data (there is no limit of three, DECISIONS #362), though none is shown', () => {
-    expect(RIFTWALKERS.knight.buildPaths).toHaveLength(4);
-    expect(pathSizes('knight')).toHaveLength(4);
-    expect(BUILD_PATHS_SHOWN).toBe(false);
   });
 
   it('Sundering Blow hits for 8 and leaves 2 Exposed', () => {
@@ -436,9 +430,9 @@ describe('the rest of the Ironclad list', () => {
     s = play(s, 'stone-stance');
     const before = hero(s).barrier;
     s = play(s, 'oath-of-iron');
-    expect(hero(s).barrier).toBe(before + 16);
+    expect(hero(s).barrier).toBe(before + 12);
     s = play(s, 'oath-of-iron');
-    expect(hero(s).barrier).toBe(before + 24);
+    expect(hero(s).barrier).toBe(before + 18);
   });
 
   it('Flailing Blows consumes a random Attack from your hand and adds its damage', () => {
@@ -458,11 +452,11 @@ describe('the rest of the Ironclad list', () => {
 
 // The knight is the Ironclad's list, card for card (DECISIONS #367), as a yardstick for the other classes.
 describe('one card for each of the Ironclad’s', () => {
-  it('has 82 cards of her own (with Sundering Blow, her Bash) plus Strike and Defend: the 87 of the Ironclad less Tank, Demonic Shield and Break', () => {
+  it('has 82 cards of the Ironclad’s list (with Sundering Blow, her Bash) plus Strike and Defend, and the 12 Mana Reserves cards (DECISIONS #454, #456)', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );
-    expect(own).toHaveLength(82);
+    expect(own).toHaveLength(82 + 12);
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(

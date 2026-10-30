@@ -1,4 +1,4 @@
-// Kesh the Unfed (Wyldmaw). Starts with a Hound. Three build paths:
+// Kesh the Unfed (Wyldmaw). Starts with a Hound. Three themes:
 //   Bloodrage  - pay HP for Might and tempo, then hit with it
 //   Pack       - buff and feed the companions
 //   Feast      - Exhaust engine: eat your own cards, heal, hit for what you have consumed (and devour allies)
@@ -373,7 +373,7 @@ export const HUNTER: CardDef[] = [
     trigger: { on: 'hpLost', min: 5 },
   }),
 
-  // --- glue: cards for any build path (DECISIONS #337) ---
+  // --- glue: cards for any deck (DECISIONS #337) ---
   k('common', 'bone-crack', 'Bone Crack', 'attack', 1, 'foe', [
     dmg(7),
     status('exposed', 1, 'target'),
@@ -390,7 +390,7 @@ export const HUNTER: CardDef[] = [
     { up: { effects: [heal(3, 'hero'), growHp(7, 'allAllies')] } },
   ),
 
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
   k('rare', 'bloodsong', 'Bloodsong', 'power', 0, 'none', [lose(3), status('ritual', 1)], {
     up: { effects: [lose(2), status('ritual', 1)] },
   }),

@@ -14,7 +14,7 @@
 // Elements (a spell's tag): Flame - big single-target bursts, Burn as a small extra; Frost - Barrier and Faltering; Storm - every enemy,
 // or Forks (2 or 3 different random enemies, 25% more when one stands), and Gathering Storm, which grows.
 //
-// Build paths stay hidden (DECISIONS #365); the three elements are the first sort, the totem, Spirit and utility cards are glue.
+// The three elements are the first sort; the totem, Spirit and utility cards are glue.
 // Costs and points: docs/reworks/SHAMAN.md and shaman-ledger.md (docs/14_CARD_COSTING.md §15).
 
 import type { CardDef, Op, TotemDef } from '@sr/combat';

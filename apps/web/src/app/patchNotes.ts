@@ -29,6 +29,31 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.136.0',
+    date: '2026-10-30',
+    title: 'Mana Reserves for the Knight',
+    summary: 'The Knight keeps unspent Mana as Reserves and gets twelve new cards, and a large batch of card art lands.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Mana Reserves: the Knight no longer loses unspent Mana. Up to 3 of it (his Max Reserves) is kept as Reserves, shown in a bubble beside the Mana gem. Cards spend your Mana first and your Reserves after it, and X cards spend all of both. It replaces Oathkeeper’s opening Barrier and Plating.',
+      },
+      {
+        kind: 'new',
+        text: 'Twelve Knight cards: Stand Fast, Measured Strike, Blood Oath, Vow Kept, Unyielding Line, Cast the Shield, Hardened Scars, Scarred Hide, Patient Wall, Oath Unbroken, Vow Fulfilled and Gilded Bulwark. They read, fill and raise your Reserves, hold Barrier, or pay blood. Scarred Hide Saps a random enemy whenever you lose HP, from an enemy or from your own cards.',
+      },
+      {
+        kind: 'changed',
+        text: 'Some Knight Barrier cards give part of it as Plating: Oath of Iron (6 Barrier and 1 Plating), Dawn Smite (3 and 1), Provoke (5 and 1), Ember Ward (8 and 2) and Blood Plate (12 and 2).',
+      },
+      {
+        kind: 'new',
+        text: 'New card art: 55 Shaman illustrations, carved Thunderbird and Moon Owl totems with their spirit forms, and 126 cards redrawn to match the current heroes. Cards that still have no art of their own use borrowed art for now.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.135.0',
     date: '2026-10-30',
     title: 'The Assassin defers',

@@ -2,7 +2,7 @@
 // Starts the fight Serene.
 // Stances (ids calm/wrath/radiant): Serene (leaving it gives 2 Mana, once a turn), Fury (deal double, take 50% more), Radiant (deal
 // triple, ends with your turn). Fervor (id mantra) builds to 10, then you enter Radiant.
-// Three build paths (DECISIONS #255):
+// Three themes (DECISIONS #255):
 //   Fury     - burst: enter Fury, hit as hard as you can, and live through the damage it lets in
 //   Flow     - stance dancing: change stance again and again; every change pays (Barrier, damage, cards, the Mana of leaving Serene)
 //   Radiant  - build Fervor to 10 and cash it in on a Radiant turn
@@ -409,7 +409,7 @@ export const MONK: CardDef[] = [
     },
   ),
 
-  // --- glue: cards for any build path (DECISIONS #337) ---
+  // --- glue: cards for any deck (DECISIONS #337) ---
   s(
     'common',
     'crushing-palm',
@@ -425,7 +425,7 @@ export const MONK: CardDef[] = [
     up: { effects: [dmg(7), status('mantra', 1)] },
   }),
 
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
   s('rare', 'spirit-shield', "Mountain's Stillness", 'skill', 2, 'none', [
     scaled(barrier(6), per('hand', 3)),
   ]),

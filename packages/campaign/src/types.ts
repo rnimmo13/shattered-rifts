@@ -78,7 +78,7 @@ export interface TrialPrize {
   /** what kind of thing it is, for the little mark on its slot: card, boon, potion, crossed, hp, upgrade, shards, heal */
   icon?: string;
   card?: string;
-  /** a prize that is a choice of cards (the Rift-crossed build path: three rares): you pick one when you take it */
+  /** a prize that is a choice of cards (the Rift-crossed prize: three rares): you pick one when you take it */
   choices?: string[];
   boon?: string;
   potion?: string;

@@ -1,12 +1,11 @@
 // Trades (DECISIONS #256): events that work on particular cards of your deck instead of random ones. Two common Attacks of your
-// class melt into an uncommon one, two common Skills bind into an uncommon one, a rare is traded for another rare, a card from a
-// build path you are not following becomes one for the path you are, an uncommon steps up to a rare. Every card that leaves and
+// class melt into an uncommon one, two common Skills bind into an uncommon one, a rare is traded for another rare, an
+// uncommon steps up to a rare. Every card that leaves and
 // every card that comes is named when the event is built, so the player sees exactly what the trade is. Same shape as eventsTuned.ts.
 
 import { nextInt } from '@sr/combat';
-import { COMBAT_DB, pathName, pathOf, rewardPool } from '@sr/content/v2';
+import { COMBAT_DB, rewardPool } from '@sr/content/v2';
 import { canAdd } from './rewards';
-import { mainPath } from './synergy';
 import { def, shards, type DealSpec, type OptSpec } from './eventDeals';
 import type { EventDef } from './events';
 import type { DealStep, RunState } from './types';
@@ -37,16 +36,9 @@ function mine(r: RunState, rarity: Rarity, kind?: Kind): string[] {
 }
 
 /**
- * Up to `n` different cards of your class the deck could take, of a rarity (and kind), none already in the deck. Cards of
- * `path` come first (the build path the deck follows), then the rest.
+ * Up to `n` different cards of your class the deck could take, of a rarity (and kind), none already in the deck.
  */
-function offers(
-  r: RunState,
-  n: number,
-  rarity: Rarity,
-  kind?: Kind,
-  path?: number | null,
-): string[] {
+function offers(r: RunState, n: number, rarity: Rarity, kind?: Kind): string[] {
   const held = new Set(r.deck.map(base));
   const pool = rewardPool(r.character).filter((id) => {
     const c = COMBAT_DB.cards[id];
@@ -59,22 +51,12 @@ function offers(
       canAdd(r.deck, id)
     );
   });
-  const first = path === null || path === undefined ? [] : pool.filter((id) => pathOf(id) === path);
   const out: string[] = [];
-  for (const from of [first, pool]) {
-    const left = from.filter((id) => !out.includes(id));
-    while (out.length < n && left.length)
-      out.push(left.splice(nextInt(r.rng, left.length), 1)[0] as string);
-  }
+  const left = [...pool];
+  while (out.length < n && left.length)
+    out.push(left.splice(nextInt(r.rng, left.length), 1)[0] as string);
   return out;
 }
-
-/** "for your Rites build path", when the card is on the path the deck follows */
-const forPath = (r: RunState, id: string): string => {
-  const p = pathOf(id);
-  const main = mainPath(r.character, r.deck);
-  return p !== undefined && p === main ? ` (${pathName(r.character, p)})` : '';
-};
 
 /** Two common cards of a kind melt into your choice of two uncommon ones of that kind. */
 const meltTwo =
@@ -84,11 +66,11 @@ const meltTwo =
     const a = pool.splice(nextInt(r.rng, Math.max(1, pool.length)), 1)[0];
     const b = pool.splice(nextInt(r.rng, Math.max(1, pool.length)), 1)[0];
     if (!a || !b) return { opts: [], cards: [] };
-    const into = offers(r, 2, 'uncommon', kind, mainPath(r.character, r.deck));
+    const into = offers(r, 2, 'uncommon', kind);
     return {
       cards: into,
       opts: into.map((id): OptSpec => [
-        `${verb} ${name(a)} and ${name(b)} (both go): ${name(id)}${forPath(r, id)} joins your deck`,
+        `${verb} ${name(a)} and ${name(b)} (both go): ${name(id)} joins your deck`,
         [giveUp([a, b]), card(id)],
         'Two cards go into it. One comes out, better than either.',
       ]),
@@ -100,42 +82,13 @@ function fence(r: RunState): { opts: OptSpec[]; cards: string[] } {
   const from = pick(r, mine(r, 'rare'));
   if (!from) return { opts: [], cards: [] };
   const up = from.endsWith('+');
-  const to = offers(r, 2, 'rare', undefined, mainPath(r.character, r.deck)).map(
-    (id) => (up && COMBAT_DB.cards[id]?.upgrade) || id,
-  );
+  const to = offers(r, 2, 'rare').map((id) => (up && COMBAT_DB.cards[id]?.upgrade) || id);
   return {
     cards: to,
     opts: to.map((id): OptSpec => [
-      `Trade ${name(from)} (it leaves your deck): ${name(id)}${forPath(r, id)} takes its place`,
+      `Trade ${name(from)} (it leaves your deck): ${name(id)} takes its place`,
       [swap(from, id)],
       'The fence turns your card over twice, nods, and slides the other across.',
-    ]),
-  };
-}
-
-/** A card from a build path the deck is not following becomes one of the same rarity for the path it is. */
-function specialist(r: RunState): { opts: OptSpec[]; cards: string[] } {
-  const hero = r.character;
-  const main = mainPath(hero, r.deck);
-  if (main === null) return { opts: [], cards: [] };
-  const stray = pick(
-    r,
-    [...mine(r, 'common'), ...mine(r, 'uncommon')].filter((id) => {
-      const p = pathOf(id);
-      return p !== undefined && p !== main;
-    }),
-  );
-  if (!stray) return { opts: [], cards: [] };
-  const rarity = COMBAT_DB.cards[base(stray)]?.rarity as Rarity;
-  const to = offers(r, 2, rarity, undefined, main).filter((id) => pathOf(id) === main);
-  const p = pathOf(stray);
-  const strayPath = p === undefined ? '' : ` (${pathName(hero, p)})`;
-  return {
-    cards: to,
-    opts: to.map((id): OptSpec => [
-      `Retrain ${name(stray)}${strayPath} (it leaves your deck): ${name(id)} (${pathName(hero, main)}) takes its place`,
-      [swap(stray, id)],
-      'The old habit is hard to lose. The new one sits right from the first swing.',
     ]),
   };
 }
@@ -145,11 +98,11 @@ function stepUp(r: RunState): { opts: OptSpec[]; cards: string[] } {
   const from = pick(r, [...mine(r, 'uncommon', 'attack'), ...mine(r, 'uncommon', 'skill')]);
   if (!from) return { opts: [], cards: [] };
   const kind = COMBAT_DB.cards[base(from)]?.kind as Kind;
-  const to = offers(r, 2, 'rare', kind, mainPath(r.character, r.deck));
+  const to = offers(r, 2, 'rare', kind);
   return {
     cards: to,
     opts: to.map((id): OptSpec => [
-      `Hand over ${name(from)} and 60 shards (the card leaves your deck): ${name(id)}${forPath(r, id)} takes its place`,
+      `Hand over ${name(from)} and 60 shards (the card leaves your deck): ${name(id)} takes its place`,
       [shards(-60), swap(from, id)],
       'The master keeps your card as a lesson for the next student.',
     ]),
@@ -188,15 +141,6 @@ const SPECS: DealSpec[] = [
     opts: [],
     needs: (r) => mine(r, 'rare').length > 0,
     dyn: fence,
-  },
-  {
-    id: 'the-specialist',
-    weight: 1,
-    title: 'The specialist',
-    text: 'A veteran watches you train and frowns at one move in particular. "That one does not belong in your style. Let me show you something that does."',
-    opts: [],
-    needs: (r) => mainPath(r.character, r.deck) !== null,
-    dyn: specialist,
   },
   {
     id: 'step-up',

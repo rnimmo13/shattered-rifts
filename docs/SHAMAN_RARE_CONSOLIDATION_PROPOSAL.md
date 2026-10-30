@@ -5,7 +5,7 @@ Status: design handoff for Claude; suggestions, not implemented card changes. Re
 
 ## User intent and precedence
 
-This document supersedes the earlier chat recommendations to preferentially delete Slay the Spire imports. Robert clarified that imported cards are welcome, their build paths should remain functional, and he wants fewer duplicates plus Shaman-specific variations on their effects. Provenance is not a reason to remove a card.
+This document supersedes the earlier chat recommendations to preferentially delete Slay the Spire imports. Robert clarified that imported cards are welcome, and he wants fewer duplicates plus Shaman-specific variations on their effects. Provenance is not a reason to remove a card.
 
 Latest explicit requirement: preserve big payoff cards for **Status cards, Burn, totems, and Gathering Storm**. Payoffs and their supporting cards do not all need to be rare; Gathering Storm should remain accessible at common. Rares should feel impactful rather than merely be larger commons.
 
@@ -51,7 +51,7 @@ Use this as an acceptance checklist. A rare cut must not leave a strategy with s
 | Burn | Firebrand, Twin Cinders, Flame Spear, Immolate, Smoulder; Ash Chant bridges from card creation | **Flashpoint**; **Wildfire** remains an uncommon multiplier; Phoenix Feather can amplify an attack payoff | Build Burn, decide when to double it, and time the finisher. Do not remove Flashpoint just because Wildfire is strong. |
 | Totems / Spirit | Raise a Totem, Hawk Call, Bear Call, Thunderbird Call, Totem Circle, Spirit Surge, Spirit Call, Turning Wheel | **Shattering Call**, **Chain of Calls**, **Thunder Memory**, **Storm Sovereign**; rare Owl/Elder access | Preserve a row for passives, cash the row in, concentrate commands on its front, or turn repeated planting into damage. |
 | Gathering Storm / zero-cost attacks | **Gathering Storm stays common**, Spirit Lance, Swift Strike, Snap Back; normal draw | **Free Hand**, **Return of the Free**, **Phoenix Feather**; Echoing Strike as an adjacent zero-cost supply engine | Grow copies, retrieve and replay them, and spend attack duplication on a developed Gathering Storm. A rare need not explicitly name Gathering Storm to be its payoff. |
-| Aura-heavy decks | Boon Strike, Storm Chant, Wild Vision | **Dream Weaving**, **Doubled Vow**, **Echoing Spirit**, plus worthwhile class Auras | Invest in lasting engines and choose what to duplicate. Do not eliminate the imported Aura path as collateral damage. |
+| Aura-heavy decks | Boon Strike, Storm Chant, Wild Vision | **Dream Weaving**, **Doubled Vow**, **Echoing Spirit**, plus worthwhile class Auras | Invest in lasting engines and choose what to duplicate. Do not eliminate the imported Aura cards as collateral damage. |
 | Mana / expensive turns | Spirit Offering, Tidecaller, Double Rite, Burnt Offering | **Wellspring**, **Call the Elder Tree**, **Spent Strike**; X-cost cards | Immediate burst versus ongoing Mana; convert a large Mana turn into an attack or commands. |
 | Frost / Faltering | Hoarfrost, Frozen Grasp, Ice Shatter, Bear supply | **Absolute Zero**, **Hail Chant**, **Frostbound** | Mitigate while developing Faltering, then convert that setup into damage. |
 
@@ -69,13 +69,13 @@ A candidate flavour revision is to tag it Storm and change its incidental target
 
 ### 2. Echoing Strike: retain the zero-cost copy engine
 
-Keep its ability to seed zero-cost attacks. Removing it together with Return of the Free and Free Hand would hollow out that path.
+Keep its ability to seed zero-cost attacks. Removing it together with Return of the Free and Free Hand would hollow out that part of the pool.
 
 A candidate Flame variation trades part of the immediate hit for Burn: start evaluation at **2 Mana, 14 damage, apply 2 Burn, add a zero-cost copy to discard**, with an upgrade primarily increasing damage. This connects its repeated casts to Flashpoint and Smoulder while preserving its original role. This is not a free Burn addition to the current 18 damage. Check copied-card costs, whether copies generate more copies, Ash Chant triggers, Snap Back, Free Hand and recursion before choosing final numbers. Keep the current version if the proposed bridge is too strong or muddies the role.
 
 ### 3. Hail Chant: the Bear/Faltering engine
 
-Retain the Bear condition and recurring Faltering/Barrier. It makes Bears support the Frost spell path, and differs from Frostbound's debuff-triggered defence.
+Retain the Bear condition and recurring Faltering/Barrier. It makes Bears support the Frost spells, and differs from Frostbound's debuff-triggered defence.
 
 Candidate: **2 Mana Aura; at turn end, if you have a Bear, apply 1 Faltering to all enemies and gain 4 Barrier. Upgrade: 6 Barrier, still 1 Faltering.** Use 70% Bear uptime as the baseline: 4 x 0.70 x (4.5 + 4 x 1.2) = 26.04 points. The 37.2-point result assumes 100% uptime and is an optimistic sensitivity case, not the baseline. The proposed upgrade with 6 Barrier prices at 32.76 points at 70% uptime. This does not by itself justify the proposed move to 2 Mana against the 38-point rare Aura target. Leave the current card unchanged during the cuts pass; revisit cost, Barrier and upgrade together in a separate balance pass. Check actual Bear availability, enemy timing, multiple copies and Frostbound triggers rather than assuming the condition is always met.
 
@@ -120,7 +120,7 @@ Check that the resulting package has a satisfying ordinary turn and a large deve
 
 ## Expected result
 
-43 -> 30 base rares if the pool is unchanged. No new cards required. Retain big payoffs for Status cards, Burn, totems and Gathering Storm, plus viable Aura, Mana and zero-cost strategies. Reduce redundant damage/defence/position cards, with selective flavour changes to imports rather than wholesale removal of imported build paths.
+43 -> 30 base rares if the pool is unchanged. No new cards required. Retain big payoffs for Status cards, Burn, totems and Gathering Storm, plus viable Aura, Mana and zero-cost strategies. Reduce redundant damage/defence/position cards, with selective flavour changes to imports rather than wholesale removal of imported cards.
 
 Before implementing, report any changed source counts or material conflicts with this snapshot. After implementation, report actual counts, the final cut/rework list, payoff coverage, hand-costing findings and checks performed. Do not claim playtested balance from this design proposal alone.
 
@@ -130,18 +130,11 @@ This section takes precedence over conflicting suggestions above. The initial im
 
 ### Phase 1: cuts, mappings, then immediate validation
 
-1. Capture the current rare/reward counts, each path's reward count, and the fraction of Shaman rewards assigned to a path.
-2. Apply the proposed 13 cuts and their retirement mappings. Do not modify retained card effects, costs or upgrades in this phase.
-3. Immediately run `pnpm paths` and `pnpm test` before any optional rework. Inspect both the generated assignments and test results. Report the exact path counts and on-path fraction; passing tests alone is insufficient for the stricter design target below.
-4. Require **at least 14 reward cards in each Shaman path** and **strictly more than 55% of his reward cards assigned to a path overall**. The current assertion in packages/content/src/v2/cards.test.ts requires at least 12 per path and >0.55 overall; 14 is Robert's stricter acceptance target for this pass. The percentage is collective path coverage, not 55% in each individual path.
-5. If coverage fails, inspect meaningful existing assignments first (including Ash Chant and the prior path-assignment fix). Do not weaken the thresholds, arbitrarily label glue as elemental, or add filler cards to get green tests. Reconsider a cut if necessary and report the revised count; preserving functional paths matters more than exactly 13 removals.
-6. Complete remaining repository-required checks and documentation for the cuts-only result. Keep its validation separate from any later rework.
+Done 2026-10-30 (DECISIONS #450): the cuts, the retirement mappings and the checks.
 
-### Frost and Flame coverage checks
+### Burn check
 
-Frost's remaining named rare engines/payoffs are Absolute Zero, Frostbound and Hail Chant; Absolute Zero already absorbed Avalanche. Verify the accessible Frost support is deep enough and these rares have separate jobs. Do not remove or weaken another Frost engine during the cleanup. If the path falls below 14 meaningful reward cards, revisit Winter's Embrace or Glacial Lance rather than force the original cut list.
-
-Flame retains Flashpoint, Phoenix Feather, Echoing Strike, Spent Strike and Flak Burst in the intended package. Verify current generated assignments rather than assuming all these are already tagged or assigned identically. Burn relies on Flashpoint, Wildfire and Smoulder plus its direct applicators; Ash Chant can supply a Status/card-creation bridge. Hand-evaluate Smoulder at ordinary Flame-card frequency, including random targeting and realistic Mana/draw. It should feel like an engine without requiring a perfect hand or another rare. Preserve a substantial Burn payoff and accessible Burn supply; do not assume a list of Burn cards proves that the engine works.
+Hand-evaluate Smoulder at ordinary Flame-card frequency, including random targeting and realistic Mana/draw. It should feel like an engine without requiring a perfect hand or another rare. Preserve a substantial Burn payoff and accessible Burn supply.
 
 ### Phase 2: optional reworks, one at a time
 

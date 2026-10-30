@@ -50,7 +50,6 @@ export interface Riftwalker {
   realm: RealmId;
   starter: string[];
   blurb: string;
-  /** the build paths of its card pool, shown on the character screen (docs/09_ROSTER.md); most have three, there is no rule (DECISIONS #362) */
   /** what kind of fighter this is, in one word players know ("Knight", "Assassin"...) */
   role: string;
   /**
@@ -61,21 +60,13 @@ export interface Riftwalker {
   persona: string;
   /** the innate trait every one of this character's fights starts with (shown on the character screens) */
   trait: HeroTrait;
-  buildPaths: string[];
-  /** the mechanics this character plays with, in plain words (shown on the character screens in place of build paths) */
+  /** the mechanics this character plays with, in plain words (shown on the character screens) */
   mechanics: string[];
   /** a few plain sentences on how this character plays (shown on the character screen and the Learn page) */
   howTo: string[];
   /** things the character says (shown on the character screen, one at random) */
   quotes?: string[];
 }
-
-/**
- * Build paths are hidden for now (Robert, 2026-10-28, DECISIONS #365: "lets remove the build path thing for now, we will associate cards with
- * build paths later"). The data stays (`buildPaths`, `pathOf`, `pnpm paths`), but nothing shows a card's build path or hints at one, and
- * nothing is offered because of one. Screens show `Riftwalker.mechanics` instead.
- */
-export const BUILD_PATHS_SHOWN = false;
 
 const rep = (id: string, n: number): string[] => Array<string>(n).fill(id);
 
@@ -85,21 +76,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     persona: 'Valeria',
     role: 'Knight',
     trait: {
-      name: 'Oathkeeper',
-      text: 'Start every fight with 6 Barrier and 6 Plating: your Barrier survives each turn up to your Plating, which shrinks by 1 a turn.',
-      fightStart: [barrier(6), status('plating', 6)],
+      name: 'Mana Reserves',
+      text: 'Unspent Mana is not lost: it is kept as Reserves, up to your Max Reserves (3). Cards spend your Mana before your Reserves.',
+      maxReserves: 3,
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
     starter: [...rep('strike', 5), ...rep('defend', 4), 'sundering-blow'],
     blurb:
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
-    buildPaths: [
-      'Bulwark: hit with your Barrier',
-      'Might: hit many times, harder and harder',
-      'Consume: burn your own cards for value',
-      'Blood: pay HP for Mana, cards and Might',
-    ],
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
       'Exposed enemies take 50% more from your attacks: Sundering Blow sets it up.',
@@ -130,11 +115,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
     mechanics: ['Companions', 'Frames', 'Salvage', 'Primed', 'Might', 'Max HP growth'],
-    buildPaths: [
-      'Swarm: many cheap drones, spent freely',
-      'Assemble: charge your companions up',
-      'Core: one big construct, built up',
-    ],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
       'You have 3 companion slots. A Light machine takes 1, a Heavy 2 and a Colossal all 3 (the pips on the card and the machine). Many small drones can be spent freely; one big machine can be built up (heals and upgrades give it max HP) and cashed in; and companions can be charged up (Primed: their next strike hits harder).',
@@ -164,11 +144,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'rend'],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     mechanics: ['Companions', 'Might', 'Self-damage', 'Mana and draw'],
-    buildPaths: [
-      'Bloodrage: HP for Might',
-      'Pack: feed the companions',
-      'Predator: Mana and draw for burst turns',
-    ],
     howTo: [
       'You start with a Hound. Might makes every attack hit harder, permanently.',
       'Many of your cards cost HP. Spend it to buff the pack; Savage Bite and Devour heal some of it back.',
@@ -200,11 +175,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and a deck of tricks.',
     mechanics: ['Traps', 'Exposed', 'Suits', 'Foresee'],
-    buildPaths: [
-      'Traps: one for every trigger',
-      'Exposed: mark, then spend the mark',
-      'Suits: show all four suits in a turn for a Full Trick',
-    ],
     howTo: [
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
@@ -233,11 +203,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
     mechanics: ['Daggers', 'Bleed', 'Discard', 'Premeditate', 'Faltering'],
-    buildPaths: [
-      'Daggers: Daggers, and the attacks around them',
-      'Bleed: stack it, make it burn harder',
-      'Sleight: draw, discard and dodge',
-    ],
     howTo: [
       'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
       'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
@@ -273,11 +238,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.',
     mechanics: ['Elements', 'Totems', 'Commands', 'Spirit', 'Primed', 'Burn'],
-    buildPaths: [
-      'Flame: big single-target bursts, with Burn',
-      'Frost: Barrier and Faltering',
-      'Storm: every enemy at once, or Forks',
-    ],
     howTo: [
       'Your totems stand in a row (the Totems panel), oldest at the front. Each works every turn while it stands: the Hawk hits a random enemy for 3, the Bear gives Barrier, the Thunderbird hits two random enemies.',
       'A command (Spirit Call) makes your front totem act once more and consumes it: the Hawk hits a random enemy for 7, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
@@ -312,11 +272,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
-    buildPaths: [
-      'Fury: get in, hit hard, live through it',
-      'Flow: change stance again and again; every change pays',
-      'Radiant: build Fervor to 10 for a triple-damage turn',
-    ],
     howTo: [
       'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
@@ -355,11 +310,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
     mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
-    buildPaths: [
-      'Blade: sharpen the Obsidian Blade and swing it',
-      'Arcana: gain it, then spend it on big cards',
-      'Court: create cards and play many',
-    ],
     howTo: [
       'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
       'The Obsidian Blade (2 Mana, Hold) is a card of your deck, always in your opening hand. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
@@ -396,11 +346,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
     mechanics: ['Old Twelve Gauge', 'Buckshot', 'Hangover', 'Stagger'],
-    buildPaths: [
-      'Gun: sharpen the Old Twelve Gauge',
-      'Shells: buckshot that hits everyone',
-      'Hangover: drink now, pay tomorrow',
-    ],
     howTo: [
       'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes every attack hit 1% harder for each 1% of your HP you are missing.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
@@ -447,11 +392,6 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     blurb:
       'A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.',
     mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],
-    buildPaths: [
-      'Fate: curse, then cash it in',
-      'Thralls: raise them, grow them, command them',
-      'Souls: Gravesouls and Fleeting cards',
-    ],
     howTo: [
       'You start with a Bone Thrall. Thralls stand in front of you and take the hits meant for you, but they never act on their own.',
       'Raise N brings a new Bone Thrall with N HP (up to three). With three already standing, your weakest Thrall gains N max HP instead.',
@@ -910,27 +850,7 @@ export {
   stripRoll,
   type CardMark,
 } from './sanctify';
-import { PATH_OF } from './paths.generated';
 import { TRIMMED_CARDS } from './retired';
-
-/** Which of its Riftwalker's build paths (an index into `Riftwalker.buildPaths`) a card belongs to, or undefined (basics and glue cards). */
-export function pathOf(cardId: string): number | undefined {
-  return PATH_OF[stripRoll(cardId).replace(/\+$/, '')];
-}
-
-/** The short name of a build path ("Bulwark"), and the whole line ("Bulwark: hit with your Barrier"). */
-export function pathName(hero: HeroId, path: number): string {
-  return (RIFTWALKERS[hero].buildPaths[path] ?? '').split(':')[0] ?? '';
-}
-
-/** How many cards (base versions) a Riftwalker has in each of its build paths. */
-export function pathSizes(hero: HeroId): number[] {
-  const n = RIFTWALKERS[hero].buildPaths.map(() => 0);
-  for (const [id, path] of Object.entries(PATH_OF))
-    if (COMBAT_DB.cards[id]?.hero === hero && path >= 0 && path < n.length)
-      n[path] = (n[path] ?? 0) + 1;
-  return n;
-}
 
 /**
  * Deck rules for Combat v2 runs: a deck never drops below minSize cards, holds at most MAX_COPIES of a card (DECISIONS #337), and at most

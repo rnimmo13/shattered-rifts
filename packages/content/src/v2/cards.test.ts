@@ -222,11 +222,11 @@ describe('real card data, end to end', () => {
 });
 
 describe('pool shape (docs/09_ROSTER.md §1)', () => {
-  const buildPaths = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
+  const cardsOf = (h: HeroId) => rewardPool(h).map((id) => db.cards[id]!);
 
   it('every Riftwalker has a deep pool with all rarities, mostly of their own', () => {
     for (const h of HEROES) {
-      const own = buildPaths(h).filter((c) => c.hero === h);
+      const own = cardsOf(h).filter((c) => c.hero === h);
       expect(own.length, `${h} own cards`).toBeGreaterThanOrEqual(30);
       for (const r of ['common', 'uncommon', 'rare'])
         expect(own.filter((c) => c.rarity === r).length, `${h} ${r}`).toBeGreaterThanOrEqual(3);
@@ -334,34 +334,6 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     // (Foresee: Solen and Vesper; the Slay the Spire list copies, Obsidia and Ilvane among them, have none)
     expect(count((c) => c.effects.some((o) => o.op === 'scry'))).toBeGreaterThanOrEqual(2);
     expect(count((c) => c.exhaust === true)).toBeGreaterThanOrEqual(6);
-  });
-});
-
-describe('buildPaths (each with room to build a deck; most characters have three, there is no rule, DECISIONS #362)', async () => {
-  const { pathOf, pathSizes } = await import('./index');
-  it('every Riftwalker has buildPaths of at least 12 cards each, and most of their cards belong to one', () => {
-    for (const h of HEROES) expect(RIFTWALKERS[h].buildPaths.length, h).toBeGreaterThanOrEqual(3);
-    for (const h of HEROES) {
-      // (the Shaman's element sort is retired, Robert 2026-10-30: his builds are judged by their payoffs, not by path counts)
-      if (h === 'shaman') continue;
-      const sizes = pathSizes(h);
-      // (Valeria's cards are sorted into build paths again later, DECISIONS #365: her first sort is lopsided)
-      if (h !== 'knight')
-        for (const n of sizes)
-          expect(n, `${h} buildPaths ${sizes.join('/')}`).toBeGreaterThanOrEqual(12);
-      const own = rewardPool(h).filter(
-        (id) => db.cards[id]?.hero === h && db.cards[id]?.rarity !== 'legendary',
-      );
-      const onPath = own.filter((id) => pathOf(id) !== undefined).length;
-      expect(onPath / own.length, h).toBeGreaterThan(0.55); // the rest is shared glue
-    }
-  });
-
-  it('a path belongs to its own character: no path name is shared by two characters', () => {
-    const names = HEROES.flatMap((h) =>
-      RIFTWALKERS[h].buildPaths.map((l) => l.split(':')[0]!.toLowerCase()),
-    );
-    expect(new Set(names).size).toBe(names.length);
   });
 });
 

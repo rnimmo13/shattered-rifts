@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Mana Reserves for the Knight:** unspent Mana is kept as Reserves (Max Reserves 3, shown beside the Mana gem; cards spend Mana first), with twelve new Knight cards, Plating on some Barrier cards, and Scarred Hide. 58 cards without art of their own use borrowed art for now.
+- Card artwork now follows the current hero base models and card actions; the Shaman gains 55 dedicated card illustrations. Thunderbird and Moon Owl now have carved totem and spirit artwork.
 - **The Assassin defers:** a new keyword, Defer (a card waits a turn and comes back costing 1 less); Stalker’s Lunge, Side Slip, Palm Switch, Quick Reflexes, Cartwheel Cut, Slip the Blow, Glancing Knives and Into the Shadows use it.
 - **Shaman pool trimmed again:** nineteen more cards retired (Firebrand, Talon Strike, Immolate, Storm Front, Totem Drum, Raise the Pole, Cold Breath and twelve rares); old copies turn into a nearby card.
 - **Shaman pool trimmed:** seventeen uncommons and rares retired, Storm Chant, Raise the Pole and Storm Sovereign absorb three more, Spirit Surge gives more Spirit, and the texts of Wild Vision, Blighted Chorus and Phoenix Feather are fixed.

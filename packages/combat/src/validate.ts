@@ -322,6 +322,7 @@ export function validateDb(db: CombatDb): string[] {
       !h.trait.triggers?.length &&
       !h.trait.clutch &&
       !h.trait.shareMight &&
+      !h.trait.maxReserves &&
       !h.trait.healAfterFight
     )
       errs.push(`hero ${id}: trait "${h.trait.name}" does nothing`);

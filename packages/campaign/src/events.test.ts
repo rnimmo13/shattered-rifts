@@ -61,27 +61,18 @@ const SETUP: Record<string, Partial<RunState>> = {
   'legend-reliquary': {
     deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'foundry-awakens+'],
   },
-  // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, a card off the build
-  // path the deck follows, an uncommon and the shards to step it up
+  // the trades (DECISIONS #256) name cards of your own class: two common Attacks, two common Skills, a rare, an uncommon
+  // and the shards to step it up
   smelter: { deck: [...RIFTWALKERS.knight.starter, 'bulwark-blow', 'twin-cut'] },
   'binders-table': { deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'field-repairs'] },
   'the-fence': { deck: [...RIFTWALKERS.knight.starter, 'bastion-engine'] },
-  'the-specialist': {
-    deck: [
-      ...RIFTWALKERS.knight.starter,
-      'oath-of-iron',
-      'cold-stare',
-      'bulwark-blow',
-      'field-repairs',
-    ],
-  },
   'step-up': { deck: [...RIFTWALKERS.knight.starter, 'rising-fist'], shards: 100 },
 };
 
 describe('events', () => {
-  it('there are ninety-four of them, each with its own id', () => {
-    expect(EVENTS.length).toBe(94);
-    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(94);
+  it('there are ninety-three of them, each with its own id', () => {
+    expect(EVENTS.length).toBe(93);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(93);
   });
 
   it('are varied and random, and a card is on offer only now and then', () => {
@@ -103,8 +94,6 @@ describe('events', () => {
 
   it('every option of every event resolves, says what happened, and leaves a sane run', () => {
     for (const def of EVENTS) {
-      // (The specialist needs a main build path, and build paths are hidden for now, DECISIONS #365)
-      if (def.id === 'the-specialist') continue;
       const first = eventRun(`def-${def.id}`);
       // a deck with one non-basic card in it, so every event has something to work with
       const base: RunState = {

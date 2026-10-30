@@ -67,7 +67,7 @@ export const wound = (side: 'self' | 'foe' = 'foe', card = 'wound'): Op => ({
 export const ACT: Op = { op: 'actAllies' };
 export const PREVENT: Op = { op: 'prevent' };
 
-// --- ops for the build paths (docs/09_ROSTER.md) --------------------------------------------------------------------------
+// --- ops for the class mechanics (docs/09_ROSTER.md) --------------------------------------------------------------------------
 /** A scale: "+mult per metric". `of`: self (default) / the card's target / each unit hit. */
 export const per = (by: Metric, mult = 1, of?: Scale['of'], into?: Scale['into']): Scale => ({
   by,
@@ -137,6 +137,14 @@ export const revive: Op = { op: 'revive' };
 export const manaNext = (amount: number): Op => ({ op: 'manaNext', amount });
 export const maxMana = (amount: number): Op => ({ op: 'maxMana', amount });
 export const drawNext = (amount: number): Op => ({ op: 'drawNext', amount });
+/** Gain Reserves (the Mana Reserves trait), up to the Max Reserves */
+export const reserves = (amount: number): Op => ({ op: 'reserves', amount });
+/** Raise the Max Reserves, for this turn only or for the rest of the fight */
+export const maxReserves = (amount: number, turn = false): Op => ({
+  op: 'maxReserves',
+  amount,
+  ...(turn ? { turn: true } : {}),
+});
 /** Defer a card (or `count`, or up to `count`): it comes back next turn costing 1 less */
 export const defer = (count = 1, upTo = false): Op => ({ op: 'defer', count, ...(upTo ? { upTo: true } : {}) });
 export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Scale): Op => ({

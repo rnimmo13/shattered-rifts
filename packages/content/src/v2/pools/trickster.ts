@@ -1,4 +1,4 @@
-// Vesper Nightlace (Umbral). No companions. Three build paths (DECISIONS #255, #387):
+// Vesper Nightlace (Umbral). No companions. Three themes (DECISIONS #255, #387):
 //   Traps    - set traps with different triggers; payoffs for having them out
 //   Exposed  - mark the enemy, then spend the mark
 //   Suits    - every card shows a suit; show all four in a turn for a Full Trick, and payoffs for every suit shown
@@ -216,7 +216,7 @@ export const TRICKSTER: CardDef[] = [
   ),
 
   // (more Exposed)
-  // (Cheap Shot and Stalk were the Assassin's Dirty Hit and Stalker's Lunge word for word: each now leans on a Trickster build path)
+  // (Cheap Shot and Stalk were the Assassin's Dirty Hit and Stalker's Lunge word for word: each now leans on a Trickster mechanic)
   v(
     'common',
     'cheap-shot',
@@ -421,7 +421,7 @@ export const TRICKSTER: CardDef[] = [
     { up: { effects: [on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 4))])] } },
   ),
 
-  // --- glue: Mana and time, for any build path ---
+  // --- glue: Mana and time, for any deck ---
   v('uncommon', 'saved-breath', 'Saved Breath', 'skill', 0, 'none', [manaNext(2), scry(2)], {
     exhaust: true,
   }),
@@ -550,7 +550,7 @@ export const TRICKSTER: CardDef[] = [
     status('faltering', 1, 'target'),
   ]),
 
-  // --- glue: cards for any build path (DECISIONS #337) ---
+  // --- glue: cards for any deck (DECISIONS #337) ---
   v(
     'common',
     'low-blow',
@@ -575,7 +575,7 @@ export const TRICKSTER: CardDef[] = [
     up: { effects: [barrier(9), drawNext(1)] },
   }),
 
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
   v('rare', 'between-worlds', 'Between Worlds', 'skill', 2, 'none', [status('ghostly', 2)], {
     exhaust: true,
   }),

@@ -37,7 +37,6 @@ const out: string[] = [
 for (const [id, r] of Object.entries(RIFTWALKERS)) {
   const pool = cards.filter((c) => c.hero === id && !c.source);
   out.push(`## ${r.hero.name} (${r.realm}, ${r.hero.maxHp} HP)`, '', r.blurb, '');
-  out.push(`Paths: ${r.buildPaths.join(' / ')}`, '');
   out.push(`Starter: ${r.starter.map((s) => db.cards[s]?.name ?? s).join(', ')}`, '');
   out.push(...table(pool));
   const tokens = cards.filter((c) => c.hero === id && c.source === 'token');

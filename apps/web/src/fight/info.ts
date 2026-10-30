@@ -550,6 +550,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'After you play it, it is removed from the rest of this fight.',
   },
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
+  reserves: {
+    name: 'Reserves',
+    text: 'Mana the Knight kept instead of losing it (his trait), up to his Max Reserves. Cards spend your Mana first and your Reserves after it. Reserves stay until they are spent.',
+  },
   defer: {
     name: 'Defer',
     text: 'Choose a card in your hand that costs 1 or more (not an X card). It leaves now and comes back at the start of your next turn, on top of the cards you draw, costing 1 less until you play it, even if that takes a few turns. It is set aside, not discarded; with a full hand it waits on top of your draw pile instead.',
@@ -910,7 +914,12 @@ export const UI_TIPS = {
   mana: (mana: number, max: number): TipContent => ({
     kicker: 'Resource',
     title: `Mana ${mana} / ${max}`,
-    text: `What you spend to play cards (the number on the blue gem). It refills to ${max} at the start of your turn; unspent Mana is lost.`,
+    text: `What you spend to play cards (the number on the blue gem). It refills to ${max} at the start of your turn; unspent Mana is lost (the Knight keeps it as Reserves instead).`,
+  }),
+  reserves: (n: number, max: number): TipContent => ({
+    kicker: 'Second resource',
+    title: `Reserves ${n} / ${max}`,
+    text: 'Mana kept instead of lost: whatever you do not spend at the end of your turn is kept here, up to your Max Reserves. Cards spend your Mana first, then Reserves.',
   }),
   lumen: (n: number): TipContent => ({
     kicker: 'Second resource',

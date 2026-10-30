@@ -42,7 +42,7 @@ export type StatusId =
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
   | 'hangover' // at the start of its turn it loses this much HP (never below 1), then it clears (KP's drinks; DECISIONS #354)
   | 'clutch' // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
-  | 'sapped' // its attacks deal this much less damage (it wears off at the end of its own turn when a card puts it on an enemy)
+  | 'sapped' // its attacks deal this much less damage (it wears off at the end of its own turn when a card puts it on an enemy: one put on during that enemy's turn ends with it)
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
   | 'sturdy' // you take half damage from Exposed enemies (until the enemies' next turn is over)
   | 'unmovable' // the first Barrier a card gives you each turn is doubled
@@ -380,6 +380,7 @@ export type Metric =
   | 'totemsOf' // your totems of the `rune` kind
   | 'spirit' // (about a unit) its Spirit
   | 'umbra' // (about a unit) the Moon Owl's charge
+  | 'reserves' // your Reserves (the Mana Reserves trait pool)
   | 'commanded' // 1 once you have commanded a totem this turn
   | 'uprooted' // totems the card being played has uprooted
   | 'replacedNow' // totems the card being played has replaced with a different kind
@@ -431,6 +432,7 @@ export type TriggerWhen =
   | 'barrier' // your hero gained Barrier (from anything)
   | 'heal' // your hero was healed (from anything; a heal at full HP still counts, for its whole amount)
   | 'loseHp' // your hero lost HP to one of your own effects
+  | 'hurt' // your hero lost HP to anything: an enemy's attack, or one of your own effects (Scarred Hide)
   | 'draw' // you drew a card
   | 'created' // a card was created in one of your piles
   | 'arcana' // you spent Arcana (a card's Arcana cost was paid; DECISIONS #288)
@@ -706,6 +708,10 @@ export type Op =
   | { op: 'giveSly' }
   /** (assassin) Defer: choose `count` cards in your hand (`upTo`: any number up to it) that cost 1 or more and are not X cards: they leave now and come back at the start of your next turn costing 1 less until played */
   | { op: 'defer'; count: number; upTo?: boolean }
+  /** (the Mana Reserves trait) gain Reserves, up to the Max Reserves */
+  | { op: 'reserves'; amount: number }
+  /** (the Mana Reserves trait) raise the Max Reserves: for this turn only (`turn`), or for the rest of the fight */
+  | { op: 'maxReserves'; amount: number; turn?: boolean }
   /** choose a card in your hand: at the start of your next turn, add this many copies of it to your hand */
   | { op: 'copyNext'; times: number }
   // --- the Regent's pieces (Obsidia, the spellblade)
@@ -974,6 +980,8 @@ export interface HeroTrait {
   totems?: number;
   /** Trinity (DECISIONS #420): the first time each turn he has cast a spell of every element, he gains 1 Spirit */
   trinity?: boolean;
+  /** Max Reserves (the Mana Reserves trait, DECISIONS #452): unspent Mana is not lost, it is kept as Reserves up to this many; cards spend Mana before Reserves */
+  maxReserves?: number;
   /** Martial Forms (the Monk, DECISIONS #419): the form he starts each fight in; completing its objective gives 1 Mastery */
   forms?: Form;
 }
@@ -1288,6 +1296,9 @@ export interface SideState {
   /** Potion ids carried (the rest of the run keeps whatever is unused) */
   potions: string[];
   stars: number;
+  /** (the Mana Reserves trait) Mana kept from earlier turns, spent after the turn's own Mana, and the most that can be kept */
+  reserves: number;
+  maxReserves: number;
   /** Mana and cards that arrive at the start of your next turn */
   nextMana: number;
   nextDraw: number;
@@ -1325,6 +1336,8 @@ export interface SideState {
   nextCopies?: { card: CardId; times: number }[];
   /** (DECISIONS #433) Premeditate: cards an effect discarded this turn, coming back to the hand next turn at 0 */
   premeditating?: CardInst[];
+  /** (the Mana Reserves trait) this turn's extra Max Reserves (Stand Fast): it ends when the next turn begins */
+  reservesTurn?: number;
   /** Defer: cards set aside this turn, coming back to the hand next turn costing 1 less */
   deferring?: CardInst[];
   honedUsed?: boolean;
@@ -1529,6 +1542,7 @@ export type CombatEvent =
   | { type: 'snareSprung'; side: Side; snare: string; card: CardId }
   | { type: 'prevented'; unit: UnitId }
   | { type: 'stars'; side: Side; stars: number }
+  | { type: 'reserves'; side: Side; reserves: number; max: number }
   | { type: 'runeChannel'; side: Side; rune: string; index: number }
   | { type: 'runeFire'; side: Side; rune: string; how: 'passive' | 'evoke' }
   /** `index`: where in the row it stood (the newest can go first, Consuming Shadow) */

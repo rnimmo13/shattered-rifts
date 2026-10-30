@@ -2,17 +2,7 @@
 // turning counts into a deck, and a random deck for quick experiments.
 
 import { nextInt, seedRng, type CardDef, type CombatDb } from '@sr/combat';
-import {
-  BUILD_PATHS_SHOWN,
-  REALMS,
-  RIFTWALKERS,
-  pathName,
-  pathOf as rawPathOf,
-  type HeroId,
-} from '@sr/content/v2';
-
-/** a card's build path, or undefined while build paths are hidden (DECISIONS #365) */
-const pathOf = (id: string): number | undefined => (BUILD_PATHS_SHOWN ? rawPathOf(id) : undefined);
+import { REALMS, RIFTWALKERS } from '@sr/content/v2';
 
 export type PoolKey = 'all' | 'neutral' | 'wardens' | 'tokens' | 'other' | string; // or a Riftwalker id
 
@@ -152,8 +142,7 @@ export function tabCards(
 }
 
 /**
- * Book order: character, build path, then rarity (basic to legendary), cost, name. With `by: 'character'` the build paths are not
- * kept apart (character, rarity, cost, name). With `by: 'rarity'` the rarest come first across every character (then character,
+ * Book order: character, then rarity (basic to legendary), cost, name. With `by: 'rarity'` the rarest come first across every character (then character,
  * cost, name), so a page is a run of cards with no sections.
  */
 export function sortCards(
@@ -177,7 +166,6 @@ export function sortCards(
   return [...cards].sort(
     (a, b) =>
       heroRank(a.pool) - heroRank(b.pool) ||
-      (by === 'book' ? (pathOf(a.def.id) ?? 9) - (pathOf(b.def.id) ?? 9) : 0) ||
       (RARITY_RANK[a.def.rarity ?? 'common'] ?? 1) - (RARITY_RANK[b.def.rarity ?? 'common'] ?? 1) ||
       a.def.cost - b.def.cost ||
       a.def.name.localeCompare(b.def.name),
@@ -185,18 +173,15 @@ export function sortCards(
 }
 
 /**
- * Cut a run of cards into book pages of `perPage`. A page never mixes characters or build paths, and its heading names them
- * ("Ser Maren Ashcourt · Bulwark"), so the book shows each character's build paths as sections.
+ * Cut a run of cards into book pages of `perPage`. A page never mixes characters, and its heading names its character.
  */
 export function paginate(
   cards: readonly CatalogCard[],
   perPage: number,
-  /** fill every page to the brim, whatever the character or build path (the heading then lists the characters on the page) */
+  /** fill every page to the brim, whatever the character (the heading then lists the characters on the page) */
   packed = false,
-  /** start a new page for each build path (false: only for each character) */
-  byPath = true,
-): { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] {
-  const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[]; path?: string }[] = [];
+): { cards: CatalogCard[]; heroes: string[]; heroIds: string[] }[] {
+  const pages: { cards: CatalogCard[]; heroes: string[]; heroIds: string[] }[] = [];
   if (packed) {
     const names = RIFTWALKERS as Record<string, { hero: { name: string } }>;
     for (let k = 0; k < cards.length; k += perPage) {
@@ -207,11 +192,10 @@ export function paginate(
     }
     return pages;
   }
-  const keyOf = (c: CatalogCard): string =>
-    byPath ? `${c.pool}|${pathOf(c.def.id) ?? ''}` : c.pool;
+  const keyOf = (c: CatalogCard): string => c.pool;
   let i = 0;
   while (i < cards.length) {
-    // the run of cards sharing a character and build path
+    // the run of cards sharing a character
     let j = i + 1;
     while (j < cards.length && keyOf(cards[j] as CatalogCard) === keyOf(cards[i] as CatalogCard))
       j++;
@@ -220,14 +204,10 @@ export function paginate(
       const first = slice[0] as CatalogCard;
       const hero = (RIFTWALKERS as Record<string, { hero: { name: string } }>)[first.pool]?.hero
         .name;
-      const path = pathOf(first.def.id);
       pages.push({
         cards: slice,
         heroes: hero ? [hero] : [],
         heroIds: hero ? [first.pool] : [],
-        ...(byPath && hero && path !== undefined
-          ? { path: pathName(first.pool as HeroId, path) }
-          : {}),
       });
     }
     i = j;

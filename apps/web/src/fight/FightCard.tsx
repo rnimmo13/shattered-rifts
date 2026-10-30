@@ -8,9 +8,9 @@ import {
   type Element,
   type LiveDamage,
 } from '@sr/combat';
+import { RIFTWALKERS } from '@sr/content/v2';
 import { CARD_H, CARD_W } from '../cards/size';
 import { markRollDiff, parseRules } from '../cards/cardText';
-import { BUILD_PATHS_SHOWN, RIFTWALKERS, pathName, pathOf, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { cardArtV2, paintedCardArt } from './art';
 import '../cards/card.css';
@@ -36,7 +36,7 @@ const RARITY_LABEL: Record<string, string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Bleed|Shocked|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Precision|Consume|Lifesteal|Hold|Defer|Fleeting|Unplayable|Traps?|Burn|Reverb|Wounds?|Voids?|Dry Tinder|Tinder|Owl Charge|Buffer|Bracing|Primed|Totems?|Hawks?|Bears?|Thunderbirds?|Elder Trees?|Moon Owls?)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Bleed|Shocked|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Precision|Consume|Lifesteal|Hold|Defer|Max Reserves|Reserves|Fleeting|Unplayable|Traps?|Burn|Reverb|Wounds?|Voids?|Dry Tinder|Tinder|Owl Charge|Buffer|Bracing|Primed|Totems?|Hawks?|Bears?|Thunderbirds?|Elder Trees?|Moon Owls?)\b/g;
 
 /**
  * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll
@@ -159,10 +159,6 @@ export const FightCard = memo(
     const owner = def.hero && !def.source?.startsWith('boss:') ? def.hero : undefined;
     const frame = useMemo(() => frameOf(db, def), [db, def]);
     const style = { '--k': k, width, height: width * (CARD_H / CARD_W) } as CSSProperties;
-    // the build path the card belongs to, top right on the art; basics, glue and tokens have none (DECISIONS #342)
-    const pathIdx =
-      BUILD_PATHS_SHOWN && owner && Object.hasOwn(RIFTWALKERS, owner) ? pathOf(def.id) : undefined;
-    const path = pathIdx === undefined ? null : pathName(owner as HeroId, pathIdx);
     return (
       <div
         ref={ref}
@@ -181,7 +177,6 @@ export const FightCard = memo(
             />
             <div className="card__artShade" />
           </div>
-          {path && <div className="card__path">{path}</div>}
           <div className="card__banner">
             <span className="card__name">
               <WithArrows text={def.name} />

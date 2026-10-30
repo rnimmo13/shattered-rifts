@@ -78,7 +78,6 @@ for (const hero of CLASSES) {
     trait: r.trait,
     blurb: r.blurb,
     mechanics: r.mechanics,
-    buildPaths: r.buildPaths,
     howTo: r.howTo,
     starter: r.starter,
     starterText: r.starter.map((id) => ({

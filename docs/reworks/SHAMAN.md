@@ -37,7 +37,7 @@ would otherwise pile it up onto a multi-hit Storm spell. Two Hawks do not Prime 
 - **The Totem Cycle:** a Hawk, a Bear and a Thunderbird at the start, in that order; the rules above.
 - **Starter (10):** 2 Strike, Defend, Spirit Call (command the front totem), 2 Ember Bolt, 2 Frost Ward, 2 Forked Lightning.
 
-## Strategies (91 cards; 87 reward-eligible; 12 Auras; build paths Flame 17, Frost 16, Storm 18, glue the rest)
+## Strategies (91 cards; 87 reward-eligible; 12 Auras)
 
 - **Flame:** big single-target hits (Flare 10, Flame Spear 18, Pyroclasm 16 +8 on a Burning enemy, Inferno 30), Burn as a small extra,
   and Talon Strike (11, plant a Hawk). The Hawk's Primed lands on his next attack, so a Flame turn follows a Hawk turn.

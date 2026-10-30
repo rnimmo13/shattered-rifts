@@ -1,0 +1,194 @@
+[
+  {
+    "id": "dawn-ward",
+    "name": "Dawn Ward",
+    "hero": "shaman",
+    "text": "Frost. Gain 10 Barrier. Consume. Opening hand."
+  },
+  {
+    "id": "hail-chant",
+    "name": "Hail Chant",
+    "hero": "shaman",
+    "text": "At the end of your turn: If you have a Bear: Apply 1 Faltering to ALL enemies. Gain 4 Barrier."
+  },
+  {
+    "id": "consuming-dusk",
+    "name": "Consuming Dusk",
+    "hero": "shaman",
+    "text": "Plant 2 Moon Owls. At the end of your turn: Command your front totem."
+  },
+  {
+    "id": "storm-chant",
+    "name": "Storm Chant",
+    "hero": "shaman",
+    "text": "Whenever you play an Aura: Gain 1 Mana. Plant a Thunderbird."
+  },
+  {
+    "id": "blighted-chorus",
+    "name": "Blighted Chorus",
+    "hero": "shaman",
+    "text": "Storm. Deal 5 damage to a random enemy 2 times, 1 more time per Status card in your deck."
+  },
+  {
+    "id": "swift-strike",
+    "name": "Swift Strike",
+    "hero": "shaman",
+    "text": "Storm. Deal 5 damage. If you have played 2 or fewer other cards this turn: Draw 1 card."
+  },
+  {
+    "id": "shattering-call",
+    "name": "Shattering Call",
+    "hero": "shaman",
+    "text": "Storm. Deal 7 damage to ALL enemies. Command every totem, front to back twice. Consume."
+  },
+  {
+    "id": "thunder-rush",
+    "name": "Thunder Rush",
+    "hero": "shaman",
+    "text": "Storm. Plant a Thunderbird X times."
+  },
+  {
+    "id": "spark-strike",
+    "name": "Spark Strike",
+    "hero": "shaman",
+    "text": "Storm. Deal 3 (+4 per Thunderbird you have) damage."
+  },
+  {
+    "id": "thunder-beam",
+    "name": "Thunder Beam",
+    "hero": "shaman",
+    "text": "Storm. Deal 28 damage to ALL enemies. Lose 3 Spirit."
+  },
+  {
+    "id": "swift-study",
+    "name": "Swift Study",
+    "hero": "shaman",
+    "text": "Storm. Draw 3 cards."
+  },
+  {
+    "id": "thunder-chant",
+    "name": "Thunder Chant",
+    "hero": "shaman",
+    "text": "For the rest of the fight, a Thunderbird you command deals 5 more damage (its end-of-turn effect is not changed)."
+  },
+  {
+    "id": "hurried-prayer",
+    "name": "Hurried Prayer",
+    "hero": "shaman",
+    "text": "Draw 2 cards. Add a Void to your discard pile. Consume."
+  },
+  {
+    "id": "harmonize",
+    "name": "Harmonize",
+    "hero": "shaman",
+    "text": "Gain Spirit equal to 2 times the kinds of totem you have until the end of your turn. Consume."
+  },
+  {
+    "id": "double-rite",
+    "name": "Double Rite",
+    "hero": "shaman",
+    "text": "Gain Mana equal to your Mana. Consume."
+  },
+  {
+    "id": "burnt-offering",
+    "name": "Burnt Offering",
+    "hero": "shaman",
+    "text": "Consume 1 card. Next turn, gain 2 extra Mana."
+  },
+  {
+    "id": "echoing-spirit",
+    "name": "Echoing Spirit",
+    "hero": "shaman",
+    "text": "The first card you play each turn is played an extra time. Fleeting."
+  },
+  {
+    "id": "hawk-banner",
+    "name": "Hawk Banner",
+    "hero": "shaman",
+    "text": "At the start of your turn: Plant a Hawk."
+  },
+  {
+    "id": "wellspring",
+    "name": "Wellspring",
+    "hero": "shaman",
+    "text": "Gain 4 Mana. Consume."
+  },
+  {
+    "id": "doubled-vow",
+    "name": "Doubled Vow",
+    "hero": "shaman",
+    "text": "Your next Aura is played an extra time. Consume."
+  },
+  {
+    "id": "free-hand",
+    "name": "Free Hand",
+    "hero": "shaman",
+    "text": "Your 0-cost Attacks deal 3 more damage for the rest of the fight."
+  },
+  {
+    "id": "chain-of-calls",
+    "name": "Chain of Calls",
+    "hero": "shaman",
+    "text": "Command your front totem X times."
+  },
+  {
+    "id": "salvage-spirit",
+    "name": "Salvage Spirit",
+    "hero": "shaman",
+    "text": "Whenever you create a Status card: Plant a random totem."
+  },
+  {
+    "id": "snap-back",
+    "name": "Snap Back",
+    "hero": "shaman",
+    "text": "The first time you play a 0-cost Attack each turn: Return it to your hand."
+  },
+  {
+    "id": "bitter-lesson",
+    "name": "Bitter Lesson",
+    "hero": "shaman",
+    "text": "The first time you draw a Status card each turn: Draw 2 cards."
+  },
+  {
+    "id": "turning-wheel",
+    "name": "Turning Wheel",
+    "hero": "shaman",
+    "text": "At the start of your turn: Your front totem's end-of-turn effect happens now."
+  },
+  {
+    "id": "ward-of-the-spirits",
+    "name": "Ward of the Spirits",
+    "hero": "shaman",
+    "text": "The next time you would lose HP, you lose none instead."
+  },
+  {
+    "id": "wild-vision",
+    "name": "Wild Vision",
+    "hero": "shaman",
+    "text": "Add a random Aura card from your pool to your hand (it costs 0 this turn). Consume."
+  },
+  {
+    "id": "kindling-ward",
+    "name": "Kindling Ward",
+    "hero": "shaman",
+    "text": "Gain 6 Barrier. Turn every Status card in your hand into a Tinder (0-cost: Gain 1 Mana. Consume)."
+  },
+  {
+    "id": "fresh-start",
+    "name": "Fresh Start",
+    "hero": "shaman",
+    "text": "Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume."
+  },
+  {
+    "id": "thunder-memory",
+    "name": "Thunder Memory",
+    "hero": "shaman",
+    "text": "Plant a Thunderbird for each Thunderbird you have planted this fight. Consume."
+  },
+  {
+    "id": "harvest-of-ruin",
+    "name": "Harvest of Ruin",
+    "hero": "shaman",
+    "text": "Add 3 Wounds to your discard pile. Draw 2 cards."
+  }
+]

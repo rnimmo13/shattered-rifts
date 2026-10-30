@@ -7,7 +7,7 @@
 // beta list) unless a comment says why not. Not here: Blade Symphony, Concoct, Fade, Flanking and Sneaky (they need a second
 // player), and the Ancient cards Suppress and Wraith Form (an event's prize in their game, as the knight's Break is).
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort:
+// The headings below are only a first sort:
 //   Shivs  - Sleeve Knives and the attacks around them
 //   Bleed  - stack Bleed and make it burn harder
 //   Sleight - draw, discard (Sly cards play themselves when discarded) and dodge

@@ -159,32 +159,6 @@
   );
 }
 
-/* ---- build path, bottom left under the rules text (DECISIONS #342, #345) ---- */
-.card__path {
-  position: absolute;
-  left: 30px;
-  bottom: 34px;
-  padding: 6px 18px 4px;
-  border-radius: 999px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 36px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: var(--accent);
-  background: rgb(0 0 0 / 0.62);
-  box-shadow: inset 0 0 0 2px var(--trim-lo);
-  text-shadow: 0 1px 0 rgb(0 0 0 / 0.8);
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* a Summon card has its HP badge in that corner: the label sits just right of it */
-.card:has(.card__stat) .card__path {
-  left: 128px;
-}
-
 /* ---- name banner ---- */
 .card__banner {
   position: absolute;

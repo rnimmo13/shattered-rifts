@@ -517,6 +517,8 @@ function applyDamage(
     hsd.lostHpFight = (hsd.lostHpFight ?? 0) + 1;
     syncClutch(r, r.s.sides[t.side]);
     fireSnare(r, t.side, { on: 'hpLost', lost, attacker: source, hit: null });
+    // (an Aura that answers any HP lost: Scarred Hide)
+    fireTriggers(r, hsd, 'hurt', { lost });
   }
   if (rises && rise) riseUp(r, t, rise);
   // (the Necrobinder copy) an Aura that answers a companion losing HP (Necro Mastery)
@@ -1431,6 +1433,8 @@ function metricValue(
       return u ? stacks(u, 'spirit') : 0;
     case 'umbra':
       return u ? stacks(u, 'umbra') : 0;
+    case 'reserves':
+      return sd.reserves ?? 0;
     case 'commanded':
       return sd.commanded ? 1 : 0;
     case 'uprooted':
@@ -2440,6 +2444,20 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'pending', side: side.id, kind: 'defer' });
       return;
     }
+    case 'reserves': {
+      const n = Math.max(0, Math.min(op.amount, reservesCap(side) - side.reserves));
+      if (n > 0) {
+        side.reserves += n;
+        r.ev.push({ type: 'reserves', side: side.id, reserves: side.reserves, max: reservesCap(side) });
+      }
+      return;
+    }
+    case 'maxReserves': {
+      if (op.turn) side.reservesTurn = (side.reservesTurn ?? 0) + op.amount;
+      else side.maxReserves += op.amount;
+      r.ev.push({ type: 'reserves', side: side.id, reserves: side.reserves, max: reservesCap(side) });
+      return;
+    }
     case 'revive': {
       const def = (side.fallen ??= []).pop();
       if (!def) return;
@@ -3128,6 +3146,21 @@ function moveFromHand(
   } else exhaustCard(r, sd, c);
 }
 
+/** (the Mana Reserves trait) the most Reserves he can keep: his Max Reserves, and this turn's extra */
+function reservesCap(sd: Pick<SideState, 'maxReserves' | 'reservesTurn'>): number {
+  return sd.maxReserves + (sd.reservesTurn ?? 0);
+}
+
+/** (the Mana Reserves trait) pay a cost: the Mana of the turn first, then Reserves */
+function payCost(r: Run, sd: SideState, cost: number): void {
+  const fromMana = Math.min(sd.mana, cost);
+  sd.mana -= fromMana;
+  if (cost > fromMana) {
+    sd.reserves -= cost - fromMana;
+    r.ev.push({ type: 'reserves', side: sd.id, reserves: sd.reserves, max: reservesCap(sd) });
+  }
+}
+
 /** (assassin) Defer can take this card: it costs 1 or more right now and is not an X card (nothing to take off) or unplayable */
 function deferrable(db: CombatDb, sd: SideState, c: CardInst): boolean {
   const cd = cardDef(db, c.card);
@@ -3803,6 +3836,8 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.nextMana = Math.min(0, rawMana);
   sd.nextDraw = 0;
   r.ev.push({ type: 'mana', side, mana: sd.mana });
+  // (the Mana Reserves trait) the extra Max Reserves of the last turn is gone
+  sd.reservesTurn = 0;
   r.openingDraw = true;
   drawCards(r, sd, sd.handSize + (first ? 1 : 0) + extraDraw);
   r.openingDraw = false;
@@ -3994,6 +4029,15 @@ function endTurn(r: Run): void {
   r.endAfter = false;
   const side = r.s.active;
   const sd = r.s.sides[side];
+  // (the Mana Reserves trait, DECISIONS #452) unspent Mana is not lost: it is kept as Reserves, up to the Max Reserves, before anything
+  // that answers the end of the turn
+  const kept = Math.min(Math.max(0, reservesCap(sd) - sd.reserves), sd.mana);
+  if (kept > 0) {
+    sd.mana -= kept;
+    sd.reserves += kept;
+    r.ev.push({ type: 'mana', side, mana: sd.mana });
+    r.ev.push({ type: 'reserves', side, reserves: sd.reserves, max: reservesCap(sd) });
+  }
   // end-of-turn Powers, then every rune's passive, then Radiant fades
   fireTriggers(r, sd, 'turnEnd');
   if (r.s.winner) return;
@@ -4094,6 +4138,8 @@ const blankSide = (id: Side): SideState => ({
   boons: [],
   potions: [],
   stars: 0,
+  reserves: 0,
+  maxReserves: 0,
   nextMana: 0,
   nextDraw: 0,
   temps: [],
@@ -4118,6 +4164,7 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
       return { id: newId(r.s, 'c'), card };
     }),
     maxMana: hd.mana,
+    ...(hd.trait?.maxReserves ? { maxReserves: hd.trait.maxReserves } : {}),
     handSize: hd.handSize,
     hero: hd.id,
     // (the Monk's form, DECISIONS #419)
@@ -4284,7 +4331,7 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
   const cd = cardDef(r.db, c.card);
   const sd = r.s.sides[side];
   if (r.s.pending) return false;
-  if (cd.unplayable || costOf(r.db, sd, c) > sd.mana || (cd.starCost ?? 0) > sd.stars) return false;
+  if (cd.unplayable || costOf(r.db, sd, c) > sd.mana + sd.reserves || (cd.starCost ?? 0) > sd.stars) return false;
   if (cd.statusCost) {
     const hero = sd.units.find((u) => u.kind === 'hero');
     if (!hero || stacks(hero, cd.statusCost.status) < cd.statusCost.amount) return false;
@@ -4578,8 +4625,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
       cd.tags?.some((t) => t === PRISM_TAG || (ELEMENTS as readonly string[]).includes(t)) ?? false,
     );
   const paid = costOf(r.db, sd, inst);
-  sd.mana -= paid;
-  sd.spentTurn = (sd.spentTurn ?? 0) + paid + (cd.x ? sd.mana : 0);
+  payCost(r, sd, paid);
+  sd.spentTurn = (sd.spentTurn ?? 0) + paid + (cd.x ? sd.mana + sd.reserves : 0);
   if (freeAttack) addStatus(r, hero, 'freeattack', -1);
   if (freeSkill) addStatus(r, hero, 'freeskill', -1);
   if (freeEthereal) addStatus(r, hero, 'freeethereal', -1);
@@ -4595,10 +4642,15 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   delete inst.costMod;
   clearTurnFlags(inst);
   let x = 0;
-  const xMana = cd.x ? sd.mana : 0;
+  // (an X card spends all your Mana, and all your Reserves after it)
+  const xMana = cd.x ? sd.mana + sd.reserves : 0;
   if (cd.x) {
-    x = sd.mana + (cd.xBonus ?? 0);
+    x = sd.mana + sd.reserves + (cd.xBonus ?? 0);
     sd.mana = 0;
+    if (sd.reserves > 0) {
+      sd.reserves = 0;
+      r.ev.push({ type: 'reserves', side: sd.id, reserves: 0, max: reservesCap(sd) });
+    }
   }
   orbitPay(r, sd, hero, paid + xMana);
   let starsSpent = cd.starCost ?? 0;
@@ -4907,12 +4959,19 @@ export function previewCardDamage(
   const hero = heroOf(sd);
   if (!inst || !def || !hero) return out;
   // as the effects will see it: the card has left the hand and its cost is paid (a card that counts your hand or your Mana)
-  const paid = def.x ? sd.mana : Math.min(sd.mana, costOf(db, sd, inst));
+  const pool = sd.mana + sd.reserves;
+  const paid = def.x ? pool : Math.min(pool, costOf(db, sd, inst));
+  const fromMana = Math.min(sd.mana, paid);
   const after: CombatState = {
     ...s,
     sides: {
       ...s.sides,
-      [sd.id]: { ...sd, hand: sd.hand.filter((c) => c.id !== instId), mana: sd.mana - paid },
+      [sd.id]: {
+        ...sd,
+        hand: sd.hand.filter((c) => c.id !== instId),
+        mana: sd.mana - fromMana,
+        reserves: sd.reserves - (paid - fromMana),
+      },
     },
   };
   const r: Run = { db, s: after, ev: [], depth: 0 };
@@ -4927,7 +4986,7 @@ export function previewCardDamage(
     card: def,
     inst,
     target: friendly ? mine : chosen,
-    x: def.x ? sd.mana + (def.xBonus ?? 0) : 0,
+    x: def.x ? sd.mana + sd.reserves + (def.xBonus ?? 0) : 0,
   });
   // (the Shaman's totems: their help on the first spell of its element this turn, DECISIONS #420)
   const help = sd.totems ? spellBoost(r, sd, def, false) : 0;

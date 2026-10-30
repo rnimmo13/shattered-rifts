@@ -1,6 +1,5 @@
-// Cards taken out by the pool trim (Robert, 2026-10-27: "trim each pool down to about 70"; "every character build path should have 8 common
-// cards, 7 uncommon cards, 5 rares, and 1 legendary"; DECISIONS #334), and the card of the same build path each becomes in an old
-// save, Arena deck or ghost. Read through RETIRED_CARDS / canonicalCard in index.ts.
+// Cards taken out by the pool trim (Robert, 2026-10-27: "trim each pool down to about 70"; DECISIONS #334), and the card each becomes
+// in an old save, Arena deck or ghost. Read through RETIRED_CARDS / canonicalCard in index.ts.
 
 export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   // knight

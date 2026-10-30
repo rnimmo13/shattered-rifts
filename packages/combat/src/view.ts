@@ -71,6 +71,9 @@ export interface SideView {
   potions: string[] | null;
   potionCount: number;
   stars: number;
+  /** (the Knight) Mana kept as Reserves, and the most that can be kept this turn */
+  reserves: number;
+  maxReserves: number;
   /** Attacks played this turn (some cards cost less for each) */
   attacksPlayed: number;
   /** Skills played this turn (Pinpoint costs less for each) */
@@ -297,6 +300,8 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potions: own ? [...sd.potions] : null,
       potionCount: sd.potions.length,
       stars: sd.stars,
+      reserves: sd.reserves,
+      maxReserves: sd.maxReserves + (sd.reservesTurn ?? 0),
       attacksPlayed: sd.attacksPlayed,
       skillsPlayed: sd.skillsPlayed,
       played: sd.played,
@@ -653,6 +658,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   totemsOf: { per: 'such totem you have', equal: 'such totems you have' },
   spirit: { per: 'Spirit', equal: 'your Spirit' },
   umbra: { per: 'Owl charge', equal: 'the Owl charge' },
+  reserves: { per: 'Reserve', equal: 'your Reserves' },
   commanded: { per: 'command this turn', equal: 'your commands this turn' },
   uprooted: { per: 'totem uprooted', equal: 'the totems uprooted' },
   replacedNow: { per: 'totem replaced', equal: 'the totems replaced' },
@@ -807,6 +813,7 @@ const WHEN_TEXT: Record<string, string> = {
   barrier: 'Whenever you gain Barrier',
   heal: 'Whenever you heal (even at full HP)',
   loseHp: 'Whenever you lose HP to your own cards or Hangover',
+  hurt: 'Whenever you lose HP',
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
   arcana: 'Whenever you spend Arcana',
@@ -1274,6 +1281,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : o.any
           ? 'Discard any number of cards.'
           : `Discard ${o.amount} card${o.amount === 1 ? '' : 's'}.`;
+    case 'reserves':
+      return `Gain ${o.amount} Reserve${o.amount === 1 ? '' : 's'}.`;
+    case 'maxReserves':
+      return `Max Reserves +${o.amount} ${o.turn ? 'this turn' : 'for the rest of the fight'}.`;
     case 'defer':
       return o.upTo
         ? `Defer up to ${o.count} card${o.count === 1 ? '' : 's'}.`
@@ -1364,7 +1375,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               o.when === 'extract'
             ? { ...who, target: ' to that enemy' }
             : who;
-      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${o.ops.map((x) => opText(db, x, inner)).join(' ')}`;
+      const said = o.ops.map((x) => opText(db, x, inner)).join(' ');
+      // (a Sapped put on an enemy while an enemy is hitting you ends with that enemy turn; one from your own cards, with the coming one)
+      const body = o.when === 'hurt' ? said.split('until the end of their next turn').join("until the end of the enemy's turn") : said;
+      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${body}`;
     }
     case 'channel': {
       const nm = o.rune === '*' ? 'a random totem' : (db.runes?.[o.rune]?.name ?? o.rune);

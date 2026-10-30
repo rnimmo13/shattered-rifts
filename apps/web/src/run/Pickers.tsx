@@ -21,8 +21,6 @@ import {
   type TrialPrize,
   diceOdds,
   diceable,
-  fitLabel,
-  fitOf,
   removePrice,
   SALE_OFF,
   engravable,
@@ -80,8 +78,6 @@ function Pickable(props: {
   badge?: string | undefined;
   /** just show the card (hover to read it): no button */
   preview?: boolean;
-  /** the deck it would join: a hint says whether it fits (DECISIONS #243) */
-  deck?: readonly string[] | undefined;
   children?: React.ReactNode;
 }) {
   const def = defOf(props.id);
@@ -103,7 +99,6 @@ function Pickable(props: {
           {props.badge && <span className="pick__badge">{props.badge}</span>}
         </div>
         <CrossTag def={def} own={props.own} />
-        {props.deck && <FitTag id={props.id} deck={props.deck} />}
         {props.children}
       </div>
     );
@@ -128,27 +123,8 @@ function Pickable(props: {
         {props.badge && <span className="pick__badge">{props.badge}</span>}
       </button>
       <CrossTag def={def} own={props.own} />
-      {props.deck && <FitTag id={props.id} deck={props.deck} />}
       {props.children}
     </div>
-  );
-}
-
-/** Whether an offered card fits the deck it would join: "Fits your Bulwark (4)", or "New build path: Swarm". */
-function FitTag(props: { id: string; deck: readonly string[] }) {
-  const f = useMemo(() => fitOf(props.deck, props.id), [props.deck, props.id]);
-  if (!f) return null;
-  return (
-    <span
-      className={`pick__fit pick__fit--${f.kind}`}
-      title={
-        f.kind === 'fits'
-          ? `Your deck has ${f.n} cards of the ${f.path} build path: this one builds on them.`
-          : `Your deck has no ${f.path} cards yet: this one starts something new.`
-      }
-    >
-      {fitLabel(f)}
-    </span>
   );
 }
 
@@ -171,8 +147,6 @@ export function CardOffer(props: {
   onSkip?: (() => void) | undefined;
   /** the player's Riftwalker, to tag cards from another one */
   character?: string | undefined;
-  /** the deck the card joins, for the fit hints */
-  deck?: readonly string[] | undefined;
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
   return (
@@ -191,7 +165,6 @@ export function CardOffer(props: {
             id={id}
             width={290}
             own={props.character}
-            deck={props.deck}
             onHover={setHover}
             onClick={() => props.onPick(id)}
           />
@@ -429,7 +402,6 @@ export function ShrineView(props: {
                   id={id}
                   width={250}
                   own={run.character}
-                  deck={run.deck}
                   onHover={setHover}
                   onClick={() => {
                     setAltarOpen(false);
@@ -573,7 +545,6 @@ export function MerchantView(props: {
                 width={210}
                 onHover={setHover}
                 preview
-                deck={it.sold ? undefined : props.run.deck}
                 badge={
                   it.sold
                     ? 'SOLD'
@@ -920,7 +891,6 @@ export function EventView(props: {
             id={card.id}
             width={270}
             own={props.run.character}
-            deck={props.run.deck}
             onHover={setHover}
           />
         </div>
@@ -933,7 +903,6 @@ export function EventView(props: {
               id={id}
               width={210}
               own={props.run.character}
-              deck={props.run.deck}
               onHover={setHover}
               preview
             />

@@ -23,6 +23,21 @@ export function LumenCounter(props: { value: number }) {
   );
 }
 
+/** The Knight's Reserves, in the same place and look as the second resource beside Mana. */
+export function ReservesCounter(props: { value: number; max: number }) {
+  return (
+    <div
+      className="fight__lumen fight__lumen--reserves"
+      aria-label={`Reserves ${props.value} of ${props.max}`}
+      {...tipAttrs(UI_TIPS.reserves(props.value, props.max))}
+    >
+      <span aria-hidden>◈</span>
+      <b>{props.value}</b>
+      <small>Reserves</small>
+    </div>
+  );
+}
+
 /** The totem slots in a curved column beside the hero (towards the enemies), so they never sit on the buffs under the health bar: `x` is where the column bows out to, `cy` its vertical centre (host px). */
 export function RuneArc(props: {
   db: CombatDb;

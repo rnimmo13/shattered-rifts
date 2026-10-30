@@ -18,7 +18,6 @@ import {
   MARK_INFO,
   rolledId,
   rewardPool,
-  pathOf,
   canonicalCard,
   canonicalHero,
   type HeroId,
@@ -50,7 +49,6 @@ import {
   type ShrineKind,
 } from './gambler';
 import { makePrelude } from './preludes';
-import { mainPath } from './synergy';
 import { omenEffects, omenMods } from './omens';
 import type { EnemyMod, StatusId } from '@sr/combat';
 import {
@@ -366,18 +364,6 @@ export function enterNode(run: RunState, nodeId: string): RunState {
               stock.push(id);
       } else {
         stock = offerCards(r.rng, r.character, r.deck, 'elite', 4);
-        // a merchant who knows your deck keeps one card of the build path it leans on most (DECISIONS #243)
-        const path = mainPath(r.character, r.deck);
-        if (path !== null && stock.length > 0 && !stock.some((id) => pathOf(id) === path)) {
-          const fits = rewardPool(r.character).filter(
-            (id) =>
-              pathOf(id) === path &&
-              !stock.includes(id) &&
-              canAdd(r.deck, id) &&
-              ['common', 'uncommon', 'rare'].includes(COMBAT_DB.cards[id]?.rarity ?? ''),
-          );
-          if (fits.length) stock[stock.length - 1] = fits[nextInt(r.rng, fits.length)] as string;
-        }
       }
       const items: MerchantItem[] = stock.map((cardId) => ({
         cardId,

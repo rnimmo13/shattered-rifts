@@ -1,4 +1,4 @@
-// Suits (the Trickster's playing-card build path, docs/TRICKSTER_SUITS.md): every card has one of four suits, read from what it
+// Suits (the Trickster's playing-card mechanic, docs/TRICKSTER_SUITS.md): every card has one of four suits, read from what it
 // does, so no card needs tagging and a Neutral or Rift-crossed card has a suit too. A card can name its own (`CardDef.suit`).
 //   ♠ spades   Attacks
 //   ♥ hearts   Barrier and protection

@@ -5,17 +5,15 @@
 **Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trickster (Vesper; was trapper, #372), assassin (Sylas), shaman (Ilvane; was totemist, #371), monk (Solen, a man; was Sehra and barbarian, #391, #395), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).
 
 The goal (Robert, 2026-10-23): reach 8-10 characters, each with **real choices at the reward screen**, covering the same
-mechanics Slay the Spire's classes do. Silent works because her pool has three build paths (poison, shivs, discard) and a good
-deck takes one and a half of them. Our pools were ~16 cards and one build path each. That is the main thing this document fixes.
+mechanics Slay the Spire's classes do. Silent works because her pool offers several ways to win (poison, shivs, discard) and a good
+deck takes one and a half of them. Our pools were ~16 cards and one way to win each. That is the main thing this document fixes.
 
 ## 1. Rules for every pool
 
 1. **A pool belongs to a character**, not a realm (`CardDef.hero`). A realm is flavour and enemy stage; two characters can
    share one (Maren and Solen are both Aurelion). Reward offers come from *your* pool + Neutral (+ the 1-in-10 Rift-crossed
    card from another character's pool).
-2. **Every Riftwalker has about 20 commons, 30 uncommons and 25-28 rares (the Legendaries are Rares for now, DECISIONS #363).** Each build path holds 6 commons, 9
-   uncommons and 7-8 rares; a few **glue** cards have no build path (DECISIONS #341). **There is no rule that a character has three build paths** (DECISIONS #362): most have three, Valeria four (her cards are the Ironclad's list, #367). Rares define a build. Each build path works alone; two build paths can
-   combine; all of them at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool by build path and flags near-duplicates.
+2. **Every Riftwalker has about 20 commons, 30 uncommons and 25-28 rares (the Legendaries are Rares for now, DECISIONS #363).** A few **glue** cards serve every deck of the class (DECISIONS #341). Rares define a deck. Each way of winning works alone; two can combine; all of them at once is a bad deck. `pnpm poolaudit` (docs/POOL_AUDIT.md) lists each pool and flags near-duplicates.
 3. **Shared toolkit, owned signatures.** Everyone has some of the common StS tools in their own flavour: draw, Barrier,
    Heal, Consume, Retain, Might, 0-cost cards, AoE, Mana gain, Exposed/Faltering, self-damage. A mechanic with its own
    *rules* belongs to exactly one character:
@@ -33,27 +31,27 @@ deck takes one and a half of them. Our pools were ~16 cards and one build path e
 | ~~**Devotion**~~ | gone (DECISIONS #364) | Valeria's heal-and-spend mechanic was removed when she became the Ironclad shape |
 | **Traps** (face-down, auto-springing) | Vesper gets the most (14, with payoffs for setting them) | **Shared toolkit** like Might or Consume: every deck but Valeria's (the Ironclad's list has none, #367) has a trap or two in its own flavour (the Hunter has 6 since DECISIONS #377: snares that slow the prey for the pack; the Engineer 5, Quill 2 incl. a Bleed needle, Ilvane, Solen, Obsidia 1 each) and Neutral has 2. Enforced by `cards.test.ts` |
 | **Foresee** | Vesper, Solen, Obsidia | a Neutral common |
-| **Consume payoffs** | Kesh (Feast build path) | Neutral Consume-on-play is common |
+| **Consume payoffs** | Kesh | Neutral Consume-on-play is common |
 
-4. **Starters belong to no build path.** The first rewards decide the build.
+4. **Starters are generic.** The first rewards decide how the deck plays.
 5. **Powers are triggers.** A Power card registers a trigger (`power` op: when X happens, run these ops). No bespoke
    status per Power; new Powers are data.
 
-### What makes a build path (DECISIONS #255)
+### What makes a way to win (DECISIONS #255)
 
-A build path passes when it has **its own verb** (something you do on your turn that the other two don't), **its own payoff
+A way to win passes when it has **its own verb** (something you do on your turn that the other plans don't), **its own payoff
 cards**, and **a name that says how you play**, not what you collect. Three flavours of one resource (Ilvane's old Hawk, Bear and
-Elder totems) are one build path, not three. The build paths are the tags players see on the character picker.
+Elder totems) are one plan, not three.
 
-**A trait helps every build path** (Sylas's used to be Bleed, which only his Bleed build path cared about). **No card copies
+**A trait helps every way a class plays** (Sylas's used to be Bleed, which only his Bleed cards cared about). **No card copies
 another game:** no Slay the Spire 1 or 2 card name, and no card that is a famous card's effect with its numbers. The ids of the
 reworked cards stayed the same, so their art and every saved deck still work.
 
 ## 2. The roster
 
-| # | Riftwalker | Realm | HP | Build path 1 | Build path 2 | Build path 3 |
+| # | Riftwalker | Realm | HP | Way to win 1 | Way to win 2 | Way to win 3 |
 |---|---|---|---|---|---|---|
-| 1 | **Valeria** (id `knight`) | Aurelion | 80 | The Ironclad's card list, card for card (DECISIONS #367): the yardstick other classes are balanced against | Might and many hits, Barrier, burning your own cards, paying HP | (build paths hidden for now, #365) |
+| 1 | **Valeria** (id `knight`) | Aurelion | 80 | The Ironclad's card list, card for card (DECISIONS #367): the yardstick other classes are balanced against | Might and many hits, Barrier, burning your own cards, paying HP | **Reserves:** save Mana (Mana Reserves, #452, #454): a second pool, Max Reserves 3, spent after the turn's Mana, for a big turn |
 | 2 | **Rivet** | Nexus-9 | 72 | **Swarm:** go wide: many cheap Light drones (1 slot each), payoffs per ally, per summon and per death, sacrifice, Might for everyone | **Assemble:** charge companions (and the Engineer's own guns) up with Primed, then fire: only Assemble, Relay Strike, Command Chip and Full Salvo make them act now (#383) | **Core:** go tall: one Heavy (2 slots) or Colossal (all 3) machine you grow (max HP, Might, Barrier on one ally), revive, and cash in (Heavy Hitter, Crankshaft, Reactor Meltdown); Salvage passes scrapped drones into it (#383) |
 | 3 | **Kesh the Unfed** | Wyldmaw | 76 | **Bloodrage:** Might and self-damage | **Pack:** buffed companions | **Predator:** Mana and draw for burst turns |
 | 4 | **Vesper Nightlace** | Umbral | 80 | **Traps:** many, varied triggers | **Exposed:** debuff burst, Faltering control | **Suits:** every card is ♠ ♥ ♦ or ♣; show all four in a turn for a Full Trick (DECISIONS #387; was Patience) |
@@ -89,14 +87,14 @@ Role tags (what kind of fighter, shown on every character screen): Maren **Knigh
 | **Stances**: `stance` op; statuses `calm`, `wrath`, `radiant`; `mantra` | Exclusive statuses with enter/exit effects and damage multipliers | Solen |
 | **Arcana** (`stars` op, `starCost` on a card) | Second resource that persists between turns | Obsidia |
 | `sharpen` op; per-card `bonus` | Grow every copy of a scaling card | Obsidia |
-| More Trap triggers: `foeDefends`, `foeTurn` | Vesper's build path needs variety | Vesper |
+| More Trap triggers: `foeDefends`, `foeTurn` | Vesper's Traps need variety | Vesper |
 
 ## 4. Build status (2026-10-23)
 
 - [x] Engine: choices, discard/exhaust/scry, scale, Powers as triggers, runes, stances, Arcana, sharpen, sacrifice, extra Trap triggers (DECISIONS #97)
-- [x] Existing 4 reorganised into character pools and deepened to 3 build paths (34-38 cards each)
+- [x] Existing 4 reorganised into character pools and deepened to 3 ways to win (34-38 cards each)
 - [x] Quill, Ilvane, Solen, Obsidia: 34-39 cards each
-- [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8 with build paths
+- [x] UI: pick modal, side panel (Arcana, totems, Powers), exact damage preview, character picker for 8
 - [x] First-pass sim; per-card scenario tests; generated `10_CARD_LIST.md`
 - [ ] Balance pass (waits for the content set to settle, DECISIONS #91)
 - [ ] Stretch characters: Cinder (Consume engine), Mire (Doom / undying minion)
@@ -143,6 +141,6 @@ pending kind). Say the word if you want them.
 
 ## Innate traits
 
-Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their build paths (DECISIONS #255): Valeria (id knight) Oathkeeper (6 Barrier and 6 Plating at the start; her Devotion went in DECISIONS #364), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356; her starting Drone has 6 HP, #411), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 1 extra card at the start, #412; its 4 Barrier a turn went in #398, and its Full Trick deals 3 more for each one before it in a fight; was Ambusher, Exposed for 3 turns), with Suits: the first time in a turn all four suits are showing, a Full Trick (3 damage to a random enemy, +2 for each earlier one in the fight, draw 1; `HeroTrait.suits`, DECISIONS #387, #398, #404, #411, #412), Sylas (id assassin) Hidden Blades (a Dagger every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Solen Inner Fire (1 Fervor whenever he enters a stance, 2 Mana the first time each turn he leaves Serene (an engine rule until #413), and 2 Primed whenever he leaves Fury, #412; its 2 Barrier went in DECISIONS #390; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (Raise 2 at the start of every turn, DECISIONS #397, #401; Fate on a random enemy whenever an ally dies (2, #413) or a card is consumed (3; #403; 5 a death for a while, #398); no Fate at the start; his starting Thrall has 2 HP, #411), KP Clutch Genes (1% more attack damage for every 1% of his HP missing, #429; per HP missing in #411; was +50% at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.
+Every Riftwalker has one passive (`Riftwalker.trait`), and it helps all of their decks (DECISIONS #255): Valeria (id knight) Mana Reserves (unspent Mana is kept as Reserves, a second pool of up to Max Reserves 3 that cards spend after the turn's Mana, DECISIONS #452, #454; was Oathkeeper, 6 Barrier and 6 Plating at the start; her Devotion went in DECISIONS #364), Rivet Tinkerer (heal 1 each turn, and each companion gains 1 max HP; DECISIONS #356; her starting Drone has 6 HP, #411), Kesh Pack Instinct (her companions share half her Might, rounded down; DECISIONS #285, #329, #333), Vesper Lying in Wait (6 Barrier and 1 extra card at the start, #412; its 4 Barrier a turn went in #398, and its Full Trick deals 3 more for each one before it in a fight; was Ambusher, Exposed for 3 turns), with Suits: the first time in a turn all four suits are showing, a Full Trick (3 damage to a random enemy, +2 for each earlier one in the fight, draw 1; `HeroTrait.suits`, DECISIONS #387, #398, #404, #411, #412), Sylas (id assassin) Hidden Blades (a Dagger every turn; was Envenomed, 2 Bleed a turn), Ilvane Totem-bound (starts with a Hawk, a Bear and a Splinter totem), Solen Inner Fire (1 Fervor whenever he enters a stance, 2 Mana the first time each turn he leaves Serene (an engine rule until #413), and 2 Primed whenever he leaves Fury, #412; its 2 Barrier went in DECISIONS #390; was 2 Fervor at the start), Obsidia Kindled (1 Arcana and Sharpen 1 each turn; she starts with 3 Arcana), Dorian (id necromancer) Grave Chill (Raise 2 at the start of every turn, DECISIONS #397, #401; Fate on a random enemy whenever an ally dies (2, #413) or a card is consumed (3; #403; 5 a death for a while, #398); no Fate at the start; his starting Thrall has 2 HP, #411), KP Clutch Genes (1% more attack damage for every 1% of his HP missing, #429; per HP missing in #411; was +50% at or below half HP). A trait can have triggers (`HeroTrait.triggers`) that fire like an Aura's but never count or show as one. Hero HP is 70-88, Slay the Spire's range.
 
 (2026-10-29) Ilvane's trait is **The Totem Cycle** since DECISIONS #430 (a Hawk, a Bear and a Thunderbird in a row; each works every turn, a command makes the front one act and consumes it; Spirit adds to every totem number; docs/reworks/SHAMAN.md; Trinity before it, #420). The Knight, Assassin, Spellblade and Monk identity reworks of the same day were reverted to the cards above (DECISIONS #428; archived in reviews/balance-baselines/2026-10-29-reverted-reworks/).

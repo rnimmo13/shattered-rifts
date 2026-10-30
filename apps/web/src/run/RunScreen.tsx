@@ -950,7 +950,6 @@ function Body(props: {
               : 'Add one to your deck, or skip: a thin deck draws its best cards more often.'
           }
           offers={run.context?.offers ?? []}
-          deck={run.deck}
           character={run.character}
           shards={run.context?.shardsGained}
           boon={run.context?.boonGained}
@@ -970,7 +969,6 @@ function Body(props: {
                 : "The Warden falls. Take one of your class's rare cards, or skip it."
             }
             offers={run.context?.offers ?? []}
-            deck={run.deck}
             character={run.character}
             shards={run.context?.shardsGained}
             boon={run.context?.boonGained}

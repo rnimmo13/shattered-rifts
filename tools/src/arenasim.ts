@@ -44,7 +44,7 @@ interface Row {
 
 function play(level: Level, mult: number, x: HeroId, y: HeroId, seed: string): Row {
   const deckOf = (h: HeroId, k: string) =>
-    buildDeck(h, hashSeed(k) % 3, level, hashSeed(`${h}/${level}/${k}`)).deck;
+    buildDeck(h, level, hashSeed(`${h}/${level}/${k}`)).deck;
   const hp = (h: HeroId, extra: number) => db.heroes[h]!.maxHp * mult + extra;
   let s: CombatState = createCombat(db, {
     seed,
@@ -152,8 +152,8 @@ function ghostFight(
 ): GhostRow {
   const sp = LEVEL_SPEC[level];
   const sc = enemyScale(sp.tier, sp.stage);
-  const me = buildDeck(x, hashSeed(`${seed}a`) % 3, level, hashSeed(`${x}/${level}/${seed}a`));
-  const gh = buildDeck(y, hashSeed(`${seed}b`) % 3, level, hashSeed(`${y}/${level}/${seed}b`));
+  const me = buildDeck(x, level, hashSeed(`${x}/${level}/${seed}a`));
+  const gh = buildDeck(y, level, hashSeed(`${y}/${level}/${seed}b`));
   const myHp = db.heroes[x]!.maxHp + me.boons.reduce((n, b) => n + (db.boons[b]?.maxHp ?? 0), 0);
   // (--flat: k alone, without the tier table; today's ghost Warden is 1.65 + 0.07 a tier past 3)
   const ghostHp = Math.round(

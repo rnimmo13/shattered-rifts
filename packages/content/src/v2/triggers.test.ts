@@ -72,7 +72,7 @@ describe('Powers that react to your own effects', () => {
       x.sides.b.units.reduce((n, u) => n + u.hp + u.barrier, 0);
     const hp = total(s);
     s = applyAction(tdb, s, { type: 'play', card: 'T1' }).state;
-    expect(hero(s).barrier).toBeGreaterThanOrEqual(8);
+    expect(hero(s).barrier).toBeGreaterThanOrEqual(6);
     expect(total(s)).toBe(hp - 5);
   });
 });

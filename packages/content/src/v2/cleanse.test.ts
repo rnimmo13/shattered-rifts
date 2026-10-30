@@ -54,7 +54,8 @@ describe('lessening debuffs', () => {
     });
     // (Stunned is a single stack, so one stack is all of it)
     expect(hero(s).statuses.stunned).toBeUndefined();
-    expect(hero(s).barrier).toBeGreaterThanOrEqual(4);
+    // (Shake It Off's own 3: the Knight no longer starts the fight with Barrier)
+    expect(hero(s).barrier).toBe(3);
   });
 
   it('Steady Nerves takes two or half, and a debuff that is not that deep simply goes', () => {

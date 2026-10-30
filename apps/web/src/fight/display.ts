@@ -121,6 +121,10 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     case 'maxMana':
       s.sides[e.side].maxMana = e.max;
       return;
+    case 'reserves':
+      s.sides[e.side].reserves = e.reserves;
+      s.sides[e.side].maxReserves = e.max;
+      return;
     case 'stars':
       s.sides[e.side].stars = e.stars;
       return;

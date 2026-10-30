@@ -1,5 +1,5 @@
 // The Trickster's costing pass (DECISIONS #386, docs/TRICKSTER_REVIEW.md): a cancel stops one hit, Cheap Shot and Stalk lean on
-// the Trickster's build paths, and Traps that answer a summon or Barrier name "that enemy".
+// the Trickster's cards, and Traps that answer a summon or Barrier name "that enemy".
 
 import { describe, expect, it } from 'vitest';
 import {

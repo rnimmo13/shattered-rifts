@@ -1,7 +1,7 @@
 // The third top-rarity card of most Riftwalkers (the others live in each pool file; Sylas, Obsidia, Dorian and Ilvane have none). These were the Legendaries: Robert put
 // Legendary away for now (2026-10-28, DECISIONS #363: "do away with legendary cards for now, we will add those once the base set of
-// common/uncommon/rare is balanced"), so they are Rares until it comes back. Each belongs to one build path and is a build-around
-// for it, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
+// common/uncommon/rare is balanced"), so they are Rares until it comes back. Each is a build-around
+// for its class, never a one-off pile of Barrier (Robert, 2026-10-27; DECISIONS #338).
 
 import type { CardDef } from '@sr/combat';
 import { ACT, barrier, dmg, forge, on, pool, stance, status, summon } from '../build';

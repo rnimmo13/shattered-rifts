@@ -61,12 +61,10 @@ export function DeckBuilder(props: {
   const searching = filter.text.trim() !== '';
   const pages = useMemo(() => {
     const shown = filterCatalog(all, { ...filter, pool: 'all' }, (c) => cardText(db, c));
-    // a search reads through the whole book; otherwise only the open bookmark. Pages run by character, not by build path.
+    // a search reads through the whole book; otherwise only the open bookmark. Pages run by character.
     return paginate(
       searching ? sortCards(shown, 'character') : tabCards(shown, tab, 'character'),
       cols * 2,
-      false,
-      false,
     );
   }, [all, filter, db, tab, searching, cols]);
   const spreads = Math.max(1, Math.ceil(pages.length / spread));
@@ -198,7 +196,7 @@ export function DeckBuilder(props: {
                 <h4 className="grim__pagehead">
                   {searching
                     ? 'Search results'
-                    : [p.heroes.join(' · '), p.path].filter(Boolean).join(' · ') || tabName}
+                    : p.heroes.join(' · ') || tabName}
                 </h4>
                 <ul
                   className="grim__cards"

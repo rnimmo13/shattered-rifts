@@ -1,5 +1,5 @@
 // The Shaman's totem pictures (DECISIONS #429): the carved totems and their spirits, cut by tools/pack-totems.ps1 into
-// public/art/totems and listed in its index.json. Loaded once; a kind with no picture (the Thunderbird, the Moon Owl for now) keeps
+// public/art/totems and listed in its index.json. Loaded once; a kind with no picture keeps
 // its drawn mark. Presentation only.
 
 import { useEffect, useState } from 'react';

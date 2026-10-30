@@ -1,5 +1,5 @@
 // Rivet (Nexus-9). Builds machines in 3 companion slots: a Light machine takes 1, a Heavy 2, a Colossal all 3 (DECISIONS #383).
-// Three build paths:
+// Three themes:
 //   Swarm     - go wide: cheap Light bodies, payoffs per ally, per summon and per death, sacrifice, Might for everyone (DECISIONS #358)
 //   Assemble  - charge up with Primed (the Engineer's own guns too), then fire: only 4 cards make the companions act now (#361, #383)
 //   Core      - go tall: one Heavy or Colossal machine you grow, protect and cash in (Repair Bot, Reactor, Heavy Plating are Swarm's,
@@ -421,7 +421,7 @@ export const ENGINEER: CardDef[] = [
     { up: { effects: [barrier(12, 'target'), draw(1)] } },
   ),
 
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
   r('uncommon', 'factory-floor', 'Factory Floor', 'power', 1, 'none', [on('summon', [draw(1)])], {
     up: { innate: true },
   }),

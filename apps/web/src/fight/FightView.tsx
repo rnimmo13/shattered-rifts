@@ -84,7 +84,7 @@ import { PickModal } from './PickModal';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
-import { AuraList, LumenCounter, RuneArc, SnareRow } from './SidePanel';
+import { AuraList, LumenCounter, ReservesCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
 import { ShieldBubble } from './ShieldBubble';
 import { BattleLog } from './BattleLog';
@@ -2060,7 +2060,9 @@ export function FightView(props: {
             onRefuse={(c) => {
               play('refuse');
               setBanner(
-                (c.cost ?? c.def.cost) > (game.current?.state.sides[mySide].mana ?? 0)
+                (c.cost ?? c.def.cost) >
+                (game.current?.state.sides[mySide].mana ?? 0) +
+                  (game.current?.state.sides[mySide].reserves ?? 0)
                   ? 'Not enough Mana'
                   : 'You cannot play that now',
                 'bad',
@@ -2315,6 +2317,7 @@ export function FightView(props: {
             </div>
           )}
           {me && showStars && <LumenCounter value={me.stars} />}
+          {me && me.maxReserves > 0 && <ReservesCounter value={me.reserves} max={me.maxReserves} />}
           {me && showRunes && heroPlaced && (
             <RuneArc db={db} me={me} x={heroPlaced.x + 185} cy={heroPlaced.y - 110} />
           )}

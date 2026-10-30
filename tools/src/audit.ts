@@ -1,4 +1,4 @@
-// `pnpm audit:balance`: the balance audit (docs/BALANCE.md, "Balance audit"). Decks are drafted the way a person drafts (one build path, best card
+// `pnpm audit:balance`: the balance audit (docs/BALANCE.md, "Balance audit"). Decks are drafted the way a person drafts (best card
 // on offer, Strikes cut, upgrades and Boons by depth: tools/src/audit/decks.ts), played by the beam-search bot, on every core.
 //
 //   pnpm audit:balance -- burst  [--seeds 12] [--heroes monk,knight]   the most damage a deck can deal on turn 1 and turn 3 (a combo search)
@@ -28,10 +28,12 @@ const DECKS = Number(arg('decks', MODE === 'matrix' ? '3' : '4'));
 const SEEDS = Number(arg('seeds', '12'));
 const WORKERS = Number(arg('workers', String(Math.max(1, availableParallelism() - 2))));
 const OUT = arg('out', '');
+/** the three drafted decks each hero is audited with (the seed differs) */
+const VARIANTS = [0, 1, 2];
 /** --noboons: the decks play without their Boons (what the Arena does) */
 const NO_BOONS = process.argv.includes('--noboons');
-/** --bypath: the ladder also shows each build path of each hero on its own row (hero/0, hero/1, hero/2) */
-const BY_PATH = process.argv.includes('--bypath');
+/** --byvariant: the ladder also shows each drafted deck of each hero on its own row (hero/0, hero/1, hero/2) */
+const BY_VARIANT = process.argv.includes('--byvariant');
 
 type Kind = 'regular' | 'elite' | 'warden' | 'finale';
 const byKind = (k: Kind) => ENCOUNTERS.filter((e) => e.kind === k);
@@ -93,7 +95,7 @@ async function burstMode(): Promise<void> {
   const meta: { hero: HeroId; level: Level; turn: number }[] = [];
   for (const hero of HEROES)
     for (const level of LVLS)
-      for (const path of RIFTWALKERS[hero].buildPaths.keys())
+      for (const variant of VARIANTS)
         for (let s = 0; s < SEEDS; s++)
           for (const turn of [1, 3]) {
             meta[jobs.length] = { hero, level, turn };
@@ -101,7 +103,7 @@ async function burstMode(): Promise<void> {
               id: jobs.length,
               kind: 'burst',
               hero,
-              path,
+              variant,
               level,
               deckSeed: s % 3,
               enemies: ['seraphine'],
@@ -114,7 +116,7 @@ async function burstMode(): Promise<void> {
           }
   const res = await runAll<number>(jobs);
   console.log(
-    `\nBurst: most damage in one round (search), ${SEEDS} shuffles x 3 buildPaths. Cell = turn 1 median / p90 | turn 3 p90`,
+    `\nBurst: most damage in one round (search), ${SEEDS} shuffles x 3 decks. Cell = turn 1 median / p90 | turn 3 p90`,
   );
   console.log(`(the Warden's HP at that level's tier and stage 2 is in brackets in the header)\n`);
   const wardenHp = (l: Level) =>
@@ -175,7 +177,7 @@ const pick = (k: Kind, n: number) => {
 async function ladderMode(): Promise<void> {
   const kinds: Kind[] = ['regular', 'elite', 'warden', 'finale'];
   const jobs: Job[] = [];
-  const meta: { hero: HeroId; level: Level; kind: Kind; path: number }[] = [];
+  const meta: { hero: HeroId; level: Level; kind: Kind; variant: number }[] = [];
   for (const hero of HEROES)
     for (const level of LVLS) {
       const sp = LEVEL_SPEC[level];
@@ -189,15 +191,15 @@ async function ladderMode(): Promise<void> {
               : byKind(kind);
         const stage = kind === 'finale' ? 3 : sp.stage;
         const sc = scale(sp.tier, stage);
-        for (const path of RIFTWALKERS[hero].buildPaths.keys())
+        for (const variant of VARIANTS)
           for (let d = 0; d < DECKS; d++)
             for (const e of encs) {
-              meta[jobs.length] = { hero, level, kind, path };
+              meta[jobs.length] = { hero, level, kind, variant };
               jobs.push({
                 id: jobs.length,
                 kind: 'fight',
                 hero,
-                path,
+                variant,
                 level,
                 deckSeed: d,
                 enemies: e.units,
@@ -215,7 +217,7 @@ async function ladderMode(): Promise<void> {
     const f = res.get(j.id);
     if (!f) continue;
     const keys = [`${m.hero}|${m.level}|${m.kind}`, `ALL|${m.level}|${m.kind}`];
-    if (BY_PATH) keys.push(`${m.hero}/${m.path}|${m.level}|${m.kind}`);
+    if (BY_VARIANT) keys.push(`${m.hero}/${m.variant}|${m.level}|${m.kind}`);
     for (const key of keys) {
       if (!cells.has(key)) cells.set(key, cell());
       add(cells.get(key)!, f);
@@ -231,7 +233,7 @@ async function ladderMode(): Promise<void> {
       `\n${level}: Tier ${sp.tier} stage ${sp.stage} (enemies ${sc.hp}% HP / ${sc.dmg}% damage)`,
     );
     console.log('hero'.padEnd(12) + kinds.map((k) => k.padEnd(28)).join(''));
-    const rows = BY_PATH ? HEROES.flatMap((h) => [h, `${h}/0`, `${h}/1`, `${h}/2`]) : HEROES;
+    const rows = BY_VARIANT ? HEROES.flatMap((h) => [h, `${h}/0`, `${h}/1`, `${h}/2`]) : HEROES;
     for (const hero of [...rows, 'ALL']) {
       console.log(
         hero.padEnd(12) +
@@ -257,7 +259,7 @@ async function matrixMode(): Promise<void> {
   for (const hero of HEROES)
     for (const level of LVLS)
       for (const tier of tiers)
-        for (const path of RIFTWALKERS[hero].buildPaths.keys())
+        for (const variant of VARIANTS)
           for (let d = 0; d < DECKS; d++)
             for (const { e, stage } of bosses) {
               const sc = scale(tier, stage);
@@ -266,7 +268,7 @@ async function matrixMode(): Promise<void> {
                 id: jobs.length,
                 kind: 'fight',
                 hero,
-                path,
+                variant,
                 level,
                 deckSeed: d,
                 enemies: e.units,
@@ -307,7 +309,7 @@ async function matrixMode(): Promise<void> {
 }
 
 /**
- * The optimizer: per character and build path, hill-climb the deck towards the most damage over the opening rounds, then play the best
+ * The optimizer: per character, hill-climb the deck towards the most damage over the opening rounds, then play the best
  * deck against every Warden at the level's tier. Prints the damage ceiling and how fast that deck kills.
  */
 async function optimizeMode(): Promise<void> {
@@ -323,12 +325,12 @@ async function optimizeMode(): Promise<void> {
   const dmgPct = scale(sp.tier, sp.stage).dmg;
   const jobs: Job[] = [];
   for (const hero of HEROES)
-    for (const path of RIFTWALKERS[hero].buildPaths.keys())
+    for (const variant of VARIANTS)
       jobs.push({
         id: jobs.length,
         kind: 'optimize',
         hero,
-        path,
+        variant,
         level,
         deckSeed: 0,
         enemies: [],
@@ -354,7 +356,7 @@ async function optimizeMode(): Promise<void> {
           id: 100000 + fights.length,
           kind: 'fight',
           hero: j.hero,
-          path: j.path,
+          variant: j.variant,
           level,
           deckSeed: j.id,
           deck: o.deck,
@@ -375,7 +377,7 @@ async function optimizeMode(): Promise<void> {
   );
   console.log(
     'hero'.padEnd(12) +
-      'path'.padEnd(6) +
+      'variant'.padEnd(8) +
       'per round'.padEnd(22) +
       'vs Wardens'.padEnd(30) +
       'deck',
@@ -389,10 +391,10 @@ async function optimizeMode(): Promise<void> {
       const r = fr.get(f.id);
       if (r) add(c, r);
     }
-    out[`${j.hero}/${j.path}`] = { ...o, fights: c };
+    out[`${j.hero}/${j.variant}`] = { ...o, fights: c };
     console.log(
       j.hero.padEnd(12) +
-        String(j.path).padEnd(6) +
+        String(j.variant).padEnd(8) +
         o.perRound
           .map((x) => Math.round(x))
           .join(' / ')

@@ -52,14 +52,14 @@ export interface Entry {
 // (13: Kesh's pack and basics, Den Mother, Summon Pup, Dire Wolf, #323-326)
 // (14: Valeria's Devotion, a heal trigger and Devotion costs, #328)
 // (15: card pools rebuilt to 20/30/25 per Riftwalker with cards retired and new ones, kits, 5 copies at most, Legendaries reworked,
-//  Kesh's Predator build path and no heal after fights, Valeria's Devotion spenders, #329-343)
+//  Kesh's Predator cards and no heal after fights, Valeria's Devotion spenders, #329-343)
 // (16: Fortified no longer stacks, Sunfall and Sunforged Edge spend X Devotion, Unbroken Wall 3, Retribution 2, #347-349)
-// (17: the Bear totem gives 2 Barrier a turn, Ilvane's Elements build path, #351-353)
+// (17: the Bear totem gives 2 Barrier a turn, Ilvane's Elements cards, #351-353)
 // (18: a heal grows a companion, Hangover, Sunfall strikes 2 enemies, X Devotion costs, Rivet's Swarm and Core, Ilvane +1 damage, Assemble's Primed, #354-361)
 // (19: The Foundry Awakens primes before it summons)
 // (21: the Trapper is the Trickster (id trickster), free statuses spent only when they make a card free, Blade Echo/Replay after a choice, #372)
 // (20, also: Sylas, Obsidia, Dorian and Ilvane are the Silent, the Regent, the Necrobinder and the Defect; the Totemist is the Shaman, #368-371)
-// (20: Valeria is the Ironclad shape and there are new engine pieces, no Devotion, no Legendary cards, build paths hidden, two uncommons to start, #362-366)
+// (20: Valeria is the Ironclad shape and there are new engine pieces, no Devotion, no Legendary cards, two uncommons to start, #362-366)
 // (25: companion frames (slots), scrapping several to make room, Salvage, the Engineer rebalanced with new cards, #383-385)
 // (26: the Trickster rebalanced by the card costing guide, Death Trap and Whisper Net retired, #386)
 // (27: the Full Trick goes off after the card that earned it, #389)
@@ -71,7 +71,7 @@ export interface Entry {
 // (33: Last Call and The Long Memory are 2-cost Auras, #410)
 // (34: the trait pass #411-413, and the class identity reworks: the Knight's Guard, Riposte and Thorns #415, then the Assassin, Spellblade,
 // Shaman and Monk #416-#419)
-export const RULES_VERSION = 46;
+export const RULES_VERSION = 47;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

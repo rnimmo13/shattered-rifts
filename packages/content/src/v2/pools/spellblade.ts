@@ -8,7 +8,7 @@
 // for Robert to decide). Each card's comment names the Regent card it copies; numbers and rarities are the Regent's unless the comment
 // says why not (DECISIONS #369).
 //
-// Build paths are hidden for now (DECISIONS #365) and the headings below are only a first sort, to be redone when they come back:
+// The headings below are only a first sort:
 //   Blade  - sharpen the Obsidian Blade and swing it
 //   Arcana - gain Arcana and spend it on big cards
 //   Court  - create cards (Retainers, Neutral cards, Rubble), play many, and the Auras that pay for it

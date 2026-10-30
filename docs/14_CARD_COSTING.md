@@ -6,7 +6,7 @@ game that has been balanced for years; this file turns them into exchange rates 
 cards. Written 2026-10-28 from the card list at 0.106.0 (`docs/10_CARD_LIST.md`).
 
 These are rules of thumb, not a formula the game enforces. A card that scores on budget can still be broken in a combo, and a card
-that scores low can be the best card in its build path. Use the score to find the cards worth a closer look, then check them in play
+that scores low can be the best card in its deck. Use the score to find the cards worth a closer look, then check them in play
 (and with `pnpm audit:balance` when Robert asks for sims).
 
 Everything assumes the normal turn: 3 Mana, a 5-card hand, a fight of about 4-6 of your turns, Tier I enemies hitting for 8-15.
@@ -78,7 +78,7 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 |---|---|---|
 | Barrier, now | **1.2** per point | 9 Barrier = 10 damage. Defend 5 = Strike 6. Stone Skin 9, Dawn Smite 5 + 5 Barrier = 11. |
 | Barrier next turn (Guarded, "next turn gain N") | **1.0** per point | Can't be aimed at a known intent. Roll Away 4 + 4 Guarded, Glass Veil 11 + 5. |
-| Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (4) is a 1-cost uncommon. |
+| Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (4) is a 1-cost uncommon. A Barrier card that gives Plating swaps **2 Barrier for 1 Plating** (2.4 against 2.5): Oath of Iron 8 Barrier became 6 + 1 Plating. |
 | Blur | the Barrier you expect to carry over (~4-5) | Smoke Veil: 5 Barrier + Blur. |
 | Shielded | **~one enemy hit** (10-12 at Tier I) | Great against one big hit, nearly nothing against chip damage. |
 | Cancel a hit (a Trap's "cancel that attack") | **~12**, one Tier I hit | The Trap springs on the first hit of a move and stops that hit only. Mirror Veil, Bait and Switch. |
@@ -126,11 +126,12 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Draw 1** as an extra (the card replaces itself) | **3** | Hilt Strike 9 + draw = 12; Oath of Iron 8 Barrier + draw. |
 | Each further card drawn | **4** (halve past the 3rd extra card in a turn: no Mana left to play them) | Catch Breath (draw 2) = 7, Clear Spring (draw 3) = 11, Read the Embers (draw 6, 2 cost) ≈ 17. |
 | Extra draw next turn | **3.5** each | Scheme. |
+| **Reserves** (Knight, 2026-10-30) | **3.5** each gained, **1.5** a point of *Max Reserves for this turn*, **4** a point of Max Reserves for the fight | Mana kept instead of lost, spent after the turn's Mana. Capped at the Max Reserves (3), so the 4th and later are wasted. Blood Oath: 3 HP (-4.5) for 3 Reserves (10.5) = 6 on a 0-cost card. A card that *reads* them is priced at the ~1.5 Reserves a deck holds mid-fight: Vow Kept 3 + 5 each = 10.5, Vow Fulfilled 18 + 7 each = 28.5 (39 at full). |
 | **Defer a card** (Assassin, 2026-10-30) | **3.5** each | A card of your hand that costs 1+ (never a 0-cost or X card) waits a turn and comes back costing 1 less until it is played: about +1 Mana next turn (4) less ~12% for the wait, and it needs a card to take. It is set aside, not discarded, so discard payoffs do not hear of it. Stalker's Lunge 15 + Defer = 18.5, Palm Switch 7 Barrier + Defer = 11.9, Side Slip = 3.5. *Up to N* (Into the Shadows) is priced at 3.5 x the cards you will usually have to give (~3 of 3), a little less. |
 | Discard 1 (yours, as a cost) | **-2**, or **+2** with Premeditate / discard payoffs in the deck | Duck and Weave, Flick Knife. *(legacy: "in the Assassin's pool call it 0" held for his Sly engine, gone since #416; it is -2 for him now)* |
 | Put a card on top of your draw pile | **+1.5** | Ram Home, Glint. |
 | Foresee N (look at the top N, draw the one you choose, discard the rest) | a draw (**3** as an extra, **4** on its own) **+0.5 per card past the first** (at most +2) | Cold Read (0: Foresee 4) ≈ 5.5. |
-| Reverb (your next Attack is played twice) | the next Attack's value, **~12** in an ordinary deck | Second Act. Check it against the best Attack in its build path (§8). |
+| Reverb (your next Attack is played twice) | the next Attack's value, **~12** in an ordinary deck | Second Act. Check it against the best Attack in its deck (§8). |
 | Return a random card from discard to hand | **+3** (a draw); a chosen card **+4** | |
 | Add a random card to your hand | **+4** (Neutral), **~9** if it is from your pool and costs 0 (Consume) | Royal Decree, Borrowed Blade, Rift Windfall. |
 | A Dagger | **4** (its damage) + Edge | *(legacy: the Assassin's Dagger tokens and Edge, gone since #416; his knives are embedded markers now, §15)* |
@@ -192,7 +193,7 @@ For "whenever X" triggers, count how often X happens per turn in the deck that w
 2. **The multiplier test.** Two multipliers on one card (Exposed and Reverb, Primed and multi-hit, Strangled and a free-card engine)
    multiply each other. Price the card in the deck that has the other half.
 3. **The best-case test.** For "+N per X" and "plus all it has grown", work out the number at the end of a good fight. If it beats a
-   rare's budget by turn 4 in an ordinary deck of its build path, lower the per-X.
+   rare's budget by turn 4 in an ordinary deck of its class, lower the per-X.
 4. **The tier test.** Flat numbers (Sapped, Thorns, Bleed, Fate, Barrier) shrink against Tier X enemies; percentages grow. A card on
    budget at Tier I may be weak or strong at Tier X.
 5. **The upgrade check.** Price the "+" version too (§12).

@@ -21,7 +21,6 @@
     "audit:balance": "tsx src/audit.ts",
     "cardscan": "tsx src/cardscan.ts",
     "traitscan": "tsx src/traitscan.ts",
-    "paths": "tsx src/paths.ts",
     "pvpsmoke": "tsx src/pvpsmoke.ts",
     "pvpbalance": "tsx src/pvpbalance.ts",
     "ghostsim": "tsx src/ghostsim.ts",

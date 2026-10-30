@@ -143,16 +143,6 @@ export {
   type ShrineKind,
 } from './gambler';
 export {
-  FIT_AT,
-  fitLabel,
-  fitOf,
-  fitOfPaths,
-  pathCounts,
-  mainPath,
-  mainPathOf,
-  type Fit,
-} from './synergy';
-export {
   OMENS,
   OMEN_TUNING,
   omenEffects,

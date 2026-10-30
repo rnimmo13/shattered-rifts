@@ -1,5 +1,5 @@
 // DRUNKARD, the Homeless Drunk (the Midden, the rift's rubbish heap). A short, fat, bald dwarf with a hammer, a sawed-off 12 gauge and a shopping trolley of
-// window panes. No companions. Three build paths:
+// window panes. No companions. Three themes:
 //   Gun        - the Old Twelve Gauge: it hits every enemy, and Precision cards (its Sharpen) make it hit harder for the fight
 //   Shells     - Buckshot Shells (0-cost, hit EVERY enemy, consumed) and a few junk Traps
 //   Hangover   - drink now, pay tomorrow: drinks leave Hangover (HP lost next turn), payoffs grow with it, heals grow with missing HP
@@ -420,7 +420,7 @@ export const DRUNKARD: CardDef[] = [
     { up: { effects: [forge('old-twelve-gauge', 2), status('exposed', 2, 'allFoes')] } },
   ),
 
-  // --- glue: cards for any build path (DECISIONS #337) ---
+  // --- glue: cards for any deck (DECISIONS #337) ---
   p(
     'common',
     'broken-bottle',
@@ -447,13 +447,13 @@ export const DRUNKARD: CardDef[] = [
       up: { effects: [draw(3), discard(1), heal(4)] },
     },
   ),
-  // (utility for any build path, DECISIONS #393: a look at what is coming, and a guard that draws)
+  // (utility for any deck, DECISIONS #393: a look at what is coming, and a guard that draws)
   p('common', 'rummage-the-bin', 'Rummage the Bin', 'skill', 0, 'none', [scry(3)]),
   p('uncommon', 'sway', 'Sway', 'skill', 1, 'none', [barrier(7), draw(1)], {
     up: { effects: [barrier(10), draw(1)] },
   }),
 
-  // --- more glue: uncommons and rares for any build path (DECISIONS #339) ---
+  // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
   p('rare', 'whiskey-miracle', 'Whiskey Miracle', 'skill', 1, 'none', [heal(10)], {
     exhaust: true,
   }),
