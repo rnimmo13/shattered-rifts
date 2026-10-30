@@ -29,6 +29,40 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.128.0',
+    date: '2026-10-29',
+    title: 'Play it on your phone',
+    summary:
+      'Fights work on a phone held upright, the hand follows your mouse, and big Thralls look big.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'Phones and tablets: fight with your phone upright (no more turning it sideways). Enemies stand on a row behind you, Boons and Auras fold into a drawer, and the menu folds away. Tap a card to see it big, tap again to play it, then tap your target. On smaller screens the figures, plates and cards are smaller and the board sits higher. The run map runs top to bottom on an upright screen.',
+      },
+      {
+        kind: 'changed',
+        text: 'The hand follows your mouse along the fan: the card you point at is the one that lifts. The targeting arrow shows as soon as you drag a card out of your hand.',
+      },
+      {
+        kind: 'changed',
+        text: 'Enemies stand back toward their edge of the battlefield, and damage numbers are bigger, in the card font, with a black outline.',
+      },
+      {
+        kind: 'changed',
+        text: "A big Thrall (the Grave Colossus card's, or one fed to 18 HP) stands as the Grave Colossus, and grows into it mid-fight.",
+      },
+      {
+        kind: 'changed',
+        text: "The map's Arena button turns red when your deck as it stands could not be brought to the Arena, and its tip says why.",
+      },
+      {
+        kind: 'balance',
+        text: 'Sharpen goes only on the Old Twelve Gauges and Obsidian Blades you have: a copy made later (Double Tap, Spare Barrel) starts unsharpened.',
+      },
+    ],
+    heads: 'Rules changed: replays and Arena games from before this version no longer play.',
+  },
+  {
     version: '0.127.0',
     date: '2026-10-29',
     title: 'Monsters of the multiverse',
