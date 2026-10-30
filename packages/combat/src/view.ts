@@ -987,7 +987,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return `Deal ${a.equal ? `damage equal to ${a.num}` : `${a.num} damage`} to ${o.hits} different random enemies${o.lonePct ? ` (${o.lonePct}% more when only one enemy stands)` : ''}.`;
       let times = o.hits && o.hits > 1 ? ` ${o.hits} times` : '';
       if (o.scale?.into === 'hits') {
-        const w = METRIC_WORDS[o.scale.by];
+        const tagName = o.scale.tag ? (TAG_NAMES[o.scale.tag] ?? cap(o.scale.tag)) : null;
+        const w =
+          tagName && o.scale.by === 'tagDeck'
+            ? { per: `${tagName} in your deck`, equal: `the number of ${plural(tagName)} in your deck` }
+            : METRIC_WORDS[o.scale.by];
         // (the base hits and the hits added per point both show: "2 times, 2 more times per card discarded this turn")
         const hits = o.hits ?? 1;
         const m = o.scale.mult ?? 1;
@@ -1176,6 +1180,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : `The first ${o.amount} cards you play each turn are played an extra time.`;
         if (o.status === 'deftness')
           return `Your 0-cost Attacks deal ${o.amount} more damage for the rest of the fight.`;
+        if (o.status === 'twinned')
+          return o.amount === 1
+            ? 'Gain 1 Reverb: your next Attack is played twice.'
+            : `Gain ${o.amount} Reverb: your next ${o.amount} Attacks are played twice.`;
         if (o.status === 'umbra')
           return `Gain ${o.amount} Owl Charge: a commanded Moon Owl hits the enemy with the least HP for 6 plus all the charge, and the charge is spent.`;
         if (o.status === 'buffer')
@@ -1437,7 +1445,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return `Add ${what2}${o.neutral ? 'Neutral ' : ''}card${(o.count ?? 1) > 1 ? 's' : ''}${o.neutral ? '' : ` ${from}`} to your hand${o.free ? free : ''}.`;
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
-      return `Add ${what} from your pool to your hand${o.free ? free : ''}.${o.ethereal ? ` ${many ? 'They are' : 'It is'} Fleeting.` : ''}`;
+      const thisTurn = many ? ' (they cost 0 this turn)' : ' (it costs 0 this turn)';
+      return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : ''}.${o.ethereal ? ` ${many ? 'They are' : 'It is'} Fleeting.` : ''}`;
     }
     case 'upgrade':
       if (o.scope === 'discard') {

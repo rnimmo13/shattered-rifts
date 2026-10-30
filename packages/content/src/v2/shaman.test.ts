@@ -258,23 +258,14 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(t)).toEqual([5]);
   });
 
-  it('Auras stack: two Totem Drums each strike when a totem acts; Harmony and Storm Sovereign answer a push-out too', () => {
-    let s = fight(['totem-drum', 'totem-drum', 'harmony', 'storm-sovereign', 'hawks-dive']);
-    for (const id of ['totem-drum', 'totem-drum', 'harmony', 'storm-sovereign']) s = play(s, id);
+  it('Auras stack: two Totem Drums each strike when a totem acts; Storm Sovereign answers a push-out too', () => {
+    let s = fight(['totem-drum', 'totem-drum', 'storm-sovereign', 'hawks-dive']);
+    for (const id of ['totem-drum', 'totem-drum', 'storm-sovereign']) s = play(s, id);
     const hp = foe(s).hp;
     s = play(s, 'hawks-dive', foe(s).id);
-    // (the Hawk pushed out hits for 7, 3 + 3 from the Drums, 3 from the Sovereign, 3 Barrier from Harmony)
+    // (the Hawk pushed out hits for 7, 3 + 3 from the Drums, 3 from the Sovereign, and its 3 Barrier)
     expect(hp - foe(s).hp).toBe(7 + 7 + 3 + 3 + 3);
     expect(hero(s).barrier).toBe(3);
-  });
-
-  it('Spirit Chorus commands the front totem at the start of each turn', () => {
-    let s = fight(['spirit-chorus']);
-    s = play(s, 'spirit-chorus');
-    s = endTurn(s);
-    expect(row(s)).toEqual(['bear', 'thunderbird', null]);
-    // (the Hawk's command, 7, on top of its end-of-turn hit and the Thunderbird's Fork)
-    expect(lost(s)[0]).toBeGreaterThanOrEqual(7);
   });
 
   it('the new plant and command cards do what they say', () => {
@@ -305,16 +296,13 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
   });
 
   it('the Defect-shaped uncommons and rares do what they say', () => {
-    // (Moonshade Ward: 11 Barrier and an Owl, which pushes the Hawk out)
-    let s = fight(['moonshade-ward', 'dawn-ward', 'frostbound-hide']);
-    s = play(s, 'moonshade-ward');
-    expect(hero(s).barrier).toBe(11);
-    expect(row(s)).toEqual(['bear', 'thunderbird', 'owl']);
+    // (Dawn Ward: 10 Barrier, consumed; Frostbound Hide: 6 and two Bears, which push the Hawk and the Bear out: the Bear gives 6 more)
+    let s = fight(['dawn-ward', 'frostbound-hide']);
     s = play(s, 'dawn-ward');
-    expect(hero(s).barrier).toBe(21);
+    expect(hero(s).barrier).toBe(10);
     expect(s.sides.a.exhausted.map((c) => c.card)).toContain('dawn-ward');
     s = play(s, 'frostbound-hide');
-    expect(hero(s).barrier).toBe(27 + 6 + 0);
+    expect(hero(s).barrier).toBe(10 + 6 + 6);
     // (Wellspring: 4 Mana, consumed; Thunder Beam: 28 to all, up to 3 Spirit lost)
     let t = fight(['wellspring', 'thunder-beam'], ['squire', 'squire']);
     hero(t).statuses.spirit = 2;
@@ -526,11 +514,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     }
   });
 
-  it('pool: about 127 reward-eligible cards, 29 Auras, three element paths of 14 or more', () => {
+  it('pool: about 108 reward-eligible cards, 24 Auras, three element paths of 14 or more', () => {
     const own = rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman');
-    expect(own.length).toBeGreaterThanOrEqual(110);
+    expect(own.length).toBeGreaterThanOrEqual(100);
     expect(own.length).toBeLessThanOrEqual(145);
-    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(29);
+    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(24);
     expect(pathSizes('shaman').every((n) => n >= 14)).toBe(true);
   });
 

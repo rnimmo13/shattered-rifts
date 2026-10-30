@@ -16,7 +16,6 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 /** Every Aura whose upgrade is 1 less Mana, on purpose. A new one goes here only when its effect cannot grow. */
 const COST_CUT_AURAS = [
   // (the Shaman's, as Slay the Spire 2 has them: Subroutine 1 > 0)
-  'awakening-chant',
   'dream-weaving',
   'salvage-spirit',
   'snap-back',

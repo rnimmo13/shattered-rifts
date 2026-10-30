@@ -36,7 +36,7 @@ const RARITY_LABEL: Record<string, string> = {
 };
 
 const KEYWORDS =
-  /\b(Barrier|Exposed|Faltering|Might|Bleed|Shocked|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Precision|Consume|Lifesteal|Hold|Fleeting|Unplayable|Traps?|Burn|Wounds?|Voids?|Dry Tinder|Tinder|Owl Charge|Buffer|Bracing|Primed|Totems?|Hawks?|Bears?|Thunderbirds?|Elder Trees?|Moon Owls?)\b/g;
+  /\b(Barrier|Exposed|Faltering|Might|Bleed|Shocked|Thorns|Shielded|Exhaust|Retain|Mana|Spirit|Edge|Fervor|Serene|Fury|Radiant|Arcana|Foresee|Sharpen|Sharpened|Precision|Consume|Lifesteal|Hold|Fleeting|Unplayable|Traps?|Burn|Reverb|Wounds?|Voids?|Dry Tinder|Tinder|Owl Charge|Buffer|Bracing|Primed|Totems?|Hawks?|Bears?|Thunderbirds?|Elder Trees?|Moon Owls?)\b/g;
 
 /**
  * Rules text with the keywords marked **bold** for the card renderer. A sanctified card ("hi~strike") also marks each number its roll

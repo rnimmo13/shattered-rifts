@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.133.0',
+    date: '2026-10-30',
+    title: 'Shaman pool trimmed',
+    summary: 'Seventeen Shaman uncommons and rares are retired, three pairs are merged, and a few card texts are fixed.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Retired uncommons: Clear Spring, Wild Spirits, Elder Seed, Hawk’s Shelter, Moonshade Ward, Moonbite, Deepening Night, Hail Rite, Thunderclap and Ember Lance. Retired rares: Meteor Fall, Superstorm, Avalanche, Glacial Fortress, Bark Carapace, Spirit Chorus and Growing Ward. Old copies turn into a nearby card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Storm Chant costs 2 and also gives 1 Mana (it absorbed Awakening Chant). Raise the Pole costs 2 and gives 2 totem positions (it absorbed Wider Circle). Storm Sovereign also gives 3 Barrier (it absorbed Harmony). Spirit Surge gives 2 Spirit (3 upgraded).',
+      },
+      {
+        kind: 'fixed',
+        text: 'Wild Vision says the card it adds costs 0 this turn. Blighted Chorus says it counts Status cards. Phoenix Feather explains Reverb.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.132.0',
     date: '2026-10-30',
     title: 'Shaman trim, Shocked',
