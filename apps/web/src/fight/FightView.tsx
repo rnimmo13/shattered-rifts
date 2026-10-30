@@ -509,8 +509,17 @@ export function FightView(props: {
       if (menuOpen && !t?.closest('.fight__menu, .fight__menuBtn')) setMenuOpen(false);
       if (sideOpen && !t?.closest('.fight__drawer, .fight__sideToggle')) setSideOpen(false);
     };
+    const esc = (e: KeyboardEvent): void => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      setSideOpen(false);
+    };
     window.addEventListener('pointerdown', away);
-    return () => window.removeEventListener('pointerdown', away);
+    window.addEventListener('keydown', esc);
+    return () => {
+      window.removeEventListener('pointerdown', away);
+      window.removeEventListener('keydown', esc);
+    };
   }, [menuOpen, sideOpen]);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   /** the last press was a finger: there is no pointer to draw the aiming arrow to, the targets glow instead (DECISIONS #443) */
@@ -1030,7 +1039,10 @@ export function FightView(props: {
     if (modeRef.current === mode) return;
     modeRef.current = mode;
     const g = game.current;
-    if (g) scene.current?.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current, mode));
+    if (g)
+      scene.current?.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current, mode), {
+        instant: true,
+      });
   }, [mode, db, mySide]);
 
   useEffect(() => {
@@ -1646,6 +1658,8 @@ export function FightView(props: {
       view?.sides[mySide].enchants ||
       view?.sides[mySide].form ||
       view?.sides[foeSide].suitsTurn ||
+      view?.sides[foeSide].enchants ||
+      view?.sides[foeSide].form ||
       pvp
         ? 1
         : 0;
@@ -1794,10 +1808,12 @@ export function FightView(props: {
                 <button
                   className={`btn btn--small btn--ghost fight__menuBtn${menuOpen ? ' is-on' : ''}`}
                   aria-expanded={menuOpen}
-                  aria-controls="fight-menu"
+                  {...(menuOpen ? { 'aria-controls': 'fight-menu' } : {})}
                   onClick={() => setMenuOpen((o) => !o)}
                 >
-                  <span>☰ Menu</span>
+                  <span>
+                    <span aria-hidden>☰</span> Menu
+                  </span>
                 </button>
                 {menuOpen && (
                   <div
@@ -1870,7 +1886,8 @@ export function FightView(props: {
 
           <UnitPlates
             scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
-            intentTop={mode === 'wide' ? '7.8rem' : '3.2rem'}
+            // (an intent hangs from this: room for the top bar and the intent itself)
+            intentTop={mode === 'wide' ? '7.8rem' : mode === 'portrait' ? '5.8rem' : '6.6rem'}
             preview={preview}
             items={placed}
             heroId={heroUnit?.id ?? null}
@@ -2198,7 +2215,8 @@ export function FightView(props: {
             <button
               className={`fight__sideToggle${sideOpen ? ' is-open' : ''}`}
               aria-expanded={sideOpen}
-              aria-controls="fight-drawer"
+              {...(sideOpen ? { 'aria-controls': 'fight-drawer' } : {})}
+              aria-label={`Boons and Auras: ${sideCount.boons} Boons and traits, ${sideCount.auras} Auras, ${sideCount.foe} on the other side`}
               onClick={() => setSideOpen((o) => !o)}
             >
               {sideCount.boons > 0 && (

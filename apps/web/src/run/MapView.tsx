@@ -4,6 +4,7 @@
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
+import { useTallMap } from './mapShape';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -110,9 +111,6 @@ function labelOf(n: MapNode): string {
   return KIND_LABEL[n.kind];
 }
 
-/** Whether the map runs top to bottom: a screen taller than it is wide. */
-export const mapIsTall = (): boolean => window.innerHeight > window.innerWidth;
-
 export function MapView(props: {
   map: StageMap;
   at: string | null;
@@ -121,7 +119,9 @@ export function MapView(props: {
   onEnter: (id: string) => void;
 }) {
   const { map } = props;
-  if (mapIsTall()) return <TallMap {...props} />;
+  // (the hook re-renders the map when the screen is turned)
+  const tall = useTallMap();
+  if (tall) return <TallMap {...props} />;
   // fill the screen: the spacing grows with the window. PAD is the room left and right of the first and last floor, so the
   // map sits dead centre and a hovered node's glow is never cut off.
   const PAD = 90;

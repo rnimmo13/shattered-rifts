@@ -50,7 +50,7 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
 }
 
 /** Card width for the hand at the current window size (px). */
-export function handCardWidth(viewportWidth: number, viewportHeight = Infinity): number {
+export function handCardWidth(viewportWidth: number, viewportHeight: number): number {
   const wide = Math.round(Math.max(168, Math.min(238, viewportWidth * 0.122)));
   // (DECISIONS #443) held upright: about five cards across, and never a fifth of the height (a tap shows a card big)
   if (viewportHeight > viewportWidth)

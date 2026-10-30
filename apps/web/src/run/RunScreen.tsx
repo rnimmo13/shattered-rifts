@@ -73,7 +73,8 @@ import { reportRun } from '../pvp/boardApi';
 import { syncSavedRuns } from './syncRuns';
 import { getName, hasUsername } from '../pvp/config';
 import { CharacterPicker } from './CharacterPicker';
-import { MapLegend, MapView, mapIsTall } from './MapView';
+import { MapLegend, MapView } from './MapView';
+import { useTallMap } from './mapShape';
 import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
@@ -914,6 +915,7 @@ function Body(props: {
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
+  const tallMap = useTallMap();
 
   switch (run.phase) {
     case 'map':
@@ -923,8 +925,8 @@ function Body(props: {
             Stage {run.stage}: {REALM_LABEL[realmOfStage(run, run.stage)]}
           </h2>
           <p className="stage-panel__hint">
-            Choose where to go next. Floors run {mapIsTall() ? 'top to bottom' : 'left to right'};
-            the Warden waits at the end.
+            Choose where to go next. Floors run {tallMap ? 'top to bottom' : 'left to right'}; the
+            Warden waits at the end.
           </p>
           <div className="mapwrap">
             <MapView

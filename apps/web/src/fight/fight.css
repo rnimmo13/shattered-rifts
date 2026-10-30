@@ -3392,6 +3392,7 @@ button.totem:disabled {
   font-size: 0.85rem;
 }
 .fight--portrait .fight__aimbar {
+  white-space: nowrap;
   top: 2.9rem;
   max-width: calc(100% - 1rem);
   padding: 0.3rem 0.7rem;
@@ -3435,8 +3436,14 @@ button.totem:disabled {
 .fight__peekKeys b {
   color: var(--c-gold-light);
 }
-.fight--portrait .fight__aimbar {
-  white-space: nowrap;
+/* the Traps row: above the strip held upright, above the hand's controls on a small screen held sideways */
+.fight--portrait .fight__snares {
+  left: 0.5rem;
+  bottom: calc(var(--strip-bottom) + 3.2rem);
+}
+/* an open menu comes over the aim bar, the tip and the banners */
+.fight--portrait .fight__top:has(.fight__menu) {
+  z-index: 75;
 }
 /* held upright: the top bar's buttons in a menu under its button */
 .fight__menu {
