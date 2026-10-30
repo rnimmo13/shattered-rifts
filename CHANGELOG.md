@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- Hovering a card explains the cards it makes (Daggers, Gravesouls, Buckshot Shells...) with their real cost and text, and any totem it plants or names. The Totem explanation describes how totems work now.
 - The Shaman's Flame, Frost and Storm cards show their element as a coloured icon in the top right (hover it for what the element does), instead of a word in the text.
 - The Card library's book stays the full width of the screen, with cards the same size, whatever you filter by.
 - A big Thrall (the Grave Colossus card's, or one you have fed to 18 HP) now stands as the Grave Colossus, and grows into it mid-fight.

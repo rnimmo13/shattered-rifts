@@ -480,6 +480,49 @@ export const INTENT_GLYPH: Record<IntentIcon, string> = {
   special: '?',
 };
 
+const KIND_WORD: Record<string, string> = {
+  attack: 'Attack',
+  skill: 'Skill',
+  power: 'Aura',
+  snare: 'Trap',
+  summon: 'Summon',
+};
+/**
+ * What a card another card makes is (a Dagger, a Gravesoul, a Buckshot Shell...), for the hover beside the card that makes it:
+ * its cost, its kind and its own text, from the card itself (DECISIONS #448). Undefined for an id that is not a card.
+ */
+export function createdInfo(id: string): { name: string; text: string } | undefined {
+  const c = COMBAT_DB.cards[id];
+  if (!c) return undefined;
+  const cost = c.x ? 'X' : String(c.cost);
+  return {
+    name: c.name,
+    text: `A ${cost}-cost ${KIND_WORD[c.kind] ?? c.kind}: ${cardText(COMBAT_DB, c)}`,
+  };
+}
+
+/** Every card some card makes (Daggers, Gravesouls, Buckshot Shells, Rubble...): a card that only names one is explained too. */
+const MADE_CARDS: readonly string[] = (() => {
+  const ids = new Set<string>();
+  const walk = (x: unknown): void => {
+    if (Array.isArray(x)) x.forEach(walk);
+    else if (x && typeof x === 'object') {
+      const o = x as Record<string, unknown>;
+      if (o['op'] === 'addCard' && typeof o['card'] === 'string')
+        ids.add(o['card'].replace(/\+$/, ''));
+      Object.values(o).forEach(walk);
+    }
+  };
+  for (const c of Object.values(COMBAT_DB.cards)) walk(c.effects);
+  return [...ids].filter((id) => COMBAT_DB.cards[id]);
+})();
+
+/** A totem by its own words (the Hawk: "At the end of your turn..."), for a card that plants or names it (DECISIONS #448). */
+export function totemInfo(id: string): { name: string; text: string } | undefined {
+  const t = COMBAT_DB.totems?.[id];
+  return t ? { name: t.name, text: `A totem. ${t.text}` } : undefined;
+}
+
 /** Plain-language definitions of every term that can appear on a card, shown when you hover one. */
 export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   barrier: {
@@ -539,9 +582,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Foresee',
     text: 'Look at that many cards from the top of your draw pile. Choose one to draw and discard the rest.',
   },
+  // (the totem cycle, DECISIONS #430; the old text described the totems' help on spells, #448)
   rune: {
     name: 'Totem',
-    text: 'The Shaman starts with a Hawk, a Bear and a Thunderbird. Each helps the first spell of its element each turn. A totem stays for the fight; planting into a full row asks which one to replace (or keep them). Cards can add positions, up to 5.',
+    text: 'The Shaman’s totems stand in a row beside him, in the order he planted them, and each does something every turn while it stands. A command makes the front totem’s spirit act once more, and the totem is gone. Planting into a full row pushes the front one out (it acts as it goes). Every Spirit adds 1 to their numbers (not the Elder Tree’s or the Moon Owl’s). He starts with 3 positions; cards add more, up to 5.',
   },
   // (the Monk's, DECISIONS #419)
   technique: {
@@ -600,7 +644,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Preparation',
     text: 'Up to 3, kept from turn to turn. Setup cards and Knife Work give it; a finisher spends it ("spend up to 3 Preparation") for its bonus.',
   },
-  'sleeve-knife': { name: 'Dagger', text: 'A 0-cost Attack that is consumed.' },
+  'sleeve-knife': createdInfo('sleeve-knife') ?? {
+    name: 'Dagger',
+    text: 'A 0-cost Attack that is consumed.',
+  },
   // (was Sly, played for free when discarded: DECISIONS #433)
   sly: {
     name: 'Premeditate',
@@ -610,7 +657,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Stagger',
     text: "A drunk's swing: its damage lands on a random enemy instead of one you choose, and it hits harder for it.",
   },
-  'buckshot-shell': {
+  'buckshot-shell': createdInfo('buckshot-shell') ?? {
     name: 'Buckshot Shell',
     text: 'A 0-cost Attack that hits every enemy and is consumed.',
   },
@@ -657,6 +704,7 @@ function sharpenInfo(weapon: string | undefined): { name: string; text: string }
 /** The keywords a card uses, in reading order. */
 export function keywordsOf(
   c: {
+    id?: string;
     kind: string;
     exhaust?: boolean | undefined;
     retain?: boolean | undefined;
@@ -684,6 +732,7 @@ export function keywordsOf(
   text?: string,
 ): { name: string; text: string }[] {
   const out: { name: string; text: string }[] = [];
+  const self = c.id?.replace(/\+$/, '');
   const add = (k: { name: string; text: string } | undefined) => {
     if (k && !out.some((x) => x.name === k.name)) out.push(k);
   };
@@ -736,7 +785,6 @@ export function keywordsOf(
     if (o.ops?.some((x) => x.op === 'riposte')) add(KEYWORD_INFO['riposte']);
     if (o.op === 'stars') add(KEYWORD_INFO['stars']);
     if (o.op === 'forge') add(sharpenInfo(weapon));
-    if (o.op === 'addCard' && o.card === 'sleeve-knife') add(KEYWORD_INFO['sleeve-knife']);
     // (knives anywhere on the card: an Aura's trigger, a condition, a count of them)
     if (
       o.op === 'embed' ||
@@ -754,13 +802,28 @@ export function keywordsOf(
     if (o.op === 'imbue' || o.op === 'recast' || o.ops?.some((x) => x.op === 'imbue'))
       add(KEYWORD_INFO['imbue']);
     if (o.op === 'discharge') add(KEYWORD_INFO['discharge']);
-    if (o.op === 'addCard' && o.card === 'buckshot-shell') add(KEYWORD_INFO['buckshot-shell']);
     if (o.op === 'summon' && o.unit && taunting(o.unit)) add(KEYWORD_INFO['taunt']);
     if (o.op === 'status' && o.status) {
       const s = STATUS_INFO[o.status as StatusId];
       if (s) add({ name: s.name, text: s.text });
     }
   }
+  // every card this one makes (a Dagger, a Gravesoul...) and every totem it plants, by what it really is, wherever on the card it
+  // is (an Aura's trigger, a choice, a condition), DECISIONS #448
+  const walk = (x: unknown): void => {
+    if (Array.isArray(x)) x.forEach(walk);
+    else if (x && typeof x === 'object') {
+      const o = x as Record<string, unknown>;
+      if (typeof o['card'] === 'string' && o['card'] !== self) {
+        // (a Sharpen of a weapon names the weapon, not a card made; a Sharpen that makes a card when there is none does)
+        const made = COMBAT_DB.cards[o['card']];
+        if (o['op'] !== 'forge' || (made && !made.weapon)) add(createdInfo(o['card']));
+      }
+      if (o['op'] === 'plant' && typeof o['spirit'] === 'string') add(totemInfo(o['spirit']));
+      Object.values(o).forEach(walk);
+    }
+  };
+  walk(c.effects);
   if (c.tags?.includes('defensive') || c.tags?.includes('striking')) add(KEYWORD_INFO['technique']);
   // (the Shaman's spells: their element)
   if (c.tags?.some((t) => t === 'flame' || t === 'frost' || t === 'storm' || t === 'prism'))
@@ -785,6 +848,14 @@ export function keywordsOf(
     if (/\bOpen\b/.test(hay))
       add({ name: STATUS_INFO.opening.name, text: STATUS_INFO.opening.text });
     for (const k of Object.values(KEYWORD_INFO)) if (names(hay, k.name)) add(k);
+    // ("Whenever you play a Gravesoul": a made card it names, by its singular or plural name)
+    for (const id of MADE_CARDS) {
+      const nm = COMBAT_DB.cards[id]!.name;
+      if (names(hay, nm) || names(hay, `${nm}s`)) add(createdInfo(id));
+    }
+    // ("If you have a Thunderbird": the totem it names)
+    for (const t of Object.values(COMBAT_DB.totems ?? {}))
+      if (names(hay, t.name)) add(totemInfo(t.id));
   }
   // ...and what those explanations name in turn (Fervor ends in "enter Radiant": so Radiant is explained too)
   for (const k of [...out])

@@ -120,6 +120,13 @@ export function TotemArc(props: {
                   kicker: next ? `Totem ${i + 1} · next to act` : `Totem ${i + 1}`,
                   title: look.name,
                   text: live,
+                  // (what a totem is at all, under its own words: DECISIONS #448)
+                  lines: [
+                    {
+                      title: 'Totems',
+                      text: 'Each works every turn while it stands. A command makes the front totem act once more, and it is gone; planting into a full row pushes the front one out (it acts as it goes). Every Spirit adds 1 to their numbers (not the Elder Tree’s or the Moon Owl’s).',
+                    },
+                  ],
                 })
               : tipAttrs({
                   kicker: `Totem position ${i + 1}`,

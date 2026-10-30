@@ -57,3 +57,37 @@ describe('Sharpen names the weapon it sharpens (the gun calls it Precision, DECI
     expect(sharpen(blade!.id)).not.toContain('Twelve Gauge');
   });
 });
+
+describe('a card says what the cards it makes and the totems it plants are (DECISIONS #448)', () => {
+  const keys = (id: string) => {
+    const def = db.cards[id]!;
+    return keywordsOf(def, () => false, cardText(db, def));
+  };
+  it('a card that adds a card explains it by its own cost, kind and text', () => {
+    for (const [maker, made] of [
+      ['gravesoul', 'Gravesoul'],
+      ['sleeve-knife', 'Dagger'],
+      ['buckshot-shell', 'Buckshot Shell'],
+    ] as const) {
+      const id = Object.values(db.cards).find(
+        (c) =>
+          c.id !== maker &&
+          !c.id.includes('~') &&
+          JSON.stringify(c.effects).includes(`"card":"${maker}"`),
+      )!.id;
+      const k = keys(id).find((x) => x.name === made);
+      expect(k?.text, id).toMatch(/^A \d+-cost (Attack|Skill): /);
+    }
+  });
+  it('a card that plants a totem says what that totem does', () => {
+    const id = Object.values(db.cards).find((c) =>
+      JSON.stringify(c.effects).includes('"spirit":"hawk"'),
+    )!.id;
+    expect(keys(id).find((x) => x.name === 'Hawk')?.text).toMatch(/^A totem\. .*Primed/);
+  });
+  it('the Totem keyword describes the cycle, not the old help on spells', () => {
+    const t = keys('call-the-moon-owl').find((x) => x.name === 'Totem');
+    expect(t?.text).toMatch(/front totem/);
+    expect(t?.text).not.toMatch(/first spell of its element/);
+  });
+});
