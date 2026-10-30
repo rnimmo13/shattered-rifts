@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- The hand follows your mouse along the fan: the card you point at is the one that lifts, with no more sticking on the wrong card. The targeting arrow shows as soon as you drag a card out of your hand.
 - The map's Arena button turns red when your deck as it stands could not be brought to the Arena (too big, too small, over a card limit), and its tip says why.
 - Enemies stand back toward their edge of the battlefield. Damage numbers are bigger, in the card font, with a black outline. A new Old Twelve Gauge or Obsidian Blade made mid-fight starts unsharpened: Sharpen only goes on the copies you already have.
 - **The Shaman's totems stand in an arc beside him**, numbered in order with the next one lit, each showing exactly what it does every turn and when it acts (with your Spirit counted).
