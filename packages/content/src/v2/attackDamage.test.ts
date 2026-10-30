@@ -91,13 +91,14 @@ describe('attack statuses only touch attack damage', () => {
   // (the Shaman's Hawk command, DECISIONS #418: a spirit acting, not an attack)
   it('totems deal the same with or without Might on you and Exposed on the enemy', () => {
     const lost = (buffed: boolean): number => {
-      let s = fight(['thunderbirds-cry'], 'shaman');
+      let s = fight(['spirit-call'], 'shaman');
+      s.sides.a.totems = ['thunderbird', null, null];
       if (buffed) {
         hero(s).statuses.might = 5;
         foe(s).statuses.exposed = 3;
       }
       // (a card commands the Thunderbird: 8 to every enemy, DECISIONS #430)
-      const dive = s.sides.a.hand.find((c) => c.card === 'thunderbirds-cry')!;
+      const dive = s.sides.a.hand.find((c) => c.card === 'spirit-call')!;
       s = applyAction(db, s, { type: 'play', card: dive.id }).state;
       return 200 - foe(s).hp;
     };

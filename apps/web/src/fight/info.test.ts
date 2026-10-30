@@ -83,7 +83,7 @@ describe('a card says what the cards it makes and the totems it plants are (DECI
     const id = Object.values(db.cards).find((c) =>
       JSON.stringify(c.effects).includes('"spirit":"hawk"'),
     )!.id;
-    expect(keys(id).find((x) => x.name === 'Hawk')?.text).toMatch(/^A totem\. .*Primed/);
+    expect(keys(id).find((x) => x.name === 'Hawk')?.text).toMatch(/^A totem\. .*random enemy/);
   });
   it('the Totem keyword describes the cycle, not the old help on spells', () => {
     const t = keys('call-the-moon-owl').find((x) => x.name === 'Totem');

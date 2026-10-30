@@ -48,7 +48,9 @@ describe('balance guard rails', () => {
       const discards = c.effects.reduce((n, o) => (o.op === 'discard' ? n + o.amount : n), 0);
       // the card itself leaves the hand: drawing as many as it costs in cards is "free"
       if (draws - discards >= 1) bad.push(`${c.id} (draws ${draws}, discards ${discards})`);
-      if (c.effects.some((o) => o.op === 'mana' && (o.amount > 0 || o.scale)))
+      // (a Void put in your own discard pile is the price of Spirit Offering's Mana: it is not consumed, Robert 2026-10-30)
+      const voids = c.effects.some((o) => o.op === 'addCard' && o.side === 'self' && o.to === 'discard' && junk(o.card));
+      if (!voids && c.effects.some((o) => o.op === 'mana' && (o.amount > 0 || o.scale)))
         bad.push(`${c.id} (free Mana)`);
     }
     expect(bad).toEqual([]);

@@ -266,7 +266,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('strike', 2),
       'defend',
       'spirit-call',
-      ...rep('ember-bolt', 2),
+      ...rep('raise-the-hawk', 2),
       ...rep('frost-ward', 2),
       ...rep('forked-lightning', 2),
     ],
@@ -279,9 +279,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Storm: every enemy at once, or Forks',
     ],
     howTo: [
-      'Your totems stand in a row (the Totems panel), oldest at the front. Each works every turn while it stands: the Hawk Primes your next attack, the Bear gives Barrier, the Thunderbird hits two random enemies.',
-      'A command (Spirit Call) makes your front totem act once more and consumes it: the Hawk gives 1 Spirit, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
-      'Spirit never goes down. Each point adds 1 to every totem number, so Hawks you command make every totem stronger. His spells are Flame (big hits on one enemy), Frost (Barrier and Faltering) and Storm (every enemy, or Forks).',
+      'Your totems stand in a row (the Totems panel), oldest at the front. Each works every turn while it stands: the Hawk hits a random enemy for 3, the Bear gives Barrier, the Thunderbird hits two random enemies.',
+      'A command (Spirit Call) makes your front totem act once more and consumes it: the Hawk hits a random enemy for 7, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
+      'Spirit never goes down. Each point adds 1 to every totem number, so Spirit cards and the Moon Owl (which gives Spirit) make every totem stronger. His spells are Flame (big hits on one enemy), Frost (Barrier and Faltering) and Storm (every enemy, or Forks).',
     ],
   },
 

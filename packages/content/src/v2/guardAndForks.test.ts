@@ -88,16 +88,11 @@ describe('the Shaman: Forks (DECISIONS #427)', () => {
     expect(previewCardDamage(db, two, 'T0', null).get(0)?.lo).toBe(10);
   });
 
-  it('Spark Fork (0) and Thunder Fork (2) are rewards; the text names the bonus', () => {
-    let s = fight('shaman', ['spark-fork']);
-    s.sides.a.mana = 0;
-    s = play(s, 'spark-fork');
-    expect(foe(s).hp).toBe(195);
+  it('Thunder Fork (2) is a reward; the text names the bonus', () => {
     expect(cardText(db, db.cards['forked-lightning']!)).toBe(
       'Storm. Deal 5 damage to 2 different random enemies (25% more when only one enemy stands).',
     );
     const pool = rewardPool('shaman');
-    expect(pool).toContain('spark-fork');
     expect(pool).toContain('thunder-fork');
   });
 

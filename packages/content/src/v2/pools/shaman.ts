@@ -6,11 +6,11 @@
 // in the DECISIONS log; their cards are frozen in reviews/balance-baselines/2026-10-29-shaman-cycle/). No summons.
 //
 // Totems (TOTEMS below; +1 Spirit adds 1 to each number marked +S):
-//   Hawk        - end of turn: 2+S Primed, if he is not Primed;     command / pushed out: gain 1 Spirit (flat)
+//   Hawk        - end of turn: 3+S damage to a random enemy;        command: 7+S to a random enemy
 //   Bear        - end of turn: 2+S Barrier;                         command: 6+S Barrier
 //   Thunderbird - end of turn: 3+S damage to 2 different random enemies (25% more when one stands);   command: 8+S to every enemy
 //   Elder Tree  - (rare) start of turn: 1 Mana;                     command: 2 Mana
-//   Moon Owl    - (rare) start of turn: his first elemental spell this turn costs 1 less;   command: his next elemental spell is played twice
+//   Moon Owl    - (rare) start of turn: gain 1 Spirit;   command: gain 2 Spirit
 // Elements (a spell's tag): Flame - big single-target bursts, Burn as a small extra; Frost - Barrier and Faltering; Storm - every enemy,
 // or Forks (2 or 3 different random enemies, 25% more when one stands), and Gathering Storm, which grows.
 //
@@ -22,7 +22,6 @@ import {
   barrier,
   barrierNext,
   card,
-  commandOne,
   commandTotem,
   discard,
   dmg,
@@ -45,9 +44,9 @@ import {
   statusTheirs,
   STATUS_TAG,
   STORM,
-  totemRotate,
   totemSlot,
   when,
+  wound,
 } from '../build';
 
 /** Fork N (DECISIONS #427): N different random enemies once each, 25% more when only one enemy stands */
@@ -66,15 +65,11 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'hawk',
     name: 'Hawk',
-    // (only if he is not Primed: Primed adds to every hit of his next attack, so it never piles up over quiet turns)
-    text: 'At the end of your turn: if you are not Primed, gain 2 (+1 per Spirit) Primed. Command: gain 1 Spirit.',
+    text: 'At the end of your turn: deal 3 (+1 per Spirit) damage to a random enemy. Command: deal 7 (+1 per Spirit) damage to a random enemy.',
     aim: 'none',
-    command: [gainSpirit(1)],
+    command: [sp(dmg(7, 'randomFoe'))],
     empower: false,
-    passive: {
-      when: 'turnEnd',
-      ops: [when('vigor', { atMost: 0 }, [sp(status('vigor', 2))])],
-    },
+    passive: { when: 'turnEnd', ops: [sp(dmg(3, 'randomFoe'))] },
   },
   {
     id: 'bear',
@@ -107,11 +102,11 @@ export const TOTEMS: TotemDef[] = [
   {
     id: 'owl',
     name: 'Moon Owl',
-    text: 'At the start of your turn: your first elemental spell this turn costs 1 less. Command: your next elemental spell is played twice.',
+    text: 'At the start of your turn: gain 1 Spirit. Command: gain 2 Spirit.',
     aim: 'none',
-    command: [status('twinspell', 1)],
+    command: [gainSpirit(2)],
     empower: false,
-    passive: { when: 'turnStart', ops: [status('spellcut', 1, 'self', true)] },
+    passive: { when: 'turnStart', ops: [gainSpirit(1)] },
     rare: true,
   },
 ];
@@ -123,15 +118,15 @@ const ifBurning = (ops: Op[]): Op => ({ op: 'when', by: 'burn', of: 'target', at
 /** doubles the target's Burn, at most 10 more (balance.test: a multiplier Consumes and is capped) */
 const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target', max: 10 };
 const gatheringStorm = (n: number, grow: number): Op[] => [
-  scaled(dmg(n, 'allFoes'), per('bonus')),
+  scaled(fork(n, 2), per('bonus')),
   forge('gathering-storm', grow),
 ];
 
 export const SHAMAN: CardDef[] = [
   // --- basics ---
-  i('basic', 'ember-bolt', 'Ember Bolt', 'attack', 1, 'foe', [dmg(7)], {
-    ...FLAME,
-    up: { effects: [dmg(10)] },
+  // (the starting Hawk: it works every turn it stands)
+  i('basic', 'raise-the-hawk', 'Raise the Hawk', 'skill', 1, 'none', [plant('hawk')], {
+    up: { cost: 0 },
   }),
   i(
     'basic',
@@ -149,8 +144,8 @@ export const SHAMAN: CardDef[] = [
     up: { effects: [fork(7, 2)] },
   }),
   // (the starter command: the front totem acts and goes)
-  i('basic', 'spirit-call', 'Spirit Call', 'skill', 1, 'none', [commandTotem('front')], {
-    up: { effects: [commandTotem('front'), barrier(3)] },
+  i('basic', 'spirit-call', 'Spirit Call', 'skill', 1, 'none', [commandTotem('front', 2)], {
+    up: { cost: 0 },
   }),
 
   // --- Flame: big single-target bursts; Burn is a small extra ---
@@ -164,25 +159,31 @@ export const SHAMAN: CardDef[] = [
     [dmg(8), status('burn', 2, 'target')],
     { ...FLAME, up: { effects: [dmg(11), status('burn', 2, 'target')] } },
   ),
-  i('common', 'kindle', 'Kindle', 'attack', 0, 'foe', [dmg(6)], {
+  i('common', 'kindle', 'Kindle', 'attack', 0, 'foe', [dmg(5), status('burn', 2, 'target')], {
     ...FLAME,
-    up: { effects: [dmg(8)] },
+    up: { effects: [dmg(7), status('burn', 2, 'target')] },
   }),
-  i('common', 'firebrand', 'Firebrand', 'attack', 1, 'foe', [dmg(7), ifBurning([dmg(4)])], {
+  i(
+    'common',
+    'firebrand',
+    'Firebrand',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), ifBurning([dmg(4)]), status('burn', 1, 'target')],
+    { ...FLAME, up: { effects: [dmg(10), ifBurning([dmg(4)]), status('burn', 1, 'target')] } },
+  ),
+  i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('burn', 2, 'target')], {
     ...FLAME,
-    up: { effects: [dmg(10), ifBurning([dmg(4)])] },
+    up: { effects: [dmg(6, 'target', 2), status('burn', 2, 'target')] },
   }),
-  i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(4, 'target', 2)], {
+  i('common', 'flame-spear', 'Flame Spear', 'attack', 2, 'foe', [dmg(16), status('burn', 3, 'target')], {
     ...FLAME,
-    up: { effects: [dmg(6, 'target', 2)] },
+    up: { effects: [dmg(19), status('burn', 5, 'target')] },
   }),
-  i('common', 'flame-spear', 'Flame Spear', 'attack', 2, 'foe', [dmg(18)], {
+  i('common', 'flare', 'Flare', 'attack', 1, 'foe', [dmg(10), status('burn', 1, 'target')], {
     ...FLAME,
-    up: { effects: [dmg(23)] },
-  }),
-  i('common', 'flare', 'Flare', 'attack', 1, 'foe', [dmg(10)], {
-    ...FLAME,
-    up: { effects: [dmg(13)] },
+    up: { effects: [dmg(13), status('burn', 1, 'target')] },
   }),
   // (a Flame attack that brings a Hawk)
   i('common', 'talon-strike', 'Talon Strike', 'attack', 2, 'foe', [dmg(11), plant('hawk')], {
@@ -287,10 +288,6 @@ export const SHAMAN: CardDef[] = [
     [dmg(3), status('faltering', 1, 'target')],
     { ...FROST, up: { effects: [dmg(5), status('faltering', 1, 'target')] } },
   ),
-  i('common', 'rime-shield', 'Rime Shield', 'skill', 1, 'none', [barrier(8)], {
-    ...FROST,
-    up: { effects: [barrier(11)] },
-  }),
   i(
     'common',
     'chill-touch',
@@ -311,10 +308,15 @@ export const SHAMAN: CardDef[] = [
     [barrier(5), status('faltering', 1, 'allFoes')],
     { ...FROST, up: { effects: [barrier(8), status('faltering', 1, 'allFoes')] } },
   ),
-  // (a Frost ward that brings a Bear)
-  i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(2)], {
+  // (a free ward that clutters the discard pile with a Void)
+  i('common', 'hasty-ward', 'Hasty Ward', 'skill', 0, 'none', [barrier(6), wound('self', 'void-drain')], {
     ...FROST,
-    up: { effects: [plant('bear'), barrier(5)] },
+    up: { effects: [barrier(9), wound('self', 'void-drain')] },
+  }),
+  // (a Frost ward that brings a Bear)
+  i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(4)], {
+    ...FROST,
+    up: { effects: [plant('bear'), barrier(7)] },
   }),
   i('uncommon', 'ice-wall', 'Ice Wall', 'skill', 2, 'none', [barrier(16)], {
     ...FROST,
@@ -424,22 +426,18 @@ export const SHAMAN: CardDef[] = [
 
   // --- Storm: every enemy, or Forks; Sapped for defence ---
   // (a stacking storm: every copy hits every enemy 3 harder each time one is cast, for the fight)
-  i('common', 'gathering-storm', 'Gathering Storm', 'attack', 1, 'none', gatheringStorm(4, 3), {
+  i('common', 'gathering-storm', 'Gathering Storm', 'attack', 0, 'none', gatheringStorm(4, 3), {
     ...STORM,
     forgeWord: 'Gather',
     up: { effects: gatheringStorm(6, 3) },
   }),
-  i('common', 'spark-fork', 'Spark Fork', 'attack', 0, 'none', [fork(4, 2)], {
-    ...STORM,
-    up: { effects: [fork(5, 2)] },
+  // (a plain, physical hit: it clutters the discard pile with a Void)
+  i('common', 'stone-sling', 'Stone Sling', 'attack', 0, 'foe', [dmg(4), wound('self', 'void-drain')], {
+    up: { effects: [dmg(6), wound('self', 'void-drain')] },
   }),
-  i('common', 'chain-lightning', 'Chain Lightning', 'attack', 1, 'none', [dmg(3, 'randomFoe', 3)], {
+  i('common', 'gale-call', 'Gale Call', 'attack', 1, 'none', [dmg(6, 'allFoes'), draw(1)], {
     ...STORM,
-    up: { effects: [dmg(4, 'randomFoe', 3)] },
-  }),
-  i('common', 'gale-call', 'Gale Call', 'attack', 1, 'none', [dmg(5, 'allFoes'), draw(1)], {
-    ...STORM,
-    up: { effects: [dmg(8, 'allFoes'), draw(1)] },
+    up: { effects: [dmg(9, 'allFoes'), draw(1)] },
   }),
   i('common', 'wind-wall', 'Wind Wall', 'skill', 1, 'none', [barrier(5), sapAll(2)], {
     ...STORM,
@@ -544,24 +542,28 @@ export const SHAMAN: CardDef[] = [
   }),
 
   // --- glue: planting totems (at the back of the row; a full row pushes the front one out, and it acts as it goes) ---
-  i('common', 'spark-cast', 'Hawk Call', 'skill', 1, 'none', [plant('hawk'), draw(1)], {
-    up: { effects: [plant('hawk'), draw(1), barrier(3)] },
+  // (a Hawk on each of your next two turns, not now)
+  i(
+    'common',
+    'spark-cast',
+    'Hawk Call',
+    'skill',
+    1,
+    'none',
+    [barrier(4), on('turnStart', [plant('hawk')], { times: 2 })],
+    { up: { effects: [barrier(7), on('turnStart', [plant('hawk')], { times: 2 })] } },
+  ),
+  // (free Mana, paid for with a Void in the discard pile, which costs you Mana when it is drawn)
+  i('common', 'spirit-offering', 'Spirit Offering', 'skill', 0, 'none', [mana(2), wound('self', 'void-drain')], {
+    up: { effects: [mana(3), wound('self', 'void-drain')] },
   }),
-  i('common', 'raise-a-totem', 'Raise a Totem', 'skill', 1, 'none', [plant('*'), barrier(2)], {
-    up: { effects: [plant('*'), barrier(5)] },
-  }),
-  // (free plants Consume: a push-out is a free command)
-  i('common', 'hawk-feather', 'Hawk Feather', 'skill', 0, 'none', [plant('hawk')], {
+  // (a free, one-shot Spirit boost: it wears off at the end of the turn)
+  i('common', 'spirit-rush', 'Spirit Rush', 'skill', 0, 'none', [status('spirit', 2, 'self', true)], {
     exhaust: true,
-    up: { effects: [plant('hawk'), barrier(3)] },
+    up: { effects: [status('spirit', 3, 'self', true)] },
   }),
-  i('common', 'bear-hide', 'Bear Hide', 'skill', 0, 'none', [plant('bear')], {
-    exhaust: true,
-    up: { effects: [plant('bear'), barrier(3)] },
-  }),
-  i('common', 'storm-feather', 'Storm Feather', 'skill', 0, 'none', [plant('thunderbird')], {
-    exhaust: true,
-    up: { effects: [plant('thunderbird'), barrier(3)] },
+  i('common', 'raise-a-totem', 'Raise a Totem', 'skill', 1, 'none', [plant('*'), barrier(4)], {
+    up: { effects: [plant('*'), barrier(7)] },
   }),
   i(
     'uncommon',
@@ -628,62 +630,10 @@ export const SHAMAN: CardDef[] = [
       up: { effects: [barrier(5), commandTotem('front')] },
     },
   ),
-  // (a free command Consumes: the Elder Tree's command makes Mana)
-  i('common', 'call-again', 'Call Again', 'skill', 0, 'none', [commandTotem('front')], {
-    exhaust: true,
-    up: { effects: [commandTotem('front'), barrier(3)] },
+  // (a dive that brings a Hawk)
+  i('common', 'hawks-dive', "Hawk's Dive", 'attack', 1, 'foe', [dmg(7), plant('hawk')], {
+    up: { effects: [dmg(10), plant('hawk')] },
   }),
-  i('common', 'hawks-dive', "Hawk's Dive", 'skill', 1, 'none', [commandOne('hawk'), barrier(2)], {
-    up: { effects: [commandOne('hawk'), barrier(5)] },
-  }),
-  i('common', 'bears-guard', "Bear's Guard", 'skill', 1, 'none', [commandOne('bear'), barrier(3)], {
-    up: { effects: [commandOne('bear'), barrier(6)] },
-  }),
-  i(
-    'common',
-    'thunderbirds-cry',
-    "Thunderbird's Cry",
-    'skill',
-    1,
-    'none',
-    [commandOne('thunderbird')],
-    { up: { effects: [commandOne('thunderbird'), draw(1)] } },
-  ),
-  // (the cycle's utility: the front totem goes to the back, so the next command finds the one behind it; it draws and discards one)
-  i(
-    'common',
-    'turn-the-wheel',
-    'Turn the Wheel',
-    'skill',
-    0,
-    'none',
-    [totemRotate, draw(1), discard(1), barrier(3)],
-    {
-      up: { effects: [totemRotate, draw(1), discard(1), barrier(5)] },
-    },
-  ),
-  i(
-    'uncommon',
-    'last-called',
-    'Last Called',
-    'skill',
-    1,
-    'none',
-    [commandTotem('newest'), draw(1)],
-    {
-      up: { effects: [commandTotem('newest'), draw(1), barrier(4)] },
-    },
-  ),
-  i(
-    'uncommon',
-    'ancestral-exchange',
-    'Ancestral Exchange',
-    'skill',
-    2,
-    'none',
-    [commandTotem('newest'), plant('*'), barrier(3)],
-    { up: { effects: [commandTotem('newest'), plant('*'), barrier(6)] } },
-  ),
   i(
     'uncommon',
     'rally-the-spirits',
@@ -693,16 +643,6 @@ export const SHAMAN: CardDef[] = [
     'none',
     [commandTotem('front', 2), barrier(4)],
     { up: { effects: [commandTotem('front', 2), barrier(7)] } },
-  ),
-  i(
-    'rare',
-    'great-spirits-call',
-    "Great Spirit's Call",
-    'skill',
-    3,
-    'none',
-    [commandTotem('all'), barrier(5)],
-    { up: { effects: [commandTotem('all'), barrier(9)] } },
   ),
   i(
     'uncommon',
@@ -785,8 +725,9 @@ export const SHAMAN: CardDef[] = [
   i('common', 'tidecaller', 'Tidecaller', 'skill', 1, 'none', [barrier(7), manaNext(1)], {
     up: { effects: [barrier(10), manaNext(1)] },
   }),
-  i('common', 'read-the-winds', 'Read the Winds', 'skill', 1, 'none', [scry(3), barrier(4)], {
-    up: { effects: [scry(3), barrier(7)] },
+  i('common', 'read-the-winds', 'Read the Winds', 'skill', 0, 'none', [scry(3)], {
+    exhaust: true,
+    up: { effects: [scry(5)] },
   }),
   // (free cycling: it draws one and discards one, so it never replaces itself for nothing)
   i(
@@ -838,5 +779,5 @@ export const SHAMAN_STATUSES: CardDef[] = [
   // (Slimed)
   junk('muck', 'Muck', 1, [draw(1)], { exhaust: true }),
   // (Void)
-  junk('void-drain', 'Drain', 0, [], { unplayable: true, ethereal: true, onDraw: [mana(-1)] }),
+  junk('void-drain', 'Void', 1, [draw(1)], { exhaust: true, ethereal: true }),
 ];

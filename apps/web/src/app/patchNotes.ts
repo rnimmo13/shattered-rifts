@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.130.0',
+    date: '2026-10-30',
+    title: 'Shaman totem pass',
+    summary: 'The Hawk and Moon Owl change, Spirit Call commands twice, and a cleaner Shaman card pool.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'The Hawk hits a random enemy at the end of your turn (3, or 7 when commanded), plus 1 per Spirit. The Moon Owl gives 1 Spirit each turn (2 when commanded).',
+      },
+      {
+        kind: 'changed',
+        text: 'Spirit Call commands your front totem twice; its upgrade costs 0. Ember Bolt is replaced by Raise the Hawk.',
+      },
+      {
+        kind: 'changed',
+        text: 'Gathering Storm costs 0 and hits two enemies. Kindle, Firebrand, Flare, Twin Cinders and Flame Spear apply Burn. Hawk Call, Hawk’s Dive, Bear Call, Raise a Totem, Gale Call and Read the Winds are reworked.',
+      },
+      {
+        kind: 'new',
+        text: 'New Shaman cards: Spirit Rush, Spirit Offering, Hasty Ward and Stone Sling. The last three add a Void to your discard pile (Spirit Offering gives Mana, Hasty Ward Barrier); a Void costs 1, draws a card and is consumed.',
+      },
+      {
+        kind: 'changed',
+        text: 'Retired: the feather plants, Call Again, Spark Fork, Turn the Wheel, Rime Shield, Bear’s Guard, Thunderbird’s Cry, Last Called, Ancestral Exchange, Great Spirit’s Call and Chain Lightning. Old copies turn into a nearby card.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.129.0',
     date: '2026-10-29',
     title: 'Clearer cards',

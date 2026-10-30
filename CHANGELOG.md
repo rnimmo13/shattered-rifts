@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Shaman totem pass:** the Hawk hits a random enemy each turn (more when commanded) and the Moon Owl gives Spirit; Spirit Call commands twice; new cards Spirit Rush, Spirit Offering, Hasty Ward, Stone Sling and Raise the Hawk; a dozen cards retired; Burn on the Flame commons; Void is a 1-cost draw-a-card status card.
 - Hovering a card explains the cards it makes (Daggers, Gravesouls, Buckshot Shells...) with their real cost and text, and any totem it plants or names. The Totem explanation describes how totems work now.
 - The Shaman's Flame, Frost and Storm cards show their element as a coloured icon in the top right (hover it for what the element does), instead of a word in the text.
 - The Card library's book stays the full width of the screen, with cards the same size, whatever you filter by.
