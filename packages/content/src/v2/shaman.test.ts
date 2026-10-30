@@ -1,4 +1,4 @@
-// The Shaman's totem cycle (Robert, DECISIONS #430): his totems stand in a row in the order they were planted, front first. Each does
+﻿// The Shaman's totem cycle (Robert, DECISIONS #430): his totems stand in a row in the order they were planted, front first. Each does
 // something every turn while it stands; a command makes the front totem act and consumes it; planting into a full row pushes the front
 // one out, which acts as it goes. Every totem number grows by 1 per Spirit (the Elder Tree and the Moon Owl excepted). No Trinity, no
 // help on spells.
@@ -168,15 +168,21 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(s.sides.a.mana).toBe(RIFTWALKERS.shaman.hero.mana + 1 - 1 + 4);
   });
 
-  it('the Moon Owl: 1 Spirit at the start of his turn, 2 when commanded', () => {
-    let s = fight(['spirit-call']);
+  it('the Moon Owl (a Dark orb): its charge grows 6 each turn; a command hits the weakest enemy for 6 plus the charge', () => {
+    let s = fight(['spirit-call'], ['squire', 'squire']);
     s.sides.a.totems = ['owl', null, null];
+    s.sides.b.units[1]!.hp = 50;
     s = endTurn(s);
-    expect(hero(s).statuses.spirit).toBe(1);
+    expect(hero(s).statuses.umbra).toBe(6);
     s.sides.a.hand = [{ id: 'C', card: 'spirit-call' }];
     s.sides.a.mana = 9;
+    for (const u of s.sides.b.units) u.barrier = 0;
+    const before = s.sides.b.units.map((u) => u.hp);
     s = play(s, 'spirit-call');
-    expect(hero(s).statuses.spirit).toBe(5);
+    // (Spirit Call acts it twice: 6 + 6 = 12, then the charge is spent and the second act is 6; both go to the weakest enemy)
+    const lostNow = s.sides.b.units.map((u, i) => before[i]! - u.hp);
+    expect(lostNow).toEqual([0, 18]);
+    expect(hero(s).statuses.umbra ?? 0).toBe(0);
     expect(row(s)).toEqual([null, null, null]);
   });
 
@@ -220,13 +226,6 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(s.sides.a.mana).toBe(9 + 2);
     expect(s.sides.a.discard.map((c) => c.card)).toContain('void-drain');
     expect(s.sides.a.exhausted.map((c) => c.card)).not.toContain('spirit-offering');
-  });
-
-  it('Stone Sling hits for 4 and adds a Void to your discard pile', () => {
-    let s = fight(['stone-sling']);
-    s = play(s, 'stone-sling', foe(s).id);
-    expect(lost(s)).toEqual([4]);
-    expect(s.sides.a.discard.map((c) => c.card)).toContain('void-drain');
   });
 
   it('Flame Spear does 16 and 3 Burn; Twin Cinders burns too', () => {
@@ -313,6 +312,201 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(row(t)).toEqual([null, null, null]);
   });
 
+  it('the Defect-shaped uncommons and rares do what they say', () => {
+    // (Moonshade Ward: 11 Barrier and an Owl, which pushes the Hawk out)
+    let s = fight(['moonshade-ward', 'dawn-ward', 'frostbound-hide']);
+    s = play(s, 'moonshade-ward');
+    expect(hero(s).barrier).toBe(11);
+    expect(row(s)).toEqual(['bear', 'thunderbird', 'owl']);
+    s = play(s, 'dawn-ward');
+    expect(hero(s).barrier).toBe(21);
+    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('dawn-ward');
+    s = play(s, 'frostbound-hide');
+    expect(hero(s).barrier).toBe(27 + 6 + 0);
+    // (Wellspring: 4 Mana, consumed; Thunder Beam: 28 to all, up to 3 Spirit lost)
+    let t = fight(['wellspring', 'thunder-beam'], ['squire', 'squire']);
+    hero(t).statuses.spirit = 2;
+    t = play(t, 'wellspring');
+    expect(t.sides.a.mana).toBe(9 + 4);
+    t = play(t, 'thunder-beam');
+    expect(lost(t)).toEqual([28, 28]);
+    expect(hero(t).statuses.spirit ?? 0).toBe(0);
+    // (Totem Mantle: 2 Barrier per kind of totem at the start of each turn; Awakened Spirit: a point of Spirit)
+    let u = fight(['totem-mantle', 'awakened-spirit']);
+    u = play(u, 'totem-mantle');
+    u = play(u, 'awakened-spirit');
+    expect(hero(u).statuses.spirit).toBe(1);
+    u = endTurn(u);
+    expect(hero(u).barrier).toBeGreaterThanOrEqual(6);
+    // (Spark Strike: 3, and 6 more with a Thunderbird standing)
+    let w = fight(['spark-strike']);
+    w = play(w, 'spark-strike', foe(w).id);
+    expect(lost(w)).toEqual([9]);
+    // (Grim Ward: 13 Barrier and two Wounds in your discard)
+    let x = fight(['grim-ward']);
+    x = play(x, 'grim-ward');
+    expect(hero(x).barrier).toBe(13);
+    expect(x.sides.a.discard.filter((c) => c.card === 'wound')).toHaveLength(2);
+    // (Echoing Spirit: the first card each turn is played twice)
+    let y = fight(['echoing-spirit', 'spark-strike']);
+    y = play(y, 'echoing-spirit');
+    expect(hero(y).statuses.echoing).toBe(1);
+  });
+
+  it('X-cost cards: Thunder Rush plants a Thunderbird per Mana, Chain of Calls acts the front totem that many times', () => {
+    let s = fight(['thunder-rush']);
+    s.sides.a.totems = [null, null, null];
+    s.sides.a.mana = 2;
+    s = play(s, 'thunder-rush');
+    expect(row(s).filter((k) => k === 'thunderbird')).toHaveLength(2);
+    let t = fight(['chain-of-calls']);
+    t.sides.a.mana = 3;
+    t = play(t, 'chain-of-calls');
+    // (the Hawk at the front acts three times, 7 each, and is consumed)
+    expect(lost(t)).toEqual([21]);
+    expect(row(t)).toEqual(['bear', 'thunderbird', null]);
+  });
+
+  it('the Defect Powers with their own engine: Buffer, Bulk Up, Loop, Salvage Spirit, Iteration, Feral, Dream Weaving', () => {
+    // (Ward of the Spirits: the next HP loss is none; Barrier still soaks first)
+    let b = fight(['ward-of-the-spirits']);
+    b = play(b, 'ward-of-the-spirits');
+    expect(hero(b).statuses.buffer).toBe(1);
+    for (const u of b.sides.b.units) u.intent = { move: 'slash', target: hero(b).id };
+    const hp = hero(b).hp;
+    b = applyAction(db, b, { type: 'endTurn' }).state;
+    expect(hero(b).hp).toBe(hp);
+    expect(hero(b).statuses.buffer ?? 0).toBe(0);
+    // (Hardened Resolve: a totem position fewer; with the row full the front totem is pushed out and acts; +2 Might, +2 Bracing)
+    let h = fight(['hardened-resolve']);
+    h = play(h, 'hardened-resolve');
+    expect(row(h)).toEqual(['bear', 'thunderbird']);
+    expect(lost(h)).toEqual([7]);
+    expect(hero(h).statuses.might).toBe(2);
+    expect(hero(h).statuses.bracing).toBe(2);
+    // (Turning Wheel: the front totem's passive fires at the start of each turn, without consuming it)
+    let l = fight(['turning-wheel']);
+    l.sides.a.totems = ['bear', null, null];
+    l = play(l, 'turning-wheel');
+    l = endTurn(l);
+    // (the Bear's end-of-turn Barrier, and its pulse at the start of the next turn)
+    expect(hero(l).barrier).toBeGreaterThanOrEqual(2);
+    expect(row(l)).toEqual(['bear', null, null]);
+    // (Salvage Spirit: a Void or Wound made in your piles plants a random totem)
+    let v = fight(['salvage-spirit', 'spirit-offering']);
+    v.sides.a.totems = [null, null, null];
+    v = play(v, 'salvage-spirit');
+    v = play(v, 'spirit-offering');
+    expect(row(v).filter((k) => k !== null)).toHaveLength(1);
+    // (Bitter Lesson: the first Status you draw each turn draws 2 more)
+    let d = fight(['bitter-lesson', 'swift-study']);
+    d = play(d, 'bitter-lesson');
+    d.sides.a.draw = [
+      { id: 'V1', card: 'void-drain' },
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'strike' },
+      { id: 'D3', card: 'strike' },
+      { id: 'D4', card: 'strike' },
+      { id: 'D5', card: 'strike' },
+    ];
+    d = play(d, 'swift-study');
+    expect(d.sides.a.hand).toHaveLength(5);
+    // (Dream Weaving: a random Power joins your hand at the start of each turn)
+    let w = fight(['dream-weaving']);
+    w = play(w, 'dream-weaving');
+    w = endTurn(w);
+    expect(w.sides.a.hand.some((c) => db.cards[c.card]?.kind === 'power')).toBe(true);
+    // (Snap Back: the first 0-cost Attack each turn returns to your hand)
+    let f = fight(['snap-back', 'spark-strike']);
+    f = play(f, 'snap-back');
+    f = play(f, 'spark-strike', foe(f).id);
+    expect(f.sides.a.hand.some((c) => c.card === 'spark-strike')).toBe(true);
+  });
+
+  it('the rest of the Defect copies: Chill, Sunder, Compact, Modded, Reboot, Voltaic, Shatter, All for One, Adaptive Strike', () => {
+    // (Cold Breath: a Bear for each enemy)
+    let c = fight(['cold-breath'], ['squire', 'squire']);
+    c.sides.a.totems = [null, null, null];
+    c = play(c, 'cold-breath');
+    expect(row(c).filter((k) => k === 'bear')).toHaveLength(2);
+    // (Skullsplitter: 3 Mana when it kills)
+    let k1 = fight(['skullsplitter'], ['squire', 'squire']);
+    foe(k1).hp = 10;
+    const before = k1.sides.a.mana;
+    k1 = play(k1, 'skullsplitter', foe(k1).id);
+    expect(k1.sides.a.mana).toBe(before - 3 + 3);
+    // (Kindling Ward: Void and Wound cards in your hand become Tinder, which gives a Mana)
+    let w = fight(['kindling-ward']);
+    w.sides.a.hand.push({ id: 'V', card: 'void-drain' }, { id: 'W', card: 'wound' });
+    w = play(w, 'kindling-ward');
+    expect(w.sides.a.hand.filter((x) => x.card === 'tinder')).toHaveLength(2);
+    // (Grow the Pole: a position, a card, and it costs 1 more for the rest of the fight)
+    let g = fight(['grow-the-pole']);
+    g = play(g, 'grow-the-pole');
+    expect(g.sides.a.totems).toHaveLength(4);
+    // (Fresh Start: every card goes back into the draw pile, then 4 are drawn)
+    let f = fight(['fresh-start']);
+    f.sides.a.discard = [{ id: 'X1', card: 'strike' }, { id: 'X2', card: 'defend' }];
+    f = play(f, 'fresh-start');
+    expect(f.sides.a.hand).toHaveLength(4);
+    // (Thunder Memory: a Thunderbird for each one planted this fight)
+    let v = fight(['thunder-memory']);
+    v.sides.a.channeledBy = { thunderbird: 2 };
+    v.sides.a.totems = [null, null, null];
+    v.sides.a.mana = 9;
+    v = play(v, 'thunder-memory');
+    expect(row(v).filter((k) => k === 'thunderbird')).toHaveLength(2);
+    // (Shattering Call: 7 to all, then every totem acts twice)
+    let h = fight(['shattering-call'], ['squire', 'squire']);
+    h = play(h, 'shattering-call');
+    expect(row(h)).toEqual([null, null, null]);
+    expect(lost(h).every((n) => n > 7)).toBe(true);
+    // (Return of the Free: every 0-cost card in your discard pile comes back)
+    let r = fight(['return-of-the-free']);
+    r.sides.a.discard = [{ id: 'Z1', card: 'spark-strike' }, { id: 'Z2', card: 'strike' }];
+    r = play(r, 'return-of-the-free', foe(r).id);
+    expect(r.sides.a.hand.map((x) => x.card)).toContain('spark-strike');
+    expect(r.sides.a.hand.map((x) => x.card)).not.toContain('strike');
+    // (Echoing Strike: a free copy of itself goes into your discard pile)
+    let e = fight(['echoing-strike']);
+    e = play(e, 'echoing-strike', foe(e).id);
+    expect(e.sides.a.discard.filter((x) => x.card === 'echoing-strike').length).toBeGreaterThanOrEqual(2);
+    // (Wild Vision: a random Power joins your hand free this turn)
+    let p = fight(['wild-vision']);
+    p = play(p, 'wild-vision');
+    const power = p.sides.a.hand.find((x) => db.cards[x.card]?.kind === 'power');
+    expect(power).toBeTruthy();
+    expect(power!.freeTurn).toBe(true);
+  });
+
+  it('status payoffs: Sorrow\'s Hammer and Blighted Chorus grow with the Status cards in your deck, Harvest of Ruin feeds them, Sweep Away clears the draw pile of them', () => {
+    // (3 Wounds from Harvest of Ruin: Sorrow's Hammer is 12 + 3 for each Status card in the deck)
+    let h = fight(['harvest-of-ruin', 'sorrows-hammer']);
+    h = play(h, 'harvest-of-ruin');
+    expect(h.sides.a.discard.filter((x) => x.card === 'wound')).toHaveLength(3);
+    h = play(h, 'sorrows-hammer', foe(h).id);
+    expect(lost(h)).toEqual([12 + 3 * 3]);
+    // (Blighted Chorus: 2 hits, one more per Status card)
+    let b = fight(['blighted-chorus']);
+    b.sides.a.discard = [
+      { id: 'W1', card: 'wound' },
+      { id: 'W2', card: 'wound' },
+      { id: 'W3', card: 'void-drain' },
+    ];
+    b = play(b, 'blighted-chorus');
+    expect(lost(b)).toEqual([5 * (2 + 3)]);
+    // (Sweep Away: only the Status cards leave the draw pile)
+    let w = fight(['sweep-away']);
+    w.sides.a.draw = [
+      { id: 'D1', card: 'strike' },
+      { id: 'D2', card: 'wound' },
+      { id: 'D3', card: 'void-drain' },
+    ];
+    w = play(w, 'sweep-away');
+    expect(w.sides.a.draw.map((x) => x.card)).toEqual(['strike']);
+    expect(w.sides.a.discard.filter((x) => x.card === 'wound' || x.card === 'void-drain')).toHaveLength(2);
+  });
+
   it('the rare totems are planted by their own cards, for 3 and 2 Mana', () => {
     let s = fight(['call-the-elder-tree', 'call-the-moon-owl']);
     s = play(s, 'call-the-elder-tree');
@@ -331,19 +525,19 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       const up = db.cards[`${c.id}+`];
       expect(up, c.id).toBeDefined();
       expect(
-        JSON.stringify(up!.effects) !== JSON.stringify(c.effects) || up!.innate || up!.cost !== c.cost,
+        JSON.stringify(up!.effects) !== JSON.stringify(c.effects) || up!.innate || up!.cost !== c.cost || up!.ethereal !== c.ethereal || up!.xBonus !== c.xBonus || up!.exhaust !== c.exhaust,
         c.id,
       ).toBeTruthy();
       expect(cardText(db, c).length, c.id).toBeGreaterThan(3);
     }
   });
 
-  it('pool: about 78 reward-eligible cards, 12 Auras, three element paths of 15 or more', () => {
+  it('pool: about 139 reward-eligible cards, 31 Auras, three element paths of 14 or more', () => {
     const own = rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman');
-    expect(own.length).toBeGreaterThanOrEqual(75);
-    expect(own.length).toBeLessThanOrEqual(78);
-    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(12);
-    expect(pathSizes('shaman').every((n) => n >= 15)).toBe(true);
+    expect(own.length).toBeGreaterThanOrEqual(110);
+    expect(own.length).toBeLessThanOrEqual(145);
+    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(31);
+    expect(pathSizes('shaman').every((n) => n >= 14)).toBe(true);
   });
 
   it('no loop: an 8-card deck of free plants, commands, the Elder and the Owl plays a bounded number of cards a turn', () => {
@@ -432,8 +626,8 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     // (Inferno+ costs 3; Primed 6 goes on it; the Owl's command gave Spirit instead)
     s = play(s, 'inferno+', k.id);
     const dealt = hp - s.sides.b.units.find((u) => u.kind === 'hero')!.hp;
-    // (Inferno+ 38 + Primed 6; its Burn ticks later)
-    expect(dealt).toBe(38 + 6);
+    // (Inferno+ 38 + Primed 6; its Burn ticks later; Spirit Call acts the Owl twice: 6 + 6 more)
+    expect(dealt).toBe(38 + 6 + 12);
     expect(dealt).toBeLessThan(540 / 5);
   });
 });

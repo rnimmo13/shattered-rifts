@@ -642,6 +642,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   totemKinds: { per: 'kind of totem you have', equal: 'the kinds of totem you have' },
   totemsOf: { per: 'such totem you have', equal: 'such totems you have' },
   spirit: { per: 'Spirit', equal: 'your Spirit' },
+  umbra: { per: 'Owl charge', equal: 'the Owl charge' },
   commanded: { per: 'command this turn', equal: 'your commands this turn' },
   uprooted: { per: 'totem uprooted', equal: 'the totems uprooted' },
   replacedNow: { per: 'totem replaced', equal: 'the totems replaced' },
@@ -1676,17 +1677,31 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'plant': {
       if (o.spirit === '*') return 'Plant a random totem.';
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
+      if (o.scale?.by === 'x') return `Plant ${article(nm)} ${nm} X${o.times ? ` + ${o.times}` : ''} times.`;
+      if (o.scale?.by === 'foes') return `Plant ${article(nm)} ${nm} for each enemy.`;
+      if (o.scale?.by === 'channeledOf') {
+        const k = db.totems?.[o.scale.rune ?? '']?.name ?? 'totem';
+        return `Plant ${article(nm)} ${nm} for each ${k} you have planted this fight.`;
+      }
       return `Plant ${article(nm)} ${nm}.`;
     }
     case 'uproot':
       return 'Uproot all your totems.';
     case 'totemSlot':
-      return 'Gain a totem position.';
+      return (o.amount ?? 1) < 0
+        ? 'Lose a totem position (your front totem is pushed out if the row is full).'
+        : 'Gain a totem position.';
+    case 'totemPulse':
+      return `Your front totem's end-of-turn effect happens now${(o.times ?? 1) > 1 ? ` ${o.times} times` : ''}.`;
+    case 'sweep':
+      return o.tag === 'status'
+        ? 'Put every Status card in your draw pile into your discard pile.'
+        : 'Put every card in your draw pile into your discard pile.';
     case 'totemRotate':
       return 'Your front totem moves to the back.';
     case 'totemCommand': {
       const n = o.times ?? 1;
-      const twice = n === 1 ? '' : n === 2 ? ' twice' : ` ${n} times`;
+      const twice = o.scale?.by === 'x' ? ` X${o.times ? ` + ${o.times}` : ''} times` : n === 1 ? '' : n === 2 ? ' twice' : ` ${n} times`;
       if (o.spirit === 'all') return `Command every totem, front to back${twice}.`;
       if (o.spirit === 'random') return `Command a random totem${twice}.`;
       if (o.spirit === 'newest') return `Command your newest totem${twice}.`;

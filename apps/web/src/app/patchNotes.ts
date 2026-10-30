@@ -29,6 +29,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.131.0',
+    date: '2026-10-30',
+    title: 'Shaman pool, big pass',
+    summary: 'The Shaman’s pool is rebuilt around totems and Status cards, with the Moon Owl as a growing charge.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'About 60 new Shaman uncommons and rares, in the manner of another game’s Defect: X-cost totem cards, Powers that react to Status cards, Buffer, Loop and more. Three new payoffs for Status cards: Sorrow’s Hammer, Blighted Chorus and Harvest of Ruin.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Moon Owl stores 6 charge at the end of each turn; a command deals it, plus 6, to the enemy with the least HP.',
+      },
+      {
+        kind: 'changed',
+        text: 'Void is unplayable and ethereal, and costs 1 Mana when drawn. New Status cards: Blight, Venom, Smudge and Scrap. Sweep Away moves the Status cards in your draw pile to the discard pile.',
+      },
+      {
+        kind: 'changed',
+        text: 'Slip the Leash doubles all your Might with no cap. Shattering Call costs 2 (1 upgraded).',
+      },
+      {
+        kind: 'changed',
+        text: 'Enemies stand a little further from the screen edge, the Boon, Omen and Aura columns scroll inside their own window instead of covering the fight, and a ghost opponent shows its owner’s name in the fight.',
+      },
+    ],
+    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+  },
+  {
     version: '0.130.0',
     date: '2026-10-30',
     title: 'Shaman totem pass',

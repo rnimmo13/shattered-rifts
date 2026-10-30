@@ -1,4 +1,4 @@
-// Aura upgrades the Slay the Spire way (DECISIONS #396, docs/AURA_UPGRADES_REVIEW.md): an Aura's "+" raises its number, gains
+﻿// Aura upgrades the Slay the Spire way (DECISIONS #396, docs/AURA_UPGRADES_REVIEW.md): an Aura's "+" raises its number, gains
 // Opening hand, or eases its drawback; "1 less Mana" only where the effect is on/off or an engine. plus() never looks inside an
 // Aura, so without a hand-written upgrade it falls back to the cost cut: that fallback has to be chosen, so it is listed here.
 
@@ -15,6 +15,11 @@ import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 /** Every Aura whose upgrade is 1 less Mana, on purpose. A new one goes here only when its effect cannot grow. */
 const COST_CUT_AURAS = [
+  // (the Shaman's, as Slay the Spire 2 has them: Subroutine 1 > 0)
+  'awakening-chant',
+  'dream-weaving',
+  'salvage-spirit',
+  'snap-back',
   // the Knight's are Robert's to set (the Ironclad's list, DECISIONS #367)
   'bastion-engine',
   'blood-fire',

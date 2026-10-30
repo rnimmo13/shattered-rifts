@@ -887,4 +887,8 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'last-called': 'spirit-ward',
   'ancestral-exchange': 'raise-a-totem',
   'great-spirits-call': 'rally-the-spirits',
+  'searing-lash': 'immolate',
+  kindle: 'twin-cinders',
+  flare: 'firebrand',
+  'stone-sling': 'hasty-ward',
 };

@@ -115,6 +115,8 @@ describe('every card plays', () => {
     it(`${c.id}: resolves and does something`, () => {
       const hero = heroOf(c);
       const s0 = setup(c, hero);
+      // (a sweep of the draw pile needs a Status card in it to move)
+      if (c.effects.some((o) => o.op === 'sweep')) s0.sides.a.draw.unshift({ id: 'SW0', card: 'wound' });
       let s = s0;
       // a Trap needs room; a card that only works with a rune or Seared on board still resolves without error
       const { s: after, events } = playOut(s, 'T0');
@@ -132,7 +134,8 @@ describe('every card plays', () => {
       const stateChange =
         after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
-        after.sides.a.nextDraw !== s0.sides.a.nextDraw;
+        after.sides.a.nextDraw !== s0.sides.a.nextDraw ||
+        (c.effects.some((o) => o.op === 'sweep') && after.sides.a.discard.some((x) => x.id === 'SW0'));
       expect(
         stateChange || fx.some((e) => !['exhaust', 'discard'].includes(e.type)),
         `${c.id} did nothing`,

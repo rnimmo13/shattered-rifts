@@ -158,10 +158,12 @@ const MAX_FIGURE_W = 300;
 /** how far above the floor the top of a flyer's head may be (stage px) */
 const MAX_TOP = 640;
 /** where a side's line starts (nearest the middle) and the furthest it may reach, stage px */
+// (pulled in from the edge, Robert 2026-10-30: the column of Boons, Omens and Auras on that side must never cover them; the group is
+// a little smaller when it has to squeeze into the room that is left)
 const FOE_NEAR = 1010;
-const FOE_FAR = 1850;
-/** where the far edge of the enemy group stands: back against their side, so a lone enemy stands where an Arena opponent would */
-const FOE_BACK = 1810;
+const FOE_FAR = 1680;
+/** where the far edge of the enemy group stands: back toward their side, so a lone enemy stands where an Arena opponent would, but clear of that side's panel */
+const FOE_BACK = 1640;
 const ALLY_NEAR = 910;
 const ALLY_FAR = 440;
 
@@ -185,8 +187,8 @@ function mirror(c: HTMLCanvasElement): HTMLCanvasElement {
 }
 
 /** In PvP the opponent's hero stands on the right, where yours stands on the left. */
-const FOE_HERO_X = 1690;
-const FOE_FAR_PVP = 1480;
+const FOE_HERO_X = 1600;
+const FOE_FAR_PVP = 1420;
 
 /** Which way a result reads from the point of view of the seat you sit in ('a' = you). */
 const shown = (w: Winner, me: Side): Winner => (w === 'draw' ? 'draw' : w === me ? 'a' : 'b');

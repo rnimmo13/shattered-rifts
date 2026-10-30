@@ -333,10 +333,14 @@ function validDeal(steps: unknown, depth = 0): boolean {
 /** A retired card's id, as a whole JSON string (with any Sanctum roll, engraving or upgrade on it). */
 const RETIRED_CARD_STRING = new RegExp(
   `"(?:(?:hi|lo)~)?(?:(?:hold|opening|flare)\\^)?(?:${Object.keys(RETIRED_CARDS)
+    // ("flare" is also the name of a card mark in an event: a retired Flare card is found by canonicalCard instead)
+    .filter((id) => id !== 'flare')
     .map((id) => id.replace(/[-]/g, '\\-'))
     .join('|')})\\+?"`,
   'g',
 );
+
+const FLARE_CARD_STRING = /(?<!"mark":|"chisel":|"k":"mark","id":)"(?:(?:hi|lo)~)?flare\+?"/g;
 
 export function parseRun(text: string): RunState | null {
   if (text.length > 2_000_000) return null;
@@ -346,7 +350,9 @@ export function parseRun(text: string): RunState | null {
     raw = JSON.parse(
       text
         .replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"')
-        .replace(RETIRED_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`),
+        .replace(RETIRED_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`)
+        // (a retired Flare card, but not the Flare mark an event names)
+        .replace(FLARE_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`),
     );
   } catch {
     return null;

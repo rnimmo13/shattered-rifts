@@ -2034,6 +2034,16 @@
   gap: 0.5rem;
   justify-items: start;
   pointer-events: none;
+  /* a window of its own: when Boons, Omens and Auras add up to more than fits, the column scrolls instead of running down over the
+     figures or the hand */
+  max-width: 15.5rem;
+  max-height: min(46vh, 24rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-gold-dark) transparent;
+  padding-right: 0.25rem;
 }
 .fight__side > * {
   pointer-events: auto;
@@ -2122,6 +2132,11 @@
   left: auto;
   right: 1.2rem;
   justify-items: end;
+  padding-right: 0;
+  padding-left: 0.25rem;
+}
+.fight__side--foe .fight__omens {
+  max-width: 100%;
 }
 .fight__side--foe .fight__aux--auras,
 .fight__side--foe .fight__aux--auras .aux--powers {

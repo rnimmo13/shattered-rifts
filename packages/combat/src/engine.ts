@@ -482,6 +482,11 @@ function applyDamage(
   const blocked = kind === 'attack' ? Math.min(t.barrier, amount) : 0;
   t.barrier -= blocked;
   let lost = Math.min(t.hp, amount - blocked);
+  // Buffer: the next time HP would be lost, none is (Barrier has soaked what it could first)
+  if (lost > 0 && stacks(t, 'buffer') > 0) {
+    addStatus(r, t, 'buffer', -1);
+    lost = 0;
+  }
   // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
   const rise = t.rise?.[0];
   let rises = false;
@@ -865,6 +870,7 @@ function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string)
   const list = side.totems;
   if (!list || at < 0 || at >= list.length) return;
   list[at] = spirit;
+  (side.channeledBy ??= {})[spirit] = (side.channeledBy[spirit] ?? 0) + 1;
   r.ev.push({ type: 'totems', side: side.id, totems: [...list], at });
   const def = r.db.totems?.[spirit];
   if (def?.onPlant?.length) runOps(r, mkAct(a.actor), def.onPlant);
@@ -1423,6 +1429,8 @@ function metricValue(
       return (sd.totems ?? []).filter((x) => x !== null && x === rune).length;
     case 'spirit':
       return u ? stacks(u, 'spirit') : 0;
+    case 'umbra':
+      return u ? stacks(u, 'umbra') : 0;
     case 'commanded':
       return sd.commanded ? 1 : 0;
     case 'uprooted':
@@ -2090,6 +2098,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           op.upgraded && pick.upgrade && r.db.cards[pick.upgrade] ? pick.upgrade : pick.id;
         const made = addCardTo(r, side, better, 'hand');
         if (op.free && pick.cost > 0) made.costMod = -pick.cost;
+        if (op.turn) made.freeTurn = true;
         if (op.ethereal) made.ethereal = true;
       }
       return;
@@ -2583,6 +2592,15 @@ function execOp(r: Run, a: Act, op: Op): void {
       c.costUp = Math.max(-a.card.cost, (c.costUp ?? 0) + op.amount);
       return;
     }
+    case 'sweep': {
+      const moved = side.draw.filter(
+        (c) => !op.tag || r.db.cards[c.card]?.tags?.includes(op.tag) === true,
+      );
+      if (!moved.length) return;
+      side.draw = side.draw.filter((c) => !moved.includes(c));
+      side.discard.push(...moved);
+      return;
+    }
     case 'reshuffle': {
       side.draw = shuffle(r.s.rng, [...side.draw, ...side.discard, ...side.hand]);
       for (const c of side.hand)
@@ -2671,9 +2689,12 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     // --- the Shaman's totems (DECISIONS #418)
-    case 'plant':
-      plant(r, a, side, op.spirit);
+    case 'plant': {
+      // (an X card plants once per X: `scale` reads it, `times` is what is added)
+      const n = op.scale ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null)) : 1;
+      for (let k = 0; k < n && !r.s.winner; k++) plant(r, a, side, op.spirit);
       return;
+    }
     // --- the Monk's Martial Forms (DECISIONS #419)
     case 'form': {
       if (!side.form) return;
@@ -2699,14 +2720,47 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'totemSlot': {
       const list = side.totems;
-      if (!list || list.length >= TOTEM_SLOTS) return;
+      if (!list) return;
+      if ((op.amount ?? 1) < 0) {
+        // (Bulk Up) a position fewer, at least one stays: an empty one goes first, else the front totem is pushed out (it acts as it goes)
+        for (let k = 0; k < -(op.amount ?? 1) && (side.totems?.length ?? 0) > 1 && !r.s.winner; k++) {
+          let cur = side.totems as (string | null)[];
+          if (!cur.includes(null)) {
+            const hero = heroOf(side);
+            const front = cur[0];
+            if (hero && front) leaveRow(r, side, hero, 0, front, 1, true);
+            packTotems(side);
+            cur = side.totems as (string | null)[];
+          }
+          const empty = cur.lastIndexOf(null);
+          if (empty >= 0) cur.splice(empty, 1);
+        }
+        r.ev.push({ type: 'totems', side: side.id, totems: [...(side.totems ?? [])] });
+        return;
+      }
+      if (list.length >= TOTEM_SLOTS) return;
       list.push(null);
       r.ev.push({ type: 'totems', side: side.id, totems: [...list] });
       return;
     }
-    case 'totemCommand':
-      commandTotems(r, a, side, op.spirit, Math.max(1, op.times ?? 1));
+    case 'totemPulse': {
+      // (Loop) the oldest totem's passive, now
+      packTotems(side);
+      const kind = side.totems?.find((x) => x !== null);
+      const p = kind ? r.db.totems?.[kind]?.passive : undefined;
+      const hero = heroOf(side);
+      if (p && hero)
+        for (let k = 0; k < (op.times ?? 1) && !r.s.winner && hero.hp > 0; k++)
+          runOps(r, mkAct(hero), p.ops);
       return;
+    }
+    case 'totemCommand': {
+      const n = op.scale
+        ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null))
+        : Math.max(1, op.times ?? 1);
+      if (n > 0) commandTotems(r, a, side, op.spirit, n);
+      return;
+    }
     case 'totemRotate': {
       // (DECISIONS #430) the front totem goes to the back: the next command finds the one behind it
       if (!side.totems) return;

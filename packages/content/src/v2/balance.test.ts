@@ -31,6 +31,8 @@ describe('balance guard rails', () => {
         c.x ||
         c.kind === 'power' ||
         consumes(c) ||
+        // (its cost rises each time it is played: Modded, Grow the Pole)
+        c.effects.some((o) => o.op === 'recost' && o.amount > 0) ||
         (c.starCost ?? 0) > 0
       )
         continue;
@@ -67,7 +69,9 @@ describe('balance guard rails', () => {
       if (!multiplies(c.effects)) continue;
       if (c.kind === 'power' || !c.exhaust) bad.push(`${c.id} (not consumed)`);
       for (const o of c.effects)
-        if (o.op === 'scaleStatus' && o.max === undefined) bad.push(`${c.id} (no cap)`);
+        // (Slip the Leash doubles all your Might with no cap, Robert 2026-10-30)
+        if (o.op === 'scaleStatus' && o.max === undefined && c.id !== 'slip-the-leash' && c.id !== 'slip-the-leash+')
+          bad.push(`${c.id} (no cap)`);
     }
     expect(bad).toEqual([]);
   });

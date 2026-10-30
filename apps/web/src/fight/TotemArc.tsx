@@ -45,6 +45,7 @@ function totemChips(ops: readonly Op[], spirit: number): string[] {
       else if (o.status === 'spirit') out.push(`+${n} Spirit`);
       else if (o.status === 'spellcut') out.push('spell −1');
       else if (o.status === 'twinspell') out.push('spell ×2');
+      else if (o.status === 'umbra') out.push(o.amount < 0 ? 'spend charge' : '+' + n + ' charge');
       else out.push(`${n} ${o.status}`);
     }
   }

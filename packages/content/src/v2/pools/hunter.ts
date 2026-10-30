@@ -401,9 +401,9 @@ export const HUNTER: CardDef[] = [
     'skill',
     2,
     'none',
-    [doubleSt('might', 'self', 2, 4)],
-    // (the cap grows by 1, not by half: +6 was the doubler the 2026-10-25 audit flagged)
-    { exhaust: true, up: { effects: [doubleSt('might', 'self', 2, 5)] } },
+    [doubleSt('might', 'self', 2)],
+    // (no cap now, Robert 2026-10-30: it doubles all the Might you have; it is still consumed, and the upgrade costs 1)
+    { exhaust: true, up: { cost: 1 } },
   ),
 
   // --- Predator: Mana and draw to burn through the deck, then a burst turn (replaces Feast; DECISIONS #340) ---

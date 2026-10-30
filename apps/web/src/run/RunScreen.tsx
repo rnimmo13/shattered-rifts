@@ -616,7 +616,7 @@ export default function RunScreen() {
                   potions: [],
                 },
               }}
-              names={{ a: 'You', b: 'Ghost deck' }}
+              names={{ a: 'You', b: plan.ghost.name ? `${plan.ghost.name}'s ghost` : 'Ghost deck' }}
               progress={{
                 a: { tier: run.tier },
                 b: {

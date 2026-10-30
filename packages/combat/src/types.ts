@@ -94,6 +94,8 @@ export type StatusId =
   | 'freespell' // (the Shaman, DECISIONS #420) your next elemental spell costs 0, per stack
   | 'spellcut' // (the Shaman's Moon Owl, DECISIONS #430) your next elemental spell this turn costs this much less; spent by it
   | 'twinspell' // (the Shaman's Moon Owl, DECISIONS #430) your next elemental spell is played twice, per stack
+  | 'buffer' // the next time you would lose HP, you lose none instead (per stack; Barrier still soaks first)
+  | 'umbra' // (the Shaman's Moon Owl, the Dark orb) the charge the Owls hold: it grows every turn, and a command spends it all
   // (the Monk's Martial Forms, DECISIONS #419)
   | 'mastery'; // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
 export const STATUS_IDS: readonly StatusId[] = [
@@ -170,6 +172,8 @@ export const STATUS_IDS: readonly StatusId[] = [
   'shelter',
   'mastery',
   'freespell',
+  'umbra',
+  'buffer',
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
@@ -375,6 +379,7 @@ export type Metric =
   | 'totemKinds' // different kinds of them
   | 'totemsOf' // your totems of the `rune` kind
   | 'spirit' // (about a unit) its Spirit
+  | 'umbra' // (about a unit) the Moon Owl's charge
   | 'commanded' // 1 once you have commanded a totem this turn
   | 'uprooted' // totems the card being played has uprooted
   | 'replacedNow' // totems the card being played has replaced with a different kind
@@ -599,6 +604,8 @@ export type Op =
       scale?: Scale;
       neutral?: boolean;
       upgraded?: boolean;
+      /** the cards it makes cost 0 this turn only (White Noise) */
+      turn?: boolean;
       /** the cards it makes are Fleeting */
       ethereal?: boolean;
     }
@@ -733,6 +740,8 @@ export type Op =
   | { op: 'recost'; amount: number }
   /** your hand and discard pile are shuffled into your draw pile (Reboot) */
   | { op: 'reshuffle' }
+  /** every card of your draw pile (with this `tag`, if given) goes to your discard pile */
+  | { op: 'sweep'; tag?: string }
   /** in a 'play' trigger: the card just played comes back from your discard pile to your hand (Feral) */
   | { op: 'returnPlayed' }
   // --- the Knight's Guard (DECISIONS #415)
@@ -769,17 +778,19 @@ export type Op =
    * first free position; with all taken, the front totem is pushed out (its spirit acts as it goes) and the rest move up.
    * (`anywhere` is retired: nothing chooses a position.)
    */
-  | { op: 'plant'; spirit: string; anywhere?: boolean }
+  | { op: 'plant'; spirit: string; anywhere?: boolean; times?: number; scale?: Scale }
   /** uproot every totem you have (the `uprooted` metric counts them) */
   | { op: 'uproot' }
   /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
-  | { op: 'totemSlot' }
+  | { op: 'totemSlot'; amount?: number }
+  /** (the Defect's Loop) the oldest totem's passive fires now, `times` times, whatever its timing */
+  | { op: 'totemPulse'; times?: number }
   /**
    * (DECISIONS #430, the totem cycle) a totem's spirit acts `times` times and the totem is consumed (it leaves the row, the rest move
    * up): 'front' the oldest (the next in the cycle), 'newest' the last planted, a kind the front-most of that kind, 'all' every totem
    * in order from the front ('random' / 'choose' are read as a random one / the front). Nothing else acts but a push-out.
    */
-  | { op: 'totemCommand'; spirit: string; times?: number; one?: boolean }
+  | { op: 'totemCommand'; spirit: string; times?: number; one?: boolean; scale?: Scale }
   /** (DECISIONS #430) the front totem moves to the back of the row (nothing acts) */
   | { op: 'totemRotate' }
   // --- the Monk's Martial Forms (DECISIONS #419)

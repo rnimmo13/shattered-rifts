@@ -103,7 +103,7 @@ export function AuraList(props: { db: CombatDb; me: SideView; panel: string; tit
       className="fight__aux fight__aux--auras"
       title={`${props.title} · ${rows.length}`}
     >
-      <div className={`aux aux--powers${rows.length > 5 ? ' aux--scroll' : ''}`}>
+      <div className={`aux aux--powers${rows.length > 4 ? ' aux--scroll' : ''}`}>
         {rows.map((p) => {
           const c = db.cards[p.card];
           return (

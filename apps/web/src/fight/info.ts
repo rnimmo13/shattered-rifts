@@ -421,6 +421,18 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Your first elemental spell this turn costs this much less (the Moon Owl).',
   },
+  buffer: {
+    name: 'Buffer',
+    glyph: '◌',
+    tone: 'good',
+    text: 'The next time you would lose HP, you lose none instead (per stack). Barrier still soaks first.',
+  },
+  umbra: {
+    name: 'Owl Charge',
+    glyph: '☽',
+    tone: 'good',
+    text: 'What your Moon Owls have stored: it grows by 6 at the end of each of your turns. A command spends it all as damage to the enemy with the least HP.',
+  },
   twinspell: {
     name: 'Owl Echo',
     glyph: '❂',
@@ -600,7 +612,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (the Shaman's, DECISIONS #418)
   command: {
     name: 'Command',
-    text: 'A command makes your front totem (or the one the card names) act and consumes it: the Hawk gives 1 Spirit, the Bear 6 Barrier, the Thunderbird 8 to every enemy, the Elder Tree 2 Mana, the Moon Owl plays your next elemental spell twice. Every Spirit adds 1 (not to the Hawk’s Spirit, the Elder’s or the Owl’s). Planting into a full row pushes the front one out, and it acts too.',
+    text: 'A command makes your front totem (or the one the card names) act and consumes it: the Hawk hits a random enemy for 7, the Bear gives 6 Barrier, the Thunderbird hits every enemy for 8, the Elder Tree gives 2 Mana, the Moon Owl hits the weakest enemy for its stored charge. Every Spirit adds 1 (not to the Elder’s or the Owl’s). Planting into a full row pushes the front one out, and it acts too.',
   },
   // (the Shaman's elements and Trinity, DECISIONS #420)
   element: {
