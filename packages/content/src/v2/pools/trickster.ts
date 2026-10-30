@@ -60,6 +60,10 @@ export const TRICKSTER: CardDef[] = [
 
   // a ♦ for the starting deck, so it holds all four suits (DECISIONS #387)
   v('basic', 'pick-a-card', 'Pick a Card', 'skill', 0, 'none', [scry(2)]),
+  // (a second Trap for the starting deck: a class basic, Robert 2026-10-30)
+  v('basic', 'pinprick-trap', 'Pinprick Trap', 'snare', 0, 'none', [dmg(6, 'attacker')], {
+    trigger: { on: 'attacked' },
+  }),
 
   // --- Traps ---
   v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(8, 'attacker')], {

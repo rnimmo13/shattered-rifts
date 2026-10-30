@@ -35,7 +35,7 @@ browser (apps/web/src/pvp)  ──WebSocket──►  Cloudflare Worker (apps/se
   silently) and carries on.
 - **Matchmaking** (`packages/pvp/src/queue.ts`): longest-waiting first, the closest Arena rating (looked up on the server from the
   player's board id; a new player starts at 1000), within 100 until someone has waited 20 s, then anyone (DECISIONS #307).
-- **Deck check** (`deck.ts`): a real Riftwalker, 8 to 80 real cards, within the copy and Legendary limits. The server cannot
+- **Deck check** (`deck.ts`): a real Riftwalker, 8 to 80 real cards (the Arena wants 15 or more, `ARENA_MIN_DECK`, DECISIONS #460), within the copy and Legendary limits. The server cannot
   know a deck was really banked, only that it is legal.
 
 ### Known limits of this version

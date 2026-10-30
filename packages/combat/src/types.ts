@@ -198,8 +198,8 @@ export const EDGE_TAG = 'knife';
 /** The most knives one unit can have embedded, and the most Preparation a hero can hold (the Assassin, DECISIONS #416). */
 export const KNIFE_MAX = 3;
 export const PREP_MAX = 3;
-/** The Shaman's totems (DECISIONS #420): the most positions he can grow to. Spirit has no cap (Robert, 2026-10-29). */
-export const TOTEM_SLOTS = 5;
+/** The Shaman's totems (DECISIONS #420): the most positions he can grow to (8 since DECISIONS #459). Spirit has no cap (Robert, 2026-10-29). */
+export const TOTEM_SLOTS = 8;
 /** The Shaman's elements (DECISIONS #420): a spell's tag. A prism spell counts as the element he has not cast yet this turn. */
 export const ELEMENTS = ['flame', 'frost', 'storm'] as const;
 export type Element = (typeof ELEMENTS)[number];
@@ -1235,7 +1235,7 @@ export interface Pending {
     | 'form'
     | 'commandPick'
     | 'defer';
-  /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t4', none = keep) */
+  /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t7', none = keep) */
   spirit?: string;
   /** (the Shaman) the totem boost the card's first play got, carried over the choice */
   plus?: number;

@@ -41,12 +41,14 @@ const foeHp = (s: CombatState): number => s.sides.b.units[0]!.hp + s.sides.b.uni
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('the knight is the Ironclad shape', () => {
-  it('starts with five Strikes, three Defends, Sundering Blow and Brace and Press; Devotion is gone', () => {
+  it('starts with four Strikes, two Defends and four class basics; Devotion is gone', () => {
     expect(RIFTWALKERS.knight.starter).toEqual([
-      ...Array<string>(5).fill('strike'),
-      ...Array<string>(3).fill('defend'),
+      ...Array<string>(4).fill('strike'),
+      ...Array<string>(2).fill('defend'),
       'sundering-blow',
       'brace-and-press',
+      'press-the-attack',
+      'heavy-swing',
     ]);
     expect(RIFTWALKERS.knight.hero.maxHp).toBe(80);
     expect(STATUS_IDS).not.toContain('devotion');
@@ -453,11 +455,11 @@ describe('the rest of the Ironclad list', () => {
 
 // The knight is the Ironclad's list, card for card (DECISIONS #367), as a yardstick for the other classes.
 describe('one card for each of the Ironclad’s', () => {
-  it('has 82 cards of the Ironclad’s list (with Sundering Blow, her Bash) plus Strike and Defend, the 12 Mana Reserves cards (DECISIONS #454, #456) and Brace and Press (#457)', () => {
+  it('has 82 cards of the Ironclad’s list (with Sundering Blow, her Bash) plus Strike and Defend, the 12 Mana Reserves cards (DECISIONS #454, #456), and Brace and Press, Press the Attack and Heavy Swing (#457, #458)', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );
-    expect(own).toHaveLength(82 + 12 + 1);
+    expect(own).toHaveLength(82 + 12 + 3);
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(

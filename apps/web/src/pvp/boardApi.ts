@@ -175,6 +175,14 @@ export interface GhostDeckRow {
  * A ghost deck to stand in for a campaign Warden (null when there is none, or the server cannot be reached: the usual Warden is
  * fought). The campaign checks it before it believes it (checkGhostBoss).
  */
+/** Is this ghost the player's own deck (it carries their name)? A campaign ghost is only ever another player's (DECISIONS #460). */
+export function isOwnGhost(ghost: unknown, myName: string): boolean {
+  const mine = myName.trim().toLowerCase();
+  if (!mine || typeof ghost !== 'object' || ghost === null) return false;
+  const name = (ghost as { name?: unknown }).name;
+  return typeof name === 'string' && name.trim().toLowerCase() === mine;
+}
+
 /** A ghost deck to stand in for a campaign Warden: one near `tier`, never one of `exclude` (the ghosts this run has met). */
 export async function fetchGhostBoss(tier: number, exclude: readonly string[]): Promise<unknown> {
   // (in a development build a ghost can be put in by hand, to try the fight without a server: localStorage 'sr.debug.ghostboss')
@@ -191,7 +199,9 @@ export async function fetchGhostBoss(tier: number, exclude: readonly string[]): 
     post('ghostboss', { tier, exclude: exclude.slice(-25), name: getName() }),
     new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 6000)),
   ]);
-  return d?.['ghost'] ?? null;
+  const ghost = d?.['ghost'] ?? null;
+  // (the server never sends one of the player's own; a name that is theirs is dropped here too)
+  return isOwnGhost(ghost, getName()) ? null : ghost;
 }
 
 /** How many players are waiting in the Arena queue (null when the server cannot be reached). */

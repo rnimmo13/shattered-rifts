@@ -22,7 +22,8 @@ const BASE = (process.argv[2] ?? 'ws://127.0.0.1:8787').replace(/\/$/, '');
 const entryOf = (hero: HeroId, name: string, tier = 4): Entry => ({
   name,
   hero,
-  deck: [...RIFTWALKERS[hero].starter],
+  // (the Arena takes decks of 15 cards or more: the starter and five neutral cards, DECISIONS #460)
+  deck: [...RIFTWALKERS[hero].starter, 'alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave'],
   boons: [],
   tier,
 });

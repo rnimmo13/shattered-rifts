@@ -125,7 +125,9 @@ describe('Wardens that are ghosts', () => {
     expect(checkGhostBoss({ ...entry, hero: 'nobody' })).toBeNull();
     expect(checkGhostBoss({ ...entry, deck: ['no-such-card', ...entry.deck] })).toBeNull();
     expect(checkGhostBoss({ ...entry, deck: entry.deck.slice(0, 3) })).toBeNull();
-    expect(checkGhostBoss({ ...entry, boons: ['no-such-boon'] })).toBeNull();
+    // (a Boon that has been taken out of the game is played without: DECISIONS #462)
+    expect(checkGhostBoss({ ...entry, boons: ['no-such-boon'] })?.boons).toEqual([]);
+    expect(checkGhostBoss({ ...entry, boons: Array.from({ length: 13 }, () => 'iron-sigil') })).toBeNull();
     expect(checkGhostBoss(null)).toBeNull();
     expect(checkGhostBoss('trickster')).toBeNull();
     // a bad ghost is turned away and the usual Warden is fought

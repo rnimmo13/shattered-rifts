@@ -350,6 +350,8 @@ export function parseRun(text: string): RunState | null {
     raw = JSON.parse(
       text
         .replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"')
+        // (Ward Stone was taken out: DECISIONS #462)
+        .replace(/"ward-stone"/g, '"iron-sigil"')
         .replace(RETIRED_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`)
         // (a retired Flare card, but not the Flare mark an event names)
         .replace(FLARE_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`),
@@ -360,6 +362,8 @@ export function parseRun(text: string): RunState | null {
   if (!isObj(raw)) return null;
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
+  // (a Boon held twice, after a retired one became another, is held once)
+  if (isStrArray(r.boons)) r.boons = [...new Set(r.boons)];
   // a save from before the Riftwalkers were named for their class (maren -> knight): the character, and any visiting merchant
   if (typeof r.character === 'string')
     r.character = canonicalHero(r.character) as RunState['character'];

@@ -68,6 +68,14 @@ export const KNIGHT: CardDef[] = [
   ], {
     up: { effects: [barrier(5), status('plating', 3), status('exposed', 1, 'target')] },
   }),
+  // (a hit that pays off the Exposed the other basics set up: Robert 2026-10-30, more damage in the starting deck)
+  m('basic', 'press-the-attack', 'Press the Attack', 'attack', 1, 'foe', [
+    dmg(5),
+    when('exposed', { atLeast: 1, of: 'target' }, [dmg(4)]),
+  ], {
+    up: { effects: [dmg(7), when('exposed', { atLeast: 1, of: 'target' }, [dmg(5)])] },
+  }),
+  m('basic', 'heavy-swing', 'Heavy Swing', 'attack', 2, 'foe', [dmg(14)]),
 
   // --- Bulwark ---
   // (Body Slam: your Barrier, as damage)

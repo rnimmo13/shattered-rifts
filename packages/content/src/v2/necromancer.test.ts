@@ -65,14 +65,14 @@ function addThrall(s: CombatState, hp: number, id = `B${s.sides.a.units.length}`
 }
 
 describe('Dorian, the Necrobinder copy', () => {
-  it('starts as hers: 4 Strike, 4 Defend, Raise Thrall and Off the Leash, 70 HP, and a Bone Thrall that does not act', () => {
+  it('starts as hers: 4 Strike, 3 Defend, Raise Thrall, Off the Leash and Marked for the Grave, 70 HP, and a Bone Thrall that does not act', () => {
     const r = RIFTWALKERS.necromancer;
     expect([...r.starter].sort()).toEqual(
       [
         'defend',
         'defend',
         'defend',
-        'defend',
+        'marked-for-the-grave',
         'off-the-leash',
         'raise-thrall',
         'strike',

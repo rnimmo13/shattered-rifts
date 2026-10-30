@@ -531,12 +531,13 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   const deck = Array.isArray(rawDeck)
     ? rawDeck.map((c: unknown) => (typeof c === 'string' ? canonicalCard(c) : c))
     : rawDeck;
-  const boons = g['boons'];
+  const sentBoons = g['boons'];
   if (!Array.isArray(deck) || deck.length < V2_DECK_RULES.minSize || deck.length > 80) return null;
   // (sanctified and engraved cards are real cards of that deck: isDeckCard knows them)
   if (!deck.every(isDeckCard)) return null;
-  if (!Array.isArray(boons) || boons.length > 12) return null;
-  if (!boons.every((b) => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b))) return null;
+  if (!Array.isArray(sentBoons) || sentBoons.length > 12) return null;
+  // (a ghost saved with a Boon that has been taken out of the game plays without it)
+  const boons = sentBoons.filter((b): b is string => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b));
   const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
   const tier = typeof g['tier'] === 'number' && Number.isInteger(g['tier']) ? g['tier'] : 1;
   const stage = typeof g['stage'] === 'number' && Number.isInteger(g['stage']) ? g['stage'] : null;
@@ -548,7 +549,7 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
     name,
     hero: hero as GhostBoss['hero'],
     deck: [...deck],
-    boons: [...(boons as string[])],
+    boons: [...new Set(boons)],
     tier,
     stage,
   };

@@ -80,6 +80,8 @@ interface Run {
   ev: CombatEvent[];
   /** how deep triggers are nested (a guard against a Power that feeds itself) */
   depth: number;
+  /** a hero's card is resolving: the match is decided when it has finished, so a cost paid after the kill (HP) is still paid */
+  hold?: number;
   /** a side's turn is just beginning (its opponent's turn-start Traps are springing): a Stun put on now is not fresh */
   opening?: boolean;
   /** the draw that starts a turn is happening (a "draw during your turn" trigger ignores it) */
@@ -1558,6 +1560,19 @@ const deftOf = (a: Act): number =>
     : 0;
 
 function runOps(r: Run, a: Act, ops: readonly Op[]): void {
+  const held = !!a.card && a.actor.kind === 'hero' && !r.hold;
+  if (held) r.hold = 1;
+  try {
+    runOpList(r, a, ops);
+  } finally {
+    if (held) {
+      r.hold = 0;
+      reap(r);
+    }
+  }
+}
+
+function runOpList(r: Run, a: Act, ops: readonly Op[]): void {
   for (let i = 0; i < ops.length; i++) {
     if (r.s.winner) return;
     if (a.actor.hp <= 0 && a.actor.kind !== 'hero') return;
@@ -3480,6 +3495,8 @@ function fireTriggers(
       p.ops.some((o) => 'to' in o && (o as { to?: string }).to === 'attacker')
     )
       continue;
+    // a limited Aura that brings an ally back is not spent when there is nobody to bring back
+    if (p.left !== undefined && p.ops.some((o) => o.op === 'revive') && !sd.fallen?.length) continue;
     // (it answers now: a once-a-turn Aura is spent for the turn, a limited one has one answer fewer)
     if (p.once) p.firedTurn = r.s.turn;
     if (p.left !== undefined && --p.left <= 0) sd.powers = sd.powers.filter((x) => x !== p);
@@ -3574,6 +3591,7 @@ function reap(r: Run): void {
       fireTriggers(r, sd, 'allyLost', { attacker: killer && killer.hp > 0 ? killer : null });
     }
   }
+  if (r.hold) return;
   const lost = (side: Side): boolean => {
     const sd = r.s.sides[side];
     return sd.hero !== null ? !heroOf(sd) : sd.units.length === 0;

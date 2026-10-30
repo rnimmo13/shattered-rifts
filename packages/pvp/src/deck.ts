@@ -14,6 +14,8 @@ import {
 import { MAX_MATCH_DECKS, type Entry } from './protocol';
 
 export const MAX_DECK = 80;
+/** The Arena takes decks of at least this many cards (Robert, 2026-10-30, DECISIONS #460); a run and a Vault keep any deck of 8 or more. */
+export const ARENA_MIN_DECK = 15;
 export const MAX_NAME = 24;
 /** A run holds at most five Boons; a little headroom for the ones a later build may allow. */
 export const MAX_BOONS = 8;
@@ -244,6 +246,11 @@ export function checkEntry(raw: unknown): Checked | Rejected {
 export function checkArenaEntry(raw: unknown): Checked | Rejected {
   const checked = checkEntry(raw);
   if (!checked.ok) return checked;
+  if (checked.entry.deck.length < ARENA_MIN_DECK)
+    return {
+      ok: false,
+      message: `The Arena takes decks of at least ${ARENA_MIN_DECK} cards; this one holds ${checked.entry.deck.length}.`,
+    };
   const count = (r: string): number =>
     checked.entry.deck.filter(
       (id) => COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity === r,

@@ -2,7 +2,7 @@
 // fight a ghost or play a friend with a room code; every deck in your Vault comes along, and you choose one before each game.
 
 import { useEffect, useRef, useState } from 'react';
-import { MAX_MATCH_DECKS, QUEUE_WIDEN_MS, checkArenaEntry, type Entry } from '@sr/pvp';
+import { ARENA_MIN_DECK, MAX_MATCH_DECKS, QUEUE_WIDEN_MS, checkArenaEntry, type Entry } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import { arenaFor } from './arenaVenue';
@@ -152,6 +152,8 @@ export default function PvpScreen() {
       ? firstProblem.message
       : null;
   const ready = usable.length > 0;
+  // (some decks pass and others do not: the short ones are left out, and the player is told how many)
+  const skipped = checks.filter((c) => !c.ok).length;
   const busy = snap.phase !== 'idle' && snap.phase !== 'error';
 
   /** the decks that went to the server (with the board id), so a ghost can be asked for later from the queue */
@@ -440,6 +442,11 @@ export default function PvpScreen() {
               </p>
               {deckList}
               {problem && <p className="pvp__error">{problem}</p>}
+              {!problem && skipped > 0 && usable.length > 0 && (
+                <p className="pvp__hint">
+                  {skipped} of your saved decks {skipped === 1 ? 'does' : 'do'} not pass the Arena&apos;s check (a deck needs at least {ARENA_MIN_DECK} cards) and {skipped === 1 ? 'is' : 'are'} left out.
+                </p>
+              )}
               <div className="pvp__actions">
                 <button
                   className="btn btn--primary"

@@ -151,7 +151,6 @@ const BEST_BOONS = [
   'rift-satchel',
   'might-idol',
   'hex-lantern',
-  'ward-stone',
   'iron-sigil',
   'ember-lamp',
   'vigor-wick',

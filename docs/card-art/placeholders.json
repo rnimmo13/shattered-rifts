@@ -352,5 +352,53 @@
   "name": "Brace and Press",
   "source": "plate-discipline",
   "why": "a shield dome"
+ },
+ {
+  "id": "press-the-attack",
+  "name": "Press the Attack",
+  "source": "sure-footing",
+  "why": "boots stepping forward"
+ },
+ {
+  "id": "heavy-swing",
+  "name": "Heavy Swing",
+  "source": "colossus-blow",
+  "why": "a huge swing (shows the old Knight)"
+ },
+ {
+  "id": "fang-and-claw",
+  "name": "Fang and Claw",
+  "source": "venom-fang",
+  "why": "a gloved hand with a fang"
+ },
+ {
+  "id": "pocket-blades",
+  "name": "Pocket Blades",
+  "source": "gather-the-blades",
+  "why": "blades and cards from a pouch"
+ },
+ {
+  "id": "mindful-palm",
+  "name": "Mindful Palm",
+  "source": "still-pool",
+  "why": "a still lotus pool"
+ },
+ {
+  "id": "spot-weld",
+  "name": "Spot Weld",
+  "source": "overtime",
+  "why": "Rivet sending drones forward"
+ },
+ {
+  "id": "pinprick-trap",
+  "name": "Pinprick Trap",
+  "source": "death-trap",
+  "why": "a spiked trap"
+ },
+ {
+  "id": "marked-for-the-grave",
+  "name": "Marked for the Grave",
+  "source": "deathknell",
+  "why": "a chained undead under a mark"
  }
 ]

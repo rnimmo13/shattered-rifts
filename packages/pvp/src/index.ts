@@ -14,6 +14,7 @@ export {
   isProfane,
   MAX_BOONS,
   MAX_DECK,
+  ARENA_MIN_DECK,
   MAX_NAME,
   type Checked,
   type Rejected,

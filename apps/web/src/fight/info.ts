@@ -609,7 +609,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (the totem cycle, DECISIONS #430; the old text described the totems' help on spells, #448)
   rune: {
     name: 'Totem',
-    text: 'The Shaman’s totems stand in a row beside him, in the order he planted them, and each does something every turn while it stands. A command makes the front totem’s spirit act once more, and the totem is gone. Planting into a full row pushes the front one out (it acts as it goes). Every Spirit adds 1 to their numbers (not the Elder Tree’s or the Moon Owl’s). He starts with 3 positions; cards add more, up to 5.',
+    text: 'The Shaman’s totems stand in a row beside him, in the order he planted them, and each does something every turn while it stands. A command makes the front totem’s spirit act once more, and the totem is gone. Planting into a full row pushes the front one out (it acts as it goes). Every Spirit adds 1 to their numbers (not the Elder Tree’s or the Moon Owl’s). He starts with 3 positions; cards add more, up to 8.',
   },
   // (the Monk's, DECISIONS #419)
   technique: {

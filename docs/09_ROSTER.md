@@ -33,7 +33,7 @@ deck takes one and a half of them. Our pools were ~16 cards and one way to win e
 | **Foresee** | Vesper, Solen, Obsidia | a Neutral common |
 | **Consume payoffs** | Kesh | Neutral Consume-on-play is common |
 
-4. **Starters are generic.** The first rewards decide how the deck plays.
+4. **Starters are ten cards: 3 or 4 class basics (no card twice), then Strikes and Defends** (DECISIONS #458, #461; the Trickster has Veil Strike twice, which Robert keeps). The first rewards decide how the deck plays.
 5. **Powers are triggers.** A Power card registers a trigger (`power` op: when X happens, run these ops). No bespoke
    status per Power; new Powers are data.
 

@@ -97,7 +97,15 @@ describe('the deck limits in the Arena (DECISIONS #238)', () => {
     const r = checkArenaEntry({
       name: 'Ann',
       hero: 'knight',
-      deck: [...RIFTWALKERS.knight.starter, 'foundry-awakens', 'overclocked-legion'],
+      // (15 cards, so it is the Legendary limit that refuses it)
+      deck: [
+        ...RIFTWALKERS.knight.starter,
+        'alarm-bell',
+        'catch-breath',
+        'glimpse-ahead',
+        'foundry-awakens',
+        'overclocked-legion',
+      ],
       boons: [],
       tier: 4,
     });

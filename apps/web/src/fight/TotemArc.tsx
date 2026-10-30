@@ -68,7 +68,9 @@ export function TotemArc(props: {
   const art = useTotemArt();
   const n = props.totems.length;
   if (n === 0) return null;
-  const s = props.size;
+  // (a row longer than five shrinks so the arc keeps the height of five: the positions get smaller as more are gained, DECISIONS #459)
+  const tight = n > 5;
+  const s = tight ? Math.round((props.size * 5) / n) : props.size;
   const gap = s * 1.02;
   const dir = props.mirror ? 1 : -1;
   // (each position on the arc: the middle bows out away from the hero, the ends curl back towards him)
@@ -84,7 +86,7 @@ export function TotemArc(props: {
   const spot = props.summon ? at(props.summon.totem) : null;
   return (
     <div
-      className={`totemarc${props.mirror ? ' totemarc--mirror' : ''}`}
+      className={`totemarc${props.mirror ? ' totemarc--mirror' : ''}${tight ? ' totemarc--tight' : ''}`}
       aria-label="Totems, in order"
     >
       {props.totems.map((kind, i) => {

@@ -41,6 +41,8 @@ export const ENGINEER: CardDef[] = [
   r('basic', 'overclock', 'Tune-Up', 'skill', 1, 'none', [status('might', 1, 'allFriends')], {
     up: { effects: [status('might', 1, 'allFriends'), draw(1)] },
   }),
+  // (a hit that keeps the crew a little safer: a third class basic, Robert 2026-10-30)
+  r('basic', 'spot-weld', 'Spot Weld', 'attack', 1, 'foe', [dmg(5), barrier(2, 'allFriends')]),
 
   // --- Swarm ---
   r('common', 'spare-parts', 'Spare Parts', 'summon', 0, 'none', [summon('micro-drone')], {
@@ -340,9 +342,9 @@ export const ENGINEER: CardDef[] = [
     [summon('enforcer'), status('might', 1, 'allFriends')],
     { exhaust: true },
   ),
-  // (only the first death each turn: every death brought back made the machine an endless wall, Robert 2026-10-28)
+  // (one death only, then it is spent: bringing back every death made the machine an endless wall, Robert 2026-10-28 and 2026-10-30)
   r('rare', 'backup-core', 'Backup Core', 'power', 2, 'none', [
-    on('allyDies', [revive], { once: true }),
+    on('allyDies', [revive], { times: 1 }),
   ]),
   // Heavy and Colossal machines, and the gun that welds them bigger (DECISIONS #383)
   r('uncommon', 'build-bulwark-walker', 'Build Bulwark Walker', 'summon', 2, 'none', [

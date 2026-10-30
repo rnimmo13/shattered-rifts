@@ -95,3 +95,21 @@ Things to know:
 | Bar Fight (`bar-fight`) | `steady-hands` | a dwarf with a shotgun |
 | Nurse the Hangover (`nurse-the-hangover`) | `spare-change` | a mug, bottles and coins |
 | Take It on the Chin (`take-it-on-the-chin`) | `stained-glass` | a glass shield |
+
+### Starting-deck basics added 2026-10-30 (5)
+
+| Card | Borrowed art | Why it fits |
+|---|---|---|
+| Press the Attack (`press-the-attack`) | `sure-footing` | boots stepping forward |
+| Heavy Swing (`heavy-swing`) | `colossus-blow` | a huge swing (shows the old Knight) |
+| Fang and Claw (`fang-and-claw`) | `venom-fang` | a gloved hand with a fang |
+| Pocket Blades (`pocket-blades`) | `gather-the-blades` | blades and cards from a pouch |
+| Mindful Palm (`mindful-palm`) | `still-pool` | a still lotus pool |
+
+### Engineer, Trickster and Necromancer basics (3)
+
+| Card | Borrowed art | Why it fits |
+|---|---|---|
+| Spot Weld (`spot-weld`) | `overtime` | Rivet sending drones forward |
+| Pinprick Trap (`pinprick-trap`) | `death-trap` | a spiked trap |
+| Marked for the Grave (`marked-for-the-grave`) | `deathknell` | a chained undead under a mark |

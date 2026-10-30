@@ -56,12 +56,11 @@ const blade = (s: CombatState) =>
   [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard].find((c) => c.card === BLADE);
 
 describe('Obsidia is the Regent: starter, HP and Arcana', () => {
-  it('starts with 75 HP, 4 Strike, 4 Defend, Cinderfall and Gather Arcana', () => {
+  it('starts with 75 HP, 4 Strike, 3 Defend, Cinderfall, Gather Arcana and the Obsidian Blade', () => {
     const r = RIFTWALKERS.spellblade;
     expect(r.hero.maxHp).toBe(75);
     expect([...r.starter].sort()).toEqual(
       [
-        'defend',
         'defend',
         'defend',
         'defend',

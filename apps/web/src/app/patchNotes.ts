@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.138.0',
+    date: '2026-10-30',
+    title: 'Ten-card starts and tighter rules',
+    summary: 'Every class starts with ten cards, the Arena wants fifteen, and a few cards were fixed or nerfed.',
+    notes: [
+      { kind: 'changed', text: 'Every class starts with ten cards and three or four class basics: new basics for the Knight, Assassin, Monk, Engineer, Trickster and Necromancer, fewer duplicates for the Shaman, Drunkard and Spellblade.' },
+      { kind: 'changed', text: 'Arena decks need at least 15 cards, and the campaign Arena badge says so. Campaign ghosts are never your own.' },
+      { kind: 'changed', text: 'The Shaman can hold up to 8 totems; they shrink to fit.' },
+      { kind: 'balance', text: 'Aegis of Ages gives 1 Shielded, not 3, and Ward Stone is gone (old saves get an Iron Sigil). Backup Core revives one ally, once.' },
+      { kind: 'fixed', text: 'A card that hits every enemy and then costs you HP now takes the HP even when the hit ends the fight.' },
+      { kind: 'fixed', text: 'Heavy Hitter says it counts your biggest living companion.' },
+    ],
+  },
+  {
     version: '0.137.0',
     date: '2026-10-30',
     title: 'A stronger start for the Knight',
@@ -659,7 +673,7 @@ export const PATCH_NOTES: PatchNote[] = [
       },
       {
         kind: 'fixed',
-        text: 'Backup Core revives one companion a turn: it used to bring the same machine back after every hit, so nothing reached you.',
+        text: 'Backup Core revives one companion, once: it used to bring the same machine back after every hit, so nothing reached you.',
       },
       {
         kind: 'new',

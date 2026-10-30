@@ -81,13 +81,20 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxReserves: 3,
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
-    starter: [...rep('strike', 5), ...rep('defend', 3), 'sundering-blow', 'brace-and-press'],
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 2),
+      'sundering-blow',
+      'brace-and-press',
+      'press-the-attack',
+      'heavy-swing',
+    ],
     blurb:
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
-      'Exposed enemies take 50% more from your attacks: Sundering Blow sets it up.',
+      'Exposed enemies take 50% more from your attacks: Sundering Blow and Brace and Press set it up, and Press the Attack pays it off.',
       'Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might.',
     ],
   },
@@ -111,7 +118,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       // (6 HP, not the Drone's 8: DECISIONS #411)
       startUnits: [{ unit: 'drone', hp: 6 }],
     },
-    starter: [...rep('strike', 5), ...rep('defend', 3), 'deploy-drone', 'overclock'],
+    starter: [...rep('strike', 4), ...rep('defend', 3), 'deploy-drone', 'overclock', 'spot-weld'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
     mechanics: ['Companions', 'Frames', 'Salvage', 'Primed', 'Might', 'Max HP growth'],
@@ -167,10 +174,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
     starter: [
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       ...rep('veil-strike', 2),
       'set-the-web',
       'pick-a-card',
+      'pinprick-trap',
     ],
     blurb:
       'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and a deck of tricks.',
@@ -199,7 +207,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       mana: 3,
       handSize: 5,
     },
-    starter: [...rep('strike', 5), ...rep('defend', 5), 'hobbling-jab', 'duck-and-weave'],
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 2),
+      'hobbling-jab',
+      'duck-and-weave',
+      'fang-and-claw',
+      'pocket-blades',
+    ],
     blurb:
       'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
     mechanics: ['Daggers', 'Bleed', 'Discard', 'Premeditate', 'Faltering'],
@@ -228,12 +243,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
     },
     starter: [
-      ...rep('strike', 2),
-      'defend',
+      ...rep('strike', 4),
+      ...rep('defend', 2),
       'spirit-call',
-      ...rep('raise-the-hawk', 2),
-      ...rep('frost-ward', 2),
-      ...rep('forked-lightning', 2),
+      'raise-the-hawk',
+      'frost-ward',
+      'forked-lightning',
     ],
     blurb:
       'An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.',
@@ -268,7 +283,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       sigil: [stance('calm')],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'kindle-fury', 'still-guard'],
+    starter: [...rep('strike', 4), ...rep('defend', 3), 'kindle-fury', 'still-guard', 'mindful-palm'],
     blurb:
       'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
@@ -302,7 +317,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (the Obsidian Blade is a card of her deck, in her opening hand, removable: DECISIONS #436; Kindled's Sharpen made it before)
     starter: [
       ...rep('strike', 4),
-      ...rep('defend', 4),
+      ...rep('defend', 3),
       'meteor-jab',
       'gather-light',
       'starforged-blade',
@@ -338,7 +353,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [
       ...rep('strike', 3),
       ...rep('defend', 3),
-      ...rep('hammer-swing', 2),
+      'hammer-swing',
       'pane-up',
       'bottle-tripwire',
       'old-twelve-gauge',
@@ -388,7 +403,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       // (no starting Thrall of its own: Grave Chill's Raise 2 at the start of his first turn is the one he begins with; with both he
       // began with two, DECISIONS #431)
     },
-    starter: [...rep('strike', 4), ...rep('defend', 4), 'raise-thrall', 'off-the-leash'],
+    starter: [...rep('strike', 4), ...rep('defend', 3), 'raise-thrall', 'off-the-leash', 'marked-for-the-grave'],
     blurb:
       'A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.',
     mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],

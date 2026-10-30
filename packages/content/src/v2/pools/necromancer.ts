@@ -70,6 +70,8 @@ export const NECROMANCER: CardDef[] = [
   // --- basics and tokens ---
   // (Bodyguard)
   g('basic', 'raise-thrall', 'Raise Thrall', 'skill', 1, 'none', [raise(5)]),
+  // (a hit that curses: a third class basic, Robert 2026-10-30)
+  g('basic', 'marked-for-the-grave', 'Marked for the Grave', 'attack', 1, 'foe', [dmg(6), status('doom', 4, 'target')]),
   // (Unleash: each Thrall strikes for 6 plus its own HP)
   g(
     'basic',

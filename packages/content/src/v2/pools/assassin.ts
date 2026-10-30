@@ -61,6 +61,11 @@ export const ASSASSIN: CardDef[] = [
   ),
   // (Survivor)
   q('basic', 'duck-and-weave', 'Duck and Weave', 'skill', 1, 'none', [barrier(8), discard(1)]),
+  // (two more basics for damage in the starting deck: Robert 2026-10-30)
+  q('basic', 'fang-and-claw', 'Fang and Claw', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('seared', 1, 'target')]),
+  q('basic', 'pocket-blades', 'Pocket Blades', 'skill', 1, 'none', [addTo('sleeve-knife', 2)], {
+    up: { effects: [addTo('sleeve-knife', 3)] },
+  }),
   // (Shiv: 4 damage, Consume; Shiv+ deals 6. Shown as the Dagger since 2026-10-28, DECISIONS #379; the id stays for saves)
   q('common', 'sleeve-knife', 'Dagger', 'attack', 0, 'foe', [dmg(4)], {
     exhaust: true,

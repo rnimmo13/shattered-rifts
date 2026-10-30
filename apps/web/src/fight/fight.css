@@ -3093,6 +3093,16 @@ button.totem:disabled {
 .totemarc__acts {
   color: #ffe08a;
 }
+/* more than five positions: smaller spots, with the numbers left to the hover */
+.totemarc--tight .totemarc__nums {
+  display: none;
+}
+.totemarc--tight .totemarc__order {
+  top: -0.4rem;
+  min-width: 1rem;
+  padding: 0 0.2rem;
+  font-size: 0.55rem;
+}
 .totemarc__spirit {
   position: absolute;
   display: grid;

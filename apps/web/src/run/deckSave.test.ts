@@ -82,8 +82,10 @@ describe("the map's Arena button says whether the deck as it stands would pass t
       deck,
       boons: [],
     }) as unknown as RunState;
-  it('a starter deck passes', () => {
-    expect(arenaProblem(run([...RIFTWALKERS.knight.starter]))).toBeNull();
+  it('a deck of 15 cards passes, and a starter deck of ten does not: the Arena wants 15 (DECISIONS #460)', () => {
+    const starter = [...RIFTWALKERS.knight.starter];
+    expect(arenaProblem(run([...starter, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']]))).toBeNull();
+    expect(arenaProblem(run(starter))).toMatch(/at least 15 cards; this one holds 10/);
   });
   it('a deck too small or too big does not, and says why', () => {
     expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(/A deck holds/);

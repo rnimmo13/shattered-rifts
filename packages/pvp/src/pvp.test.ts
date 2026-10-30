@@ -322,14 +322,26 @@ describe('the game clock (DECISIONS #259)', () => {
 describe('the decks a player brings to a match (DECISIONS #307)', () => {
   it('takes 1 to MAX_MATCH_DECKS decks of any Riftwalkers, under one name and board id', () => {
     const who = 'a'.repeat(64);
+    // (the Arena takes decks of 15 cards or more, DECISIONS #460)
+    const big = (e: ReturnType<typeof entryOf>) => ({ ...e, deck: [...e.deck, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']] });
     const r = checkArenaDecks([
-      { ...entryOf('knight', 'Ann'), who },
-      { ...entryOf('hunter', 'Someone else'), who: 'b'.repeat(64) },
+      big({ ...entryOf('knight', 'Ann'), who }),
+      big({ ...entryOf('hunter', 'Someone else'), who: 'b'.repeat(64) }),
     ]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.decks.map((d) => d.hero)).toEqual(['knight', 'hunter']);
     expect(r.decks.every((d) => d.name === 'Ann' && d.who === who)).toBe(true);
+  });
+  it('refuses a deck of fewer than 15 cards, and says so', () => {
+    const small = checkArenaDecks([entryOf('knight', 'Ann')]);
+    expect(small.ok).toBe(false);
+    expect(!small.ok && small.message).toMatch(/at least 15 cards; this one holds 10/);
+    const fifteen = { ...entryOf('knight', 'Ann') };
+    fifteen.deck = [...fifteen.deck, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']];
+    expect(checkArenaDecks([fifteen]).ok).toBe(true);
+    fifteen.deck = fifteen.deck.slice(0, 14);
+    expect(checkArenaDecks([fifteen]).ok).toBe(false);
   });
   it('refuses none, too many, or a list with a bad deck in it', () => {
     expect(checkArenaDecks([]).ok).toBe(false);

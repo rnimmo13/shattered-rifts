@@ -96,10 +96,10 @@ describe('the Shaman: Forks (DECISIONS #427)', () => {
     expect(pool).toContain('gathering-storm');
   });
 
-  it('Gathering Storm is a common reward now, and he starts with two Forked Lightning instead', () => {
+  it('Gathering Storm is a common reward now, and he starts with a Forked Lightning instead', () => {
     expect(db.cards['gathering-storm']!.rarity).toBe('common');
     expect(rewardPool('shaman')).toContain('gathering-storm');
     expect(RIFTWALKERS.shaman.starter).not.toContain('gathering-storm');
-    expect(RIFTWALKERS.shaman.starter.filter((c) => c === 'forked-lightning')).toHaveLength(2);
+    expect(RIFTWALKERS.shaman.starter.filter((c) => c === 'forked-lightning')).toHaveLength(1);
   });
 });

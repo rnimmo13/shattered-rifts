@@ -543,8 +543,8 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   exhausted: { per: 'consumed card', equal: 'the number of cards you have consumed' },
   allies: { per: 'ally', equal: 'the number of your allies' },
   biggestAlly: {
-    per: 'max HP of your biggest companion',
-    equal: "your biggest companion's max HP",
+    per: 'max HP of your biggest living companion',
+    equal: "your biggest living companion's max HP",
   },
   slots: { per: 'companion slot filled', equal: 'the companion slots filled' },
   foes: { per: 'enemy', equal: 'the number of enemies' },

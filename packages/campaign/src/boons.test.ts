@@ -111,11 +111,20 @@ describe('boons in a run', () => {
     expect(() => buyBoon({ ...shop, shards: 10 })).toThrow(RunError);
   });
 
-  it('saves refuse unknown or repeated boons', () => {
+  it('saves refuse unknown boons, hold a repeated one once, and turn the retired Ward Stone into an Iron Sigil (DECISIONS #462)', () => {
     const r = fresh('trickster', 'sv');
     expect(parseRun(JSON.stringify({ ...r, boons: ['nope'] }))).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))).toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil'] }))).not.toBeNull();
+    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone'] }))?.boons).toEqual(['iron-sigil']);
+    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
+  });
+
+  it('Aegis of Ages gives one Shielded, and there is no other Shielded Boon but the Warded Heart', () => {
+    expect(COMBAT_DB.boons['aegis-of-ages']?.fightStart?.[0]).toMatchObject({ status: 'shielded', amount: 1 });
+    expect(COMBAT_DB.boons['ward-stone']).toBeUndefined();
+    const shielded = Object.values(COMBAT_DB.boons).filter((x) => x.fightStart?.some((o) => o.op === 'status' && o.status === 'shielded'));
+    expect(shielded.map((x) => x.id).sort()).toEqual(['aegis-of-ages', 'warded-heart']);
   });
 });
 

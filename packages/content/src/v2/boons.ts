@@ -32,13 +32,6 @@ export const BOONS: BoonDef[] = [
     fightStart: [status('might', 1)],
   },
   {
-    id: 'ward-stone',
-    name: 'Ward Stone',
-    rarity: 'common',
-    text: 'Start each fight Shielded: ignore the first hit.',
-    fightStart: [status('shielded', 1)],
-  },
-  {
     id: 'ember-lamp',
     name: 'Ember Lamp',
     rarity: 'common',
@@ -129,8 +122,8 @@ export const BOONS: BoonDef[] = [
     id: 'aegis-of-ages',
     name: 'Aegis of Ages',
     rarity: 'legendary',
-    text: 'Start each fight Shielded 3 times: ignore the first three hits.',
-    fightStart: [status('shielded', 3)],
+    text: 'Start each fight Shielded: ignore the first hit.',
+    fightStart: [status('shielded', 1)],
   },
   {
     id: 'gilded-crown',
