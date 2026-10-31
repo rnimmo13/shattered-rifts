@@ -5,7 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Merchants:** the removal price only doubles within one visit; every merchant starts over at 40.
+- **Merchants:** the removal price only doubles within one visit: 50, 100, 200, 400, and every merchant starts over at 50.
 - **Card text:** statuses that are simply on or off have no number ("Gain Fanned"), and a Fanned Dagger plays without aiming.
 - **Merchants** remove as many cards as you can pay for on one visit, each double the price of the last.
 - **Words:** a run is now Tiers, Acts and Floors, and the home page's New Run button says Play.

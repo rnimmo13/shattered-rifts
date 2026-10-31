@@ -372,7 +372,7 @@ export const PRICE: Record<string, number> = {
 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
 /** What a merchant first charges to remove a card. Each one bought at that same shop doubles the next; the next shop starts over (DECISIONS #493). */
-export const REMOVE_PRICE = 40;
+export const REMOVE_PRICE = 50;
 /** One card on each merchant's table is on sale: this share off its price. */
 export const SALE_OFF = 0.3;
 /**

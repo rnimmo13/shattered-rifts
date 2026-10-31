@@ -38,21 +38,21 @@ function atMerchant(seed: string, prev?: RunState, deck?: string[]): RunState {
 describe('card removal at the merchant', () => {
   it('sells as many as you can pay for in one visit, each double the last (DECISIONS #491, #493)', () => {
     const deck = Array<string>(12).fill('strike');
-    let m = { ...atMerchant('remove-many', undefined, deck), shards: 280 };
+    let m = { ...atMerchant('remove-many', undefined, deck), shards: 350 };
     for (const [price, left] of [
-      [40, 240],
-      [80, 160],
-      [160, 0],
+      [50, 300],
+      [100, 200],
+      [200, 0],
     ] as const) {
       expect(m.context!.merchant!.removePrice).toBe(price);
       m = buyRemoval(m, m.deck[0]!);
       expect(m.shards).toBe(left);
     }
     expect(m.removals).toBe(3);
-    expect(m.context!.merchant!.removePrice).toBe(320);
+    expect(m.context!.merchant!.removePrice).toBe(400);
     expect(() => buyRemoval(m, m.deck[0]!)).toThrow();
     // (and it still survives a save)
-    expect(parseRun(serializeRun(m))?.context?.merchant?.removePrice).toBe(320);
+    expect(parseRun(serializeRun(m))?.context?.merchant?.removePrice).toBe(400);
   });
 
   it('still stops at the deck minimum', () => {
