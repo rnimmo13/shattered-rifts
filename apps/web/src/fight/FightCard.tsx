@@ -216,7 +216,7 @@ export const FightCard = memo(
               className="card__stars"
               aria-label={def.starX ? 'Spends any amount of Spell Power' : `Costs ${def.starCost} Spell Power`}
             >
-              <span>◆ {def.starX ? 'X' : def.starCost}</span>
+              <span>{def.starX ? 'X' : def.starCost}</span>
             </div>
           ) : null}
           {def.statusCost ? (
