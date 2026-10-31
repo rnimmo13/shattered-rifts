@@ -5,6 +5,7 @@ ChatGPT's draft (`SPELLBLADE_SPELL_POWER_CHATGPT.md`) was the main version; this
 hand from `docs/14_CARD_COSTING.md`; no sim was run.
 
 **As built, changed from the list below:**
+- **No choice of amount (DECISIONS #482):** wherever the list says "Spend any amount", the card now spends a fixed share. **X (all):** Molten Ruin, Arcane Flood, Falling Shards, Lava Bomb, Cataclysm, Thousand Shards. **X/2 (half, rounded down):** Cinderfall, Spellbolt, Arcane Pulse, Glass Burst, Controlled Release, Dying Ember, Obsidian Drill, Stress the Glass, Arcane Barrier, Glass Wall. **Mirror Glass** costs a fixed 2 for 7 Barrier and 1 Shielded. The rates and damage per point are unchanged.
 - **Banked Embers** gains 3 SP next turn and 1 Mana next turn (upgrade: 4 SP), not 4 SP and a Hold: a test holds that every class has a Mana trick, and this was hers. 7.65 + 4 = 11.65 / 11.2.
 - **Crowned Edge** gives 2 Primed until the end of the turn, for any attack, not "2 more a hit on your next Sword": the same number with no new status.
 - **Call the Blade** returns a random Sword, not a chosen one (the engine's tag fetch): 3 + 6 = 9 / 11.2.

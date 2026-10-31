@@ -78,13 +78,11 @@ export function cleanAction(a: Action): Action {
             .map(str)
             .filter((x): x is string => !!x)
         : str(raw);
-      const spend = num(o['spend']);
       return {
         type: 'play',
         card: str(o['card']) ?? '',
         ...(target ? { target } : {}),
         ...(release && release.length ? { release } : {}),
-        ...(spend !== undefined ? { spend } : {}),
       };
     }
     case 'potion': {

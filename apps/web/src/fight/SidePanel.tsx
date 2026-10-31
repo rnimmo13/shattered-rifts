@@ -16,9 +16,7 @@ export function LumenCounter(props: { value: number }) {
       aria-label={`Spell Power ${props.value}`}
       {...tipAttrs(UI_TIPS.lumen(props.value))}
     >
-      <span aria-hidden>◆</span>
       <b>{props.value}</b>
-      <small>Spell Power</small>
     </div>
   );
 }

@@ -416,7 +416,7 @@ export type Metric =
   | 'elementsTurn' // different elements you have cast this turn (0-3)
   | 'trinityDone' // 1 once Trinity has triggered this turn
   // (the Spellblade's Spell Power rework, DECISIONS #480)
-  | 'starSpend' // the Spell Power this "spend any amount" card spent
+  | 'starSpend' // the Spell Power this X or X/2 card spent
   | 'starsSpentTurn' // Spell Power spent this turn
   | 'lastSpend' // the Spell Power the card last played spent
   | 'prevSpell' // 1 when the card played just before this one this turn was a Spell
@@ -932,6 +932,8 @@ export interface CardDef {
   onDraw?: Op[];
   /** an Arcana X card: it spends all your Arcana and the Metric 'x' is how much was spent */
   starX?: boolean;
+  /** X/2: it spends half your Spell Power, rounded down (DECISIONS #482) */
+  starHalf?: boolean;
   /** where it goes after it is played, instead of the discard pile: back to your hand, or on top of your draw pile */
   after?: 'hand' | 'drawTop';
   /** every `n`th card of `kind` you play in a turn brings this back to your hand from your draw or discard pile */
@@ -1541,8 +1543,7 @@ export interface CombatSetup {
 export type Action =
   /** `release` names the companion that leaves (is scrapped) to make room, when a card summons more than the free companion slots
    * hold; a list when several have to go (DECISIONS #383) */
-  /** `spend`: how much Spell Power a "spend any amount" card spends (left out: all of it) */
-  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[]; spend?: number }
+  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[] }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }

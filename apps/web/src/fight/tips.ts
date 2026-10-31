@@ -60,7 +60,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'lumen',
     title: 'Spell Power',
-    text: 'Spell Power is the magic stored in your blade, in the orange orb beside your Mana. It lasts the whole fight. Swords strike more times the more you hold; Spells spend it, as much as you choose.',
+    text: 'Spell Power is the magic stored in your blade, in the orange orb beside your Mana. It lasts the whole fight. Swords strike more times the more you hold. Spells spend it: X on the card means all you hold, X/2 half, rounded down.',
     when: (v, c) => c.usesStars || v.sides.a.stars > 0,
   },
   {

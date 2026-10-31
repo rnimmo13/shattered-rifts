@@ -1982,7 +1982,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   // (the Spellblade's kinds, DECISIONS #480)
   if (c.tags?.includes('sword')) parts.push('Sword.');
   if (c.tags?.includes('spell')) parts.push('Spell.');
-  // (a Spell Power cost is shown on the card itself, under the Mana cost, an X for "any amount": it is not said again in the text)
+  // (a Spell Power cost is shown on the card itself, under the Mana cost, as a number, X or X/2: it is not said again in the text)
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;

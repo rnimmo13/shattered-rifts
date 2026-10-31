@@ -85,6 +85,10 @@
   color: #2a0e02;
   text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
 }
+/* (three characters in the same circle: X/2) */
+.card__stars--half span {
+  font-size: 32px;
+}
 .card--neutral {
   --ink-a: #262a4a;
   --ink-b: #0c0e1c;

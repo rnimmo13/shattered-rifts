@@ -4652,15 +4652,6 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     }
     // ... and as it is, last: what fits is summoned, the rest is not (DECISIONS #405)
     out.push(...plays);
-    // (a "spend any amount" card: the whole reserve comes with no amount named; the bots also weigh none and half. Any amount is legal,
-    // and the player's slider can name any; listing every one would swamp a search.)
-    if (cd.starX && sd.stars > 0) {
-      const half = Math.floor(sd.stars / 2);
-      for (const p of plays) {
-        out.push({ ...p, spend: 0 });
-        if (half > 0 && half < sd.stars) out.push({ ...p, spend: half });
-      }
-    }
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -4768,11 +4759,6 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
-  if (
-    action.spend !== undefined &&
-    (!cd.starX || !Number.isInteger(action.spend) || action.spend < 0 || action.spend > sd.stars)
-  )
-    throw new RulesError('That is not an amount of Spell Power this card can spend');
   let scrapped = 0;
   // (with no room and no companion named, the card is played as it is: what fits is summoned, DECISIONS #405)
   if (needsRelease(r.db, sd, cd) && releaseIds(action).length > 0) {
@@ -4856,9 +4842,9 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.stars -= cd.starCost;
     r.ev.push({ type: 'stars', side, stars: sd.stars });
   }
-  // a "spend any amount" card spends what the player chose (all of it when no amount is named)
-  if (cd.starX) {
-    starsSpent = action.spend ?? sd.stars;
+  // X spends all your Spell Power, X/2 half of it (rounded down, DECISIONS #482)
+  if (cd.starX || cd.starHalf) {
+    starsSpent = cd.starX ? sd.stars : Math.floor(sd.stars / 2);
     x = starsSpent + (cd.xBonus ?? 0);
     sd.stars -= starsSpent;
     r.ev.push({ type: 'stars', side, stars: sd.stars });
@@ -5169,8 +5155,6 @@ export function previewCardDamage(
   s: CombatState,
   instId: string,
   targetId: string | null = null,
-  /** a "spend any amount" card: the amount being weighed (left out: all of it) */
-  spend?: number,
 ): Map<number, LiveDamage> {
   const out = new Map<number, LiveDamage>();
   const sd = s.sides[s.active];
@@ -5209,13 +5193,15 @@ export function previewCardDamage(
     x: def.x
       ? sd.mana + sd.reserves + (def.xBonus ?? 0)
       : def.starX
-        ? Math.min(spend ?? sd.stars, sd.stars) + (def.xBonus ?? 0)
-        : 0,
+        ? sd.stars + (def.xBonus ?? 0)
+        : def.starHalf
+          ? Math.floor(sd.stars / 2) + (def.xBonus ?? 0)
+          : 0,
   });
   // (the Shaman's totems: their help on the first spell of its element this turn, DECISIONS #420)
   const help = sd.totems ? spellBoost(r, sd, def, false) : 0;
   // (Measured Ruin and Whispering Edge, DECISIONS #480)
-  const spendNow = def.starX ? a.x - (def.xBonus ?? 0) : (def.starCost ?? 0);
+  const spendNow = def.starX || def.starHalf ? a.x - (def.xBonus ?? 0) : (def.starCost ?? 0);
   const ruin =
     def.kind === 'attack' && def.tags?.includes(SPELL_TAG) && spendNow > 0 && !sd.ruinUsed
       ? stacks(hero, 'ruinous') * spendNow

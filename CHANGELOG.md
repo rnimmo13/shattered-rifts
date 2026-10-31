@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Spell Power costs are on the card:** no more slider. X spends all you hold and X/2 half, rounded down. Mirror Glass costs 2. The counter beside your Mana shows only its number.
 - **Cleaner Spellblade cards:** Sword and Spell are now a badge in the top right with a tooltip, like the Shaman's elements, and the Spell Power orb shows only its number or X.
 - **The Spellblade is rebuilt:** Arcana and Sharpen are now one reserve, Spell Power. Swords strike more times the more you hold and spend none; Spells spend it, as much as you choose; and a third way to win, Fracture, cracks an enemy until it Shatters at 10. 88 reward cards, some that grow as you play them, and no caps. Saved Spellblade runs are moved to the new cards and told so.
 - **Damage numbers are right for the Assassin:** a card's number and breakdown count Honed (and Lethality and Noose), name Edge and Honed, and show the highest number's steps when there are several enemies.

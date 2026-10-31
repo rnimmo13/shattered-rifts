@@ -662,7 +662,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   stars: {
     name: 'Spell Power',
-    text: 'The magic stored in your blade; it lasts the whole fight. Swords read it and spend nothing. Spells spend it: you choose how much when you play one.',
+    text: 'The magic stored in your blade; it lasts the whole fight. Swords read it and spend nothing. Spells spend it: X on the card means all you hold, X/2 half, rounded down.',
   },
   sword: {
     name: 'Sword',
@@ -770,6 +770,7 @@ export function keywordsOf(
     ethereal?: boolean | undefined;
     starCost?: number | undefined;
     starX?: boolean | undefined;
+    starHalf?: boolean | undefined;
     statusCost?: { status: string; amount: number; x?: boolean } | undefined;
     x?: boolean | undefined;
     tags?: readonly string[] | undefined;
@@ -892,7 +893,7 @@ export function keywordsOf(
   if (c.retain) add(KEYWORD_INFO['retain']);
   if (c.innate) add(KEYWORD_INFO['innate']);
   if (c.ethereal) add(KEYWORD_INFO['ethereal']);
-  if (c.starCost || c.starX) add(KEYWORD_INFO['stars']);
+  if (c.starCost || c.starX || c.starHalf) add(KEYWORD_INFO['stars']);
   if (c.statusCost) {
     const s = STATUS_INFO[c.statusCost.status as StatusId];
     if (s) add({ name: s.name, text: s.text });
@@ -964,7 +965,7 @@ export const UI_TIPS = {
   lumen: (n: number): TipContent => ({
     kicker: 'Second resource',
     title: `Spell Power ${n}`,
-    text: 'The magic stored in your blade. Swords strike more times the more you hold, and spend none. Spells spend it: you choose how much. Unlike Mana it lasts the whole fight.',
+    text: 'The magic stored in your blade. Swords strike more times the more you hold, and spend none. Spells spend it: X on the card means all you hold, X/2 half, rounded down. Unlike Mana it lasts the whole fight.',
   }),
   draw: {
     kicker: 'Pile',

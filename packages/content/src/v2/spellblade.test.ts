@@ -41,7 +41,7 @@ function fight(hand: string[], opts: { stars?: number; foes?: number; draw?: str
 }
 const foe = (s: CombatState, i = 0) => s.sides.b.units[i]!;
 const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
-function play(s: CombatState, id: string, spend?: number, pick?: string[]): CombatState {
+function play(s: CombatState, id: string, pick?: string[]): CombatState {
   const c = s.sides.a.hand.find((x) => x.card === id || x.card === `${id}`);
   expect(c, `${id} in hand`).toBeTruthy();
   const def = db.cards[c!.card]!;
@@ -49,7 +49,6 @@ function play(s: CombatState, id: string, spend?: number, pick?: string[]): Comb
     type: 'play',
     card: c!.id,
     ...(def.target === 'foe' ? { target: foe(s).id } : {}),
-    ...(spend !== undefined ? { spend } : {}),
   }).state;
   if (pick && r.pending) r = applyAction(db, r, { type: 'pick', cards: pick }).state;
   for (let i = 0; i < 6 && r.pending; i++) r = applyAction(db, r, chooseAction(db, r)).state;
@@ -101,26 +100,26 @@ describe('Spell Power', () => {
     expect(next.sides.a.stars).toBe(5);
   });
 
-  it('a spell spends what the player names, and all of it when no amount is named', () => {
-    const named = play(fight(['devastate']), 'devastate', 3);
-    expect(named.sides.a.stars).toBe(5);
-    expect(lost(named)).toBe(12 + 18);
-    const all = play(fight(['devastate']), 'devastate');
-    expect(all.sides.a.stars).toBe(0);
-    expect(lost(all)).toBe(12 + 48);
+  it('X spends all of it', () => {
+    const r = play(fight(['devastate']), 'devastate');
+    expect(r.sides.a.stars).toBe(0);
+    expect(lost(r)).toBe(12 + 48);
   });
 
-  it('spending nothing is legal, and a spell plays with none held', () => {
-    expect(lost(play(fight(['devastate']), 'devastate', 0))).toBe(12);
+  it('X/2 spends half, rounded down', () => {
+    const even = play(fight(['skybolt'], { stars: 8 }), 'skybolt');
+    expect(even.sides.a.stars).toBe(4);
+    expect(lost(even)).toBe(8 + 16);
+    const odd = play(fight(['skybolt'], { stars: 7 }), 'skybolt');
+    expect(odd.sides.a.stars).toBe(4);
+    expect(lost(odd)).toBe(8 + 12);
+    const one = play(fight(['skybolt'], { stars: 1 }), 'skybolt');
+    expect(one.sides.a.stars).toBe(1);
+    expect(lost(one)).toBe(8);
+  });
+
+  it('a spell plays with none held', () => {
     expect(lost(play(fight(['devastate'], { stars: 0 }), 'devastate'))).toBe(12);
-  });
-
-  it('an amount past what is held, a fraction, or a negative is refused', () => {
-    for (const spend of [9, -1, 1.5]) expect(() => play(fight(['devastate']), 'devastate', spend)).toThrow();
-  });
-
-  it('naming an amount on a card that does not spend is refused', () => {
-    expect(() => play(fight([BLADE]), BLADE, 2)).toThrow();
   });
 
   it('there is no cap on spending', () => {
@@ -128,19 +127,22 @@ describe('Spell Power', () => {
     expect(lost(s)).toBe(20 + 8 * 40);
   });
 
-  it('the bots are offered none, half and all, and every offer can be played', () => {
+  it('there is no choice of amount: one legal play for a target', () => {
     const s = fight(['devastate']);
-    const offers = legalActions(db, s).filter((a) => a.type === 'play');
-    expect(offers.map((a) => (a.type === 'play' ? a.spend : 0))).toEqual([undefined, 0, 4]);
-    for (const a of offers) expect(() => applyAction(db, s, a)).not.toThrow();
+    expect(legalActions(db, s).filter((a) => a.type === 'play')).toHaveLength(1);
   });
 
-  it('the preview reads the amount being weighed', () => {
-    const s = fight(['devastate']);
-    const at = (spend?: number) => [...previewCardDamage(db, s, 'T0', foe(s).id, spend).values()][0]!.lo;
-    expect(at(0)).toBe(12);
-    expect(at(2)).toBe(24);
-    expect(at()).toBe(60);
+  it('the spending cards are X or X/2, never both', () => {
+    for (const c of Object.values(db.cards)) expect(c.starX && c.starHalf, c.id).toBeFalsy();
+  });
+
+  it('the preview reads what the card will spend', () => {
+    const at = (card: string) => {
+      const s = fight([card]);
+      return [...previewCardDamage(db, s, 'T0', foe(s).id).values()][0]!.lo;
+    };
+    expect(at('devastate')).toBe(60);
+    expect(at('skybolt')).toBe(24);
   });
 
   it('a Sword reads Spell Power when it starts, and what it gains comes after', () => {
@@ -174,7 +176,7 @@ describe('what makes the Blade hit harder', () => {
   it('Whispering Edge adds to every Sword hit and to nothing else', () => {
     const r = play(play(fight(['whispering-edge', BLADE]), 'whispering-edge'), BLADE);
     expect(lost(r)).toBe(5 * 6);
-    const spell = play(play(fight(['whispering-edge', 'skybolt']), 'whispering-edge'), 'skybolt', 0);
+    const spell = play(play(fight(['whispering-edge', 'skybolt'], { stars: 0 }), 'whispering-edge'), 'skybolt');
     expect(lost(spell)).toBe(8);
   });
 
@@ -188,8 +190,8 @@ describe('what makes the Blade hit harder', () => {
   it('Tempered Focus Primes each turn; Quenched Edge Primes after a spend, once a turn', () => {
     const tf = play(fight(['tempered-focus']), 'tempered-focus');
     expect(hero(applyAction(db, tf, { type: 'endTurn' }).state).statuses.vigor).toBe(1);
-    const q = play(play(fight(['quenched-edge', 'skybolt', 'star-barrier']), 'quenched-edge'), 'skybolt', 1);
-    const q2 = play(q, 'star-barrier', 1);
+    const q = play(play(fight(['quenched-edge', 'skybolt', 'star-barrier']), 'quenched-edge'), 'skybolt');
+    const q2 = play(q, 'star-barrier');
     expect(hero(q2).statuses.vigor).toBe(1);
   });
 
@@ -209,9 +211,9 @@ describe('what makes the Blade hit harder', () => {
 
   it('Measured Ruin adds to the first spending Spell Attack each turn only', () => {
     const s = play(fight(['measured-ruin', 'skybolt', 'gamma-burst']), 'measured-ruin');
-    const a = play(s, 'skybolt', 2);
-    expect(lost(a)).toBe(8 + 8 + 4);
-    const b = play(a, 'gamma-burst', 2);
+    const a = play(s, 'skybolt');
+    expect(lost(a)).toBe(8 + 16 + 8);
+    const b = play(a, 'gamma-burst');
     expect(lost(b) - lost(a)).toBe(6 + 8);
   });
 });
@@ -396,7 +398,7 @@ describe('growing cards', () => {
   });
 
   it('The Forgemaster raises a generator chosen from the hand, which stays there', () => {
-    const s = play(fight(['the-forgemaster', 'faint-glow', 'whetstone'], { stars: 0 }), 'the-forgemaster', undefined, ['T2']);
+    const s = play(fight(['the-forgemaster', 'faint-glow', 'whetstone'], { stars: 0 }), 'the-forgemaster', ['T2']);
     expect(s.sides.a.stars).toBe(6);
     const w = s.sides.a.hand.find((c) => c.id === 'T2')!;
     expect(w.bonus).toBe(2);
@@ -417,25 +419,25 @@ describe('growing cards', () => {
 
 describe('Aura conditions', () => {
   it('Sigil of Glass waits for a spend of 3 or more, and a smaller one does not use it up', () => {
-    const s = play(fight(['cygnus', 'skybolt', 'gamma-burst']), 'cygnus');
-    const small = play(s, 'skybolt', 2);
+    const s = play(fight(['cygnus', 'skybolt', 'devastate'], { stars: 5 }), 'cygnus');
+    const small = play(s, 'skybolt');
     expect(hero(small).barrier).toBe(0);
-    const big = play(small, 'gamma-burst', 3);
+    const big = play(small, 'devastate');
     expect(hero(big).barrier).toBe(5);
   });
 
   it('Afterglow answers spending your last Spell Power', () => {
-    const s = play(fight(['afterglow', 'skybolt', 'gamma-burst']), 'afterglow');
-    const some = play(s, 'skybolt', 2);
+    const s = play(fight(['afterglow', 'skybolt', 'devastate']), 'afterglow');
+    const some = play(s, 'skybolt');
     expect(hero(some).barrier).toBe(0);
-    const all = play(some, 'gamma-burst');
+    const all = play(some, 'devastate');
     expect(hero(all).barrier).toBe(3);
   });
 
   it('Patient Edge pays for a turn with nothing spent', () => {
     const quiet = play(fight(['patient-edge-aura'], { stars: 2 }), 'patient-edge-aura');
     expect(applyAction(db, quiet, { type: 'endTurn' }).state.sides.a.stars).toBe(2 + 2 + 1);
-    const spent = play(play(fight(['patient-edge-aura', 'skybolt'], { stars: 2 }), 'patient-edge-aura'), 'skybolt', 1);
+    const spent = play(play(fight(['patient-edge-aura', 'skybolt'], { stars: 2 }), 'patient-edge-aura'), 'skybolt');
     expect(applyAction(db, spent, { type: 'endTurn' }).state.sides.a.stars).toBe(1 + 1);
   });
 
@@ -470,7 +472,6 @@ describe('Aura conditions', () => {
 const CASES: {
   id: string;
   stars?: number;
-  spend?: number;
   dmg?: number;
   sp?: number;
   barrier?: number;
@@ -479,7 +480,7 @@ const CASES: {
   foeStatus?: Record<string, number>;
   drew?: number;
 }[] = [
-  { id: 'meteor-jab', spend: 2, dmg: 12, sp: 6 },
+  { id: 'meteor-jab', stars: 4, dmg: 12, sp: 2 },
   { id: 'gather-light', sp: 10 },
   { id: 'hairline-hex', fracture: 5, barrier: 2 },
   { id: 'forged-in-fury', dmg: 6, sp: 9 },
@@ -512,36 +513,36 @@ const CASES: {
   { id: 'fault-piercer', dmg: 20 },
   { id: 'hammer-and-anvil', dmg: 24, sp: 9 },
   { id: 'storm-of-glass', dmg: 40 },
-  { id: 'thousand-shards', spend: 3, dmg: 18, sp: 5 },
-  { id: 'obsidian-drill', spend: 2, dmg: 35, sp: 6 },
+  { id: 'thousand-shards', stars: 3, dmg: 18, sp: 0 },
+  { id: 'obsidian-drill', stars: 4, dmg: 35, sp: 2 },
   { id: 'call-the-blade', sp: 10 },
   { id: 'feint', barrier: 5, status: { vigor: 1 } },
   { id: 'conqueror', status: { vigor: 2 }, drew: 1 },
   { id: 'forge-heat', status: { vigor: 2 } },
   { id: 'crowns-weight', sp: 6, status: { might: 1 }, foeStatus: { sapped: 1 } },
   { id: 'soul-of-steel', status: { might: 2 } },
-  { id: 'skybolt', spend: 4, dmg: 24, sp: 4 },
-  { id: 'astral-pulse', spend: 4, dmg: 19, sp: 4 },
+  { id: 'skybolt', dmg: 24, sp: 4 },
+  { id: 'astral-pulse', dmg: 19, sp: 4 },
   { id: 'tempered-bolt', dmg: 7, sp: 8 },
   { id: 'tempered-bolt', stars: 0, dmg: 7, sp: 2 },
   { id: 'glassbrand', dmg: 5, fracture: 3 },
-  { id: 'gamma-burst', spend: 3, dmg: 18, foeStatus: { exposed: 1, faltering: 1 } },
-  { id: 'gamma-burst', spend: 2, dmg: 14, foeStatus: {} },
-  { id: 'controlled-release', spend: 4, dmg: 24, drew: 1 },
-  { id: 'controlled-release', spend: 8, dmg: 40, drew: 0 },
-  { id: 'falling-sky', spend: 4, dmg: 25 },
-  { id: 'devastate', spend: 8, dmg: 60 },
-  { id: 'radiance', spend: 6, dmg: 34 },
-  { id: 'dying-star', spend: 4, dmg: 24, foeStatus: { faltering: 2 } },
-  { id: 'comet', spend: 8, dmg: 84 },
-  { id: 'supernova', spend: 8, dmg: 66 },
+  { id: 'gamma-burst', stars: 6, dmg: 18, foeStatus: { exposed: 1, faltering: 1 } },
+  { id: 'gamma-burst', stars: 4, dmg: 14, foeStatus: {} },
+  { id: 'controlled-release', dmg: 24, drew: 1 },
+  { id: 'controlled-release', stars: 1, dmg: 8, drew: 0 },
+  { id: 'falling-sky', stars: 4, dmg: 25, sp: 0 },
+  { id: 'devastate', dmg: 60 },
+  { id: 'radiance', stars: 6, dmg: 34 },
+  { id: 'dying-star', dmg: 24, foeStatus: { faltering: 2 } },
+  { id: 'comet', dmg: 84 },
+  { id: 'supernova', dmg: 66 },
   { id: 'faultline-hex', fracture: 7 },
   { id: 'spreading-fault', fracture: 5 },
   { id: 'pressure-point-hex', fracture: 5, drew: 0 },
   { id: 'glass-prison', barrier: 5, fracture: 3 },
   { id: 'crack-the-shell', fracture: 5 },
   { id: 'hairline-crack', fracture: 5 },
-  { id: 'stress-the-glass', spend: 2, fracture: 10 - 10, dmg: 18 },
+  { id: 'stress-the-glass', stars: 4, fracture: 0, dmg: 18 },
   { id: 'fault-memory', fracture: 5 },
   { id: 'final-shatter', dmg: 18, barrier: 6 },
   { id: 'collapsing-star', fracture: 2, dmg: 18 },
@@ -549,11 +550,10 @@ const CASES: {
   { id: 'deep-fault', fracture: 4 },
   { id: 'rupture-script', fracture: 2, dmg: 36 },
   { id: 'breaking-point-hex', dmg: 18, fracture: 8 },
-  { id: 'star-barrier', spend: 3, barrier: 14, sp: 5 },
+  { id: 'star-barrier', stars: 6, barrier: 14, sp: 3 },
   { id: 'glass-veil', barrier: 10 },
-  { id: 'glass-wall', spend: 1, barrier: 15 },
-  { id: 'mirror-glass', spend: 2, barrier: 7, status: { shielded: 1 } },
-  { id: 'mirror-glass', spend: 1, barrier: 7, status: {} },
+  { id: 'glass-wall', stars: 2, barrier: 15 },
+  { id: 'mirror-glass', stars: 2, sp: 0, barrier: 7, status: { shielded: 1 } },
   { id: 'stellar-wind', drew: 2 },
   { id: 'recenter', drew: 2, sp: 8 },
   { id: 'unbreakable-crown', barrier: 18, status: { steadfast: 1 } },
@@ -563,11 +563,11 @@ const CASES: {
 
 describe('every card does what the list says', () => {
   for (const c of CASES) {
-    const name = `${c.id}${c.spend !== undefined ? ` spending ${c.spend}` : ''}${c.stars !== undefined ? ` at ${c.stars} Spell Power` : ''}`;
+    const name = `${c.id}${c.stars !== undefined ? ` at ${c.stars} Spell Power` : ''}`;
     it(name, () => {
       const s = fight([c.id, 'strike'], c.stars !== undefined ? { stars: c.stars } : {});
       const hand = s.sides.a.hand.length;
-      const r = play(s, c.id, c.spend);
+      const r = play(s, c.id);
       if (c.dmg !== undefined) expect(lost(r), 'damage').toBe(c.dmg);
       if (c.sp !== undefined) expect(r.sides.a.stars, 'Spell Power').toBe(c.sp);
       if (c.barrier !== undefined) expect(hero(r).barrier, 'Barrier').toBe(c.barrier);

@@ -193,12 +193,12 @@ export function validateDb(db: CombatDb): string[] {
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
     const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
-    // (a "spend any amount" card may read what it spent directly, or only in an "if you spent N" clause: Mirror Glass)
     const readsSpend = JSON.stringify(c.effects).includes('"starSpend"');
     if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
-    if (c.starX && !readsX && !readsSpend) errs.push(`${id}: a spending card must read what it spent`);
+    if ((c.starX || c.starHalf) && !readsX && !readsSpend) errs.push(`${id}: a spending card must read what it spent`);
+    if (c.starX && c.starHalf) errs.push(`${id}: X or X/2, not both`);
     if (!c.x && !c.starX && readsX) errs.push(`${id}: scales by x but is not an X card`);
-    if (!c.starX && readsSpend) errs.push(`${id}: reads a spend but spends nothing`);
+    if (!c.starX && !c.starHalf && readsSpend) errs.push(`${id}: reads a spend but spends nothing`);
     if (c.x && c.starX) errs.push(`${id}: a card spends all its Mana or all its Arcana, not both`);
     if (c.effects.some((o) => o.op === 'sacrifice' && !o.self) && c.target !== 'ally')
       errs.push(`${id}: sacrifice needs a card that targets an ally`);

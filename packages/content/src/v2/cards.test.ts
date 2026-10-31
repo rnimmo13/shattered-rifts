@@ -166,7 +166,7 @@ describe('second resources have a way in and a way out from the first hand', () 
   it('The spellblade starts every fight with Spell Power to spend, and her starter both makes and spends it', () => {
     const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
     expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
-    expect(starter.some((c) => c.starX)).toBe(true);
+    expect(starter.some((c) => c.starX || c.starHalf)).toBe(true);
     for (let i = 0; i < 20; i++) {
       const { state } = createCombat(db, {
         seed: `arcana-${i}`,
@@ -263,8 +263,8 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
       );
     // (and the Shaman's Gathering Storm grown by Tempest Call, DECISIONS #420)
     owns(sharpensAnother, ['drunkard', 'shaman']);
-    // (Fracture and "spend any amount" are hers, DECISIONS #480)
-    owns((c) => uses(c, 'fracture') || c.starX === true, 'spellblade');
+    // (Fracture and X / X/2 costs are hers, DECISIONS #480, #482)
+    owns((c) => uses(c, 'fracture') || c.starX === true || c.starHalf === true, 'spellblade');
     owns((c) => c.tags?.includes('gun') === true, 'drunkard');
     owns((c) => c.tags?.includes('knife') === true, 'assassin');
     owns((c) => c.tags?.includes('shell') === true, 'drunkard');

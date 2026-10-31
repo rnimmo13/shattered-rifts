@@ -254,12 +254,18 @@ export const FightCard = memo(
               <KindIcon kind={kind} />
             </div>
           )}
-          {def.starCost || def.starX ? (
+          {def.starCost || def.starX || def.starHalf ? (
             <div
-              className="card__stars"
-              aria-label={def.starX ? 'Spends any amount of Spell Power' : `Costs ${def.starCost} Spell Power`}
+              className={`card__stars${def.starHalf ? ' card__stars--half' : ''}`}
+              aria-label={
+                def.starX
+                  ? 'Spends all your Spell Power'
+                  : def.starHalf
+                    ? 'Spends half your Spell Power'
+                    : `Costs ${def.starCost} Spell Power`
+              }
             >
-              <span>{def.starX ? 'X' : def.starCost}</span>
+              <span>{def.starX ? 'X' : def.starHalf ? 'X/2' : def.starCost}</span>
             </div>
           ) : null}
           {def.statusCost ? (

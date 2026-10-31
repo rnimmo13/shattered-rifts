@@ -439,6 +439,7 @@ type Extra = Partial<
     | 'needsEmptyDraw'
     | 'onDraw'
     | 'starX'
+    | 'starHalf'
     | 'after'
     | 'returnEvery'
     | 'playFromTop'

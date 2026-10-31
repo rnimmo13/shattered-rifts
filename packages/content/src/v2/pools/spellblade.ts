@@ -3,7 +3,7 @@
 //
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
 //   Swords   - hold it: a Sword's hits grow with it and swinging spends nothing
-//   Spells   - spend it: "spend any amount" (`starX`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
+//   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
 //   Fracture - build marks on an enemy and cross 10 for a Shatter, which Deepening makes hit harder
 // No caps on hits or spending, by Robert's call: Might and Primed are how a Sword deck pays off.
 
@@ -39,7 +39,7 @@ const GENERATOR = 'generator';
 /** what a generator's copy has grown to reads on its card as "Grown +N" */
 const GROWN = { forgeWord: 'Grown' } as const;
 
-/** "spend any amount" reads this: the Spell Power the card spent */
+/** an X or X/2 card reads this: the Spell Power it spent */
 const SPENT = (mult = 1): Scale => per('starSpend', mult);
 /** gain N Spell Power, plus what this copy has grown */
 const gain = (n: number): Op => scaled(stars(n), per('bonus'));
@@ -68,7 +68,7 @@ const strip = (amount: number): Op => ({ op: 'strip', to: 'target', amount });
 export const SPELLBLADE: CardDef[] = [
   // --- starter ---
   a('basic', 'meteor-jab', 'Cinderfall', 'attack', 1, 'foe', [burst(4, 4)], {
-    starX: true,
+    starHalf: true,
     tags: [SPELL],
     up: { effects: [burst(7, 4)] },
   }),
@@ -367,7 +367,7 @@ export const SPELLBLADE: CardDef[] = [
     'foe',
     [{ op: 'damage', amount: 7, hits: 3, to: 'target', scale: { by: 'starSpend', into: 'hits' } }],
     {
-      starX: true,
+      starHalf: true,
       tags: [SWORD],
       up: {
         effects: [{ op: 'damage', amount: 8, hits: 3, to: 'target', scale: { by: 'starSpend', into: 'hits' } }],
@@ -478,12 +478,12 @@ export const SPELLBLADE: CardDef[] = [
 
   // --- Spells ---
   a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [burst(8, 4)], {
-    starX: true,
+    starHalf: true,
     tags: [SPELL],
     up: { effects: [burst(11, 4)] },
   }),
   a('common', 'astral-pulse', 'Arcane Pulse', 'attack', 1, 'none', [burst(7, 3, 'allFoes')], {
-    starX: true,
+    starHalf: true,
     tags: [SPELL],
     up: { effects: [burst(9, 3, 'allFoes')] },
   }),
@@ -519,7 +519,7 @@ export const SPELLBLADE: CardDef[] = [
       ]),
     ],
     {
-      starX: true,
+      starHalf: true,
       tags: [SPELL],
       up: {
         effects: [
@@ -544,7 +544,7 @@ export const SPELLBLADE: CardDef[] = [
       when('starSpend', { atLeast: 1 }, [when('stars', { atLeast: 1 }, [draw(1)])]),
     ],
     {
-      starX: true,
+      starHalf: true,
       tags: [SPELL],
       up: {
         effects: [
@@ -587,7 +587,7 @@ export const SPELLBLADE: CardDef[] = [
     'none',
     [burst(8, 4, 'allFoes'), status('faltering', 2, 'allFoes')],
     {
-      starX: true,
+      starHalf: true,
       tags: [SPELL],
       up: { effects: [burst(11, 4, 'allFoes'), status('faltering', 2, 'allFoes')] },
     },
@@ -649,7 +649,7 @@ export const SPELLBLADE: CardDef[] = [
     'foe',
     [scaled(fracture(4), SPENT(3))],
     {
-      starX: true,
+      starHalf: true,
       tags: [SPELL],
       up: { effects: [scaled(fracture(6), SPENT(3))] },
     },
@@ -842,7 +842,7 @@ export const SPELLBLADE: CardDef[] = [
 
   // --- defence and selection ---
   a('common', 'star-barrier', 'Arcane Barrier', 'skill', 1, 'none', [scaled(barrier(5), SPENT(3))], {
-    starX: true,
+    starHalf: true,
     tags: [SPELL],
     up: { effects: [scaled(barrier(8), SPENT(3))] },
   }),
@@ -851,7 +851,7 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [barrier(13), barrierNext(6)] },
   }),
   a('uncommon', 'glass-wall', 'Glass Wall', 'skill', 2, 'none', [scaled(barrier(12), SPENT(3))], {
-    starX: true,
+    starHalf: true,
     retain: true,
     tags: [SPELL],
     up: { effects: [scaled(barrier(16), SPENT(3))] },
@@ -863,11 +863,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(7), when('starSpend', { atLeast: 2 }, [status('shielded', 1)])],
+    [barrier(7), status('shielded', 1)],
     {
-      starX: true,
+      starCost: 2,
       tags: [SPELL],
-      up: { effects: [barrier(10), when('starSpend', { atLeast: 2 }, [status('shielded', 1)])] },
+      up: { effects: [barrier(10), status('shielded', 1)] },
     },
   ),
   a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(3), discard(1)], {
