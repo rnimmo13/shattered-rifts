@@ -21,7 +21,7 @@ import {
   type TrialPrize,
   diceOdds,
   diceable,
-  removePrice,
+  REMOVE_PRICE,
   SALE_OFF,
   engravable,
   ledgerGain,
@@ -715,7 +715,7 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✂</span>}
               name="Remove a card"
               kind="service"
-              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Buy as many as you can pay for: each removal this run doubles the price of the next (${shopPrice(props.run, removePrice((props.run.removals ?? 0) + 1))} after this one).`}
+              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Buy as many as you can pay for: each one at this shop costs double the last (${m.removePrice * 2} after this one), and the next shop starts over at ${shopPrice(props.run, REMOVE_PRICE)}.`}
               price={m.removePrice}
               button={
                 !roomToRemove

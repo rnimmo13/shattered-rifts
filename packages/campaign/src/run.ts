@@ -59,7 +59,7 @@ import {
   POTION_PRICE,
   PRICE,
   SALE_OFF,
-  removePrice,
+  REMOVE_PRICE,
   upgradePrice,
   ancestralPool,
   offerPotion,
@@ -445,7 +445,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       r.context.merchant = {
         items,
         ...(crossed ? { crossed } : {}),
-        removePrice: removePrice(r.removals ?? 0),
+        removePrice: REMOVE_PRICE,
         removed: false,
         potions,
         ...(boon
@@ -1375,8 +1375,8 @@ export function buyRemoval(run: RunState, card: string): RunState {
   r.deck.splice(i, 1);
   m.removed = true;
   r.removals = (r.removals ?? 0) + 1;
-  // (as many as you can pay for, each double the last, on this visit too: DECISIONS #491)
-  m.removePrice = shopPrice(r, removePrice(r.removals));
+  // (as many as you can pay for, each double the last at this shop; the next shop starts over: DECISIONS #493)
+  m.removePrice *= 2;
   return r;
 }
 

@@ -12,7 +12,6 @@ import {
   newRun,
   parseRun,
   priceOf,
-  removePrice,
   serializeRun,
   type RunState,
 } from './index';
@@ -37,7 +36,7 @@ function atMerchant(seed: string, prev?: RunState, deck?: string[]): RunState {
 }
 
 describe('card removal at the merchant', () => {
-  it('sells as many as you can pay for in one visit, each double the last (DECISIONS #491)', () => {
+  it('sells as many as you can pay for in one visit, each double the last (DECISIONS #491, #493)', () => {
     const deck = Array<string>(12).fill('strike');
     let m = { ...atMerchant('remove-many', undefined, deck), shards: 280 };
     for (const [price, left] of [
@@ -61,17 +60,14 @@ describe('card removal at the merchant', () => {
     expect(() => buyRemoval(m, 'strike')).toThrow(/cannot go below 8/);
   });
 
-  it('doubles for each removal already bought this run', () => {
-    expect(removePrice(0)).toBe(REMOVE_PRICE);
-    expect(removePrice(1)).toBe(REMOVE_PRICE * 2);
-    expect(removePrice(3)).toBe(REMOVE_PRICE * 8);
-    expect(removePrice(99)).toBe(removePrice(20));
+  it('starts over at the next merchant (DECISIONS #493)', () => {
     let m = atMerchant('remove-1');
     expect(m.context!.merchant!.removePrice).toBe(REMOVE_PRICE);
     m = buyRemoval(m, m.deck[0]!);
-    expect(m.removals).toBe(1);
+    m = buyRemoval(m, m.deck[0]!);
+    expect(m.context!.merchant!.removePrice).toBe(REMOVE_PRICE * 4);
     const next = atMerchant('remove-2', leaveMerchant(m));
-    expect(next.context!.merchant!.removePrice).toBe(REMOVE_PRICE * 2);
+    expect(next.context!.merchant!.removePrice).toBe(REMOVE_PRICE);
   });
 
   it('remembers the count through a save', () => {

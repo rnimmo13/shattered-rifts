@@ -371,13 +371,8 @@ export const PRICE: Record<string, number> = {
   ancestral: 240,
 };
 export const priceOf = (id: string): number => PRICE[rarityOf(id)] ?? 60;
+/** What a merchant first charges to remove a card. Each one bought at that same shop doubles the next; the next shop starts over (DECISIONS #493). */
 export const REMOVE_PRICE = 40;
-/**
- * Each card removal bought from a merchant in a run doubles the price of the next (Robert, 2026-10-30; it was 15 more each time up to 100,
- * DECISIONS #243): 40, 80, 160, 320... Past 20 it stops doubling, so the number stays one a save can hold.
- */
-export const removePrice = (bought: number): number =>
-  REMOVE_PRICE * 2 ** Math.min(20, Math.max(0, bought));
 /** One card on each merchant's table is on sale: this share off its price. */
 export const SALE_OFF = 0.3;
 /**

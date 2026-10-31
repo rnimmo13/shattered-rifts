@@ -340,7 +340,7 @@ export interface RunState {
   ghostsMet?: string[];
   /** how many times the Gambler's Ledger has been signed this run (each signature gives more Max HP) */
   ledger?: number;
-  /** card removals bought from merchants this run (each makes the next dearer); missing = none */
+  /** card removals bought from merchants this run, a count only: the price goes by the shop (DECISIONS #493); missing = none */
   removals?: number;
   /** the Warden's Heart this run holds, if any (DECISIONS #246) */
   heart?: string;
