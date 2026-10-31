@@ -37,6 +37,19 @@ function atMerchant(seed: string, shards: number, prev?: RunState): RunState {
   return at;
 }
 
+describe('a held card the deck can no longer take', () => {
+  it('leaves the table, and the merchant returns its deposit and says so (DECISIONS #498)', () => {
+    const base = open(newRun('knight', 'hold-aura'));
+    // (bought for 95 less 30%, on a 19 shard deposit)
+    const held = { ...base, deck: [...base.deck, 'inner-furnace', 'inner-furnace'], held: [{ cardId: 'inner-furnace', price: 67 }] };
+    const m = atMerchant('hold-aura', 100, held);
+    expect(m.held).toBeUndefined();
+    expect(m.context!.merchant!.items.some((i) => i.held)).toBe(false);
+    expect(m.shards).toBe(100 + Math.ceil(Math.round(67 / HOLD_LATER) * HOLD_DEPOSIT));
+    expect(m.eventResult).toContain('deposit');
+  });
+});
+
 describe('letting a hold go', () => {
   it('holds several cards at once, up to the limit', () => {
     let m = atMerchant('hold-many', 5000);

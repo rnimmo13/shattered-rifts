@@ -179,7 +179,7 @@ Add up what the Aura does over **4 of your turns** (it is usually played turn 1-
 
 The extra is because the turn you play it you did nothing else, and you might draw it on turn 5. Examples: Bottomless Sleeves (1 cost,
 a Knife a turn: 16 over 4 turns, 1.6x), Inner Furnace (2 cost, +1 Mana a turn: ~28, 1.5x, a little low for a rare), Warm Anvil (Sharpen 5 a turn: 16, 1.6x).
-For "whenever X" triggers, count how often X happens per turn in the deck that wants it, not in a starter deck.
+For "whenever X" triggers, count how often X happens per turn in the deck that wants it, not in a starter deck. A deck holds at most **2 copies of an Aura** (DECISIONS #498), so check the pair too: it doubles the effect, and a trigger that replaces itself at one copy makes a profit at two.
 
 **+1 Mana every turn** is ~28 over the four turns (7 a Mana): a 2-cost Aura with no price (Inner Furnace, Ascendant Form, Deep Pockets, Attunement, Last Call with 2 Hangover). At 1 it needs a real price, ~-10 (Blood Pact: 7 HP). A Skill that does it and Consumes is an Aura in disguise: make it an Aura (DECISIONS #410).
 
@@ -446,7 +446,7 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **Grows N** | **N x 3.6** | The growth rate (N x 1.2) on 3 a point. |
 | **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. |
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
-| **Fracture** | **3.1** a point, **4.1** to ALL | It only adds up, and the k-th Shatter deals 10 + 10k + the Spell Power held: 43 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 50 at 20, 90 at 30, 200 at 50, 650 at 100. |
+| **Fracture** | **3.1** a point, **4.1** to ALL | It only adds up, and the k-th Shatter deals 10 + 10k + the Spell Power held: 43 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 50 at 20, 90 at 30, 200 at 50, 650 at 100. Applied at about **5 a Mana** since DECISIONS #499 (Faultline Hex 1: 5, Final Shatter 2: 10, Rupture Script 2: 15 with Consume). That stays over budget at this rate on purpose: Fracture does nothing until it crosses a 10. |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
 | **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. Worth less on a turn the Obsidian Blade swings, one hit without Blade Echo (DECISIONS #488); not repriced. |
 | **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
@@ -538,6 +538,8 @@ spent at most 2 a card.
 A Boon pays every fight of the run, so price it **per fight** (5 of your turns), not against a card's budget. Turn-long rates x 5.
 Compare Boons with each other. A Boon's points are not a card's points: there is no Mana or card slot to pay for it.
 
+**Boons have no rarity, so every Boon sits at 7-15 points a fight** (DECISIONS #497). A new one above that needs a real drawback, and then it is a Warden's Heart, not a Boon. Hearts run about 15-25: they are one at a time, and each costs something.
+
 | Effect | Points a fight | Notes |
 |---|---|---|
 | +1 Mana every turn | **35-45** | 7-9 a turn. Rift Core had this at no price and was taken out (DECISIONS #496). |
@@ -549,5 +551,7 @@ Compare Boons with each other. A Boon's points are not a card's points: there is
 | Heal N HP after a fight | **1.5 x N** | |
 | Lose N HP every turn | **-7.5 x N** | A heal after the fight can pay it back in full. |
 | Exposed on you for 2 turns | **~-27** at Tier I | 50% more on ~1.5 hits of 12, two turns running: 18 HP at 1.5. Barrier and Shielded lessen it. It grows with the tier. |
-| Fight-start effects | their usual rates | Iron Sigil 7, Rift Satchel 7, Aegis of Ages 12, Hex Lantern and Hunter's Lens 9 (Lens more in a big-hitting deck). |
+| Fight-start effects | their usual rates | Iron Sigil 7, Rift Satchel 7, Aegis of Ages 12, Hex Lantern 9, Hunter's Lens ~7 (one turn, more in a big-hitting deck). |
+| Max HP | **1.5 per HP, once** | The Gilded Crown: 6 Max HP (9 once) and 3 HP a fight (4.5). |
+| Shards after a fight | no rate yet | Shard Purse's 6 is about 36 an act, against about 160 from an act's fights. |
 

@@ -234,7 +234,9 @@ describe('what makes the Blade hit harder', () => {
 
 describe('Fracture and Shatter', () => {
   it('every 10 Shatters it, harder each time, and Fracture only adds up', () => {
-    const s = play(fight(['rupture-script']), 'rupture-script');
+    const start = fight(['rupture-script']);
+    foe(start).statuses.fracture = 5;
+    const s = play(start, 'rupture-script');
     expect(foe(s).statuses.fracture).toBe(20);
     // (Spell Power 8 on each)
     expect(lost(s)).toBe(28 + 38);
@@ -242,17 +244,17 @@ describe('Fracture and Shatter', () => {
 
   it('the Shatter at 100 deals 110, and ten of them come to 650', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
-    foe(s).statuses.fracture = 95;
+    foe(s).statuses.fracture = 96;
     const r = play(s, 'hairline-crack');
     expect(foe(r).statuses.fracture).toBe(100);
     expect(lost(r)).toBe(110);
-    let total = fight(['rupture-script'], { stars: 0 });
+    let total = fight(['final-shatter'], { stars: 0 });
     foe(total).statuses.fracture = 0;
-    total = play(total, 'rupture-script');
-    for (let i = 0; i < 4; i++) {
-      total.sides.a.hand.push({ id: `R${i}`, card: 'rupture-script' });
+    total = play(total, 'final-shatter');
+    for (let i = 0; i < 9; i++) {
+      total.sides.a.hand.push({ id: `R${i}`, card: 'final-shatter' });
       total.sides.a.mana = 9;
-      total = play(total, 'rupture-script');
+      total = play(total, 'final-shatter');
     }
     expect(foe(total).statuses.fracture).toBe(100);
     expect(lost(total)).toBe(650);
@@ -268,7 +270,7 @@ describe('Fracture and Shatter', () => {
 
   it('it keeps scaling past 100', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
-    foe(s).statuses.fracture = 105;
+    foe(s).statuses.fracture = 106;
     expect(lost(play(s, 'hairline-crack'))).toBe(120);
   });
 
@@ -280,7 +282,7 @@ describe('Fracture and Shatter', () => {
     const db2 = { ...db, cards: { ...db.cards, wash: { ...db.cards['strike']!, id: 'wash', kind: 'skill' as const, target: 'foe' as const, effects: [{ op: 'cleanse' as const, amount: 99, to: 'target' as const, all: true }] } } };
     r.sides.a.hand.push({ id: 'W', card: 'wash' });
     const after = applyAction(db2, r, { type: 'play', card: 'W', target: u.id }).state;
-    expect(after.sides.b.units[0]!.statuses.fracture).toBe(7);
+    expect(after.sides.b.units[0]!.statuses.fracture).toBe(5);
     expect(after.sides.b.units[0]!.statuses.exposed ?? 0).toBe(0);
   });
 
@@ -327,10 +329,10 @@ describe('Fracture and Shatter', () => {
 
   it('below 10 nothing happens, and Fracture never fades', () => {
     const s = play(fight(['faultline-hex']), 'faultline-hex');
-    expect(foe(s).statuses.fracture).toBe(7);
+    expect(foe(s).statuses.fracture).toBe(5);
     expect(lost(s)).toBe(0);
     const later = applyAction(db, applyAction(db, s, { type: 'endTurn' }).state, { type: 'endTurn' }).state;
-    expect(foe(later).statuses.fracture).toBe(7);
+    expect(foe(later).statuses.fracture).toBe(5);
   });
 
   it('Blade Echo stacks: 1 more hit of the Blade per copy (DECISIONS #488)', () => {
@@ -391,6 +393,7 @@ describe('Fracture and Shatter', () => {
   it('Deepening Fault raises Shatters once a turn, after the card that applied Fracture', () => {
     const s = play(play(fight(['deepening-fault', 'faultline-hex', 'hairline-crack'], { stars: 0 }), 'deepening-fault'), 'faultline-hex');
     expect(s.sides.a.shatterBonus).toBe(2);
+    foe(s).statuses.fracture = 7;
     const t = play(s, 'hairline-crack');
     expect(t.sides.a.shatterBonus).toBe(2);
     expect(lost(t)).toBe(22);
@@ -421,7 +424,7 @@ describe('Fracture and Shatter', () => {
     const m = play(s, 'hairline-crack');
     const bonus = m.sides.a.shatterBonus;
     const next = applyAction(db, m, { type: 'endTurn' }).state;
-    expect(foe(next, 0).statuses.fracture).toBe(8);
+    expect(foe(next, 0).statuses.fracture).toBe(6);
     expect(foe(next, 1).statuses.fracture ?? 0).toBe(0);
     expect(next.sides.a.shatterBonus).toBe(bonus);
   });
@@ -438,14 +441,14 @@ describe('Fracture and Shatter', () => {
     const s = fight(['carry-the-fault'], { foes: 2, stars: 0 });
     foe(s, 1).statuses.fracture = 16;
     const r = applyAction(db, s, { type: 'play', card: 'T0', target: foe(s, 0).id }).state;
-    // the other keeps its 16; half of it and 4 more: one Shatter
+    // the other keeps its 16; half of it and 3 more: one Shatter
     expect(foe(r, 1).statuses.fracture).toBe(16);
-    expect(foe(r, 0).statuses.fracture).toBe(12);
+    expect(foe(r, 0).statuses.fracture).toBe(11);
     expect(lost(r, 0)).toBe(20);
   });
 
-  it('Carry the Fault on a lone enemy applies 8', () => {
-    expect(foe(play(fight(['carry-the-fault']), 'carry-the-fault')).statuses.fracture).toBe(8);
+  it('Carry the Fault on a lone enemy applies 6', () => {
+    expect(foe(play(fight(['carry-the-fault']), 'carry-the-fault')).statuses.fracture).toBe(6);
   });
 
   it('Etching Edge cracks once per hit', () => {
@@ -527,10 +530,10 @@ describe('growing cards', () => {
   it('Fault Memory applies 2 more each play', () => {
     let s = fight(['fault-memory'], { stars: 0 });
     s = play(s, 'fault-memory');
-    expect(foe(s).statuses.fracture).toBe(5);
+    expect(foe(s).statuses.fracture).toBe(4);
     s.sides.a.hand.push(s.sides.a.discard.pop()!);
     s = play(s, 'fault-memory');
-    expect(foe(s).statuses.fracture).toBe(12);
+    expect(foe(s).statuses.fracture).toBe(10);
     expect(lost(s)).toBe(20);
   });
 });
@@ -744,7 +747,7 @@ const CASES: {
   { id: 'astral-pulse', dmg: 19, sp: 4 },
   { id: 'tempered-bolt', dmg: 6, sp: 9 },
   { id: 'tempered-bolt', stars: 0, dmg: 6, sp: 3 },
-  { id: 'glassbrand', dmg: 5, fracture: 3 },
+  { id: 'glassbrand', dmg: 5, fracture: 2 },
   { id: 'gamma-burst', stars: 6, dmg: 18, foeStatus: { exposed: 1, faltering: 1 } },
   { id: 'gamma-burst', stars: 4, dmg: 14, foeStatus: {} },
   { id: 'controlled-release', dmg: 24, drew: 1 },
@@ -755,20 +758,20 @@ const CASES: {
   { id: 'dying-star', dmg: 24, foeStatus: { faltering: 2 } },
   { id: 'comet', dmg: 100 },
   { id: 'supernova', dmg: 66 },
-  { id: 'faultline-hex', fracture: 7 },
-  { id: 'spreading-fault', fracture: 5 },
-  { id: 'pressure-point-hex', fracture: 5, drew: 0 },
-  { id: 'glass-prison', barrier: 7, fracture: 3 },
-  { id: 'crack-the-shell', fracture: 5 },
-  { id: 'hairline-crack', fracture: 5 },
-  { id: 'stress-the-glass', stars: 4, fracture: 10, dmg: 22 },
-  { id: 'fault-memory', fracture: 5 },
+  { id: 'faultline-hex', fracture: 5 },
+  { id: 'spreading-fault', fracture: 4 },
+  { id: 'pressure-point-hex', fracture: 4, drew: 0 },
+  { id: 'glass-prison', barrier: 7, fracture: 2 },
+  { id: 'crack-the-shell', fracture: 4 },
+  { id: 'hairline-crack', fracture: 4 },
+  { id: 'stress-the-glass', stars: 4, fracture: 7 },
+  { id: 'fault-memory', fracture: 4 },
   { id: 'final-shatter', fracture: 10, dmg: 28, barrier: 8 },
-  { id: 'collapsing-star', fracture: 12, dmg: 28 },
-  { id: 'carry-the-fault', fracture: 8 },
+  { id: 'collapsing-star', fracture: 9 },
+  { id: 'carry-the-fault', fracture: 6 },
   { id: 'deep-fault', fracture: 4 },
-  { id: 'rupture-script', fracture: 20, dmg: 66 },
-  { id: 'breaking-point-hex', dmg: 28, fracture: 8 },
+  { id: 'rupture-script', fracture: 15, dmg: 28 },
+  { id: 'breaking-point-hex', dmg: 28, fracture: 6 },
   { id: 'star-barrier', stars: 6, barrier: 14, sp: 3 },
   { id: 'glass-veil', barrier: 10, sp: 9 },
   { id: 'glass-wall', stars: 2, barrier: 15 },

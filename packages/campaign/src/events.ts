@@ -78,7 +78,7 @@ export const EVENTS: EventDef[] = [
     weight: 2,
     when: (r) => r.hp > 20,
     build: (r) => {
-      const boon = offerBoon(r.rng, r.boons, 'elite') ?? undefined;
+      const boon = offerBoon(r.rng, r.boons) ?? undefined;
       return {
         title: 'The blood altar',
         text: 'An altar drinks what you give it, and gives back. The rift rewards those who bleed for it.',
@@ -208,7 +208,7 @@ export const EVENTS: EventDef[] = [
       text: 'A small idol of black glass. It wants to be carried. It will pay for it, and so will you.',
       options: [{ id: 'idol', label: 'Take it: gain a Boon and two Wounds in your deck' }, leave],
       cardOffer: '',
-      boonOffer: offerBoon(r.rng, r.boons, 'elite') ?? '',
+      boonOffer: offerBoon(r.rng, r.boons) ?? '',
     }),
   },
   {

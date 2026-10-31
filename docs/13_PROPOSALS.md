@@ -80,7 +80,7 @@ fourth choice ("Engrave Seraphine's Mark"), so it competes with them instead of 
 
 ### 3. New Boons (draft for review)
 
-**Rule now live:** a run holds **one Legendary Boon at most** (DECISIONS #293).
+**Rule now live:** Boons have **no rarity** (DECISIONS #497), so the drafts below that name one need repricing.
 
 **Proposed engine addition:** Boons get **triggers** the same way Riftwalker traits have them (`triggers` on
 `BoonDef`, run like an Aura but not counted as one). Most of the Boons below need nothing else. Boons tied to one

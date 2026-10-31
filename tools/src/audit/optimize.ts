@@ -73,7 +73,7 @@ function legal(deck: string[]): boolean {
     count.set(base, (count.get(base) ?? 0) + 1);
     const c = db.cards[id];
     if (c?.rarity === 'legendary') legends++;
-    const lim = c?.rarity === 'basic' ? 99 : maxCopiesOf(c?.rarity);
+    const lim = c?.rarity === 'basic' ? 99 : maxCopiesOf(c?.rarity, c?.kind);
     if ((count.get(base) ?? 0) > lim) return false;
   }
   return legends <= V2_DECK_RULES.maxLegendary;

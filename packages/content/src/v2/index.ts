@@ -881,6 +881,8 @@ export const V2_DECK_RULES = {
 
 /** The most copies of one card (and its "+" version) a deck may hold, in a run and in the Arena alike, basics too (DECISIONS #337). */
 export const MAX_COPIES = 5;
+/** The most copies of one Aura (kind 'power') a deck may hold: doubling is a strategy, more than that is not (DECISIONS #498). */
+export const MAX_AURA_COPIES = 2;
 /**
  * The most copies of one card a deck may take, by rarity: MAX_COPIES of any card (Robert, 2026-10-27: "no more than 5 copies of a card
  * in a deck"; DECISIONS #337), but a Legendary or Ancestral card is one of a kind.
@@ -889,8 +891,8 @@ export const COPIES_BY_RARITY: Readonly<Record<string, number>> = {
   legendary: 1,
   ancestral: 1,
 };
-export const maxCopiesOf = (rarity: string | undefined): number =>
-  COPIES_BY_RARITY[rarity ?? 'common'] ?? MAX_COPIES;
+export const maxCopiesOf = (rarity: string | undefined, kind?: string): number =>
+  COPIES_BY_RARITY[rarity ?? 'common'] ?? (kind === 'power' ? MAX_AURA_COPIES : MAX_COPIES);
 
 export { BOONS, HEARTS, POTIONS };
 export { SHELVED_LEGENDARIES, lendLegendaries } from './shelved';

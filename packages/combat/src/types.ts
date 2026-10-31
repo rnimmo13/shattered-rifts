@@ -1060,8 +1060,6 @@ export interface HeroDef {
 export interface BoonDef {
   id: string;
   name: string;
-  /** legendary: the rarest and strongest (one held at a time) */
-  rarity: 'common' | 'uncommon' | 'rare' | 'legendary';
   /** shown to the player; written by hand because some boons mix engine and campaign effects */
   text: string;
   mana?: number;

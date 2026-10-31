@@ -41,7 +41,7 @@ export function describeEffect(e: PreludeEffect): string {
       return e.n === 1 ? `Remove a ${one} from your deck` : `Remove ${e.n} ${many} from your deck`;
     }
     case 'boon':
-      return `Gain a random ${rarityWord[e.rarity]} Boon`;
+      return 'Gain a random Boon';
     case 'potion':
       return 'Take a random Potion';
     case 'resolve':
@@ -55,10 +55,17 @@ export function describeEffect(e: PreludeEffect): string {
   }
 }
 
+const boonsIn = (effects: readonly PreludeEffect[]): number => effects.filter((e) => e.k === 'boon').length;
+
 const opt = (id: string, name: string, effects: PreludeEffect[], risky = false): PreludeOption => ({
   id,
   name,
-  text: effects.map(describeEffect).join('. ') + '.',
+  text:
+    effects
+      // (several Boons read as one line)
+      .filter((e, i) => e.k !== 'boon' || effects.findIndex((x) => x.k === 'boon') === i)
+      .map((e) => (e.k === 'boon' && boonsIn(effects) > 1 ? `Gain ${boonsIn(effects)} random Boons` : describeEffect(e)))
+      .join('. ') + '.',
   effects,
   ...(risky ? { risky } : {}),
 });
@@ -80,7 +87,7 @@ function blessings(stage: number, hurt: boolean): PreludeOption[] {
       { k: 'potion' },
       { k: 'shards', n: 40 },
     ]),
-    opt('trinket', 'A Trinket of the Road', [{ k: 'boon', rarity: 'common' }]),
+    opt('trinket', 'A Trinket of the Road', [{ k: 'boon' }]),
     opt('whetstone', 'Whetstone and Oil', [
       { k: 'upgrade', n: 1 },
       { k: 'shards', n: 60 },
@@ -120,7 +127,7 @@ function blessings(stage: number, hurt: boolean): PreludeOption[] {
     ]),
     opt('cache', 'A Hidden Cache', [{ k: 'shards', n: 120 + stage * 15 }]),
     opt('lucky-find', 'A Lucky Find', [
-      { k: 'boon', rarity: 'common' },
+      { k: 'boon' },
       { k: 'shards', n: 40 },
     ]),
     opt('apothecary', "Apothecary's Satchel", [{ k: 'potion' }, { k: 'upgrade', n: 1 }]),
@@ -163,7 +170,8 @@ function bargains(stage: number): PreludeOption[] {
       'The Rift Is Hungry',
       [
         { k: 'maxHp', n: -6 },
-        { k: 'boon', rarity: 'rare' },
+        { k: 'boon' },
+        { k: 'boon' },
       ],
       true,
     ),
@@ -199,8 +207,8 @@ function bargains(stage: number): PreludeOption[] {
       'haunted-gift',
       'A Haunted Gift',
       [
-        { k: 'boon', rarity: 'uncommon' },
-        { k: 'boon', rarity: 'common' },
+        { k: 'boon' },
+        { k: 'boon' },
         { k: 'wound', n: 1 },
       ],
       true,
@@ -229,7 +237,9 @@ function bargains(stage: number): PreludeOption[] {
       [
         { k: 'wound', n: 1 },
         { k: 'hp', n: 10 },
-        { k: 'boon', rarity: 'rare' },
+        { k: 'boon' },
+        { k: 'boon' },
+        { k: 'boon' },
       ],
       true,
     ),
@@ -303,23 +313,22 @@ export function makePrelude(
   realm: StageRealm,
   /** the run is missing some Resolve, so Resolve blessings can be offered */
   hurt = false,
+  /** how many Boons the run does not hold yet: an option never promises more than that */
+  boonsLeft = Infinity,
 ): PreludeOffer {
+  const fits = (o: PreludeOption): boolean => boonsIn(o.effects) <= boonsLeft;
+  const good = blessings(stage, hurt).filter(fits);
+  const risky = bargains(stage).filter(fits);
   if (kind === 'threshold') {
     return {
       kind,
       title: 'The Threshold',
       text: 'Before the first step into the Rift, something offers you a choice. Take one.',
-      options: [
-        ...takeDistinct(rng, blessings(stage, hurt), 3),
-        ...takeDistinct(rng, bargains(stage), 1),
-      ],
+      options: [...takeDistinct(rng, good, 3), ...takeDistinct(rng, risky, 1)],
     };
   }
-  const options: PreludeOption[] = [
-    preludeCatalogue(stage).rest,
-    ...takeDistinct(rng, blessings(stage, hurt), 2),
-  ];
-  if (nextInt(rng, 2) === 0) options.push(...takeDistinct(rng, bargains(stage), 1));
+  const options: PreludeOption[] = [preludeCatalogue(stage).rest, ...takeDistinct(rng, good, 2)];
+  if (nextInt(rng, 2) === 0) options.push(...takeDistinct(rng, risky, 1));
   return {
     kind,
     title: `Waymark: ${REALM_LABEL[realm]}`,

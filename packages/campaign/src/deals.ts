@@ -198,15 +198,15 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const rest = r.deck.filter((_, i) => i !== at);
       // a swap never raises the count of a rarity: a Legendary for a Legendary only needs the copy limit (so a deck from before
       // the one-Legendary limit can still trade one of its two)
-      const rarity = (id: string): string | undefined =>
-        COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity;
+      const def = (id: string) => COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')];
+      const rarity = (id: string): string | undefined => def(id)?.rarity;
       const like = rarity(s.from) === rarity(s.to);
       // (a Legendary or Ancestral card is one of a kind either way, DECISIONS #336)
       const base = (id: string): string => stripRoll(id).replace(/[+]$/, '');
       const copies = rest.filter((x) => base(x) === base(s.to)).length;
       if (
         !canAdd(rest, s.to, !like) ||
-        (rarity(s.to) !== 'basic' && copies >= maxCopiesOf(rarity(s.to)))
+        (rarity(s.to) !== 'basic' && copies >= maxCopiesOf(rarity(s.to), def(s.to)?.kind))
       )
         fail('That card would break the deck rules');
       r.deck[at] = s.to;

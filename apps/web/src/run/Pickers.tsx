@@ -688,15 +688,9 @@ export function MerchantView(props: {
           <div className="shop__rows">
             {m.boon && boon ? (
               <ShopRow
-                tone={`boon--${boon.rarity}`}
                 icon={<BoonChip id={boon.id} size="large" />}
                 name={boon.name}
-                kind={
-                  <>
-                    <RarityGem rarity={boon.rarity} />
-                    boon · {boon.rarity}
-                  </>
-                }
+                kind="Boon"
                 text={boon.text}
                 price={m.boon.sold ? null : m.boon.price}
                 button={m.boon.sold ? 'Sold' : shards < m.boon.price ? 'Too expensive' : 'Buy'}

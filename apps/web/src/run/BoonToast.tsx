@@ -16,7 +16,7 @@ export function BoonToast(props: { id: string; more: number; onDone: () => void 
   return (
     <button
       type="button"
-      className={`boontoast boon--${b.rarity}`}
+      className="boontoast"
       role="status"
       aria-live="polite"
       onClick={onDone}
@@ -30,7 +30,7 @@ export function BoonToast(props: { id: string; more: number; onDone: () => void 
         <b>{b.name}</b>
         <span>{b.text}</span>
         <i>
-          {b.rarity} · yours for the rest of the run
+          Yours for the rest of the run
           {props.more > 0 ? ` · ${props.more} more` : ''}
         </i>
       </span>

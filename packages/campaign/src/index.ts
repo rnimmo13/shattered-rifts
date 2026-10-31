@@ -18,8 +18,6 @@ export {
   canAdd,
   giftOffers,
   offerBoon,
-  boonOfRarity,
-  holdsLegendBoon,
   offerPotion,
   MAX_POTIONS,
   MAX_TIER,
@@ -42,8 +40,6 @@ export {
   availableNodes,
   bank,
   buyBoon,
-  discardLegendBoon,
-  answerLegendOffer,
   buyPotion,
   potionSellPrice,
   sellPotion,
@@ -124,8 +120,7 @@ export {
 } from './run';
 export { FIGHT_SHARDS, POTION_DROP_CHANCE, ELITE_HEAL_PCT } from './run';
 export {
-  BOON_WEIGHTS,
-  LOOP_LEGEND_CHANCE,
+  LOOP_BOON_CHANCE,
   CROSSED_OFFER_CHANCE,
   GIFT_LEGEND_CHANCE,
   POTION_WEIGHTS,

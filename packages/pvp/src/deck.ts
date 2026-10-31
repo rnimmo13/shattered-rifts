@@ -4,6 +4,7 @@
 import { canAdd, MAX_TIER } from '@sr/campaign';
 import {
   COMBAT_DB,
+  MAX_AURA_COPIES,
   RIFTWALKERS,
   V2_DECK_RULES,
   isDeckCard,
@@ -193,7 +194,9 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     // a copy past the 5-copy cap is left out, not the whole deck refused: a deck banked before the cap (DECISIONS #337) keeps working
     const base = stripRoll(id).replace(/[+]$/, '');
     const n = (copies.get(base) ?? 0) + 1;
-    if (n > MAX_COPIES && COMBAT_DB.cards[base]?.rarity !== 'legendary') continue;
+    // (and past the 2-Aura cap, DECISIONS #498)
+    const limit = COMBAT_DB.cards[base]?.kind === 'power' ? MAX_AURA_COPIES : MAX_COPIES;
+    if (n > limit && COMBAT_DB.cards[base]?.rarity !== 'legendary') continue;
     copies.set(base, n);
     // (the Legendary and Ancestral limits are the Arena's, checkArenaEntry)
     if (!canAdd(held, id, false))

@@ -192,6 +192,13 @@ describe('rewards', () => {
       }
     }
   }, 30_000); // (about 2 s alone; past the default 5 s under a full parallel run)
+  it('takes at most 2 copies of an Aura, a "+" counting as one, while other cards stay at 5 (DECISIONS #498)', () => {
+    expect(COMBAT_DB.cards['inner-furnace']?.kind).toBe('power');
+    expect(canAdd(['inner-furnace'], 'inner-furnace')).toBe(true);
+    expect(canAdd(['inner-furnace', 'inner-furnace'], 'inner-furnace')).toBe(false);
+    expect(canAdd(['inner-furnace', 'inner-furnace+'], 'inner-furnace')).toBe(false);
+    expect(canAdd(['inner-furnace', 'inner-furnace'], 'inner-furnace+')).toBe(false);
+  });
   it('takes at most 5 copies of a card, basics too (DECISIONS #337)', () => {
     expect(canAdd(['rift-bolt', 'rift-bolt', 'rift-bolt', 'rift-bolt'], 'rift-bolt')).toBe(true);
     expect(canAdd(['strike', 'strike', 'strike', 'strike'], 'strike')).toBe(true);

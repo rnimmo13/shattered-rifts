@@ -21,7 +21,7 @@ export type OfferQuality = 'duel' | 'elite';
 const rarityOf = (id: string): string => COMBAT_DB.cards[id]?.rarity ?? 'common';
 
 /**
- * A card can be added unless the deck holds 5 of it already, or it is a Legendary or Ancestral card the deck already holds (#337), or
+ * A card can be added unless the deck holds 5 of it already (2 of an Aura), or it is a Legendary or Ancestral card the deck already holds (#337), or
  * (with `rarityLimits`, the default) the deck already holds its Legendary or its two Ancestral cards. Checking a deck that already
  * exists (a Vault deck, a ghost) passes false: one built before the limits came down (DECISIONS #238) is still a deck, only not one
  * for the Arena.
@@ -37,9 +37,9 @@ export function canAdd(deck: readonly string[], cardId: string, rarityLimits = t
     return false;
   if (rarityLimits && c.rarity === 'ancestral' && held('ancestral') >= V2_DECK_RULES.maxAncestral)
     return false;
-  // at most 5 copies of any card, basics too, and a Legendary or Ancestral card is one of a kind (a card and its "+" count as one; #337)
+  // at most 5 copies of any card, basics too, 2 of an Aura (#498), and a Legendary or Ancestral card is one of a kind (a card and its "+" count as one; #337)
   const base = (id: string): string => stripRoll(id).replace(/\+$/, '');
-  return deck.filter((x) => base(x) === base(cardId)).length < maxCopiesOf(c.rarity);
+  return deck.filter((x) => base(x) === base(cardId)).length < maxCopiesOf(c.rarity, c.kind);
 }
 
 /**
@@ -223,29 +223,6 @@ export function cardOfRarity(
   return pool.length ? (pool[nextInt(rng, pool.length)] as string) : null;
 }
 
-/** A run holds at most one Legendary Boon (DECISIONS #293): once it has one, no other is offered, sold or given. */
-export function holdsLegendBoon(owned: readonly string[]): boolean {
-  return owned.some((id) => BOONS.some((b) => b.id === id && b.rarity === 'legendary'));
-}
-
-/** A Boon of one rarity the player does not own (any rarity if that one is used up), or null if they own them all. */
-export function boonOfRarity(
-  rng: RngState,
-  owned: readonly string[],
-  rarity: 'common' | 'uncommon' | 'rare' | 'legendary',
-  /** a Legendary may be offered although one is held: the player swaps one for the other */
-  swap = false,
-): string | null {
-  const legendOk = swap || !holdsLegendBoon(owned);
-  const left = BOONS.filter((b) => !owned.includes(b.id) && (legendOk || b.rarity !== 'legendary'));
-  if (left.length === 0) return null;
-  const same = left.filter((b) => b.rarity === rarity);
-  // (a Legendary Boon is only ever given when one was asked for)
-  const from = same.length ? same : left.filter((b) => b.rarity !== 'legendary');
-  if (!from.length) return null;
-  return (from[nextInt(rng, from.length)] as (typeof BOONS)[number]).id;
-}
-
 /** The chance (percent) that the Warden's Gift includes one of your Legendary cards. */
 export const GIFT_LEGEND_CHANCE = 30;
 
@@ -281,53 +258,14 @@ export function giftOffers(
   return out;
 }
 
-/**
- * The chance of each Boon rarity (by where the Boon comes from). Legendary Boons are rare on purpose (DECISIONS #227): an Elite
- * gives one 3% of the time, the merchant never sells one, and clearing a loop may leave one (LOOP_LEGEND_CHANCE).
- */
-export const BOON_WEIGHTS: Record<OfferQuality, Record<string, number>> = {
-  duel: { common: 70, uncommon: 25, rare: 5, legendary: 0 },
-  elite: { common: 50, uncommon: 35, rare: 12, legendary: 3 },
-};
+/** The chance (percent) that clearing a loop (beating Vorthax) leaves a Boon you do not have yet. */
+export const LOOP_BOON_CHANCE = 40;
 
-/** The chance (percent) that clearing a loop (beating Vorthax) leaves a Legendary Boon you do not have yet. */
-export const LOOP_LEGEND_CHANCE = 40;
-
-/** A Boon the player does not own yet (falls down the rarity ladder when a rarity is used up), or null if they have them all. */
-export function offerBoon(
-  rng: RngState,
-  owned: readonly string[],
-  quality: OfferQuality,
-  /** a shop never sells a Legendary Boon */
-  noLegend = false,
-  /** a Legendary may be offered although one is held: the player swaps one for the other */
-  swap = false,
-): string | null {
-  noLegend = noLegend || (!swap && holdsLegendBoon(owned));
-  const left = BOONS.filter(
-    (b) => !owned.includes(b.id) && !(noLegend && b.rarity === 'legendary'),
-  );
+/** A Boon the player does not own yet, or null if they have them all. Boons have no rarity: each is as likely as any other (DECISIONS #497). */
+export function offerBoon(rng: RngState, owned: readonly string[]): string | null {
+  const left = BOONS.filter((b) => !owned.includes(b.id));
   if (left.length === 0) return null;
-  const w = BOON_WEIGHTS[quality];
-  const total = Object.values(w).reduce((a, b) => a + b, 0);
-  let r = nextInt(rng, total);
-  let want = 'common';
-  for (const [rarity, weight] of Object.entries(w)) {
-    if (r < weight) {
-      want = rarity;
-      break;
-    }
-    r -= weight;
-  }
-  if (noLegend && want === 'legendary') want = 'rare';
-  const order = ['legendary', 'rare', 'uncommon', 'common'];
-  for (let i = order.indexOf(want); i < order.length; i++) {
-    const pool = left.filter((b) => b.rarity === order[i]);
-    if (pool.length > 0) return (pool[nextInt(rng, pool.length)] as (typeof BOONS)[number]).id;
-  }
-  // (nothing left below what was asked for: never fall back up into a Legendary)
-  const rest = left.filter((b) => b.rarity !== 'legendary' || want === 'legendary');
-  return rest.length ? (rest[nextInt(rng, rest.length)] as (typeof BOONS)[number]).id : null;
+  return (left[nextInt(rng, left.length)] as (typeof BOONS)[number]).id;
 }
 
 /** The chance of each potion rarity. */
@@ -356,12 +294,7 @@ export const MAX_POTIONS = 3;
 /** The deepest Rift Tier for now: clearing this one ends the climb (Bank is the only choice left). */
 export const MAX_TIER = 20;
 
-export const BOON_PRICE: Record<string, number> = {
-  common: 70,
-  uncommon: 120,
-  rare: 200,
-  legendary: 400,
-};
+export const BOON_PRICE = 70;
 
 export const PRICE: Record<string, number> = {
   common: 30,

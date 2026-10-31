@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { seedRng } from '@sr/combat';
 import { BOONS, COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
-  boonOfRarity,
-  holdsLegendBoon,
-  offerBoon,
   buyPotion,
   sellPotion,
   chooseCard,
@@ -60,30 +56,20 @@ describe('boons in a run', () => {
     }
   });
 
-  it('never drops a boon you already have, and never falls back to a Legendary one', () => {
-    const plain = BOONS.filter((b) => b.rarity !== 'legendary');
-    const owned = plain.slice(0, plain.length - 1).map((b) => b.id);
+  it('never drops a boon you already have, and gives none once you hold them all', () => {
+    const owned = BOONS.slice(0, BOONS.length - 1).map((b) => b.id);
     const run = { ...inFight(fresh('knight', 'owned'), 'elite'), boons: owned, hp: 30 };
     const won = finishDuel(run, true, 30);
-    // the one plain Boon left, or (3% of the time) a Legendary rolled on purpose
-    const got = won.boons.filter((b) => !owned.includes(b));
-    expect(got).toHaveLength(1);
-    expect(new Set(won.boons).size).toBe(won.boons.length);
-    // with every plain Boon owned, an Elite gives a Legendary only when it rolls one (never as a fallback)
-    const allPlain = { ...run, boons: plain.map((b) => b.id) };
-    let legends = 0;
-    for (let k = 0; k < 40; k++) {
-      const w = finishDuel({ ...allPlain, seed: `full-${k}`, rng: seedRng(`full-${k}`) }, true, 30);
-      legends += w.boons.length - plain.length;
-    }
-    expect(legends).toBeLessThan(10);
+    expect(won.boons.filter((b) => !owned.includes(b))).toEqual([(BOONS[BOONS.length - 1] as (typeof BOONS)[number]).id]);
+    const all = { ...run, boons: BOONS.map((b) => b.id) };
+    expect(finishDuel(all, true, 30).boons).toHaveLength(BOONS.length);
   });
 
   it('a Healing Vial heals after every fight and a Shard Purse pays extra', () => {
     const base = { ...fresh('knight', 'vial'), boons: ['healing-vial', 'coin-purse'] };
     const won = finishDuel({ ...inFight(base, 'duel'), hp: 30 }, true, 30);
     expect(won.hp).toBe(36);
-    expect(won.shards).toBe(15 + 10);
+    expect(won.shards).toBe(15 + 6);
   });
 
   it('the merchant sells one boon, once', () => {
@@ -120,19 +106,33 @@ describe('boons in a run', () => {
     expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
   });
 
-  it('Rift Core is gone, and a run that held it holds a Scholar\'s Tome instead (DECISIONS #496)', () => {
+  it('a run that held a Boon since taken out holds its nearest one (DECISIONS #496, #497)', () => {
     const r = fresh('trickster', 'sv');
-    expect(COMBAT_DB.boons['rift-core']).toBeUndefined();
-    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core'] }))?.boons).toEqual(['scholars-tome']);
-    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core', 'scholars-tome'] }))?.boons).toEqual(['scholars-tome']);
-    // (never offered the Tome it now holds)
-    expect(parseRun(JSON.stringify({ ...r, boons: ['scholars-tome'], legendOffer: 'rift-core' }))?.legendOffer).toBeUndefined();
-    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core'], legendOffer: 'scholars-tome' }))?.legendOffer).toBeUndefined();
+    for (const [gone, now] of [
+      ['rift-core', 'rift-satchel'],
+      ['scholars-tome', 'rift-satchel'],
+      ['battle-standard', 'might-idol'],
+      ['phoenix-ember', 'healing-vial'],
+    ] as const) {
+      expect(COMBAT_DB.boons[gone]).toBeUndefined();
+      expect(parseRun(JSON.stringify({ ...r, boons: [gone] }))?.boons).toEqual([now]);
+      expect(parseRun(JSON.stringify({ ...r, boons: [gone, now] }))?.boons).toEqual([now]);
+    }
+    // (both Boons that became a Satchel are held as one)
+    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core', 'scholars-tome'] }))?.boons).toEqual(['rift-satchel']);
   });
 
-  it('no plain Boon gives Mana: only a Warden\'s Heart does, at a price (DECISIONS #496)', () => {
-    const withMana = Object.values(COMBAT_DB.boons).filter((x) => x.mana);
-    expect(withMana.map((x) => x.id).sort()).toEqual(['blood-heart', 'ember-heart']);
+  it('a Legendary waiting to be swapped in leaves the save with the rule that made it', () => {
+    const r = fresh('trickster', 'sv');
+    const loaded = parseRun(JSON.stringify({ ...r, legendOffer: 'gilded-crown' }));
+    expect(loaded).not.toBeNull();
+    expect(loaded).not.toHaveProperty('legendOffer');
+  });
+
+  it('Boons have no rarity, and none gives Mana or a card every turn: only a Heart does, at a price (DECISIONS #496, #497)', () => {
+    for (const b of Object.values(COMBAT_DB.boons)) expect(b).not.toHaveProperty('rarity');
+    const every = Object.values(COMBAT_DB.boons).filter((x) => x.mana || x.handSize);
+    expect(every.map((x) => x.id).sort()).toEqual(['blood-heart', 'ember-heart', 'gluttons-heart']);
   });
 
   it('Aegis of Ages gives one Shielded, and there is no other Shielded Boon but the Warded Heart', () => {
@@ -297,21 +297,3 @@ describe('a lost fight is retried at full HP (DECISIONS #289, #355)', () => {
   });
 });
 
-describe('one Legendary Boon per run (DECISIONS #293)', () => {
-  const legends = BOONS.filter((b) => b.rarity === 'legendary').map((b) => b.id);
-  it('holding one, no offer or gift is ever another Legendary', () => {
-    const owned = [legends[0] as string];
-    expect(holdsLegendBoon(owned)).toBe(true);
-    expect(holdsLegendBoon([])).toBe(false);
-    for (let i = 0; i < 300; i++) {
-      const rng = seedRng(`legend-cap${i}`);
-      const a = offerBoon(rng, owned, 'elite');
-      const b = boonOfRarity(rng, owned, 'legendary');
-      for (const id of [a, b]) if (id) expect(COMBAT_DB.boons[id]?.rarity).not.toBe('legendary');
-    }
-  });
-  it('without one, a Legendary can still be asked for', () => {
-    const id = boonOfRarity(seedRng('legend-free'), [], 'legendary');
-    expect(legends).toContain(id);
-  });
-});

@@ -144,25 +144,22 @@ export interface AuditDeck {
   boons: string[];
 }
 
-/** Boons in the order a strong player would want them (Legendary ones apart: they are rare, DECISIONS #227). */
+/** Boons in the order a strong player would want them. */
 const BEST_BOONS = [
-  'battle-standard',
   'hunters-lens',
   'rift-satchel',
   'might-idol',
+  'aegis-of-ages',
   'hex-lantern',
   'iron-sigil',
   'ember-lamp',
+  'gilded-crown',
   'vigor-wick',
-  'phoenix-ember',
   'crystal-heart',
   'thorn-charm',
   'healing-vial',
   'coin-purse',
 ];
-const LEGEND_BOONS = ['scholars-tome', 'aegis-of-ages', 'gilded-crown'];
-/** how many Legendary Boons a deck of each depth has found by then */
-const LEGENDS: Record<Level, number> = { t1s1: 0, t1s3: 0, t2: 0, t5: 1, t10: 2, t20: 3 };
 
 export function buildDeck(hero: HeroId, level: Level, seed: number): AuditDeck {
   const spec = LEVEL_SPEC[level];
@@ -202,7 +199,7 @@ export function buildDeck(hero: HeroId, level: Level, seed: number): AuditDeck {
     const c = db.cards[id];
     if (!c) continue;
     const copies = kept.filter((x) => x === id).length;
-    const limit = maxCopiesOf(c.rarity);
+    const limit = maxCopiesOf(c.rarity, c.kind);
     if (copies >= limit) continue;
     if (c.rarity === 'legendary') {
       if (legends >= V2_DECK_RULES.maxLegendary) continue;
@@ -230,13 +227,12 @@ export function buildDeck(hero: HeroId, level: Level, seed: number): AuditDeck {
       n++;
     }
   }
-  const plain = BOONS.filter((b) => b.rarity !== 'legendary').map((b) => b.id);
+  const plain = BOONS.map((b) => b.id);
   let boons: string[];
   if (spec.bestBoons) boons = BEST_BOONS.slice(0, spec.boons);
   else {
     const shuffled = [...plain].sort(() => r() - 0.5);
     boons = shuffled.slice(0, spec.boons);
   }
-  boons.push(...LEGEND_BOONS.slice(0, LEGENDS[level]));
   return { deck, boons };
 }

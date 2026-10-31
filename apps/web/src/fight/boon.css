@@ -49,36 +49,21 @@
   cursor: help;
   pointer-events: auto;
 }
-/* (scoped to the chip: the written-out BoonCard carries the same rarity class) */
-.boon.boon--uncommon {
-  background: radial-gradient(circle at 35% 30%, var(--c-cyan-glow), var(--c-cyan) 60%, #0a5a78);
-  border-color: var(--c-cyan-glow);
-}
-.boon.boon--rare {
-  background: radial-gradient(
-    circle at 35% 30%,
-    #e7d6ff,
-    var(--c-violet) 60%,
-    var(--c-violet-deep)
-  );
-  border-color: var(--c-violet-glow);
-  color: #fff;
-}
-/* Legendary: rift ember, crimson with a molten core, so it never reads as a common gold one */
-.boon.boon--legendary {
+/* A Warden's Heart: rift ember, crimson with a molten core, so it never reads as a gold Boon */
+.boon.boon--heart {
   background: radial-gradient(circle at 35% 30%, #ffe2c4, #ff5a3c 50%, #7a0f24);
   border-color: #ffb08a;
   color: #fff;
   text-shadow: 0 1px 2px rgb(60 0 10 / 0.8);
   box-shadow: 0 0 12px rgb(255 80 60 / 0.6);
 }
-/* and the written-out card of a legendary Boon (rewards) glows the same way (the shop row: run.css) */
-.booncard.boon--legendary {
+/* and its written-out card glows the same way */
+.booncard.boon--heart {
   background: linear-gradient(135deg, rgb(70 8 22 / 0.85), rgb(8 10 20 / 0.8) 70%);
   border-color: #ff7a5a;
   box-shadow: 0 0 18px rgb(255 80 60 / 0.3);
 }
-.booncard.boon--legendary b {
+.booncard.boon--heart b {
   color: #ffc2a8;
 }
 .boon--large {
@@ -88,29 +73,3 @@
   flex: none;
 }
 
-/* the small X on a Legendary Boon in the run bar */
-.boonwrap {
-  position: relative;
-  display: inline-block;
-}
-.boonwrap__x {
-  position: absolute;
-  top: -0.3rem;
-  right: -0.3rem;
-  width: 1rem;
-  height: 1rem;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 1px solid var(--c-gold, #c9a24b);
-  background: #15151f;
-  color: #e8e8f0;
-  font-size: 0.8rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.boonwrap__x:hover,
-.boonwrap__x:focus-visible {
-  background: #5a1d1d;
-}

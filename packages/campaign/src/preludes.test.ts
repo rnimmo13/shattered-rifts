@@ -166,8 +166,21 @@ describe('what each effect does', () => {
     );
   });
 
+  it('never promises more Boons than the run can still gain, and says how many at once (DECISIONS #497)', () => {
+    for (let i = 0; i < 300; i++) {
+      for (const [left, most] of [[0, 0], [1, 1], [2, 2]] as const) {
+        const o = makePrelude(seedRng(`boons-left-${i}`), 'threshold', 1, 'aurelion', false, left);
+        for (const x of o.options) expect(x.effects.filter((e) => e.k === 'boon').length).toBeLessThanOrEqual(most);
+      }
+      for (const x of makePrelude(seedRng(`boons-text-${i}`), 'threshold', 1, 'aurelion').options) {
+        const n = x.effects.filter((e) => e.k === 'boon').length;
+        if (n > 1) expect(x.text).toContain(`Gain ${n} random Boons`);
+      }
+    }
+  });
+
   it('boons, potions, wounds and transforms', () => {
-    const boon = take(offering([{ k: 'boon', rarity: 'common' }]));
+    const boon = take(offering([{ k: 'boon' }]));
     expect(boon.boons).toHaveLength(1);
     expect(COMBAT_DB.boons[boon.boons[0] as string]).toBeDefined();
     const potion = take(offering([{ k: 'potion' }]));

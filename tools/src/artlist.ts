@@ -74,7 +74,7 @@ for (const c of Object.values(db.cards)) {
 lines.push('', '## Boons (icons, `boons/<id>`, 256 px, transparent)', '');
 for (const b of BOONS)
   lines.push(
-    `- **${b.name}** (\`${b.id}\`, ${b.rarity}): ${b.text} Prompt: "${b.name} relic icon, ${STYLE}"`,
+    `- **${b.name}** (\`${b.id}\`): ${b.text} Prompt: "${b.name} relic icon, ${STYLE}"`,
   );
 lines.push('', '## Potions (icons, `potions/<id>`, 256 px, transparent)', '');
 for (const p of POTIONS)

@@ -5,7 +5,12 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Rift Core is gone:** the Legendary Boon for 1 extra Mana every turn was far too strong. A run holding it now holds a Scholar's Tome.
+- **Boons have no rarity:** there are no more common, rare or Legendary Boons, the one-Legendary limit and its swap are gone, and every Boon costs 70 at a merchant.
+- **Boons gone:** Rift Core, Scholar's Tome, Battle Standard and Phoenix Ember. A run holding one gets a Rift Satchel (for the first two), an Idol of Might or a Healing Vial.
+- **Boons tuned:** Vigor Wick heals 1 a turn, Hunter's Lens gives 1 turn of Exposed, Shard Purse pays 6, The Gilded Crown is 6 Max HP and heal 3. Thorned Heart gives 4 Thorns.
+- **Threshold bargains:** The Rift Is Hungry now gives 2 Boons and The Cursed Crown 3.
+- **Auras:** a deck holds at most 2 copies of an Aura. A run's deck already over that keeps its copies but can't add more; an Arena deck leaves the extras out.
+- **Spellblade:** cards apply less Fracture, about a quarter less. Rupture Script applies 15. Shatter damage is unchanged.
 - **Merchants:** upgrading a card costs 75, then 50 more each time at the same merchant.
 - **Merchants:** the removal price only doubles within one visit: 50, 100, 200, 400, and every merchant starts over at 50.
 - **Card text:** statuses that are simply on or off have no number ("Gain Fanned"), and a Fanned Dagger plays without aiming.

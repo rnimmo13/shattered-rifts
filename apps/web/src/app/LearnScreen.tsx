@@ -4,7 +4,7 @@ import {
   DMG_PER_TIER,
   HP_PER_STAGE,
   HP_PER_TIER,
-  LOOP_LEGEND_CHANCE,
+  LOOP_BOON_CHANCE,
   MAX_TIER,
   OMENS,
   enemyScale,
@@ -205,21 +205,16 @@ function HeartList() {
   );
 }
 
-/** Every Boon, rarest last. */
+/** Every Boon. */
 function BoonList() {
-  const order = ['common', 'uncommon', 'rare', 'legendary'] as const;
   return (
     <dl>
-      {order.flatMap((rarity) =>
-        BOONS.filter((b) => b.rarity === rarity).map((b) => (
-          <div key={b.id} className="learn__row">
-            <dt>
-              {b.name} <i>({rarity === 'legendary' ? 'Legendary' : rarity})</i>
-            </dt>
-            <dd>{b.text}</dd>
-          </div>
-        )),
-      )}
+      {BOONS.map((b) => (
+        <div key={b.id} className="learn__row">
+          <dt>{b.name}</dt>
+          <dd>{b.text}</dd>
+        </div>
+      ))}
     </dl>
   );
 }
@@ -390,9 +385,8 @@ export function LearnScreen() {
           <h3>Boons</h3>
           <p>
             Boons last for the whole run, and every tier after it. Elites give one; the merchant
-            sells one (never a Legendary); some events and Threshold options give one; and beating
-            Vorthax leaves a Legendary Boon {LOOP_LEGEND_CHANCE}% of the time. A run holds one
-            Legendary Boon at most. Wardens give their Gift instead.
+            sells one; some events and Threshold options give one; and beating Vorthax leaves one{' '}
+            {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
           </p>
           <BoonList />
           <h3>Warden&rsquo;s Hearts</h3>

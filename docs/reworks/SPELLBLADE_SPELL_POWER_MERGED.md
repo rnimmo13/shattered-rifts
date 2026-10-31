@@ -5,6 +5,7 @@ ChatGPT's draft (`SPELLBLADE_SPELL_POWER_CHATGPT.md`) was the main version; this
 hand from `docs/14_CARD_COSTING.md`; no sim was run.
 
 **As built, changed from the list below:**
+- **DECISIONS #499:** cards apply about a quarter less Fracture (Rupture Script 15, Faultline Hex 5 and the rest in that entry); the list below keeps the old amounts.
 - **DECISIONS #487:** every Shatter also adds the Spell Power you hold, spending none.
 - **DECISIONS #488:** the **Obsidian Blade** is one hit of 5 + 2 per Spell Power (upgrade 8 + 2), not a growing number of hits. **Echoing Blade** adds 1 hit per copy, and copies stack.
 - **DECISIONS #486:** a Shatter is now 10 + 10 x k (20, 30, 40... 110 at 100), and every Barrier of hers grows with Spell Power: +1 per 3 held (Unbreakable Crown +1 per 2, without its old "+8 at 10"), or +1 per 3 spent this turn on Last Ember, Sigil of Glass and Afterglow. This replaces the Shatter numbers and the Barrier prices below; the bases are unchanged, so each card is 3.2 points dearer (1.6 for the three that read spending).

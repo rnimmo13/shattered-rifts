@@ -48,7 +48,7 @@ export const chance = (pct: number, win: DealStep[], lose: DealStep[] = []): Dea
 
 /** Build the event for this run (the Boon, if any, is picked here) and its options. */
 export function make(spec: DealSpec, r: RunState): EventCtx {
-  const boonOffer = spec.boon ? (offerBoon(r.rng, r.boons, 'elite') ?? '') : '';
+  const boonOffer = spec.boon ? (offerBoon(r.rng, r.boons) ?? '') : '';
   const built = spec.dyn ? spec.dyn(r) : { opts: spec.opts, cards: undefined };
   // (an optional option that cannot be taken now is left off)
   const probe = clone(r);

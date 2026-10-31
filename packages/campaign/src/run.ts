@@ -20,6 +20,7 @@ import {
   rewardPool,
   canonicalCard,
   canonicalHero,
+  BOONS,
   type HeroId,
 } from '@sr/content/v2';
 import {
@@ -53,7 +54,7 @@ import { omenEffects, omenMods } from './omens';
 import type { EnemyMod, StatusId } from '@sr/combat';
 import {
   BOON_PRICE,
-  LOOP_LEGEND_CHANCE,
+  LOOP_BOON_CHANCE,
   MAX_POTIONS,
   MAX_TIER,
   POTION_PRICE,
@@ -63,8 +64,6 @@ import {
   upgradePrice,
   ancestralPool,
   offerPotion,
-  boonOfRarity,
-  holdsLegendBoon,
   canAdd,
   cardOfRarity,
   giftOffers,
@@ -213,6 +212,7 @@ function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
       run.stage,
       realmOfStage(run, run.stage),
       run.resolve < run.maxResolve,
+      BOONS.length - run.boons.length,
     ),
   };
 }
@@ -227,50 +227,6 @@ function gainBoon(r: RunState, id: string): void {
     r.maxHp += b.maxHp;
     r.hp += b.maxHp;
   }
-}
-
-/** Give a Boon the player earned: a Legendary one while another is held waits as an offer to swap instead (`legendOffer`). */
-function giveBoon(r: RunState, id: string): void {
-  if (COMBAT_DB.boons[id]?.rarity === 'legendary' && holdsLegendBoon(r.boons)) r.legendOffer = id;
-  else gainBoon(r, id);
-}
-
-/** The Legendary Boon the run holds, if any. */
-function heldLegend(r: RunState): string | undefined {
-  return r.boons.find((id) => COMBAT_DB.boons[id]?.rarity === 'legendary');
-}
-
-/** Put down the Legendary Boon held (its Max HP goes with it; HP is never raised), so another can be offered later. */
-function dropLegend(r: RunState): void {
-  const id = heldLegend(r);
-  need(id, 'You hold no Legendary Boon');
-  r.boons = r.boons.filter((b) => b !== id);
-  const hp = COMBAT_DB.boons[id]?.maxHp ?? 0;
-  if (hp) {
-    r.maxHp = Math.max(1, r.maxHp - hp);
-    r.hp = Math.min(r.hp, r.maxHp);
-  }
-}
-
-/** The X on a Legendary Boon: give it up for good, hoping a better one is offered. */
-export function discardLegendBoon(run: RunState): RunState {
-  need(heldLegend(run), 'You hold no Legendary Boon');
-  const r = clone(run);
-  dropLegend(r);
-  return r;
-}
-
-/** Answer a Legendary Boon offered while one is held: swap it in for the one held, or keep the one held. */
-export function answerLegendOffer(run: RunState, swap: boolean): RunState {
-  const id = run.legendOffer;
-  need(id, 'No Legendary Boon is on offer');
-  const r = clone(run);
-  delete r.legendOffer;
-  if (swap) {
-    dropLegend(r);
-    gainBoon(r, id);
-  }
-  return r;
 }
 
 /** Two Warden's Hearts to offer (never the one the run holds). */
@@ -424,6 +380,14 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       // a card you put on hold earlier is waiting for you, at the price you were promised
       if (r.held) {
         const keep = r.held.filter((h) => canAdd(r.deck, h.cardId));
+        // (a held card the deck can no longer take, as an Aura it has since found twice: the deposit comes back, DECISIONS #498)
+        const back = r.held
+          .filter((h) => !keep.includes(h))
+          .reduce((sum, h) => sum + Math.ceil(Math.round(h.price / HOLD_LATER) * HOLD_DEPOSIT), 0);
+        if (back > 0) {
+          r.shards += back;
+          r.eventResult = `Your deck can no longer take a card you put on hold, so the merchant returns your ${back} shard deposit.`;
+        }
         items.unshift(
           ...keep.map((h) => ({ cardId: h.cardId, price: h.price, sold: false, held: true })),
         );
@@ -441,7 +405,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         price: POTION_PRICE[COMBAT_DB.potions[id]?.rarity ?? 'common'] ?? 40,
         sold: false,
       }));
-      const boon = offerBoon(r.rng, r.boons, 'elite', true);
+      const boon = offerBoon(r.rng, r.boons);
       r.context.merchant = {
         items,
         ...(crossed ? { crossed } : {}),
@@ -450,11 +414,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         potions,
         ...(boon
           ? {
-              boon: {
-                id: boon,
-                price: BOON_PRICE[COMBAT_DB.boons[boon]?.rarity ?? 'common'] ?? 100,
-                sold: false,
-              },
+              boon: { id: boon, price: BOON_PRICE, sold: false },
             }
           : {}),
       };
@@ -799,11 +759,10 @@ export function finishDuel(
   // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
   const fromEvent = node.bonus !== undefined;
   if (node.kind === 'elite' && !fromEvent) {
-    const id = offerBoon(r.rng, r.boons, 'elite', false, true);
+    const id = offerBoon(r.rng, r.boons);
     if (id) {
-      giveBoon(r, id);
-      // (a Legendary left as an offer is not gained yet: the player answers it on the map)
-      if (r.legendOffer !== id) boonGained = id;
+      gainBoon(r, id);
+      boonGained = id;
     }
   }
   if (node.kind === 'elite') heal(r, (r.maxHp * ELITE_HEAL_PCT) / 100); // an elite leaves you a little breathing room
@@ -817,12 +776,12 @@ export function finishDuel(
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     if (r.stage >= FINAL_STAGE) {
-      // the Heart of the Rift sometimes leaves something behind: a Legendary Boon you do not have yet
-      if (nextInt(r.rng, 100) < LOOP_LEGEND_CHANCE) {
-        const legend = boonOfRarity(r.rng, r.boons, 'legendary', true);
-        if (legend && COMBAT_DB.boons[legend]?.rarity === 'legendary') {
-          giveBoon(r, legend);
-          r.eventResult = `${r.eventResult} The Heart of the Rift ${r.legendOffer === legend ? 'offers' : 'leaves something behind:'} the Legendary Boon ${COMBAT_DB.boons[legend]?.name ?? legend}.`;
+      // the Heart of the Rift sometimes leaves something behind: a Boon you do not have yet
+      if (nextInt(r.rng, 100) < LOOP_BOON_CHANCE) {
+        const left = offerBoon(r.rng, r.boons);
+        if (left) {
+          gainBoon(r, left);
+          r.eventResult = `${r.eventResult} The Heart of the Rift leaves something behind: the Boon ${COMBAT_DB.boons[left]?.name ?? left}.`;
         }
       }
     }
@@ -1084,7 +1043,7 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
       return gone.length ? `${listOf(gone)} leave${gone.length === 1 ? 's' : ''} your deck.` : null;
     }
     case 'boon': {
-      const id = boonOfRarity(r.rng, r.boons, e.rarity);
+      const id = offerBoon(r.rng, r.boons);
       if (!id) return null;
       gainBoon(r, id);
       return `You gain the Boon ${COMBAT_DB.boons[id]?.name ?? id}.`;

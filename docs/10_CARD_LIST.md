@@ -724,13 +724,13 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Spellbolt | 1+X/2◆ | attack | common | Spell. Deal 8 (+4 per Spell Power spent) damage. |
 | Arcane Pulse | 1+X/2◆ | attack | common | Spell. Deal 7 (+3 per Spell Power spent) damage to ALL enemies. |
 | Tempered Bolt | 1 | attack | common | Spell. Deal 6 damage. Gain 1 Spell Power. If you had no Spell Power: Gain 2 Spell Power. |
-| Glassbrand | 1 | attack | common | Spell. Deal 5 damage. Apply 3 Fracture. |
-| Faultline Hex | 1 | skill | common | Spell. Apply 7 Fracture. |
-| Spreading Fault | 1 | skill | common | Spell. Apply 5 Fracture to ALL enemies. |
-| Pressure Point | 1 | skill | common | Spell. Apply 5 Fracture. If this caused a Shatter: Draw 1 card. |
-| Glass Prison | 1 | skill | common | Spell. Gain 5 (+1 per 3 Spell Power) Barrier. Apply 3 Fracture. |
-| Crack the Shell | 1 | skill | common | Spell. Remove up to 6 Barrier from the target. Apply 5 Fracture. |
-| Hairline Crack | 0 | skill | common | Spell. Apply 5 Fracture. Consume. |
+| Glassbrand | 1 | attack | common | Spell. Deal 5 damage. Apply 2 Fracture. |
+| Faultline Hex | 1 | skill | common | Spell. Apply 5 Fracture. |
+| Spreading Fault | 1 | skill | common | Spell. Apply 4 Fracture to ALL enemies. |
+| Pressure Point | 1 | skill | common | Spell. Apply 4 Fracture. If this caused a Shatter: Draw 1 card. |
+| Glass Prison | 1 | skill | common | Spell. Gain 5 (+1 per 3 Spell Power) Barrier. Apply 2 Fracture. |
+| Crack the Shell | 1 | skill | common | Spell. Remove up to 6 Barrier from the target. Apply 4 Fracture. |
+| Hairline Crack | 0 | skill | common | Spell. Apply 4 Fracture. Consume. |
 | Arcane Barrier | 1+X/2◆ | skill | common | Spell. Gain 5 (+3 per Spell Power spent) Barrier. |
 | Glass Veil | 2 | skill | common | Spell. Gain 8 (+1 per 3 Spell Power) Barrier. Next turn, gain 6 Barrier. Gain 1 Spell Power. |
 | Bladewall | 2 | skill | uncommon | Spell. Gain 12 (+1 per 3 Spell Power) Barrier. Gain 3 Spell Power. |
@@ -741,7 +741,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Shard Strike | 1 | attack | uncommon | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you have 9 or more Spell Power: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Tyrant Strike | 2 | attack | uncommon | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If you spent Spell Power earlier this turn: Apply 2 Exposed. |
 | Crosscut | 1 | attack | uncommon | Sword. Deal 2 damage 2 times, 1 more time per 4 Spell Power. If your previous card was a Spell: Deal 2 damage 2 times and gain 1 Spell Power. |
-| Fault Piercer | 2 | attack | uncommon | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If the target has Fracture: Apply 3 Fracture. |
+| Fault Piercer | 2 | attack | uncommon | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If the target has Fracture: Apply 2 Fracture. |
 | Call the Blade | 1 | skill | uncommon | Return a random Sword from your discard pile to your hand. Gain 2 Spell Power. |
 | Crowned Edge | 1 | skill | uncommon | Gain 2 Primed until the end of your turn. Draw 1 card. |
 | Heat of the Forge | 1 | skill | uncommon | Gain 2 Primed. |
@@ -754,14 +754,14 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Falling Shards | 1+X◆ | attack | uncommon | Spell. Deal 9 (+4 per Spell Power spent) damage. If this is fatal: Apply Fracture equal to the Spell Power spent to ALL enemies. |
 | Molten Ruin | 2+X◆ | attack | uncommon | Spell. Deal 12 (+6 per Spell Power spent) damage. |
 | Arcane Flood | 2+X◆ | attack | uncommon | Spell. Deal 10 (+4 per Spell Power spent) damage to ALL enemies. |
-| Stress the Glass | 1+X/2◆ | skill | uncommon | Spell. Apply 4 (+3 per Spell Power spent) Fracture. |
-| Fault Memory | 1 | skill | uncommon | Spell. Apply 5 Fracture. Grows 2: this card gains 2 more each time you play it. |
+| Stress the Glass | 1+X/2◆ | skill | uncommon | Spell. Apply 3 (+2 per Spell Power spent) Fracture. |
+| Fault Memory | 1 | skill | uncommon | Spell. Apply 4 Fracture. Grows 2: this card gains 2 more each time you play it. |
 | Final Shatter | 2 | skill | uncommon | Spell. Apply 10 Fracture. If this caused a Shatter: Gain 6 (+1 per 3 Spell Power) Barrier. |
-| Collapsing Vein | 2 | skill | uncommon | Spell. Apply 7 Fracture to ALL enemies. Apply 5 Fracture. |
-| Carry the Fault | 1 | skill | uncommon | Spell. Apply 4 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 8. |
+| Collapsing Vein | 2 | skill | uncommon | Spell. Apply 6 Fracture to ALL enemies. Apply 3 Fracture. |
+| Carry the Fault | 1 | skill | uncommon | Spell. Apply 3 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 6. |
 | Deep Fault | 2 | skill | uncommon | Spell. Your Shatters deal 6 more for the rest of the fight. Apply 4 Fracture. Consume. |
 | Deepening Fault | 2 | aura | uncommon | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight. |
-| Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
+| Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 2 Fracture to each enemy that has Fracture. |
 | Pillar of Glass | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Fault Reader | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
 | Glass Armory | 1 | aura | uncommon | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
@@ -787,8 +787,8 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Dying Ember | 2+X/2◆ | attack | rare | Spell. Deal 8 (+4 per Spell Power spent) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
 | Lava Bomb | 3+X◆ | attack | rare | Spell. Deal 20 (+10 per Spell Power spent) damage. Consume. |
 | Cataclysm | 3+X◆ | attack | rare | Spell. Deal 18 (+6 per Spell Power spent) damage to ALL enemies. Consume. |
-| Rupture Script | 2 | skill | rare | Spell. Apply 20 Fracture. Consume. |
-| Breaking Point | 2 | skill | rare | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 8 Fracture. Consume. |
+| Rupture Script | 2 | skill | rare | Spell. Apply 15 Fracture. Consume. |
+| Breaking Point | 2 | skill | rare | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 6 Fracture. Consume. |
 | Crucible Heart | 1 | aura | rare | The first time each turn a card of yours grows: That card grows 2 more. |
 | Measured Ruin | 2 | aura | rare | Gain 2 Measured Ruin for the rest of the fight. |
 | Obsidian Aegis | 1 | aura | rare | At the end of your turn: Gain Barrier equal to half your Spell Power. |

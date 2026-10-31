@@ -45,6 +45,13 @@ describe('checkEntry', () => {
     }
   });
 
+  it('leaves out copies of an Aura past 2, a "+" counting as one (DECISIONS #498)', () => {
+    const base = entryOf('knight');
+    const r = checkEntry({ ...base, deck: [...base.deck, 'inner-furnace', 'inner-furnace+', 'inner-furnace', 'inner-furnace'] });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.entry.deck).toEqual([...base.deck, 'inner-furnace', 'inner-furnace+']);
+  });
+
   it('takes a real starter deck and cleans the name', () => {
     const r = checkEntry({ ...entryOf('knight'), name: '  <b>Rob</b>\u0007  ' });
     expect(r.ok).toBe(true);
