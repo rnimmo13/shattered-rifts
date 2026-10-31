@@ -72,7 +72,8 @@ export interface Entry {
 // (34: the trait pass #411-413, and the class identity reworks: the Knight's Guard, Riposte and Thorns #415, then the Assassin, Spellblade,
 // Shaman and Monk #416-#419)
 // (53: the Spellblade rebuilt on Spell Power and Fracture, spend any amount, #480)
-export const RULES_VERSION = 53;
+// (54: X and X/2 Spell Power costs, Fracture only adds up, Obsidian Ward, Lava Bomb, Spell Power on more cards, #482-484)
+export const RULES_VERSION = 54;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

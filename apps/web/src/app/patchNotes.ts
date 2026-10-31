@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.143.0',
+    date: '2026-10-31',
+    title: 'Fracture keeps climbing',
+    summary: 'A second pass on the Spellblade: costs on the card instead of a slider, Fracture that only adds up, and more Barrier and Spell Power early.',
+    notes: [
+      { kind: 'changed', text: 'No more slider. X on a card spends all your Spell Power and X/2 spends half, rounded down. Basics and commons spend at most half. Mirror Glass costs 2.' },
+      { kind: 'changed', text: 'Fracture never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100, with no limit past that. Cleanses no longer remove it.' },
+      { kind: 'changed', text: 'Carry the Fault applies 4 plus half the Fracture on your most-cracked other enemy (8 against one enemy). Rupture Script applies 20.' },
+      { kind: 'changed', text: 'Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. It borrows another card\'s picture for now.' },
+      { kind: 'balance', text: 'Lava Bomb deals 10 per Spell Power spent, her biggest payoff. Pale Ward gains 8 Barrier.' },
+      { kind: 'balance', text: 'Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power, with some of their other numbers lowered.' },
+      { kind: 'changed', text: 'Sword and Spell are now a badge in a card\'s top right with a tooltip. The Spell Power orb and counter show only the number.' },
+      { kind: 'fixed', text: 'A Sword in your hand shows its real hits and total, with Might and Primed counted.' },
+    ],
+    heads: 'Old Arena games and replays no longer play. A Hairline Hex in a saved deck becomes Obsidian Ward.',
+  },
+  {
     version: '0.142.0',
     date: '2026-10-31',
     title: 'The Spellblade reforged',
