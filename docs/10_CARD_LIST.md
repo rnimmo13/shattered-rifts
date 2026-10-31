@@ -783,7 +783,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Whispering Edge | 1 | aura | rare | Gain 1 Keen for the rest of the fight. |
 | Tempered Focus | 1 | aura | rare | At the start of your turn: Gain 1 Primed. |
 | Cleaving Edge | 1 | aura | rare | Gain 2 Spell Power. Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
-| Echoing Blade | 2 | aura | rare | Your Obsidian Blade strikes 1 more time per 2 Spell Power for the rest of the fight. Extra copies add nothing. |
+| Echoing Blade | 2 | aura | rare | Your Obsidian Blade strikes 1 more time for the rest of the fight. |
 | Dying Ember | 2+X/2◆ | attack | rare | Spell. Deal 8 (+4 per Spell Power spent) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
 | Lava Bomb | 3+X◆ | attack | rare | Spell. Deal 20 (+10 per Spell Power spent) damage. Consume. |
 | Cataclysm | 3+X◆ | attack | rare | Spell. Deal 18 (+6 per Spell Power spent) damage to ALL enemies. Consume. |
@@ -799,7 +799,7 @@ Tokens (made by other cards):
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Obsidian Blade | 2 | attack | common | Sword. Deal 5 damage, 1 more time per 2 Spell Power. Hold. Opening hand. |
+| Obsidian Blade | 2 | attack | common | Sword. Deal 5 (+2 per Spell Power) damage. Hold. Opening hand. |
 
 ## Drunkard (midden, 88 HP)
 

@@ -1632,11 +1632,9 @@ function execOp(r: Run, a: Act, op: Op): void {
         return;
       }
       let hits = op.hits ?? 1;
-      if (op.scale?.into === 'hits') {
-        // (Blade Echo: the Blade's growing hits count twice, however many Echoes you have: DECISIONS #487)
-        const echoed = a.card?.tags?.includes(BLADE_TAG) && stacks(a.actor, 'bladeecho') > 0;
-        hits += scaleValue(r, a, op.scale, a.target) * (echoed ? 2 : 1);
-      }
+      if (op.scale?.into === 'hits') hits += scaleValue(r, a, op.scale, a.target);
+      // (Blade Echo: the Blade strikes once more per stack, DECISIONS #488)
+      if (a.card?.tags?.includes(BLADE_TAG)) hits += stacks(a.actor, 'bladeecho');
       const knife = a.card?.tags?.includes(EDGE_TAG) === true;
       const edge = knife ? stacks(a.actor, 'edge') : 0;
       // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
@@ -5135,6 +5133,8 @@ export interface LiveDamage {
   echoed?: boolean;
   /** the total is against each enemy it strikes */
   each?: boolean;
+  /** (DECISIONS #489) this is what a card that plays others from your consumed pile comes to: how many it plays (`lo` and `hi` are their sum) */
+  played?: number;
   /** (DECISIONS #486) this is the Barrier a scaled Barrier effect would give you, not damage */
   barrier?: boolean;
 }
@@ -5280,6 +5280,31 @@ export function previewCardDamage(
       pull = Math.max(0, op.amount);
       return;
     }
+    // (a card that plays every fitting card in your consumed pile shows what they come to, each after what the one before spent: DECISIONS #489)
+    if (op.op === 'playPile' && op.from === 'exhaust' && op.all && !earlier) {
+      const sim = clone(after);
+      const simSide = sim.sides[sd.id];
+      const simHero = heroOf(simSide);
+      const simFoe = sim.sides[other(sd.id)].units.find((u) => u.id === targetId);
+      const piled = sd.exhausted.filter((c) => fitsFree(r, op, c));
+      let lo = 0;
+      let hi = 0;
+      for (const c of piled) {
+        const better = op.upgrade ? db.cards[c.card]?.upgrade : undefined;
+        const played = { ...c, card: better && db.cards[better] ? better : c.card };
+        simSide.hand = [played];
+        for (const l of previewCardDamage(db, sim, played.id, targetId).values()) {
+          if (l.barrier) continue;
+          lo += l.total?.lo ?? l.lo;
+          hi += l.total?.hi ?? l.hi;
+        }
+        simSide.honedUsed = true;
+        simSide.attacksPlayed += 1;
+        if (simHero) delete simHero.statuses.vigor;
+        if (simFoe && stacks(simFoe, 'shielded') > 0) simFoe.statuses.shielded = stacks(simFoe, 'shielded') - 1;
+      }
+      out.set(i, { lo, hi, printed: 0, calc: true, played: piled.length });
+    }
     // (a Barrier that reads the board shows its real number, worked out as the engine's 'barrier' op does: DECISIONS #486)
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
     const unaimed = friendly && !mine && 'scale' in op && op.scale?.of === 'target';
@@ -5329,11 +5354,11 @@ export function previewCardDamage(
     const [eLo, eHi] = many ? [0, 0] : [emberLo, emberHi];
     const firstBonus = many && emberHi > 0 ? { lo: emberLo, hi: emberHi } : null;
     emberLo = emberHi = 0;
-    // (hits that grow: how many, and what they come to against each enemy it could hit)
-    const growing = op.scale?.into === 'hits';
-    const echoed = growing && def.tags?.includes(BLADE_TAG) && stacks(hero, 'bladeecho') > 0;
-    const grown = growing ? scaleValue(r, a, op.scale!, chosen) : 0;
-    const hitCount = (op.hits ?? 1) + grown * (echoed ? 2 : 1);
+    // (hits that grow, or Blade Echo's: how many, and what they come to against each enemy it could hit)
+    const echoes = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
+    const growing = op.scale?.into === 'hits' || echoes > 0;
+    const grown = op.scale?.into === 'hits' ? scaleValue(r, a, op.scale, chosen) : 0;
+    const hitCount = (op.hits ?? 1) + grown + echoes;
     const sums: number[] = [];
     const one = (t: Unit | null, ember = 0): number => {
       // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
@@ -5417,8 +5442,7 @@ export function previewCardDamage(
         ? {
             hits: hitCount,
             total: { lo: Math.min(...sums), hi: Math.max(...sums) },
-            // (Blade Echo's growing hits count twice; only said when it added some)
-            ...(echoed && grown > 0 ? { echoed: true } : {}),
+            ...(echoes > 0 ? { echoed: true } : {}),
             ...(to === 'allFoes' ? { each: true } : {}),
           }
         : {}),

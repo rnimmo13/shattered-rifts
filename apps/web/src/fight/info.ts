@@ -361,7 +361,7 @@ export const STATUS_INFO: Record<
     name: 'Blade Echo',
     glyph: '⧉',
     tone: 'good',
-    text: 'Your Obsidian Blade strikes 1 more time per 2 Spell Power. More stacks add nothing.',
+    text: 'Your Obsidian Blade strikes 1 more time for each stack.',
   },
   bladebane: {
     name: 'Bladebane',

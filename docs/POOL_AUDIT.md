@@ -764,7 +764,7 @@ cost and effects whose numbers differ by about a third or less.
 | Cleaving Edge | rare | aura | 1 | Gain 2 Spell Power. Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
 | Crucible Heart | rare | aura | 1 | The first time each turn a card of yours grows: That card grows 2 more. |
 | Dying Ember | rare | attack | 2 | Spell. Deal 8 (+4 per Spell Power spent) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
-| Echoing Blade | rare | aura | 2 | Your Obsidian Blade strikes 1 more time per 2 Spell Power for the rest of the fight. Extra copies add nothing. |
+| Echoing Blade | rare | aura | 2 | Your Obsidian Blade strikes 1 more time for the rest of the fight. |
 | Fated Hand | rare | skill | 1 | Choose 2 cards in your draw pile and put them on top. Draw 2 cards. Gain 1 Spell Power. Consume. |
 | Hammer and Anvil | rare | attack | 2 | Sword. Deal 3 damage 4 times, 1 more time per 2 Spell Power. Gain Spell Power equal to the different enemies your Swords hit this turn. |
 | Lava Bomb | rare | attack | 3 | Spell. Deal 20 (+10 per Spell Power spent) damage. Consume. |

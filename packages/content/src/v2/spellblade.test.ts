@@ -168,13 +168,12 @@ describe('Spell Power', () => {
     expect(s.sides.a.stars).toBe(6);
   });
 
-  it('the Blade strikes once more per 2 Spell Power, with no hit cap, and spends none', () => {
+  it('the Blade deals 2 more per Spell Power, with no cap, and spends none (DECISIONS #488)', () => {
     const at = (stars: number) => lost(play(fight([BLADE], { stars }), BLADE));
     expect(at(0)).toBe(5);
-    expect(at(1)).toBe(5);
-    expect(at(4)).toBe(15);
-    expect(at(12)).toBe(35);
-    expect(at(40)).toBe(105);
+    expect(at(1)).toBe(7);
+    expect(at(8)).toBe(21);
+    expect(at(40)).toBe(85);
     expect(play(fight([BLADE], { stars: 12 }), BLADE).sides.a.stars).toBe(12);
   });
 });
@@ -184,14 +183,14 @@ describe('what makes the Blade hit harder', () => {
     const s = fight(['forge-heat', BLADE]);
     hero(s).statuses.might = 2;
     const r = play(play(s, 'forge-heat'), BLADE);
-    // 5 hits of 5 + 2 Might + 2 Primed
-    expect(lost(r)).toBe(5 * 9);
+    // one hit: 5 + 2 per Spell Power, 2 Might and 2 Primed
+    expect(lost(r)).toBe(21 + 2 + 2);
     expect(hero(r).statuses.vigor ?? 0).toBe(0);
   });
 
   it('Whispering Edge adds to every Sword hit and to nothing else', () => {
     const r = play(play(fight(['whispering-edge', BLADE]), 'whispering-edge'), BLADE);
-    expect(lost(r)).toBe(5 * 6);
+    expect(lost(r)).toBe(21 + 1);
     const spell = play(play(fight(['whispering-edge', 'skybolt'], { stars: 0 }), 'whispering-edge'), 'skybolt');
     expect(lost(spell)).toBe(8);
   });
@@ -214,14 +213,13 @@ describe('what makes the Blade hit harder', () => {
   it('Cleaving Edge makes the Blade strike every enemy and gains 2', () => {
     const r = play(play(fight(['cleaving-edge', BLADE], { foes: 2 }), 'cleaving-edge'), BLADE);
     expect(r.sides.a.stars).toBe(10);
-    expect(lost(r, 0)).toBe(6 * 5);
-    expect(lost(r, 1)).toBe(6 * 5);
+    expect(lost(r, 0)).toBe(25);
+    expect(lost(r, 1)).toBe(25);
   });
 
-  it('Echoing Blade adds hits to the Blade, and not to other Swords', () => {
+  it('Echoing Blade adds a hit to the Blade, and not to other Swords', () => {
     const s = play(fight(['echoing-blade', BLADE, 'obsidian-flurry'], { stars: 8 }), 'echoing-blade');
-    // 1 hit, 4 for 8 Spell Power, 4 more from the Echo
-    expect(lost(play(s, BLADE))).toBe(5 * 9);
+    expect(lost(play(s, BLADE))).toBe(21 * 2);
     expect(lost(play(s, 'obsidian-flurry'))).toBe(3 * 7);
   });
 
@@ -287,36 +285,37 @@ describe('Fracture and Shatter', () => {
   });
 
   it('a card shows a growing Sword\'s real hits and total', () => {
-    const s = fight([BLADE], { stars: 12 });
+    const s = fight(['storm-of-glass'], { stars: 12 });
     const live = previewCardDamage(db, s, 'T0', foe(s).id);
-    expect(cardText(db, db.cards[BLADE]!, live)).toContain('[[live:same:5]] damage, 1 more time per 2 Spell Power (7 hits, [[live:calc:35]] total).');
+    expect(cardText(db, db.cards['storm-of-glass']!, live)).toContain('[[live:same:5]] damage 4 times, 1 more time per 2 Spell Power (10 hits, [[live:calc:50]] total).');
     hero(s).statuses.might = 2;
     const m = previewCardDamage(db, s, 'T0', foe(s).id);
-    expect(cardText(db, db.cards[BLADE]!, m)).toContain('[[live:up:7]] damage, 1 more time per 2 Spell Power (7 hits, [[live:calc:49]] total).');
-    hero(s).statuses.bladeecho = 1;
-    delete hero(s).statuses.might;
-    const e = previewCardDamage(db, s, 'T0', foe(s).id);
-    expect(cardText(db, db.cards[BLADE]!, e)).toContain('1 more time per 2 Spell Power (13 hits with Blade Echo, [[live:calc:65]] total).');
+    expect(cardText(db, db.cards['storm-of-glass']!, m)).toContain('[[live:up:7]] damage 4 times, 1 more time per 2 Spell Power (10 hits, [[live:calc:70]] total).');
   });
 
-  it('the Blade reads as what the engine really does: swept, Shielded and with no hits to echo', () => {
+  it('the Blade says its rule, and what it comes to now', () => {
+    const s = fight([BLADE], { stars: 12 });
+    const text = () => cardText(db, db.cards[BLADE]!, previewCardDamage(db, s, 'T0', foe(s).id));
+    expect(text()).toContain('Deal 5 (+2 per Spell Power) damage ([[live:calc:29]]).');
+    hero(s).statuses.bladeecho = 1;
+    expect(text()).toContain('Deal 5 (+2 per Spell Power) damage ([[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total).');
+  });
+
+  it('the Blade reads as what the engine really does: swept and Shielded', () => {
     const swept = fight([BLADE], { stars: 12, foes: 2 });
     hero(swept).statuses.bladesweep = 1;
     hero(swept).statuses.bladeecho = 1;
     const a = previewCardDamage(db, swept, 'T0', foe(swept).id);
-    expect(cardText(db, db.cards[BLADE]!, a)).toContain('(13 hits with Blade Echo, [[live:calc:65]] total each)');
-    expect(lost(play(swept, BLADE), 0)).toBe(65);
-    expect(lost(play(swept, BLADE), 1)).toBe(65);
+    expect(cardText(db, db.cards[BLADE]!, a)).toContain('(  [[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total each)'.replace('(  ', '('));
+    expect(lost(play(swept, BLADE), 0)).toBe(58);
+    expect(lost(play(swept, BLADE), 1)).toBe(58);
 
     const shield = fight([BLADE], { stars: 12 });
+    hero(shield).statuses.bladeecho = 1;
     foe(shield).statuses.shielded = 1;
     const b = previewCardDamage(db, shield, 'T0', foe(shield).id).get(0)!;
-    expect(b.total).toEqual({ lo: 30, hi: 30 });
-    expect(lost(play(shield, BLADE))).toBe(30);
-
-    const empty = fight([BLADE], { stars: 1 });
-    hero(empty).statuses.bladeecho = 1;
-    expect(previewCardDamage(db, empty, 'T0', foe(empty).id).get(0)?.echoed).toBeUndefined();
+    expect(b.total).toEqual({ lo: 29, hi: 29 });
+    expect(lost(play(shield, BLADE))).toBe(29);
   });
 
   it('a card shows what a spell will really deal', () => {
@@ -333,20 +332,20 @@ describe('Fracture and Shatter', () => {
     expect(foe(later).statuses.fracture).toBe(7);
   });
 
-  it('Blade Echo: the Blade strikes 1 more per 2 Spell Power, once however many you have (DECISIONS #487)', () => {
+  it('Blade Echo stacks: 1 more hit of the Blade per copy (DECISIONS #488)', () => {
     const blade = (echoes: number, might = 0) => {
       const s = fight([BLADE], { stars: 12 });
       if (echoes) hero(s).statuses.bladeecho = echoes;
       if (might) hero(s).statuses.might = might;
       return lost(play(s, BLADE));
     };
-    expect(blade(0)).toBe(35);
-    expect(blade(1)).toBe(65);
-    expect(blade(3)).toBe(65);
-    expect(blade(1, 2)).toBe(91);
+    expect(blade(0)).toBe(29);
+    expect(blade(1)).toBe(58);
+    expect(blade(3)).toBe(116);
+    expect(blade(1, 2)).toBe(31 * 2);
     const none = fight([BLADE, 'echoing-blade'], { stars: 0 });
-    expect(lost(play(play(none, 'echoing-blade'), BLADE))).toBe(5);
-    expect(cardText(db, db.cards['echoing-blade']!)).toContain('1 more time per 2 Spell Power');
+    expect(lost(play(play(none, 'echoing-blade'), BLADE))).toBe(5 * 2);
+    expect(cardText(db, db.cards['echoing-blade']!)).toContain('strikes 1 more time');
   });
 
   it('Barrier stops a Shatter', () => {

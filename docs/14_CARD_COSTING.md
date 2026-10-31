@@ -450,7 +450,8 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
 | **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. |
 | **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
-| **Blade Echo** | **+1 hit per 2 SP on the Blade** | 4 more hits at 8 SP, so 20 a Blade (24 upgraded). Copies do not stack (DECISIONS #487). |
+| **Obsidian Blade** | **5 + 2 per SP**, 21 at 8 SP | Against a budget of 19 for 2 Mana, with Hold and Opening hand on top (DECISIONS #488). Might and Primed add once a swing, so they buy little here without Blade Echo. |
+| **Blade Echo** | **+1 Blade hit** a copy | 21 more per swing at 8 SP (DECISIONS #488). Copies stack: 42, 63, 84. |
 | **Barrier +1 per 3 SP** | **+3.2** | 2.67 Barrier at the priced 8 SP, x1.2 (DECISIONS #486). +1 per 2 (Unbreakable Crown) is +4.8. |
 | **Barrier +1 per 3 SP spent this turn** | **+1.6** | About 4 spent by then, on the cards that need her empty or spending. |
 

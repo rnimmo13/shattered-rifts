@@ -5,7 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
-- **Spellblade:** every Shatter adds your Spell Power to its damage. Echoing Blade now gives the Obsidian Blade 1 more hit per 2 Spell Power instead of replaying it, and extra copies add nothing.
+- **Recall the Blades** shows how many Daggers it will play and the damage they come to.
+- **Spellblade:** every Shatter adds your Spell Power to its damage. The Obsidian Blade now deals 2 more damage per Spell Power instead of gaining hits, and each Echoing Blade gives it 1 more hit.
 - **Spellblade:** Shatters now deal 20 at 10 Fracture and 10 more each time, 110 at 100. All her Barrier cards grow with Spell Power, and a card in hand shows the Barrier it would really give.
 - **Clearer card text everywhere:** what a trigger or condition does is now one sentence, and what always happens comes before it, so it is clear where a condition stops.
 - **More Spell Power for the Spellblade:** Lava Bomb deals 10 per point spent, her biggest payoff, and Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power.

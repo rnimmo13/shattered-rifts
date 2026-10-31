@@ -170,6 +170,34 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
     expect(s.sides.a.exhausted.filter((c) => c.card === 'sleeve-knife')).toHaveLength(2);
   });
 
+  it('Recall the Blades shows what its Daggers will really deal (DECISIONS #489)', () => {
+    const at = (fix: (s: CombatState) => void, card = 'recall-the-blades') => {
+      const s = fight([card]);
+      s.sides.a.exhausted = [
+        { id: 'K1', card: 'sleeve-knife' },
+        { id: 'K2', card: 'sleeve-knife' },
+        { id: 'K3', card: 'strike' },
+      ];
+      fix(s);
+      const shown = previewCardDamage(db, s, 'T0', foe(s).id).get(0)!;
+      const before = foe(s).hp;
+      expect(shown.lo, card).toBe(before - foe(play(s, card)).hp);
+      return { shown, text: cardText(db, db.cards[card]!, previewCardDamage(db, s, 'T0', foe(s).id)) };
+    };
+    const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
+    const plain = at(() => {});
+    expect(plain.shown).toMatchObject({ lo: 8, hi: 8, played: 2 });
+    expect(plain.text).toContain('they go back there (2 played, [[live:calc:8]] total).');
+    at((s) => (hero(s).statuses.might = 2));
+    at((s) => (hero(s).statuses.vigor = 3));
+    at((s) => (hero(s).statuses.edge = 2));
+    at((s) => (hero(s).statuses.honed = 3));
+    at((s) => (foe(s).statuses.exposed = 2));
+    at((s) => (foe(s).statuses.shielded = 1));
+    at(() => {}, 'recall-the-blades+');
+    expect(at((s) => (s.sides.a.exhausted = [])).shown).toMatchObject({ lo: 0, played: 0 });
+  });
+
   it('Spare Blades (Up My Sleeve) gets 1 cheaper every time it is played', () => {
     let s = play(fight(['spare-blades']), 'spare-blades');
     const inst = s.sides.a.discard.find((c) => c.card === 'spare-blades')!;

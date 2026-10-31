@@ -63,7 +63,7 @@ export type StatusId =
   // --- the Regent's pieces (Obsidia, the spellblade; DECISIONS #369)
   | 'reflect' // Barrier that soaks an attack sends the soaked damage back to the attacker; it ends when your next turn starts
   | 'bladesweep' // your blade cards (tag BLADE_TAG: the Obsidian Blade) strike every enemy instead of one
-  | 'bladeecho' // your blade-tagged attacks count their growing hits twice; more stacks add nothing (DECISIONS #487)
+  | 'bladeecho' // your blade-tagged attacks strike once more per stack (DECISIONS #488)
   | 'bladebane' // takes double damage from blade-tagged attacks (a card puts it on for the rest of the turn)
   | 'freeplay' // the first this-many cards you play each turn cost no Mana
   | 'orbit' // for every ORBIT_STEP Mana you spend, gain this much Mana

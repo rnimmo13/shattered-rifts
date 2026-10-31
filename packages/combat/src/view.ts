@@ -1212,7 +1212,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         if (o.status === 'bladesweep' && o.to === 'self')
           return 'Your Obsidian Blade strikes ALL enemies for the rest of the fight.';
         if (o.status === 'bladeecho' && o.to === 'self')
-          return 'Your Obsidian Blade strikes 1 more time per 2 Spell Power for the rest of the fight. Extra copies add nothing.';
+          return `Your Obsidian Blade strikes ${n === 1 ? '1 more time' : `${n} more times`} for the rest of the fight.`;
         if (o.status === 'bladebane' && o.to === 'target')
           return 'Your Obsidian Blade deals double damage to the target this turn.';
         if (o.status === 'freeplay' && o.to === 'self')
@@ -1906,21 +1906,28 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
  */
 function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }> | null, l: LiveDamage): string {
   const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
-  if (l.calc || !o) {
-    const dot = text.indexOf('.');
-    const mark = `[[live:calc:${num}]]`;
-    return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
+  // (a card that plays others: how many, and what they come to, DECISIONS #489)
+  if (l.played !== undefined) {
+    const dot = text.lastIndexOf('.');
+    const mark = ` (${l.played} played, [[live:calc:${num}]] total)`;
+    return dot < 0 ? `${text}${mark}` : `${text.slice(0, dot)}${mark}${text.slice(dot)}`;
   }
-  // (hits that grow: the rule stays, and what it comes to now follows it, "Deal 5 damage, 1 more time per 2 Spell Power (7 hits, 35 total)", DECISIONS #487)
+  // (more than one hit: the rule stays, and what it comes to now follows it, "Deal 5 damage, 1 more time per 2 Spell Power (7 hits, 35 total)", DECISIONS #487)
   if (l.hits !== undefined) {
     const per = `[[live:${l.lo === l.printed && l.lo === l.hi ? 'same' : l.lo >= l.printed ? 'up' : 'calc'}:${num}]]`;
-    const said = text.replace(/^Deal \d+/, `Deal ${per}`);
+    // (an amount that is a formula keeps it too, and says what one hit comes to: "Deal 5 (+2 per Spell Power) damage (21 a hit, 2 hits...)")
+    const said = l.calc ? text : text.replace(/^Deal \d+/, `Deal ${per}`);
     const end = said.search(/\.( |$)/);
     const sum = l.total ?? { lo: l.lo * l.hits, hi: l.hi * l.hits };
     const all = sum.lo === sum.hi ? String(sum.lo) : `${sum.lo}-${sum.hi}`;
     const hits = `${l.hits} ${l.hits === 1 ? 'hit' : 'hits'}${l.echoed ? ' with Blade Echo' : ''}`;
-    const mark = ` (${hits}, [[live:calc:${all}]] total${l.each ? ' each' : ''})`;
+    const mark = ` (${l.calc ? `[[live:calc:${num}]] a hit, ` : ''}${hits}, [[live:calc:${all}]] total${l.each ? ' each' : ''})`;
     return end < 0 ? `${said}${mark}` : `${said.slice(0, end)}${mark}${said.slice(end)}`;
+  }
+  if (l.calc || !o) {
+    const dot = text.indexOf('.');
+    const mark = `[[live:calc:${num}]]`;
+    return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
   }
   // (green when it can only be more than printed, red when only less, gold for a range that goes both ways)
   const dir =
@@ -2078,7 +2085,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       const kills = !isTrap && o.op === 'damage' ? o.onKill : undefined;
       const plain = kills ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>) : o;
       if (kills) late.push(`If this is fatal: ${joinClause(kills.map((x) => opText(db, x, who)))}`);
-      const l = o.op === 'damage' || o.op === 'barrier' ? live?.get(i) : undefined;
+      const l = o.op === 'damage' || o.op === 'barrier' || o.op === 'playPile' ? live?.get(i) : undefined;
       const line = l
         ? liveDamageText(opText(db, plain, who), plain.op === 'damage' ? plain : null, l)
         : opText(db, plain, who);

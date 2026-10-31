@@ -2,7 +2,7 @@
 // Fracture (DECISIONS #480; the list with every price: docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md). No companions.
 //
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
-//   Swords   - hold it: a Sword's hits grow with it and swinging spends nothing
+//   Swords   - hold it: a Sword's hits grow with it (the Obsidian Blade's damage instead) and swinging spends nothing
 //   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
 //   Fracture - marks on an enemy that only add up: every 10 Shatters it, harder each time (20, 30... 110 at 100, + the Spell Power held), found in rewards, not the starter
 // No caps on hits or spending, by Robert's call: Might and Primed are how a Sword deck pays off.
@@ -88,13 +88,13 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [ward(10), gain(1)] },
   }),
   // (a card of her starting deck, always in the opening hand: DECISIONS #436)
-  a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [swing(5, 1, 2)], {
+  a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [scaled(dmg(5), per('stars', 2))], {
     retain: true,
     innate: true,
     tags: ['blade', SWORD],
     source: 'token',
     weapon: true,
-    up: { effects: [swing(6, 1, 2)] },
+    up: { effects: [scaled(dmg(8), per('stars', 2))] },
   }),
   // (a card that only takes up room; nothing of hers makes it now, and old effects in other pools may)
   a('basic', 'rubble', 'Rubble', 'skill', 1, 'none', [], {

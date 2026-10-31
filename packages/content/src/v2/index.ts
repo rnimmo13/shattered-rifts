@@ -326,7 +326,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Spell Power', 'Swords', 'Spells', 'Fracture'],
     howTo: [
       'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
-      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) strikes once more for every 2 Spell Power. Might and Primed add to every hit.',
+      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords strike more often. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
       'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 30 at 20, up to 110 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
