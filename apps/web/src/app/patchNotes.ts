@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.147.0',
+    date: '2026-10-31',
+    title: 'Boons, Auras and Fracture',
+    summary: 'Boons no longer have rarities, a deck holds 2 copies of an Aura, and the Spellblade applies less Fracture.',
+    heads: 'Old Arena games and replays no longer play. Saved runs holding a removed Boon get a replacement.',
+    notes: [
+      { kind: 'changed', text: 'Boons have no rarity. Every Boon costs 70 at a merchant, and the one-Legendary limit and its swap are gone.' },
+      { kind: 'balance', text: 'Rift Core, Scholar\'s Tome, Battle Standard and Phoenix Ember are gone. A run holding one gets a Rift Satchel (for the first two), an Idol of Might or a Healing Vial.' },
+      { kind: 'balance', text: 'Vigor Wick heals 1 a turn, Hunter\'s Lens gives 1 turn of Exposed, Shard Purse pays 6, and The Gilded Crown is 6 Max HP and heal 3 after fights. Thorned Heart gives 4 Thorns.' },
+      { kind: 'changed', text: 'The Rift Is Hungry now gives 2 Boons and The Cursed Crown gives 3.' },
+      { kind: 'balance', text: 'A deck holds at most 2 copies of an Aura. A run\'s deck already over that keeps its copies but can\'t add more, and an Arena deck leaves the extras out.' },
+      { kind: 'changed', text: 'A card on hold that your deck can no longer take refunds its deposit at the next merchant.' },
+      { kind: 'balance', text: 'The Spellblade\'s cards apply about a quarter less Fracture: Rupture Script applies 15 and Faultline Hex 5. Shatter damage is unchanged.' },
+    ],
+  },
+  {
     version: '0.146.0',
     date: '2026-10-31',
     title: 'Merchant prices',
