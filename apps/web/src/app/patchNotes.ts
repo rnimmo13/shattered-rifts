@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.144.0',
+    date: '2026-10-31',
+    title: 'Clearer card text',
+    summary: 'Every card now makes it clear where a condition or trigger stops, and Spell Power costs are easier to read.',
+    notes: [
+      { kind: 'changed', text: 'Everything one trigger or condition does is now one sentence: "Draw 1 card and gain 2 Barrier."' },
+      { kind: 'changed', text: 'What always happens comes first, then keywords like Consume, then each condition, so nothing after a condition can be mistaken for part of it.' },
+      { kind: 'changed', text: 'A summon says what the companion does inside its own brackets.' },
+      { kind: 'changed', text: 'Spell Power costs on cards are bigger and bolder on a brighter circle, X/2 included.' },
+      { kind: 'balance', text: 'Shard Strike checks for 9 Spell Power after its gain, so holding 8 now earns the Barrier.' },
+    ],
+    heads: 'Old Arena games and replays no longer play.',
+  },
+  {
     version: '0.143.0',
     date: '2026-10-31',
     title: 'Fracture keeps climbing',
