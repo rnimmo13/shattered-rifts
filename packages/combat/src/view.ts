@@ -1909,7 +1909,7 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }> | null, l
   // (a card that plays others: how many, and what they come to, DECISIONS #489)
   if (l.played !== undefined) {
     const dot = text.lastIndexOf('.');
-    const mark = ` (${l.played} played, [[live:calc:${num}]] total)`;
+    const mark = ` (${l.played} played, [[live:calc:${num}]] total${l.each ? ' each' : ''})`;
     return dot < 0 ? `${text}${mark}` : `${text.slice(0, dot)}${mark}${text.slice(dot)}`;
   }
   // (more than one hit: the rule stays, and what it comes to now follows it, "Deal 5 damage, 1 more time per 2 Spell Power (7 hits, 35 total)", DECISIONS #487)

@@ -306,7 +306,7 @@ describe('Fracture and Shatter', () => {
     hero(swept).statuses.bladesweep = 1;
     hero(swept).statuses.bladeecho = 1;
     const a = previewCardDamage(db, swept, 'T0', foe(swept).id);
-    expect(cardText(db, db.cards[BLADE]!, a)).toContain('(  [[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total each)'.replace('(  ', '('));
+    expect(cardText(db, db.cards[BLADE]!, a)).toContain('([[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total each)');
     expect(lost(play(swept, BLADE), 0)).toBe(58);
     expect(lost(play(swept, BLADE), 1)).toBe(58);
 
@@ -315,6 +315,7 @@ describe('Fracture and Shatter', () => {
     foe(shield).statuses.shielded = 1;
     const b = previewCardDamage(db, shield, 'T0', foe(shield).id).get(0)!;
     expect(b.total).toEqual({ lo: 29, hi: 29 });
+    expect(b.lo).toBe(29);
     expect(lost(play(shield, BLADE))).toBe(29);
   });
 

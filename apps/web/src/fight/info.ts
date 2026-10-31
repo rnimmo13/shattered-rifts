@@ -666,7 +666,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   sword: {
     name: 'Sword',
-    text: 'An Attack that strikes more times the more Spell Power you hold. Swinging spends none. Might and Primed add to every hit.',
+    text: 'An Attack that reads your Spell Power and spends none: most strike more times, and the Obsidian Blade deals more damage. Swinging spends none. Might and Primed add to every hit.',
   },
   spell: {
     name: 'Spell',
@@ -965,7 +965,7 @@ export const UI_TIPS = {
   lumen: (n: number): TipContent => ({
     kicker: 'Second resource',
     title: `Spell Power ${n}`,
-    text: 'The magic stored in your blade. Swords strike more times the more you hold, and spend none. Spells spend it: X on the card means all you hold, X/2 half, rounded down. Unlike Mana it lasts the whole fight.',
+    text: 'The magic stored in your blade. Swords hit harder the more you hold, and spend none. Spells spend it: X on the card means all you hold, X/2 half, rounded down. Unlike Mana it lasts the whole fight.',
   }),
   draw: {
     kicker: 'Pile',

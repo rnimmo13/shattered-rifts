@@ -448,7 +448,7 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
 | **Fracture** | **3.1** a point, **4.1** to ALL | It only adds up, and the k-th Shatter deals 10 + 10k + the Spell Power held: 43 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 50 at 20, 90 at 30, 200 at 50, 650 at 100. |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
-| **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. |
+| **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. Worth less on a turn the Obsidian Blade swings, one hit without Blade Echo (DECISIONS #488); not repriced. |
 | **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
 | **Obsidian Blade** | **5 + 2 per SP**, 21 at 8 SP | Against a budget of 19 for 2 Mana, with Hold and Opening hand on top (DECISIONS #488). Might and Primed add once a swing, so they buy little here without Blade Echo. |
 | **Blade Echo** | **+1 Blade hit** a copy | 21 more per swing at 8 SP (DECISIONS #488). Copies stack: 42, 63, 84. |

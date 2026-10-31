@@ -196,6 +196,25 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
     at((s) => (foe(s).statuses.shielded = 1));
     at(() => {}, 'recall-the-blades+');
     expect(at((s) => (s.sides.a.exhausted = [])).shown).toMatchObject({ lo: 0, played: 0 });
+
+    // (as it sits in hand, not yet aimed: a Shield stops only the first Dagger)
+    const unaimed = fight(['recall-the-blades'], 1);
+    unaimed.sides.a.exhausted = [
+      { id: 'K1', card: 'sleeve-knife' },
+      { id: 'K2', card: 'sleeve-knife' },
+    ];
+    foe(unaimed).statuses.shielded = 1;
+    expect(previewCardDamage(db, unaimed, 'T0').get(0)).toMatchObject({ lo: 4, hi: 4 });
+
+    // (Fanned: each Dagger strikes every enemy, and the total says so)
+    const fanned = fight(['recall-the-blades']);
+    fanned.sides.a.exhausted = [
+      { id: 'K1', card: 'sleeve-knife' },
+      { id: 'K2', card: 'sleeve-knife' },
+    ];
+    fanned.sides.a.units.find((u) => u.kind === 'hero')!.statuses.fanned = 1;
+    const live = previewCardDamage(db, fanned, 'T0', foe(fanned).id);
+    expect(cardText(db, db.cards['recall-the-blades']!, live)).toContain('(2 played, [[live:calc:8]] total each)');
   });
 
   it('Spare Blades (Up My Sleeve) gets 1 cheaper every time it is played', () => {

@@ -5144,7 +5144,7 @@ export interface LiveDamage {
  * The damage a card in the active side's hand would deal right now, for showing on the card (as Slay the Spire does): Might, stances,
  * Faltering, Sharpen, Edge, Honed and Vigor counted, and the target's Exposed and Wrath too when a target is given. With no target, a card
  * that picks one, or one that hits every enemy, gives the range over the enemies it could hit. Keyed by the effect's index in the
- * card's effects (top-level damage effects that hit enemies, and scaled Barrier on yourself, only). Reads the state and never changes it.
+ * card's effects (top-level damage effects that hit enemies, scaled Barrier on yourself, and a play of your consumed pile, only). Reads the state and never changes it.
  */
 export function previewCardDamage(
   db: CombatDb,
@@ -5285,25 +5285,30 @@ export function previewCardDamage(
       const sim = clone(after);
       const simSide = sim.sides[sd.id];
       const simHero = heroOf(simSide);
-      const simFoe = sim.sides[other(sd.id)].units.find((u) => u.id === targetId);
       const piled = sd.exhausted.filter((c) => fitsFree(r, op, c));
       let lo = 0;
       let hi = 0;
+      let each = false;
       for (const c of piled) {
         const better = op.upgrade ? db.cards[c.card]?.upgrade : undefined;
         const played = { ...c, card: better && db.cards[better] ? better : c.card };
+        // (an upgrade that plays a pile itself could preview for ever: as the engine's rule keeps it from being played from here)
+        if (db.cards[played.card]?.effects.some((x) => x.op === 'playPile')) continue;
         simSide.hand = [played];
         for (const l of previewCardDamage(db, sim, played.id, targetId).values()) {
           if (l.barrier) continue;
           lo += l.total?.lo ?? l.lo;
           hi += l.total?.hi ?? l.hi;
+          each = each || !!l.each;
         }
         simSide.honedUsed = true;
         simSide.attacksPlayed += 1;
         if (simHero) delete simHero.statuses.vigor;
-        if (simFoe && stacks(simFoe, 'shielded') > 0) simFoe.statuses.shielded = stacks(simFoe, 'shielded') - 1;
+        // (a Shield stops only the first card: whichever enemy this turns out to be)
+        for (const u of sim.sides[other(sd.id)].units)
+          if (stacks(u, 'shielded') > 0) u.statuses.shielded = stacks(u, 'shielded') - 1;
       }
-      out.set(i, { lo, hi, printed: 0, calc: true, played: piled.length });
+      out.set(i, { lo, hi, printed: 0, calc: true, played: piled.length, ...(each ? { each } : {}) });
     }
     // (a Barrier that reads the board shows its real number, worked out as the engine's 'barrier' op does: DECISIONS #486)
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
@@ -5415,11 +5420,13 @@ export function previewCardDamage(
       // (Shielded only stops as many hits as it has stacks; the rest land in full)
       const stopped = t ? Math.min(stacks(t, 'shielded'), hitCount) : 0;
       sums.push(stopped > 0 && !(at.extracted > 0) ? n * (hitCount - stopped) : dealt * hitCount);
+      // (several hits on a Shield: the card says what the ones that land deal)
+      const shown = stopped > 0 && stopped < hitCount && !(at.extracted > 0) ? n : dealt;
       if (dealt >= bestDealt) {
         bestDealt = dealt;
         bestHow = how;
       }
-      return dealt;
+      return shown;
     };
     const targets = pool.length ? pool : [null];
     let bestDealt = -1;
@@ -5443,9 +5450,9 @@ export function previewCardDamage(
             hits: hitCount,
             total: { lo: Math.min(...sums), hi: Math.max(...sums) },
             ...(echoes > 0 ? { echoed: true } : {}),
-            ...(to === 'allFoes' ? { each: true } : {}),
           }
         : {}),
+      ...(to === 'allFoes' ? { each: true } : {}),
     });
     riposted = false;
   });
