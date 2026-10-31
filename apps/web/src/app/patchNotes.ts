@@ -29,6 +29,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.145.0',
+    date: '2026-10-31',
+    title: 'Spell Power everywhere',
+    summary: 'The Spellblade\u2019s Shatters, Barrier and Obsidian Blade all grow with Spell Power, merchants remove as many cards as you can pay for, and a run is now Tiers, Acts and Floors.',
+    notes: [
+      { kind: 'balance', text: 'Shatters hit much harder: 20 at 10 Fracture and 10 more each time, 110 at 100, plus 1 for each Spell Power you hold.' },
+      { kind: 'balance', text: 'All the Spellblade\u2019s fixed Barrier grows with Spell Power: 1 more per 3 you hold (per 2 on Unbreakable Crown, which loses its bonus at 10). Last Ember, Sigil of Glass and Afterglow count what you have spent this turn.' },
+      { kind: 'balance', text: 'The Obsidian Blade is now one hit of 5, plus 2 per Spell Power, instead of gaining hits. Upgraded, it starts at 8.' },
+      { kind: 'balance', text: 'Each Echoing Blade gives the Obsidian Blade 1 more hit.' },
+      { kind: 'changed', text: 'Merchants remove as many cards as you can pay for on one visit. Each costs double the last: 40, 80, 160...' },
+      { kind: 'changed', text: 'A run is now Tiers, Acts and Floors. The home page\u2019s New Run button says Play.' },
+      { kind: 'changed', text: 'A card in your hand shows the Barrier it would really give, and Recall the Blades shows how many Daggers it plays and what they deal.' },
+      { kind: 'changed', text: 'A growing Sword keeps its rule beside its total: "Deal 5 damage 4 times, 1 more time per 2 Spell Power (10 hits, 50 total)."' },
+      { kind: 'changed', text: 'Statuses that are simply on or off have no number: "Gain Fanned", not "Gain 1 Fanned".' },
+      { kind: 'changed', text: 'A Fanned Dagger plays without aiming. An Inked Dagger still asks, for its Faltering.' },
+      { kind: 'changed', text: 'On a phone, Begin the run stays in view while you look over your Riftwalker.' },
+      { kind: 'fixed', text: 'The total on a Sword or Obsidian Blade was wrong against a Shielded enemy, and now says "each" when it strikes every enemy.' },
+      { kind: 'fixed', text: 'A card that counts your suits now counts its own suit in the number shown in your hand.' },
+      { kind: 'fixed', text: 'Should stop the Riftwalker on the home page starting off to one side on some phones.' },
+    ],
+    heads: 'Old Arena games and replays no longer play.',
+  },
+  {
     version: '0.144.0',
     date: '2026-10-31',
     title: 'Clearer card text',

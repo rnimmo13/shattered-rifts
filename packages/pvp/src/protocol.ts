@@ -74,7 +74,8 @@ export interface Entry {
 // (53: the Spellblade rebuilt on Spell Power and Fracture, spend any amount, #480)
 // (54: X and X/2 Spell Power costs, Fracture only adds up, Obsidian Ward, Lava Bomb, Spell Power on more cards, #482-484)
 // (55: Shard Strike checks its Spell Power after its gain, #485)
-export const RULES_VERSION = 55;
+// (56: Shatters, the Spellblade's Barrier, the Obsidian Blade and Echoing Blade, #486-#488)
+export const RULES_VERSION = 56;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;
