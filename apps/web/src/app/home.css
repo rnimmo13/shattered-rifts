@@ -216,15 +216,18 @@
   justify-items: center;
   align-items: end;
   grid-template-rows: minmax(0, 1fr);
-  height: min(56vh, 34rem);
+  --show-h: min(56vh, 34rem);
+  height: var(--show-h);
+  /* the full width, with the picture fitted and centred inside: sized from the canvas instead, a browser could keep a stale place for it
+     from before the figure was drawn, off to one side until the next Riftwalker was picked */
+  width: 100%;
   margin-bottom: 1.2rem;
 }
 .home__figure {
   position: relative;
   z-index: 1;
+  width: 100%;
   height: 100%;
-  width: auto;
-  max-width: 100%;
   min-height: 0;
   object-fit: contain;
   filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.55));
@@ -238,7 +241,10 @@
 .home__floor {
   position: absolute;
   bottom: -0.6rem;
-  width: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  /* about 70% of a figure's width, which goes by the height it is drawn at */
+  width: calc(var(--show-h) * 0.42);
   height: 1.6rem;
   border-radius: 50%;
   background: radial-gradient(
@@ -344,7 +350,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .home__show {
-    height: min(34vh, 18rem);
+    --show-h: min(34vh, 18rem);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -537,11 +543,11 @@
 
 /* the same showcase on a page with more below it (the Sandbox): a smaller figure (and on a phone, smaller still) */
 .home__stage--compact .home__show {
-  height: min(36vh, 22rem);
+  --show-h: min(36vh, 22rem);
 }
 @media (max-width: 52rem) {
   .home__stage--compact .home__show {
-    height: min(28vh, 14rem);
+    --show-h: min(28vh, 14rem);
   }
 }
 

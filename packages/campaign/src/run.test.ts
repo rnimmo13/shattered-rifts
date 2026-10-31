@@ -415,7 +415,7 @@ describe('the other rooms and the rules around them', () => {
   });
   const nodeId = (r: RunState) => r.map.nodes[0]!.id;
 
-  it('the merchant sells cards and one removal, and refuses what you cannot afford', () => {
+  it('the merchant sells cards and removals, and refuses what you cannot afford', () => {
     const base = fresh('knight', 'shop');
     const card = offerCards(seedRng('shop'), 'knight', base.deck, 'duel', 1)[0]!;
     const shop = (shards: number): RunState => ({
@@ -437,7 +437,8 @@ describe('the other rooms and the rules around them', () => {
     const removed = buyRemoval(shop(80), 'strike');
     expect(removed.deck).toHaveLength(9);
     expect(removed.shards).toBe(40);
-    expect(() => buyRemoval(removed, 'strike')).toThrow(RunError); // one per visit
+    expect(removed.context?.merchant?.removePrice).toBe(80);
+    expect(() => buyRemoval(removed, 'strike')).toThrow(RunError); // the next costs 80, and 40 is left
     expect(leaveMerchant(shop(0)).phase).toBe('map');
   });
 

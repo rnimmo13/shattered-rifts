@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Merchants** remove as many cards as you can pay for on one visit, each double the price of the last.
+- **Words:** a run is now Tiers, Acts and Floors, and the home page's New Run button says Play.
+- **Phones:** Begin the run stays in view on the Riftwalker screen, and the Riftwalker on the home page no longer starts off to one side.
 - **Recall the Blades** shows how many Daggers it will play and the damage they come to.
 - **Spellblade:** every Shatter adds your Spell Power to its damage. The Obsidian Blade now deals 2 more damage per Spell Power instead of gaining hits, and each Echoing Blade gives it 1 more hit.
 - **Spellblade:** Shatters now deal 20 at 10 Fracture and 10 more each time, 110 at 100. All her Barrier cards grow with Spell Power, and a card in hand shows the Barrier it would really give.

@@ -1364,7 +1364,6 @@ export function buyRemoval(run: RunState, card: string): RunState {
   const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
     NonNullable<RunState['context']>['merchant']
   >;
-  need(!m.removed, 'The merchant only removes one card per visit');
   need(r.shards >= m.removePrice, 'Not enough shards');
   need(
     r.deck.length > V2_DECK_RULES.minSize,
@@ -1376,6 +1375,8 @@ export function buyRemoval(run: RunState, card: string): RunState {
   r.deck.splice(i, 1);
   m.removed = true;
   r.removals = (r.removals ?? 0) + 1;
+  // (as many as you can pay for, each double the last, on this visit too: DECISIONS #491)
+  m.removePrice = shopPrice(r, removePrice(r.removals));
   return r;
 }
 

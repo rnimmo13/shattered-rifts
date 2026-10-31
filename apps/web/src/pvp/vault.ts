@@ -76,7 +76,7 @@ export function deckSnapshot(
   return { ...deckFromRun(run, now), stage: stagesCleared(run) };
 }
 
-/** Where a saved deck is in the campaign, as everywhere else: "Tier 2 · Stage 1/3". */
+/** Where a saved deck is in the campaign, as everywhere else: "Tier 2 · Act 1/3". */
 export const progressLabelOf = (d: Pick<VaultDeck, 'tier' | 'stage'>): string =>
   progressLabel(d.tier, d.stage);
 

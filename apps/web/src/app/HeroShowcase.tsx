@@ -1,7 +1,7 @@
 // The picked Riftwalker on show (figure, name, role, mechanics, trait) with the row of icons to pick another. The home page and
 // the Sandbox both use it, so a Riftwalker is chosen the same way everywhere.
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
 import { heroFigure } from '../fight/art';
 import { ART_READY_EVENT } from '../art/assets';
@@ -22,7 +22,8 @@ function HeroStage(props: { hero: HeroId }) {
     window.addEventListener(ART_READY_EVENT, on);
     return () => window.removeEventListener(ART_READY_EVENT, on);
   }, []);
-  useEffect(() => {
+  // (before the first paint, so the canvas is never seen at its default size)
+  useLayoutEffect(() => {
     const c = ref.current;
     const g = c?.getContext('2d');
     if (!c || !g) return;

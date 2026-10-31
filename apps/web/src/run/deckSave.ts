@@ -33,7 +33,7 @@ export async function loseSavedDecks(run: Pick<RunState, 'seed'>): Promise<numbe
   return Math.max(gone.length, online);
 }
 
-/** The words for where this run's deck stands in the Arena ("Tier 2 · Stage 1/3"), or null if no copy of it is saved. */
+/** The words for where this run's deck stands in the Arena ("Tier 2 · Act 1/3"), or null if no copy of it is saved. */
 export function savedArenaLabel(run: Pick<RunState, 'seed'>): string | null {
   const mine = runOf(safeId(RUN_PREFIX + run.seed));
   const d = loadVault().find((x) => runOf(x.id) === mine);

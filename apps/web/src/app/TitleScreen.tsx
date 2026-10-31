@@ -1,6 +1,7 @@
-// The home page: the Riftwalker you have picked on show, the three ways to play (New Run, Arena, Sandbox), and sign-in.
+// The home page: the Riftwalker you have picked on show, the three ways to play (Play, Arena, Sandbox), and sign-in.
 
 import { useEffect, useState, type CSSProperties } from 'react';
+import { MAX_TIER } from '@sr/campaign';
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
 import {
@@ -228,11 +229,11 @@ export function TitleScreen() {
             disabled={full}
             onClick={startNew}
           >
-            <b>New Run</b>
+            <b>Play</b>
             <small>
               {full
                 ? `You have ${RUN_SLOTS} runs in progress. Finish or abandon one to start another.`
-                : `Three stages as the ${hero.hero.name}. Build a deck and face Vorthax.`}
+                : `Start a new campaign run as the ${hero.hero.name}, through ${MAX_TIER} tiers of fights.`}
             </small>
           </button>
           <a className="home__play" href="#/arena">

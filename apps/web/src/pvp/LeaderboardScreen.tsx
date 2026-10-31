@@ -307,7 +307,7 @@ export function LeaderboardScreen() {
               />
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
-                head={['Player', 'Character', 'Where they are', 'Stages cleared', 'Status']}
+                head={['Player', 'Character', 'Where they are', 'Acts cleared', 'Status']}
                 numeric={[3]}
                 rows={view.board as RunStanding[]}
                 you={view.you as (RunStanding & { rank: number }) | null}

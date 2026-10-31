@@ -66,13 +66,13 @@ export const dateLabel = (ms: number): string =>
 export const heroName = (hero: string): string =>
   Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
 
-/** Where a player is in the campaign, short: "Tier 1 · Stage 2/3", or "Tier 2 · Cleared" (an older deck without a stage: just "Tier 1"). */
+/** Where a player is in the campaign, short: "Tier 1 · Act 2/3", or "Tier 2 · Cleared" (an older deck without a stage: just "Tier 1"). */
 export function progressLabel(tier: number, stage?: number): string {
   if (stage === undefined) return `Tier ${tier}`;
-  return stage >= 3 ? `Tier ${tier} · Cleared` : `Tier ${tier} · Stage ${stage + 1}/3`;
+  return stage >= 3 ? `Tier ${tier} · Cleared` : `Tier ${tier} · Act ${stage + 1}/3`;
 }
 
-/** Where a saved deck is, said the same way as everywhere else (see progressLabel): "Tier 2 · Stage 1/3", "Tier 1 · Cleared". */
+/** Where a saved deck is, said the same way as everywhere else (see progressLabel): "Tier 2 · Act 1/3", "Tier 1 · Cleared". */
 export function tierLabel(d: Pick<VaultDeck, 'id' | 'tier'> & { stage?: number }): string {
   // (decks saved by older builds carried the stage in their id)
   const stage = d.stage ?? Number(/:s(\d)$/.exec(d.id)?.[1] ?? 3);

@@ -593,6 +593,26 @@
   font-size: 1.02rem;
   color: var(--c-text-dim);
 }
+/* on a phone the Sanctum is long: Begin stays in view at the bottom of the screen, and Import stays below it in the page */
+@media (max-width: 52rem) {
+  .setup__actions {
+    display: contents;
+  }
+  .setup__start {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    justify-self: stretch;
+    display: grid;
+    /* (above the build label in the corner of the screen) */
+    padding: 1rem 0 calc(1.6rem + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, transparent, var(--c-void) 45%);
+  }
+  .setup__start .setup__go {
+    justify-self: stretch;
+    width: 100%;
+  }
+}
 
 .picker {
   display: grid;

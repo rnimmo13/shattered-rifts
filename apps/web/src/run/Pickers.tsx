@@ -494,11 +494,8 @@ export function MerchantView(props: {
   const beltFull = props.run.potions.length >= 3;
   // (every card can be removed, a sanctified one too)
   const removable = new Set(removableCards(props.run.deck));
-  const canRemove =
-    !m.removed &&
-    shards >= m.removePrice &&
-    props.run.deck.length > V2_DECK_RULES.minSize &&
-    removable.size > 0;
+  const roomToRemove = props.run.deck.length > V2_DECK_RULES.minSize && removable.size > 0;
+  const canRemove = shards >= m.removePrice && roomToRemove;
   // each upgrade bought at this shop makes the next one dearer; the next shop starts again from the base price
   const upPrice = shopPrice(props.run, upgradePrice(m.upgrades ?? 0));
   const upgradeable = new Set(upgradable(props.run.deck));
@@ -718,11 +715,14 @@ export function MerchantView(props: {
               icon={<span className="shoprow__glyph">✂</span>}
               name="Remove a card"
               kind="service"
-              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Each removal bought this run doubles the price of the next (${shopPrice(props.run, // (a removal bought at this visit is already counted)
-                removePrice((props.run.removals ?? 0) + (m.removed ? 0 : 1)))} after this one).`}
-              price={m.removed ? null : m.removePrice}
+              text={`Cut one card from your deck for good. A thinner deck draws its best cards more often. Buy as many as you can pay for: each removal this run doubles the price of the next (${shopPrice(props.run, removePrice((props.run.removals ?? 0) + 1))} after this one).`}
+              price={m.removePrice}
               button={
-                m.removed ? 'Done' : shards < m.removePrice ? 'Too expensive' : 'Choose a card'
+                !roomToRemove
+                  ? 'Deck too small'
+                  : shards < m.removePrice
+                    ? 'Too expensive'
+                    : 'Choose a card'
               }
               disabled={!canRemove}
               onBuy={() => setPicking('remove')}

@@ -107,8 +107,8 @@ describe('the Vault', () => {
 
   it('a copy taken after a stage says so', () => {
     const mid = deckFromStage(run('a', 2), 1, 1);
-    expect(labelOf(mid)).toBe('Knight: Tier 2 · Stage 2/3');
-    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Knight: Tier 2 · Stage 1/3');
+    expect(labelOf(mid)).toBe('Knight: Tier 2 · Act 2/3');
+    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Knight: Tier 2 · Act 1/3');
   });
 
   it('saving the same run again replaces its earlier save instead of adding a second', () => {

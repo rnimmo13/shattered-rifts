@@ -1,5 +1,7 @@
 # Shattered Rifts: Campaign, Runs & Seasons
 
+> **Players see Tiers > Acts > Floors (DECISIONS #490).** Where this doc and the code say "stage", read "act": the code, saves and the server keep the name `stage`.
+
 The campaign is a **run**, in the style of Slay the Spire. Pick a character, start with a small Grimoire, and grow
 it one choice at a time across **five stages**. Clear all five and you face the real decision of the game:
 **Bank** the deck for PvP, or **Continue** one Rift Tier deeper for better rewards, knowing that if you fall, the

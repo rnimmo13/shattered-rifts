@@ -287,6 +287,7 @@ export interface NodeContext {
     /** a visiting merchant from another Riftwalker's world: every card here is that Riftwalker's (a hero id) */
     crossed?: string;
     removePrice: number;
+    /** a removal has been bought at this visit (it no longer limits buying another: DECISIONS #491) */
     removed: boolean;
     /** cards upgraded at this shop so far: each makes the next upgrade dearer (missing = none; the next shop starts again from none) */
     upgrades?: number;

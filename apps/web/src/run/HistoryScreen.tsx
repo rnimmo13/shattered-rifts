@@ -180,7 +180,7 @@ function RunRow(props: {
         <span className="history__runWhere">
           <b className={`history__end history__end--${run.end}`}>{END_LABEL[run.end]}</b>
           <small>
-            Tier {run.tier} · Stage {run.stage}
+            Tier {run.tier} · Act {run.stage}
           </small>
         </span>
         <span className="history__runStats">

@@ -108,9 +108,9 @@ export function LearnOdds() {
 
       <h3>The map</h3>
       <p>
-        Each stop on a stage (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
-        (the first one on a stage, then {NODE_ODDS.eliteMore}%; from the third floor, and only two
-        or three a stage), a Merchant {NODE_ODDS.merchant}% (two at most), a Shrine{' '}
+        Each stop in an act (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
+        (the first one in an act, then {NODE_ODDS.eliteMore}%; from the third floor, and only two
+        or three an act), a Merchant {NODE_ODDS.merchant}% (two at most), a Shrine{' '}
         {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is always a Shrine), an
         Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a fight. An Event stop
         is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain
@@ -122,7 +122,7 @@ export function LearnOdds() {
         From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
         being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
         Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
-        usual HP at first; its HP and damage then grow with the tier and stage like every
+        usual HP at first; its HP and damage then grow with the tier and act like every
         Warden&apos;s. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
       </p>
 
