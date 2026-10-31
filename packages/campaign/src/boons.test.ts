@@ -120,6 +120,21 @@ describe('boons in a run', () => {
     expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
   });
 
+  it('Rift Core is gone, and a run that held it holds a Scholar\'s Tome instead (DECISIONS #496)', () => {
+    const r = fresh('trickster', 'sv');
+    expect(COMBAT_DB.boons['rift-core']).toBeUndefined();
+    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core'] }))?.boons).toEqual(['scholars-tome']);
+    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core', 'scholars-tome'] }))?.boons).toEqual(['scholars-tome']);
+    // (never offered the Tome it now holds)
+    expect(parseRun(JSON.stringify({ ...r, boons: ['scholars-tome'], legendOffer: 'rift-core' }))?.legendOffer).toBeUndefined();
+    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core'], legendOffer: 'scholars-tome' }))?.legendOffer).toBeUndefined();
+  });
+
+  it('no plain Boon gives Mana: only a Warden\'s Heart does, at a price (DECISIONS #496)', () => {
+    const withMana = Object.values(COMBAT_DB.boons).filter((x) => x.mana);
+    expect(withMana.map((x) => x.id).sort()).toEqual(['blood-heart', 'ember-heart']);
+  });
+
   it('Aegis of Ages gives one Shielded, and there is no other Shielded Boon but the Warded Heart', () => {
     expect(COMBAT_DB.boons['aegis-of-ages']?.fightStart?.[0]).toMatchObject({ status: 'shielded', amount: 1 });
     expect(COMBAT_DB.boons['ward-stone']).toBeUndefined();

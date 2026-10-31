@@ -531,3 +531,23 @@ Mastery 3 + 3.6 Barrier) x 4 turns = ~16 with the starter, ~21 in a technique de
 makes Mana now, no completion gives a card or Mana on its own (Perfected Motion's card is one a turn), Mastery is capped at 3 and
 spent at most 2 a card.
 
+---
+
+## 16. Boons and Warden's Hearts (2026-10-31)
+
+A Boon pays every fight of the run, so price it **per fight** (5 of your turns), not against a card's budget. Turn-long rates x 5.
+Compare Boons with each other. A Boon's points are not a card's points: there is no Mana or card slot to pay for it.
+
+| Effect | Points a fight | Notes |
+|---|---|---|
+| +1 Mana every turn | **35-45** | 7-9 a turn. Rift Core had this at no price and was taken out (DECISIONS #496). |
+| Draw 1 more every turn | **~20** | 4 a turn. More in a deck of cheap cards. |
+| Lasting Thorns, per stack | **~7.5** | Thorns never fade: 1 per enemy hit, ~1.5 hits a turn. More against several enemies or multi-hit moves. |
+| Might at the start, per stack | **~10** | 1 per hit, ~2 hits a turn; more with multi-hit cards. Higher than the card rate of 5, because it covers every turn. |
+| Barrier every turn, per point | **6** | 1.2 x 5. |
+| Heal N HP every turn | **7.5 x N** | 1.5 x 5, and it grows in long fights. |
+| Heal N HP after a fight | **1.5 x N** | |
+| Lose N HP every turn | **-7.5 x N** | A heal after the fight can pay it back in full. |
+| Exposed on you for 2 turns | **~-27** at Tier I | 50% more on ~1.5 hits of 12, two turns running: 18 HP at 1.5. Barrier and Shielded lessen it. It grows with the tier. |
+| Fight-start effects | their usual rates | Iron Sigil 7, Rift Satchel 7, Aegis of Ages 12, Hex Lantern and Hunter's Lens 9 (Lens more in a big-hitting deck). |
+

@@ -354,6 +354,8 @@ export function parseRun(text: string): RunState | null {
         .replace(/"twelve-gauge(\+?)"/g, '"slug-round$1"')
         // (Ward Stone was taken out: DECISIONS #462)
         .replace(/"ward-stone"/g, '"iron-sigil"')
+        // (Rift Core was taken out: DECISIONS #496)
+        .replace(/"rift-core"/g, '"scholars-tome"')
         .replace(RETIRED_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`)
         // (a retired Flare card, but not the Flare mark an event names)
         .replace(FLARE_CARD_STRING, (m: string) => `"${canonicalCard(m.slice(1, -1))}"`),
@@ -412,9 +414,11 @@ export function parseRun(text: string): RunState | null {
   if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
   // (a Warden's Heart: one that is in the game, or none)
   const legendOffer = (r as { legendOffer?: unknown }).legendOffer;
+  // (nor one the run already holds, as when a retired Boon became the one on offer)
   if (
     legendOffer !== undefined &&
-    !(typeof legendOffer === 'string' && COMBAT_DB.boons[legendOffer]?.rarity === 'legendary')
+    (!(typeof legendOffer === 'string' && COMBAT_DB.boons[legendOffer]?.rarity === 'legendary') ||
+      (isStrArray(r.boons) && r.boons.includes(legendOffer)))
   )
     delete (r as { legendOffer?: unknown }).legendOffer;
   // (a Warden's Heart: one that is in the game, or none)

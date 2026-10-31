@@ -2,8 +2,8 @@
 // events and bargains give one; clearing a loop may leave a Legendary one. The engine handles mana / handSize / fightStart /
 // turnStart; the campaign handles maxHp / healAfterFight / shardsPerFight. Boons never appear in PvP.
 //
-// Rarity is how often a Boon turns up (rewards.ts, BOON_WEIGHTS). Legendary Boons are the ones that change every turn of every
-// fight (an extra Mana, an extra card): they are the rarest, never sold, and mostly come from clearing a loop (DECISIONS #227).
+// Rarity is how often a Boon turns up (rewards.ts, BOON_WEIGHTS). Legendary Boons are the strongest: they are the rarest, never
+// sold, and mostly come from clearing a loop (DECISIONS #227). Extra Mana is only ever a Warden's Heart, at a price (DECISIONS #496).
 
 import type { BoonDef } from '@sr/combat';
 import { barrier, draw, heal, lose, status } from './build';
@@ -104,13 +104,6 @@ export const BOONS: BoonDef[] = [
     healAfterFight: 15,
   },
   // legendary
-  {
-    id: 'rift-core',
-    name: 'Rift Core',
-    rarity: 'legendary',
-    text: 'Gain 1 extra Mana each turn.',
-    mana: 1,
-  },
   {
     id: 'scholars-tome',
     name: "Scholar's Tome",

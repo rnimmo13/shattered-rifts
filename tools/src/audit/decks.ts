@@ -160,9 +160,9 @@ const BEST_BOONS = [
   'healing-vial',
   'coin-purse',
 ];
-const LEGEND_BOONS = ['rift-core', 'scholars-tome', 'aegis-of-ages', 'gilded-crown'];
+const LEGEND_BOONS = ['scholars-tome', 'aegis-of-ages', 'gilded-crown'];
 /** how many Legendary Boons a deck of each depth has found by then */
-const LEGENDS: Record<Level, number> = { t1s1: 0, t1s3: 0, t2: 0, t5: 1, t10: 2, t20: 4 };
+const LEGENDS: Record<Level, number> = { t1s1: 0, t1s3: 0, t2: 0, t5: 1, t10: 2, t20: 3 };
 
 export function buildDeck(hero: HeroId, level: Level, seed: number): AuditDeck {
   const spec = LEVEL_SPEC[level];

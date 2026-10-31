@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Rift Core is gone:** the Legendary Boon for 1 extra Mana every turn was far too strong. A run holding it now holds a Scholar's Tome.
 - **Merchants:** upgrading a card costs 75, then 50 more each time at the same merchant.
 - **Merchants:** the removal price only doubles within one visit: 50, 100, 200, 400, and every merchant starts over at 50.
 - **Card text:** statuses that are simply on or off have no number ("Gain Fanned"), and a Fanned Dagger plays without aiming.
