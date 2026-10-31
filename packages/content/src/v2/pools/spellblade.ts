@@ -274,10 +274,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [when('stars', { atLeast: 9 }, [barrier(4)]), swing(2, 1, 3), stars(1)],
+    [swing(2, 1, 3), stars(1), when('stars', { atLeast: 9 }, [barrier(4)])],
     {
       tags: [SWORD],
-      up: { effects: [when('stars', { atLeast: 9 }, [barrier(4)]), swing(3, 1, 3), stars(1)] },
+      up: { effects: [swing(3, 1, 3), stars(1), when('stars', { atLeast: 9 }, [barrier(4)])] },
     },
   ),
   a(

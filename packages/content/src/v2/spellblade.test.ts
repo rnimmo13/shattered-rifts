@@ -598,7 +598,7 @@ const CASES: {
   { id: 'rift-sweep', dmg: 15 },
   { id: 'glass-needle', dmg: 6 },
   { id: 'guarded-cut', dmg: 6, barrier: 4 },
-  { id: 'shard-strike', dmg: 6, barrier: 0, sp: 9 },
+  { id: 'shard-strike', stars: 7, dmg: 6, barrier: 0, sp: 8 },
   { id: 'shard-strike', stars: 9, dmg: 8, barrier: 4, sp: 10 },
   { id: 'sovereign-strike', dmg: 20 },
   { id: 'crosscut', dmg: 8 },

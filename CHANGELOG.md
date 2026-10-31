@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Clearer card text everywhere:** what a trigger or condition does is now one sentence, and what always happens comes before it, so it is clear where a condition stops.
 - **More Spell Power for the Spellblade:** Lava Bomb deals 10 per point spent, her biggest payoff, and Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power.
 - **Fracture keeps adding up:** it never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100. The Spellblade's starting Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. Pale Ward gains 8 Barrier. Swords show their real hits and total on the card.
 - **Spell Power costs are on the card:** no more slider. X spends all you hold and X/2 half, rounded down. Mirror Glass costs 2. The counter beside your Mana shows only its number.

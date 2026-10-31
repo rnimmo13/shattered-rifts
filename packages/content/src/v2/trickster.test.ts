@@ -80,7 +80,7 @@ describe('the Trickster costing pass', () => {
     expect(text('poison-pantry')).toContain('to that enemy');
     expect(text('false-floor')).not.toContain('attacker');
     expect(text('set-the-web')).toContain('to the attacker');
-    expect(text('mirror-veil')).toContain('Cancel that hit.');
+    expect(text('mirror-veil')).toContain('Cancel that hit');
   });
 
   it("an HP-lost Trap (the Monk's Coiled Serpent) still names the attacker", () => {

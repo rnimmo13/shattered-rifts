@@ -413,7 +413,7 @@ describe('the other new rules', () => {
     const t = (id: string) => cardText(db, db.cards[id]!);
     expect(t('raise-thrall')).toBe('Raise 5.');
     expect(t('knucklebone')).toBe('Your companions each deal 6 damage.');
-    expect(t('call-at-dusk')).toBe('Next turn: Raise 2. Gain 2 Mana.');
+    expect(t('call-at-dusk')).toBe('Next turn: Raise 2 and gain 2 Mana.');
     expect(t('bone-crush')).toMatch(/^Costs 0 if your companions have struck this turn\./);
   });
 });

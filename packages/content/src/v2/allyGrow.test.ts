@@ -113,6 +113,6 @@ describe('healing a companion grows it', () => {
   });
 
   it('says so on the card', () => {
-    expect(cardText(db, db.cards['sync-pulse']!)).toContain('Your companions gain 2 max HP');
+    expect(cardText(db, db.cards['sync-pulse']!)).toContain('your companions gain 2 max HP');
   });
 });

@@ -806,6 +806,27 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
 }
 
 /** Sentences that repeat one after another read once, with how often: "Gain 6 Barrier. Gain 6 Barrier." is "Gain 6 Barrier twice." */
+/** The verbs that start a sentence of card text, lowered when that sentence joins another. Keywords (Consume, Foresee...) keep their capital. */
+const JOINS_LOWER =
+  /^(Deal|Gain|Draw|Apply|Add|Lose|Heal|Put|Return|Raise|Summon|Plant|Awaken|Command|Shock|Cancel|Choose|Discard|Your|Each|All|This|That|It|Next|Spend|Move|Remove|Copy|Play|Upgrade|Mark|End)\b/;
+const lowerStart = (line: string): string =>
+  JOINS_LOWER.test(line) ? line.charAt(0).toLowerCase() + line.slice(1) : line;
+
+/**
+ * Everything one trigger or condition does, as one sentence, so a reader can see where it stops (DECISIONS #485): "Draw 1 card and gain 2
+ * Barrier." A line that is itself more than one sentence cannot be folded into a list, so those join with a semicolon.
+ */
+export function joinClause(lines: readonly string[]): string {
+  const said = sayRepeats(lines).map((l) => l.replace(/\.$/, ''));
+  if (said.length === 0) return '';
+  const [first, ...rest] = said as [string, ...string[]];
+  if (rest.length === 0) return `${first}.`;
+  const tail = rest.map(lowerStart);
+  if (said.some((l) => /[.:] /.test(l))) return `${[first, ...tail].join('; ')}.`;
+  const last = tail.pop() as string;
+  return `${[first, ...tail].join(', ')} and ${last}.`;
+}
+
 function sayRepeats(lines: readonly string[]): string[] {
   const out: string[] = [];
   for (let i = 0; i < lines.length; i++) {
@@ -1059,7 +1080,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const cracks = o.hitFracture ? ` Each hit applies ${o.hitFracture} Fracture.` : '';
       const kill =
         (o.onKill
-          ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}`
+          ? ` If this is fatal: ${joinClause(o.onKill.map((x) => opText(db, x, who)))}`
           : '') +
         (o.repeatOnKill ? ' Repeat this for each enemy it kills.' : '') +
         // (Riposte, the Knight's: DECISIONS #415)
@@ -1107,8 +1128,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // (only on your own cards: an enemy's units are not companions, and only heal)
       if (o.to === 'allFriends' && who.self === WHO.self)
         return a.equal
-          ? `Heal ${n}. Your companions gain as much max HP.`
-          : `Heal ${n}. Your companions gain ${n} max HP.`;
+          ? `Heal ${n} and your companions gain as much max HP.`
+          : `Heal ${n} and your companions gain ${n} max HP.`;
       if (o.to === 'allAllies')
         return `Your companions gain ${a.equal ? `max HP equal to ${a.num}` : `${n} max HP`}.`;
       return `Heal ${n}${o.to === 'self' ? '' : who[o.to]}.`;
@@ -1441,10 +1462,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               o.when === 'extract'
             ? { ...who, target: ' to that enemy' }
             : who;
-      const said = o.ops.map((x) => opText(db, x, inner)).join(' ');
+      const said = joinClause(o.ops.map((x) => opText(db, x, inner)));
       // (a Sapped put on an enemy while an enemy is hitting you ends with that enemy turn; one from your own cards, with the coming one)
       const body = o.when === 'hurt' ? said.split('until the end of their next turn').join("until the end of the enemy's turn") : said;
-      return `${o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when}: ${body}`;
+      const opening = o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when;
+      // ("At the end of your turn, if you spent none: ...", not two colons in a row)
+      return body.startsWith('If ') ? `${opening}, if ${body.slice(3)}` : `${opening}: ${body}`;
     }
     case 'channel': {
       const nm = o.rune === '*' ? 'a random totem' : (db.runes?.[o.rune]?.name ?? o.rune);
@@ -1497,14 +1520,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : o.amount === 1
             ? `a random ${what}`
             : `${o.amount} random ${what}s`;
-      const up = o.upgrade ? ' It is upgraded.' : '';
+      const up = o.upgrade ? ', upgraded' : '';
       if (o.anywhere)
         return o.tag && o.amount === 1
-          ? `Put your ${what} into your hand from wherever it is.${up}`
-          : `Put ${n} into your hand from your piles.${up}`;
+          ? `Put your ${what} into your hand from wherever it is${up}.`
+          : `Put ${n} into your hand from your piles${up}.`;
       return o.to === 'draw'
-        ? `Put ${n} from your discard pile on top of your draw pile.${up}`
-        : `Return ${n} from your discard pile to your hand.${up}`;
+        ? `Put ${n} from your discard pile on top of your draw pile${up}.`
+        : `Return ${n} from your discard pile to your hand${up}.`;
     }
     case 'manaNext':
       return o.amount < 0
@@ -1532,7 +1555,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
       const thisTurn = many ? ' (they cost 0 this turn)' : ' (it costs 0 this turn)';
-      return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : ''}.${o.ethereal ? ` ${many ? 'They are' : 'It is'} Fleeting.` : ''}`;
+      return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : ''}${o.ethereal ? `, ${many ? 'all ' : ''}Fleeting` : ''}.`;
     }
     case 'upgrade':
       if (o.scope === 'discard') {
@@ -1611,7 +1634,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Turn ${n} in ${pile} into ${o.amount === 1 ? `${article(into)} ${into}` : plural(into)}.`;
     }
     case 'when':
-      return `If ${whenText(o, db)}: ${sayRepeats(o.ops.map((x) => opText(db, x, who))).join(' ')}`;
+      // ("If A and B: ...", not "If A: If B: ...")
+      if (o.ops.length === 1 && o.ops[0]?.op === 'when')
+        return `If ${whenText(o, db)} and ${opText(db, o.ops[0], who).slice(3)}`.replace(
+          /^If you played a (\w+) earlier this turn and you played a (\w+) earlier this turn:/,
+          'If you played a $1 and a $2 earlier this turn:',
+        );
+      return `If ${whenText(o, db)}: ${joinClause(o.ops.map((x) => opText(db, x, who)))}`;
     case 'copyPlayed':
       return 'Add a copy of that card to your hand.';
     case 'maxHp': {
@@ -1855,19 +1884,20 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
   if (!u) return `Summon ${unit}.`;
   const acts =
     u.brain.kind === 'ally'
-      ? u.brain.act
-          .filter((x) => x.op !== 'summon')
-          .map((x) => opText(db, x, who))
-          .join(' ')
+      ? joinClause(u.brain.act.filter((x) => x.op !== 'summon').map((x) => opText(db, x, who)))
       : '';
   // (a Heavy or Colossal says how many companion slots it takes, DECISIONS #383)
   const slots = u.slots ?? 1;
   const frame = slots >= 3 ? 'Colossal: 3 slots, ' : slots === 2 ? 'Heavy: 2 slots, ' : '';
-  const head =
-    n > 1
-      ? `Summon ${n} ${u.name}s (${frame}${u.maxHp} HP each${u.taunt ? ', Taunt' : ''}).`
-      : `Summon ${u.name} (${frame}${u.maxHp} HP${u.taunt ? ', Taunt' : ''}).`;
-  return `${head}${acts ? ` At the end of your turn ${n > 1 ? 'each' : 'it'} will: ${acts}` : ''}`;
+  const said = lowerStart(acts)
+    .replace(/\.$/, '')
+    .replace(/^next turn, gain (.+)$/, 'give you $1 next turn')
+    .replace(/\bgain (\d+) Barrier to your hero\b/, 'give your hero $1 Barrier')
+    .replace(/\bheal (\d+) to your hero\b/, 'heal your hero $1');
+  const does = acts ? `; at the end of your turn ${n > 1 ? 'each' : 'it'} will ${said}` : '';
+  return n > 1
+    ? `Summon ${n} ${u.name}s (${frame}${u.maxHp} HP each${u.taunt ? ', Taunt' : ''}${does}).`
+    : `Summon ${u.name} (${frame}${u.maxHp} HP${u.taunt ? ', Taunt' : ''}${does}).`;
 }
 
 /**
@@ -1936,19 +1966,8 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
 export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
   if (c.text) return c.text;
   const parts: string[] = [];
-  if (c.kind === 'snare' && c.trigger) {
-    parts.push(
-      c.trigger.on === 'attacked'
-        ? 'When you or an ally is attacked:'
-        : c.trigger.on === 'hpLost'
-          ? `When you lose ${c.trigger.min}+ HP at once:`
-          : c.trigger.on === 'foeSummons'
-            ? 'When the enemy summons:'
-            : c.trigger.on === 'foeDefends'
-              ? 'When an enemy gains Barrier:'
-              : 'At the start of the enemy turn:',
-    );
-  }
+  // (what depends on a condition or a trigger goes last, each on its own, so no sentence after it can be taken for part of it: DECISIONS #485)
+  const late: string[] = [];
   if (c.unplayable) parts.push('Unplayable.');
   if (c.needsExhausted)
     parts.push(`Only playable with ${c.needsExhausted} or more cards consumed.`);
@@ -2001,6 +2020,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     c.kind === 'power' &&
     !c.effects.some((o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots') &&
     c.effects.filter((o) => isLasting(o)).length === 1;
+  const opsFrom = parts.length;
   // several of the same summon in a row read as one line ("Summon 3 Bone Thralls...")
   for (let i = 0; i < c.effects.length; i++) {
     const o = c.effects[i] as Op;
@@ -2048,9 +2068,19 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
           continue;
         }
       }
+      // (a Trap's effects all hang on its trigger, so they stay together below)
+      const isTrap = c.kind === 'snare';
+      if (!isTrap && (o.op === 'when' || o.op === 'power')) {
+        late.push(opText(db, o, who));
+        continue;
+      }
+      // ("If this is fatal" is a condition too: the hit stays in its place, and the clause goes with the others)
+      const kills = !isTrap && o.op === 'damage' ? o.onKill : undefined;
+      const plain = kills ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>) : o;
+      if (kills) late.push(`If this is fatal: ${joinClause(kills.map((x) => opText(db, x, who)))}`);
       const l = o.op === 'damage' ? live?.get(i) : undefined;
       const line =
-        l && o.op === 'damage' ? liveDamageText(opText(db, o, who), o, l) : opText(db, o, who);
+        l && plain.op === 'damage' ? liveDamageText(opText(db, plain, who), plain, l) : opText(db, plain, who);
       parts.push(
         oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line,
       );
@@ -2063,13 +2093,26 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   const lasting = c.effects.filter((o) => isLasting(o)).length;
   if (c.kind === 'power' && !ongoing && lasting > 1)
     parts.push('These last the rest of the fight.');
+  if (c.kind === 'snare' && c.trigger) {
+    const opening =
+      c.trigger.on === 'attacked'
+        ? 'When you or an ally is attacked:'
+        : c.trigger.on === 'hpLost'
+          ? `When you lose ${c.trigger.min}+ HP at once:`
+          : c.trigger.on === 'foeSummons'
+            ? 'When the enemy summons:'
+            : c.trigger.on === 'foeDefends'
+              ? 'When an enemy gains Barrier:'
+              : 'At the start of the enemy turn:';
+    late.push(`${opening} ${joinClause(parts.splice(opsFrom))}`);
+  }
   if (c.exhaust) parts.push('Consume.');
   if (c.retain) parts.push('Hold.');
   if (c.innate) parts.push('Opening hand.');
   if (c.ethereal) parts.push('Fleeting.');
-  if (c.onDiscard) parts.push(`If discarded: ${c.onDiscard.map((o) => opText(db, o)).join(' ')}`);
-  if (c.onExhaust) parts.push(`If consumed: ${c.onExhaust.map((o) => opText(db, o)).join(' ')}`);
-  if (c.onDraw) parts.push(`When you draw this: ${c.onDraw.map((o) => opText(db, o)).join(' ')}`);
+  if (c.onDiscard) late.push(`If discarded: ${joinClause(c.onDiscard.map((o) => opText(db, o)))}`);
+  if (c.onExhaust) late.push(`If consumed: ${joinClause(c.onExhaust.map((o) => opText(db, o)))}`);
+  if (c.onDraw) late.push(`When you draw this: ${joinClause(c.onDraw.map((o) => opText(db, o)))}`);
   if (c.after === 'hand') parts.push('It goes back to your hand after you play it.');
   if (c.after === 'drawTop') parts.push('It goes on top of your draw pile after you play it.');
   if (c.returnEvery)
@@ -2079,14 +2122,14 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.playFromTop)
     parts.push('At the end of your turn, if this is on top of your draw pile, it is played.');
   if (c.inHandAtEnd)
-    parts.push(
-      `At the end of your turn, if this is in your hand: ${c.inHandAtEnd.map((o) => opText(db, o)).join(' ')}`,
+    late.push(
+      `At the end of your turn, if this is in your hand: ${joinClause(c.inHandAtEnd.map((o) => opText(db, o)))}`,
     );
   if (c.cheaperOnCreate)
     parts.push(
       `Whenever you create ${article(TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate)} ${TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate}, this costs 1 less until played.`,
     );
-  const text = parts.join(' ');
+  const text = [...parts, ...late].join(' ');
   // a Trap that springs on a summon or on Barrier answers an enemy that did not attack: "that enemy", not "the attacker"
   // (an "HP lost" Trap still answers whoever hit you: it keeps "the attacker")
   return c.kind === 'snare' && (c.trigger?.on === 'foeSummons' || c.trigger?.on === 'foeDefends')

@@ -161,6 +161,37 @@ describe('every card plays', () => {
   });
 });
 
+describe('card text says where a condition stops (DECISIONS #485)', () => {
+  const CLAUSE = /^(If|When|Whenever|The first|The next|At the (start|end)|For the next|This turn, whenever|Next turn:)\b[^.]*: /;
+  it('no plain sentence follows a condition or a trigger, on any card, upgraded or not', () => {
+    const bad: string[] = [];
+    for (const c of Object.values(db.cards)) {
+      if (c.text) continue;
+      const sentences = cardText(db, c).split(/(?<=\.)\s+(?=[A-Z])/);
+      let seen = false;
+      for (const line of sentences) {
+        const clause = CLAUSE.test(line);
+        if (seen && !clause) bad.push(`${c.id}: ${cardText(db, c)}`);
+        seen = seen || clause;
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('what one trigger does is one sentence', () => {
+    expect(cardText(db, db.cards['fault-reader']!)).toBe(
+      'The first time each turn you Shatter an enemy: Draw 1 card and gain 2 Barrier.',
+    );
+    expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(/^When you or an ally is attacked: Cancel that hit and deal 12 damage to the attacker\.$/);
+  });
+
+  it('what always happens comes first, then the keywords, then the condition', () => {
+    expect(cardText(db, db.cards['last-ember']!)).toBe(
+      'Gain 2 Spell Power. Consume. If you had no Spell Power: Gain 5 Barrier.',
+    );
+  });
+});
+
 describe('second resources have a way in and a way out from the first hand', () => {
   // (the way in is the 3 Spell Power every fight starts with and the 1 Kindled adds each turn; a spell can spend any of it, DECISIONS #480)
   it('The spellblade starts every fight with Spell Power to spend, and her starter both makes and spends it', () => {
