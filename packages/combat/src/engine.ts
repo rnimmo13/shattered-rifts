@@ -2666,7 +2666,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'reshuffle': {
       side.draw = shuffle(r.s.rng, [...side.draw, ...side.discard, ...side.hand]);
       for (const c of side.hand)
-        r.ev.push({ type: 'discard', side: side.id, card: c.id, def: c.card });
+        r.ev.push({ type: 'discard', side: side.id, card: c.id, def: c.card, routine: true });
       side.hand = [];
       side.discard = [];
       r.ev.push({ type: 'shuffle', side: side.id });
@@ -3049,7 +3049,7 @@ function transformCard(r: Run, sd: SideState, c: CardInst, into: CardId): void {
     'premeditated',
   ] as const)
     delete c[k];
-  r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card });
+  r.ev.push({ type: 'transform', side: sd.id, card: c.id, def: c.card, changed: true });
 }
 
 /** Cards that come back to the hand on every nth card of a kind played this turn (Make It So). */
@@ -3156,6 +3156,7 @@ function moveFromHand(
     ) {
       sd.discard = sd.discard.filter((x) => x.id !== c.id);
       (sd.premeditating ??= []).push(c);
+      r.ev.push({ type: 'premeditate', side: sd.id, card: c.id, def: c.card });
     }
     fireTriggers(r, sd, 'discard');
   } else exhaustCard(r, sd, c);
@@ -3187,7 +3188,7 @@ function deferrable(db: CombatDb, sd: SideState, c: CardInst): boolean {
 function deferCard(r: Run, sd: SideState, c: CardInst): void {
   clearTurnFlags(c);
   (sd.deferring ??= []).push(c);
-  r.ev.push({ type: 'discard', side: sd.id, card: c.id, def: c.card });
+  r.ev.push({ type: 'discard', side: sd.id, card: c.id, def: c.card, defer: true });
 }
 
 /** (assassin) what a copy had only for this turn (free, Held, Sly) ends when it leaves the hand */
@@ -3308,10 +3309,10 @@ function playFree(
   const back = (): void => {
     if (how === 'stay') {
       sd.exhausted.push(inst);
-      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card, routine: true });
     } else {
       sd.discard.push(inst);
-      r.ev.push({ type: 'discard', side: sd.id, card: inst.id, def: inst.card });
+      r.ev.push({ type: 'discard', side: sd.id, card: inst.id, def: inst.card, routine: true });
     }
   };
   // it shows up in the hand for a moment, so the screen can play it
@@ -3361,7 +3362,7 @@ function playFree(
   if ((how === 'stay' || how === 'exhaust') && cd.kind !== 'power') {
     if (how === 'stay') {
       sd.exhausted.push(inst);
-      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+      r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card, routine: true });
     } else exhaustCard(r, sd, inst);
     sd.played++;
     if (cd.kind === 'attack') sd.attacksPlayed++;
@@ -4114,7 +4115,7 @@ function endTurn(r: Run): void {
     else if (held || holdAll) keep.push(c);
     else {
       sd.discard.push(c);
-      r.ev.push({ type: 'discard', side, card: c.id, def: c.card });
+      r.ev.push({ type: 'discard', side, card: c.id, def: c.card, routine: true });
     }
   }
   sd.hand = [...keep, ...sd.hand];
@@ -4525,7 +4526,7 @@ function finishCard(
   if (cd.kind === 'power') {
     // a Power stays in effect for the fight and leaves the deck (without counting as "exhausted")
     sd.exhausted.push(inst);
-    r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card });
+    r.ev.push({ type: 'exhaust', side: sd.id, card: inst.id, def: inst.card, routine: true });
   } else if (cd.exhaust || (cd.kind === 'skill' && unbound(sd))) exhaustCard(r, sd, inst);
   else if (cd.after === 'hand' && sd.hand.length < MAX_HAND) {
     // (Particle Wall: back to the hand, not the discard pile)
@@ -4960,9 +4961,10 @@ export interface LiveDamage {
   first?: { lo: number; hi: number };
 }
 
+// (a breakdown is sent whenever there is something to break down: with a range of numbers, it is the highest's)
 /**
  * The damage a card in the active side's hand would deal right now, for showing on the card (as Slay the Spire does): Might, stances,
- * Faltering, Sharpen, Edge and Vigor counted, and the target's Exposed and Wrath too when a target is given. With no target, a card
+ * Faltering, Sharpen, Edge, Honed and Vigor counted, and the target's Exposed and Wrath too when a target is given. With no target, a card
  * that picks one, or one that hits every enemy, gives the range over the enemies it could hit. Keyed by the effect's index in the
  * card's effects (top-level damage effects that hit enemies only). Reads the state and never changes it.
  */
@@ -5010,7 +5012,14 @@ export function previewCardDamage(
   });
   // (the Shaman's totems: their help on the first spell of its element this turn, DECISIONS #420)
   const help = sd.totems ? spellBoost(r, sd, def, false) : 0;
-  const edge = (def.tags?.includes(EDGE_TAG) ? stacks(hero, 'edge') : 0) + deftOf(a) + help;
+  const knife = def.tags?.includes(EDGE_TAG) === true;
+  const edge = deftOf(a) + help;
+  // (each its own step in the breakdown, as the engine adds them: DECISIONS #479)
+  const knifeEdge = knife ? stacks(hero, 'edge') : 0;
+  const honed = knife && !sd.honedUsed ? stacks(hero, 'honed') : 0;
+  const lethality =
+    def.kind === 'attack' && sd.attacksPlayed === 0 ? stacks(hero, 'lethality') : 0;
+  const leth = 1 + lethality / 100;
   // (Vigor goes into the first damage effect only, as the engine spends it)
   let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
   let earlier = false;
@@ -5075,20 +5084,22 @@ export function previewCardDamage(
     if (earlier) return;
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
     if (friendly && !mine && op.scale?.of === 'target') return;
+    // (Fanned: a Dagger aimed at one enemy hits them all, as the engine does)
+    const to = knife && op.to === 'target' && stacks(hero, 'fanned') > 0 ? 'allFoes' : op.to;
     const pool =
-      op.to === 'target'
+      to === 'target'
         ? chosen
           ? [chosen]
           : taunters.length
             ? taunters
             : foes
-        : op.to === 'front'
+        : to === 'front'
           ? foes.slice(0, 1)
-          : op.to === 'allFoes' || op.to === 'randomFoe' || op.to === 'weakestFoe'
+          : to === 'allFoes' || to === 'randomFoe' || to === 'weakestFoe'
             ? foes
             : null;
     if (!pool) return;
-    const hitsAll = op.to === 'allFoes';
+    const hitsAll = to === 'allFoes';
     const lone =
       op.lonePct && (hitsAll || (op.distinct && op.to === 'randomFoe') ? foes.length === 1 : true)
         ? 1 + op.lonePct / 100
@@ -5122,6 +5133,8 @@ export function previewCardDamage(
         how.push(`${k > 0 ? '+' : '−'}${Math.abs(k)} ${word} = ${run}`);
       };
       add(amt - op.amount, scaleWord(def, op.scale?.by));
+      add(knifeEdge, 'Edge');
+      add(honed, 'Honed');
       add(edge, 'bonus');
       add(v, 'Primed');
       add(rip, 'Riposte');
@@ -5130,32 +5143,43 @@ export function previewCardDamage(
         how.push(
           `${def.tags?.includes('gun') ? 'Point Blank' : 'one enemy'} +${op.lonePct}% = ${Math.round(run * lone)}`,
         );
+      if (leth !== 1) how.push(`first Attack +${lethality}% = ${Math.round(run * lone * leth)}`);
+      const noose = t && def.tags?.includes('noose') ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
+      if (noose !== 1) how.push(`Noose ×${noose} = ${Math.round(run * lone * leth * noose)}`);
       const n = modifiedDamage(
-        Math.round((amt + edge + v + rip + ember) * lone),
+        Math.round((amt + knifeEdge + honed + edge + v + rip + ember) * lone * leth * noose),
         hero,
         t,
         def.kind === 'attack',
         how,
       );
-      lastHow = how;
       // Ghostly lets 1 through, Shielded none
       // (a pull before the attack hits first, so its own damage takes the Shield off: Knife Work's)
-      if (t && stacks(t, 'shielded') > 0 && !(at.extracted > 0)) return 0;
-      return t && stacks(t, 'ghostly') > 0 && n > 1 ? 1 : n;
+      const dealt =
+        t && stacks(t, 'shielded') > 0 && !(at.extracted > 0)
+          ? 0
+          : t && stacks(t, 'ghostly') > 0 && n > 1
+            ? 1
+            : n;
+      if (dealt >= bestDealt) {
+        bestDealt = dealt;
+        bestHow = how;
+      }
+      return dealt;
     };
     const targets = pool.length ? pool : [null];
-    let lastHow: string[] = [];
+    let bestDealt = -1;
+    let bestHow: string[] = [];
     const vals = [...targets.map((t) => one(t, eLo)), ...targets.map((t) => one(t, eHi))];
     const lo = Math.min(...vals);
     const hi = Math.max(...vals);
-    // (the steps are shown only when they are the one answer: one enemy it can hit, no choice left open)
-    const single = targets.length === 1 && lo === hi;
+    // (several possible numbers: the steps of the highest, and the screen says so)
     out.set(i, {
       lo,
       hi,
       ...(firstBonus ? { first: firstBonus } : {}),
       ...(lone !== 1 ? { lone: true } : {}),
-      ...(single && lastHow.length > 1 ? { how: lastHow } : {}),
+      ...(bestHow.length > 1 ? { how: bestHow } : {}),
       printed: op.amount,
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',

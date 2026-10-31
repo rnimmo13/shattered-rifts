@@ -8,7 +8,7 @@ import {
   legalActions,
   type CombatState,
 } from '@sr/combat';
-import { COMBAT_DB as db, RIFTWALKERS } from './index';
+import { COMBAT_DB as db, RIFTWALKERS, canonicalCard } from './index';
 
 type Hero = 'knight' | 'assassin' | 'monk' | 'engineer' | 'necromancer';
 
@@ -42,7 +42,7 @@ const lost = (s: CombatState): number => 500 - s.sides.b.units[0]!.hp;
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('starting decks', () => {
-  it('have ten cards, and 3 or 4 different class basics (the Trickster has Veil Strike twice, Robert is fine with it)', () => {
+  it('have ten cards, and 3 or 4 different class basics', () => {
     for (const [id, r] of Object.entries(RIFTWALKERS)) {
       expect(r.starter, id).toHaveLength(10);
       const basics = [...new Set(r.starter.filter((c) => c !== 'strike' && c !== 'defend'))];
@@ -51,8 +51,8 @@ describe('starting decks', () => {
     }
   });
 
-  it('the Knight, Assassin, Shaman, Monk and Drunkard have no class basic twice, and four or three of them', () => {
-    const want: Record<string, number> = { knight: 4, assassin: 4, shaman: 4, monk: 3, drunkard: 4 };
+  it('the Knight, Trickster, Assassin, Shaman, Monk and Drunkard have no class basic twice, and four or three of them', () => {
+    const want: Record<string, number> = { knight: 4, trickster: 4, assassin: 4, shaman: 4, monk: 3, drunkard: 4 };
     for (const [id, n] of Object.entries(want)) {
       const basics = RIFTWALKERS[id as keyof typeof RIFTWALKERS].starter.filter((c) => c !== 'strike' && c !== 'defend');
       expect(new Set(basics).size, id).toBe(basics.length);
@@ -62,11 +62,21 @@ describe('starting decks', () => {
 });
 
 describe('the new class basics', () => {
-  it('Press the Attack: 5, and 4 more against an Exposed enemy (which then takes more from both hits)', () => {
-    expect(lost(play(fight('knight', ['press-the-attack']), 'press-the-attack'))).toBe(5);
-    const e = fight('knight', ['press-the-attack']);
-    e.sides.b.units[0]!.statuses.exposed = 1;
-    expect(lost(play(e, 'press-the-attack'))).toBeGreaterThan(9);
+  it('Set Your Shield: 6 Barrier, and 3 more with Reserves left after paying for it', () => {
+    expect(hero(play(fight('knight', ['set-your-shield']), 'set-your-shield')).barrier).toBe(6);
+    const r = fight('knight', ['set-your-shield']);
+    r.sides.a.reserves = 1;
+    expect(hero(play(r, 'set-your-shield')).barrier).toBe(9);
+    // (paying with your last Reserve leaves none to read)
+    const last = fight('knight', ['set-your-shield']);
+    last.sides.a.mana = 0;
+    last.sides.a.reserves = 1;
+    expect(hero(play(last, 'set-your-shield')).barrier).toBe(6);
+  });
+
+  it('a Press the Attack in an old save or deck becomes Set Your Shield, keeping its upgrade', () => {
+    expect(canonicalCard('press-the-attack')).toBe('set-your-shield');
+    expect(canonicalCard('press-the-attack+')).toBe('set-your-shield+');
   });
 
   it('Heavy Swing: 14 for 2 Mana', () => {
@@ -113,7 +123,7 @@ describe('the new class basics', () => {
   });
 
   it('they are basics, never offered as rewards', () => {
-    for (const id of ['press-the-attack', 'heavy-swing', 'fang-and-claw', 'pocket-blades', 'mindful-palm', 'spot-weld', 'pinprick-trap', 'marked-for-the-grave'])
+    for (const id of ['set-your-shield', 'heavy-swing', 'fang-and-claw', 'pocket-blades', 'mindful-palm', 'spot-weld', 'pinprick-trap', 'marked-for-the-grave'])
       expect(db.cards[id]!.rarity).toBe('basic');
   });
 });

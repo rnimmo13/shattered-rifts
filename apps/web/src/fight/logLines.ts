@@ -1,7 +1,8 @@
 // The battle log: what happened in the fight, in words. Pure: it turns engine events into short lines and never decides anything.
-// Noise (draws, Mana ticks, intents, pile shuffles) is left out; what a player wants to look back at is who played what, what hit
-// whom for how much, and what changed (statuses, Barrier, deaths, stances, Traps). Units are named with a number when there is more
-// than one of a kind ("Gilded Squire 2"), and damage that is not an attack (a Trap, Thorns) says what caused it.
+// Noise (the hand drawn at the start of a turn, the end-of-turn discard, Mana spent, intents, pile shuffles) is left out; what a player
+// wants to look back at is who played what, what hit whom for how much, what changed (statuses, Barrier, deaths, stances, Traps) and
+// where cards went because of an effect (DECISIONS #476). An opponent's hidden cards are told without their names. Units are named with
+// a number when there is more than one of a kind ("Gilded Squire 2"), and damage that is not an attack (a Trap, Thorns) says what caused it.
 
 import {
   OVERFLOW_NAME,
@@ -38,6 +39,8 @@ export interface LogContext {
   who: (side: Side) => string;
   /** which unit definition a unit is (to name an enemy's move); absent: moves are named from their id */
   defOf?: (unit: string) => string | null;
+  /** watching someone's live match: their hand is hidden from the viewer as well */
+  blind?: boolean;
 }
 
 /**
@@ -122,6 +125,14 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
   let trap: { name: string } | null = null;
   /** the last attack that landed: Thorns answer it at once */
   let lastHit: { source: string | null; target: string } | null = null;
+  /** something has been played this turn: a draw or Mana after that is an effect's doing, not the start of the turn */
+  let acting = false;
+  /** the card just played: its own Consume or Trap is not news */
+  let lastPlayed: string | null = null;
+  /** the client runs the engine, so events carry every card: whose cards this viewer may not read is decided here */
+  const hidden = (side: Side): boolean => side !== c.me || c.blind === true;
+  let lastMana: number | null = null;
+  const lastReserves: Partial<Record<Side, number>> = {};
 
   /** an enemy's move by its own name ("Slash"), or from its id when the unit's definition is not known */
   const moveName = (unit: string, move: string): string => {
@@ -135,6 +146,7 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
       case 'turnStart':
         trap = null;
         lastHit = null;
+        acting = false;
         return {
           text: e.side === c.me ? 'Your turn' : `${c.who(e.side)}'s turn`,
           tone: 'turn',
@@ -142,6 +154,10 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
       case 'play': {
         trap = null;
         lastHit = null;
+        acting = true;
+        lastPlayed = e.card;
+        // (a Trap goes down face down: the next line says one was set, not which)
+        if (hidden(e.side) && c.db.cards[e.def]?.kind === 'snare') return null;
         const target = e.target ? ` on ${obj(c.nameOf(e.target))}` : '';
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'play' : 'plays'} ${cardName(c.db, e.def)}${target}`,
@@ -149,7 +165,82 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
           card: e.def,
         };
       }
+      case 'discard': {
+        if (e.routine) return null;
+        const mine = e.side === c.me;
+        const named = e.def && !hidden(e.side) ? cardName(c.db, e.def) : 'a card';
+        return {
+          text: e.defer
+            ? `${c.who(e.side)} ${mine ? 'defer' : 'defers'} ${named}: back next turn, 1 cheaper`
+            : `${c.who(e.side)} ${mine ? 'discard' : 'discards'} ${named}`,
+          tone: tone(e.side),
+        };
+      }
+      case 'premeditate':
+        return e.def && !hidden(e.side)
+          ? {
+              text: `Premeditate: ${cardName(c.db, e.def)} comes back next turn at 0 Mana`,
+              tone: tone(e.side),
+            }
+          : null;
+      case 'exhaust':
+        return e.routine || e.card === lastPlayed
+          ? null
+          : {
+              text: `${c.who(e.side)} ${e.side === c.me ? 'consume' : 'consumes'} ${hidden(e.side) ? 'a card' : cardName(c.db, e.def)}`,
+              tone: tone(e.side),
+            };
+      case 'draw':
+        return acting && !hidden(e.side) && e.def
+          ? { text: `You draw ${cardName(c.db, e.def)}`, tone: 'mine' }
+          : null;
+      case 'burn':
+        return !hidden(e.side) && e.def
+          ? { text: `Your hand is full: ${cardName(c.db, e.def)} goes to your discard pile`, tone: 'mine' }
+          : null;
+      case 'addCard': {
+        if (hidden(e.side) || !e.def) return null;
+        const where =
+          e.to === 'hand' ? 'your hand' : e.to === 'draw' ? 'your draw pile' : 'your discard pile';
+        return { text: `${cardName(c.db, e.def)} goes to ${where}`, tone: 'mine' };
+      }
+      case 'transform':
+        // (the same event tells a card's cost or keywords changing: only a new card is a line)
+        return e.changed && !hidden(e.side) && e.def
+          ? { text: `A card becomes ${cardName(c.db, e.def)}`, tone: 'mine' }
+          : null;
+      case 'scry':
+        return {
+          text: `${c.who(e.side)} ${e.side === c.me ? 'foresee' : 'foresees'}`,
+          tone: tone(e.side),
+        };
+      case 'prevented':
+        return {
+          text: `${c.nameOf(e.unit) === 'You' ? 'Your' : `${c.nameOf(e.unit)}'s`} attack is stopped`,
+          tone: tone(c.sideOf(e.unit)),
+        };
+      case 'mana': {
+        if (e.side !== c.me) return null;
+        const before = lastMana;
+        lastMana = e.mana;
+        return acting && before !== null && e.mana > before
+          ? { text: `You gain ${e.mana - before} Mana`, tone: 'mine' }
+          : null;
+      }
+      case 'reserves': {
+        const before = lastReserves[e.side] ?? 0;
+        lastReserves[e.side] = e.reserves;
+        const change = e.reserves - before;
+        if (change === 0) return null;
+        const mine = e.side === c.me;
+        const n = Math.abs(change);
+        return {
+          text: `${c.who(e.side)} ${change > 0 ? (mine ? 'gain' : 'gains') : mine ? 'spend' : 'spends'} ${n} ${n === 1 ? 'Reserve' : 'Reserves'} (now ${e.reserves})`,
+          tone: tone(e.side),
+        };
+      }
       case 'potion':
+        acting = true;
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'use' : 'uses'} ${c.db.potions[e.potion]?.name ?? 'a potion'}`,
           tone: tone(e.side),

@@ -1495,8 +1495,12 @@ export type CombatEvent =
   | { type: 'draw'; side: Side; card: InstId; def: CardId }
   | { type: 'shuffle'; side: Side }
   | { type: 'burn'; side: Side; card: InstId; def: CardId } // drawn with a full hand
-  | { type: 'discard'; side: Side; card: InstId; def: CardId }
-  | { type: 'exhaust'; side: Side; card: InstId; def: CardId }
+  /** `routine`: the end-of-turn sweep and the like, not an effect; `defer`: it was set aside by Defer, not discarded */
+  | { type: 'discard'; side: Side; card: InstId; def: CardId; routine?: true; defer?: true }
+  /** a discarded card will come back next turn through Premeditate */
+  | { type: 'premeditate'; side: Side; card: InstId; def: CardId }
+  /** `routine`: an Aura leaving the deck as it starts, and the like, not something Consumed */
+  | { type: 'exhaust'; side: Side; card: InstId; def: CardId; routine?: true }
   | { type: 'addCard'; side: Side; card: InstId; def: CardId; to: 'hand' | 'discard' | 'draw' }
   | { type: 'mana'; side: Side; mana: number }
   | { type: 'maxMana'; side: Side; max: number }
@@ -1566,7 +1570,8 @@ export type CombatEvent =
       empowered: boolean;
     }
   | { type: 'power'; side: Side; card: CardId }
-  | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number }
+  /** `changed`: it really became another card, not a cost or a keyword changing on it */
+  | { type: 'transform'; side: Side; card: InstId; def: CardId; costMod?: number; changed?: true }
   | { type: 'forge'; side: Side; card: CardId; amount: number }
   | { type: 'scry'; side: Side; cards: InstId[] }
   | { type: 'pending'; side: Side; kind: Pending['kind'] }

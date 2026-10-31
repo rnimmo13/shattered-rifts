@@ -1,6 +1,8 @@
 // Saving a run: plain JSON text, so it can go to localStorage and to an export file. Loading checks the whole shape
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
+import { boxNamedCard } from './eventBoxes';
+import type { EventCtx } from './deals';
 import {
   COMBAT_DB,
   ENCOUNTERS,
@@ -483,5 +485,10 @@ export function parseRun(text: string): RunState | null {
     return null;
   const run = r as RunState;
   if (!validContext(run)) return null;
+  // (an event laid out by an older build gets its card in the option box: DECISIONS #477)
+  const savedEvent = (run.context as { event?: EventCtx } | null | undefined)?.event;
+  // (only where the context has been checked: elsewhere a damaged one must not throw)
+  if ((run.phase === 'event' || run.phase === 'shrine') && savedEvent?.options && typeof savedEvent.cardOffer === 'string')
+    boxNamedCard(savedEvent);
   return run;
 }

@@ -3,9 +3,9 @@
 // - 'wide': a desktop or a big landscape screen. The side-by-side line as it always was.
 // - 'compact': a phone on its side or a tablet held sideways. The same line, with smaller figures, a smaller hand and the
 //   sky cropped harder, so the board sits higher and the controls have room.
-// - 'portrait': any screen taller than it is wide (a phone held upright, a tablet in portrait). The enemies stand on a row
-//   behind, your side on a row in front, and the camera frames the middle of the stage, so the figures stay big enough to
-//   read on a narrow screen. Boons and Auras fold into a drawer.
+// - 'portrait': any screen taller than it is wide (a phone held upright, a tablet in portrait). You stand at the bottom left and
+//   the enemies at the top right, with smaller figures, which leaves the top left for your Boons and Auras at a glance. The whole
+//   lists fold into a drawer (DECISIONS #475).
 
 import type { BoardFrame } from '../duel/scene/BattlefieldScene';
 import { handCardWidth, handReserve } from '../hand/fanLayout';
@@ -27,21 +27,38 @@ export const PORTRAIT = {
   /** the part of the stage the camera frames */
   x0: 550,
   x1: 1370,
-  /** the enemies' row (behind) and yours (in front) */
-  foeY: 580,
+  /** the enemies' row (top right) and yours (bottom left) */
+  foeY: 560,
   myY: 1040,
+  myMaxY: 1340,
   /** where your hero stands, and how far right your companions may reach */
-  heroX: 700,
-  allyNear: 880,
+  heroX: 650,
+  allyNear: 790,
   allyFar: 1350,
   /** the enemies' line: centred in this span */
-  foeNear: 570,
-  foeFar: 1350,
+  foeNear: 830,
+  foeFar: 1360,
+  /** ...and a big group (five or more) spreads further left, as its plates would otherwise overlap */
+  foeCrowd: 5,
+  foeNearCrowd: 600,
   /** an opponent's hero in the Arena (on the row behind, on the right, facing you) */
-  foeHeroX: 1200,
-  foeAllyNear: 1040,
-  foeAllyFar: 570,
+  foeHeroX: 1270,
+  foeAllyNear: 1160,
+  foeAllyFar: 830,
 } as const;
+
+/**
+ * The row you stand on, upright: as low as the room above the controls allows, so a tall phone has you in the corner and no empty floor
+ * under you. `myY` is the highest it goes; the room under the feet is for the name and health bar.
+ */
+export function portraitMyY(width = window.innerWidth, height = window.innerHeight): number {
+  const frame = frameFor('portrait', height);
+  const r = boardReserve('portrait', width, height);
+  const room = height - r.top - r.bottom;
+  const scale = Math.min(width / (frame.x1 - frame.x0), room / (frame.bottom - frame.top));
+  const plate = 70 / scale;
+  return Math.max(PORTRAIT.myY, Math.min(PORTRAIT.myMaxY, frame.top + room / scale - plate));
+}
 
 /** On a small screen held sideways your hero stands further in from the edge, clear of the potion belt, Mana and the piles. */
 export const COMPACT = {
@@ -51,7 +68,7 @@ export const COMPACT = {
 
 /** How big the figures are drawn, against the wide layout. */
 export function figureScale(mode: StageMode, hero: boolean): number {
-  if (mode === 'portrait') return hero ? 0.84 : 0.9;
+  if (mode === 'portrait') return hero ? 0.62 : 0.68;
   if (mode === 'compact') return hero ? 0.8 : 0.84;
   return 1;
 }

@@ -5,6 +5,17 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Damage numbers are right for the Assassin:** a card's number and breakdown count Honed (and Lethality and Noose), name Edge and Honed, and show the highest number's steps when there are several enemies.
+- **Lay Bare and Cast the Shield read more simply:** they say "Remove all Barrier" and no longer mention Steadfast. They work as before.
+- **Event cards in their option boxes, everywhere:** an event saved before 0.140.0 is repaired when the run loads, the master and the student shows its rares and your card there, and an option that adds a Wound or Static shows it. A card in a box is no longer laid out above the options too.
+- **A fuller battle log:** discards from effects, Defer, Premeditate, Consume, cards added, cards drawn or Mana gained by an effect, Foresee and Reserves now have their own lines, naming the card.
+- **Premeditate stands out when you discard:** those cards pulse violet with a ribbon, because discarding them brings them back next turn at 0 Mana.
+- **Phones:** a tap plays a card or starts aiming it, and a long press lifts it to read. Held upright, you stand at the bottom left and the enemies at the top right, with smaller figures, and your Boons and Auras show at the top left.
+- **Garrote is out of the Assassin pool:** a Garrote in a saved run or Arena deck becomes Graveside Cut.
+- **Choose from your hand:** discarding, Deferring, Consuming and other choices of cards in your hand no longer open a window or ask to Confirm. The cards you can choose glow, and clicking one chooses it.
+- **Virulent is now Hemorrhage:** the same status under a name that suits Bleed. The rare card that was called Hemorrhage is now Red Tide, and it plays the same.
+- **The Trickster starts with one Veil Strike:** the second one is now a Strike.
+- **A defensive basic for the Knight:** Set Your Shield (6 Barrier, 3 more if you have Reserves) replaces Press the Attack in the starting deck. A Press the Attack in a saved run or Arena deck becomes Set Your Shield.
 - **Big machines hit more often:** War Engine 4x3, Dreadnought 4x2 to all, Scrap Golem 3x2; Enforcer, Bulwark Walker and Scrap Golem back to their earlier HP; merchant removal doubles in price each time; scrap buttons on the no-room prompt; named event cards in their option boxes; the elite event button says Spin To Win.
 - **Bigger machines, Engineer ceiling, Legendary swaps:** Full Throttle, Critical Mass and Final Volley for the Engineer; Heavy and Colossal machines have more HP and damage; Defer lasts only the turn the card returns; Foresee needs no Confirm; a Legendary Boon can be given up (X) or swapped when another is offered; the campaign board re-links a player whose name the server did not know.
 - **Ten-card starts, Arena minimum, fixes:** every class starts with ten cards; Arena decks need 15; totem cap 8; Aegis of Ages gives 1 Shielded (Ward Stone removed); Backup Core revives once; a card that damages every enemy then costs HP now takes the HP even when it ends the fight.

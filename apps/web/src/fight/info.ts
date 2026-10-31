@@ -256,7 +256,7 @@ export const STATUS_INFO: Record<
   },
   // (Sylas, the Silent's shape: DECISIONS #368)
   virulent: {
-    name: 'Virulent',
+    name: 'Hemorrhage',
     glyph: '☣',
     tone: 'good',
     text: 'Bleed on your enemies deals its damage this many more times each turn, losing 1 each time.',

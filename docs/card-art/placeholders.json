@@ -354,10 +354,10 @@
   "why": "a shield dome"
  },
  {
-  "id": "press-the-attack",
-  "name": "Press the Attack",
-  "source": "sure-footing",
-  "why": "boots stepping forward"
+  "id": "set-your-shield",
+  "name": "Set Your Shield",
+  "source": "stand-firm",
+  "why": "the Knight behind a raised shield (the old Knight model)"
  },
  {
   "id": "heavy-swing",

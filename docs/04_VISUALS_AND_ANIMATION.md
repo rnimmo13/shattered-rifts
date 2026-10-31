@@ -98,6 +98,7 @@ rift-touched) → 12) state overlays (playable glow, selected, disabled).
 - Keywords are **bold** with a 20 px inline icon before them. Hovering a keyword (inspect view) shows its reminder text.
 - Numbers changed from base show **green** (higher) or **red** (lower/damaged) everywhere: card, token, tooltip.
 - The cost gem number turns green when cost is reduced and red when increased; the original cost appears struck-through, small, beside it.
+- A card that **can be chosen** for a discard, Defer or similar pulses gold in hand (1.1 s) while that choice is the next input; a marked one stands up out of the fan.
 - A card that is **playable now** gets a soft realm-coloured outer glow in hand (2 s breathe). A
   **Resonance-live** card adds a rune ring flicker on its Resonance keyword.
 
@@ -166,8 +167,7 @@ On the board, units are **tokens**, not full cards: readable at a glance, with f
 - **Small screens (DECISIONS #443, `fight/stageLayout.ts`):** the layout is chosen from the window's size. *Compact* (a phone on its
   side, a tablet held sideways): figures ~80%, plates 80%, sky cropped (frame y 300-960), smaller hand. *Portrait* (taller than wide):
   enemies on a row behind (stage y 580), your side in front (y 1040), the camera frames x 550-1370 / y 130-1120 under a 46 px top bar;
-  below the board a strip (potions, the Boons and Auras drawer button) and a controls row (Mana, piles, End turn) on the hand; tap a card
-  to see it big, tap again to play.
+  below the board a strip (potions, the Boons and Auras drawer button) and a controls row (Mana, piles, End turn) on the hand; tap a card to play it (or to start aiming it); long-press a card to see it big, for as long as the finger stays down. You stand at the bottom left, the enemies at the top right, and the top left shows your Boons and Auras at a glance.
 - The **Arena background** (boss/realm specific) sits behind the board at 40% brightness with slow ambient
   motion (motes, steam, spores). It must never compete with the board: keep it low contrast, with a 12 px blur at the edges.
 

@@ -490,6 +490,9 @@
   display: contents;
 }
 .fhand__hit {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -668,6 +671,72 @@
 }
 .fight__hint {
   display: none;
+}
+/* a choice made on the hand: the cards that can be chosen pulse, and one already marked stands up out of the fan */
+.fight__aimbar--pick {
+  width: max-content;
+  max-width: min(44rem, 92vw);
+}
+.fhand__slot > * {
+  transition: translate 0.12s var(--ease-out);
+}
+.fhand__slot.is-pickable > * {
+  animation: pick-pulse 1.1s ease-in-out infinite;
+}
+.fhand__slot.is-picked > * {
+  translate: 0 -2rem;
+  filter: drop-shadow(0 0 10px var(--c-gold)) drop-shadow(0 0 3px var(--c-gold));
+}
+/* a card that gains from this choice (Premeditate, when discarding): a stronger violet pulse, and its name on a ribbon */
+.fhand__slot.is-synergy > * {
+  animation: pick-synergy 0.9s ease-in-out infinite;
+}
+.fhand__slot.is-synergy::after {
+  content: 'Premeditate';
+  position: absolute;
+  left: 50%;
+  top: -0.7rem;
+  translate: -50% 0;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 0 8px #a78bfa;
+}
+.fight__pickSynergy {
+  color: #c4b5fd;
+  font-style: normal;
+}
+@keyframes pick-synergy {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px #a78bfa);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px #a78bfa) drop-shadow(0 0 7px #ddd6fe);
+  }
+}
+@keyframes pick-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px var(--c-gold));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px var(--c-gold)) drop-shadow(0 0 4px var(--c-gold));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fhand__slot.is-pickable > * {
+    animation: none;
+    filter: drop-shadow(0 0 8px var(--c-gold));
+  }
+  .fhand__slot.is-synergy > * {
+    animation: none;
+    filter: drop-shadow(0 0 12px #a78bfa);
+  }
 }
 
 /* ---- modal & result ---- */
@@ -3407,6 +3476,36 @@ button.totem:disabled {
   width: 2.6rem;
   height: 2.6rem;
 }
+/* the top left of the upright stage, beside the enemies: your Boons and Auras at a glance */
+.fight__glance {
+  position: absolute;
+  left: 0.4rem;
+  top: 2.9rem;
+  z-index: 25;
+  display: grid;
+  gap: 0.1rem;
+  justify-items: start;
+  width: min(36vw, 12rem);
+  max-height: 32%;
+  overflow: hidden;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 0.5rem;
+  background: rgb(8 10 20 / 0.72);
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+.fight__glance b {
+  color: var(--c-gold);
+  font-size: 0.75rem;
+}
+.fight__glanceRow.is-foe {
+  color: #e58f8f;
+}
 .fight--portrait .fight__sideToggle {
   right: 0.5rem;
   bottom: var(--strip-bottom);
@@ -3443,6 +3542,21 @@ button.totem:disabled {
   padding: 0.3rem 0.7rem;
   gap: 0.5rem;
   font-size: 0.85rem;
+}
+/* a choice's sentence can be long, and its button must stay on the screen */
+.fight--portrait .fight__aimbar--pick {
+  white-space: normal;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: calc(100% - 1rem);
+  border-radius: 1rem;
+  text-align: center;
+}
+.fight--portrait .fight__aimbar--pick > span {
+  display: none;
+}
+.fight--portrait .fight__pickSynergy {
+  flex-basis: 100%;
 }
 .fight--portrait .fight__banner span {
   font-size: 1.4rem;

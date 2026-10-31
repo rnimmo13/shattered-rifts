@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.141.0',
+    date: '2026-10-30',
+    title: 'Choose from your hand',
+    summary: 'Discards and Defers are chosen right on your hand, phones get tap to play and a new upright layout, and the battle log tells you far more.',
+    notes: [
+      { kind: 'changed', text: 'Choosing a card from your hand (discard, Defer, Consume and the like) no longer opens a window or asks to Confirm. The cards you can choose glow, and clicking one chooses it. There is no undo.' },
+      { kind: 'changed', text: 'When you discard, cards with Premeditate pulse violet with a ribbon, because they come back next turn at 0 Mana.' },
+      { kind: 'changed', text: 'Phones: a tap plays a card or starts aiming it, and a long press lifts it to read.' },
+      { kind: 'changed', text: 'Phones held upright: you stand at the bottom left and the enemies at the top right, with smaller figures, and your Boons and Auras show at the top left.' },
+      { kind: 'changed', text: 'The battle log now names discards, Defer, Premeditate, Consume and cards added, and tells cards drawn and Mana gained from effects, Foresee, stopped attacks and Reserves.' },
+      { kind: 'changed', text: 'Every card an event option will surely take or give is in its box: the master and the student\u2019s rares, Wounds and Static, and an event saved before the last patch.' },
+      { kind: 'changed', text: 'A card\u2019s damage number and its breakdown now count Honed, and name Edge and Honed as their own steps. Fanned Daggers show the range across every enemy, and with several enemies the breakdown shows the highest number. The damage dealt has not changed, only what the card says. Lethality and Noose now count too.' },
+      { kind: 'balance', text: 'Knight: Set Your Shield (6 Barrier, 3 more if you have Reserves) replaces Press the Attack in the starting deck.' },
+      { kind: 'balance', text: 'Trickster: the starting deck has one Veil Strike; the second is now a Strike.' },
+      { kind: 'balance', text: 'Assassin: Garrote is out of the card pool. A Garrote in a saved run or Arena deck becomes Graveside Cut.' },
+      { kind: 'changed', text: 'Names: Virulent is now Hemorrhage, and the rare card that was called Hemorrhage is now Red Tide. Both work as before.' },
+      { kind: 'changed', text: 'Lay Bare and Cast the Shield say "Remove all Barrier" and no longer mention Steadfast. They work as before.' },
+    ],
+    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+  },
+  {
     version: '0.140.0',
     date: '2026-10-30',
     title: 'Big machines hit more often',

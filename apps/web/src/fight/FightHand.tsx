@@ -1,6 +1,7 @@
 // The hand: a fan of cards along the bottom. Hover lifts a card; click or drag plays it. A card with no target (or only
 // one legal target) plays as soon as you release it above the hand: no arrow, no menus. A card with several possible
-// targets is dropped on one, or clicked and then aimed with the pointer.
+// targets is dropped on one, or clicked and then aimed with the pointer. On a touch screen a tap is the click, and a long press
+// lifts the card to read it, for as long as the finger stays down (DECISIONS #475).
 
 import { AimArrow } from './AimArrow';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
@@ -55,8 +56,18 @@ export interface FightHandProps {
   onHover: (card: HandCard | null, rect?: DOMRect) => void;
   /** the centre (client px) of the figure the card is aimed at, for the arrow to lock onto */
   lockAt?: { x: number; y: number } | null;
+  /** a panel is open: the press that closes it does nothing else */
+  swallowPress?: boolean;
   /** the fan may use the whole width (held upright, the controls sit above the hand: DECISIONS #443) */
   fill?: boolean;
+  /** the next input is a choice of cards from this hand: clicking one chooses it instead of playing it (DECISIONS #473) */
+  picking?: {
+    pool: readonly string[];
+    chosen: readonly string[];
+    /** the choosable cards that gain from being chosen (Premeditate, when discarding): they stand out from the rest */
+    synergy: readonly string[];
+    onPick: (card: HandCard) => void;
+  } | null;
 }
 
 interface Drag {
@@ -66,7 +77,19 @@ interface Drag {
   moved: boolean;
   startX: number;
   startY: number;
+  /** a choice of cards was already waiting when the press began: a press meant to play a card never turns into a choice, or the reverse */
+  picking: boolean;
+  /** a finger, not a mouse */
+  touch: boolean;
+  /** only this pointer's moves and release count: a second finger on the screen is not this press */
+  pointerId: number;
+  /** the hand could not be played when the press began (the enemy's turn): a long press still reads a card, nothing else comes of it */
+  readOnly: boolean;
 }
+
+/** How long a finger stays on a card before it is lifted to be read, and how far it may wander and still be a tap. */
+const LONG_PRESS_MS = 350;
+const TOUCH_SLOP = 12;
 
 /**
  * How far in from each side of the screen the corner widgets (Mana and the draw pile, End turn and the discard pile, the battle log) reach
@@ -96,30 +119,30 @@ export function FightHand(p: FightHandProps) {
   const restRef = useRef<{ xs: number[]; w: number; pitch: number }>({ xs: [], w: 0, pitch: 0 });
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<Drag | null>(null);
-  /** on a touch screen a first tap only lifts a card to read it; the card previewed this way plays on the next tap */
-  const previewRef = useRef<string | null>(null);
+  /** a finger is holding a card up to read it: letting go only puts it back */
+  const [previewing, setPreviewing] = useState(false);
+  const previewRef = useRef(false);
+  const pressTimer = useRef<number | null>(null);
   const propsRef = useRef(p);
   useEffect(() => {
     propsRef.current = p;
   });
 
-  // a previewed card is forgotten when the hand changes or can no longer be played
-  useEffect(() => {
-    previewRef.current = null;
-  }, [p.cards, p.locked]);
-
-  // tapping anywhere but the hand puts a previewed card back
-  useEffect(() => {
-    const away = (e: PointerEvent): void => {
-      if (previewRef.current === null) return;
-      if ((e.target as HTMLElement | null)?.closest('.fhand__hit')) return;
-      previewRef.current = null;
-      setHover(null);
-      propsRef.current.onHover(null);
-    };
-    window.addEventListener('pointerdown', away);
-    return () => window.removeEventListener('pointerdown', away);
-  }, []);
+  const clearPress = (): void => {
+    if (pressTimer.current !== null) window.clearTimeout(pressTimer.current);
+    pressTimer.current = null;
+  };
+  /** Ends a long press, if there was one: true when the release was only that. */
+  const endPreview = (): boolean => {
+    clearPress();
+    if (!previewRef.current) return false;
+    previewRef.current = false;
+    setPreviewing(false);
+    setHover(null);
+    propsRef.current.onHover(null);
+    return true;
+  };
+  useEffect(() => clearPress, []);
 
   const n = p.cards.length;
   // (a hand that shrinks under the hovered card lets it go)
@@ -141,7 +164,7 @@ export function FightHand(p: FightHandProps) {
   };
   const slots = fanLayout(n, {
     ...layout,
-    focus: drag ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null,
+    focus: drag && !previewing ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null,
   });
   // where each card rests when nothing is lifted: the pointer is tested against THIS, so a card that lifts or grows
   // never moves out from under the pointer (which made it twitch up and down)
@@ -222,8 +245,12 @@ export function FightHand(p: FightHandProps) {
     if (!drag) return;
     const onMove = (e: PointerEvent) => {
       const d = dragRef.current;
-      if (!d) return;
-      const moved = d.moved || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > 7;
+      if (d && e.pointerId !== d.pointerId) return;
+      // (a card held up to read stays where it is, and the hand it could not be played from stays too)
+      if (!d || previewRef.current || d.readOnly) return;
+      const moved =
+        d.moved || Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > (d.touch ? TOUCH_SLOP : 7);
+      if (moved) clearPress();
       const nd = { ...d, x: e.clientX, y: e.clientY, moved };
       dragRef.current = nd;
       setDrag(nd);
@@ -234,36 +261,36 @@ export function FightHand(p: FightHandProps) {
     };
     const onUp = (e: PointerEvent) => {
       const d = dragRef.current;
+      if (d && e.pointerId !== d.pointerId) return;
       dragRef.current = null;
       setDrag(null);
       propsRef.current.onDragTargets(null);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onCancel);
-      if (!d) return;
+      if (endPreview() || !d || d.readOnly) return;
       const pr = propsRef.current;
       const c = pr.cards.find((x) => x.inst.id === d.id);
       if (!c) return;
+      if (d.picking !== !!pr.picking) return;
       if (!d.moved) {
-        // a click
-        if (e.pointerType === 'touch' && previewRef.current !== c.inst.id) {
-          // (a finger hides what it touches: the first tap lifts the card and shows it, tapping it again plays it)
-          previewRef.current = c.inst.id;
-          return;
-        }
-        previewRef.current = null;
+        // a click, or a tap
+        if (pr.picking) return pr.picking.onPick(c);
         if (!c.playable) return pr.onRefuse(c);
         if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
         return pr.onSelect(pr.selectedId === c.inst.id ? null : c);
       }
       if (!aboveHand(e.clientY)) return; // dropped back on the hand: cancel
+      if (pr.picking) return pr.picking.onPick(c);
       if (!c.playable) return pr.onRefuse(c);
       if (!needsAim(c)) return pr.onPlay(c, c.targets[0] ?? null);
       const over = pr.unitAt(e.clientX, e.clientY, new Set(c.targets));
       if (over && c.targets.includes(over)) return pr.onPlay(c, over);
       pr.onSelect(c); // dropped in the open with several targets: go on to aim it
     };
-    const onCancel = () => {
+    const onCancel = (e: PointerEvent) => {
+      if (dragRef.current && e.pointerId !== dragRef.current.pointerId) return;
+      endPreview();
       dragRef.current = null;
       setDrag(null);
       propsRef.current.onDragTargets(null);
@@ -292,6 +319,8 @@ export function FightHand(p: FightHandProps) {
         if (!s || !r0) return null;
         const dragging = drag?.id === c.inst.id && drag.moved;
         const sel = p.selectedId === c.inst.id;
+        const pickable = p.picking?.pool.includes(c.inst.id) ?? false;
+        const marked = p.picking?.chosen.includes(c.inst.id) ?? false;
         const style: CSSProperties = {
           width: w,
           height: w * 1.4,
@@ -326,15 +355,15 @@ export function FightHand(p: FightHandProps) {
         return (
           <div key={c.inst.id} className="fhand__pair">
             <div
-              className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}`}
+              className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}${pickable && !marked ? ' is-pickable' : ''}${marked ? ' is-picked' : ''}${p.picking?.synergy.includes(c.inst.id) ? ' is-synergy' : ''}`}
               style={style}
             >
               <FightCard
                 db={p.db}
                 def={c.def}
                 width={w}
-                playable={c.playable && !p.locked}
-                dimmed={!c.playable}
+                playable={(c.playable && !p.locked) || pickable}
+                dimmed={p.picking ? !pickable : !c.playable}
                 {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
                 {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
                 {...(p.live?.has(c.inst.id) ? { live: p.live.get(c.inst.id)! } : {})}
@@ -347,21 +376,24 @@ export function FightHand(p: FightHandProps) {
               ref={(el) => {
                 hitRefs.current[i] = el;
               }}
-              onPointerEnter={(e) => {
-                // (a mouse's hover follows the pointer along the fan, above; a finger lifts the card it touches)
-                if (e.pointerType !== 'touch') return;
-                setHover(i);
-                p.onHover(c, e.currentTarget.getBoundingClientRect());
-              }}
-              onPointerLeave={(e) => {
-                // a finger leaves the moment it lifts: the card it chose stays lifted until the player taps elsewhere
-                if (e.pointerType !== 'touch' || previewRef.current === c.inst.id) return;
-                setHover((h) => (h === i ? null : h));
-                p.onHover(null);
-              }}
+              // (a long press must not open the browser's own menu)
+              onContextMenu={(e) => e.preventDefault()}
               onPointerDown={(e) => {
-                if (p.locked || e.button !== 0) return;
+                const touch = e.pointerType === 'touch';
+                if ((p.locked && !touch) || e.button !== 0 || !e.isPrimary || p.swallowPress) return;
                 e.preventDefault();
+                if (touch) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  clearPress();
+                  pressTimer.current = window.setTimeout(() => {
+                    pressTimer.current = null;
+                    if (!dragRef.current || dragRef.current.moved) return;
+                    previewRef.current = true;
+                    setPreviewing(true);
+                    setHover(i);
+                    propsRef.current.onHover(c, rect);
+                  }, LONG_PRESS_MS);
+                }
                 // a mouse picks up the card that is lifted, whichever stand-in is under the pointer
                 const picked =
                   e.pointerType !== 'touch' && hover !== null ? (p.cards[hover] ?? c) : c;
@@ -372,6 +404,10 @@ export function FightHand(p: FightHandProps) {
                   moved: false,
                   startX: e.clientX,
                   startY: e.clientY,
+                  picking: !!p.picking,
+                  touch,
+                  pointerId: e.pointerId,
+                  readOnly: p.locked,
                 };
                 dragRef.current = d;
                 setDrag(d);

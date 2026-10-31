@@ -885,6 +885,9 @@ export function EventView(props: {
     (o) => o.shows?.gain.includes(ev.cardOffer) || o.shows?.lose.includes(ev.cardOffer),
   );
   const card = ev.cardOffer && !inABox ? defOf(ev.cardOffer) : undefined;
+  const loose = ev.cardOffers?.filter(
+    (id) => !ev.options.some((o) => o.shows?.gain.includes(id) || o.shows?.lose.includes(id)),
+  );
   return (
     <section className="stage-panel" aria-label="Event">
       <h2 className="stage-panel__title">{ev.title}</h2>
@@ -900,9 +903,9 @@ export function EventView(props: {
           />
         </div>
       )}
-      {ev.cardOffers && (
+      {loose && loose.length > 0 && (
         <div className="offers">
-          {ev.cardOffers.map((id) => (
+          {loose.map((id) => (
             <Pickable
               key={id}
               id={id}

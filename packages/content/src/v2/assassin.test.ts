@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  previewCardDamage,
   costOf,
   applyAction,
   cardText,
@@ -13,7 +14,7 @@ import {
   legalActions,
   type CombatState,
 } from '@sr/combat';
-import { COMBAT_DB as db, RIFTWALKERS } from './index';
+import { COMBAT_DB as db, RIFTWALKERS, canonicalCard } from './index';
 
 function fight(hand: string[], foes = 2): CombatState {
   const deck = RIFTWALKERS.assassin.starter;
@@ -66,13 +67,13 @@ describe('Sylas is the Silent shape', () => {
     expect(RIFTWALKERS.assassin.trait.name).toBe('Hidden Blades');
   });
 
-  it('has one card for each of the Silent’s 80: 20 commons, 35 uncommons and 25 rares, no Traps', () => {
+  it('has the Silent’s list less Garrote (DECISIONS #474): 20 commons, 34 uncommons and 25 rares, no Traps', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'assassin' && !c.id.endsWith('+') && c.source !== 'token',
     );
     const count = (r: string) => own.filter((c) => c.rarity === r).length;
     expect([count('basic'), count('common'), count('uncommon'), count('rare')]).toEqual([
-      4, 20, 35, 25,
+      4, 20, 34, 25,
     ]);
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
   });
@@ -276,13 +277,18 @@ describe('the rest of the Silent’s tricks', () => {
     expect(foeHp(s, 0)).toBe(180);
   });
 
-  it('Garrote (Strangle) costs the enemy 2 HP for every card played after it this turn', () => {
-    let s = play(fight(['garrote', 'turn-aside', 'turn-aside']), 'garrote');
-    expect(foeHp(s)).toBe(192);
+  // (no card applies Strangled since Garrote left the pool, DECISIONS #474; the rule stays in the engine)
+  it('Strangled costs the enemy its stacks in HP for every card played', () => {
+    let s = fight(['turn-aside', 'turn-aside']);
+    foe(s).statuses.strangled = 2;
     s = play(play(s, 'turn-aside'), 'turn-aside');
-    expect(foeHp(s)).toBe(188);
-    s = endTurn(s);
-    expect(foe(s).statuses.strangled).toBeUndefined();
+    expect(foeHp(s)).toBe(196);
+  });
+
+  it('Garrote has left the pool: an old copy becomes Graveside Cut, keeping its upgrade', () => {
+    expect(db.cards.garrote).toBeUndefined();
+    expect(canonicalCard('garrote')).toBe('graveside-cut');
+    expect(canonicalCard('garrote+')).toBe('graveside-cut+');
   });
 
   it('Stilled Time (Bullet Time) makes the hand free and stops drawing', () => {
@@ -379,5 +385,98 @@ describe('the rest of the Silent’s tricks', () => {
     expect(cardText(db, db.cards['tossed-vials']!)).toBe(
       'Apply 3 Bleed to a random enemy 3 times.',
     );
+  });
+
+  describe('the number on a Dagger is the damage it deals (DECISIONS #479)', () => {
+    const shown = (s: CombatState) => {
+      const inst = s.sides.a.hand.find((c) => c.card === 'sleeve-knife')!;
+      return previewCardDamage(db, s, inst.id, foe(s).id).get(0)!;
+    };
+    /** what the card says, and then what it really takes off the enemy */
+    const check = (s: CombatState): { said: number; dealt: number; next: CombatState } => {
+      const said = shown(s).lo;
+      const before = foeHp(s);
+      const next = play(s, 'sleeve-knife');
+      return { said, dealt: before - foeHp(next), next };
+    };
+    const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
+
+    it('Honed counts on the first Dagger of the turn, and not on the next', () => {
+      const s = fight(['sleeve-knife', 'sleeve-knife']);
+      hero(s).statuses.honed = 9;
+      const first = check(s);
+      expect(first.said).toBe(13);
+      expect(first.dealt).toBe(13);
+      const second = check(first.next);
+      expect(second.said).toBe(4);
+      expect(second.dealt).toBe(4);
+    });
+
+    it('with Tracking against a Faltering enemy, and everything else on top', () => {
+      const s = fight(['sleeve-knife']);
+      hero(s).statuses.honed = 9;
+      hero(s).statuses.tracking = 1;
+      hero(s).statuses.might = 2;
+      hero(s).statuses.edge = 1;
+      foe(s).statuses.faltering = 1;
+      foe(s).statuses.exposed = 1;
+      // (4 + 1 Edge + 9 Honed + 2 Might = 16; Exposed 24; Tracking 36)
+      expect(shown(s).how).toEqual([
+        '4',
+        '+1 Edge = 5',
+        '+9 Honed = 14',
+        '+2 Might = 16',
+        'Exposed +50% = 24',
+        'Tracking +50% = 36',
+      ]);
+      const r = check(s);
+      expect(r.said).toBe(36);
+      expect(r.dealt).toBe(36);
+    });
+
+    it('with several enemies it shows the steps of the highest number', () => {
+      const s = fight(['sleeve-knife']);
+      hero(s).statuses.tracking = 1;
+      const extra = clone(foe(s));
+      extra.id = 'extra';
+      s.sides.b.units.push(extra);
+      foe(s).statuses.faltering = 1;
+      const inst = s.sides.a.hand[0]!;
+      const l = previewCardDamage(db, s, inst.id).get(0)!;
+      expect([l.lo, l.hi]).toEqual([4, 6]);
+      expect(l.how).toEqual(['4', 'Tracking +50% = 6']);
+    });
+
+    it('Fanned shows every enemy, as it hits them all', () => {
+      const s = fight(['sleeve-knife']);
+      hero(s).statuses.fanned = 1;
+      hero(s).statuses.tracking = 1;
+      const extra = clone(foe(s));
+      extra.id = 'extra';
+      s.sides.b.units.push(extra);
+      foe(s).statuses.faltering = 1;
+      const l = previewCardDamage(db, s, s.sides.a.hand[0]!.id, extra.id).get(0)!;
+      expect([l.lo, l.hi]).toEqual([4, 6]);
+    });
+  });
+
+  it('Lay Bare does not mention Steadfast, and still takes it (DECISIONS #478)', () => {
+    expect(cardText(db, db.cards['lay-bare']!)).toBe(
+      'Remove all Barrier from the target. Apply 2 Exposed. Consume.',
+    );
+    const s = fight(['lay-bare']);
+    foe(s).statuses.steadfast = 1;
+    foe(s).barrier = 5;
+    const after = play(s, 'lay-bare');
+    expect(foe(after).barrier).toBe(0);
+    expect(foe(after).statuses.steadfast).toBeUndefined();
+    // (with the Steadfast gone first, the Exposed lands)
+    expect(foe(after).statuses.exposed).toBe(2);
+  });
+
+  it('the Virulent status reads as Hemorrhage, and the card of that name as Red Tide (DECISIONS #472)', () => {
+    expect(cardText(db, db.cards['thin-the-blood']!)).toBe('Gain 1 Hemorrhage.');
+    expect(db.cards.hemorrhage!.name).toBe('Red Tide');
+    expect(Object.values(db.cards).filter((c) => c.name === 'Hemorrhage')).toEqual([]);
   });
 });

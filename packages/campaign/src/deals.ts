@@ -517,6 +517,13 @@ function pinCard(
     // (a card the event already named, the open rift's three: shown in its option too, DECISIONS #435)
     case 'card':
       return st.id ? { step: st, lose: [], gain: [st.id] } : null;
+    // (cards the option names outright: DECISIONS #477)
+    case 'swap':
+      return deck.includes(st.from) ? { step: st, lose: [st.from], gain: [st.to] } : null;
+    case 'wound':
+      return { step: st, lose: [], gain: Array<string>(st.n).fill('wound') };
+    case 'static':
+      return { step: st, lose: [], gain: Array<string>(st.n).fill('static') };
     default:
       return null;
   }

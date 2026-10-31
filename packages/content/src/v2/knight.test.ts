@@ -47,7 +47,7 @@ describe('the knight is the Ironclad shape', () => {
       ...Array<string>(2).fill('defend'),
       'sundering-blow',
       'brace-and-press',
-      'press-the-attack',
+      'set-your-shield',
       'heavy-swing',
     ]);
     expect(RIFTWALKERS.knight.hero.maxHp).toBe(80);
@@ -455,7 +455,7 @@ describe('the rest of the Ironclad list', () => {
 
 // The knight is the Ironclad's list, card for card (DECISIONS #367), as a yardstick for the other classes.
 describe('one card for each of the Ironclad’s', () => {
-  it('has 82 cards of the Ironclad’s list (with Sundering Blow, her Bash) plus Strike and Defend, the 12 Mana Reserves cards (DECISIONS #454, #456), and Brace and Press, Press the Attack and Heavy Swing (#457, #458)', () => {
+  it('has 82 cards of the Ironclad’s list (with Sundering Blow, her Bash) plus Strike and Defend, the 12 Mana Reserves cards (DECISIONS #454, #456), and Brace and Press, Set Your Shield and Heavy Swing (#457, #458, #470)', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );

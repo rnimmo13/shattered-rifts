@@ -67,6 +67,7 @@ import {
   PORTRAIT,
   boardReserve,
   figureScale,
+  portraitMyY,
   foldsSide,
   frameFor,
   stageModeFor,
@@ -82,6 +83,7 @@ import { CardHover } from './CardHover';
 import { preloadAllArt, realSkinFigure } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
+import { isHandPick, pickStep, premeditateIn, prompt as pickPrompt } from './handPick';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
@@ -256,7 +258,7 @@ function specsFrom(
       ? ds === 'b'
         ? pvp
           ? packLine(line, P.foeAllyNear, P.foeAllyFar)
-          : centredLine(line, P.foeNear, P.foeFar)
+          : centredLine(line, line.length >= P.foeCrowd ? P.foeNearCrowd : P.foeNear, P.foeFar)
         : packLine(line, P.allyNear, P.allyFar)
       : ds === 'b'
         ? packLine(line, FOE_NEAR, pvp ? FOE_FAR_PVP : FOE_FAR)
@@ -291,7 +293,7 @@ function specsFrom(
                 : {}
           : { x: fit.xs[n++] as number }),
         // (upright: the other side on the row behind, yours in front)
-        ...(upright ? { y: ds === 'b' ? P.foeY : P.myY } : {}),
+        ...(upright ? { y: ds === 'b' ? P.foeY : portraitMyY() } : {}),
         canvas: e.canvas,
         height: e.height * k,
         ...(e.hover > 0 ? { hover: e.hover * k } : {}),
@@ -321,7 +323,8 @@ function WhoTag(props: {
     <div
       ref={ref}
       className={`fight__who fight__who--${props.mine ? 'me' : 'foe'}`}
-      style={{ left: props.x, top: props.y }}
+      // (centred on the figure, but kept on the screen when it stands near the edge)
+      style={{ left: Math.max(72, Math.min(window.innerWidth - 72, props.x)), top: props.y }}
     >
       <b>
         {props.name} <TrophyBadges trophies={props.trophies} />
@@ -359,6 +362,8 @@ function sharpOf(
   }
   return null;
 }
+
+const NONE_PICKED: string[] = [];
 
 export function FightView(props: {
   db: CombatDb;
@@ -419,6 +424,8 @@ export function FightView(props: {
   const [paused, setPaused] = useState(false);
   /** choices answered so far: two questions in a row with the same options still open a fresh choice window */
   const [pickCount, setPickCount] = useState(0);
+  /** the cards marked so far in a choice made on the hand, and which choice they belong to */
+  const [handPicked, setHandPicked] = useState<{ key: string; cards: string[] }>({ key: '', cards: [] });
   // (DECISIONS #429) a totem commanded just now: its spirit rises over it on the totem panel for a moment
   const [summon, setSummon] = useState<(TotemSummon & { side: Side }) | null>(null);
   const summonTimer = useRef<number | null>(null);
@@ -825,6 +832,7 @@ export function FightView(props: {
         sideOf: (id) => namer.current.sideOf(id),
         defOf: (id) => namer.current.defOf(id),
         who: (side) => (side === mySide ? 'You' : foeName),
+        blind: hideHand,
       });
       const line = describer.current(e);
       if (!line) return;
@@ -837,7 +845,7 @@ export function FightView(props: {
           setLogLines((prev) => [...prev, ...add].slice(-LOG_LIMIT));
         }, 120);
     },
-    [db, mySide, foeName],
+    [db, mySide, foeName, hideHand],
   );
 
   const runBatch = useCallback(
@@ -1305,6 +1313,41 @@ export function FightView(props: {
 
   const anyPlay = handCards.some((c) => c.playable);
 
+  // (a choice of enchantments or totems has no cards: its kind and options tell two questions in a row apart)
+  const pickKey = view?.pending
+    ? `${view.pending.kind}:${view.pending.pool.map((c) => c.id).join()}:${(view.pending.charges ?? []).map((c) => c.id + c.kind).join()}:${(view.pending.spirits ?? []).map((c) => c.id + (c.spirit ?? '')).join()}:${view.pending.incoming ?? ''}${view.pending.planting ?? ''}:${pickCount}`
+    : '';
+  const handPickNow =
+    view?.pending && !watch
+      ? isHandPick(
+          view.pending,
+          handCards.map((c) => c.inst.id),
+        )
+      : false;
+  const pickedNow = handPicked.key === pickKey ? handPicked.cards : NONE_PICKED;
+  const pickPool = handPickNow && view?.pending ? view.pending.pool.map((c) => c.id) : null;
+  const pickSynergy = handPickNow && view?.pending ? premeditateIn(view.pending, db) : [];
+  // (a number key pressed just as a choice appears was meant for a card to play, not for this choice)
+  const pickShownAt = useRef(0);
+  useEffect(() => {
+    if (handPickNow) pickShownAt.current = performance.now();
+  }, [handPickNow, pickKey]);
+  const submitPick = (cards: string[]): void => {
+    setPickCount((n) => n + 1);
+    // (the next card slides under the pointer: the chosen one's notes must not stay beside it)
+    setHoverCard(null);
+    act({ type: 'pick', cards });
+  };
+  const chooseInHand = (id: string): void => {
+    const p = view?.pending;
+    if (!p) return;
+    const pool = p.pool.map((c) => c.id);
+    if (!pool.includes(id)) return void play('refuse');
+    const step = pickStep(pickedNow, id, { pool, max: p.max });
+    if (step.submit) submitPick(step.chosen);
+    else setHandPicked({ key: pickKey, cards: step.chosen });
+  };
+
   const selectedCard = handCards.find((c) => c.inst.id === selected) ?? null;
   const releaseCard = releasing
     ? (handCards.find((c) => c.inst.id === releasing.card) ?? null)
@@ -1398,6 +1441,14 @@ export function FightView(props: {
       ? lockOn
       : null;
 
+  const [touchAimAt, setTouchAimAt] = useState<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    const first = touch && (selected || releasing) ? [...aimSet][0] : undefined;
+    const sc = scene.current;
+    const at = first ? sc?.fighters.anchor(first) : null;
+    setTouchAimAt(sc && at ? sc.stageToClient(at.x, at.y - at.h * 0.5) : null);
+  }, [touch, selected, releasing, aimSet]);
+
   const unitAt = useCallback(
     (cx: number, cy: number, among?: ReadonlySet<string>): string | null => {
       const sc = scene.current;
@@ -1453,7 +1504,10 @@ export function FightView(props: {
           setReleasing(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
-      else if (/^[1-9]$/.test(e.key) && !waiting && !watch) {
+      else if (/^[1-9]$/.test(e.key) && handPickNow) {
+        const c = handCards[Number(e.key) - 1];
+        if (c && performance.now() - pickShownAt.current > 150) chooseInHand(c.inst.id);
+      } else if (/^[1-9]$/.test(e.key) && !waiting && !watch) {
         const c = handCards[Number(e.key) - 1];
         if (!c) return;
         if (!c.playable) return void play('refuse');
@@ -1464,7 +1518,8 @@ export function FightView(props: {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [act, commit, endTurn, handCards, waiting, pile, watch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- chooseInHand is new each render, and pickKey and pickedNow change with it
+  }, [act, commit, endTurn, handCards, waiting, pile, watch, handPickNow, pickKey, pickedNow]);
 
   const onStagePointerDown = (e: React.PointerEvent) => {
     if (releasing) {
@@ -1615,8 +1670,8 @@ export function FightView(props: {
     // no panel. Sized from the figure, the next to act at the top.
     const at = side === mySide ? heroPlaced : foePlaced;
     if (!at) return null;
-    const mirror = side !== mySide;
-    const size = Math.max(54, Math.round(at.h * 0.24));
+    const mirror = side !== mySide || mode === 'portrait';
+    const size = Math.max(mode === 'portrait' ? 40 : 54, Math.round(at.h * 0.24));
     return (
       <TotemArc
         key={`totems-${side}`}
@@ -1627,7 +1682,7 @@ export function FightView(props: {
         // (close beside the figure, and never off the edge of the stage: the arc bows out by half a position)
         x={
           mirror
-            ? at.x + at.w * 0.38 + size * 0.45
+            ? Math.min(window.innerWidth - size * 1.05 - 6, at.x + at.w * 0.38 + size * 0.45)
             : Math.max(size * 1.05 + 6, at.x - at.w * 0.38 - size * 0.45)
         }
         cy={at.y - at.h * 0.55}
@@ -1700,7 +1755,10 @@ export function FightView(props: {
   const damageSteps = hoverLive
     ? [...hoverLive.values()]
         .filter((l) => l.how && l.how.length > 1)
-        .map((l) => ({ name: 'Damage', text: l.how!.join(' → ') }))
+        .map((l) => ({
+          name: l.lo === l.hi ? 'Damage' : 'Damage (the highest)',
+          text: l.how!.join(' → '),
+        }))
     : [];
   const keywords = hoverCard
     ? [
@@ -2053,7 +2111,18 @@ export function FightView(props: {
             cards={handCards}
             live={liveDamage}
             cardWidth={cw}
-            locked={waiting || finished}
+            locked={handPickNow ? finished : waiting || finished}
+            swallowPress={menuOpen || sideOpen}
+            picking={
+              pickPool
+                ? {
+                    pool: pickPool,
+                    chosen: pickedNow,
+                    synergy: pickSynergy,
+                    onPick: (c) => chooseInHand(c.inst.id),
+                  }
+                : null
+            }
             selectedId={selected}
             unitAt={unitAt}
             lockAt={lockAt}
@@ -2096,8 +2165,8 @@ export function FightView(props: {
                 db={db}
                 def={hoverCard.def}
                 width={Math.round(Math.min(260, window.innerWidth * 0.56))}
-                playable={hoverCard.playable && !waiting}
-                dimmed={!hoverCard.playable}
+                playable={pickPool ? pickPool.includes(hoverCard.inst.id) : hoverCard.playable && !waiting}
+                dimmed={pickPool ? !pickPool.includes(hoverCard.inst.id) : !hoverCard.playable}
                 {...(hoverCard.inst.bonus ? { bonus: hoverCard.inst.bonus } : {})}
                 {...(hoverCard.cost !== undefined && hoverCard.cost !== hoverCard.def.cost
                   ? { cost: hoverCard.cost }
@@ -2139,12 +2208,12 @@ export function FightView(props: {
             mode !== 'portrait' &&
             keywords.length > 0 && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
 
-          {(selectedCard || releasing) && !touch && (
+          {(selectedCard || releasing) && (!touch || touchAimAt) && (
             <AimArrow
               className="fight__arrow"
               from={{ x: window.innerWidth / 2, y: window.innerHeight - cw * 1.1 }}
-              to={pointer}
-              lock={lockAt}
+              to={touchAimAt ?? pointer}
+              lock={touch ? null : lockAt}
             />
           )}
           {me && showBelt && (
@@ -2157,7 +2226,7 @@ export function FightView(props: {
                     <PotionButton
                       key={`${id}-${i}`}
                       id={id}
-                      disabled={waiting || finished || watch !== null}
+                      disabled={waiting || finished || watch !== null || (view?.pending ?? null) !== null}
                       active={aimPotion === id}
                       onUse={() => {
                         const needs = legal.some(
@@ -2186,6 +2255,23 @@ export function FightView(props: {
               <button className="btn btn--small btn--ghost" onClick={() => setAimPotion(null)}>
                 <span>Cancel</span>
               </button>
+            </div>
+          )}
+          {handPickNow && view.pending && !finished && (
+            <div className="fight__aimbar fight__aimbar--pick" role="status">
+              <b>{pickPrompt(view.pending)}</b> <span>{touch ? 'Tap' : 'Click'} a glowing card.</span>
+              {pickSynergy.length > 0 && (
+                <em className="fight__pickSynergy">Premeditate cards come back next turn at 0 Mana.</em>
+              )}
+              {view.pending.min < view.pending.max && (
+                <button
+                  className="btn btn--small btn--primary"
+                  disabled={pickedNow.length < view.pending.min}
+                  onClick={() => submitPick(pickedNow)}
+                >
+                  <span>{pickedNow.length === 0 ? 'Keep them all' : 'Done'}</span>
+                </button>
+              )}
             </div>
           )}
           {selectedCard && (
@@ -2232,6 +2318,29 @@ export function FightView(props: {
             )}
           </div>
           {/* (DECISIONS #443) on a small screen the two side columns fold into one drawer, opened by a button with their counts */}
+          {mode === 'portrait' && sideCount.boons + sideCount.auras + sideCount.foe > 0 && !sideOpen && (
+            // (your Boons and Auras at a glance in the room at the top left; tapping it opens the drawer with their whole text)
+            <button
+              className="fight__glance"
+              aria-label="Boons and Auras: open the list"
+              onClick={() => setSideOpen(true)}
+            >
+              {traitOf(setup[mySide]) && <b>{traitOf(setup[mySide])?.name}</b>}
+              {(mine.boons?.length ?? 0) > 0 && (
+                <span className="fight__glanceRow">
+                  ✦ {mine.boons?.length} {mine.boons?.length === 1 ? 'Boon' : 'Boons'}
+                </span>
+              )}
+              {[...new Set((me?.powers ?? []).map((p) => p.card))].map((card) => (
+                <span key={card} className="fight__glanceRow">
+                  ◈ {db.cards[card]?.name ?? 'Aura'}
+                </span>
+              ))}
+              {sideCount.foe > 0 && (
+                <span className="fight__glanceRow is-foe">☾ {sideCount.foe} against you</span>
+              )}
+            </button>
+          )}
           {foldsSide(mode) && sideCount.total > 0 && (
             <button
               className={`fight__sideToggle${sideOpen ? ' is-open' : ''}`}
@@ -2384,17 +2493,13 @@ export function FightView(props: {
               </button>
             </aside>
           )}
-          {view.pending && !finished && !watch && (
+          {view.pending && !finished && !watch && !handPickNow && (
             <PickModal
-              // (a choice of enchantments or totems has no cards: its kind and options tell two questions in a row apart)
-              key={`${view.pending.kind}:${view.pending.pool.map((c) => c.id).join()}:${(view.pending.charges ?? []).map((c) => c.id + c.kind).join()}:${(view.pending.spirits ?? []).map((c) => c.id + (c.spirit ?? '')).join()}:${view.pending.incoming ?? ''}${view.pending.planting ?? ''}:${pickCount}`}
+              key={pickKey}
               db={db}
               pending={view.pending}
               width={Math.min(190, cw)}
-              onSubmit={(cards) => {
-                setPickCount((n) => n + 1);
-                act({ type: 'pick', cards });
-              }}
+              onSubmit={submitPick}
             />
           )}
           {pile && (

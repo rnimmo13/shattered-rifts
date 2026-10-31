@@ -410,6 +410,7 @@ const STATUS_NAME: Record<string, string> = {
   ritual: 'Cadence',
   vigor: 'Primed',
   seared: 'Bleed',
+  virulent: 'Hemorrhage',
   burn: 'Burn',
   freeattack: 'Free Attack',
   freeskill: 'Free Skill',
@@ -1576,7 +1577,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'strip': {
       const whom =
         o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
-      return `Remove all Barrier and Steadfast from ${whom}.`;
+      // (it takes Steadfast too, but so few enemies have any that saying so only made the cards read as niche: DECISIONS #478)
+      return `Remove all Barrier from ${whom}.`;
     }
     case 'selfCost':
       return `This card costs ${o.amount} less for the rest of the fight.`;
@@ -2025,6 +2027,7 @@ export function eventsFor(
       case 'draw':
       case 'burn':
       case 'discard':
+      case 'premeditate':
       case 'addCard':
       case 'transform':
         return e.side === viewer ? e : { ...e, def: '' };

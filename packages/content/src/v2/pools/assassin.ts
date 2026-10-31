@@ -418,22 +418,11 @@ export const ASSASSIN: CardDef[] = [
     [on('turnStart', [status('seared', 2, 'allFoes')])],
     { up: { effects: [on('turnStart', [status('seared', 3, 'allFoes')])] } },
   ),
-  // (Strangle: the enemy loses HP whenever you play a card this turn)
-  q(
-    'uncommon',
-    'garrote',
-    'Garrote',
-    'attack',
-    1,
-    'foe',
-    [dmg(8), status('strangled', 2, 'target', true)],
-    { up: { effects: [dmg(10), status('strangled', 3, 'target', true)] } },
-  ),
   // (Corrosive Wave)
   q(
     'rare',
     'hemorrhage',
-    'Hemorrhage',
+    'Red Tide',
     'skill',
     1,
     'none',

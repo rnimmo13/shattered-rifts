@@ -68,12 +68,12 @@ export const KNIGHT: CardDef[] = [
   ], {
     up: { effects: [barrier(5), status('plating', 3), status('exposed', 1, 'target')] },
   }),
-  // (a hit that pays off the Exposed the other basics set up: Robert 2026-10-30, more damage in the starting deck)
-  m('basic', 'press-the-attack', 'Press the Attack', 'attack', 1, 'foe', [
-    dmg(5),
-    when('exposed', { atLeast: 1, of: 'target' }, [dmg(4)]),
+  // (a better Defend that pays for keeping Mana back: Robert 2026-10-30, "we have enough damage now but need better defenses for the knight")
+  m('basic', 'set-your-shield', 'Set Your Shield', 'skill', 1, 'none', [
+    barrier(6),
+    when('reserves', { atLeast: 1 }, [barrier(3)]),
   ], {
-    up: { effects: [dmg(7), when('exposed', { atLeast: 1, of: 'target' }, [dmg(5)])] },
+    up: { effects: [barrier(8), when('reserves', { atLeast: 1 }, [barrier(4)])] },
   }),
   m('basic', 'heavy-swing', 'Heavy Swing', 'attack', 2, 'foe', [dmg(14)]),
 

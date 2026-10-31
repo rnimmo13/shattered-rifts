@@ -15,6 +15,7 @@ import {
   type HeroId,
 } from '@sr/content/v2';
 import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
+import { offerShows } from './eventBoxes';
 import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from './deals';
 import { DEAL_EVENTS } from './eventDeals';
 import { MORE_EVENTS } from './eventsMore';
@@ -357,9 +358,11 @@ export function pinOptions(r: RunState, ev: EventCtx): EventCtx {
     if (o.deal) continue;
     let shows: EventOption['shows'] | undefined;
     // (the card the event already named goes in the box of the option that takes or gives it, Robert 2026-10-30: the rift cache)
-    if (ev.cardOffer && (o.id === 'card' || o.id === 'ancestor' || o.id === 'cross'))
-      shows = { lose: [], gain: [ev.cardOffer] };
-    else if (ev.cardOffer && o.id === 'burn') shows = { lose: [ev.cardOffer], gain: [] };
+    const named = offerShows(o.id, ev.cardOffer);
+    if (named) shows = named;
+    // (hand-written options that add Wounds)
+    else if (o.id === 'rob' || o.id === 'maxhp') shows = { lose: [], gain: ['wound'] };
+    else if (o.id === 'idol') shows = { lose: [], gain: ['wound', 'wound'] };
     else if (o.id === 'upgrade') {
       const pick = pickOf(upgradable(r.deck));
       if (pick) shows = { lose: [pick], gain: [upOf(pick)] };

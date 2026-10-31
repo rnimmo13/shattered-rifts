@@ -86,7 +86,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('defend', 2),
       'sundering-blow',
       'brace-and-press',
-      'press-the-attack',
+      'set-your-shield',
       'heavy-swing',
     ],
     blurb:
@@ -94,7 +94,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     howTo: [
       'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
-      'Exposed enemies take 50% more from your attacks: Sundering Blow and Brace and Press set it up, and Press the Attack pays it off.',
+      'Exposed enemies take 50% more from your attacks: Sundering Blow and Brace and Press set it up, and your Strikes and Heavy Swing pay it off.',
       'Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might.',
     ],
   },
@@ -173,9 +173,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
     starter: [
-      ...rep('strike', 3),
+      ...rep('strike', 4),
       ...rep('defend', 2),
-      ...rep('veil-strike', 2),
+      'veil-strike',
       'set-the-web',
       'pick-a-card',
       'pinprick-trap',
@@ -928,6 +928,8 @@ export const RETIRED_CARDS: Readonly<Record<string, string>> = {
   heel: 'thick-hide',
   'call-gnashlings': 'thick-hide',
   howl: 'pack-tactics',
+  'press-the-attack': 'set-your-shield',
+  garrote: 'graveside-cut',
   ...TRIMMED_CARDS,
 };
 

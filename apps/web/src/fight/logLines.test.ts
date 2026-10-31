@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CombatEvent } from '@sr/combat';
+import { applyAction, clone, createCombat, legalActions, type CombatEvent } from '@sr/combat';
 import { COMBAT_DB as db } from '@sr/content/v2';
 import { Namer, createDescriber, type LogContext } from './logLines';
 
@@ -173,5 +173,102 @@ describe('the battle log shows how hard a move hits and how HP moved', () => {
         hp: 34,
       }),
     ).toBe('Gilded Squire hits you: no damage (4 blocked)');
+  });
+});
+
+describe('where cards went, in the log (DECISIONS #476)', () => {
+  const inst = { side: 'a' as const, card: 'c1', def: 'strike' };
+  it('names a discard from an effect, a Defer and Premeditate', () => {
+    expect(say({ type: 'discard', ...inst })).toBe('You discard Strike');
+    expect(say({ type: 'discard', ...inst, defer: true })).toBe('You defer Strike: back next turn, 1 cheaper');
+    expect(say({ type: 'premeditate', ...inst })).toBe('Premeditate: Strike comes back next turn at 0 Mana');
+    expect(say({ type: 'exhaust', ...inst })).toBe('You consume Strike');
+  });
+  it('leaves out the end-of-turn sweep and an Aura leaving the deck', () => {
+    expect(say({ type: 'discard', ...inst, routine: true })).toBeNull();
+    expect(say({ type: 'exhaust', ...inst, routine: true })).toBeNull();
+  });
+  it('never names a card the opponent is hiding', () => {
+    const foe = { side: 'b' as const, card: 'c2', def: '' };
+    expect(say({ type: 'discard', ...foe })).toBe('Enemy discards a card');
+    expect(say({ type: 'premeditate', ...foe })).toBeNull();
+    expect(say({ type: 'addCard', ...foe, to: 'hand' })).toBeNull();
+    expect(say({ type: 'draw', ...foe })).toBeNull();
+    expect(say({ type: 'burn', ...foe })).toBeNull();
+    expect(say({ type: 'transform', ...foe })).toBeNull();
+  });
+  it('tells a draw or Mana from an effect, not the start of the turn', () => {
+    const turn: CombatEvent = { type: 'turnStart', side: 'a', turn: 1 };
+    const draw: CombatEvent = { type: 'draw', ...inst };
+    const mana = (n: number): CombatEvent => ({ type: 'mana', side: 'a', mana: n });
+    const play: CombatEvent = { type: 'play', ...inst, target: null };
+    expect(story([turn, mana(3), draw, play, mana(2), draw, mana(4)])).toEqual([
+      'Your turn',
+      'You play Strike',
+      'You draw Strike',
+      'You gain 2 Mana',
+    ]);
+  });
+  it('tells Reserves gained and spent, once each', () => {
+    const r = (n: number): CombatEvent => ({ type: 'reserves', side: 'a', reserves: n, max: 3 });
+    expect(story([r(2), r(2), r(1)])).toEqual(['You gain 2 Reserves (now 2)', 'You spend 1 Reserve (now 1)']);
+  });
+});
+
+describe('the log of a real discard', () => {
+  const realEvents = (): CombatEvent[] => {
+    const { state } = createCombat(db, {
+      seed: 'log',
+      a: { hero: 'assassin', deck: Array<string>(10).fill('strike') },
+      b: { enemies: ['squire'] },
+    });
+    const s = clone(state);
+    s.sides.a.hand = [
+      { id: 'T0', card: 'duck-and-weave' },
+      { id: 'T1', card: 'glancing-knives' },
+      { id: 'T2', card: 'strike' },
+    ];
+    s.sides.a.mana = 3;
+    const play = legalActions(db, s).find((a) => a.type === 'play' && a.card === 'T0')!;
+    const first = applyAction(db, s, play);
+    const second = applyAction(db, first.state, { type: 'pick', cards: ['T1'] });
+    const third = applyAction(db, second.state, { type: 'endTurn' });
+    return [...first.events, ...second.events, ...third.events];
+  };
+  const quiet: LogContext = { ...ctx, nameOf: () => 'Someone' };
+
+  it('names the card, says it will come back, and leaves out the end-of-turn sweep', () => {
+    const lines = story(realEvents(), quiet);
+    expect(lines).toContain('You discard Glancing Knives');
+    expect(lines).toContain('Premeditate: Glancing Knives comes back next turn at 0 Mana');
+    expect(lines).toContain('Glancing Knives goes to your hand');
+    // (the Strike left in hand is swept at the end of the turn, with no line)
+    expect(lines).not.toContain('You discard Strike');
+  });
+
+  it('never names the hidden cards of the other side, or of the seat being watched', () => {
+    const other = story(realEvents(), {
+      ...quiet,
+      me: 'b',
+      who: (side) => (side === 'b' ? 'You' : 'Enemy'),
+    });
+    expect(other).toContain('Enemy discards a card');
+    expect(other.join(' ')).not.toContain('Glancing Knives');
+    const watching = story(realEvents(), { ...quiet, blind: true });
+    expect(watching.join(' ')).not.toContain('Glancing Knives');
+  });
+
+  it('a change to a card is not called a new card, and a Foresee gives no count', () => {
+    const inst = { side: 'a' as const, card: 'c1', def: 'strike' };
+    expect(say({ type: 'transform', ...inst })).toBeNull();
+    expect(say({ type: 'transform', ...inst, changed: true })).toBe('A card becomes Strike');
+    expect(say({ type: 'scry', side: 'a', cards: ['x'] })).toBe('You foresee');
+  });
+
+  it('a card consuming itself as it is played is no second line', () => {
+    const inst = { side: 'a' as const, card: 'c1', def: 'strike' };
+    expect(story([{ type: 'play', ...inst, target: null }, { type: 'exhaust', ...inst }])).toEqual([
+      'You play Strike',
+    ]);
   });
 });

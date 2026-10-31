@@ -100,7 +100,7 @@ Things to know:
 
 | Card | Borrowed art | Why it fits |
 |---|---|---|
-| Press the Attack (`press-the-attack`) | `sure-footing` | boots stepping forward |
+| Set Your Shield (`set-your-shield`) | `stand-firm` | the Knight behind a raised shield (the old Knight model; replaced Press the Attack) |
 | Heavy Swing (`heavy-swing`) | `colossus-blow` | a huge swing (shows the old Knight) |
 | Fang and Claw (`fang-and-claw`) | `venom-fang` | a gloved hand with a fang |
 | Pocket Blades (`pocket-blades`) | `gather-the-blades` | blades and cards from a pouch |
