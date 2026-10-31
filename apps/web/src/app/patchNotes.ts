@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.146.0',
+    date: '2026-10-31',
+    title: 'Merchant prices',
+    summary: 'Removing and upgrading cards now get dearer only within one merchant visit, and each starts a little higher.',
+    notes: [
+      { kind: 'balance', text: 'Removing a card costs 50 at every merchant, then 100, 200, 400 at that same merchant. The next merchant starts over at 50, so it no longer carries across the run.' },
+      { kind: 'balance', text: 'Upgrading a card costs 75 at every merchant, then 125, 175 at that same merchant. The next merchant starts over at 75.' },
+    ],
+  },
+  {
     version: '0.145.0',
     date: '2026-10-31',
     title: 'Spell Power everywhere',

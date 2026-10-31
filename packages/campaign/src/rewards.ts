@@ -379,8 +379,8 @@ export const SALE_OFF = 0.3;
  * What the merchant charges to upgrade a card: this much the first time at a shop, and each upgrade bought at that same shop makes the next
  * one dearer by the step. The next merchant starts from the base again.
  */
-export const UPGRADE_PRICE = 60;
-export const UPGRADE_STEP = 40;
+export const UPGRADE_PRICE = 75;
+export const UPGRADE_STEP = 50;
 export const upgradePrice = (doneHere: number): number =>
   UPGRADE_PRICE + UPGRADE_STEP * Math.max(0, doneHere);
 

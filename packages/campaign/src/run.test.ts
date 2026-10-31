@@ -453,8 +453,7 @@ describe('the other rooms and the rules around them', () => {
     });
     const card = base.deck.find((id) => !!COMBAT_DB.cards[id]?.upgrade) as string;
     const up = COMBAT_DB.cards[card]?.upgrade as string;
-    expect(upgradePrice(0)).toBeLessThan(upgradePrice(1));
-    expect(upgradePrice(1)).toBeLessThan(upgradePrice(2));
+    expect([upgradePrice(0), upgradePrice(1), upgradePrice(2)]).toEqual([75, 125, 175]);
     expect(() => buyUpgrade(shop(upgradePrice(0) - 1), card)).toThrow(RunError); // too poor
     expect(() => buyUpgrade(shop(500), 'not-a-card')).toThrow(RunError);
     expect(() => buyUpgrade(shop(500), up)).toThrow(RunError); // already upgraded
