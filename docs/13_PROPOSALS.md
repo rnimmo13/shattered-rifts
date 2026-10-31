@@ -162,6 +162,11 @@ Mastery counts only runs from the day it ships; earlier runs are not counted (Ro
 - Decks can be **any of your Riftwalkers**: a match can see each player switch between up to 3 decks, or keep one.
 - One saved deck is enough to play: it is simply picked for every game.
 
+### 6. The Spellblade: Spell Power and Fracture (built 2026-10-31, DECISIONS #480)
+
+The list: `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. Kept for later: Spellstrike (Inscribe a Skill into the blade) and Weave as her
+trait (`docs/reworks/SPELLBLADE_SPELL_POWER.md` and this log's #480).
+
 ## Kept for later
 
 - **Daily Rift:** everyone plays the same seed with the same Riftwalker and two or three twists, one attempt a day, on

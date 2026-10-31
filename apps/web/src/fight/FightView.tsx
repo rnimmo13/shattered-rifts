@@ -337,10 +337,16 @@ function WhoTag(props: {
   );
 }
 
+/** Where a "spend any amount" card's slider opens: all you hold, or for a card that only asks for a set amount (Mirror Glass), that amount. */
+function spendOpensAt(def: CardDef, held: number): number {
+  const reads = def.effects.some((o) => 'scale' in o && o.scale?.by === 'starSpend');
+  const asks = def.effects.find((o) => o.op === 'when' && o.by === 'starSpend');
+  return !reads && asks?.op === 'when' ? Math.min(held, asks.atLeast ?? held) : held;
+}
+
 /** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400; the Spellblade's
- * blade is enchanted now, not sharpened: DECISIONS #417). */
+ * blade reads Spell Power now, not a Sharpen: DECISIONS #480). */
 const SHARPENED = [
-  { card: 'starforged-blade', name: 'The Obsidian Blade' },
   { card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' },
 ] as const;
 
@@ -484,6 +490,8 @@ export function FightView(props: {
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
   /** a card that summons, played with every companion slot taken: now choosing which companion leaves */
   // (the companions picked so far to scrap: a Heavy or Colossal can need several, DECISIONS #383)
+  // (a "spend any amount" card waits here while the player names the amount, DECISIONS #480)
+  const [spending, setSpending] = useState<{ card: string; target?: string; amount: number } | null>(null);
   const [releasing, setReleasing] = useState<{
     card: string;
     target?: string;
@@ -1131,6 +1139,7 @@ export function FightView(props: {
         setSelected(null);
         setAimPotion(null);
         setReleasing(null);
+        setSpending(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
         // a campaign fight keeps every move, so a reload can resume it
         if (!history && !pvp) onMove?.(a);
@@ -1259,14 +1268,32 @@ export function FightView(props: {
         setReleasing({ card: c.inst.id, ...(target ? { target } : {}), picked: [] });
         return;
       }
+      const held = game.current?.state.sides[mySide].stars ?? 0;
+      if (c.def.starX && held > 0) {
+        setSelected(null);
+        setSpending({ card: c.inst.id, ...(target ? { target } : {}), amount: spendOpensAt(c.def, held) });
+        return;
+      }
       act({ type: 'play', card: c.inst.id, ...(target ? { target } : {}) });
     },
-    [act],
+    [act, mySide],
   );
+  const sendSpend = useCallback(() => {
+    if (!spending) return;
+    act({
+      type: 'play',
+      card: spending.card,
+      ...(spending.target ? { target: spending.target } : {}),
+      spend: spending.amount,
+    });
+    setSpending(null);
+    setHoverCard(null);
+  }, [act, spending]);
 
   const endTurn = useCallback(() => {
     if (waiting || game.current?.state.pending) return;
     setReleasing(null);
+    setSpending(null);
     act({ type: 'endTurn' });
   }, [act, waiting]);
 
@@ -1426,6 +1453,28 @@ export function FightView(props: {
     return out;
   }, [live, watch, mySide, handCards, db, liveCard, liveUnit]);
 
+  // (the amount being weighed: what it would really deal, or the printed card when it deals none)
+  const spendHeld = spending ? (live?.sides[mySide].stars ?? 0) : 0;
+  const spendPreview = useMemo(() => {
+    if (!spending || !live) return '';
+    const st = live.active === mySide ? live : { ...live, active: mySide };
+    const first = [...previewCardDamage(db, st, spending.card, spending.target ?? null, spending.amount).values()][0];
+    if (!first) return '';
+    const per = first.lo === first.hi ? String(first.lo) : `${first.lo}-${first.hi}`;
+    // (a card whose hits are what it spends reads "6 x 3 damage")
+    const op = db.cards[live.sides[mySide].hand.find((c) => c.id === spending.card)?.card ?? '']?.effects.find(
+      (o) => o.op === 'damage',
+    );
+    const hits =
+      op?.op === 'damage' && op.scale?.into === 'hits' && op.scale.by === 'starSpend'
+        ? (op.hits ?? 0) + spending.amount
+        : op?.op === 'damage'
+          ? (op.hits ?? 1)
+          : 1;
+    if (hits <= 0) return 'no damage';
+    return `${per}${hits > 1 ? ` x ${hits}` : ''} damage`;
+  }, [spending, live, mySide, db]);
+
   useEffect(() => {
     scene.current?.fighters.setTargetable(aimSet.size ? aimSet : null);
     if (!aimSet.size) scene.current?.fighters.setHover(null);
@@ -1502,6 +1551,7 @@ export function FightView(props: {
           setSelected(null);
           setAimPotion(null);
           setReleasing(null);
+          setSpending(null);
         }
       } else if (e.key === 'e' || e.key === 'E') endTurn();
       else if (/^[1-9]$/.test(e.key) && handPickNow) {
@@ -2046,6 +2096,40 @@ export function FightView(props: {
               </div>
             ))}
           <BattleLog lines={logLines} db={db} />
+          {spending && spendHeld > 0 && (
+            <div className="fight__banner fight__banner--info fight__spend" role="dialog" aria-label="Spend Spell Power">
+              <span>
+                Spend <b>{spending.amount}</b> of {spendHeld} Spell Power
+                {spendPreview ? `: ${spendPreview}` : ''}
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={spendHeld}
+                value={spending.amount}
+                aria-label="Spell Power to spend"
+                onChange={(e) => setSpending({ ...spending, amount: Number(e.target.value) })}
+              />
+              <button className="btn btn--small" onClick={() => setSpending({ ...spending, amount: 0 })}>
+                <span>None</span>
+              </button>
+              <button
+                className="btn btn--small"
+                onClick={() => setSpending({ ...spending, amount: Math.floor(spendHeld / 2) })}
+              >
+                <span>Half</span>
+              </button>
+              <button className="btn btn--small" onClick={() => setSpending({ ...spending, amount: spendHeld })}>
+                <span>All</span>
+              </button>
+              <button className="btn btn--small btn--primary" onClick={sendSpend}>
+                <span>Play</span>
+              </button>
+              <button className="btn btn--small" onClick={() => setSpending(null)}>
+                <span>Cancel</span>
+              </button>
+            </div>
+          )}
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">
               <span>

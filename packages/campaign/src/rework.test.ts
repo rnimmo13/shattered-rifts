@@ -36,7 +36,6 @@ describe('runs saved before a class rework', () => {
   for (const [hero, kept, gone, pronoun] of [
     ['knight', 'twin-cut', 'return-the-blow', 'her'],
     ['assassin', 'bottomless-sleeves', 'draw-steel', 'his'],
-    ['spellblade', 'starforged-blade', 'fracture-script', 'her'],
     ['monk', 'rise-radiant', 'mountain-breaker', 'his'],
   ] as const) {
     it(`a ${hero} run saved under the reverted rework gets the earlier cards back, and says so`, () => {
@@ -121,3 +120,28 @@ describe('the starting weapons are cards of the deck (DECISIONS #436)', () => {
     expect(parseRun(serializeRun(knight))!.deck).toEqual(knight.deck);
   });
 });
+
+describe('a Spellblade run saved before Spell Power and Fracture (DECISIONS #480)', () => {
+  it('becomes a live deck, says so, and starts its fight again', () => {
+    const run = newRun('spellblade', 'old-spellblade');
+    run.reworked = 2;
+    run.deck = [...run.deck, 'spoils', 'seven-shards+', 'retainer-strike'];
+    const back = parseRun(serializeRun(run));
+    expect(back).not.toBeNull();
+    expect(back!.reworked).toBe(CLASS_REWORKS.spellblade?.version);
+    expect(back!.reworkNotice).toMatch(/Spell Power and Fracture/);
+    for (const gone of ['spoils', 'seven-shards+', 'retainer-strike']) expect(back!.deck).not.toContain(gone);
+    for (const id of back!.deck) expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+  });
+
+  it('one saved under the reverted rework follows the chain to live cards', () => {
+    const run = newRun('spellblade', 'older-spellblade');
+    run.reworked = 1;
+    run.deck = [...run.deck, 'fracture-script'];
+    const back = parseRun(serializeRun(run));
+    expect(back).not.toBeNull();
+    expect(back!.deck).not.toContain('fracture-script');
+    for (const id of back!.deck) expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+  });
+});
+

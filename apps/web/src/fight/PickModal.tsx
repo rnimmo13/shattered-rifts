@@ -27,6 +27,8 @@ const TITLE: Record<PendingView['kind'], string> = {
   form: 'Change form',
   commandPick: 'Command',
   defer: 'Defer',
+  // (The Forgemaster, DECISIONS #480)
+  empower: 'Empower',
 };
 
 export function PickModal(props: {

@@ -115,6 +115,24 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Gains that much Might at the end of its turn.',
   },
+  fracture: {
+    name: 'Fracture',
+    glyph: '⌇',
+    tone: 'bad',
+    text: 'Cracks that never fade. At 10, 10 are removed and it Shatters: it takes 18 damage, plus anything that has made those Shatters stronger, and Barrier stops it. What is left over stays.',
+  },
+  keen: {
+    name: 'Keen',
+    glyph: '⚔',
+    tone: 'good',
+    text: 'Every hit of a Sword deals this much more.',
+  },
+  ruinous: {
+    name: 'Measured Ruin',
+    glyph: '◈',
+    tone: 'good',
+    text: 'Your first Spell Attack each turn that spends Spell Power deals this much more per point spent.',
+  },
   vigor: {
     name: 'Primed',
     glyph: '↯',
@@ -643,12 +661,28 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'You are in at most one stance. Entering a new one leaves the old one.',
   },
   stars: {
-    name: 'Arcana',
-    text: 'A second resource. Cards gain it and spend it; it lasts the whole fight.',
+    name: 'Spell Power',
+    text: 'The magic stored in your blade; it lasts the whole fight. Swords read it and spend nothing. Spells spend it: you choose how much when you play one.',
+  },
+  sword: {
+    name: 'Sword',
+    text: 'An Attack that strikes more times the more Spell Power you hold. Swinging spends none. Might and Primed add to every hit.',
+  },
+  spell: {
+    name: 'Spell',
+    text: 'A magic card. Some Swords and Auras answer one being played.',
+  },
+  shatter: {
+    name: 'Shatter',
+    text: 'At 10 Fracture, 10 are removed and the enemy takes 18 damage, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+  },
+  grows: {
+    name: 'Grows',
+    text: 'This copy of the card yields more each time you play it, for the rest of the fight.',
   },
   forge: {
     name: 'Sharpen',
-    text: 'Every copy of your weapon you have now (the Obsidian Blade or the Old Twelve Gauge) permanently gains damage for this fight. A copy made later starts fresh, and with none it does nothing (your weapon is a card of your deck).',
+    text: 'Every copy of your weapon you have now (the Old Twelve Gauge) permanently gains damage for this fight. A copy made later starts fresh, and with none it does nothing (your weapon is a card of your deck).',
   },
   // (the Spellblade's, DECISIONS #417)
   imbue: {
@@ -868,6 +902,12 @@ export function keywordsOf(
   if (text) {
     const hay = text.replace(/\*\*/g, '');
     if (names(hay, 'Sharpen') || names(hay, 'Precision')) add(sharpenInfo(weapon));
+    // (the Spellblade's words, DECISIONS #480)
+    if (names(hay, 'Spell Power')) add(KEYWORD_INFO['stars']);
+    if (names(hay, 'Sword')) add(KEYWORD_INFO['sword']);
+    if (/\bSpell\.|\ba Spell\b/.test(hay)) add(KEYWORD_INFO['spell']);
+    if (/\bShatters?\b/.test(hay)) add(KEYWORD_INFO['shatter']);
+    if (names(hay, 'Grows')) add(KEYWORD_INFO['grows']);
     for (const s of Object.values(STATUS_INFO)) if (names(hay, s.name)) add(s);
     if (/\b(knife|knives)\b/i.test(hay)) add(KEYWORD_INFO['knives']);
     // ("left Open", "If the target is Open": the Knight's Opening, DECISIONS #415)
@@ -923,8 +963,8 @@ export const UI_TIPS = {
   }),
   lumen: (n: number): TipContent => ({
     kicker: 'Second resource',
-    title: `Arcana ${n}`,
-    text: 'Some cards gain Arcana. Cards with an orange orb under their Mana gem spend it. Unlike Mana it lasts the whole fight.',
+    title: `Spell Power ${n}`,
+    text: 'The magic stored in your blade. Swords strike more times the more you hold, and spend none. Spells spend it: you choose how much. Unlike Mana it lasts the whole fight.',
   }),
   draw: {
     kicker: 'Pile',

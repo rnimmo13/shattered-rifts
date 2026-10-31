@@ -162,20 +162,18 @@ describe('every card plays', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  // (she has the Regent's starter now, 4 Strike, 4 Defend, Cinderfall and Gather Arcana, with nothing Innate, so the opening hand need
-  // not hold both: the way in is the 3 Arcana every fight starts with and the 1 Kindled adds each turn, enough for Cinderfall at once)
-  it('The spellblade starts every fight with Arcana to spend, and her starter both makes and spends it', () => {
+  // (the way in is the 3 Spell Power every fight starts with and the 1 Kindled adds each turn; a spell can spend any of it, DECISIONS #480)
+  it('The spellblade starts every fight with Spell Power to spend, and her starter both makes and spends it', () => {
     const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
     expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
-    const spender = starter.find((c) => (c.starCost ?? 0) > 0);
-    expect(spender).toBeDefined();
+    expect(starter.some((c) => c.starX)).toBe(true);
     for (let i = 0; i < 20; i++) {
       const { state } = createCombat(db, {
         seed: `arcana-${i}`,
         a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
         b: { enemies: ['squire'] },
       });
-      expect(state.sides.a.stars, `seed ${i}`).toBeGreaterThanOrEqual(spender!.starCost!);
+      expect(state.sides.a.stars, `seed ${i}`).toBe(4);
     }
   });
 });
@@ -264,7 +262,9 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
           (o.op === 'power' && o.ops.some((x) => x.op === 'forge')),
       );
     // (and the Shaman's Gathering Storm grown by Tempest Call, DECISIONS #420)
-    owns(sharpensAnother, ['spellblade', 'drunkard', 'shaman']);
+    owns(sharpensAnother, ['drunkard', 'shaman']);
+    // (Fracture and "spend any amount" are hers, DECISIONS #480)
+    owns((c) => uses(c, 'fracture') || c.starX === true, 'spellblade');
     owns((c) => c.tags?.includes('gun') === true, 'drunkard');
     owns((c) => c.tags?.includes('knife') === true, 'assassin');
     owns((c) => c.tags?.includes('shell') === true, 'drunkard');

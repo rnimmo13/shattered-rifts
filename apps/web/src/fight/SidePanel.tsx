@@ -1,4 +1,4 @@
-// What your Riftwalker has going beyond cards: the Arcana counter (beside Mana), the totems (a curved column beside the hero)
+// What your Riftwalker has going beyond cards: the Spell Power counter (beside Mana), the totems (a curved column beside the hero)
 // and the Auras in play. Each part only shows once it matters to the deck, so a Riftwalker without runes never sees an
 // empty totem row.
 
@@ -13,12 +13,12 @@ export function LumenCounter(props: { value: number }) {
   return (
     <div
       className="fight__lumen"
-      aria-label={`Arcana ${props.value}`}
+      aria-label={`Spell Power ${props.value}`}
       {...tipAttrs(UI_TIPS.lumen(props.value))}
     >
       <span aria-hidden>◆</span>
       <b>{props.value}</b>
-      <small>Arcana</small>
+      <small>Spell Power</small>
     </div>
   );
 }

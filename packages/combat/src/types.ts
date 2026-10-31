@@ -97,7 +97,11 @@ export type StatusId =
   | 'buffer' // the next time you would lose HP, you lose none instead (per stack; Barrier still soaks first)
   | 'umbra' // (the Shaman's Moon Owl, the Dark orb) the charge the Owls hold: it grows every turn, and a command spends it all
   // (the Monk's Martial Forms, DECISIONS #419)
-  | 'mastery'; // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
+  | 'mastery' // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
+  // (the Spellblade's Spell Power rework, DECISIONS #480)
+  | 'fracture' // cracks on a unit, never decaying: at SHATTER_AT, SHATTER_AT of them are removed and the side that put them there Shatters it
+  | 'keen' // your Sword hits deal this much more (permanent)
+  | 'ruinous'; // your first Spell Attack each turn that spends Spell Power deals this much more per point spent
 export const STATUS_IDS: readonly StatusId[] = [
   'exposed',
   'faltering',
@@ -167,6 +171,9 @@ export const STATUS_IDS: readonly StatusId[] = [
   'knives',
   'prep',
   'twinedge',
+  'fracture',
+  'keen',
+  'ruinous',
   'spirit',
   'rousing',
   'shelter',
@@ -177,6 +184,7 @@ export const STATUS_IDS: readonly StatusId[] = [
 ];
 /** Debuffs: a Steadfast unit ignores the next one put on it. */
 export const DEBUFFS: readonly StatusId[] = [
+  'fracture',
   'exposed',
   'faltering',
   'seared',
@@ -224,6 +232,12 @@ export const GLASS_DAMAGE = 2;
 export const WARD_BARRIER = 3;
 /** Cards with this tag are "the blade" for Blade Sweep, Blade Echo and Bladebane (Obsidia's Obsidian Blade). */
 export const BLADE_TAG = 'blade';
+/** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
+export const SWORD_TAG = 'sword';
+export const SPELL_TAG = 'spell';
+/** A unit Shatters at this much Fracture, for this much damage (plus what its owner's Deepening adds). */
+export const SHATTER_AT = 10;
+export const SHATTER_DAMAGE = 18;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;
@@ -400,7 +414,18 @@ export type Metric =
   | 'vigor' // (about a unit) its Vigor: damage its next attack adds
   // (the Shaman, DECISIONS #420)
   | 'elementsTurn' // different elements you have cast this turn (0-3)
-  | 'trinityDone'; // 1 once Trinity has triggered this turn
+  | 'trinityDone' // 1 once Trinity has triggered this turn
+  // (the Spellblade's Spell Power rework, DECISIONS #480)
+  | 'starSpend' // the Spell Power this "spend any amount" card spent
+  | 'starsSpentTurn' // Spell Power spent this turn
+  | 'lastSpend' // the Spell Power the card last played spent
+  | 'prevSpell' // 1 when the card played just before this one this turn was a Spell
+  | 'swordsPlayed' // Swords played this turn (before this one)
+  | 'spellsPlayed' // Spells played this turn (before this one)
+  | 'swordFoes' // different enemies your Swords have hit this turn
+  | 'fracture' // (about a unit) the Fracture on it
+  | 'shatteredNow' // Shatters the card being played has caused so far
+  | 'shatterDamage'; // what your Shatters deal now
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -467,7 +492,11 @@ export type TriggerWhen =
   | 'technique' // you completed your form's technique (at most once a turn)
   | 'formChange' // you changed form
   // (the Shaman's Trinity, DECISIONS #420)
-  | 'trinity'; // you cast a Flame, a Frost and a Storm spell this turn (the first time each turn)
+  | 'trinity' // you cast a Flame, a Frost and a Storm spell this turn (the first time each turn)
+  // (the Spellblade's Spell Power rework, DECISIONS #480)
+  | 'fracture' // a card of yours applied Fracture (Auras applying it do not count)
+  | 'shatter' // you Shattered an enemy (the target is that enemy)
+  | 'grown'; // a card of yours grew itself ("Grows N")
 
 export type Op =
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
@@ -489,6 +518,8 @@ export type Op =
       repeatOnKill?: boolean;
       /** Riposte (the Knight, DECISIONS #415): against an Open target, every hit deals this much more and the Opening is spent */
       riposte?: number;
+      /** each hit that lands applies this much Fracture to what it struck (DECISIONS #480) */
+      hitFracture?: number;
     }
   | { op: 'loseHp'; amount: number; to: Sel; scale?: Scale } // unblockable, unmodified
   | { op: 'barrier'; amount: number; to: Sel; scale?: Scale }
@@ -517,6 +548,16 @@ export type Op =
   | { op: 'draw'; amount: number; scale?: Scale; hold?: boolean; keepCost?: number }
   | { op: 'mana'; amount: number; scale?: Scale }
   | { op: 'stars'; amount: number; scale?: Scale }
+  /** (DECISIONS #480) apply Fracture; `marked`: only to those that already have some */
+  | { op: 'fracture'; amount: number; to: Sel; scale?: Scale; marked?: boolean }
+  /** your Shatters deal this much more for the rest of the fight */
+  | { op: 'shatterUp'; amount: number }
+  /** deal your current Shatter damage (it is not a Shatter: no Fracture is removed and nothing that answers a Shatter hears of it) */
+  | { op: 'shatterBlast'; to: Sel }
+  /** every point of Fracture on your most-cracked other enemy moves to the target, then apply `amount` there; with one enemy, apply `alone` */
+  | { op: 'carryFracture'; amount: number; alone: number }
+  /** choose a card in your hand with this tag: it yields this much more for the rest of the fight (The Forgemaster) */
+  | { op: 'empower'; amount: number; tag: string }
   | { op: 'summon'; unit: string }
   | {
       op: 'addCard';
@@ -572,6 +613,8 @@ export type Op =
       rune?: string;
       /** 'spend': only spending this status */
       status?: StatusId;
+      /** it answers only while this holds; checked first, so a once-a-turn Aura is not spent when it does not */
+      only?: { by: Metric; atLeast?: number; atMost?: number };
     }
   // --- runes
   /** `rune: '*'` plants a random totem (any of them) */
@@ -699,7 +742,8 @@ export type Op =
   /** Bleed on the targets deals its damage now (and loses 1), as it does at the start of their turn */
   | { op: 'tick'; to: Sel }
   /** remove the targets' Barrier and Steadfast */
-  | { op: 'strip'; to: Sel }
+  /** remove Barrier and Steadfast; `amount`: at most this much Barrier, and Steadfast stays */
+  | { op: 'strip'; to: Sel; amount?: number }
   /** this copy of the card costs this much less for the rest of the fight (Up My Sleeve) */
   | { op: 'selfCost'; amount: number }
   /** every card in your hand costs 0 this turn */
@@ -724,7 +768,9 @@ export type Op =
   /** your turn ends once this card is done */
   | { op: 'endTurn' }
   /** the card being resolved deals this much more damage for the rest of the fight (it reads the 'bonus' metric) */
-  | { op: 'growSelf'; amount: number }
+  /** `grown`: this is a card's own "Grows N": a replay does not grow it again, and it sets off the Auras that answer it */
+  /** `that`: said of the card that has just grown (Crucible Heart), in an Aura's text */
+  | { op: 'growSelf'; amount: number; grown?: boolean; that?: boolean }
   /** add a copy of a random card in your hand (`neutral`: a Neutral one) */
   | { op: 'copyInHand'; neutral?: boolean }
   // --- the Necrobinder copy (Dorian; his minions stand in for Osty, several at once)
@@ -1212,6 +1258,8 @@ export interface PowerState {
   rune?: string;
   /** 'spend': only spending this status */
   status?: StatusId;
+  /** it answers only while this holds */
+  only?: { by: Metric; atLeast?: number; atMost?: number };
   /** the turn it last answered (for `once`) */
   firedTurn?: number;
 }
@@ -1234,7 +1282,8 @@ export interface Pending {
     | 'plantAt'
     | 'form'
     | 'commandPick'
-    | 'defer';
+    | 'defer'
+    | 'empower';
   /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t7', none = keep) */
   spirit?: string;
   /** (the Shaman) the totem boost the card's first play got, carried over the choice */
@@ -1343,6 +1392,16 @@ export interface SideState {
   honedUsed?: boolean;
   /** Mana spent on cards this turn; totems planted this fight, by kind */
   spentTurn?: number;
+  /** (the Spellblade's Spell Power rework, DECISIONS #480) what her Shatters deal on top of SHATTER_DAMAGE; this turn's spending and sequence */
+  shatterBonus?: number;
+  starsSpentTurn?: number;
+  lastSpend?: number;
+  lastSpell?: boolean;
+  prevSpell?: boolean;
+  swordsPlayed?: number;
+  spellsPlayed?: number;
+  swordFoes?: UnitId[];
+  ruinUsed?: boolean;
   channeledBy?: Record<string, number>;
   /** (the Shaman) standing boosts to a kind of totem's command, by totem id */
   totemBoost?: Record<string, number>;
@@ -1482,7 +1541,8 @@ export interface CombatSetup {
 export type Action =
   /** `release` names the companion that leaves (is scrapped) to make room, when a card summons more than the free companion slots
    * hold; a list when several have to go (DECISIONS #383) */
-  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[] }
+  /** `spend`: how much Spell Power a "spend any amount" card spends (left out: all of it) */
+  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[]; spend?: number }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }

@@ -127,7 +127,8 @@ export function validateDb(db: CombatDb): string[] {
             !!o.pin,
           snare: false,
           attacker: o.when === 'allyDies' || o.when === 'allyLost' || o.when === 'thorns',
-          played: o.when === 'play',
+          // (Crucible Heart: a 'grown' Aura grows the card that just grew)
+          played: o.when === 'play' || o.when === 'grown',
         });
       }
       if (o.op === 'channel' && o.rune !== '*' && !db.runes?.[o.rune])
@@ -144,7 +145,7 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: forges unknown card "${o.card}"`);
       if (o.op === 'transform' && !db.cards[o.into])
         errs.push(`${where}: transforms into unknown card "${o.into}"`);
-      if ((o.op === 'growSelf' || o.op === 'endTurn') && !opts.card)
+      if (((o.op === 'growSelf' && !opts.played) || o.op === 'endTurn') && !opts.card)
         errs.push(`${where}: "${o.op}" only works in a card`);
       if ('scale' in o && o.scale) {
         if (o.scale.by === 'charge' && !opts.rune)
@@ -192,8 +193,12 @@ export function validateDb(db: CombatDb): string[] {
     if (c.x && c.cost !== 0) errs.push(`${id}: an X card must have cost 0`);
     const flat = [...c.effects, ...c.effects.flatMap((o) => (o.op === 'power' ? o.ops : []))];
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
-    if ((c.x || c.starX) && !readsX) errs.push(`${id}: an X card must scale something by x`);
+    // (a "spend any amount" card may read what it spent directly, or only in an "if you spent N" clause: Mirror Glass)
+    const readsSpend = JSON.stringify(c.effects).includes('"starSpend"');
+    if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
+    if (c.starX && !readsX && !readsSpend) errs.push(`${id}: a spending card must read what it spent`);
     if (!c.x && !c.starX && readsX) errs.push(`${id}: scales by x but is not an X card`);
+    if (!c.starX && readsSpend) errs.push(`${id}: reads a spend but spends nothing`);
     if (c.x && c.starX) errs.push(`${id}: a card spends all its Mana or all its Arcana, not both`);
     if (c.effects.some((o) => o.op === 'sacrifice' && !o.self) && c.target !== 'ally')
       errs.push(`${id}: sacrifice needs a card that targets an ally`);
@@ -228,6 +233,7 @@ export function validateDb(db: CombatDb): string[] {
           (o.op === 'command' && usesTarget(o.ops)) ||
           (o.op === 'power' && !!o.pin) ||
           o.op === 'spreadDebuffs' ||
+          o.op === 'carryFracture' ||
           // (the Knight's Riposte reads the target; the Assassin's knives go into it or come out of it)
           o.op === 'riposte' ||
           ((o.op === 'embed' || o.op === 'extract') && (o.to ?? 'target') === 'target'),

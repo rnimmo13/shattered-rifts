@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The Spellblade is rebuilt:** Arcana and Sharpen are now one reserve, Spell Power. Swords strike more times the more you hold and spend none; Spells spend it, as much as you choose; and a third way to win, Fracture, cracks an enemy until it Shatters at 10. 88 reward cards, some that grow as you play them, and no caps. Saved Spellblade runs are moved to the new cards and told so.
 - **Damage numbers are right for the Assassin:** a card's number and breakdown count Honed (and Lethality and Noose), name Edge and Honed, and show the highest number's steps when there are several enemies.
 - **Lay Bare and Cast the Shield read more simply:** they say "Remove all Barrier" and no longer mention Steadfast. They work as before.
 - **Event cards in their option boxes, everywhere:** an event saved before 0.140.0 is repaired when the run loads, the master and the student shows its rares and your card there, and an option that adds a Wound or Static shows it. A card in a box is no longer laid out above the options too.

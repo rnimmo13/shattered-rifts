@@ -272,6 +272,8 @@ export const on = (
     rune?: string;
     /** 'spend': only this status (the Assassin's Preparation) */
     status?: StatusId;
+    /** it answers only while this holds (checked before a once-a-turn Aura is spent) */
+    only?: { by: Metric; atLeast?: number; atMost?: number };
   } = {},
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 

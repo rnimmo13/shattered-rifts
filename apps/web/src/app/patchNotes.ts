@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.142.0',
+    date: '2026-10-31',
+    title: 'The Spellblade reforged',
+    summary: 'Arcana and Sharpen become one reserve, Spell Power, with three ways to win: Swords, Spells and Fracture.',
+    notes: [
+      { kind: 'new', text: 'Spell Power replaces Arcana and Sharpen. You start each fight with 3 and gain 1 a turn. It lasts the whole fight, with no cap.' },
+      { kind: 'new', text: 'Swords read Spell Power and spend none. The Obsidian Blade strikes once more for every 2 you hold, and Might and Primed add to every hit.' },
+      { kind: 'new', text: 'Spells spend it, as much as you choose: a slider opens when you play one. The more Mana a spell costs, the more each point deals.' },
+      { kind: 'new', text: 'Fracture is a new way to win: cracks on an enemy that never fade. At 10 it Shatters for 18 and the rest stays. Barrier stops a Shatter, and some cards make every Shatter hit harder.' },
+      { kind: 'new', text: 'Some cards grow: that copy gives more each time you play it, for the rest of the fight.' },
+      { kind: 'changed', text: 'Her pool is 88 reward cards: 50 reworked, 38 new with their own art, 30 removed. Retainers and the cards that made other cards are gone. Her starting deck swaps one Strike for Hairline Hex.' },
+    ],
+    heads: 'A Spellblade run saved before this moves to the new cards and tells you so, and a fight in progress starts again. Old Arena games and replays no longer play.',
+  },
+  {
     version: '0.141.0',
     date: '2026-10-30',
     title: 'Choose from your hand',

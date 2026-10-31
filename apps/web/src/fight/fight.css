@@ -3696,3 +3696,14 @@ button.totem:disabled {
 .fight--portrait .fight__lumen small {
   display: none;
 }
+
+/* (the Spellblade's "spend any amount" choice, DECISIONS #480) */
+.fight__spend {
+  grid-auto-flow: row;
+  gap: 0.4rem;
+  pointer-events: auto;
+}
+.fight__spend input[type='range'] {
+  width: min(24rem, 80vw);
+  accent-color: #ff9d4d;
+}

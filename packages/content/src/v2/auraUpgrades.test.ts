@@ -38,9 +38,6 @@ const COST_CUT_AURAS = [
   'warlords-oath',
   // copies of Slay the Spire cards that get cheaper there (Spellblade, Necromancer, Shaman, Assassin)
   'echoing-blade',
-  'orbit',
-  'sigil-of-wandering',
-  'tyrants-gaze',
   'ever-watchful',
   'grimoire-gale',
   'phylactery',

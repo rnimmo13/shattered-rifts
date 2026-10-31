@@ -50,6 +50,7 @@ export function prompt(p: PendingView): string {
   const upTo = `${p.max} ${p.max > 1 ? 'cards' : 'card'}`;
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
+  if (p.kind === 'empower') return 'Choose a generator: it yields more for the rest of the fight.';
   if (p.kind === 'defer')
     return p.min === 0
       ? `Defer up to ${upTo}: ${p.max > 1 ? 'they come' : 'it comes'} back next turn costing 1 less.`

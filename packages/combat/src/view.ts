@@ -349,6 +349,8 @@ export { other, activePattern };
 /** Statuses that stay for the rest of the fight once gained (no turns to count down, nothing that uses them up). */
 // (Edge says so in its own line, and maximum Mana in its own)
 const LASTING: readonly StatusId[] = [
+  'keen',
+  'ruinous',
   'might',
   'thorns',
   'bracing',
@@ -416,6 +418,9 @@ const STATUS_NAME: Record<string, string> = {
   freeskill: 'Free Skill',
   resonance: 'Spirit',
   twinned: 'Reverb',
+  fracture: 'Fracture',
+  keen: 'Keen',
+  ruinous: 'Measured Ruin',
   bladesweep: 'Blade Sweep',
   bladeecho: 'Blade Echo',
   bladebane: 'Bladebane',
@@ -471,6 +476,8 @@ const TOTEM_WORDS: Record<string, string> = {
 const TAG_NAMES: Record<string, string> = {
   knife: 'Dagger',
   blade: 'Obsidian Blade',
+  sword: 'Sword',
+  spell: 'Spell',
   carving: 'Carving',
   soul: 'Gravesoul',
   command: 'Command card',
@@ -550,7 +557,17 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   slots: { per: 'companion slot filled', equal: 'the companion slots filled' },
   foes: { per: 'enemy', equal: 'the number of enemies' },
   snares: { per: 'Trap set', equal: 'the number of Traps you have set' },
-  stars: { per: 'Arcana', equal: 'your Arcana' },
+  stars: { per: 'Spell Power', equal: 'your Spell Power' },
+  starSpend: { per: 'Spell Power spent', equal: 'the Spell Power spent' },
+  starsSpentTurn: { per: 'Spell Power spent this turn', equal: 'the Spell Power spent this turn' },
+  lastSpend: { per: 'Spell Power that card spent', equal: 'the Spell Power that card spent' },
+  prevSpell: { per: 'Spell', equal: 'your previous card being a Spell' },
+  swordsPlayed: { per: 'Sword played this turn', equal: 'the Swords played this turn' },
+  spellsPlayed: { per: 'Spell played this turn', equal: 'the Spells played this turn' },
+  swordFoes: { per: 'different enemy your Swords hit this turn', equal: 'the different enemies your Swords hit this turn' },
+  fracture: { per: 'Fracture', equal: 'its Fracture' },
+  shatteredNow: { per: 'Shatter caused', equal: 'the Shatters caused' },
+  shatterDamage: { per: 'point of your Shatter damage', equal: 'your Shatter damage' },
   runes: { per: 'totem', equal: 'the number of your totems' },
   powers: { per: 'Aura you have', equal: 'the number of your Auras' },
   mana: { per: 'Mana left', equal: 'your Mana' },
@@ -582,10 +599,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   discardedNow: { per: 'card discarded this way', equal: 'the cards discarded this way' },
   skillsDrawnNow: { per: 'Skill drawn this way', equal: 'the Skills drawn this way' },
   x: { per: 'Mana spent', equal: 'the Mana spent' },
-  starsGained: { per: 'Arcana gained this turn', equal: 'the Arcana gained this turn' },
+  starsGained: { per: 'Spell Power gained this turn', equal: 'the Spell Power gained this turn' },
   starCards: {
-    per: 'card with an Arcana cost in your deck',
-    equal: 'the number of cards with an Arcana cost in your deck',
+    per: 'card with a Spell Power cost in your deck',
+    equal: 'the number of cards with a Spell Power cost in your deck',
   },
   handRoom: { per: 'empty place in your hand', equal: 'the room left in your hand' },
   hitsTaken: { per: 'time it was hit this turn', equal: 'the times it was hit this turn' },
@@ -594,7 +611,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   hearts: { per: '♥ played this turn', equal: 'whether a ♥ was played this turn' },
   diamonds: { per: '♦ played this turn', equal: 'whether a ♦ was played this turn' },
   clubs: { per: '♣ played this turn', equal: 'whether a ♣ was played this turn' },
-  spent: { per: 'Arcana spent', equal: 'the Arcana spent' },
+  spent: { per: 'Spell Power spent', equal: 'the Spell Power spent' },
   charge: { per: 'charge', equal: 'its charge' },
   healed: { per: 'HP healed', equal: 'the HP healed' },
   bonus: { per: 'point of sharpening', equal: 'its sharpening' },
@@ -735,6 +752,9 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
               : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
           : METRIC_WORDS[sc.by];
   const named = sc.by === 'hitsTaken';
+  // (half of a number, rounded down: "equal to half your Spell Power")
+  if (sc.step === 2 && n === 0 && (sc.mult ?? 1) === 1 && !sc.of)
+    return { num: `half ${METRIC_WORDS[sc.by].equal}`, equal: true };
   // (a count in steps: "+5 per 10 Fate on the target")
   if (sc.step && n > 0)
     return {
@@ -817,12 +837,15 @@ const WHEN_TEXT: Record<string, string> = {
   hurt: 'Whenever you lose HP',
   draw: 'Whenever you draw a card',
   created: 'Whenever a card is created',
-  arcana: 'Whenever you spend Arcana',
+  arcana: 'Whenever you spend Spell Power',
+  fracture: 'Whenever a card of yours applies Fracture',
+  shatter: 'Whenever you Shatter an enemy',
+  grown: 'Whenever a card of yours grows',
   shuffle: 'Whenever your deck is reshuffled',
   exposeFoe: 'Whenever you apply Exposed to an enemy',
   hitFoe: 'Whenever an Attack of yours deals damage to an enemy’s HP',
   drawMidTurn: 'Whenever you draw a card during your turn',
-  gainArcana: 'Whenever you gain Arcana',
+  gainArcana: 'Whenever you gain Spell Power',
   doomFoe: 'Whenever you curse an enemy with Fate',
   debuffFoe: 'Whenever you put a debuff on an enemy',
   allyHurt: 'Whenever one of your companions loses HP',
@@ -889,6 +912,21 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'seared' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target has Bleed';
   if (o.by === 'burn' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Burning';
   if (o.by === 'x' && lo !== undefined && hi === undefined) return `X is ${lo} or more`;
+  // (the Spellblade's, DECISIONS #480)
+  if (o.by === 'starSpend' && lo !== undefined && hi === undefined)
+    return lo === 1 ? 'you spent any' : `you spent ${lo} or more`;
+  if (o.by === 'stars' && hi === 0 && lo === undefined) return 'you had no Spell Power';
+  if (o.by === 'stars' && lo === 1 && hi === undefined) return 'you have Spell Power left';
+  if (o.by === 'stars' && lo !== undefined && hi === undefined) return `you have ${lo} or more Spell Power`;
+  if (o.by === 'starsSpentTurn' && hi === 0 && lo === undefined) return 'you spent no Spell Power this turn';
+  if (o.by === 'starsSpentTurn' && lo === 1 && hi === undefined) return 'you spent Spell Power earlier this turn';
+  if (o.by === 'starsSpentTurn' && lo !== undefined && hi === undefined)
+    return `you spent ${lo} or more Spell Power earlier this turn`;
+  if (o.by === 'prevSpell' && lo === 1) return 'your previous card was a Spell';
+  if (o.by === 'spellsPlayed' && lo === 1) return 'you played a Spell earlier this turn';
+  if (o.by === 'swordsPlayed' && lo === 1) return 'you played a Sword earlier this turn';
+  if (o.by === 'shatteredNow' && lo === 1) return 'this caused a Shatter';
+  if (o.by === 'fracture' && o.of === 'target' && lo === 1) return 'the target has Fracture';
   if (o.by === 'played' && lo !== undefined && hi === undefined)
     return `you have played ${lo} or more cards this turn`;
   if (o.by === 'attacksPlayed' && lo !== undefined && lo === hi)
@@ -1013,12 +1051,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? ' X times'
             : hits === 0
               ? `${m === 1 ? '' : ` ${m} times`} for each ${w.per}`
-              : `${hits > 1 ? ` ${hits} times` : ''}, ${more} per ${w.per}`;
+              : `${hits > 1 ? ` ${hits} times` : ''}, ${more} per ${o.scale.step ? `${o.scale.step} ` : ''}${w.per}`;
       }
       // Point Blank: more against a lone enemy
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
       // (Lifesteal: heal that percent of the HP it took off)
       const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
+      const cracks = o.hitFracture ? ` Each hit applies ${o.hitFracture} Fracture.` : '';
       const kill =
         (o.onKill
           ? ` If this is fatal: ${o.onKill.map((x) => opText(db, x, who)).join(' ')}`
@@ -1032,8 +1071,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const randomEach = o.to === 'randomFoe' && times !== '';
       const tail = randomEach ? `${who[o.to]}${times}` : `${times}${who[o.to]}`;
       return a.equal
-        ? `Deal damage equal to ${a.num}${tail}.${lone}${steal}${kill}`
-        : `Deal ${a.num} damage${tail}.${lone}${steal}${kill}`;
+        ? `Deal damage equal to ${a.num}${tail}.${lone}${steal}${cracks}${kill}`
+        : `Deal ${a.num} damage${tail}.${lone}${steal}${cracks}${kill}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
@@ -1253,9 +1292,26 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'stars': {
       const a = amountText(Math.abs(o.amount), o.scale);
       const verb = o.amount < 0 ? 'Spend' : 'Gain';
-      if (a.equal) return `${verb} Arcana equal to ${a.num}.`;
-      return `${verb} ${a.num} Arcana.`;
+      // (a generator's own growth is shown on the card as "Grown +N", not as a number per point)
+      if (o.scale?.by === 'bonus') return `${verb} ${Math.abs(o.amount)} Spell Power.`;
+      if (a.equal) return `${verb} Spell Power equal to ${a.num}.`;
+      return `${verb} ${a.num} Spell Power.`;
     }
+    // (the Spellblade's Fracture, DECISIONS #480)
+    case 'fracture': {
+      if (o.scale?.by === 'bonus') return `Apply ${o.amount} Fracture${who[o.to]}.`;
+      const n = amountText(o.amount, o.scale);
+      if (o.marked) return `Apply ${n.num} Fracture to each enemy that has Fracture.`;
+      return n.equal ? `Apply Fracture equal to ${n.num}${who[o.to]}.` : `Apply ${n.num} Fracture${who[o.to]}.`;
+    }
+    case 'shatterUp':
+      return `Your Shatters deal ${o.amount} more for the rest of the fight.`;
+    case 'shatterBlast':
+      return `Deal your Shatter damage${who[o.to]} (this is not a Shatter).`;
+    case 'carryFracture':
+      return `Move all Fracture from your most-cracked other enemy to the target, then apply ${o.amount}. With only one enemy, apply ${o.alone}.`;
+    case 'empower':
+      return `Choose a generator in your hand: it yields ${o.amount} more for the rest of the fight.`;
     case 'summon':
       return summonText(db, o.unit, 1, who);
     case 'addCard': {
@@ -1330,8 +1386,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               : costed;
       // (an Aura that answers the next turn start only: Invoke)
       const nextTurn = o.times === 1 && o.when === 'turnStart';
+      // (an Aura that answers only while something holds, DECISIONS #480)
+      const onlyBy = o.only?.by;
       const base =
-        o.when === 'play'
+        onlyBy === 'prevSpell'
+          ? `The first time each turn you play ${playWhat} straight after a Spell`
+          : onlyBy === 'lastSpend'
+            ? 'The first time each turn you play a card that spends Spell Power'
+            : onlyBy === 'spent'
+              ? `The first time each turn a card spends ${o.only?.atLeast} or more Spell Power`
+              : onlyBy === 'stars'
+                ? 'The first time each turn you spend your last Spell Power'
+        : o.when === 'play'
           ? `${o.once ? 'The first time you play' : 'Whenever you play'} ${playWhat}${o.once ? ' each turn' : ''}`
           : o.when === 'draw' && o.ethereal
             ? 'Whenever you draw a Fleeting card'
@@ -1574,7 +1640,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
       return `The Bleed on ${whom} deals its damage now.`;
     }
-    case 'strip': {
+    case 'strip':
+      if (o.amount !== undefined) return `Remove up to ${o.amount} Barrier from the target.`; {
       const whom =
         o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
       // (it takes Steadfast too, but so few enemies have any that saying so only made the cards read as niche: DECISIONS #478)
@@ -1591,7 +1658,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'barrierNext':
       return `Next turn, gain ${o.amount} Barrier.`;
     case 'starsNext':
-      return `Next turn, gain ${o.amount} Arcana.`;
+      return `Next turn, gain ${o.amount} Spell Power.`;
     case 'topdeck':
       if (o.from === 'draw')
         return `Choose ${o.amount === 1 ? 'a card' : `${o.amount} cards`} in your draw pile and put ${o.amount === 1 ? 'it' : 'them'} on top.`;
@@ -1599,6 +1666,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'endTurn':
       return 'End your turn.';
     case 'growSelf':
+      if (o.that) return `That card grows ${o.amount} more.`;
+      if (o.grown) return `Grows ${o.amount}: this card gains ${o.amount} more each time you play it.`;
       return `This card deals ${o.amount} more damage for the rest of the fight.`;
     case 'copyInHand':
       return `Add a copy of a random ${o.neutral ? 'Neutral ' : ''}card in your hand to your hand.`;
@@ -1910,8 +1979,11 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(
       'At the start of your turn, if this is consumed, it is played for free and goes back.',
     );
-  // (an Arcana cost is shown on the card itself, under the Mana cost: it is not said again in the text)
-  if (c.starX) parts.push('Spend all your Arcana: X is the Arcana spent.');
+  // (the Spellblade's kinds, DECISIONS #480)
+  if (c.tags?.includes('sword')) parts.push('Sword.');
+  if (c.tags?.includes('spell')) parts.push('Spell.');
+  // (a Spell Power cost is shown on the card itself, under the Mana cost: it is not said again in the text)
+  if (c.starX) parts.push('Spend any amount of Spell Power.');
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;

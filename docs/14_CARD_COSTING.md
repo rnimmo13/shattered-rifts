@@ -436,6 +436,21 @@ does with it *minus* what it uses up.
 The trait, **Knife Work** (1 Preparation and a knife in every enemy at the start; 1 Preparation the first time each turn you embed;
 3 damage to an enemy for every knife pulled from it): ~14 in the starter (one embed and one pull card in 11), ~24 in a knife deck.
 
+### The Spellblade: Spell Power and Fracture (DECISIONS #480)
+
+Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These replace the Arcana and Sharpen rates for her (§5 keeps them for the Drunkard's Precision).
+
+| Thing | Rate | Why |
+|---|---|---|
+| **SP gained** | **3** a point; next turn **2.55** | A point can power Swords and then a spell. |
+| **Grows N** | **N x 3.6** | The growth rate (N x 1.2) on 3 a point. |
+| **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. |
+| **Spend any amount** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: the amount is chosen and none is wasted. |
+| **Fracture** | **1.3** a point, **1.7** to ALL | 10 becomes 18, less the delay, leftovers and Barrier. |
+| **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
+| **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. |
+| **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
+
 ### The Spellblade: Imbue and Discharge (DECISIONS #417)
 
 > **Reverted (2026-10-29, DECISIONS #428):** the Spellblade is back to the cards from before the identity rework; no live card uses these rates. Kept for reference (the rework is archived in `reviews/balance-baselines/2026-10-29-reverted-reworks/`).

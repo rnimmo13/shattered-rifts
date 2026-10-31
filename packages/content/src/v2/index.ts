@@ -13,7 +13,6 @@ import {
   plant,
   dmg,
   draw,
-  forge,
   heal,
   mana,
   on,
@@ -301,11 +300,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Kindled',
-      text: 'At the start of your turn, gain 1 Arcana and Sharpen your Obsidian Blade by 1.',
-      turnStart: [stars(1), forge('starforged-blade', 1)],
+      text: 'Start each fight with 3 Spell Power. At the start of your turn, gain 1.',
+      turnStart: [stars(1)],
     },
-    // the Slay the Spire 2 Regent's shape (DECISIONS #369): 75 HP, 3 Arcana as every fight begins (his Divine
-    // Right), and his starter (4 Strike, 4 Defend, Falling Star = Cinderfall, Venerate = Gather Arcana). Kindled is hers, not his.
+    // (Spell Power and Fracture, DECISIONS #480)
     hero: {
       id: 'spellblade',
       name: 'Spellblade',
@@ -316,19 +314,21 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     // (the Obsidian Blade is a card of her deck, in her opening hand, removable: DECISIONS #436; Kindled's Sharpen made it before)
     starter: [
-      ...rep('strike', 4),
+      ...rep('strike', 3),
       ...rep('defend', 3),
       'meteor-jab',
       'gather-light',
+      'hairline-hex',
       'starforged-blade',
     ],
     blurb:
-      'A spellblade of black glass and ember. Spends Arcana on her biggest cards, calls an Obsidian Blade that every Sharpen improves for good, and fills her hand with Retainers and borrowed cards.',
-    mechanics: ['Arcana', 'Sharpen', 'Created cards', 'Auras'],
+      'A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords strike again and again, spend it on a huge spell, or crack her enemies with Fracture until they Shatter.',
+    mechanics: ['Spell Power', 'Swords', 'Spells', 'Fracture'],
     howTo: [
-      'Arcana is a second resource that lasts the whole fight. You start every fight with 3 and gain 1 more each turn. Cards with an orange orb spend it; others gain it.',
-      'The Obsidian Blade (2 Mana, Hold) is a card of your deck, always in your opening hand. Every Sharpen makes it hit harder for the rest of the fight, and some Auras make it strike every enemy or strike twice.',
-      'Court cards create cards: Retainers (free Attacks and guards), Neutral cards, Rubble. Created cards feed the Auras that count them.',
+      'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
+      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) strikes once more for every 2 Spell Power. Might and Primed add to every hit.',
+      'Spells spend it: you choose how much when you play one, from none to all of it. The more Mana a spell costs, the more each point deals.',
+      'Fracture is a mark on an enemy that never fades. At 10 it Shatters for 18, and what is left over stays. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {
@@ -958,7 +958,8 @@ export const CLASS_REWORKS: Partial<
   // (`sameAsBefore`: the class is as it was before any rework, so a run saved then needs no notice and no restart)
   knight: { version: 2, summary: 'back to her earlier cards', sameAsBefore: true },
   assassin: { version: 2, summary: 'back to his earlier cards', sameAsBefore: true },
-  spellblade: { version: 2, summary: 'back to her earlier cards', sameAsBefore: true },
+  // (version 3: Spell Power and Fracture, DECISIONS #480)
+  spellblade: { version: 3, summary: 'Spell Power and Fracture' },
   // (the Shaman was rebuilt twice the same day: version 2 is the elements, totems and Trinity of DECISIONS #420)
   // (version 3: the totem cycle, DECISIONS #430)
   shaman: { version: 3, summary: 'the totem cycle' },

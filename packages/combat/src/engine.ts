@@ -7,6 +7,10 @@ import {
   DEBUFFS,
   EDGE_TAG,
   BLADE_TAG,
+  SHATTER_AT,
+  SHATTER_DAMAGE,
+  SPELL_TAG,
+  SWORD_TAG,
   ORBIT_STEP,
   DEFAULT_RUNE_SLOTS,
   MANTRA_GOAL,
@@ -121,8 +125,10 @@ interface Act {
   /** what the card being played has discarded, and the Skills it has drawn, so far */
   discardedNow: number;
   skillsDrawnNow: number;
-  /** in an 'arcana' trigger: the Arcana just spent */
+  /** in an 'arcana' trigger: the Spell Power just spent */
   spent: number;
+  /** Shatters the card being played has caused so far */
+  shattered: number;
   /** the HP the card's last damage effect took off (Blight Strike) */
   dealt: number;
   /** in an 'allyHurt' trigger: the HP the companion lost */
@@ -176,6 +182,7 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   plus: 0,
   uprooted: 0,
   replaced: 0,
+  shattered: 0,
   ...extra,
 });
 
@@ -413,6 +420,8 @@ export function modifiedDamage(
 
 /** (DECISIONS #432) the word for the scaled part of a damage number in a card's breakdown */
 const SCALE_WORDS: Partial<Record<string, string>> = {
+  starSpend: 'Spell Power spent',
+  stars: 'Spell Power',
   missingPct: '% HP missing',
   missingHp: 'HP missing',
   thorns: 'Thorns',
@@ -1228,6 +1237,24 @@ function metricValue(
       return sd.snares.length;
     case 'stars':
       return sd.stars;
+    case 'starSpend':
+      return a.x;
+    case 'starsSpentTurn':
+      return sd.starsSpentTurn ?? 0;
+    case 'lastSpend':
+      return sd.lastSpend ?? 0;
+    case 'prevSpell':
+      return sd.prevSpell ? 1 : 0;
+    case 'swordsPlayed':
+      return sd.swordsPlayed ?? 0;
+    case 'spellsPlayed':
+      return sd.spellsPlayed ?? 0;
+    case 'swordFoes':
+      return sd.swordFoes?.length ?? 0;
+    case 'shatteredNow':
+      return a.shattered;
+    case 'shatterDamage':
+      return shatterDamage(sd);
     case 'runes':
       return sd.runes.length;
     case 'powers':
@@ -1468,6 +1495,8 @@ function metricValue(
       return sd.form ? formProgress(sd) : 0;
     case 'vigor':
       return u ? stacks(u, 'vigor') : 0;
+    case 'fracture':
+      return u ? stacks(u, 'fracture') : 0;
     // (the Shaman, DECISIONS #420)
     case 'elementsTurn':
       return sd.elementsTurn?.length ?? 0;
@@ -1615,6 +1644,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (knife && a.actor.kind === 'hero') side.honedUsed = true;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = isAttackAct(a) ? stacks(a.actor, 'vigor') : 0;
+      // (the Spellblade's Swords, DECISIONS #480)
+      const sworded = a.card?.tags?.includes(SWORD_TAG) === true;
+      let cracked = false;
+      const keen = sworded ? stacks(a.actor, 'keen') : 0;
       // (One for All: a 0-cost Attack hits harder)
       const deft = deftOf(a);
       let took = 0;
@@ -1682,6 +1715,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 edge +
                 honed +
                 vigor +
+                keen +
                 deft +
                 (ripostes.has(t.id) ? riposte : 0) +
                 ember +
@@ -1695,6 +1729,10 @@ function execOp(r: Run, a: Act, op: Op): void {
           );
           ember = 0;
           took += lostHere;
+          if (sworded && t.side !== a.actor.side && !(side.swordFoes ??= []).includes(t.id))
+            side.swordFoes.push(t.id);
+          if (op.hitFracture && t.side !== a.actor.side && a.struck.get(t.id))
+            cracked = fractureUnit(r, a, side, t, op.hitFracture) || cracked;
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
             addStatus(r, t, 'doom', lostHere);
           // Sic 'Em: a companion that hits its quarry raises another like it
@@ -1705,6 +1743,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
         reap(r);
       }
+      // (a Sword's cracks are a card applying Fracture, DECISIONS #480)
+      if (op.hitFracture && a.card && cracked && !r.s.winner) fireTriggers(r, side, 'fracture');
       // what a kill pays (Feed), once for each enemy this attack took down
       // (a blow that wins the fight still pays what outlasts it: max HP for good, an extra card reward)
       for (let k = 0; k < kills && op.onKill; k++) {
@@ -2016,6 +2056,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.times ? { left: op.times } : {}),
         ...(op.rune ? { rune: op.rune } : {}),
         ...(op.status ? { status: op.status } : {}),
+        ...(op.only ? { only: op.only } : {}),
       });
       r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
       return;
@@ -2375,12 +2416,84 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'strip':
       for (const t of resolve(r, a, op.to)) {
         if (t.barrier > 0) {
-          t.barrier = 0;
-          r.ev.push({ type: 'barrierDrop', target: t.id, total: 0 });
+          t.barrier = op.amount === undefined ? 0 : Math.max(0, t.barrier - op.amount);
+          r.ev.push({ type: 'barrierDrop', target: t.id, total: t.barrier });
         }
-        if (stacks(t, 'steadfast') > 0) addStatus(r, t, 'steadfast', -stacks(t, 'steadfast'));
+        if (op.amount === undefined && stacks(t, 'steadfast') > 0)
+          addStatus(r, t, 'steadfast', -stacks(t, 'steadfast'));
       }
       return;
+    // (the Spellblade's Fracture, DECISIONS #480)
+    case 'fracture': {
+      let any = false;
+      for (const t of resolve(r, a, op.to)) {
+        if (r.s.winner) break;
+        if (op.marked && stacks(t, 'fracture') <= 0) continue;
+        const n = amountOf(r, a, op.amount, op.scale, t);
+        if (n <= 0) continue;
+        any = fractureUnit(r, a, side, t, n) || any;
+      }
+      if (any && a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
+      return;
+    }
+    case 'shatterUp':
+      side.shatterBonus = (side.shatterBonus ?? 0) + op.amount;
+      return;
+    case 'shatterBlast': {
+      const dmg = shatterDamage(side);
+      // (like an Aura's damage: Barrier, Ghostly and Shielded answer it; Might, Exposed and Thorns do not)
+      for (const t of resolve(r, a, op.to))
+        applyDamage(r, a.actor, t, modifiedDamage(dmg, a.actor, t, false), 'attack');
+      reap(r);
+      return;
+    }
+    case 'carryFracture': {
+      const dest = a.target;
+      if (!dest || dest.hp <= 0) return;
+      const others = r.s.sides[dest.side].units.filter(
+        (u) => u.hp > 0 && u.id !== dest.id && u.kind !== 'ally',
+      );
+      if (others.length === 0) {
+        fractureUnit(r, a, side, dest, op.alone);
+      } else {
+        const from = [...others].sort((x, y) => stacks(y, 'fracture') - stacks(x, 'fracture'))[0] as Unit;
+        const moved = stacks(from, 'fracture');
+        if (moved > 0) {
+          addStatus(r, from, 'fracture', -moved);
+          // (a move is not a new application: Steadfast and the Auras that answer one do not hear of it)
+          dest.statuses.fracture = stacks(dest, 'fracture') + moved;
+          r.ev.push({ type: 'status', target: dest.id, status: 'fracture', amount: moved, total: stacks(dest, 'fracture') });
+          a.shattered += resolveShatters(r, side, dest);
+        }
+        if (dest.hp > 0 && !r.s.winner) fractureUnit(r, a, side, dest, op.amount);
+      }
+      if (a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
+      return;
+    }
+    case 'empower': {
+      const pool = side.hand.filter((c) => r.db.cards[c.card]?.tags?.includes(op.tag));
+      if (!pool.length) return;
+      const first = pool[0] as CardInst;
+      if (!a.pick || pool.length === 1) {
+        first.bonus = (first.bonus ?? 0) + op.amount;
+        r.ev.push({ type: 'transform', side: side.id, card: first.id, def: first.card });
+        return;
+      }
+      r.s.pending = {
+        kind: 'empower',
+        pool: pool.map((c) => c.id),
+        min: 1,
+        max: 1,
+        times: op.amount,
+        rest: [],
+        actor: a.actor.id,
+        target: a.target?.id ?? null,
+        finish: null,
+        x: a.x,
+      };
+      r.ev.push({ type: 'pending', side: side.id, kind: 'empower' });
+      return;
+    }
     case 'selfCost':
       if (a.inst) a.inst.costDown = (a.inst.costDown ?? 0) + op.amount;
       return;
@@ -2578,9 +2691,14 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'endTurn':
       if (a.actor.kind === 'hero' && r.s.active === a.actor.side) r.endAfter = true;
       return;
-    case 'growSelf':
-      if (a.inst) a.inst.bonus = (a.inst.bonus ?? 0) + op.amount;
+    case 'growSelf': {
+      const grows = a.inst ?? a.played;
+      // ("Grows N": a free replay yields what it has grown to, and does not grow it again, DECISIONS #480)
+      if (op.grown && !a.pick) return;
+      if (grows) grows.bonus = (grows.bonus ?? 0) + op.amount;
+      if (op.grown && grows) fireTriggers(r, side, 'grown', { inst: grows });
       return;
+    }
     case 'copyInHand': {
       const pool = side.hand.filter((c) => !op.neutral || r.db.cards[c.card]?.hero === 'neutral');
       if (!pool.length) return;
@@ -3015,7 +3133,37 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   return inst;
 }
 
-/** Arcana gained (or lost): gaining it is counted for the turn and is something Auras answer. */
+/** What the side's Shatters deal now (DECISIONS #480). */
+function shatterDamage(sd: SideState): number {
+  return SHATTER_DAMAGE + (sd.shatterBonus ?? 0);
+}
+
+/** Every SHATTER_AT Fracture on the unit becomes a Shatter from the side that applied it; what is left over stays. A Shatter is not an
+ * attack (no Might, Primed, Exposed or Thorns); Barrier stops it; it never applies Fracture or sets off another Shatter. */
+function resolveShatters(r: Run, owner: SideState, t: Unit): number {
+  const hero = heroOf(owner) ?? null;
+  let n = 0;
+  while (stacks(t, 'fracture') >= SHATTER_AT && t.hp > 0 && !r.s.winner) {
+    addStatus(r, t, 'fracture', -SHATTER_AT);
+    // (like an Aura's damage: Barrier, Ghostly and Shielded answer it)
+    const dmg = shatterDamage(owner);
+    applyDamage(r, hero, t, hero ? modifiedDamage(dmg, hero, t, false) : dmg, 'attack');
+    n++;
+    reap(r);
+    if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
+  }
+  return n;
+}
+
+/** Fracture on a unit, then any Shatter it sets off. Steadfast stops the application, not a later Shatter. */
+function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boolean {
+  if (n <= 0 || t.hp <= 0) return false;
+  if (!addStatus(r, t, 'fracture', n)) return false;
+  a.shattered += resolveShatters(r, owner, t);
+  return true;
+}
+
+/** Spell Power gained (or lost): gaining it is counted for the turn and is something Auras answer. */
 function gainStars(r: Run, sd: SideState, n: number): void {
   if (n === 0) return;
   sd.stars = Math.max(0, sd.stars + n);
@@ -3486,6 +3634,11 @@ function fireTriggers(
     )
       continue;
     if (p.once && p.firedTurn === r.s.turn) continue;
+    if (p.only) {
+      const v = metricValue(r, mkAct(hero, { spent: ctx.spent ?? 0 }), p.only.by, undefined, null);
+      if ((p.only.atLeast !== undefined && v < p.only.atLeast) || (p.only.atMost !== undefined && v > p.only.atMost))
+        continue;
+    }
     if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance)
       continue;
     if (when === 'spend' && p.status && p.status !== ctx.status) continue;
@@ -3845,6 +3998,14 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.playedTurn = [];
   sd.costTax = 0;
   sd.spentTurn = 0;
+  sd.starsSpentTurn = 0;
+  sd.lastSpend = 0;
+  sd.lastSpell = false;
+  sd.prevSpell = false;
+  sd.swordsPlayed = 0;
+  sd.spellsPlayed = 0;
+  sd.swordFoes = [];
+  sd.ruinUsed = false;
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
@@ -4491,6 +4652,15 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     }
     // ... and as it is, last: what fits is summoned, the rest is not (DECISIONS #405)
     out.push(...plays);
+    // (a "spend any amount" card: the whole reserve comes with no amount named; the bots also weigh none and half. Any amount is legal,
+    // and the player's slider can name any; listing every one would swamp a search.)
+    if (cd.starX && sd.stars > 0) {
+      const half = Math.floor(sd.stars / 2);
+      for (const p of plays) {
+        out.push({ ...p, spend: 0 });
+        if (half > 0 && half < sd.stars) out.push({ ...p, spend: half });
+      }
+    }
   }
   sd.potions.forEach((id, index) => {
     const p = db.potions[id];
@@ -4544,6 +4714,8 @@ function finishCard(
   sd.played++;
   if (cd.kind === 'attack') sd.attacksPlayed++;
   if (cd.kind === 'skill') sd.skillsPlayed++;
+  if (cd.tags?.includes(SWORD_TAG)) sd.swordsPlayed = (sd.swordsPlayed ?? 0) + 1;
+  if (cd.tags?.includes(SPELL_TAG)) sd.spellsPlayed = (sd.spellsPlayed ?? 0) + 1;
   bringBack(r, sd, cd);
   countPlayed(sd, cd, inst);
   const cost = paid ?? cd.cost + (inst.costUp ?? 0);
@@ -4596,6 +4768,11 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   }
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
+  if (
+    action.spend !== undefined &&
+    (!cd.starX || !Number.isInteger(action.spend) || action.spend < 0 || action.spend > sd.stars)
+  )
+    throw new RulesError('That is not an amount of Spell Power this card can spend');
   let scrapped = 0;
   // (with no room and no companion named, the card is played as it is: what fits is summoned, DECISIONS #405)
   if (needsRelease(r.db, sd, cd) && releaseIds(action).length > 0) {
@@ -4679,13 +4856,18 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     sd.stars -= cd.starCost;
     r.ev.push({ type: 'stars', side, stars: sd.stars });
   }
-  // an Arcana X card spends all of it
+  // a "spend any amount" card spends what the player chose (all of it when no amount is named)
   if (cd.starX) {
-    starsSpent = sd.stars;
-    x = sd.stars + (cd.xBonus ?? 0);
-    sd.stars = 0;
-    r.ev.push({ type: 'stars', side, stars: 0 });
+    starsSpent = action.spend ?? sd.stars;
+    x = starsSpent + (cd.xBonus ?? 0);
+    sd.stars -= starsSpent;
+    r.ev.push({ type: 'stars', side, stars: sd.stars });
   }
+  sd.starsSpentTurn = (sd.starsSpentTurn ?? 0) + starsSpent;
+  sd.lastSpend = starsSpent;
+  // (the card before this one, for "if your previous card was a Spell"; set here so its own effects and Auras read the right one)
+  sd.prevSpell = sd.lastSpell ?? false;
+  sd.lastSpell = cd.tags?.includes(SPELL_TAG) === true;
   if (cd.statusCost && cd.statusCost.amount > 0)
     addStatus(r, hero, cd.statusCost.status, -cd.statusCost.amount);
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
@@ -4725,7 +4907,12 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
       'twinspell') ||
     null;
   // (the Shaman) the totems' boost for the first spell of its element this turn
-  const boost = sd.totems ? spellBoost(r, sd, cd) : 0;
+  let boost = sd.totems ? spellBoost(r, sd, cd) : 0;
+  // (Measured Ruin, DECISIONS #480: the first Spell Attack of the turn that spends Spell Power)
+  if (starsSpent > 0 && !sd.ruinUsed && cd.kind === 'attack' && cd.tags?.includes(SPELL_TAG) && stacks(hero, 'ruinous') > 0) {
+    boost += stacks(hero, 'ruinous') * starsSpent;
+    sd.ruinUsed = true;
+  }
   runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true, plus: boost }), cd.effects);
   if (r.s.pending) {
     if (boost) r.s.pending.plus = boost;
@@ -4787,7 +4974,16 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       const c = sd.hand.find((x) => x.id === id);
       if (c) (sd.nextCopies ??= []).push({ card: c.card, times: p.times ?? 1 });
     }
-  for (const id of p.kind === 'copy' ? [] : ids) {
+  // (The Forgemaster: the chosen card stays in your hand, and yields more for the fight)
+  if (p.kind === 'empower')
+    for (const id of ids) {
+      const c = sd.hand.find((x) => x.id === id);
+      if (c) {
+        c.bonus = (c.bonus ?? 0) + (p.times ?? 0);
+        r.ev.push({ type: 'transform', side, card: c.id, def: c.card });
+      }
+    }
+  for (const id of p.kind === 'copy' || p.kind === 'empower' ? [] : ids) {
     const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
     const k = pile.findIndex((c) => c.id === id);
     const [c] = k >= 0 ? pile.splice(k, 1) : [];
@@ -4973,6 +5169,8 @@ export function previewCardDamage(
   s: CombatState,
   instId: string,
   targetId: string | null = null,
+  /** a "spend any amount" card: the amount being weighed (left out: all of it) */
+  spend?: number,
 ): Map<number, LiveDamage> {
   const out = new Map<number, LiveDamage>();
   const sd = s.sides[s.active];
@@ -5008,10 +5206,21 @@ export function previewCardDamage(
     card: def,
     inst,
     target: friendly ? mine : chosen,
-    x: def.x ? sd.mana + sd.reserves + (def.xBonus ?? 0) : 0,
+    x: def.x
+      ? sd.mana + sd.reserves + (def.xBonus ?? 0)
+      : def.starX
+        ? Math.min(spend ?? sd.stars, sd.stars) + (def.xBonus ?? 0)
+        : 0,
   });
   // (the Shaman's totems: their help on the first spell of its element this turn, DECISIONS #420)
   const help = sd.totems ? spellBoost(r, sd, def, false) : 0;
+  // (Measured Ruin and Whispering Edge, DECISIONS #480)
+  const spendNow = def.starX ? a.x - (def.xBonus ?? 0) : (def.starCost ?? 0);
+  const ruin =
+    def.kind === 'attack' && def.tags?.includes(SPELL_TAG) && spendNow > 0 && !sd.ruinUsed
+      ? stacks(hero, 'ruinous') * spendNow
+      : 0;
+  const keen = def.tags?.includes(SWORD_TAG) ? stacks(hero, 'keen') : 0;
   const knife = def.tags?.includes(EDGE_TAG) === true;
   const edge = deftOf(a) + help;
   // (each its own step in the breakdown, as the engine adds them: DECISIONS #479)
@@ -5136,6 +5345,8 @@ export function previewCardDamage(
       add(knifeEdge, 'Edge');
       add(honed, 'Honed');
       add(edge, 'bonus');
+      add(keen, 'Whispering Edge');
+      add(ruin, 'Measured Ruin');
       add(v, 'Primed');
       add(rip, 'Riposte');
       add(ember, 'Ember');
@@ -5147,7 +5358,7 @@ export function previewCardDamage(
       const noose = t && def.tags?.includes('noose') ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
       if (noose !== 1) how.push(`Noose ×${noose} = ${Math.round(run * lone * leth * noose)}`);
       const n = modifiedDamage(
-        Math.round((amt + knifeEdge + honed + edge + v + rip + ember) * lone * leth * noose),
+        Math.round((amt + knifeEdge + honed + edge + keen + ruin + v + rip + ember) * lone * leth * noose),
         hero,
         t,
         def.kind === 'attack',

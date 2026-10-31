@@ -9,7 +9,7 @@ export interface Tip {
   text: string;
 }
 
-/** What the fight's deck can do, so a tip can show before the first totem or Arcana is on the board. */
+/** What the fight's deck can do, so a tip can show before the first totem or Spell Power is on the board. */
 export interface TipContext {
   usesRunes: boolean;
   usesStars: boolean;
@@ -59,8 +59,8 @@ export const TIP_RULES: TipRule[] = [
   },
   {
     id: 'lumen',
-    title: 'Arcana',
-    text: 'Arcana is a second resource, in the orange orb beside your Mana. Some cards gain it; cards with an orange orb on them spend it. It lasts the whole fight, so you can save it for a big finisher.',
+    title: 'Spell Power',
+    text: 'Spell Power is the magic stored in your blade, in the orange orb beside your Mana. It lasts the whole fight. Swords strike more times the more you hold; Spells spend it, as much as you choose.',
     when: (v, c) => c.usesStars || v.sides.a.stars > 0,
   },
   {
