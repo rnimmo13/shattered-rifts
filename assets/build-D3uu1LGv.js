@@ -1,0 +1,1 @@
+var e={version:`0.141.0`,commit:`75bc870`,dirty:!1,date:`2026-10-31T01:15:36.136Z`},t=e.date?new Date(e.date):null,n={...e,label:[`v${e.version}`,`${e.commit}${e.dirty?`+`:``}`,t?t.toLocaleString(void 0,{day:`numeric`,month:`short`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}):``].filter(Boolean).join(` · `)};export{n as t};

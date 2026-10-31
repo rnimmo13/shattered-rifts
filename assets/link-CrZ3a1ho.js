@@ -1,0 +1,1 @@
+var e=class{buffer=[];reader=null;push(e){this.reader?this.reader(e):this.buffer.push(e)}attach(e){this.reader=e;for(let t of this.buffer.splice(0))e(t);return()=>{this.reader===e&&(this.reader=null)}}};export{e as t};

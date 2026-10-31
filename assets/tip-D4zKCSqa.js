@@ -1,0 +1,1 @@
+function e(e){return{"data-tip":JSON.stringify(e)}}export{e as t};

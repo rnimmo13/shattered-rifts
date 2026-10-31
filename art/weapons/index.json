@@ -1,0 +1,50 @@
+{
+    "weapons":  {
+                    "sword":  "weapons/sword.png",
+                    "shield":  "weapons/shield.png",
+                    "wrench":  "weapons/wrench.png",
+                    "cleaver":  "weapons/cleaver.png",
+                    "stiletto":  "weapons/stiletto.png",
+                    "throwing-knife":  "weapons/throwing-knife.png",
+                    "totem-staff":  "weapons/totem-staff.png",
+                    "flame-blade":  "weapons/flame-blade.png",
+                    "obsidian-blade":  "weapons/obsidian-blade.png",
+                    "grave-lantern":  "weapons/grave-lantern.png",
+                    "hammer":  "weapons/hammer.png",
+                    "shotgun":  "weapons/shotgun.png"
+                },
+    "fx":  {
+               "muzzle":  [
+                              "weapons/fx/muzzle-1.png",
+                              "weapons/fx/muzzle-2.png",
+                              "weapons/fx/muzzle-3.png",
+                              "weapons/fx/muzzle-4.png",
+                              "weapons/fx/muzzle-5.png",
+                              "weapons/fx/muzzle-6.png"
+                          ],
+               "impact":  [
+                              "weapons/fx/impact-1.png",
+                              "weapons/fx/impact-2.png",
+                              "weapons/fx/impact-3.png",
+                              "weapons/fx/impact-4.png",
+                              "weapons/fx/impact-5.png",
+                              "weapons/fx/impact-6.png"
+                          ],
+               "spark":  [
+                             "weapons/fx/spark-1.png",
+                             "weapons/fx/spark-2.png",
+                             "weapons/fx/spark-3.png",
+                             "weapons/fx/spark-4.png",
+                             "weapons/fx/spark-5.png",
+                             "weapons/fx/spark-6.png"
+                         ],
+               "cast":  [
+                            "weapons/fx/cast-1.png",
+                            "weapons/fx/cast-2.png",
+                            "weapons/fx/cast-3.png",
+                            "weapons/fx/cast-4.png",
+                            "weapons/fx/cast-5.png",
+                            "weapons/fx/cast-6.png"
+                        ]
+           }
+}
