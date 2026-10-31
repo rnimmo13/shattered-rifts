@@ -920,7 +920,7 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
 
 /** After a Warden: start the next stage. */
 export function nextStage(run: RunState): RunState {
-  need(run.phase === 'stageClear', 'The stage is not cleared yet');
+  need(run.phase === 'stageClear', 'The act is not cleared yet');
   const r = clone(run);
   r.stage += 1;
   r.map = generateStageMap(

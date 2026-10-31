@@ -27,6 +27,7 @@ import {
   legalActions,
   viewFor,
   previewCardDamage,
+  ON_OR_OFF,
   type LiveDamage,
   type Action,
   type CardDef,
@@ -720,7 +721,7 @@ export function FightView(props: {
             sc.fighters.pulse(e.target, bad ? '#d12f48' : '#f6dc94');
             float(
               e.target,
-              `${STATUS_INFO[e.status]?.name ?? e.status} ${e.amount}`,
+              `${STATUS_INFO[e.status]?.name ?? e.status}${ON_OR_OFF.has(e.status) ? '' : ` ${e.amount}`}`,
               bad ? 'bad' : 'good',
             );
             await wait(110);

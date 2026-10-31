@@ -40,7 +40,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Cold Stare | 1 | skill | uncommon | Gain 8 Barrier. If you have consumed a card this turn: Gain 8 Barrier. |
 | Provoke | 1 | skill | uncommon | Gain 5 Barrier. Gain 2 Plating. Apply 1 Exposed. |
 | Stoneskin | 1 | aura | uncommon | Gain 5 Plating. |
-| Giant's Stance | 1 | skill | uncommon | Gain 5 Barrier. Gain 1 Sturdy. |
+| Giant's Stance | 1 | skill | uncommon | Gain 5 Barrier. Gain Sturdy. |
 | Ember Ward | 2 | skill | uncommon | Gain 8 Barrier. Gain 3 Plating. Gain 4 Thorns until the enemy turn is over. |
 | Steel Resolve | 1 | aura | uncommon | Gain 2 Might for the rest of the fight. |
 | Challenge | 2 | attack | uncommon | Deal 5 damage 2 times. Gain 2 Might. Apply 1 Might. |
@@ -80,11 +80,11 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Bastion Engine | 2 | aura | rare | Whenever you gain Barrier: Deal 5 damage to a random enemy. |
 | Immovable Oath | 2 | skill | rare | Gain 30 Barrier. Consume. |
 | Unbroken Wall | 3 | aura | rare | Gain Fortified for the rest of the fight. |
-| Stone Stance | 2 | aura | rare | Gain 1 Unmovable. |
+| Stone Stance | 2 | aura | rare | Gain Unmovable. |
 | Warlord's Oath | 3 | aura | rare | At the start of your turn: Gain 2 Might. |
 | Wildfire | 1 | attack | rare | Deal 8 (+2 per Attack played this turn) damage to ALL enemies. |
 | Double Down | 1 | skill | rare | Gain 1 Reverb: your next Attack is played twice. |
-| Cruel Streak | 1 | aura | rare | Gain 1 Cruelty. |
+| Cruel Streak | 1 | aura | rare | Gain Cruelty. |
 | Crippling Blow | 3 | attack | rare | Deal 15 damage. Apply 10 Sapped until the end of their next turn. |
 | Bloodfeast | 1 | attack | rare | Deal 10 damage. Consume. If this is fatal: Raise your max HP by 3 for good. |
 | Raised Hell | 2 | aura | rare | Whenever you draw a card: Play it against a random enemy if it is a Strike card. |
@@ -92,7 +92,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Stone Fury | 0 | skill | rare | Turn every Attack in your hand into a Giant Rock. |
 | Flailing Blows | 1 | attack | rare | Consume a random Attack in your hand. Deal 4 damage 2 times. Deal damage equal to the damage of the Attacks consumed this way. |
 | Rite of Recall | 2 | aura | rare | Whenever a card is consumed: Draw 1 card. |
-| Unholy Pact | 3 | aura | rare | Gain 1 Unbound. |
+| Unholy Pact | 3 | aura | rare | Gain Unbound. |
 | Burn It All | 2 | attack | rare | Deal damage equal to 7 times the number of cards in your hand. Consume your hand. Consume. |
 | Forsake | 0 | skill | rare | Lose 1 HP. Consume 1 card. Gain 1 Might. |
 | Unravel | X | skill | rare | Play the top X cards of your draw pile. |
@@ -308,7 +308,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Rising Howl | 2 | attack | rare | Deal 10 (+5 per card played this turn) damage. |
 | Killing Spree | 3 | aura | rare | Whenever you play an Attack: Draw 1 card. |
 | Ancient Fury | 2 | aura | rare | At the start of your turn: Gain 2 Might and lose 3 HP. |
-| Hunger Unbound | 3 | aura | rare | Gain 1 Unbound. At the start of your turn: Lose 2 HP. |
+| Hunger Unbound | 3 | aura | rare | Gain Unbound. At the start of your turn: Lose 2 HP. |
 | Bloodmoon Hunt | 2 | skill | rare | Summon Hound (8 HP; at the end of your turn it will deal 4 damage). Each of your companions gains 2 Might. All your allies act now. Consume. |
 
 ## Trickster (umbral, 80 HP)
@@ -473,10 +473,10 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Cool Head | 3 | skill | uncommon | Premeditate. Gain 1 Mana. |
 | Killing Stroke | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
 | Inked Blades | 1 | skill | rare | Add 2 Inked Daggers to your hand. |
-| Wide Arc | 2 | aura | rare | Gain 1 Fanned. Add 4 Daggers to your hand. |
+| Wide Arc | 2 | aura | rare | Gain Fanned. Add 4 Daggers to your hand. |
 | Recall the Blades | 2 | skill | rare | Play every Dagger in your consumed pile against the target; they go back there. |
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
-| Into the Shadows | 2 | skill | rare | Defer up to 3 cards. Discard your hand. Gain 1 Poised. |
+| Into the Shadows | 2 | skill | rare | Defer up to 3 cards. Discard your hand. Gain Poised. |
 | Steel Monsoon | 1 | skill | rare | Discard your hand. Add Daggers to your hand equal to the cards discarded this way. |
 | Marked for Death | 1 | attack | rare | Deal 10 damage. Consume. If this is fatal: Gain an extra card reward after this fight. |
 | Final Bow | 0 | attack | rare | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |
@@ -484,16 +484,16 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Serrated Edges | 2 | aura | rare | Whenever an Attack of yours deals damage to an enemy’s HP: Apply 1 Bleed. |
 | Bloodburst | 1 | skill | rare | Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now. |
 | Sapping Wound | X | skill | rare | Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Consume. |
-| Blood Scent | 2 | aura | rare | Gain 1 Tracking. |
+| Blood Scent | 2 | aura | rare | Gain Tracking. |
 | Razor Skin | 3 | aura | rare | Premeditate. Gain 1 Bracing. Gain 4 Thorns. These last the rest of the fight. |
 | Rush of Blood | 0 | skill | rare | Gain 1 Mana. Draw 2 cards. Consume. |
 | Shadow Echo | 1 | aura | rare | Whenever you play a card: Gain 1 Barrier. |
 | Stilled Time | 3 | skill | rare | You cannot draw more cards this turn. Every card in your hand costs 0 this turn. |
 | Double Trick | 1 | skill | rare | Gain 1 Mirrored. |
-| Grand Scheme | 2 | aura | rare | Gain 1 Planner. |
+| Grand Scheme | 2 | aura | rare | Gain Planner. |
 | Slow Murder | 3 | attack | rare | Deal 1 (+1 per card drawn this fight) damage. |
 | Recurring Dream | 3 | skill | rare | Choose a card in your hand. Next turn, add 3 copies of it to your hand. Consume. |
-| Mantle of Night | 1 | skill | rare | Gain 1 Meld until the end of your turn. |
+| Mantle of Night | 1 | skill | rare | Gain Meld until the end of your turn. |
 | Nimble Routine | 1 | aura | rare | At the start of your turn: Draw 1 card and discard 1 random card. |
 | Patient Hands | 1 | aura | rare | At the end of your turn: Gain 1 Holdfast. |
 

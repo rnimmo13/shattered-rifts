@@ -50,7 +50,7 @@ cost and effects whose numbers differ by about a third or less.
 | Charging Herd | uncommon | aura | 2 | At the end of your turn: Play a random Attack from your hand against a random enemy. |
 | Cold Stare | uncommon | skill | 1 | Gain 8 Barrier. If you have consumed a card this turn: Gain 8 Barrier. |
 | Ember Ward | uncommon | skill | 2 | Gain 8 Barrier. Gain 3 Plating. Gain 4 Thorns until the enemy turn is over. |
-| Giant's Stance | uncommon | skill | 1 | Gain 5 Barrier. Gain 1 Sturdy. |
+| Giant's Stance | uncommon | skill | 1 | Gain 5 Barrier. Gain Sturdy. |
 | Grim Focus | uncommon | skill | 0 | Draw 3 cards. You cannot draw more cards this turn. |
 | Hammer Fall | uncommon | attack | 3 | Deal 32 damage. |
 | Hardened Scars | uncommon | aura | 1 | Whenever you lose HP to your own cards or Hangover: Gain 3 Barrier. |
@@ -86,7 +86,7 @@ cost and effects whose numbers differ by about a third or less.
 | Burn It All | rare | attack | 2 | Deal damage equal to 7 times the number of cards in your hand. Consume your hand. Consume. |
 | Crimson Offering | rare | skill | 0 | Lose 6 HP. Gain 2 Mana. Draw 3 cards. Consume. |
 | Crippling Blow | rare | attack | 3 | Deal 15 damage. Apply 10 Sapped until the end of their next turn. |
-| Cruel Streak | rare | aura | 1 | Gain 1 Cruelty. |
+| Cruel Streak | rare | aura | 1 | Gain Cruelty. |
 | Double Down | rare | skill | 1 | Gain 1 Reverb: your next Attack is played twice. |
 | Fan the Flames | rare | skill | 1 | Consume your hand. Add a random card from your pool to your hand for each card consumed this way. |
 | Flailing Blows | rare | attack | 1 | Consume a random Attack in your hand. Deal 4 damage 2 times. Deal damage equal to the damage of the Attacks consumed this way. |
@@ -101,10 +101,10 @@ cost and effects whose numbers differ by about a third or less.
 | Rending Fury | rare | attack | 2 | Deal 5 damage, 1 more time per time you lost HP this fight. |
 | Rite of Recall | rare | aura | 2 | Whenever a card is consumed: Draw 1 card. |
 | Stone Fury | rare | skill | 0 | Turn every Attack in your hand into a Giant Rock. |
-| Stone Stance | rare | aura | 2 | Gain 1 Unmovable. |
+| Stone Stance | rare | aura | 2 | Gain Unmovable. |
 | Unbroken Wall | rare | aura | 3 | Gain Fortified for the rest of the fight. |
 | Unforgiving Drill | rare | aura | 1 | At the start of your turn: Return a random Attack card from your discard pile to your hand, upgraded. |
-| Unholy Pact | rare | aura | 3 | Gain 1 Unbound. |
+| Unholy Pact | rare | aura | 3 | Gain Unbound. |
 | Unravel | rare | skill | 0 | Play the top X cards of your draw pile. |
 | Vow Fulfilled | rare | attack | 3 | Deal 18 (+7 per Reserve) damage. |
 | Warlord's Oath | rare | aura | 3 | At the start of your turn: Gain 2 Might. |
@@ -289,7 +289,7 @@ cost and effects whose numbers differ by about a third or less.
 | Death or Glory | rare | attack | 2 | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
 | Den Mother | rare | aura | 2 | Whenever one of your allies dies: Deal 15 damage to the attacker. |
 | Dire Wolf | rare | summon | 3 | Summon Dire Wolf (18 HP; at the end of your turn it will deal 9 damage). |
-| Hunger Unbound | rare | aura | 3 | Gain 1 Unbound. At the start of your turn: Lose 2 HP. |
+| Hunger Unbound | rare | aura | 3 | Gain Unbound. At the start of your turn: Lose 2 HP. |
 | Killing Spree | rare | aura | 3 | Whenever you play an Attack: Draw 1 card. |
 | Pack Frenzy | rare | skill | 2 | Gain 2 Might. All your allies act now. Consume. |
 | Red Frenzy | rare | aura | 1 | Whenever you draw a card during your turn: Gain 1 Might until the end of your turn. |
@@ -458,15 +458,15 @@ cost and effects whose numbers differ by about a third or less.
 | Tossed Vials | uncommon | skill | 2 | Apply 3 Bleed to a random enemy 3 times. |
 | Weeping Cuts | uncommon | aura | 1 | At the start of your turn: Apply 2 Bleed to ALL enemies. |
 | Whetted Edge | uncommon | aura | 1 | Gain 4 Edge: your Daggers deal 4 more damage for the rest of the fight. |
-| Blood Scent | rare | aura | 2 | Gain 1 Tracking. |
+| Blood Scent | rare | aura | 2 | Gain Tracking. |
 | Bloodburst | rare | skill | 1 | Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now. |
 | Double Trick | rare | skill | 1 | Gain 1 Mirrored. |
 | Final Bow | rare | attack | 0 | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |
-| Grand Scheme | rare | aura | 2 | Gain 1 Planner. |
+| Grand Scheme | rare | aura | 2 | Gain Planner. |
 | Inked Blades | rare | skill | 1 | Add 2 Inked Daggers to your hand. |
-| Into the Shadows | rare | skill | 2 | Defer up to 3 cards. Discard your hand. Gain 1 Poised. |
+| Into the Shadows | rare | skill | 2 | Defer up to 3 cards. Discard your hand. Gain Poised. |
 | Killing Stroke | rare | attack | 0 | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
-| Mantle of Night | rare | skill | 1 | Gain 1 Meld until the end of your turn. |
+| Mantle of Night | rare | skill | 1 | Gain Meld until the end of your turn. |
 | Marked for Death | rare | attack | 1 | Deal 10 damage. Consume. If this is fatal: Gain an extra card reward after this fight. |
 | Nimble Routine | rare | aura | 1 | At the start of your turn: Draw 1 card and discard 1 random card. |
 | Patient Hands | rare | aura | 1 | At the end of your turn: Gain 1 Holdfast. |
@@ -482,7 +482,7 @@ cost and effects whose numbers differ by about a third or less.
 | Slow Murder | rare | attack | 3 | Deal 1 (+1 per card drawn this fight) damage. |
 | Steel Monsoon | rare | skill | 1 | Discard your hand. Add Daggers to your hand equal to the cards discarded this way. |
 | Stilled Time | rare | skill | 3 | You cannot draw more cards this turn. Every card in your hand costs 0 this turn. |
-| Wide Arc | rare | aura | 2 | Gain 1 Fanned. Add 4 Daggers to your hand. |
+| Wide Arc | rare | aura | 2 | Gain Fanned. Add 4 Daggers to your hand. |
 
 ## Shaman (shaman)
 

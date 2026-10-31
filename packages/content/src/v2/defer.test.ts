@@ -186,7 +186,7 @@ describe('Defer', () => {
     expect(text('palm-switch')).toBe('Gain 7 Barrier. Defer a card.');
     expect(text('quick-reflexes')).toBe('Premeditate. Draw 1 card. Defer a card.');
     expect(text('cartwheel-cut')).toBe('Premeditate. Deal 5 damage to ALL enemies. Defer a card.');
-    expect(text('into-the-shadows')).toBe('Defer up to 3 cards. Discard your hand. Gain 1 Poised.');
+    expect(text('into-the-shadows')).toBe('Defer up to 3 cards. Discard your hand. Gain Poised.');
     expect(db.cards['into-the-shadows']!.cost).toBe(2);
   });
 });

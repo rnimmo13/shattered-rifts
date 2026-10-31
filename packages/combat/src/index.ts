@@ -26,6 +26,7 @@ export {
   describeIntent,
   cardText,
   opText,
+  ON_OR_OFF,
   forgeWord,
   forgeLabel,
   type CombatView,

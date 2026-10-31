@@ -4624,10 +4624,18 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     const cd = cardDef(db, c.card);
     const plays: Extract<Action, { type: 'play' }>[] = [];
     if (cd.target === 'none') plays.push({ type: 'play', card: c.id });
-    else if (cd.target === 'foe')
-      for (const t of legalFoes(r, side, cd))
+    else if (cd.target === 'foe') {
+      // (a Fanned Dagger hits every enemy, so there is nothing to choose, unless something else on it needs one enemy: DECISIONS #492)
+      const lead = heroOf(sd);
+      const fanned =
+        cd.tags?.includes(EDGE_TAG) &&
+        lead &&
+        stacks(lead, 'fanned') > 0 &&
+        !cd.effects.some((e) => e.op !== 'damage' && JSON.stringify(e).includes('"to":"target"'));
+      const foes = legalFoes(r, side, cd);
+      for (const t of fanned ? foes.slice(0, 1) : foes)
         plays.push({ type: 'play', card: c.id, target: t.id });
-    else
+    } else
       for (const t of sd.units)
         if (t.hp > 0 && (cd.target === 'friend' || t.kind === 'ally'))
           plays.push({ type: 'play', card: c.id, target: t.id });

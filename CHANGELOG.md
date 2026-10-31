@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Card text:** statuses that are simply on or off have no number ("Gain Fanned"), and a Fanned Dagger plays without aiming.
 - **Merchants** remove as many cards as you can pay for on one visit, each double the price of the last.
 - **Words:** a run is now Tiers, Acts and Floors, and the home page's New Run button says Play.
 - **Phones:** Begin the run stays in view on the Riftwalker screen, and the Riftwalker on the home page no longer starts off to one side.

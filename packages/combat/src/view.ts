@@ -1040,6 +1040,20 @@ export const forgeWord = (db: CombatDb, card: string): string =>
 /** The buff a weapon wears for it: "Sharpened +3", "Precision +3". */
 export const forgeLabel = (word: string): string => (word === 'Sharpen' ? 'Sharpened' : word);
 
+/** Statuses the engine only reads as there or not: more stacks change nothing, so a card does not give them a number. */
+export const ON_OR_OFF: ReadonlySet<string> = new Set([
+  'fortified',
+  'fanned',
+  'poised',
+  'sturdy',
+  'unmovable',
+  'cruelty',
+  'tracking',
+  'unbound',
+  'planner',
+  'meld',
+]);
+
 export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): string {
   const at = (n: number, sc: Scale | undefined): string => {
     const a = amountText(n, sc);
@@ -1199,10 +1213,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
         return `Gain ${o.amount} Edge: your Daggers deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
-      // Fortified is on or off, so it has no number: "Gain Fortified" (DECISIONS #347)
-      if (o.status === 'fortified' && o.amount > 0 && !o.scale) {
+      // a status that is on or off has no number: "Gain Fortified" (DECISIONS #347, #492)
+      if (ON_OR_OFF.has(o.status) && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;
-        return `${mine ? 'Gain' : 'Apply'} Fortified${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? (o.to === 'self' ? ' until the enemy turn is over' : ' until the end of their next turn') : o.temp ? ' until the end of your turn' : ''}.`;
+        return `${mine ? 'Gain' : 'Apply'} ${sname(o.status)}${o.to === 'self' ? '' : who[o.to]}${o.temp === 'theirs' ? (o.to === 'self' ? ' until the enemy turn is over' : ' until the end of their next turn') : o.temp ? ' until the end of your turn' : ''}.`;
       }
       // the blade's statuses and the other Regent pieces say what they do (DECISIONS #369)
       if (o.amount > 0 && !o.scale && who.self === WHO.self) {

@@ -494,6 +494,25 @@ describe('the rest of the Silent’s tricks', () => {
       expect(l.how).toEqual(['4', 'Tracking +50% = 6']);
     });
 
+    it('a Fanned Dagger asks for no target, and still hits every enemy (DECISIONS #492)', () => {
+      const s = fight(['sleeve-knife', 'strike']);
+      const dagger = () => legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0');
+      const strikes = () => legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T1');
+      expect(dagger()).toHaveLength(2);
+      hero(s).statuses.fanned = 1;
+      expect(dagger()).toHaveLength(1);
+      expect(strikes()).toHaveLength(2);
+      const r = applyAction(db, s, dagger()[0]!).state;
+      expect(foe(r, 0).hp).toBe(200 - 4);
+      expect(foe(r, 1).hp).toBe(200 - 4);
+    });
+
+    it('an Inked Dagger still asks: its Faltering needs one enemy', () => {
+      const s = fight(['inked-knife']);
+      hero(s).statuses.fanned = 1;
+      expect(legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0')).toHaveLength(2);
+    });
+
     it('Fanned shows every enemy, as it hits them all', () => {
       const s = fight(['sleeve-knife']);
       hero(s).statuses.fanned = 1;

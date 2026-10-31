@@ -161,6 +161,16 @@ describe('every card plays', () => {
   });
 });
 
+describe('a status that is on or off has no number on a card (DECISIONS #492)', () => {
+  it('says "Gain Fanned", not "Gain 1 Fanned"', () => {
+    const all = Object.values(db.cards).map((c) => cardText(db, c));
+    for (const name of ['Fanned', 'Poised', 'Sturdy', 'Unmovable', 'Cruelty', 'Tracking', 'Unbound', 'Planner', 'Meld', 'Fortified'])
+      expect(all.filter((t) => new RegExp(`\\b\\d+ ${name}\\b`).test(t)), name).toEqual([]);
+    expect(cardText(db, db.cards['wide-arc']!)).toContain('Gain Fanned.');
+    expect(cardText(db, db.cards['into-the-shadows']!)).toContain('Gain Poised.');
+  });
+});
+
 describe('card text says where a condition stops (DECISIONS #485)', () => {
   const CLAUSE = /^(If|When|Whenever|The first|The next|At the (start|end)|For the next|This turn, whenever|Next turn:)\b[^.]*: /;
   it('no plain sentence follows a condition or a trigger, on any card, upgraded or not', () => {
