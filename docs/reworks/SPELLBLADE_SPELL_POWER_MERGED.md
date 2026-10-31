@@ -5,6 +5,8 @@ ChatGPT's draft (`SPELLBLADE_SPELL_POWER_CHATGPT.md`) was the main version; this
 hand from `docs/14_CARD_COSTING.md`; no sim was run.
 
 **As built, changed from the list below:**
+- **DECISIONS #487:** every Shatter also adds the Spell Power you hold, spending none. **Echoing Blade** no longer replays the Blade: it strikes 1 more time per 2 Spell Power, and extra copies add nothing.
+- **DECISIONS #486:** a Shatter is now 10 + 10 x k (20, 30, 40... 110 at 100), and every Barrier of hers grows with Spell Power: +1 per 3 held (Unbreakable Crown +1 per 2, without its old "+8 at 10"), or +1 per 3 spent this turn on Last Ember, Sigil of Glass and Afterglow. This replaces the Shatter numbers and the Barrier prices below; the bases are unchanged, so each card is 3.2 points dearer (1.6 for the three that read spending).
 - **DECISIONS #484:** Lava Bomb is 20 + 10 per point. Spell Power added to Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand, with their other numbers trimmed (prices in the decision). Basics and commons are never X.
 - **Fracture only adds up (DECISIONS #483):** where the list says "remove 10 and Shatter for 18", read: Fracture is never removed, and every 10 is a Shatter dealing 15 + 3 x k (18, 21, 24... 45 at 100). The rate is 1.6 a point, not 1.3. **Rupture Script** applies 20 (upgrade 26). **Carry the Fault** applies 4 plus half the most-cracked other enemy's Fracture (alone, 8).
 - **Obsidian Ward replaces Hairline Hex** (1: 7 Barrier, gain 1 Spell Power; upgrade 10 Barrier), so no basic has Fracture. **Pale Ward** is 8 Barrier and 1 (upgrade 11).

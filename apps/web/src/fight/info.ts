@@ -119,7 +119,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 18 at 10, 21 at 20, 3 more each time, 45 at 100. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 30 at 20, 10 more each time, 110 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -361,7 +361,7 @@ export const STATUS_INFO: Record<
     name: 'Blade Echo',
     glyph: '⧉',
     tone: 'good',
-    text: 'Your Obsidian Blade is played once more for each stack.',
+    text: 'Your Obsidian Blade strikes 1 more time per 2 Spell Power. More stacks add nothing.',
   },
   bladebane: {
     name: 'Bladebane',
@@ -674,7 +674,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 3 more each time: 18 at 10, 21 at 20, 45 at 100, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 10 more each time: 20 at 10, 30 at 20, 110 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',

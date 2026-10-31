@@ -63,7 +63,7 @@ export type StatusId =
   // --- the Regent's pieces (Obsidia, the spellblade; DECISIONS #369)
   | 'reflect' // Barrier that soaks an attack sends the soaked damage back to the attacker; it ends when your next turn starts
   | 'bladesweep' // your blade cards (tag BLADE_TAG: the Obsidian Blade) strike every enemy instead of one
-  | 'bladeecho' // your blade-tagged attacks are played once more per stack
+  | 'bladeecho' // your blade-tagged attacks count their growing hits twice; more stacks add nothing (DECISIONS #487)
   | 'bladebane' // takes double damage from blade-tagged attacks (a card puts it on for the rest of the turn)
   | 'freeplay' // the first this-many cards you play each turn cost no Mana
   | 'orbit' // for every ORBIT_STEP Mana you spend, gain this much Mana
@@ -235,11 +235,11 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k: 18 at 10, 21 at 20, 45 at 100
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 30 at 20, 110 at 100, with none held
  * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_BASE = 15;
-export const SHATTER_STEP = 3;
+export const SHATTER_BASE = 10;
+export const SHATTER_STEP = 10;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;

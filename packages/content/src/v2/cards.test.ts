@@ -180,14 +180,14 @@ describe('card text says where a condition stops (DECISIONS #485)', () => {
 
   it('what one trigger does is one sentence', () => {
     expect(cardText(db, db.cards['fault-reader']!)).toBe(
-      'The first time each turn you Shatter an enemy: Draw 1 card and gain 2 Barrier.',
+      'The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier.',
     );
     expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(/^When you or an ally is attacked: Cancel that hit and deal 12 damage to the attacker\.$/);
   });
 
   it('what always happens comes first, then the keywords, then the condition', () => {
     expect(cardText(db, db.cards['last-ember']!)).toBe(
-      'Gain 2 Spell Power. Consume. If you had no Spell Power: Gain 5 Barrier.',
+      'Gain 2 Spell Power. Consume. If you had no Spell Power: Gain 5 (+1 per 3 Spell Power spent this turn) Barrier.',
     );
   });
 });

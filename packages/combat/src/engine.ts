@@ -1632,7 +1632,11 @@ function execOp(r: Run, a: Act, op: Op): void {
         return;
       }
       let hits = op.hits ?? 1;
-      if (op.scale?.into === 'hits') hits += scaleValue(r, a, op.scale, a.target);
+      if (op.scale?.into === 'hits') {
+        // (Blade Echo: the Blade's growing hits count twice, however many Echoes you have: DECISIONS #487)
+        const echoed = a.card?.tags?.includes(BLADE_TAG) && stacks(a.actor, 'bladeecho') > 0;
+        hits += scaleValue(r, a, op.scale, a.target) * (echoed ? 2 : 1);
+      }
       const knife = a.card?.tags?.includes(EDGE_TAG) === true;
       const edge = knife ? stacks(a.actor, 'edge') : 0;
       // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
@@ -3124,9 +3128,9 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   return inst;
 }
 
-/** What the k-th Shatter on a unit deals: 18, 21, 24... (DECISIONS #483), plus what its owner's Deepening adds. */
+/** What the k-th Shatter on a unit deals: 20, 30, 40... (DECISIONS #486), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
-  return SHATTER_BASE + SHATTER_STEP * k + (sd.shatterBonus ?? 0);
+  return SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
 }
 
 /** Fracture on a unit, and a Shatter from the side that applied it for every SHATTER_AT it crosses. Fracture is never removed. A Shatter is
@@ -4907,8 +4911,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   finishCard(r, sd, inst, cd, target, cd.x ? x : paid);
 }
 
-/** The plays a card gets on top of its own, without asking for choices: Blade Echo (the blade once more per stack) and Replay
- * (Transfigure: that many more times). They run once the card's own play, and any choice it asked for, are done. */
+/** The plays a card gets on top of its own, without asking for choices: Replay (Transfigure: that many more times). They run once the
+ * card's own play, and any choice it asked for, are done. */
 function extraPlays(
   r: Run,
   hero: Unit,
@@ -4917,9 +4921,6 @@ function extraPlays(
   target: Unit | null,
   x: number,
 ): void {
-  if (cd.kind === 'attack' && cd.tags?.includes(BLADE_TAG))
-    for (let k = 0; k < stacks(hero, 'bladeecho') && !r.s.winner && !r.s.pending; k++)
-      runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
   for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++)
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
 }
@@ -5111,7 +5112,7 @@ export function applyAction(db: CombatDb, state: CombatState, action: Action): S
   return { state: s, events: r.ev };
 }
 
-/** What one damage effect of a card would deal right now: the lowest and highest over the units it could hit, and its printed amount. */
+/** What one damage effect of a card would deal right now: the lowest and highest over the units it could hit, and its printed amount. A scaled Barrier on yourself comes the same way (`barrier`). */
 export interface LiveDamage {
   lo: number;
   hi: number;
@@ -5127,9 +5128,15 @@ export interface LiveDamage {
   how?: string[];
   /** (the Spellblade) a discharged Ember's damage on the first hit only, of an attack that hits more than once (lo-hi: by the choice) */
   first?: { lo: number; hi: number };
-  /** hits that grow: how many it will really make, and what they come to (`lo` and `hi` are one hit), with any Blade Echo counted */
+  /** hits that grow: how many it will really make, Blade Echo's included, and what they come to (`lo` and `hi` are one hit) */
   hits?: number;
   total?: { lo: number; hi: number };
+  /** Blade Echo is in `hits`, so the card can say why they are more than its rule gives */
+  echoed?: boolean;
+  /** the total is against each enemy it strikes */
+  each?: boolean;
+  /** (DECISIONS #486) this is the Barrier a scaled Barrier effect would give you, not damage */
+  barrier?: boolean;
 }
 
 // (a breakdown is sent whenever there is something to break down: with a range of numbers, it is the highest's)
@@ -5137,7 +5144,7 @@ export interface LiveDamage {
  * The damage a card in the active side's hand would deal right now, for showing on the card (as Slay the Spire does): Might, stances,
  * Faltering, Sharpen, Edge, Honed and Vigor counted, and the target's Exposed and Wrath too when a target is given. With no target, a card
  * that picks one, or one that hits every enemy, gives the range over the enemies it could hit. Keyed by the effect's index in the
- * card's effects (top-level damage effects that hit enemies only). Reads the state and never changes it.
+ * card's effects (top-level damage effects that hit enemies, and scaled Barrier on yourself, only). Reads the state and never changes it.
  */
 export function previewCardDamage(
   db: CombatDb,
@@ -5164,10 +5171,23 @@ export function previewCardDamage(
         hand: sd.hand.filter((c) => c.id !== instId),
         mana: sd.mana - fromMana,
         reserves: sd.reserves - (paid - fromMana),
+        stars: Math.max(
+          0,
+          sd.stars -
+            (def.starX ? sd.stars : def.starHalf ? Math.floor(sd.stars / 2) : (def.starCost ?? 0)),
+        ),
       },
     },
   };
   const r: Run = { db, s: after, ev: [], depth: 0 };
+  // (its own suit is shown before its effects, as playing it does: a card that counts your suits counts itself)
+  if (def.kind !== 'snare' && traitOf(r, sd.id)?.suits) {
+    const shown = sd.suitsTurn ?? [];
+    const suit = suitOf(def);
+    after.sides[sd.id].suitsTurn = SUITS.filter(
+      (x) => shown.includes(x) || suit === 'wild' || suit === x,
+    );
+  }
   const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
   const taunters = foes.filter((u) => u.taunt);
   const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
@@ -5260,6 +5280,18 @@ export function previewCardDamage(
       pull = Math.max(0, op.amount);
       return;
     }
+    // (a Barrier that reads the board shows its real number, worked out as the engine's 'barrier' op does: DECISIONS #486)
+    // (no ally picked yet: a number that reads it is not known, so the printed text stays)
+    const unaimed = friendly && !mine && 'scale' in op && op.scale?.of === 'target';
+    if (op.op === 'barrier' && op.to === 'self' && op.scale && !earlier && !unaimed) {
+      let n = amountOf(r, a, op.amount, op.scale, hero) + resonanceOf(a);
+      if (n > 0 && stacks(hero, 'unmovable') > 0 && !sd.barrierDoubled) n *= 2;
+      if (n > 0) n += stacks(hero, 'bracing');
+      if (n > 0 && stacks(hero, 'meld') > 0) n *= 2;
+      if (n > 0 && (stacks(hero, 'brittle') > 0 || stacks(hero, 'stunned') > 0))
+        n = Math.floor(n * 0.75);
+      out.set(i, { lo: n, hi: n, printed: op.amount, calc: true, barrier: true });
+    }
     if (op.op !== 'damage') {
       // an effect before the damage (Barrier gained, cards consumed, Exposed applied...) can change it: no guess, the printed text
       earlier = true;
@@ -5269,7 +5301,9 @@ export function previewCardDamage(
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
     if (friendly && !mine && op.scale?.of === 'target') return;
     // (Fanned: a Dagger aimed at one enemy hits them all, as the engine does)
-    const to = knife && op.to === 'target' && stacks(hero, 'fanned') > 0 ? 'allFoes' : op.to;
+    // (Blade Sweep, likewise: the Blade's total is against each enemy)
+    const swept = op.to === 'target' && def.tags?.includes(BLADE_TAG) && stacks(hero, 'bladesweep') > 0;
+    const to = swept || (knife && op.to === 'target' && stacks(hero, 'fanned') > 0) ? 'allFoes' : op.to;
     const pool =
       to === 'target'
         ? chosen
@@ -5295,6 +5329,12 @@ export function previewCardDamage(
     const [eLo, eHi] = many ? [0, 0] : [emberLo, emberHi];
     const firstBonus = many && emberHi > 0 ? { lo: emberLo, hi: emberHi } : null;
     emberLo = emberHi = 0;
+    // (hits that grow: how many, and what they come to against each enemy it could hit)
+    const growing = op.scale?.into === 'hits';
+    const echoed = growing && def.tags?.includes(BLADE_TAG) && stacks(hero, 'bladeecho') > 0;
+    const grown = growing ? scaleValue(r, a, op.scale!, chosen) : 0;
+    const hitCount = (op.hits ?? 1) + grown * (echoed ? 2 : 1);
+    const sums: number[] = [];
     const one = (t: Unit | null, ember = 0): number => {
       // (with no target chosen yet, a card that reads "the target's Bleed" reads each enemy's in turn)
       const at = { ...a, target: op.to === 'target' && !chosen ? t : a.target };
@@ -5347,6 +5387,9 @@ export function previewCardDamage(
           : t && stacks(t, 'ghostly') > 0 && n > 1
             ? 1
             : n;
+      // (Shielded only stops as many hits as it has stacks; the rest land in full)
+      const stopped = t ? Math.min(stacks(t, 'shielded'), hitCount) : 0;
+      sums.push(stopped > 0 && !(at.extracted > 0) ? n * (hitCount - stopped) : dealt * hitCount);
       if (dealt >= bestDealt) {
         bestDealt = dealt;
         bestHow = how;
@@ -5370,14 +5413,14 @@ export function previewCardDamage(
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',
       ...(riposted ? { riposte: true } : {}),
-      ...(op.scale?.into === 'hits'
-        ? (() => {
-            const hits = (op.hits ?? 1) + scaleValue(r, a, op.scale, chosen);
-            // (Blade Echo plays it again, without the Primed the first play spent)
-            const echo = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
-            const sum = (n: number): number => n * hits + Math.max(0, n - v) * hits * echo;
-            return { hits, total: { lo: sum(lo), hi: sum(hi) } };
-          })()
+      ...(growing
+        ? {
+            hits: hitCount,
+            total: { lo: Math.min(...sums), hi: Math.max(...sums) },
+            // (Blade Echo's growing hits count twice; only said when it added some)
+            ...(echoed && grown > 0 ? { echoed: true } : {}),
+            ...(to === 'allFoes' ? { each: true } : {}),
+          }
         : {}),
     });
     riposted = false;

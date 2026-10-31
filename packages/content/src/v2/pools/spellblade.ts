@@ -4,7 +4,7 @@
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
 //   Swords   - hold it: a Sword's hits grow with it and swinging spends nothing
 //   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
-//   Fracture - marks on an enemy that only add up: every 10 Shatters it, harder each time (18, 21... 45 at 100), found in rewards, not the starter
+//   Fracture - marks on an enemy that only add up: every 10 Shatters it, harder each time (20, 30... 110 at 100, + the Spell Power held), found in rewards, not the starter
 // No caps on hits or spending, by Robert's call: Might and Primed are how a Sword deck pays off.
 
 import type { CardDef, Op, Scale, Sel } from '@sr/combat';
@@ -64,6 +64,10 @@ const fracture = (amount: number, to: Sel = 'target', marked = false): Op => ({
 });
 const shatterUp = (amount: number): Op => ({ op: 'shatterUp', amount });
 const strip = (amount: number): Op => ({ op: 'strip', to: 'target', amount });
+/** Barrier that grows with the Spell Power you hold, on every Barrier of hers (DECISIONS #486) */
+const ward = (amount: number, step = 3): Op => scaled(barrier(amount), { by: 'stars', step });
+/** the same on a card that asks you to be empty: what you have spent this turn takes the place of what you hold */
+const wardSpent = (amount: number): Op => scaled(barrier(amount), { by: 'starsSpentTurn', step: 3 });
 
 export const SPELLBLADE: CardDef[] = [
   // --- starter ---
@@ -78,10 +82,10 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [gain(3)] },
   }),
   // (her early Barrier, and the way into Spell Power: DECISIONS #483)
-  a('basic', 'obsidian-ward', 'Obsidian Ward', 'skill', 1, 'none', [barrier(7), gain(1)], {
+  a('basic', 'obsidian-ward', 'Obsidian Ward', 'skill', 1, 'none', [ward(7), gain(1)], {
     tags: [SPELL, GENERATOR],
     ...GROWN,
-    up: { effects: [barrier(10), gain(1)] },
+    up: { effects: [ward(10), gain(1)] },
   }),
   // (a card of her starting deck, always in the opening hand: DECISIONS #436)
   a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [swing(5, 1, 2)], {
@@ -120,10 +124,10 @@ export const SPELLBLADE: CardDef[] = [
     ...GROWN,
     up: { effects: [gain(1), starsNext(4)] },
   }),
-  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [barrier(8), gain(1)], {
+  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [ward(8), gain(1)], {
     tags: [SPELL, GENERATOR],
     ...GROWN,
-    up: { effects: [barrier(11), gain(1)] },
+    up: { effects: [ward(11), gain(1)] },
   }),
   a(
     'common',
@@ -153,10 +157,10 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [when('stars', { atMost: 0 }, [stars(2)]), gain(4)] },
     },
   ),
-  a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [barrier(12), gain(3)], {
+  a('uncommon', 'bladewall', 'Bladewall', 'skill', 2, 'none', [ward(12), gain(3)], {
     tags: [SPELL, GENERATOR],
     ...GROWN,
-    up: { effects: [barrier(15), gain(3)] },
+    up: { effects: [ward(15), gain(3)] },
   }),
   a(
     'uncommon',
@@ -175,11 +179,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'none',
-    [gain(4), barrier(4), grows(2)],
+    [ward(4), gain(4), grows(2)],
     {
       tags: [GENERATOR],
       ...GROWN,
-      up: { effects: [gain(4), barrier(7), grows(2)] },
+      up: { effects: [ward(7), gain(4), grows(2)] },
     },
   ),
   a(
@@ -203,12 +207,12 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     0,
     'none',
-    [when('stars', { atMost: 0 }, [barrier(5)]), gain(2)],
+    [when('stars', { atMost: 0 }, [wardSpent(5)]), gain(2)],
     {
       exhaust: true,
       tags: [GENERATOR],
       ...GROWN,
-      up: { effects: [when('stars', { atMost: 0 }, [barrier(8)]), gain(2)] },
+      up: { effects: [when('stars', { atMost: 0 }, [wardSpent(8)]), gain(2)] },
     },
   ),
   a('rare', 'big-bang', 'Magma Surge', 'skill', 0, 'none', [gain(3)], {
@@ -263,9 +267,9 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SWORD],
     up: { effects: [swing(3, 1, 3)] },
   }),
-  a('common', 'guarded-cut', 'Guarded Cut', 'attack', 1, 'foe', [swing(2, 1, 4), barrier(4)], {
+  a('common', 'guarded-cut', 'Guarded Cut', 'attack', 1, 'foe', [swing(2, 1, 4), ward(4)], {
     tags: [SWORD],
-    up: { effects: [swing(2, 1, 4), barrier(6)] },
+    up: { effects: [swing(2, 1, 4), ward(6)] },
   }),
   a(
     'uncommon',
@@ -274,10 +278,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [swing(2, 1, 3), stars(1), when('stars', { atLeast: 9 }, [barrier(4)])],
+    [swing(2, 1, 3), stars(1), when('stars', { atLeast: 9 }, [ward(4)])],
     {
       tags: [SWORD],
-      up: { effects: [swing(3, 1, 3), stars(1), when('stars', { atLeast: 9 }, [barrier(4)])] },
+      up: { effects: [swing(3, 1, 3), stars(1), when('stars', { atLeast: 9 }, [ward(4)])] },
     },
   ),
   a(
@@ -392,8 +396,8 @@ export const SPELLBLADE: CardDef[] = [
   ),
 
   // --- what makes the Blade hit harder ---
-  a('common', 'feint', 'Feint', 'skill', 1, 'none', [barrier(5), status('vigor', 1)], {
-    up: { effects: [barrier(7), status('vigor', 1)] },
+  a('common', 'feint', 'Feint', 'skill', 1, 'none', [ward(5), status('vigor', 1)], {
+    up: { effects: [ward(7), status('vigor', 1)] },
   }),
   a(
     'uncommon',
@@ -420,7 +424,7 @@ export const SPELLBLADE: CardDef[] = [
   ),
   a('rare', 'soul-of-steel', 'Soul of Steel', 'skill', 2, 'none', [status('might', 2)], {
     exhaust: true,
-    up: { effects: [status('might', 2), barrier(5)] },
+    up: { effects: [ward(5), status('might', 2)] },
   }),
   a('rare', 'whispering-edge', 'Whispering Edge', 'power', 1, 'none', [status('keen', 1)], {
     up: { innate: true },
@@ -434,8 +438,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [barrier(4)], { tag: SWORD, once: true })],
-    { up: { effects: [on('play', [barrier(6)], { tag: SWORD, once: true })] } },
+    [on('play', [ward(4)], { tag: SWORD, once: true })],
+    { up: { effects: [on('play', [ward(6)], { tag: SWORD, once: true })] } },
   ),
   a(
     'uncommon',
@@ -473,7 +477,7 @@ export const SPELLBLADE: CardDef[] = [
     [on('turnEnd', [when('starsSpentTurn', { atMost: 0 }, [stars(2)])])],
     {
       up: {
-        effects: [on('turnEnd', [when('starsSpentTurn', { atMost: 0 }, [stars(2), barrier(2)])])],
+        effects: [on('turnEnd', [when('starsSpentTurn', { atMost: 0 }, [stars(2), ward(2)])])],
       },
     },
   ),
@@ -630,9 +634,9 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [fracture(7), when('shatteredNow', { atLeast: 1 }, [draw(1)])] },
     },
   ),
-  a('common', 'glass-prison', 'Glass Prison', 'skill', 1, 'foe', [barrier(5), fracture(3)], {
+  a('common', 'glass-prison', 'Glass Prison', 'skill', 1, 'foe', [ward(5), fracture(3)], {
     tags: [SPELL],
-    up: { effects: [barrier(7), fracture(3)] },
+    up: { effects: [ward(7), fracture(3)] },
   }),
   a('common', 'crack-the-shell', 'Crack the Shell', 'skill', 1, 'foe', [strip(6), fracture(5)], {
     tags: [SPELL],
@@ -678,10 +682,10 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'foe',
-    [fracture(10), when('shatteredNow', { atLeast: 1 }, [barrier(6)])],
+    [fracture(10), when('shatteredNow', { atLeast: 1 }, [ward(6)])],
     {
       tags: [SPELL],
-      up: { effects: [fracture(13), when('shatteredNow', { atLeast: 1 }, [barrier(6)])] },
+      up: { effects: [fracture(13), when('shatteredNow', { atLeast: 1 }, [ward(6)])] },
     },
   ),
   a(
@@ -763,8 +767,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('shatter', [barrier(4)], { once: true })],
-    { up: { effects: [on('shatter', [barrier(6)], { once: true })] } },
+    [on('shatter', [ward(4)], { once: true })],
+    { up: { effects: [on('shatter', [ward(6)], { once: true })] } },
   ),
   a(
     'uncommon',
@@ -773,8 +777,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('shatter', [draw(1), barrier(2)], { once: true })],
-    { up: { effects: [on('shatter', [draw(1), barrier(4)], { once: true })] } },
+    [on('shatter', [draw(1), ward(2)], { once: true })],
+    { up: { effects: [on('shatter', [draw(1), ward(4)], { once: true })] } },
   ),
   a(
     'uncommon',
@@ -802,8 +806,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('grown', [stars(2), barrier(2)], { once: true })],
-    { up: { effects: [on('grown', [stars(3), barrier(2)], { once: true })] } },
+    [on('grown', [stars(2), ward(2)], { once: true })],
+    { up: { effects: [on('grown', [stars(3), ward(2)], { once: true })] } },
   ),
   a(
     'uncommon',
@@ -812,8 +816,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('arcana', [barrier(5)], { once: true, only: { by: 'spent', atLeast: 3 } })],
-    { up: { effects: [on('arcana', [barrier(7)], { once: true, only: { by: 'spent', atLeast: 3 } })] } },
+    [on('arcana', [wardSpent(5)], { once: true, only: { by: 'spent', atLeast: 3 } })],
+    { up: { effects: [on('arcana', [wardSpent(7)], { once: true, only: { by: 'spent', atLeast: 3 } })] } },
   ),
   a(
     'uncommon',
@@ -822,10 +826,10 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('arcana', [draw(1), barrier(3)], { once: true, only: { by: 'stars', atMost: 0 } })],
+    [on('arcana', [draw(1), wardSpent(3)], { once: true, only: { by: 'stars', atMost: 0 } })],
     {
       up: {
-        effects: [on('arcana', [draw(1), barrier(5)], { once: true, only: { by: 'stars', atMost: 0 } })],
+        effects: [on('arcana', [draw(1), wardSpent(5)], { once: true, only: { by: 'stars', atMost: 0 } })],
       },
     },
   ),
@@ -849,9 +853,9 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [scaled(barrier(8), SPENT(3))] },
   }),
-  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(8), barrierNext(6), stars(1)], {
+  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [ward(8), barrierNext(6), stars(1)], {
     tags: [SPELL],
-    up: { effects: [barrier(11), barrierNext(6), stars(1)] },
+    up: { effects: [ward(11), barrierNext(6), stars(1)] },
   }),
   a('uncommon', 'glass-wall', 'Glass Wall', 'skill', 2, 'none', [scaled(barrier(12), SPENT(3))], {
     starHalf: true,
@@ -866,11 +870,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(7), status('shielded', 1)],
+    [ward(7), status('shielded', 1)],
     {
       starCost: 2,
       tags: [SPELL],
-      up: { effects: [barrier(10), status('shielded', 1)] },
+      up: { effects: [ward(10), status('shielded', 1)] },
     },
   ),
   a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(3), discard(1), stars(1)], {
@@ -919,11 +923,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'none',
-    [barrier(18), status('steadfast', 1), when('stars', { atLeast: 10 }, [barrier(8)])],
+    [ward(18, 2), status('steadfast', 1)],
     {
       exhaust: true,
       tags: [SPELL],
-      up: { effects: [barrier(24), status('steadfast', 1), when('stars', { atLeast: 10 }, [barrier(8)])] },
+      up: { effects: [ward(24, 2), status('steadfast', 1)] },
     },
   ),
   a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [seekTop(2), draw(2), stars(1)], {

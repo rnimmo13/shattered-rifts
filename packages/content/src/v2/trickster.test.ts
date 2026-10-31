@@ -8,6 +8,7 @@ import {
   clone,
   createCombat,
   legalActions,
+  previewCardDamage,
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, canonicalCard } from './index';
@@ -101,5 +102,15 @@ describe('the Trickster costing pass', () => {
 
   it('a hand-written upgrade replaces the automatic one (Veil Strike+ deals 9 and applies 1 Exposed)', () => {
     expect(cardText(db, db.cards['veil-strike+']!)).toBe('Deal 9 damage. Apply 1 Exposed.');
+  });
+});
+
+describe('a card that counts your suits counts itself in hand (DECISIONS #486)', () => {
+  it('Queen of Hearts shows what it gives', () => {
+    const s = fight(['queen-of-hearts']);
+    const id = s.sides.a.hand[0]!.id;
+    const shown = previewCardDamage(db, s, id).get(0)!;
+    const after = applyAction(db, s, { type: 'play', card: id }).state;
+    expect(shown.lo).toBe(after.sides.a.units.find((u) => u.kind === 'hero')!.barrier);
   });
 });

@@ -1212,7 +1212,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         if (o.status === 'bladesweep' && o.to === 'self')
           return 'Your Obsidian Blade strikes ALL enemies for the rest of the fight.';
         if (o.status === 'bladeecho' && o.to === 'self')
-          return `Your Obsidian Blade is played ${n === 1 ? 'one more time' : `${n} more times`} for the rest of the fight.`;
+          return 'Your Obsidian Blade strikes 1 more time per 2 Spell Power for the rest of the fight. Extra copies add nothing.';
         if (o.status === 'bladebane' && o.to === 'target')
           return 'Your Obsidian Blade deals double damage to the target this turn.';
         if (o.status === 'freeplay' && o.to === 'self')
@@ -1901,26 +1901,26 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
 }
 
 /**
- * The text of one damage effect with what it would deal right now marked in it ([[live:up:9]], [[live:down:3-5]]...): the printed number
+ * The text of one damage effect (or scaled Barrier, with no `o`) with what it would do right now marked in it ([[live:up:9]], [[live:down:3-5]]...): the printed number
  * is replaced, or, when the printed amount is a formula (per Barrier...), the live number follows the sentence in brackets.
  */
-function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveDamage): string {
+function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }> | null, l: LiveDamage): string {
   const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
-  if (l.calc) {
+  if (l.calc || !o) {
     const dot = text.indexOf('.');
     const mark = `[[live:calc:${num}]]`;
     return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
   }
-  // (hits that grow: what it will really do, "Deal 5 damage 7 times (35 total)", DECISIONS #483)
+  // (hits that grow: the rule stays, and what it comes to now follows it, "Deal 5 damage, 1 more time per 2 Spell Power (7 hits, 35 total)", DECISIONS #487)
   if (l.hits !== undefined) {
     const per = `[[live:${l.lo === l.printed && l.lo === l.hi ? 'same' : l.lo >= l.printed ? 'up' : 'calc'}:${num}]]`;
-    const tail = text.includes(' to ALL') ? ' to ALL enemies' : '';
-    const end = text.search(/\.( |$)/);
-    const rest = end < 0 ? '' : text.slice(end + 1);
-    const times = l.hits === 1 ? ' once' : ` ${l.hits} times`;
+    const said = text.replace(/^Deal \d+/, `Deal ${per}`);
+    const end = said.search(/\.( |$)/);
     const sum = l.total ?? { lo: l.lo * l.hits, hi: l.hi * l.hits };
     const all = sum.lo === sum.hi ? String(sum.lo) : `${sum.lo}-${sum.hi}`;
-    return `Deal ${per} damage${times}${tail} ([[live:calc:${all}]] total${tail ? ' each' : ''}).${rest}`;
+    const hits = `${l.hits} ${l.hits === 1 ? 'hit' : 'hits'}${l.echoed ? ' with Blade Echo' : ''}`;
+    const mark = ` (${hits}, [[live:calc:${all}]] total${l.each ? ' each' : ''})`;
+    return end < 0 ? `${said}${mark}` : `${said.slice(0, end)}${mark}${said.slice(end)}`;
   }
   // (green when it can only be more than printed, red when only less, gold for a range that goes both ways)
   const dir =
@@ -1960,8 +1960,8 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
 }
 
 /**
- * A card's rules text. With `live` (what previewCardDamage says it would deal now, by effect index), each damage number is marked
- * with what it would really deal, for the card in your hand.
+ * A card's rules text. With `live` (what previewCardDamage says it would do now, by effect index), each damage number and scaled Barrier
+ * is marked with what it would really come to, for the card in your hand.
  */
 export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
   if (c.text) return c.text;
@@ -2078,9 +2078,10 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       const kills = !isTrap && o.op === 'damage' ? o.onKill : undefined;
       const plain = kills ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>) : o;
       if (kills) late.push(`If this is fatal: ${joinClause(kills.map((x) => opText(db, x, who)))}`);
-      const l = o.op === 'damage' ? live?.get(i) : undefined;
-      const line =
-        l && plain.op === 'damage' ? liveDamageText(opText(db, plain, who), plain, l) : opText(db, plain, who);
+      const l = o.op === 'damage' || o.op === 'barrier' ? live?.get(i) : undefined;
+      const line = l
+        ? liveDamageText(opText(db, plain, who), plain.op === 'damage' ? plain : null, l)
+        : opText(db, plain, who);
       parts.push(
         oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line,
       );

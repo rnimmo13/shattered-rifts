@@ -446,10 +446,13 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **Grows N** | **N x 3.6** | The growth rate (N x 1.2) on 3 a point. |
 | **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. |
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
-| **Fracture** | **1.6** a point, **2.1** to ALL | It only adds up, and the k-th Shatter deals 15 + 3k: about 22 per 10 at a mid-fight count, less the delay and Barrier (DECISIONS #483). |
+| **Fracture** | **3.1** a point, **4.1** to ALL | It only adds up, and the k-th Shatter deals 10 + 10k + the Spell Power held: 43 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 50 at 20, 90 at 30, 200 at 50, 650 at 100. |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
 | **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. |
 | **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
+| **Blade Echo** | **+1 hit per 2 SP on the Blade** | 4 more hits at 8 SP, so 20 a Blade (24 upgraded). Copies do not stack (DECISIONS #487). |
+| **Barrier +1 per 3 SP** | **+3.2** | 2.67 Barrier at the priced 8 SP, x1.2 (DECISIONS #486). +1 per 2 (Unbreakable Crown) is +4.8. |
+| **Barrier +1 per 3 SP spent this turn** | **+1.6** | About 4 spent by then, on the cards that need her empty or spending. |
 
 ### The Spellblade: Imbue and Discharge (DECISIONS #417)
 

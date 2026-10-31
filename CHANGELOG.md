@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Spellblade:** every Shatter adds your Spell Power to its damage. Echoing Blade now gives the Obsidian Blade 1 more hit per 2 Spell Power instead of replaying it, and extra copies add nothing.
+- **Spellblade:** Shatters now deal 20 at 10 Fracture and 10 more each time, 110 at 100. All her Barrier cards grow with Spell Power, and a card in hand shows the Barrier it would really give.
 - **Clearer card text everywhere:** what a trigger or condition does is now one sentence, and what always happens comes before it, so it is clear where a condition stops.
 - **More Spell Power for the Spellblade:** Lava Bomb deals 10 per point spent, her biggest payoff, and Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power.
 - **Fracture keeps adding up:** it never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100. The Spellblade's starting Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. Pale Ward gains 8 Barrier. Swords show their real hits and total on the card.

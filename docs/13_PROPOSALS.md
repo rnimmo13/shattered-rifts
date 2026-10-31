@@ -167,6 +167,8 @@ Mastery counts only runs from the day it ships; earlier runs are not counted (Ro
 The list: `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. Kept for later: Spellstrike (Inscribe a Skill into the blade) and Weave as her
 trait (`docs/reworks/SPELLBLADE_SPELL_POWER.md` and this log's #480).
 
+**Open (Robert, 2026-10-31, playing it first):** Fracture may feel cut off from Swords and Spells. Shatters now read Spell Power (DECISIONS #487), but no Fracture card gains any. If it still feels separate after play, the next idea to try: each Shatter gains 1 Spell Power, so cracking an enemy feeds her Swords, her spells and her Barrier.
+
 ## Kept for later
 
 - **Daily Rift:** everyone plays the same seed with the same Riftwalker and two or three twists, one attempt a day, on
