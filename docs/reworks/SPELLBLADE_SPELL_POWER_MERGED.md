@@ -5,6 +5,9 @@ ChatGPT's draft (`SPELLBLADE_SPELL_POWER_CHATGPT.md`) was the main version; this
 hand from `docs/14_CARD_COSTING.md`; no sim was run.
 
 **As built, changed from the list below:**
+- **DECISIONS #484:** Lava Bomb is 20 + 10 per point. Spell Power added to Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand, with their other numbers trimmed (prices in the decision). Basics and commons are never X.
+- **Fracture only adds up (DECISIONS #483):** where the list says "remove 10 and Shatter for 18", read: Fracture is never removed, and every 10 is a Shatter dealing 15 + 3 x k (18, 21, 24... 45 at 100). The rate is 1.6 a point, not 1.3. **Rupture Script** applies 20 (upgrade 26). **Carry the Fault** applies 4 plus half the most-cracked other enemy's Fracture (alone, 8).
+- **Obsidian Ward replaces Hairline Hex** (1: 7 Barrier, gain 1 Spell Power; upgrade 10 Barrier), so no basic has Fracture. **Pale Ward** is 8 Barrier and 1 (upgrade 11).
 - **No choice of amount (DECISIONS #482):** wherever the list says "Spend any amount", the card now spends a fixed share. **X (all):** Molten Ruin, Arcane Flood, Falling Shards, Lava Bomb, Cataclysm, Thousand Shards. **X/2 (half, rounded down):** Cinderfall, Spellbolt, Arcane Pulse, Glass Burst, Controlled Release, Dying Ember, Obsidian Drill, Stress the Glass, Arcane Barrier, Glass Wall. **Mirror Glass** costs a fixed 2 for 7 Barrier and 1 Shielded. The rates and damage per point are unchanged.
 - **Banked Embers** gains 3 SP next turn and 1 Mana next turn (upgrade: 4 SP), not 4 SP and a Hold: a test holds that every class has a Mana trick, and this was hers. 7.65 + 4 = 11.65 / 11.2.
 - **Crowned Edge** gives 2 Primed until the end of the turn, for any attack, not "2 more a hit on your next Sword": the same number with no new status.

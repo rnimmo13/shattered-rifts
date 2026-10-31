@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **More Spell Power for the Spellblade:** Lava Bomb deals 10 per point spent, her biggest payoff, and Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power.
+- **Fracture keeps adding up:** it never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100. The Spellblade's starting Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. Pale Ward gains 8 Barrier. Swords show their real hits and total on the card.
 - **Spell Power costs are on the card:** no more slider. X spends all you hold and X/2 half, rounded down. Mirror Glass costs 2. The counter beside your Mana shows only its number.
 - **Cleaner Spellblade cards:** Sword and Spell are now a badge in the top right with a tooltip, like the Shaman's elements, and the Spell Power orb shows only its number or X.
 - **The Spellblade is rebuilt:** Arcana and Sharpen are now one reserve, Spell Power. Swords strike more times the more you hold and spend none; Spells spend it, as much as you choose; and a third way to win, Fracture, cracks an enemy until it Shatters at 10. 88 reward cards, some that grow as you play them, and no caps. Saved Spellblade runs are moved to the new cards and told so.

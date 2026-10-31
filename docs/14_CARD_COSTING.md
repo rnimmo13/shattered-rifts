@@ -446,7 +446,7 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **Grows N** | **N x 3.6** | The growth rate (N x 1.2) on 3 a point. |
 | **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. |
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
-| **Fracture** | **1.3** a point, **1.7** to ALL | 10 becomes 18, less the delay, leftovers and Barrier. |
+| **Fracture** | **1.6** a point, **2.1** to ALL | It only adds up, and the k-th Shatter deals 15 + 3k: about 22 per 10 at a mid-fight count, less the delay and Barrier (DECISIONS #483). |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
 | **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. |
 | **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |

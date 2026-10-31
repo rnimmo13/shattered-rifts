@@ -2,6 +2,8 @@
 
 **39 new pictures in 5 sheets**, for the merged card list in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. The 50 cards the rework keeps hold their art (the eight whose jobs changed most were checked by eye and still suit: `whetstone`, `final-shatter`, `collapsing-star`, `hammer-and-anvil`, `glass-armory`, `pillar-of-light`, `gravity-well`, `orion`). Upgraded cards share their base card's art.
 
+**One picture still needed:** Obsidian Ward (`obsidian-ward`, a basic: 7 Barrier, gain 1 Spell Power) replaced Hairline Hex and borrows Guarded Cut's picture. Draw: the Spellblade behind a raised wall of black glass with violet light rising through it into her sword, calm and defensive, no cracks. Save as `assets-src/cards/individual/obsidian-ward.png`, 4:3 landscape.
+
 **Done and wired in (2026-10-31):** all 39 pictures are in `apps/web/public/art/cards/` and the manifest. The four sheets have no outer navy border, so `pack-cards.ps1` cannot read their gutters; they were cut by their measured gutters into `assets-src/cards/individual/<card id>.png`, which that script exports as overrides. ChatGPT's record of the prompts is in `assets-src/cards/spellblade-spell-power/`.
 
 ## How to use this

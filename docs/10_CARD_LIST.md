@@ -699,19 +699,19 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Kindle Fury, St
 
 A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords strike again and again, spend it on a huge spell, or crack her enemies with Fracture until they Shatter.
 
-Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Power, Hairline Hex, Obsidian Blade
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Power, Obsidian Ward, Obsidian Blade
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Cinderfall | 1+X/2◆ | attack | basic | Spell. Deal 4 (+4 per Spell Power spent) damage. |
 | Gather Power | 1 | skill | basic | Gain 2 Spell Power. |
-| Hairline Hex | 1 | skill | basic | Spell. Apply 5 Fracture. Gain 2 Barrier. |
+| Obsidian Ward | 1 | skill | basic | Spell. Gain 7 Barrier. Gain 1 Spell Power. |
 | Forged in Fury | 1 | attack | common | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. |
 | Deepening Enchantment | 1 | skill | common | Gain 2 Spell Power. Grows 1: this card gains 1 more each time you play it. |
 | Faint Ember | 1 | skill | common | Gain 2 Spell Power. Draw 1 card. |
 | Ember Cache | 1 | skill | common | Gain 1 Spell Power. Next turn, gain 3 Spell Power. |
-| Pale Ward | 1 | skill | common | Spell. Gain 6 Barrier. Gain 1 Spell Power. |
-| Emberstrike | 1 | attack | common | Sword. Deal 2 damage 2 times, 1 more time per 3 Spell Power. If you played a Spell earlier this turn: Gain 2 Spell Power. |
+| Pale Ward | 1 | skill | common | Spell. Gain 8 Barrier. Gain 1 Spell Power. |
+| Emberstrike | 1 | attack | common | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you played a Spell earlier this turn: Gain 1 Spell Power. |
 | Empty Crucible | 1 | skill | common | If you had no Spell Power: Gain 2 Spell Power. Gain 3 Spell Power. |
 | Obsidian Flurry | 2 | attack | common | Sword. Deal 3 damage 3 times, 1 more time per 2 Spell Power. |
 | Obsidian Lance | 1 | attack | common | Sword. Deal 6 (+1 per 2 Spell Power) damage. |
@@ -723,7 +723,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Feint | 1 | skill | common | Gain 5 Barrier. Gain 1 Primed. |
 | Spellbolt | 1+X/2◆ | attack | common | Spell. Deal 8 (+4 per Spell Power spent) damage. |
 | Arcane Pulse | 1+X/2◆ | attack | common | Spell. Deal 7 (+3 per Spell Power spent) damage to ALL enemies. |
-| Tempered Bolt | 1 | attack | common | Spell. If you had no Spell Power: Gain 2 Spell Power. Deal 7 damage. |
+| Tempered Bolt | 1 | attack | common | Spell. If you had no Spell Power: Gain 2 Spell Power. Deal 6 damage. Gain 1 Spell Power. |
 | Glassbrand | 1 | attack | common | Spell. Deal 5 damage. Apply 3 Fracture. |
 | Faultline Hex | 1 | skill | common | Spell. Apply 7 Fracture. |
 | Spreading Fault | 1 | skill | common | Spell. Apply 5 Fracture to ALL enemies. |
@@ -732,15 +732,15 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Crack the Shell | 1 | skill | common | Spell. Remove up to 6 Barrier from the target. Apply 5 Fracture. |
 | Hairline Crack | 0 | skill | common | Spell. Apply 5 Fracture. Consume. |
 | Arcane Barrier | 1+X/2◆ | skill | common | Spell. Gain 5 (+3 per Spell Power spent) Barrier. |
-| Glass Veil | 2 | skill | common | Spell. Gain 10 Barrier. Next turn, gain 6 Barrier. |
+| Glass Veil | 2 | skill | common | Spell. Gain 8 Barrier. Next turn, gain 6 Barrier. Gain 1 Spell Power. |
 | Bladewall | 2 | skill | uncommon | Spell. Gain 12 Barrier. Gain 3 Spell Power. |
 | Banked Embers | 1 | skill | uncommon | Next turn, gain 3 Spell Power. Next turn, gain 1 extra Mana. |
 | Growing Crucible | 2 | skill | uncommon | Gain 4 Spell Power. Gain 4 Barrier. Grows 2: this card gains 2 more each time you play it. |
 | Measured Recharge | 1 | skill | uncommon | Gain 3 Spell Power. If you spent 3 or more Spell Power earlier this turn: Draw 1 card. |
 | Last Ember | 0 | skill | uncommon | If you had no Spell Power: Gain 5 Barrier. Gain 2 Spell Power. Consume. |
-| Shard Strike | 1 | attack | uncommon | Sword. Deal 2 damage 2 times, 1 more time per 3 Spell Power. If you have 9 or more Spell Power: Gain 4 Barrier. |
+| Shard Strike | 1 | attack | uncommon | Sword. If you have 9 or more Spell Power: Gain 4 Barrier. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. |
 | Tyrant Strike | 2 | attack | uncommon | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If you spent Spell Power earlier this turn: Apply 2 Exposed. |
-| Crosscut | 1 | attack | uncommon | Sword. Deal 2 damage 2 times, 1 more time per 4 Spell Power. If your previous card was a Spell: Deal 2 damage 2 times. |
+| Crosscut | 1 | attack | uncommon | Sword. Deal 2 damage 2 times, 1 more time per 4 Spell Power. If your previous card was a Spell: Deal 2 damage 2 times. Gain 1 Spell Power. |
 | Fault Piercer | 2 | attack | uncommon | Sword. If the target has Fracture: Apply 3 Fracture. Deal 4 damage 3 times, 1 more time per 3 Spell Power. |
 | Call the Blade | 1 | skill | uncommon | Return a random Sword from your discard pile to your hand. Gain 2 Spell Power. |
 | Crowned Edge | 1 | skill | uncommon | Gain 2 Primed until the end of your turn. Draw 1 card. |
@@ -758,7 +758,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Fault Memory | 1 | skill | uncommon | Spell. Apply 5 Fracture. Grows 2: this card gains 2 more each time you play it. |
 | Final Shatter | 2 | skill | uncommon | Spell. Apply 10 Fracture. If this caused a Shatter: Gain 6 Barrier. |
 | Collapsing Vein | 2 | skill | uncommon | Spell. Apply 7 Fracture to ALL enemies. Apply 5 Fracture. |
-| Carry the Fault | 1 | skill | uncommon | Spell. Move all Fracture from your most-cracked other enemy to the target, then apply 4. With only one enemy, apply 8. |
+| Carry the Fault | 1 | skill | uncommon | Spell. Apply 4 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 8. |
 | Deep Fault | 2 | skill | uncommon | Spell. Your Shatters deal 6 more for the rest of the fight. Apply 4 Fracture. Consume. |
 | Deepening Fault | 2 | aura | uncommon | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight. |
 | Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
@@ -771,8 +771,8 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Afterglow | 1 | aura | uncommon | The first time each turn you spend your last Spell Power: Draw 1 card. Gain 3 Barrier. |
 | Glass Wall | 2+X/2◆ | skill | uncommon | Spell. Gain 12 (+3 per Spell Power spent) Barrier. Hold. |
 | Mirror Glass | 1+2◆ | skill | uncommon | Spell. Gain 7 Barrier. Gain 1 Shielded. |
-| Ash Wind | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. |
-| Recenter | 1 | skill | uncommon | Draw 2 cards. If you played a Sword earlier this turn: If you played a Spell earlier this turn: Gain 2 Spell Power. |
+| Ash Wind | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. Gain 1 Spell Power. |
+| Recenter | 1 | skill | uncommon | Draw 2 cards. Gain 1 Spell Power. If you played a Sword earlier this turn: If you played a Spell earlier this turn: Gain 2 Spell Power. |
 | Magma Surge | 0 | skill | rare | Gain 3 Spell Power. Consume. |
 | The Forgemaster | 2 | skill | rare | Gain 6 Spell Power. Choose a generator in your hand: it yields 2 more for the rest of the fight. Consume. |
 | Hammer and Anvil | 2 | attack | rare | Sword. Deal 3 damage 4 times, 1 more time per 2 Spell Power. Gain Spell Power equal to the different enemies your Swords hit this turn. |
@@ -785,15 +785,15 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Cleaving Edge | 1 | aura | rare | Gain 2 Spell Power. Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
 | Echoing Blade | 2 | aura | rare | Your Obsidian Blade is played one more time for the rest of the fight. |
 | Dying Ember | 2+X/2◆ | attack | rare | Spell. Deal 8 (+4 per Spell Power spent) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
-| Lava Bomb | 3+X◆ | attack | rare | Spell. Deal 20 (+8 per Spell Power spent) damage. Consume. |
+| Lava Bomb | 3+X◆ | attack | rare | Spell. Deal 20 (+10 per Spell Power spent) damage. Consume. |
 | Cataclysm | 3+X◆ | attack | rare | Spell. Deal 18 (+6 per Spell Power spent) damage to ALL enemies. Consume. |
-| Rupture Script | 2 | skill | rare | Spell. Apply 22 Fracture. Consume. |
-| Breaking Point | 2 | skill | rare | Spell. Deal your Shatter damage (this is not a Shatter). Apply 8 Fracture. Consume. |
+| Rupture Script | 2 | skill | rare | Spell. Apply 20 Fracture. Consume. |
+| Breaking Point | 2 | skill | rare | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 8 Fracture. Consume. |
 | Crucible Heart | 1 | aura | rare | The first time each turn a card of yours grows: That card grows 2 more. |
 | Measured Ruin | 2 | aura | rare | Gain 2 Measured Ruin for the rest of the fight. |
 | Obsidian Aegis | 1 | aura | rare | At the end of your turn: Gain Barrier equal to half your Spell Power. |
 | Unbreakable Crown | 2 | skill | rare | Spell. Gain 18 Barrier. Gain 1 Steadfast. If you have 10 or more Spell Power: Gain 8 Barrier. Consume. |
-| Fated Hand | 1 | skill | rare | Choose 2 cards in your draw pile and put them on top. Draw 2 cards. Consume. |
+| Fated Hand | 1 | skill | rare | Choose 2 cards in your draw pile and put them on top. Draw 2 cards. Gain 1 Spell Power. Consume. |
 
 Tokens (made by other cards):
 

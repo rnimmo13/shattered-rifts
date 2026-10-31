@@ -752,7 +752,8 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'clean-extraction': 'bottomless-sleeves',
   'lie-in-wait': 'bottomless-sleeves',
   'recycled-steel': 'nimble-routine',
-  // spellblade: Spell Power and Fracture (DECISIONS #480)
+  // spellblade: Spell Power and Fracture (DECISIONS #480; Hairline Hex, #483)
+  'hairline-hex': 'obsidian-ward',
   spoils: 'faint-glow',
   'crowned-fist': 'forged-in-fury',
   'tyrants-stomp': 'devastate',

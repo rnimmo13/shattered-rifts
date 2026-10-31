@@ -8,7 +8,8 @@ import {
   EDGE_TAG,
   BLADE_TAG,
   SHATTER_AT,
-  SHATTER_DAMAGE,
+  SHATTER_BASE,
+  SHATTER_STEP,
   SPELL_TAG,
   SWORD_TAG,
   ORBIT_STEP,
@@ -1253,8 +1254,6 @@ function metricValue(
       return sd.swordFoes?.length ?? 0;
     case 'shatteredNow':
       return a.shattered;
-    case 'shatterDamage':
-      return shatterDamage(sd);
     case 'runes':
       return sd.runes.length;
     case 'powers':
@@ -1824,6 +1823,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       // every debuff on the target is lessened (a Doom that is lowered kills later, or not at all); `all` dispels them for good
       for (const t of resolve(r, a, op.to))
         for (const st of DEBUFFS) {
+          // (Fracture only ever adds up, DECISIONS #483)
+          if (st === 'fracture') continue;
           const have = stacks(t, st);
           if (have <= 0) continue;
           const off = op.all
@@ -2440,10 +2441,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       side.shatterBonus = (side.shatterBonus ?? 0) + op.amount;
       return;
     case 'shatterBlast': {
-      const dmg = shatterDamage(side);
-      // (like an Aura's damage: Barrier, Ghostly and Shielded answer it; Might, Exposed and Thorns do not)
-      for (const t of resolve(r, a, op.to))
+      for (const t of resolve(r, a, op.to)) {
+        const dmg = shatterDamage(side, Math.floor(stacks(t, 'fracture') / SHATTER_AT) + 1);
         applyDamage(r, a.actor, t, modifiedDamage(dmg, a.actor, t, false), 'attack');
+      }
       reap(r);
       return;
     }
@@ -2453,21 +2454,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       const others = r.s.sides[dest.side].units.filter(
         (u) => u.hp > 0 && u.id !== dest.id && u.kind !== 'ally',
       );
-      if (others.length === 0) {
-        fractureUnit(r, a, side, dest, op.alone);
-      } else {
-        const from = [...others].sort((x, y) => stacks(y, 'fracture') - stacks(x, 'fracture'))[0] as Unit;
-        const moved = stacks(from, 'fracture');
-        if (moved > 0) {
-          addStatus(r, from, 'fracture', -moved);
-          // (a move is not a new application: Steadfast and the Auras that answer one do not hear of it)
-          dest.statuses.fracture = stacks(dest, 'fracture') + moved;
-          r.ev.push({ type: 'status', target: dest.id, status: 'fracture', amount: moved, total: stacks(dest, 'fracture') });
-          a.shattered += resolveShatters(r, side, dest);
-        }
-        if (dest.hp > 0 && !r.s.winner) fractureUnit(r, a, side, dest, op.amount);
-      }
-      if (a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
+      const most = Math.max(0, ...others.map((u) => stacks(u, 'fracture')));
+      const n = others.length === 0 ? op.alone : op.amount + Math.floor(most / 2);
+      if (fractureUnit(r, a, side, dest, n) && a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
       return;
     }
     case 'empower': {
@@ -2739,6 +2728,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!from) return;
       const rest = r.s.sides[from.side].units.filter((u) => u.hp > 0 && u.id !== from.id);
       for (const st of DEBUFFS) {
+          // (Fracture only ever adds up, DECISIONS #483)
+          if (st === 'fracture') continue;
         const n = stacks(from, st);
         if (n > 0) for (const u of rest) addStatus(r, u, st, n);
       }
@@ -3133,33 +3124,28 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   return inst;
 }
 
-/** What the side's Shatters deal now (DECISIONS #480). */
-function shatterDamage(sd: SideState): number {
-  return SHATTER_DAMAGE + (sd.shatterBonus ?? 0);
+/** What the k-th Shatter on a unit deals: 18, 21, 24... (DECISIONS #483), plus what its owner's Deepening adds. */
+function shatterDamage(sd: SideState, k: number): number {
+  return SHATTER_BASE + SHATTER_STEP * k + (sd.shatterBonus ?? 0);
 }
 
-/** Every SHATTER_AT Fracture on the unit becomes a Shatter from the side that applied it; what is left over stays. A Shatter is not an
- * attack (no Might, Primed, Exposed or Thorns); Barrier stops it; it never applies Fracture or sets off another Shatter. */
-function resolveShatters(r: Run, owner: SideState, t: Unit): number {
+/** Fracture on a unit, and a Shatter from the side that applied it for every SHATTER_AT it crosses. Fracture is never removed. A Shatter is
+ * not an attack (no Might, Primed, Exposed or Thorns); Barrier stops it; it never applies Fracture or sets off another Shatter.
+ * Steadfast stops the application. */
+function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boolean {
+  if (n <= 0 || t.hp <= 0) return false;
+  const before = stacks(t, 'fracture');
+  if (!addStatus(r, t, 'fracture', n)) return false;
   const hero = heroOf(owner) ?? null;
-  let n = 0;
-  while (stacks(t, 'fracture') >= SHATTER_AT && t.hp > 0 && !r.s.winner) {
-    addStatus(r, t, 'fracture', -SHATTER_AT);
-    // (like an Aura's damage: Barrier, Ghostly and Shielded answer it)
-    const dmg = shatterDamage(owner);
+  const reached = Math.floor((before + n) / SHATTER_AT);
+  for (let k = Math.floor(before / SHATTER_AT) + 1; k <= reached && t.hp > 0 && !r.s.winner; k++) {
+    const dmg = shatterDamage(owner, k);
+    // (like an Aura's damage: Barrier, Ghostly and Shielded answer it, and the difficulty's damage percent applies)
     applyDamage(r, hero, t, hero ? modifiedDamage(dmg, hero, t, false) : dmg, 'attack');
-    n++;
+    a.shattered++;
     reap(r);
     if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
   }
-  return n;
-}
-
-/** Fracture on a unit, then any Shatter it sets off. Steadfast stops the application, not a later Shatter. */
-function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boolean {
-  if (n <= 0 || t.hp <= 0) return false;
-  if (!addStatus(r, t, 'fracture', n)) return false;
-  a.shattered += resolveShatters(r, owner, t);
   return true;
 }
 
@@ -5141,6 +5127,9 @@ export interface LiveDamage {
   how?: string[];
   /** (the Spellblade) a discharged Ember's damage on the first hit only, of an attack that hits more than once (lo-hi: by the choice) */
   first?: { lo: number; hi: number };
+  /** hits that grow: how many it will really make, and what they come to (`lo` and `hi` are one hit), with any Blade Echo counted */
+  hits?: number;
+  total?: { lo: number; hi: number };
 }
 
 // (a breakdown is sent whenever there is something to break down: with a range of numbers, it is the highest's)
@@ -5381,6 +5370,15 @@ export function previewCardDamage(
       // (Sharpen is not a formula to the player: the sharpened total simply replaces the printed number)
       calc: !!op.scale && op.scale.into !== 'hits' && op.scale.by !== 'bonus',
       ...(riposted ? { riposte: true } : {}),
+      ...(op.scale?.into === 'hits'
+        ? (() => {
+            const hits = (op.hits ?? 1) + scaleValue(r, a, op.scale, chosen);
+            // (Blade Echo plays it again, without the Primed the first play spent)
+            const echo = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
+            const sum = (n: number): number => n * hits + Math.max(0, n - v) * hits * echo;
+            return { hits, total: { lo: sum(lo), hi: sum(hi) } };
+          })()
+        : {}),
     });
     riposted = false;
   });

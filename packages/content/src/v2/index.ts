@@ -318,7 +318,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('defend', 3),
       'meteor-jab',
       'gather-light',
-      'hairline-hex',
+      'obsidian-ward',
       'starforged-blade',
     ],
     blurb:
@@ -328,7 +328,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
       'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) strikes once more for every 2 Spell Power. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that never fades. At 10 it Shatters for 18, and what is left over stays. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, up to 45 at 100 and beyond. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {

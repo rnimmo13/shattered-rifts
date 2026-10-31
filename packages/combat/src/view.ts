@@ -567,7 +567,6 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   swordFoes: { per: 'different enemy your Swords hit this turn', equal: 'the different enemies your Swords hit this turn' },
   fracture: { per: 'Fracture', equal: 'its Fracture' },
   shatteredNow: { per: 'Shatter caused', equal: 'the Shatters caused' },
-  shatterDamage: { per: 'point of your Shatter damage', equal: 'your Shatter damage' },
   runes: { per: 'totem', equal: 'the number of your totems' },
   powers: { per: 'Aura you have', equal: 'the number of your Auras' },
   mana: { per: 'Mana left', equal: 'your Mana' },
@@ -1307,9 +1306,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'shatterUp':
       return `Your Shatters deal ${o.amount} more for the rest of the fight.`;
     case 'shatterBlast':
-      return `Deal your Shatter damage${who[o.to]} (this is not a Shatter).`;
+      return `Deal the damage of this enemy's next Shatter (this is not a Shatter).`;
     case 'carryFracture':
-      return `Move all Fracture from your most-cracked other enemy to the target, then apply ${o.amount}. With only one enemy, apply ${o.alone}.`;
+      return `Apply ${o.amount} Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply ${o.alone}.`;
     case 'empower':
       return `Choose a generator in your hand: it yields ${o.amount} more for the rest of the fight.`;
     case 'summon':
@@ -1881,6 +1880,17 @@ function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }>, l: LiveD
     const dot = text.indexOf('.');
     const mark = `[[live:calc:${num}]]`;
     return dot < 0 ? `${text} (${mark})` : `${text.slice(0, dot)} (${mark})${text.slice(dot)}`;
+  }
+  // (hits that grow: what it will really do, "Deal 5 damage 7 times (35 total)", DECISIONS #483)
+  if (l.hits !== undefined) {
+    const per = `[[live:${l.lo === l.printed && l.lo === l.hi ? 'same' : l.lo >= l.printed ? 'up' : 'calc'}:${num}]]`;
+    const tail = text.includes(' to ALL') ? ' to ALL enemies' : '';
+    const end = text.search(/\.( |$)/);
+    const rest = end < 0 ? '' : text.slice(end + 1);
+    const times = l.hits === 1 ? ' once' : ` ${l.hits} times`;
+    const sum = l.total ?? { lo: l.lo * l.hits, hi: l.hi * l.hits };
+    const all = sum.lo === sum.hi ? String(sum.lo) : `${sum.lo}-${sum.hi}`;
+    return `Deal ${per} damage${times}${tail} ([[live:calc:${all}]] total${tail ? ' each' : ''}).${rest}`;
   }
   // (green when it can only be more than printed, red when only less, gold for a range that goes both ways)
   const dir =

@@ -99,7 +99,7 @@ export type StatusId =
   // (the Monk's Martial Forms, DECISIONS #419)
   | 'mastery' // Mastery: at most MASTERY_MAX, kept between turns; earned by completing a form's technique, spent by techniques
   // (the Spellblade's Spell Power rework, DECISIONS #480)
-  | 'fracture' // cracks on a unit, never decaying: at SHATTER_AT, SHATTER_AT of them are removed and the side that put them there Shatters it
+  | 'fracture' // cracks on a unit that only ever add up: every SHATTER_AT, the side that put them there Shatters it, harder each time
   | 'keen' // your Sword hits deal this much more (permanent)
   | 'ruinous'; // your first Spell Attack each turn that spends Spell Power deals this much more per point spent
 export const STATUS_IDS: readonly StatusId[] = [
@@ -235,9 +235,11 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at this much Fracture, for this much damage (plus what its owner's Deepening adds). */
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k: 18 at 10, 21 at 20, 45 at 100
+ * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_DAMAGE = 18;
+export const SHATTER_BASE = 15;
+export const SHATTER_STEP = 3;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;
@@ -424,8 +426,7 @@ export type Metric =
   | 'spellsPlayed' // Spells played this turn (before this one)
   | 'swordFoes' // different enemies your Swords have hit this turn
   | 'fracture' // (about a unit) the Fracture on it
-  | 'shatteredNow' // Shatters the card being played has caused so far
-  | 'shatterDamage'; // what your Shatters deal now
+  | 'shatteredNow'; // Shatters the card being played has caused so far
 export interface Scale {
   by: Metric;
   mult?: number;
@@ -554,7 +555,7 @@ export type Op =
   | { op: 'shatterUp'; amount: number }
   /** deal your current Shatter damage (it is not a Shatter: no Fracture is removed and nothing that answers a Shatter hears of it) */
   | { op: 'shatterBlast'; to: Sel }
-  /** every point of Fracture on your most-cracked other enemy moves to the target, then apply `amount` there; with one enemy, apply `alone` */
+  /** apply to the target half the Fracture on your most-cracked other enemy (it keeps its own) plus `amount`; with one enemy, apply `alone` */
   | { op: 'carryFracture'; amount: number; alone: number }
   /** choose a card in your hand with this tag: it yields this much more for the rest of the fight (The Forgemaster) */
   | { op: 'empower'; amount: number; tag: string }

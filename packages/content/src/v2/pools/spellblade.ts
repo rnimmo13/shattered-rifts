@@ -4,7 +4,7 @@
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
 //   Swords   - hold it: a Sword's hits grow with it and swinging spends nothing
 //   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
-//   Fracture - build marks on an enemy and cross 10 for a Shatter, which Deepening makes hit harder
+//   Fracture - marks on an enemy that only add up: every 10 Shatters it, harder each time (18, 21... 45 at 100), found in rewards, not the starter
 // No caps on hits or spending, by Robert's call: Might and Primed are how a Sword deck pays off.
 
 import type { CardDef, Op, Scale, Sel } from '@sr/combat';
@@ -77,9 +77,11 @@ export const SPELLBLADE: CardDef[] = [
     ...GROWN,
     up: { effects: [gain(3)] },
   }),
-  a('basic', 'hairline-hex', 'Hairline Hex', 'skill', 1, 'foe', [fracture(5), barrier(2)], {
-    tags: [SPELL],
-    up: { effects: [fracture(6), barrier(3)] },
+  // (her early Barrier, and the way into Spell Power: DECISIONS #483)
+  a('basic', 'obsidian-ward', 'Obsidian Ward', 'skill', 1, 'none', [barrier(7), gain(1)], {
+    tags: [SPELL, GENERATOR],
+    ...GROWN,
+    up: { effects: [barrier(10), gain(1)] },
   }),
   // (a card of her starting deck, always in the opening hand: DECISIONS #436)
   a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [swing(5, 1, 2)], {
@@ -118,10 +120,10 @@ export const SPELLBLADE: CardDef[] = [
     ...GROWN,
     up: { effects: [gain(1), starsNext(4)] },
   }),
-  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [barrier(6), gain(1)], {
+  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [barrier(8), gain(1)], {
     tags: [SPELL, GENERATOR],
     ...GROWN,
-    up: { effects: [barrier(9), gain(1)] },
+    up: { effects: [barrier(11), gain(1)] },
   }),
   a(
     'common',
@@ -130,11 +132,11 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [swing(2, 2, 3), when('spellsPlayed', { atLeast: 1 }, [gain(2)])],
+    [swing(2, 1, 3), gain(1), when('spellsPlayed', { atLeast: 1 }, [stars(1)])],
     {
       tags: [SWORD, GENERATOR],
       ...GROWN,
-      up: { effects: [swing(3, 2, 3), when('spellsPlayed', { atLeast: 1 }, [gain(2)])] },
+      up: { effects: [swing(3, 1, 3), gain(1), when('spellsPlayed', { atLeast: 1 }, [stars(1)])] },
     },
   ),
   a(
@@ -272,10 +274,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [swing(2, 2, 3), when('stars', { atLeast: 9 }, [barrier(4)])],
+    [when('stars', { atLeast: 9 }, [barrier(4)]), swing(2, 1, 3), stars(1)],
     {
       tags: [SWORD],
-      up: { effects: [swing(3, 2, 3), when('stars', { atLeast: 9 }, [barrier(4)])] },
+      up: { effects: [when('stars', { atLeast: 9 }, [barrier(4)]), swing(3, 1, 3), stars(1)] },
     },
   ),
   a(
@@ -303,10 +305,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [swing(2, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(2, 'target', 2)])],
+    [swing(2, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(2, 'target', 2), stars(1)])],
     {
       tags: [SWORD],
-      up: { effects: [swing(3, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(3, 'target', 2)])] },
+      up: { effects: [swing(3, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(3, 'target', 2), stars(1)])] },
     },
   ),
   a(
@@ -494,10 +496,10 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [when('stars', { atMost: 0 }, [stars(2)]), dmg(7)],
+    [when('stars', { atMost: 0 }, [stars(2)]), dmg(6), stars(1)],
     {
       tags: [SPELL],
-      up: { effects: [when('stars', { atMost: 0 }, [stars(2)]), dmg(10)] },
+      up: { effects: [when('stars', { atMost: 0 }, [stars(2)]), dmg(9), stars(1)] },
     },
   ),
   a('common', 'glassbrand', 'Glassbrand', 'attack', 1, 'foe', [dmg(5), fracture(3)], {
@@ -592,11 +594,12 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [burst(11, 4, 'allFoes'), status('faltering', 2, 'allFoes')] },
     },
   ),
-  a('rare', 'comet', 'Lava Bomb', 'attack', 3, 'foe', [burst(20, 8)], {
+  // (her big payoff: the best rate per point in her pool, DECISIONS #484)
+  a('rare', 'comet', 'Lava Bomb', 'attack', 3, 'foe', [burst(20, 10)], {
     starX: true,
     exhaust: true,
     tags: [SPELL],
-    up: { effects: [burst(28, 8)] },
+    up: { effects: [burst(28, 10)] },
   }),
   a('rare', 'supernova', 'Cataclysm', 'attack', 3, 'none', [burst(18, 6, 'allFoes')], {
     starX: true,
@@ -712,10 +715,10 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [shatterUp(8), fracture(4)] },
   }),
-  a('rare', 'rupture-script', 'Rupture Script', 'skill', 2, 'foe', [fracture(22)], {
+  a('rare', 'rupture-script', 'Rupture Script', 'skill', 2, 'foe', [fracture(20)], {
     exhaust: true,
     tags: [SPELL],
-    up: { effects: [fracture(28)] },
+    up: { effects: [fracture(26)] },
   }),
   a(
     'rare',
@@ -846,9 +849,9 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [scaled(barrier(8), SPENT(3))] },
   }),
-  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(10), barrierNext(6)], {
+  a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [barrier(8), barrierNext(6), stars(1)], {
     tags: [SPELL],
-    up: { effects: [barrier(13), barrierNext(6)] },
+    up: { effects: [barrier(11), barrierNext(6), stars(1)] },
   }),
   a('uncommon', 'glass-wall', 'Glass Wall', 'skill', 2, 'none', [scaled(barrier(12), SPENT(3))], {
     starHalf: true,
@@ -870,8 +873,8 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [barrier(10), status('shielded', 1)] },
     },
   ),
-  a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(3), discard(1)], {
-    up: { effects: [draw(4), discard(1)] },
+  a('uncommon', 'stellar-wind', 'Ash Wind', 'skill', 1, 'none', [draw(3), discard(1), stars(1)], {
+    up: { effects: [draw(4), discard(1), stars(1)] },
   }),
   a(
     'uncommon',
@@ -882,6 +885,7 @@ export const SPELLBLADE: CardDef[] = [
     'none',
     [
       draw(2),
+      stars(1),
       when('swordsPlayed', { atLeast: 1 }, [
         when('spellsPlayed', { atLeast: 1 }, [stars(2)]),
       ]),
@@ -890,6 +894,7 @@ export const SPELLBLADE: CardDef[] = [
       up: {
         effects: [
           draw(3),
+          stars(1),
           when('swordsPlayed', { atLeast: 1 }, [
             when('spellsPlayed', { atLeast: 1 }, [stars(2)]),
           ]),
@@ -921,8 +926,8 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [barrier(24), status('steadfast', 1), when('stars', { atLeast: 10 }, [barrier(8)])] },
     },
   ),
-  a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [seekTop(2), draw(2)], {
+  a('rare', 'fated-hand', 'Fated Hand', 'skill', 1, 'none', [seekTop(2), draw(2), stars(1)], {
     exhaust: true,
-    up: { effects: [seekTop(2), draw(3)] },
+    up: { effects: [seekTop(2), draw(3), stars(1)] },
   }),
 ];
