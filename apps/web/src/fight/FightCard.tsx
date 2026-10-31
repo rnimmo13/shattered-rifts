@@ -256,7 +256,7 @@ export const FightCard = memo(
           )}
           {def.starCost || def.starX || def.starHalf ? (
             <div
-              className={`card__stars${def.starHalf ? ' card__stars--half' : ''}`}
+              className={`card__stars card__stars--power${def.starHalf ? ' card__stars--half' : ''}`}
               aria-label={
                 def.starX
                   ? 'Spends all your Spell Power'

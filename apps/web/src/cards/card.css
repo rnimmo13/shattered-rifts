@@ -85,9 +85,19 @@
   color: #2a0e02;
   text-shadow: 0 1px 0 rgb(255 255 255 / 0.5);
 }
+/* a Spell Power cost: a brighter face and heavier dark text, so it reads at hand size */
+.card__stars--power {
+  background: radial-gradient(circle at 35% 28%, #f6f8ff, #c3cadf 60%, #7d86a3 100%);
+}
+.card__stars--power span {
+  font-size: 50px;
+  color: #180701;
+  -webkit-text-stroke: 1.5px #180701;
+  text-shadow: none;
+}
 /* (three characters in the same circle: X/2) */
 .card__stars--half span {
-  font-size: 32px;
+  letter-spacing: -1px;
 }
 .card--neutral {
   --ink-a: #262a4a;
