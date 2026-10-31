@@ -13,6 +13,7 @@ const row = (c: (typeof cards)[number]): string => {
     ? 'X'
     : String(c.cost) +
       (c.starCost ? `+${c.starCost}◆` : '') +
+      (c.starX ? '+X◆' : '') +
       (c.statusCost
         ? ` + ${c.statusCost.x ? 'X' : c.statusCost.amount} ${c.statusCost.status[0]!.toUpperCase()}${c.statusCost.status.slice(1)}`
         : '');
