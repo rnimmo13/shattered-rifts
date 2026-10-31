@@ -920,6 +920,18 @@
   --el-lo: #0d4f80;
   color: #ffffff;
 }
+.card__element--sword {
+  --el-hi: #f4e6c0;
+  --el: #a8843c;
+  --el-lo: #2c2234;
+  color: #fff8e6;
+}
+.card__element--spell {
+  --el-hi: #ffd9f5;
+  --el: #d94fc4;
+  --el-lo: #4a0f5c;
+  color: #ffffff;
+}
 .card__element--storm {
   --el-hi: #f1e3ff;
   --el: #9b6bff;

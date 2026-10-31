@@ -79,7 +79,36 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
     const word = el[0]!.toUpperCase() + el.slice(1);
     text = text.replace(new RegExp(`(^|[.)]\\s)${word}\\.(?:\\s|$)`), '$1').trim();
   }
+  // (the Spellblade's kinds are badges there too, DECISIONS #481)
+  const kind = kindOf(c);
+  if (kind) {
+    const word = KIND_NAME[kind];
+    text = text.replace(new RegExp(`(^|[.)]\\s)${word}\\.(?:\\s|$)`), '$1').trim();
+  }
   return text.replace(KEYWORDS, '**$1**');
+}
+
+/** The Spellblade's Swords and Spells, as a badge like the Shaman's elements (DECISIONS #481): a blade, a four-point star. */
+type Kind = 'sword' | 'spell';
+const kindOf = (c: Pick<CardDef, 'tags'>): Kind | null =>
+  c.tags?.includes('sword') ? 'sword' : c.tags?.includes('spell') ? 'spell' : null;
+const KIND_NAME: Record<Kind, string> = { sword: 'Sword', spell: 'Spell' };
+const KIND_TEXT: Record<Kind, string> = {
+  sword:
+    'A sword strike. Most strike more times the more Spell Power you hold, and swinging spends none. Might and Primed add to every hit.',
+  spell:
+    'A magic card. Some Swords and Auras pay off when you play a Spell first: earlier this turn, or straight before them.',
+};
+function KindIcon({ kind }: { kind: Kind }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      {kind === 'sword' ? (
+        <path d="M20.5 2 21.9 3.4 21 8l-9.6 9.6 1.5 1.5-1.4 1.4-2.1-2.1-3.3 3.3-1.8.3-1-1 .3-1.8 3.3-3.3-2.1-2.1 1.4-1.4 1.5 1.5L16 3l4.5-1Z" />
+      ) : (
+        <path d="M12 2c.8 5.6 3.4 8.6 10 10-6.6 1.4-9.2 4.4-10 10-.8-5.6-3.4-8.6-10-10 6.6-1.4 9.2-4.4 10-10Z" />
+      )}
+    </svg>
+  );
 }
 
 /** The Shaman's elements as a coloured badge in the card's top right (DECISIONS #447): a flame, a snowflake, a bolt. */
@@ -151,6 +180,7 @@ export const FightCard = memo(
     // how far the cost now is from the printed one (a cost change from a card, a Boon or Unbound): shown on the gem itself
     const costDelta = def.x || cost === undefined ? 0 : cost - def.cost;
     const element = ELEMENTS.find((e) => def.tags?.includes(e));
+    const kind = kindOf(def);
     const rarity = def.rarity === 'basic' || !def.rarity ? 'common' : def.rarity;
     const rarityRaw = def.rarity ?? 'common';
     const upgraded = def.id.endsWith('+');
@@ -162,7 +192,7 @@ export const FightCard = memo(
     return (
       <div
         ref={ref}
-        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${element ? ' card--element' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${element || kind ? ' card--element' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >
@@ -209,6 +239,19 @@ export const FightCard = memo(
               })}
             >
               <ElementIcon el={element} />
+            </div>
+          )}
+          {kind && (
+            <div
+              className={`card__element card__element--${kind}`}
+              aria-label={KIND_NAME[kind]}
+              {...tipAttrs({
+                kicker: 'Spellblade',
+                title: KIND_NAME[kind],
+                text: KIND_TEXT[kind],
+              })}
+            >
+              <KindIcon kind={kind} />
             </div>
           )}
           {def.starCost || def.starX ? (
