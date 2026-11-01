@@ -6,9 +6,24 @@ import type { PotionDef } from '@sr/combat';
 import { tipAttrs } from '../ui/tip';
 import { RarityGem } from '../ui/RarityGem';
 import { liquidOf, potionTip } from './potionStyle';
+import { Picture } from '../ui/Picture';
+
+/** The painted bottle, at about the height of the drawn flask it falls back to. */
+export function PotionIcon(props: { potion: PotionDef; size?: number }) {
+  const size = (props.size ?? 40) * 1.25;
+  return (
+    <Picture
+      id={`potion-${props.potion.id}`}
+      className={`flask flask--${props.potion.rarity}`}
+      size={size}
+    >
+      <DrawnFlask {...props} />
+    </Picture>
+  );
+}
 
 /** A little glass flask, drawn in SVG: cork, neck, round belly, and a liquid that fills most of it. */
-export function PotionIcon(props: { potion: PotionDef; size?: number }) {
+function DrawnFlask(props: { potion: PotionDef; size?: number }) {
   const { potion: p } = props;
   const size = props.size ?? 40;
   const liquid = liquidOf(p);

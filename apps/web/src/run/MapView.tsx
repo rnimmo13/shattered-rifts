@@ -3,10 +3,12 @@
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type SVGProps } from 'react';
 import { HeroIcon } from '../ui/HeroIcon';
+import { Picture } from '../ui/Picture';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
 import { useTallMap } from './mapShape';
+import { iconUrl } from '../art/gameIcons';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -17,8 +19,17 @@ const KIND_LABEL: Record<NodeKind, string> = {
   warden: 'Warden',
 };
 
+/** The painted marker of a stop (the drawing is what shows if the picture fails to load). */
+function NodeIcon({ kind, pic }: { kind: NodeKind; pic?: string }) {
+  return (
+    <Picture id={pic ?? `map-${kind}`} className="mapnode__pic">
+      <DrawnIcon kind={kind} />
+    </Picture>
+  );
+}
+
 /** Simple geometric icons (no emoji): sword, skull, question mark, flame, coin, crown. */
-function NodeIcon({ kind }: { kind: NodeKind }) {
+function DrawnIcon({ kind }: { kind: NodeKind }) {
   const common = {
     fill: 'none',
     stroke: 'currentColor',
@@ -146,6 +157,12 @@ export function MapView(props: {
   );
 }
 
+/** A walked path is gold; the ones leading on from where you stand draw themselves in as the map opens. */
+const edgeProps = (done: boolean, fromHere: boolean): SVGProps<SVGPathElement> =>
+  done && fromHere
+    ? { pathLength: 1, className: 'map__edge is-walked is-fresh' }
+    : { className: done ? 'map__edge is-walked' : 'map__edge' };
+
 /** Floors left to right. */
 function WideMap(props: MapProps & { ink: MapInkState }) {
   const { map } = props;
@@ -184,7 +201,7 @@ function WideMap(props: MapProps & { ink: MapInkState }) {
               <path
                 key={`${n.id}>${t}`}
                 d={`M ${a.x} ${a.y} C ${a.x + COL_W * 0.45} ${a.y}, ${b.x - COL_W * 0.45} ${b.y}, ${b.x} ${b.y}`}
-                className={done ? 'map__edge is-walked' : 'map__edge'}
+                {...edgeProps(done, props.at === n.id)}
               />
             );
           }),
@@ -240,7 +257,17 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
       onClick={() => props.onEnter(n.id)}
       aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
     >
-      <NodeIcon kind={n.kind} />
+      <NodeIcon
+        kind={n.kind}
+        {...(done && !here
+          ? { pic: 'map-done' }
+          : n.crossed
+            ? { pic: 'map-crossed' }
+            : n.kind === 'warden' && n.ghost && n.ghostDeck
+              ? { pic: 'map-ghost' }
+              : {})}
+      />
+      {here && <img className="mapnode__here" src={iconUrl('map-here')} alt="" draggable={false} />}
       {n.crossed && (
         <span
           className="mapnode__crossed"
@@ -290,7 +317,7 @@ function TallMap(props: MapProps & { ink: MapInkState }) {
               <path
                 key={`${n.id}>${t}`}
                 d={`M ${a.x} ${a.y} C ${a.x} ${a.y + 50}, ${b.x} ${b.y - 50}, ${b.x} ${b.y}`}
-                className={done ? 'map__edge is-walked' : 'map__edge'}
+                {...edgeProps(done, props.at === n.id)}
               />
             );
           }),

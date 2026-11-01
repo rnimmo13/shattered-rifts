@@ -110,6 +110,22 @@ import { RankBadge } from '../pvp/RankBadge';
 import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
+import type { StatusId } from '@sr/combat';
+import { hitFx, potionFx, potionHitsAllFoes, statusFx, tickOf, type FxId } from './fxMoments';
+import {
+  bump as bumpFx,
+  centreOf,
+  clearFx,
+  dimScreen,
+  flyCard,
+  flyPicture,
+  playFx,
+  preloadFx,
+  shake,
+  swingIn,
+  type Spot,
+} from './fxPlayer';
+import { PAINTED, iconUrl } from '../art/gameIcons';
 
 export interface FightResult {
   winner: Winner;
@@ -473,6 +489,10 @@ export function FightView(props: {
   const floatId = useRef(0);
   const floatStack = useRef(new Map<string, { n: number; at: number }>());
   const refuseTimer = useRef<number | undefined>(undefined);
+  /** who is acting now: a status they put on someone else flies from them */
+  const actor = useRef<string | null>(null);
+  /** a potion is being used: what heals now is the potion */
+  const drinking = useRef(false);
 
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -503,6 +523,11 @@ export function FightView(props: {
   /** the cards just played, on show in the middle of the board (each leaves on its own clock) */
   const [flourishes, setFlourishes] = useState<Flourish[]>([]);
   const flourishId = useRef(0);
+  /** the same list, for the fight's events to read (they run outside rendering) */
+  const onShow = useRef<Flourish[]>([]);
+  useEffect(() => {
+    onShow.current = flourishes;
+  }, [flourishes]);
   const [result, setResult] = useState<FightResult | null>(null);
   const speed = DEFAULT_SPEED;
   const [sound, setSoundOn] = useState(getSound().on);
@@ -569,6 +594,48 @@ export function FightView(props: {
     window.setTimeout(() => setFloats((f) => f.filter((x) => x.id !== id)), 1450);
   }, []);
 
+  // --- painted effects ----------------------------------------------------------------------------
+  useEffect(() => {
+    preloadFx();
+    return clearFx;
+  }, []);
+  /** Where a unit stands on the page, and how big an effect on it is. */
+  const spotOf = useCallback((unitId: string): (Spot & { size: number }) | null => {
+    const sc = scene.current;
+    const home = sc?.fighters.home(unitId);
+    const box = host.current?.getBoundingClientRect();
+    if (!sc || !home || !box) return null;
+    const p = sc.stageToHost(home.x, home.y - home.h * 0.5);
+    return {
+      x: box.left + p.x,
+      y: box.top + p.y,
+      size: Math.max(110, Math.min(340, home.h * p.k * 0.95)),
+    };
+  }, []);
+  const fxOn = useCallback(
+    (id: FxId, unitId: string, o: { flip?: boolean; scale?: number } = {}) => {
+      const at = spotOf(unitId);
+      if (!at) return;
+      playFx(id, at, { size: at.size * (o.scale ?? 1), ...(o.flip ? { flip: true } : {}) });
+    },
+    [spotOf],
+  );
+  /** A status landing: its icon flies from whoever put it there (not to themselves), and its effect plays on arrival. */
+  const statusLands = useCallback(
+    (target: string, status: StatusId, amount: number, total: number) => {
+      const fx = statusFx(status, amount, total);
+      const land = (): void => {
+        if (fx) fxOn(fx, target);
+      };
+      const from = actor.current && actor.current !== target ? spotOf(actor.current) : null;
+      const to = spotOf(target);
+      if (from && to && PAINTED.has(status)) {
+        flyPicture(iconUrl(status), from, to, { dur: 200, arc: 40, onArrive: land });
+      } else land();
+    },
+    [fxOn, spotOf],
+  );
+
   const show = useCallback((s: CombatState) => setView(viewFor(db, s, mySide)), [db, mySide]);
 
   /** The fight as played so far: enough to watch it again or add it up. */
@@ -602,9 +669,14 @@ export function FightView(props: {
       const heroId = heroOf(mySide);
       const respec = () =>
         sc.fighters.sync(specsFrom(db, d, mySide, skinOf.current, modeRef.current));
+      const unitOf = (id: string) =>
+        d.sides.a.units.concat(d.sides.b.units).find((u) => u.id === id);
       switch (e.type) {
         case 'turnStart': {
           reduceEvent(db, d, e);
+          actor.current = null;
+          drinking.current = false;
+          if (e.side === mySide) document.querySelectorAll('.intent').forEach(swingIn);
           if (e.side !== mySide) {
             setBanner(pvp ? `${foeName}'s turn` : 'Enemy turn', 'bad');
             await wait(650);
@@ -619,19 +691,109 @@ export function FightView(props: {
         }
         case 'draw':
           reduceEvent(db, d, e);
-          if (e.side === mySide) play('deal');
+          if (e.side === mySide) {
+            play('deal');
+            const pile = document.querySelector('.pile--draw');
+            const from = centreOf(pile);
+            if (from) {
+              bumpFx(pile);
+              flyCard(from, handSpot(), { dur: 260, arc: 30, trail: 'trail-draw' });
+            }
+          }
           await wait(70);
           return;
         case 'discard':
           reduceEvent(db, d, e);
+          // (a card set aside by Defer is not going to the discard pile)
+          if (e.side === mySide && !e.defer) {
+            const pile = document.querySelector('.pile--discard');
+            const to = centreOf(pile);
+            if (to)
+              flyCard(handSpot(), to, {
+                dur: 280,
+                arc: 24,
+                trail: 'trail-discard',
+                onArrive: () => bumpFx(pile),
+              });
+          }
           await wait(16);
           return;
+        case 'exhaust': {
+          reduceEvent(db, d, e);
+          if (e.side !== mySide || e.routine) return;
+          // the card on show burns up where it stands, if it is the one going (see FlourishCard); otherwise it burns by the pile
+          const going = onShow.current.find((f) => f.card === e.card && f.mine && !f.burn);
+          if (going) {
+            setFlourishes((list) =>
+              list.map((f) => (f.id === going.id ? { ...f, burn: true } : f)),
+            );
+          } else {
+            const at = centreOf(document.querySelector('.pile--exhaust') ?? document.querySelector('.pile--discard'));
+            if (at) playFx('card-burn', at, { size: 160, dur: 560 });
+          }
+          return;
+        }
         case 'shuffle':
           reduceEvent(db, d, e);
+          if (e.side === mySide) {
+            const from = centreOf(document.querySelector('.pile--discard'));
+            const pile = document.querySelector('.pile--draw');
+            const to = centreOf(pile);
+            if (from && to)
+              for (let n = 0; n < 5; n++)
+                flyCard(from, to, {
+                  dur: 340,
+                  delay: n * 50,
+                  arc: 90,
+                  onArrive: () => bumpFx(pile, 1.1),
+                });
+          }
           await wait(150);
           return;
+        case 'mana':
+          // (the gem gives a little as it is paid from)
+          if (e.side === mySide && e.mana < d.sides[mySide].mana)
+            bumpFx(document.querySelector('.fight__mana'), 0.86);
+          reduceEvent(db, d, e);
+          return;
+        case 'potion': {
+          // the bottle flies from the belt (it is about to leave it) to where it is used
+          const p = db.potions[e.potion];
+          const fx = potionFx(p, e.target !== null);
+          // (one with no target is drunk, or breaks over all the enemies)
+          const foes = potionHitsAllFoes(p)
+            ? d.sides[e.side === 'a' ? 'b' : 'a'].units.filter((u) => u.hp > 0).map((u) => u.id)
+            : [];
+          const toIds = e.target ? [e.target] : foes.length > 0 ? foes : [heroOf(e.side)];
+          const from =
+            e.side === mySide
+              ? centreOf(document.querySelectorAll('.fight__belt > *')[e.index])
+              : spotOf(heroOf(e.side));
+          const spots = toIds.map(spotOf).filter((s): s is NonNullable<typeof s> => s !== null);
+          const to: Spot | null = spots.length
+            ? {
+                x: spots.reduce((n, s) => n + s.x, 0) / spots.length,
+                y: spots.reduce((n, s) => n + s.y, 0) / spots.length,
+              }
+            : null;
+          reduceEvent(db, d, e);
+          actor.current = heroOf(e.side);
+          drinking.current = true;
+          const land = (): void => toIds.forEach((id) => fxOn(fx, id));
+          if (from && to)
+            flyPicture(iconUrl(`potion-${e.potion}`), from, to, {
+              dur: 300,
+              arc: 80,
+              size: 54,
+              onArrive: land,
+            });
+          else land();
+          return;
+        }
         case 'play': {
           reduceEvent(db, d, e);
+          actor.current = heroOf(e.side);
+          drinking.current = false;
           const def = db.cards[e.def];
           // (in PvE only your side plays cards; in PvP the opponent's cards show too, except a Trap they set)
           if (def) {
@@ -639,8 +801,14 @@ export function FightView(props: {
             if (e.side === mySide || def.kind !== 'snare') {
               // the card stays on show a good while (it flies to the discard pile when it leaves: see FlourishCard)
               const id = flourishId.current++;
-              setFlourishes((list) => [...list.slice(-3), { id, def, mine: e.side === mySide }]);
+              setFlourishes((list) => [
+                ...list.slice(-3),
+                { id, def, mine: e.side === mySide, card: e.card },
+              ]);
             }
+            // a card aimed at someone lifts out of the hand and flies to them
+            const to = e.target !== null && e.side === mySide ? spotOf(e.target) : null;
+            if (to) flyCard(handSpot(), to, { dur: 200, arc: 50, size: 60, trail: 'trail-draw' });
             if (def.kind === 'attack') {
               await sc.fighters.attack(hero, e.target ?? null, undefined, def);
             } else {
@@ -653,6 +821,10 @@ export function FightView(props: {
         }
         case 'act': {
           reduceEvent(db, d, e);
+          actor.current = e.unit;
+          drinking.current = false;
+          // (its intent shakes as it goes)
+          shake(document.querySelector(`[data-intent="${CSS.escape(e.unit)}"]`));
           // look ahead for what this unit hits, so the lunge goes the right way
           let target: string | null = null;
           for (let j = i + 1; j < all.length; j++) {
@@ -673,14 +845,48 @@ export function FightView(props: {
         case 'skip':
           reduceEvent(db, d, e);
           sc.fighters.pulse(e.unit, '#9aa3c4');
+          fxOn('tick-static', e.unit);
           float(e.unit, 'Shocked', 'bad');
           await wait(320);
           return;
         case 'damage': {
+          const hadFate = (unitOf(e.target)?.statuses.doom ?? 0) > 0;
           reduceEvent(db, d, e);
+          const after = unitOf(e.target);
+          // what it hit: Barrier breaking or holding, a stack ticking, a blow landing, or Fate coming due
+          if (e.blocked > 0) {
+            const broken = (after?.barrier ?? 0) <= 0;
+            fxOn(broken ? 'barrier-break' : 'barrier-hit', e.target);
+            if (broken) {
+              const bar = centreOf(
+                document.querySelector(`[data-unit="${CSS.escape(e.target)}"] .bar`),
+              );
+              if (bar) playFx('barrier-break', bar, { size: 110, dur: 380 });
+            }
+          }
+          const tick = tickOf(all, i);
+          if (tick) {
+            fxOn(tick.fx, e.target, { scale: 0.8 });
+            bumpFx(
+              document.querySelector(
+                `[data-unit="${CSS.escape(e.target)}"] [data-status="${tick.status}"]`,
+              ),
+              1.3,
+            );
+          } else if (e.source === null && hadFate && after && after.hp <= 0) {
+            fxOn('fate-kills', e.target, { scale: 1.15 });
+          } else if (e.kind === 'attack' && e.lost > 0) {
+            const by = e.source ? unitOf(e.source) : undefined;
+            const spec = by ? attackFor(by.def, by.kind === 'hero') : undefined;
+            fxOn(hitFx(e.lost, spec?.kind), e.target, {
+              // (painted swinging to the right: an attack from the right of the screen is mirrored)
+              flip: (by ? shown(by.side, mySide) : 'a') === 'b',
+            });
+          }
           if (e.shielded) {
             float(e.target, 'Shielded!', 'block');
             sc.fighters.pulse(e.target, '#a6f4ff');
+            fxOn('barrier-hit', e.target);
             play('buff');
           } else if (e.lost > 0) {
             sc.fighters.hit(e.target, e.lost);
@@ -701,6 +907,7 @@ export function FightView(props: {
         case 'barrier':
           reduceEvent(db, d, e);
           sc.fighters.pulse(e.target, '#36e0ff');
+          fxOn('barrier-gain', e.target);
           float(e.target, `+${e.amount} ⛨`, 'block');
           play('buff');
           await wait(110);
@@ -708,6 +915,7 @@ export function FightView(props: {
         case 'heal':
           reduceEvent(db, d, e);
           sc.fighters.pulse(e.target, '#6df0a8');
+          fxOn(drinking.current ? 'potion-heal' : 'unit-rest', e.target);
           float(e.target, `+${e.amount}`, 'heal');
           await wait(120);
           return;
@@ -721,6 +929,7 @@ export function FightView(props: {
               e.status === 'burn' ||
               e.status === 'stunned';
             sc.fighters.pulse(e.target, bad ? '#d12f48' : '#f6dc94');
+            statusLands(e.target, e.status, e.amount, e.total);
             float(
               e.target,
               `${STATUS_INFO[e.status]?.name ?? e.status}${ON_OR_OFF.has(e.status) ? '' : ` ${e.amount}`}`,
@@ -734,9 +943,11 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           respec();
           sc.fighters.pulse(e.unit, '#b07aff');
+          fxOn('unit-summon', e.unit);
           await wait(400);
           return;
         case 'died':
+          if (!e.released) fxOn('unit-death', e.unit);
           await sc.fighters.die(e.unit);
           reduceEvent(db, d, e);
           respec();
@@ -770,6 +981,18 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           const name = db.cards[e.card]?.name ?? 'Trap';
           setBanner(`Trap! ${name}`, e.side === mySide ? 'good' : 'bad');
+          // the card flips up and the screen dims for a beat
+          dimScreen();
+          {
+            const trap = db.cards[e.card];
+            if (trap) {
+              const id = flourishId.current++;
+              setFlourishes((list) => [
+                ...list.slice(-3),
+                { id, def: trap, mine: e.side === mySide, flip: true },
+              ]);
+            }
+          }
           play('trapReveal');
           await wait(800);
           setBanner(null);
@@ -783,6 +1006,7 @@ export function FightView(props: {
           // an enemy reached its threshold and rises (an Omen's Second Wind): a beat to see it
           reduceEvent(db, d, e);
           const name = d.sides.a.units.concat(d.sides.b.units).find((u) => u.id === e.unit)?.name;
+          fxOn('unit-phase', e.unit, { scale: 1.2 });
           float(e.unit, e.left > 0 ? 'It rises!' : 'Final phase!', 'bad');
           setBanner(
             `${name ?? 'The enemy'} rises: ${e.left > 0 ? 'its next phase' : 'its last phase'}!`,
@@ -793,6 +1017,11 @@ export function FightView(props: {
           setBanner(null);
           return;
         }
+        case 'turnEnd':
+          reduceEvent(db, d, e);
+          actor.current = null;
+          drinking.current = false;
+          return;
         case 'gameOver':
           reduceEvent(db, d, e);
           sc.fighters.finish(shown(e.winner, mySide));
@@ -804,7 +1033,7 @@ export function FightView(props: {
           return;
       }
     },
-    [db, float, wait, mySide, pvp, foeName, setBanner],
+    [db, float, wait, mySide, pvp, foeName, setBanner, fxOn, spotOf, statusLands],
   );
 
   // the battle log: events become lines as they play, using the names of units seen so far (so fallen ones are still named)
@@ -2147,6 +2376,13 @@ export function FightView(props: {
             }}
             onRefuse={(c) => {
               play('refuse');
+              shake(document.querySelector(`[data-inst="${CSS.escape(c.inst.id)}"]`));
+              if (
+                (c.cost ?? c.def.cost) >
+                (game.current?.state.sides[mySide].mana ?? 0) +
+                  (game.current?.state.sides[mySide].reserves ?? 0)
+              )
+                shake(document.querySelector('.fight__mana'));
               setBanner(
                 (c.cost ?? c.def.cost) >
                 (game.current?.state.sides[mySide].mana ?? 0) +
@@ -2787,6 +3023,16 @@ function TurnClock(props: { link: PvpLink; mine: boolean; foe: string }) {
         </small>
       )}
     </div>
+  );
+}
+
+/** About where the hand sits: what is drawn flies here, what is discarded and played leaves from here. */
+function handSpot(): Spot {
+  return (
+    centreOf(document.querySelector('.fhand')) ?? {
+      x: window.innerWidth / 2,
+      y: window.innerHeight - 120,
+    }
   );
 }
 

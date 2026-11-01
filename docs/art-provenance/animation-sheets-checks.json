@@ -1,0 +1,197 @@
+[
+  {
+    "filename": "potions-01.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      241,
+      11,
+      241
+    ],
+    "sha256": "CAC9F5CE0D64130832CC021A2F2921047A76A57B30D767836285DDB75BE9FA17"
+  },
+  {
+    "filename": "fx-potions.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      238,
+      12,
+      239
+    ],
+    "sha256": "F604E501AF77B3FFFDEC6A37B211F8957CB5354E6493FBDA5AE43B2D885526BA"
+  },
+  {
+    "filename": "fx-debuffs.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      237,
+      12,
+      239
+    ],
+    "sha256": "3F9B52D02D9A8104EF4BD6D96811B7A2EB9C51AC57D77DB8BCA3BD24D9686130"
+  },
+  {
+    "filename": "fx-curses.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      239,
+      13,
+      241
+    ],
+    "sha256": "EEAEE421481FC5AC84CF026A7981AE6E350653BDF8F157FD77679FAC80ECD668"
+  },
+  {
+    "filename": "fx-ticks.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      242,
+      11,
+      241
+    ],
+    "sha256": "FC25302164E20B7E3B9353DBC4549E7ED4CD5303ECCBC1BAC894CE59AB21F379"
+  },
+  {
+    "filename": "fx-buffs.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      238,
+      10,
+      238
+    ],
+    "sha256": "58159972BFB6BF26A9BE9C1973FDDDC2BFCEFB3EFCAF7A37E75E1C447EC65A62"
+  },
+  {
+    "filename": "fx-barrier.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      240,
+      11,
+      241
+    ],
+    "sha256": "B7C2D730F3DF9DC35921855FF88F9CF21FB2BBD341606A113C2BB818214E6843"
+  },
+  {
+    "filename": "fx-hits.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      239,
+      10,
+      238
+    ],
+    "sha256": "1752141BEC7EC15CDCC6EBE379515990B2486129B3BF6B3D009EEEBF23A945ED"
+  },
+  {
+    "filename": "fx-cards.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      240,
+      11,
+      241
+    ],
+    "sha256": "B6E21D2848D57927BDCC1E85F6AB7E3C3B3B1A82A8CB07DD2519E0F76C4F9DAD"
+  },
+  {
+    "filename": "fx-units.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 6,
+    "rows": 4,
+    "corner_rgb": [
+      239,
+      11,
+      240
+    ],
+    "sha256": "C29B03F90A543443BDD1FCFAAC64BCFB9417E3966737BA55D56422ED4124541D"
+  },
+  {
+    "filename": "intents-01.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      238,
+      10,
+      238
+    ],
+    "sha256": "408FD4CC80471B6AD23BE7E5BD771E439E54E2D1A195194828008B869E5C8D28"
+  },
+  {
+    "filename": "map-01.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      240,
+      11,
+      241
+    ],
+    "sha256": "BB29202A4A2E189F47E72E3F4563FA400ADECBAF24A0E3F02DEA35F96CE54E68"
+  },
+  {
+    "filename": "ascend-01.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      237,
+      10,
+      242
+    ],
+    "sha256": "B0695C22CAE827B1BD003125480FFE169DBCFDC3BDD8F281763D06DD00DC2B85"
+  },
+  {
+    "filename": "ascend-02.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      239,
+      11,
+      241
+    ],
+    "sha256": "214F7701FD861AFD8322E145A7F711AA49E7A7258821C6943040F24B6B2EA4EC"
+  },
+  {
+    "filename": "ascend-03.png",
+    "width": 1536,
+    "height": 1024,
+    "columns": 4,
+    "rows": 3,
+    "corner_rgb": [
+      239,
+      10,
+      241
+    ],
+    "sha256": "BE53F3E90071155328CA3044DB7BEE5FF2EF21254612ED44E45B7DB6BD7C7B37"
+  }
+]

@@ -1,4 +1,7 @@
-# Cuts the status, Boon and pile sheets in assets-src/icons (docs/icon-prompts.md, DECISIONS #510) into apps/web/public/art/icons/<id>.png.
+# Cuts the status, Boon and pile sheets in assets-src/icons (docs/icon-prompts.md, DECISIONS #510) into apps/web/public/art/icons/<id>.png,
+# the potion, intent, map and crest sheets in assets-src/fx the same way, and the effect sheets there (docs/animation-prompts.md, DECISIONS #522)
+# into apps/web/public/art/fx/<id>.png: one strip of frames per row. A frame keeps its place in its grid cell and is never trimmed, so it plays
+# without jumping.
 # Each sheet is an even grid of pictures on near-magenta. The background is whatever magenta can be reached from the edge of the sheet, or
 # a clear hole of it inside a picture (a ring, a chain link); magenta inside an outline (a violet glow) is left alone. Soft edges keep their
 # share of alpha with the magenta taken out of their colour. Each picture is then every piece whose middle falls in its grid cell (a spark
@@ -6,9 +9,11 @@
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
-$srcDir = Join-Path $root 'assets-src/icons'
+$iconDir = Join-Path $root 'assets-src/icons'
+$fxDir = Join-Path $root 'assets-src/fx'
 $outDir = Join-Path $root 'apps/web/public/art/icons'
-New-Item -ItemType Directory -Force $outDir | Out-Null
+$stripDir = Join-Path $root 'apps/web/public/art/fx'
+New-Item -ItemType Directory -Force $outDir, $stripDir | Out-Null
 
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
 using System;
@@ -23,7 +28,8 @@ public static class IconCut {
   const int Clear = 170;  // a hole inside a picture is only this magenta or more, so a glow is safe
   const int MinHole = 16;
   public static string Log = "";
-  public static Bitmap Key(Bitmap src) {
+  // (`glow`, for the effects: real magenta has red and blue equal, so a pixel that leans to blue is a violet glow, and keeps its colour)
+  public static Bitmap Key(Bitmap src, bool glow) {
     int w = src.Width, h = src.Height;
     var bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
     using (var g = Graphics.FromImage(bmp)) g.DrawImage(src, new Rectangle(0, 0, w, h));
@@ -66,6 +72,7 @@ public static class IconCut {
       int p = y * w + x, i = y * s + x * 4;
       if (!back[p]) continue;
       double a = 1.0 - Math.Min(1.0, Math.Max(0, m[p]) / (double)full);
+      if (glow) a = Math.Max(a, Math.Min(1.0, (px[i] - px[i + 2] - 14) / 60.0));
       if (a < 0.06) { px[i + 3] = 0; continue; }
       // the pixel is a mix of the picture and the background: take the background out
       for (int k = 0; k < 3; k++) {
@@ -79,13 +86,14 @@ public static class IconCut {
     return bmp;
   }
   // every piece of the keyed sheet, handed to the grid cell its middle falls in
-  public static Bitmap[] Cells(Bitmap keyed, int cols, int rows, string name) {
+  // (`split`, for the effects: a piece far bigger than a cell is frames run together, so each of its pixels stays in its own cell)
+  static List<int>[] Pieces(Bitmap keyed, int cols, int rows, bool split, out byte[] px, out int s) {
     int w = keyed.Width, h = keyed.Height;
     var d = keyed.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-    byte[] px = new byte[d.Stride * h];
+    px = new byte[d.Stride * h];
     System.Runtime.InteropServices.Marshal.Copy(d.Scan0, px, 0, px.Length);
     keyed.UnlockBits(d);
-    int s = d.Stride;
+    s = d.Stride;
     var lab = new int[w * h];
     var cell = new List<int>[cols * rows];
     for (int c = 0; c < cell.Count(); c++) cell[c] = new List<int>();
@@ -104,10 +112,24 @@ public static class IconCut {
         }
       }
       if (pts.Count < 24) continue;
+      if (split) {
+        int bx0 = w, bx1 = 0, by0 = h, by1 = 0;
+        foreach (int p in pts) { int x = p % w, y = p / w; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+        if (bx1 - bx0 > w * 1.35 / cols || by1 - by0 > h * 1.35 / rows) {
+          foreach (int p in pts) cell[Math.Min(rows - 1, (p / w) * rows / h) * cols + Math.Min(cols - 1, (p % w) * cols / w)].Add(p);
+          continue;
+        }
+      }
       int cx = (int)(sx / pts.Count), cy = (int)(sy / pts.Count);
       int ci = Math.Min(rows - 1, cy * rows / h) * cols + Math.Min(cols - 1, cx * cols / w);
       cell[ci].AddRange(pts);
     }
+    return cell;
+  }
+  public static Bitmap[] Cells(Bitmap keyed, int cols, int rows, string name) {
+    int w = keyed.Width, h = keyed.Height, s;
+    byte[] px;
+    var cell = Pieces(keyed, cols, rows, false, out px, out s);
     var out_ = new Bitmap[cols * rows];
     for (int c = 0; c < cols * rows; c++) {
       if (cell[c].Count == 0) throw new Exception(name + ": cell " + c + " is empty");
@@ -127,6 +149,40 @@ public static class IconCut {
       out_[c] = b;
     }
     return out_;
+  }
+  // one strip per row of an effect sheet: every frame where the grid put it, with room round it for what spills over its cell, scaled to this size
+  public static void Strips(Bitmap keyed, int cols, int rows, int size, int room, string name, string[] paths) {
+    int w = keyed.Width, h = keyed.Height, s;
+    byte[] px;
+    var cell = Pieces(keyed, cols, rows, true, out px, out s);
+    int cw = w / cols, ch = h / rows, fw = cw + 2 * room, fh = ch + 2 * room;
+    for (int r = 0; r < rows; r++) {
+      using (var strip = new Bitmap(size * cols, size, PixelFormat.Format32bppArgb))
+      using (var g = Graphics.FromImage(strip)) {
+        g.Clear(Color.Transparent);
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        g.CompositingMode = CompositingMode.SourceCopy;
+        for (int c = 0; c < cols; c++) {
+          using (var b = new Bitmap(fw, fh, PixelFormat.Format32bppArgb)) {
+            var t = b.LockBits(new Rectangle(0, 0, fw, fh), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            byte[] op = new byte[t.Stride * fh];
+            int spilled = 0;
+            foreach (int p in cell[r * cols + c]) {
+              int x = p % w - c * cw + room, y = p / w - r * ch + room, i = (p / w) * s + (p % w) * 4;
+              if (x < 0 || y < 0 || x >= fw || y >= fh) { spilled++; continue; }
+              int o = y * t.Stride + x * 4;
+              op[o] = px[i]; op[o + 1] = px[i + 1]; op[o + 2] = px[i + 2]; op[o + 3] = px[i + 3];
+            }
+            System.Runtime.InteropServices.Marshal.Copy(op, 0, t.Scan0, op.Length);
+            b.UnlockBits(t);
+            if (spilled > 40) Log += name + " row " + r + " frame " + c + " lost " + spilled + " pixels\n";
+            g.DrawImage(b, new Rectangle(c * size, 0, size, size), 0, 0, fw, fh, GraphicsUnit.Pixel);
+          }
+        }
+        strip.Save(paths[r], ImageFormat.Png);
+      }
+    }
   }
   // scaled to fit a square of this size, centred
   public static void Save(Bitmap b, int size, string path) {
@@ -149,33 +205,64 @@ public static class IconCut {
 
 $icon = 96
 $pile = 240
+$crest = 160
+$frame = 200
+$room = 40
 $pileIds = foreach ($k in 'draw', 'discard', 'exhaust') { foreach ($n in 1..4) { "pile-$k-$n" } }
+# (an id starting with a dash is a spare on the sheet that nothing shows yet)
 $sheets = @(
-  @{ f = 'icons-01'; c = 4; r = 3; s = $icon; ids = 'seared burn virulent doom fracture stunned exposed faltering brittle debilitated sapped hangover' -split ' ' },
-  @{ f = 'icons-02'; c = 4; r = 3; s = $icon; ids = 'noose strangled quarry bladebane might vigor keen lethality cruelty tracking clutch ritual' -split ' ' },
-  @{ f = 'icons-03'; c = 4; r = 3; s = $icon; ids = 'thorns shielded bracing ghostly steadfast armored fortified plating sturdy unmovable guarded blur' -split ' ' },
-  @{ f = 'icons-04'; c = 4; r = 3; s = $icon; ids = 'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored' -split ' ' },
-  @{ f = 'icons-05'; c = 4; r = 3; s = $icon; ids = 'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner' -split ' ' },
-  @{ f = 'icons-06'; c = 4; r = 3; s = $icon; ids = 'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell' -split ' ' },
-  @{ f = 'boons-01'; c = 4; r = 3; s = $icon; ids = 'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages' -split ' ' },
-  @{ f = 'boons-02'; c = 4; r = 2; s = $icon; ids = 'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart spirit plain-heart' -split ' ' },
-  @{ f = 'piles-01'; c = 4; r = 3; s = $pile; ids = $pileIds }
+  @{ d = $iconDir; f = 'icons-01'; c = 4; r = 3; s = $icon; ids = 'seared burn virulent doom fracture stunned exposed faltering brittle debilitated sapped hangover' -split ' ' },
+  @{ d = $iconDir; f = 'icons-02'; c = 4; r = 3; s = $icon; ids = 'noose strangled quarry bladebane might vigor keen lethality cruelty tracking clutch ritual' -split ' ' },
+  @{ d = $iconDir; f = 'icons-03'; c = 4; r = 3; s = $icon; ids = 'thorns shielded bracing ghostly steadfast armored fortified plating sturdy unmovable guarded blur' -split ' ' },
+  @{ d = $iconDir; f = 'icons-04'; c = 4; r = 3; s = $icon; ids = 'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored' -split ' ' },
+  @{ d = $iconDir; f = 'icons-05'; c = 4; r = 3; s = $icon; ids = 'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner' -split ' ' },
+  @{ d = $iconDir; f = 'icons-06'; c = 4; r = 3; s = $icon; ids = 'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell' -split ' ' },
+  @{ d = $iconDir; f = 'boons-01'; c = 4; r = 3; s = $icon; ids = 'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages' -split ' ' },
+  @{ d = $iconDir; f = 'boons-02'; c = 4; r = 2; s = $icon; ids = 'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart spirit -plain-heart' -split ' ' },
+  @{ d = $iconDir; f = 'piles-01'; c = 4; r = 3; s = $pile; ids = $pileIds },
+  @{ d = $fxDir; f = 'potions-01'; c = 4; r = 3; s = $icon; ids = 'potion-fire-flask potion-guard-draught potion-mana-vial potion-swift-draught potion-might-tonic potion-healing-philtre potion-ember-bomb potion-frost-phial potion-stun-tonic potion-ward-elixir -flask -vial' -split ' ' },
+  @{ d = $fxDir; f = 'intents-01'; c = 4; r = 3; s = $icon; ids = 'intent-attack intent-multi intent-big intent-defend intent-buff intent-debuff intent-summon intent-special -trap -charge -flee -sleep' -split ' ' },
+  @{ d = $fxDir; f = 'map-01'; c = 4; r = 3; s = $icon; ids = 'map-duel map-elite map-event map-shrine map-merchant map-warden map-ghost map-here map-done map-crossed -chest -door' -split ' ' },
+  @{ d = $fxDir; f = 'ascend-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight-paladin crest-knight-marshal crest-knight-blood-knight crest-engineer-foreman crest-engineer-golemancer crest-engineer-overclocker crest-hunter-beastmaster crest-hunter-reaver crest-hunter-predator crest-trickster-trapmaster crest-trickster-cardsharp crest-trickster-seer' -split ' ' },
+  @{ d = $fxDir; f = 'ascend-02'; c = 4; r = 3; s = $crest; ids = 'crest-assassin-assassin crest-assassin-bladedancer crest-assassin-bloodletter crest-shaman-totemist crest-shaman-spiritwalker crest-shaman-pyromancer crest-monk-sage crest-monk-zealot crest-monk-sunwalker crest-spellblade-blademaster crest-spellblade-archmage crest-spellblade-shatterer' -split ' ' },
+  @{ d = $fxDir; f = 'ascend-03'; c = 4; r = 3; s = $crest; ids = 'crest-drunkard-brewmaster crest-drunkard-gunslinger crest-drunkard-deathwish crest-necromancer-bonelord crest-necromancer-fateweaver crest-necromancer-soulreaper -banner -gold-wreath -silver-wreath -flame -wings -crown' -split ' ' }
+)
+$effects = @(
+  @{ f = 'fx-potions'; ids = 'potion-drink potion-heal potion-shatter potion-explode' -split ' ' },
+  @{ f = 'fx-debuffs'; ids = 'debuff-exposed debuff-faltering debuff-brittle debuff-shocked' -split ' ' },
+  @{ f = 'fx-curses'; glow = $true; ids = 'fate-lands fate-kills fracture shatter' -split ' ' },
+  @{ f = 'fx-ticks'; ids = 'tick-bleed tick-burn tick-hangover tick-static' -split ' ' },
+  @{ f = 'fx-buffs'; ids = 'buff-might buff-primed buff-thorns buff-shielded' -split ' ' },
+  @{ f = 'fx-barrier'; ids = 'barrier-gain barrier-hit barrier-break plating' -split ' ' },
+  @{ f = 'fx-hits'; ids = 'hit-slash hit-heavy hit-pierce hit-crit' -split ' ' },
+  @{ f = 'fx-cards'; ids = 'trail-draw trail-discard card-burn card-arrive' -split ' ' },
+  @{ f = 'fx-units'; glow = $true; ids = 'unit-summon unit-death unit-phase unit-rest' -split ' ' }
 )
 $made = 0
 foreach ($sheet in $sheets) {
-  $src = [System.Drawing.Bitmap]::FromFile((Join-Path $srcDir "$($sheet.f).png"))
-  $keyed = [IconCut]::Key($src)
+  $src = [System.Drawing.Bitmap]::FromFile((Join-Path $sheet.d "$($sheet.f).png"))
+  $keyed = [IconCut]::Key($src, $false)
   $src.Dispose()
   $cells = [IconCut]::Cells($keyed, $sheet.c, $sheet.r, $sheet.f)
   for ($i = 0; $i -lt $cells.Length; $i++) {
-    # (the plain heart is a spare for something new: nothing shows it yet)
-    if ($sheet.ids[$i] -ne 'plain-heart') {
+    if (-not $sheet.ids[$i].StartsWith('-')) {
       [IconCut]::Save($cells[$i], $sheet.s, (Join-Path $outDir "$($sheet.ids[$i]).png"))
       $made++
     }
+    # (the Ascend banner is wide, and shown wide)
+    if ($sheet.ids[$i] -eq '-banner') { [IconCut]::Save($cells[$i], 360, (Join-Path $outDir 'ascend-banner.png')); $made++ }
     $cells[$i].Dispose()
   }
   $keyed.Dispose()
 }
+$strips = 0
+foreach ($sheet in $effects) {
+  $src = [System.Drawing.Bitmap]::FromFile((Join-Path $fxDir "$($sheet.f).png"))
+  $keyed = [IconCut]::Key($src, $sheet.glow -eq $true)
+  $src.Dispose()
+  [IconCut]::Strips($keyed, 6, $sheet.ids.Length, $frame, $room, $sheet.f, [string[]]($sheet.ids | ForEach-Object { Join-Path $stripDir "$_.png" }))
+  $strips += $sheet.ids.Length
+  $keyed.Dispose()
+}
 if ([IconCut]::Log) { Write-Warning ([IconCut]::Log) }
-"icons: $made pictures in apps/web/public/art/icons"
+"icons: $made pictures in apps/web/public/art/icons, $strips effects in apps/web/public/art/fx"

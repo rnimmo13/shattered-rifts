@@ -945,3 +945,11 @@ body:has(.learn) {
   height: 1.5em;
   vertical-align: -0.4em;
 }
+
+/* an Ascendancy's crest, in its row on the Learn page */
+.learn__crest {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.55rem;
+}

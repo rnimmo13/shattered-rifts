@@ -1,5 +1,6 @@
 // The non-map screens of a run: card rewards and the Warden's Gift, shrine, merchant, event, and the deck viewer.
 
+import { bump, centreOf, flyCard } from '../fight/fxPlayer';
 import { useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB, MARK_INFO, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
@@ -73,7 +74,7 @@ function Pickable(props: {
   own?: string | undefined;
   width: number;
   onHover: (def: CardDef | null) => void;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   disabled?: boolean;
   badge?: string | undefined;
   /** just show the card (hover to read it): no button */
@@ -166,7 +167,21 @@ export function CardOffer(props: {
             width={290}
             own={props.character}
             onHover={setHover}
-            onClick={() => props.onPick(id)}
+            onClick={(e) => {
+              // the card you took flies into your deck
+              const from = centreOf(e.currentTarget);
+              const deck = document.querySelector('.runbar__deck');
+              const to = centreOf(deck);
+              if (from && to)
+                flyCard(from, to, {
+                  dur: 420,
+                  arc: 80,
+                  size: 90,
+                  trail: 'trail-draw',
+                  onArrive: () => bump(deck),
+                });
+              props.onPick(id);
+            }}
           />
         ))}
       </div>

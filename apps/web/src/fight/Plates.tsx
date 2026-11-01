@@ -1,6 +1,8 @@
 // The DOM layer over the fighters: HP bars with Barrier, status chips and enemy intents. Pure presentation.
 
 import type { CSSProperties } from 'react';
+import { intentPic } from './fxMoments';
+import { Picture } from '../ui/Picture';
 import {
   ON_OR_OFF,
   KNIFE_MAX,
@@ -118,21 +120,28 @@ export function UnitPlates({
             {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}
             {u.kind !== 'hero' && iv && (
               <div
+                data-intent={u.id}
                 className={`intent intent--${iv.icons[0] ?? 'special'}${u.kind === 'ally' ? ' intent--ally' : ''}`}
                 style={intentStyle}
                 aria-label={`${iv.name}: ${iv.text}`}
                 tabIndex={0}
               >
                 <span className="intent__icons">
-                  {iv.icons.map((i) =>
-                    i === 'buff' ? (
-                      <Arrow key={i} dir="up" />
-                    ) : i === 'debuff' ? (
-                      <Arrow key={i} dir="down" />
-                    ) : (
-                      <span key={i}>{INTENT_GLYPH[i]}</span>
-                    ),
-                  )}
+                  {iv.icons.map((i) => (
+                    <Picture
+                      key={i}
+                      id={intentPic(i, iv.damage, iv.hits)}
+                      className="intent__pic"
+                    >
+                      {i === 'buff' ? (
+                        <Arrow dir="up" />
+                      ) : i === 'debuff' ? (
+                        <Arrow dir="down" />
+                      ) : (
+                        <span>{INTENT_GLYPH[i]}</span>
+                      )}
+                    </Picture>
+                  ))}
                 </span>
                 {iv.damage !== null && (
                   <b className="intent__num">
@@ -152,6 +161,7 @@ export function UnitPlates({
               </div>
             )}
             <div
+              data-unit={u.id}
               className={`plate${incoming.length ? ' is-incoming' : ''}${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
               style={style}
             >
@@ -192,6 +202,8 @@ export function UnitPlates({
                 className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}
                 {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp, fate))}
               >
+                {/* (the pale trail that drains after the red) */}
+                <div className="bar__lag" style={{ width: `${pct}%` }} />
                 <div className="bar__fill" style={{ width: `${pct}%` }} />
                 {/* Fate builds up from the left of the bar: when it reaches the red's end, this unit dies at the end of its turn (DECISIONS #504) */}
                 {fate > 0 && u.hp > 0 && (
@@ -219,7 +231,10 @@ export function UnitPlates({
                 </div>
                 {u.barrier > 0 && (
                   <div className="bar__barrier" {...tipAttrs(UI_TIPS.barrier(u.barrier))}>
-                    ⛨ {u.barrier}
+                    {/* (the number pops each time it changes) */}
+                    <span key={u.barrier} className="bar__barrierNum">
+                      ⛨ {u.barrier}
+                    </span>
                   </div>
                 )}
               </div>
@@ -244,6 +259,7 @@ export function UnitPlates({
                   return (
                     <span
                       key={id}
+                      data-status={id}
                       className={`chip chip--${info.tone}${id === 'opening' ? ' chip--open' : ''}`}
                       {...tipAttrs(statusTip(id, n))}
                     >

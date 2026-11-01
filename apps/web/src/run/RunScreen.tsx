@@ -80,6 +80,10 @@ import { progressLabel } from '../pvp/deckLayout';
 import { reportRun } from '../pvp/boardApi';
 import { syncSavedRuns } from './syncRuns';
 import { getName, hasUsername } from '../pvp/config';
+import { AscendReveal } from './AscendReveal';
+import { crestPic } from '../fight/fxMoments';
+import { iconUrl } from '../art/gameIcons';
+import { Picture } from '../ui/Picture';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import { useTallMap } from './mapShape';
@@ -191,6 +195,9 @@ export default function RunScreen() {
     });
   }, []);
   const [showDeck, setShowDeck] = useState(false);
+  /** an Ascendancy just chosen: its moment is on the screen */
+  const [ascended, setAscended] = useState<string | null>(null);
+  const clearAscended = useCallback(() => setAscended(null), []);
   /** how many saved Arena decks the run took down with it when it collapsed (null: not known yet) */
   const [lostDecks, setLostDecks] = useState<number | null>(null);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
@@ -692,7 +699,24 @@ export default function RunScreen() {
           <a href="#/decks">Saved decks page</a> and it will be saved after your next fight.{' '}
         </Toast>
       )}
-      <Body run={run} act={act} onLeave={leaveRun} onHome={goHome} lostDecks={lostDecks} />
+      <Body
+        run={run}
+        act={act}
+        onLeave={leaveRun}
+        onHome={goHome}
+        lostDecks={lostDecks}
+        onAscended={setAscended}
+      />
+      {/* (only if the rules took the choice) */}
+      {ascended && run.ascendancy === ascended && (
+        <AscendReveal
+          id={ascended}
+          from={RIFTWALKERS[run.character].hero.name}
+          to={classNameOf(run.character, ascended)}
+          text={ascendancyOf(run.character, ascended)?.text ?? ''}
+          onDone={clearAscended}
+        />
+      )}
       {coin && (
         <ChanceReel
           flips={coin.flips}
@@ -827,6 +851,11 @@ function RunBar(props: {
               })
             : {})}
         >
+          {run.ascendancy && (
+            <Picture id={crestPic(run.ascendancy)} className="runbar__crest">
+              {null}
+            </Picture>
+          )}
           {classNameOf(run.character, run.ascendancy)}
         </b>
         <span>
@@ -915,7 +944,7 @@ function RunBar(props: {
         >
           <span>Arena</span>
         </a>
-        <button className="btn btn--small" onClick={props.onDeck}>
+        <button className="btn btn--small runbar__deck" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
         </button>
         <button
@@ -939,6 +968,7 @@ function Body(props: {
   onLeave: () => void;
   onHome: () => void;
   lostDecks: number | null;
+  onAscended: (id: string) => void;
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
@@ -989,7 +1019,12 @@ function Body(props: {
     case 'ascend':
       return (
         <section className="stage-panel" aria-label="Choose your Ascendancy">
-          <h2 className="stage-panel__title">Ascend</h2>
+          <div
+            className="ascendbanner"
+            style={{ backgroundImage: `url("${iconUrl('ascend-banner')}")` }}
+          >
+            <h2 className="stage-panel__title">Ascend</h2>
+          </div>
           <p className="stage-panel__hint">
             The Warden falls, and you are not who you were.{' '}
             {run.context?.shardsGained ? `+${run.context.shardsGained} shards. ` : ''}This is your
@@ -1003,8 +1038,14 @@ function Body(props: {
                 <button
                   key={id}
                   className="bigchoice"
-                  onClick={() => act((r) => chooseAscendancy(r, id))}
+                  onClick={() => {
+                    act((r) => chooseAscendancy(r, id));
+                    props.onAscended(id);
+                  }}
                 >
+                  <Picture id={crestPic(id)} className="bigchoice__crest">
+                    {null}
+                  </Picture>
                   <b>{x.name}</b>
                   <span>{x.text}</span>
                   <small>Leans into: {x.leans}</small>

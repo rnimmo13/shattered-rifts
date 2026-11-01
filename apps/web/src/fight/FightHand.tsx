@@ -368,6 +368,7 @@ export function FightHand(p: FightHandProps) {
         return (
           <div key={c.inst.id} className="fhand__pair">
             <div
+              data-inst={c.inst.id}
               className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}${pickable && !marked ? ' is-pickable' : ''}${marked ? ' is-picked' : ''}${p.picking?.synergy.includes(c.inst.id) ? ' is-synergy' : ''}`}
               style={style}
             >

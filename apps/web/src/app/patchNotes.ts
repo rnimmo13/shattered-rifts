@@ -29,6 +29,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.151.0',
+    date: '2026-11-01',
+    title: 'Ascendancies and a fight that moves',
+    summary: 'Become a new class after Tier III, walk longer acts, and watch every card, status and blow land with new painted effects.',
+    notes: [
+      { kind: 'new', text: 'Ascendancies: beat the last Warden of Tier III and choose one of three new classes in place of that Warden\'s Gift. A Knight can become a Paladin, a Marshal or a Blood Knight. Your name changes, you gain a new trait, and it stays with that deck in the Arena. Each has its own crest.' },
+      { kind: 'new', text: 'Painted effects for debuffs, buffs, curses, Barrier gained, hit and broken, Bleed and Burn ticking, blows by their weight, summons, deaths and an enemy rising into its next phase.' },
+      { kind: 'new', text: 'Cards now move: drawn cards deal out of the pile, discarded ones trail dust into theirs, a Consumed card burns up where it stands, a shuffle arcs across the screen, and a card you take as a reward flies into your deck.' },
+      { kind: 'new', text: 'Potions, enemy intents and the stops on the map have painted art. A thrown potion flies from the belt and breaks on its target.' },
+      { kind: 'changed', text: 'The HP bar shows a pale trail of what you just lost, new status icons pop in, an enemy\'s intent swings in at the start of your turn and shakes as it acts, and a Trap flips up as the screen dims. All of it follows the speed and reduced-motion settings.' },
+      { kind: 'changed', text: 'Every act is now 15 floors, the boss being the 15th. A run in progress keeps its current map, and its next act is the new length.' },
+      { kind: 'changed', text: 'The Assassin is now the Rogue, and Assassin is one of the things a Rogue can become.' },
+      { kind: 'changed', text: 'Held upright on a phone, the hand is a grid of bigger cards that are all wholly readable.' },
+      { kind: 'changed', text: 'Thresholds and Waymarks never offer what they can\'t do, and from Tier IV they offer much better.' },
+      { kind: 'balance', text: 'Plating: at the end of your turn you gain that much Barrier, then Plating goes down by 1.' },
+      { kind: 'balance', text: 'Omens come sooner and hit harder from Tier II, with two new ones, Times Are Tough and Rift Scars. Past Tier X, enemy HP and damage climb twice as fast.' },
+      { kind: 'balance', text: 'Warden\'s Hearts no longer give Mana, and are repriced. Ghost Wardens in the campaign have twice the HP.' },
+      { kind: 'balance', text: 'Mana Reserves: the Knight starts each fight with 2 Reserves, and gains 1 Barrier per Reserve at the end of each turn.' },
+      { kind: 'balance', text: 'Necromancer: an enemy that kills one of your allies is cursed with the Fate, and an ally you sacrifice curses a random enemy.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.150.0',
     date: '2026-11-01',
     title: 'Painted icons and card piles',

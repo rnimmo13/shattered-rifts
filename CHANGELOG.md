@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **The fight moves:** painted effects for debuffs, buffs, curses, Barrier gained, hit and broken, Bleed and Burn ticking, blows by their weight, potions, summons, deaths and an enemy rising. Cards deal out of the draw pile, trail dust into the discard pile, burn up when Consumed and arc across the screen in a shuffle. A status icon flies from whoever put it there. The HP bar shows a pale trail of what was lost, an intent swings in and shakes as it acts, and a Trap flips up as the screen dims.
+- **Painted potions, enemy intents, map stops and Ascendancy crests.** Choosing an Ascendancy is a moment: the crest rises, the old name burns away and the new one is written in gold. A reward card flies into your deck, and the path from where you stand draws itself in gold.
 - **Ascendancies:** beat the last Warden of Tier III and your reward is a choice of three new classes: a Knight becomes a Paladin, a Marshal or a Blood Knight. Your class name changes, you gain a new trait, and it stays with that run's deck in the Arena too. It takes the place of that Warden's usual Gift.
 - **The Assassin is now the Rogue,** and Assassin is one of the things a Rogue can become.
 - **Mana Reserves:** the Knight starts each fight with 2 Reserves, and gains 1 Barrier per Reserve at the end of each turn.

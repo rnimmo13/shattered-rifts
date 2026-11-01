@@ -1,3 +1,5 @@
+import { crestPic } from '../fight/fxMoments';
+import { Picture } from '../ui/Picture';
 import { useState } from 'react';
 import {
   DMG_PER_STAGE,
@@ -204,6 +206,9 @@ function AscendancyList() {
       {ASCENDANCIES.map((a) => (
         <div key={a.id} className="learn__row">
           <dt>
+            <Picture id={crestPic(a.id)} className="learn__crest">
+              {null}
+            </Picture>
             {a.name} <i>(from the {RIFTWALKERS[a.hero as keyof typeof RIFTWALKERS].hero.name})</i>
           </dt>
           <dd>{a.text}</dd>

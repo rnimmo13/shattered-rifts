@@ -35,7 +35,13 @@ export function loadEffectsMode(): EffectsMode {
   return prefersReducedMotion() ? 'reduced' : 'full';
 }
 
+/** Lets the style sheets see the setting too, as they only know the OS's by themselves. */
+export function markEffectsMode(mode: EffectsMode = loadEffectsMode()): void {
+  if (typeof document !== 'undefined') document.documentElement.dataset['effects'] = mode;
+}
+
 export function saveEffectsMode(mode: EffectsMode): void {
+  markEffectsMode(mode);
   try {
     localStorage.setItem(KEY, mode);
   } catch {
