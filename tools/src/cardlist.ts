@@ -45,6 +45,7 @@ for (const [id, r] of Object.entries(RIFTWALKERS)) {
   if (tokens.length) out.push('Tokens (made by other cards):', '', ...table(tokens));
 }
 out.push('## Neutral', '', ...table(cards.filter((c) => c.hero === 'neutral' && !c.source)));
+out.push('## Ancestral', '', ...table(cards.filter((c) => c.source === 'ancestral')));
 out.push(
   '## Warden signature cards',
   '',

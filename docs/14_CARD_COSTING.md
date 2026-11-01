@@ -31,6 +31,10 @@ Past 1 Mana each Mana buys about **9 points**. A 0-cost card is worth more than 
 hand, and that card slot is worth about 5-6 points on its own. That is also why a card that costs 1 more is never just "+9": the bigger
 card saves you a card.
 
+### Neutral and Ancestral cards
+
+A Neutral card is never better than the class card it resembles: equal at most, or a little behind. An Ancestral card may compete with the class versions (DECISIONS #500). Compare upgrades too.
+
 ### Rarity
 
 | Rarity | Budget |
@@ -181,7 +185,7 @@ The extra is because the turn you play it you did nothing else, and you might dr
 a Knife a turn: 16 over 4 turns, 1.6x), Inner Furnace (2 cost, +1 Mana a turn: ~28, 1.5x, a little low for a rare), Warm Anvil (Sharpen 5 a turn: 16, 1.6x).
 For "whenever X" triggers, count how often X happens per turn in the deck that wants it, not in a starter deck. A deck holds at most **2 copies of an Aura** (DECISIONS #498), so check the pair too: it doubles the effect, and a trigger that replaces itself at one copy makes a profit at two.
 
-**+1 Mana every turn** is ~28 over the four turns (7 a Mana): a 2-cost Aura with no price (Inner Furnace, Ascendant Form, Deep Pockets, Attunement, Last Call with 2 Hangover). At 1 it needs a real price, ~-10 (Blood Pact: 7 HP). A Skill that does it and Consumes is an Aura in disguise: make it an Aura (DECISIONS #410).
+**+1 Mana every turn** is ~28 over the four turns (7 a Mana): a 2-cost Aura with no price (Inner Furnace, Ascendant Form, Deep Pockets, Last Call with 2 Hangover). Attunement, the Neutral one, costs 3 (DECISIONS #500). At 1 it needs a real price, ~-10 (Blood Pact: 7 HP). A Skill that does it and Consumes is an Aura in disguise: make it an Aura (DECISIONS #410).
 
 ---
 

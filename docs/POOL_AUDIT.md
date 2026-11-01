@@ -694,30 +694,30 @@ cost and effects whose numbers differ by about a third or less.
 |---|---|---|---|---|
 | Arcane Barrier | common | skill | 1 | Spell. Gain 5 (+3 per Spell Power spent) Barrier. |
 | Arcane Pulse | common | attack | 1 | Spell. Deal 7 (+3 per Spell Power spent) damage to ALL enemies. |
-| Crack the Shell | common | skill | 1 | Spell. Remove up to 6 Barrier from the target. Apply 5 Fracture. |
+| Crack the Shell | common | skill | 1 | Spell. Remove up to 6 Barrier from the target. Apply 4 Fracture. |
 | Deepening Enchantment | common | skill | 1 | Gain 2 Spell Power. Grows 1: this card gains 1 more each time you play it. |
 | Ember Cache | common | skill | 1 | Gain 1 Spell Power. Next turn, gain 3 Spell Power. |
 | Emberstrike | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you played a Spell earlier this turn: Gain 1 Spell Power. |
 | Empty Crucible | common | skill | 1 | Gain 3 Spell Power. If you had no Spell Power: Gain 2 Spell Power. |
 | Etching Edge | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 4 Spell Power. Each hit applies 1 Fracture. |
 | Faint Ember | common | skill | 1 | Gain 2 Spell Power. Draw 1 card. |
-| Faultline Hex | common | skill | 1 | Spell. Apply 7 Fracture. |
+| Faultline Hex | common | skill | 1 | Spell. Apply 5 Fracture. |
 | Feint | common | skill | 1 | Gain 5 (+1 per 3 Spell Power) Barrier. Gain 1 Primed. |
 | Forged in Fury | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. |
 | Glass Needle | common | attack | 0 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Consume. |
-| Glass Prison | common | skill | 1 | Spell. Gain 5 (+1 per 3 Spell Power) Barrier. Apply 3 Fracture. |
+| Glass Prison | common | skill | 1 | Spell. Gain 5 (+1 per 3 Spell Power) Barrier. Apply 2 Fracture. |
 | Glass Veil | common | skill | 2 | Spell. Gain 8 (+1 per 3 Spell Power) Barrier. Next turn, gain 6 Barrier. Gain 1 Spell Power. |
-| Glassbrand | common | attack | 1 | Spell. Deal 5 damage. Apply 3 Fracture. |
+| Glassbrand | common | attack | 1 | Spell. Deal 5 damage. Apply 2 Fracture. |
 | Glint | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Draw 1 card. |
 | Guarded Cut | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 4 Spell Power. Gain 4 (+1 per 3 Spell Power) Barrier. |
-| Hairline Crack | common | skill | 0 | Spell. Apply 5 Fracture. Consume. |
+| Hairline Crack | common | skill | 0 | Spell. Apply 4 Fracture. Consume. |
 | Obsidian Flurry | common | attack | 2 | Sword. Deal 3 damage 3 times, 1 more time per 2 Spell Power. |
 | Obsidian Lance | common | attack | 1 | Sword. Deal 6 (+1 per 2 Spell Power) damage. |
 | Pale Ward | common | skill | 1 | Spell. Gain 8 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. |
-| Pressure Point | common | skill | 1 | Spell. Apply 5 Fracture. If this caused a Shatter: Draw 1 card. |
+| Pressure Point | common | skill | 1 | Spell. Apply 4 Fracture. If this caused a Shatter: Draw 1 card. |
 | Rift Sweep | common | attack | 2 | Sword. Deal 3 damage 3 times, 1 more time per 3 Spell Power to ALL enemies. |
 | Spellbolt | common | attack | 1 | Spell. Deal 8 (+4 per Spell Power spent) damage. |
-| Spreading Fault | common | skill | 1 | Spell. Apply 5 Fracture to ALL enemies. |
+| Spreading Fault | common | skill | 1 | Spell. Apply 4 Fracture to ALL enemies. |
 | Tempered Bolt | common | attack | 1 | Spell. Deal 6 damage. Gain 1 Spell Power. If you had no Spell Power: Gain 2 Spell Power. |
 | Afterglow | uncommon | aura | 1 | The first time each turn you spend your last Spell Power: Draw 1 card and gain 3 (+1 per 3 Spell Power spent this turn) Barrier. |
 | Arcane Flood | uncommon | attack | 2 | Spell. Deal 10 (+4 per Spell Power spent) damage to ALL enemies. |
@@ -725,16 +725,16 @@ cost and effects whose numbers differ by about a third or less.
 | Banked Embers | uncommon | skill | 1 | Next turn, gain 3 Spell Power. Next turn, gain 1 extra Mana. |
 | Bladewall | uncommon | skill | 2 | Spell. Gain 12 (+1 per 3 Spell Power) Barrier. Gain 3 Spell Power. |
 | Call the Blade | uncommon | skill | 1 | Return a random Sword from your discard pile to your hand. Gain 2 Spell Power. |
-| Carry the Fault | uncommon | skill | 1 | Spell. Apply 4 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 8. |
-| Collapsing Vein | uncommon | skill | 2 | Spell. Apply 7 Fracture to ALL enemies. Apply 5 Fracture. |
+| Carry the Fault | uncommon | skill | 1 | Spell. Apply 3 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 6. |
+| Collapsing Vein | uncommon | skill | 2 | Spell. Apply 6 Fracture to ALL enemies. Apply 3 Fracture. |
 | Controlled Release | uncommon | attack | 1 | Spell. Deal 8 (+4 per Spell Power spent) damage. If you spent any and you have Spell Power left: Draw 1 card. |
 | Crosscut | uncommon | attack | 1 | Sword. Deal 2 damage 2 times, 1 more time per 4 Spell Power. If your previous card was a Spell: Deal 2 damage 2 times and gain 1 Spell Power. |
 | Crowned Edge | uncommon | skill | 1 | Gain 2 Primed until the end of your turn. Draw 1 card. |
 | Deep Fault | uncommon | skill | 2 | Spell. Your Shatters deal 6 more for the rest of the fight. Apply 4 Fracture. Consume. |
 | Deepening Fault | uncommon | aura | 2 | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight. |
 | Falling Shards | uncommon | attack | 1 | Spell. Deal 9 (+4 per Spell Power spent) damage. If this is fatal: Apply Fracture equal to the Spell Power spent to ALL enemies. |
-| Fault Memory | uncommon | skill | 1 | Spell. Apply 5 Fracture. Grows 2: this card gains 2 more each time you play it. |
-| Fault Piercer | uncommon | attack | 2 | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If the target has Fracture: Apply 3 Fracture. |
+| Fault Memory | uncommon | skill | 1 | Spell. Apply 4 Fracture. Grows 2: this card gains 2 more each time you play it. |
+| Fault Piercer | uncommon | attack | 2 | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If the target has Fracture: Apply 2 Fracture. |
 | Fault Reader | uncommon | aura | 1 | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
 | Final Shatter | uncommon | skill | 2 | Spell. Apply 10 Fracture. If this caused a Shatter: Gain 6 (+1 per 3 Spell Power) Barrier. |
 | Glass Armory | uncommon | aura | 1 | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
@@ -743,7 +743,7 @@ cost and effects whose numbers differ by about a third or less.
 | Glass Wall | uncommon | skill | 2 | Spell. Gain 12 (+3 per Spell Power spent) Barrier. Hold. |
 | Growing Crucible | uncommon | skill | 2 | Gain 4 (+1 per 3 Spell Power) Barrier. Gain 4 Spell Power. Grows 2: this card gains 2 more each time you play it. |
 | Heat of the Forge | uncommon | skill | 1 | Gain 2 Primed. |
-| Hungering Void | uncommon | aura | 1 | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
+| Hungering Void | uncommon | aura | 1 | At the end of your turn: Apply 2 Fracture to each enemy that has Fracture. |
 | Last Ember | uncommon | skill | 0 | Gain 2 Spell Power. Consume. If you had no Spell Power: Gain 5 (+1 per 3 Spell Power spent this turn) Barrier. |
 | Measured Recharge | uncommon | skill | 1 | Gain 3 Spell Power. If you spent 3 or more Spell Power earlier this turn: Draw 1 card. |
 | Mirror Glass | uncommon | skill | 1 +2 Arcana | Spell. Gain 7 (+1 per 3 Spell Power) Barrier. Gain 1 Shielded. |
@@ -755,11 +755,11 @@ cost and effects whose numbers differ by about a third or less.
 | Shard Strike | uncommon | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you have 9 or more Spell Power: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Sigil of Glass | uncommon | aura | 1 | The first time each turn a card spends 3 or more Spell Power: Gain 5 (+1 per 3 Spell Power spent this turn) Barrier. |
 | Sigil of Kindling | uncommon | aura | 1 | The first time each turn a card of yours grows: Gain 2 Spell Power and gain 2 (+1 per 3 Spell Power) Barrier. |
-| Stress the Glass | uncommon | skill | 1 | Spell. Apply 4 (+3 per Spell Power spent) Fracture. |
+| Stress the Glass | uncommon | skill | 1 | Spell. Apply 3 (+2 per Spell Power spent) Fracture. |
 | Tyrant Strike | uncommon | attack | 2 | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If you spent Spell Power earlier this turn: Apply 2 Exposed. |
 | Warm Anvil | uncommon | aura | 2 | At the start of your turn: Gain 2 Spell Power. |
 | Weight of the Crown | uncommon | skill | 1 +2 Arcana | Gain 1 Might. Apply 1 Sapped to ALL enemies. |
-| Breaking Point | rare | skill | 2 | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 8 Fracture. Consume. |
+| Breaking Point | rare | skill | 2 | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 6 Fracture. Consume. |
 | Cataclysm | rare | attack | 3 | Spell. Deal 18 (+6 per Spell Power spent) damage to ALL enemies. Consume. |
 | Cleaving Edge | rare | aura | 1 | Gain 2 Spell Power. Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
 | Crucible Heart | rare | aura | 1 | The first time each turn a card of yours grows: That card grows 2 more. |
@@ -772,7 +772,7 @@ cost and effects whose numbers differ by about a third or less.
 | Measured Ruin | rare | aura | 2 | Gain 2 Measured Ruin for the rest of the fight. |
 | Obsidian Aegis | rare | aura | 1 | At the end of your turn: Gain Barrier equal to half your Spell Power. |
 | Obsidian Drill | rare | attack | 3 | Sword. Deal 7 damage 3 times, 1 more time per Spell Power spent. |
-| Rupture Script | rare | skill | 2 | Spell. Apply 20 Fracture. Consume. |
+| Rupture Script | rare | skill | 2 | Spell. Apply 15 Fracture. Consume. |
 | Soul of Steel | rare | skill | 2 | Gain 2 Might. Consume. |
 | Storm of Glass | rare | attack | 3 | Sword. Deal 5 damage 4 times, 1 more time per 2 Spell Power. |
 | Tempered Focus | rare | aura | 1 | At the start of your turn: Gain 1 Primed. |

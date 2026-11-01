@@ -1,6 +1,7 @@
 // Neutral cards (every Riftwalker may be offered them), Warden signature cards and junk.
 // The shared toolkit lives here: a little draw, Scry, Exhaust, Barrier and an X-cost attack. The signature mechanics
 // (Shivs, Totems, Stances, Arcana...) never appear in Neutral (docs/09_ROSTER.md §1).
+// A Neutral card is never better than the class card it resembles: equal at most, or a little behind (DECISIONS #500). Ancestral cards may compete.
 
 import type { CardDef } from '@sr/combat';
 import {
@@ -90,9 +91,10 @@ export const NEUTRAL: CardDef[] = [
   n('rare', 'purging-light', 'Purging Light', 'skill', 2, 'none', [dispel(), barrier(8)], {
     exhaust: true,
   }),
-  n('uncommon', 'rift-surge', 'Rift Surge', 'skill', 1, 'none', [mana(2)], { exhaust: true }),
-  n('rare', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(2), mana(1)], {
+  n('common', 'rift-surge', 'Rift Surge', 'skill', 1, 'none', [mana(2)], { exhaust: true }),
+  n('uncommon', 'nerve-surge', 'Nerve Surge', 'skill', 0, 'none', [draw(1), mana(1)], {
     exhaust: true,
+    up: { effects: [draw(2), mana(1)] },
   }),
   n('uncommon', 'cull-the-hand', 'Cull the Hand', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
   // (an Aura that keeps working: Might now, and again every time the deck is reshuffled; DECISIONS #299)
@@ -127,18 +129,21 @@ export const NEUTRAL: CardDef[] = [
       exhaust: true,
     },
   ),
-  n('uncommon', 'plan-ahead', 'Plan Ahead', 'skill', 1, 'none', [manaNext(2), drawNext(1)]),
+  n('common', 'plan-ahead', 'Plan Ahead', 'skill', 1, 'none', [manaNext(1), drawNext(1)], {
+    up: { effects: [manaNext(1), drawNext(2)] },
+  }),
   n('uncommon', 'fever-dream', 'Fever Dream', 'skill', 0, 'none', [cheapen(2, 'random')], {
     exhaust: true,
-    up: { effects: [cheapen(3, 'random')] },
+    up: { retain: true },
   }),
   n('rare', 'echoing-blow', 'Echoing Blow', 'skill', 1, 'none', [status('twinned', 1)]),
   n('rare', 'rift-smithing', 'Rift Smithing', 'skill', 2, 'none', [upgradeOp('hand')], {
     exhaust: true,
   }),
-  n('rare', 'heart-of-the-rift', 'Heart of the Rift', 'power', 3, 'none', [
-    on('turnStart', [mana(1), draw(1)]),
-  ]),
+  // (a step behind The Long Game: DECISIONS #500)
+  n('uncommon', 'heart-of-the-rift', 'Heart of the Rift', 'power', 2, 'none', [on('turnStart', [draw(1)])], {
+    up: { cost: 1 },
+  }),
   n(
     'rare',
     'rift-collapse',
@@ -146,15 +151,12 @@ export const NEUTRAL: CardDef[] = [
     'attack',
     3,
     'none',
-    [dmg(40, 'allFoes'), lose(15)],
-    // (the upgrade makes it cheaper, not bigger: DECISIONS #271)
-    { exhaust: true, up: { cost: 2 } },
+    [dmg(30, 'allFoes'), lose(15)],
+    // (bigger, not cheaper, since DECISIONS #500: 30 to ALL for 2 Mana would be far over)
+    { exhaust: true, up: { effects: [dmg(36, 'allFoes'), lose(15)] } },
   ),
-  n('uncommon', 'borrowed-time', 'Stolen Time', 'skill', 0, 'none', [mana(3), manaNext(-2)], {
-    exhaust: true,
-  }),
-  // (an Aura: its Mana lasts the rest of the fight, like Blood Pact; DECISIONS #381)
-  n('rare', 'attunement', 'Attunement', 'power', 2, 'none', [maxMana(1)]),
+  // (an Aura: its Mana lasts the rest of the fight, like Blood Pact, DECISIONS #381; a Mana dearer than the class versions, #500)
+  n('rare', 'attunement', 'Attunement', 'power', 3, 'none', [maxMana(1)], { up: { cost: 2 } }),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.
@@ -315,10 +317,14 @@ const anc = (
   n('ancestral', id, name, kind, cost, target, effects, { source: 'ancestral', ...extra });
 
 export const ANCESTRAL: CardDef[] = [
-  anc('ancestral-blade', 'Ancestral Blade', 'attack', 2, 'foe', [dmg(22)], { exhaust: true }),
-  anc('elders-bulwark', "Elder's Bulwark", 'skill', 2, 'none', [barrier(22)], {
+  anc('ancestral-blade', 'Ancestral Blade', 'attack', 2, 'foe', [dmg(30)], {
+    exhaust: true,
+    up: { effects: [dmg(34)] },
+  }),
+  anc('elders-bulwark', "Elder's Bulwark", 'skill', 2, 'none', [barrier(28)], {
     exhaust: true,
     retain: true,
+    up: { effects: [barrier(32)] },
   }),
   anc('forebears-gift', "Forebear's Gift", 'skill', 0, 'none', [mana(2), draw(2)], {
     exhaust: true,
@@ -329,8 +335,8 @@ export const ANCESTRAL: CardDef[] = [
     'skill',
     1,
     'none',
-    [status('might', 3), status('thorns', 2)],
-    { exhaust: true },
+    [status('might', 2), status('thorns', 2)],
+    { exhaust: true, up: { effects: [status('might', 3), status('thorns', 2)] } },
   ),
   anc('rite-of-renewal', 'Rite of Renewal', 'skill', 2, 'none', [heal(14), barrier(10)], {
     exhaust: true,
@@ -342,7 +348,7 @@ export const ANCESTRAL: CardDef[] = [
     exhaust: true,
   }),
   anc('spirit-hunt', 'Spirit Hunt', 'attack', 1, 'none', [dmg(12, 'allFoes')], { exhaust: true }),
-  anc('lineage', 'Lineage', 'power', 2, 'none', [on('play', [draw(1)], { filter: 'power' })], {
+  anc('lineage', 'Lineage', 'power', 1, 'none', [on('play', [draw(1)], { filter: 'power' })], {
     up: { innate: true },
   }),
   anc(
@@ -358,7 +364,8 @@ export const ANCESTRAL: CardDef[] = [
   // an ancestral card's edge over Attunement)
   anc('the-long-memory', 'The Long Memory', 'power', 2, 'none', [on('turnStart', [mana(1)])], {
     innate: true,
-    up: { cost: 1 },
+    // (not cheaper, DECISIONS #500: +1 Mana a turn for 1, in the opening hand, with no price, beat every class version)
+    up: { effects: [draw(1), on('turnStart', [mana(1)])] },
   }),
   anc(
     'unbroken-line',

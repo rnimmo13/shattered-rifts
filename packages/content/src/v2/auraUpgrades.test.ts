@@ -65,7 +65,6 @@ const COST_CUT_AURAS = [
   'attunement',
   'heart-of-the-rift',
   'hunters-eye',
-  'the-long-memory',
 ];
 
 const auras = (): CardDef[] =>

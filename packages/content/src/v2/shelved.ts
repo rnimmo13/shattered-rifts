@@ -31,7 +31,6 @@ export const SHELVED_LEGENDARIES: readonly string[] = [
   'the-glass-palace',
   'the-twelve-gauge-opera',
   // neutral
-  'heart-of-the-rift',
   'rift-collapse',
 ];
 

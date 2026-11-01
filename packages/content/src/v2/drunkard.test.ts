@@ -95,16 +95,6 @@ describe('Mana tools', () => {
     expect(s.sides.a.mana).toBeGreaterThanOrEqual(before + 1);
   });
 
-  it('Stolen Time gives Mana now and takes it back next turn (never below 0)', () => {
-    let s = fight('knight', ['borrowed-time']);
-    s.sides.a.mana = 0;
-    s = playCard(s, 'T0');
-    expect(s.sides.a.mana).toBe(3);
-    expect(s.sides.a.nextMana).toBe(-2);
-    s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.a.mana).toBe(s.sides.a.maxMana - 2);
-  });
-
   it('every Riftwalker can reach some Mana trick', () => {
     const tricks = new Set(['mana', 'manaNext', 'maxMana']);
     for (const h of Object.keys(RIFTWALKERS)) {

@@ -38,11 +38,11 @@ function createFight(hero: HeroId) {
 const heroUnit = (s: CombatState): Unit => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('legendary effects', () => {
-  it('Rift Collapse hits every enemy for 40 and costs 15 HP', () => {
+  it('Rift Collapse hits every enemy for 30 and costs 15 HP', () => {
     const s0 = createFight('knight').state;
     const hp0 = heroUnit(s0).hp;
     const s = play('knight', 'rift-collapse');
-    for (const u of s.sides.b.units) expect(u.hp).toBe(160);
+    for (const u of s.sides.b.units) expect(u.hp).toBe(170);
     expect(heroUnit(s).hp).toBe(hp0 - 15);
   });
 

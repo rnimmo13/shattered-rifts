@@ -3,6 +3,8 @@
 
 export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   // knight
+  // (Neutral, a near copy of Overcharge: DECISIONS #500)
+  'borrowed-time': 'rift-surge',
   'brace-up': 'stand-firm',
   'iron-vigil': 'oath-of-iron',
   rampart: 'tower-shield',

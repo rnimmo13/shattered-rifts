@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Added (newest)
+- **Neutral and Ancestral cards retuned:** Neutral cards now sit at or a little behind the class cards they resemble, and Stolen Time is retired. Ancestral Blade and Elder's Bulwark hit harder, Echo of Ages is weaker, Lineage is cheaper, and Rift Collapse deals 30 to ALL.
 - **Boons have no rarity:** there are no more common, rare or Legendary Boons, the one-Legendary limit and its swap are gone, and every Boon costs 70 at a merchant.
 - **Boons gone:** Rift Core, Scholar's Tome, Battle Standard and Phoenix Ember. A run holding one gets a Rift Satchel (for the first two), an Idol of Might or a Healing Vial.
 - **Boons tuned:** Vigor Wick heals 1 a turn, Hunter's Lens gives 1 turn of Exposed, Shard Purse pays 6, The Gilded Crown is 6 Max HP and heal 3. Thorned Heart gives 4 Thorns.
