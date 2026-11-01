@@ -60,6 +60,7 @@ import { SuitTrack } from './SuitTrack';
 import { EnchantSlots } from './EnchantSlots';
 import { TotemArc, type TotemSummon } from './TotemArc';
 import { FormPanel } from './FormPanel';
+import { PileArt } from './PileArt';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
 import { centredLine, packLine } from './lineLayout';
@@ -717,6 +718,7 @@ export function FightView(props: {
               e.status === 'exposed' ||
               e.status === 'faltering' ||
               e.status === 'seared' ||
+              e.status === 'burn' ||
               e.status === 'stunned';
             sc.fighters.pulse(e.target, bad ? '#d12f48' : '#f6dc94');
             float(
@@ -2298,14 +2300,16 @@ export function FightView(props: {
               onClick={() => openPile('draw')}
               {...tipAttrs(UI_TIPS.draw)}
             >
-              Draw <b>{me?.drawCount ?? 0}</b>
+              <PileArt kind="draw" count={me?.drawCount ?? 0} />
+              <span className="pile__label">Draw</span> <b>{me?.drawCount ?? 0}</b>
             </button>
             <button
               className="pile pile--discard"
               onClick={() => openPile('discard')}
               {...tipAttrs(UI_TIPS.discard)}
             >
-              Discard <b>{me?.discardCount ?? 0}</b>
+              <PileArt kind="discard" count={me?.discardCount ?? 0} />
+              <span className="pile__label">Discard</span> <b>{me?.discardCount ?? 0}</b>
             </button>
             {(me?.exhaustedCount ?? 0) > 0 && (
               <button
@@ -2313,7 +2317,8 @@ export function FightView(props: {
                 onClick={() => openPile('exhausted')}
                 {...tipAttrs(UI_TIPS.consumed)}
               >
-                Consumed <b>{me?.exhaustedCount ?? 0}</b>
+                <PileArt kind="exhaust" count={me?.exhaustedCount ?? 0} />
+                <span className="pile__label">Consumed</span> <b>{me?.exhaustedCount ?? 0}</b>
               </button>
             )}
           </div>

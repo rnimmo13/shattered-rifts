@@ -35,7 +35,7 @@ const hurtMight = (cap: number): Op =>
   ({ ...status('might', 0, 'self', true), scale: { by: 'hpLostNow', mult: 0.5, max: cap } }) as Op;
 
 const p = pool('drunkard', 'midden');
-/** a drink's price: that much HP at the start of your next turn (DECISIONS #354) */
+/** a drink's price: 1% of Max HP per stack at the start of your next turn (DECISIONS #354, #502) */
 const hangover = (n: number): Op => status('hangover', n);
 /** clear your Hangover */
 const soberUp: Op = doubleSt('hangover', 'self', 0);
@@ -559,7 +559,7 @@ export const DRUNKARD: CardDef[] = [
     [{ op: 'loseHp', amount: 3, to: 'self' }, barrier(10), draw(1)],
     { up: { effects: [{ op: 'loseHp', amount: 3, to: 'self' }, barrier(13), draw(1)] } },
   ),
-  // Drinks give something big now and Hangover: at the start of your next turn you lose that much HP (never your last). Every HP
+  // Drinks give something big now and Hangover: at the start of your next turn you lose 1% of your Max HP per stack (never your last). Every HP
   // lost makes Clutch Genes hit harder (1% a HP, DECISIONS #411), and his heals grow with the HP he is missing to bring him back.
   p('common', 'liquid-lunch', 'Liquid Lunch', 'skill', 0, 'none', [mana(2), hangover(3)], {
     exhaust: true,
@@ -623,9 +623,10 @@ export const DRUNKARD: CardDef[] = [
   p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), hangover(4)], {
     up: { effects: [barrier(18), hangover(4)] },
   }),
+  // (2 hits, harder the drunker, DECISIONS #502, #509)
   p('uncommon', 'bender', 'Bender', 'attack', 1, 'foe', [
-    scaled(dmg(3, 'target', 1), per('hangover', 1, undefined, 'hits')),
-  ]),
+    scaled(dmg(4, 'target', 2), { by: 'hangover', step: 2 }),
+  ], { up: { effects: [scaled(dmg(6, 'target', 2), { by: 'hangover', step: 2 })] } }),
   // (the old cure: one more drink, and the morning never comes)
   p(
     'uncommon',
@@ -736,7 +737,7 @@ export const DRUNKARD: CardDef[] = [
     [on('play', [barrier(2), dmg(2, 'randomFoe')], { tag: 'stagger' })],
     { up: { effects: [on('play', [barrier(3), dmg(3, 'randomFoe')], { tag: 'stagger' })] } },
   ),
-  // (two hits, and one more for every point of Hangover: the drunker, the wilder)
+  // (three wild swings: the drunker, the harder, DECISIONS #502, #509)
   p(
     'rare',
     'blind-drunk',
@@ -744,7 +745,7 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(6, 'randomFoe', 2), per('hangover', 1, undefined, 'hits'))],
-    { tags: ['stagger'] },
+    [scaled(dmg(6, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })],
+    { tags: ['stagger'], up: { effects: [scaled(dmg(8, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })] } },
   ),
 ];

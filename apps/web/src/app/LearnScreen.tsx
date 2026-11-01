@@ -10,9 +10,12 @@ import {
   enemyScale,
   preludeCatalogue,
 } from '@sr/campaign';
+import type { StatusId } from '@sr/combat';
 import { BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
+import { STATUS_ICONS } from '../art/gameIcons';
+import { GameIcon } from '../ui/GameIcon';
 import { LearnOdds } from './LearnOdds';
 import { SHOW_ODDS } from './learnFlags';
 
@@ -239,7 +242,7 @@ export function LearnScreen() {
   ];
   const statuses = Object.entries(STATUS_INFO)
     .filter(([id]) => !RETIRED.includes(id))
-    .map(([, s]) => s);
+    .map(([id, s]) => ({ ...s, id: id as StatusId }));
   return (
     <main className="learn">
       <a className="btn btn--small" href="#/">
@@ -441,7 +444,7 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    {s.glyph} {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} className="learn__icon" /> {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>
@@ -458,7 +461,7 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    {s.glyph} {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} className="learn__icon" /> {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>

@@ -8,6 +8,7 @@ import {
   clone,
   cardText,
   createCombat,
+  previewCardDamage,
   legalActions,
   type CardDef,
   type CombatEvent,
@@ -136,7 +137,9 @@ describe('every card plays', () => {
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
         after.sides.a.nextDraw !== s0.sides.a.nextDraw ||
         (c.effects.some((o) => o.op === 'sweep') && after.sides.a.discard.some((x) => x.id === 'SW0')) ||
-        Object.keys(after.sides.a.totemBoost ?? {}).length > 0;
+        Object.keys(after.sides.a.totemBoost ?? {}).length > 0 ||
+        // (damage that is only a count, with nothing counted, lands no hit: DECISIONS #507)
+        c.effects.some((o) => o.op === 'damage' && o.amount === 0 && o.scale !== undefined);
       expect(
         stateChange || fx.some((e) => !['exhaust', 'discard'].includes(e.type)),
         `${c.id} did nothing`,
@@ -329,7 +332,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
     );
   });
 
-  it("Burn is the Shaman's (his Flame, DECISIONS #421: works as Bleed, a status of its own)", () => {
+  it("Burn is the Shaman's (his Flame, DECISIONS #421, #501: a status of its own)", () => {
     const burns = Object.values(db.cards).filter((c) =>
       c.effects.some(
         (o) =>
@@ -388,5 +391,163 @@ describe('Aura wording (DECISIONS #299, #300)', () => {
     expect(text('rift-resonance')).toBe(
       'Gain 1 Might. Whenever your deck is reshuffled: Gain 1 Might.',
     );
+  });
+});
+
+describe('only an X card scales its number of hits (DECISIONS #507, #509)', () => {
+  const scalesHits = (o: unknown): boolean => {
+    if (Array.isArray(o)) return o.some(scalesHits);
+    if (!o || typeof o !== 'object') return false;
+    const r = o as Record<string, unknown>;
+    if (r.into === 'hits' && r.by !== 'x') return true;
+    return Object.values(r).some(scalesHits);
+  };
+  it('a card that only counts, with nothing to count, lands no hit: Primed stays and Thorns stay quiet', () => {
+    const start = createCombat(db, {
+      seed: 'zero-hit',
+      a: { hero: 'assassin', deck: ['strike', 'strike', 'strike', 'strike', 'strike', 'strike'] },
+      b: { enemies: ['squire'] },
+    }).state;
+    const s0 = clone(start);
+    s0.sides.a.hand = [{ id: 'N0', card: 'needle-rain' }];
+    s0.sides.a.mana = 3;
+    const hero = s0.sides.a.units.find((u) => u.kind === 'hero')!;
+    hero.statuses.vigor = 4;
+    const foe = s0.sides.b.units[0]!;
+    foe.statuses.thorns = 5;
+    const { state, events } = applyAction(db, s0, { type: 'play', card: 'N0', target: foe.id });
+    expect(events.filter((e) => e.type === 'damage')).toEqual([]);
+    expect(state.sides.a.units.find((u) => u.kind === 'hero')!.statuses.vigor).toBe(4);
+  });
+
+  it('more of anything else means more damage on each hit, not more hits', () => {
+    const bad = Object.values(db.cards).filter((c) => scalesHits(c.effects)).map((c) => c.id);
+    expect(bad).toEqual([]);
+  });
+});
+
+describe('an aimed attack stays on its target (DECISIONS #508)', () => {
+  const twoFoes = (card: string) => {
+    const s0 = clone(
+      createCombat(db, {
+        seed: 'aim',
+        a: { hero: 'knight', deck: ['strike', 'strike', 'strike', 'strike', 'strike', 'strike'] },
+        b: { enemies: ['squire', 'squire'] },
+      }).state,
+    );
+    s0.sides.a.hand = [{ id: 'T0', card }];
+    s0.sides.a.mana = 3;
+    return s0;
+  };
+
+  it('when the target falls, the remaining hits are lost: they do not move to another enemy', () => {
+    const s0 = twoFoes('twin-cut');
+    const [first, second] = s0.sides.b.units;
+    first!.hp = 1;
+    const hp = second!.hp;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', target: first!.id });
+    expect(state.sides.b.units.find((u) => u.id === first!.id)?.hp ?? 0).toBe(0);
+    expect(state.sides.b.units.find((u) => u.id === second!.id)!.hp).toBe(hp);
+  });
+
+  it('a second damage effect of the same card is lost too: Crosscut after a Spell', () => {
+    const s0 = twoFoes('crosscut');
+    s0.sides.a.prevSpell = true;
+    const [first, second] = s0.sides.b.units;
+    first!.hp = 1;
+    const hp = second!.hp;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', target: first!.id });
+    expect(state.sides.b.units.find((u) => u.id === second!.id)!.hp).toBe(hp);
+  });
+
+  it('a Reverb replay is a new attack, and finds a new target', () => {
+    const s0 = twoFoes('twin-cut');
+    s0.sides.a.units.find((u) => u.kind === 'hero')!.statuses.twinned = 1;
+    const [first, second] = s0.sides.b.units;
+    first!.hp = 1;
+    const hp = second!.hp;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', target: first!.id });
+    expect(state.sides.b.units.find((u) => u.id === second!.id)!.hp).toBe(hp - 10);
+  });
+
+  it("a companion's own strike, aimed by no card, carries on to the next enemy", () => {
+    const s0 = twoFoes('scrap-golem');
+    const [first, second] = s0.sides.b.units;
+    const played = applyAction(db, s0, { type: 'play', card: 'T0' }).state;
+    played.sides.b.units.find((u) => u.id === first!.id)!.hp = 1;
+    const hp = second!.hp;
+    const after = applyAction(db, played, { type: 'endTurn' }).state;
+    expect(after.sides.b.units.find((u) => u.id === second!.id)!.hp).toBeLessThan(hp);
+  });
+
+  it('every hit lands while the target stands', () => {
+    const s0 = twoFoes('twin-cut');
+    const [first] = s0.sides.b.units;
+    const hp = first!.hp;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', target: first!.id });
+    expect(state.sides.b.units[0]!.hp).toBe(hp - 10);
+  });
+});
+
+describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
+  const playIt = (hero: HeroId, card: string, mana = 3) => {
+    const s0 = clone(
+      createCombat(db, {
+        seed: 'scale-' + card,
+        a: { hero, deck: ['strike', 'strike', 'strike', 'strike', 'strike', 'strike'] },
+        b: { enemies: ['squire'] },
+      }).state,
+    );
+    s0.sides.a.hand = [{ id: 'T0', card }];
+    s0.sides.a.mana = mana;
+    const foe = s0.sides.b.units[0]!;
+    foe.hp = foe.maxHp = 500;
+    return { s0, foe };
+  };
+  const lostBy = (hero: HeroId, card: string, mana = 3, prep?: (s: CombatState) => void): number => {
+    const { s0, foe } = playIt(hero, card, mana);
+    prep?.(s0);
+    const target = db.cards[card]!.target === 'foe' ? foe.id : undefined;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', ...(target ? { target } : {}) });
+    return 500 - state.sides.b.units[0]!.hp;
+  };
+
+  it('X cards hit X times', () => {
+    expect(lostBy('hunter', 'bloodstorm')).toBe(5 * 3);
+    expect(lostBy('necromancer', 'oblivion')).toBe(11 * 3);
+    expect(lostBy('monk', 'berserk-tide')).toBe(4 * 3);
+    expect(lostBy('hunter', 'whirling-maul')).toBe(6 * 3);
+    expect(lostBy('knight', 'rift-whirl')).toBe(4 * 3);
+  });
+
+  it('an X card at X = 0 lands no hit, and Primed stays', () => {
+    const { s0, foe } = playIt('assassin', 'run-through', 0);
+    s0.sides.a.units.find((u) => u.kind === 'hero')!.statuses.vigor = 4;
+    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', target: foe.id });
+    expect(state.sides.b.units[0]!.hp).toBe(500);
+    expect(state.sides.a.units.find((u) => u.kind === 'hero')!.statuses.vigor).toBe(4);
+  });
+
+  it('fixed hits with damage that grows: Apex Frenzy, Wild Swings, Trapline Rider, Flak Burst', () => {
+    expect(lostBy('hunter', 'apex-maw')).toBe(2 * 4);
+    expect(lostBy('hunter', 'apex-maw', 3, (s) => void (s.sides.a.played = 2))).toBe(2 * (4 + 2 * 2));
+    expect(lostBy('hunter', 'wild-swings', 3, (s) => void (s.sides.a.played = 2))).toBe(3 + 3 * 2);
+    expect(lostBy('trickster', 'trapline-rider')).toBe(4);
+    expect(
+      lostBy('shaman', 'flak-burst', 3, (s) => {
+        s.sides.a.discard = [
+          { id: 'W1', card: 'wound' },
+          { id: 'W2', card: 'wound' },
+        ];
+      }),
+    ).toBe(8 * 2);
+  });
+
+  it('a fixed-hit Sword shows its hits and what they come to', () => {
+    const { s0, foe } = playIt('spellblade', 'storm-of-glass');
+    s0.sides.a.stars = 12;
+    const live = [...previewCardDamage(db, s0, 'T0', foe.id).values()][0];
+    expect(live?.hits).toBe(4);
+    expect(live?.total).toEqual({ lo: 44, hi: 44 });
   });
 });

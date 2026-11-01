@@ -499,7 +499,7 @@ export const TRICKSTER: CardDef[] = [
     },
   ),
   v('uncommon', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('snares', 1, 'self', 'hits')),
+    scaled(dmg(4), per('snares', 4, 'self')),
   ]),
   v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
     dmg(12),

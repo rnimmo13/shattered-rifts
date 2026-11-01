@@ -2,6 +2,8 @@
 // Radiant (a triple-damage stance for the turn) also burns with golden rays and rising sparks. Pure presentation: it reads the hero's
 // statuses and draws; the rules live in the engine.
 
+import { STATUS_ICONS } from '../art/gameIcons';
+import { GameIcon } from '../ui/GameIcon';
 import { useRef, type CSSProperties } from 'react';
 import { useClearOfBelt } from './clearOfBelt';
 import type { StatusId, UnitView } from '@sr/combat';
@@ -28,7 +30,7 @@ export function StanceChip(props: { unit: Pick<UnitView, 'statuses'> }) {
   const info = STATUS_INFO[stance];
   return (
     <small className={`stance__chip stance__chip--${stance}`} aria-label={`${info.name} stance`}>
-      <span aria-hidden>{info.glyph}</span> {info.name}
+      <GameIcon art={STATUS_ICONS[stance]} /> {info.name}
     </small>
   );
 }
@@ -80,7 +82,7 @@ export function StanceAura(props: {
           aria-label={`In the ${info.name} stance. ${LINE[stance]}.`}
         >
           <b>
-            <span aria-hidden>{info.glyph}</span> {info.name}
+            <GameIcon art={STATUS_ICONS[stance]} /> {info.name}
           </b>
           <small>{LINE[stance]}</small>
         </div>

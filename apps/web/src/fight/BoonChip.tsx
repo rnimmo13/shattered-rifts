@@ -2,12 +2,14 @@
 
 import { COMBAT_DB } from '@sr/content/v2';
 import { tipAttrs } from '../ui/tip';
-import { glyphOf } from './boonGlyph';
+import { boonIcon } from '../art/gameIcons';
+import { GameIcon } from '../ui/GameIcon';
 import './boon.css';
 
 export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
   const b = Object.hasOwn(COMBAT_DB.boons, props.id) ? COMBAT_DB.boons[props.id] : undefined;
   if (!b) return null;
+  const art = boonIcon(b.id);
   return (
     <span
       className={`boon${b.heart ? ' boon--heart' : ''}${props.size === 'large' ? ' boon--large' : ''}`}
@@ -23,7 +25,7 @@ export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
           : 'A passive that lasts the whole run.',
       })}
     >
-      {glyphOf(b)}
+      {art && <GameIcon art={art} />}
     </span>
   );
 }

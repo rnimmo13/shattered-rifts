@@ -6,7 +6,7 @@
 // is filled again; a plant ~8 (into a full row its push-out acts; into a free position its passive works for the turns left), a
 // random kind 7.5. Passives a turn: Hawk 2 Primed ~2.1 (only if he is not Primed; Primed adds to every hit of his next attack), Bear
 // 2 Barrier 2.4, Thunderbird a Fork 2 of 3 ~5.1, Elder Tree 1 Mana 7, Moon Owl 1 off the first elemental spell ~5.4. A Fork 2 ~1.7x,
-// a Fork 3 ~1.95x, a Fork 4 ~1.95x its number. Burn as Bleed. "Whenever one of your totems acts" ~1.3 a turn.
+// a Fork 3 ~1.95x, a Fork 4 ~1.95x its number. Burn 0.55 of its ticks, as Bleed's 0.65 less what Barrier soaks (#501). "Whenever one of your totems acts" ~1.3 a turn.
 
 import type { Price } from './common';
 
@@ -36,9 +36,9 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'the starter command',
   },
   'searing-lash': {
-    pts: 10,
-    up: 13,
-    how: '8 + 2 Burn 1.95',
+    pts: 9.7,
+    up: 12.7,
+    how: '8 + 2 Burn 1.65',
     role: 'Flame',
   },
   kindle: {
@@ -54,15 +54,15 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame: Bleed payoff',
   },
   'twin-cinders': {
-    pts: 9.8,
-    up: 13.8,
-    how: "4 x2 + the second hit's help when it is the first Flame spell (3 x0.6) 1.8",
+    pts: 9.7,
+    up: 13.7,
+    how: '4 x2 + 2 Burn 1.65',
     role: 'Flame',
   },
   'flame-spear': {
-    pts: 18,
-    up: 23,
-    how: '18',
+    pts: 19.3,
+    up: 27.3,
+    how: '16 + 3 Burn 3.3',
     role: 'Flame: the heavy hit',
   },
   flare: {
@@ -78,16 +78,16 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame/totems: a hit that brings a Hawk',
   },
   immolate: {
-    pts: 20.5,
-    up: 24.5,
-    how: '14 + 4 Burn 6.5',
+    pts: 19.5,
+    up: 23.5,
+    how: '14 + 4 Burn 5.5',
     role: 'Flame: Burn',
   },
   'spreading-flames': {
-    pts: 12.9,
-    up: 15.9,
-    how: '9 + doubling ~3 Bleed already there (at most 10 more) ~3.9',
-    role: 'Flame: Bleed payoff',
+    pts: 19.8,
+    up: 30.3,
+    how: '8 Burn: 36 ticks x 0.55',
+    role: 'Flame: a big Burn',
     consume: true,
   },
   'ember-lance': {
@@ -109,10 +109,10 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame: the Burn payoff',
   },
   smoulder: {
-    pts: 16.8,
-    up: 23,
-    how: '4 turns x ~1.2 Flame spells x 3 Bleed (~3.5 on a stack)',
-    role: 'Flame: the Bleed engine',
+    pts: 14.4,
+    up: 19.5,
+    how: '4 turns x ~1.2 Flame spells x 3 Burn (~3 on a stack)',
+    role: 'Flame: the Burn engine',
   },
   'phoenix-feather': {
     pts: 12,
@@ -121,10 +121,10 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame: a big turn',
   },
   'flash-burn': {
-    pts: 16,
-    up: 20,
-    how: '4 + 3 a Bleed (~4 in a Flame deck)',
-    role: 'Flame: the Bleed finisher',
+    pts: 21.4,
+    up: 25.4,
+    how: '12 + 2 a Burn (~8 in a Flame deck), less the half it spends (4 Burn x 0.55 x 3 turns)',
+    role: 'Flame: the Burn finisher',
     consume: true,
   },
   'heart-of-the-pyre': {
@@ -134,9 +134,9 @@ export const SHAMAN_PRICES: Record<string, Price> = {
     role: 'Flame: pays for every Flame spell',
   },
   inferno: {
-    pts: 33.9,
-    up: 41.9,
-    how: '30 + 3 Bleed 3.9',
+    pts: 33.3,
+    up: 41.3,
+    how: '30 + 3 Burn 3.3',
     role: 'Flame: the boss finisher',
   },
   'frost-needle': {

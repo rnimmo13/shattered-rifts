@@ -4,6 +4,7 @@
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
+import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
 import { useTallMap } from './mapShape';
 
 const KIND_LABEL: Record<NodeKind, string> = {
@@ -117,11 +118,23 @@ export function MapView(props: {
   cleared: readonly string[];
   available: ReadonlySet<string>;
   onEnter: (id: string) => void;
+  /** names this map for what the player has drawn on it */
+  inkKey?: string;
 }) {
-  const { map } = props;
-  // (the hook re-renders the map when the screen is turned)
+  // (the hook re-renders the map when the screen is turned; a drawing only fits the layout it was drawn on, so each has its own)
   const tall = useTallMap();
-  if (tall) return <TallMap {...props} />;
+  const ink = useMapInk(props.inkKey && `${props.inkKey}:${tall ? 'tall' : 'wide'}`);
+  return (
+    <>
+      <MapInkTools ink={ink} />
+      {tall ? <TallMap {...props} ink={ink} /> : <WideMap {...props} ink={ink} />}
+    </>
+  );
+}
+
+/** Floors left to right. */
+function WideMap(props: MapProps & { ink: MapInkState }) {
+  const { map } = props;
   // fill the screen: the spacing grows with the window. PAD is the room left and right of the first and last floor, so the
   // map sits dead centre and a hovered node's glow is never cut off.
   const PAD = 90;
@@ -168,6 +181,7 @@ export function MapView(props: {
         if (!p) return null;
         return <MapButton key={n.id} n={n} p={p} {...props} />;
       })}
+      <MapInkLayer ink={props.ink} w={W} h={H} />
     </div>
   );
 }
@@ -235,7 +249,7 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
 }
 
 /** Held upright: floor 1 at the top, the Warden at the bottom; each floor's stops spread across the width. */
-function TallMap(props: MapProps) {
+function TallMap(props: MapProps & { ink: MapInkState }) {
   const { map } = props;
   const W = Math.max(260, Math.min(520, window.innerWidth - 40));
   const ROW_H = 118;
@@ -272,6 +286,7 @@ function TallMap(props: MapProps) {
         const p = pos.get(n.id);
         return p ? <MapButton key={n.id} n={n} p={p} {...props} /> : null;
       })}
+      <MapInkLayer ink={props.ink} w={W} h={H} />
     </div>
   );
 }

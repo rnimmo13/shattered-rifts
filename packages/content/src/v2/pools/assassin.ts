@@ -37,9 +37,8 @@ import {
 
 const q = pool('assassin', 'umbral');
 
-/** Deal `amount` damage once per point of a metric (Flechettes, Skewer). */
-const hitsPer = (amount: number, by: 'x' | 'skillsInHand'): Op =>
-  scaled({ op: 'damage', amount, hits: 0, to: 'target' }, per(by, 1, undefined, 'hits'));
+/** Deal `amount` damage per Skill in hand, on one hit (Flechettes, DECISIONS #507). */
+const perSkill = (amount: number): Op => scaled(dmg(0), per('skillsInHand', amount));
 const knifeTrap = (upgrade: boolean): Op =>
   playPile('exhaust', { tag: 'knife', all: true, aim: 'target', ...(upgrade ? { upgrade } : {}) });
 const tick = (to: 'allFoes' | 'target'): Op => ({ op: 'tick', to });
@@ -206,7 +205,7 @@ export const ASSASSIN: CardDef[] = [
     { up: { effects: [scaled(dmg(0), per('attacksPlayed', 8))] } },
   ),
   // (Skewer: an X card, so its upgrade is X+1, as every X card's is, not 11 damage)
-  q('uncommon', 'run-through', 'Run Through', 'attack', 0, 'foe', [hitsPer(8, 'x')], { x: true }),
+  q('uncommon', 'run-through', 'Run Through', 'attack', 0, 'foe', [scaled({ op: 'damage', amount: 8, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))], { x: true }),
   // (Pounce)
   q(
     'uncommon',
@@ -552,9 +551,9 @@ export const ASSASSIN: CardDef[] = [
     [{ op: 'strip', to: 'target' }, status('exposed', 2, 'target')],
     { exhaust: true },
   ),
-  // (Flechettes: 5 damage once for each Skill in your hand)
-  q('uncommon', 'needle-rain', 'Needle Rain', 'attack', 1, 'foe', [hitsPer(5, 'skillsInHand')], {
-    up: { effects: [hitsPer(7, 'skillsInHand')] },
+  // (Flechettes: 5 damage for each Skill in your hand, on one hit)
+  q('uncommon', 'needle-rain', 'Needle Rain', 'attack', 1, 'foe', [perSkill(5)], {
+    up: { effects: [perSkill(7)] },
   }),
   // (Footwork)
   q('uncommon', 'fleet-step', 'Fleet Step', 'power', 1, 'none', [status('bracing', 2)]),

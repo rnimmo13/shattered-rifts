@@ -57,14 +57,6 @@ const g = pool('necromancer', 'gloomfen');
 const CMD = { tags: ['command'] };
 /** a companion gives itself up (Bone Shards: "Osty dies") */
 const DIES: Op = { op: 'sacrifice', self: true };
-/** X hits of a damage effect */
-const xHits = (amount: number): Op => ({
-  op: 'damage',
-  amount,
-  hits: 0,
-  to: 'target',
-  scale: { by: 'x', into: 'hits' },
-});
 
 export const NECROMANCER: CardDef[] = [
   // --- basics and tokens ---
@@ -189,7 +181,7 @@ export const NECROMANCER: CardDef[] = [
       exhaust: true,
     },
   ),
-  // (Rattle: one more hit for every other time your Thralls have struck this turn)
+  // (Rattle: harder for every other time your Thralls have struck this turn)
   g(
     'uncommon',
     'rattle-the-bones',
@@ -197,10 +189,10 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [command(scaled(dmg(7), per('allyStrikes', 1, undefined, 'hits')))],
+    [command(scaled(dmg(7), per('allyStrikes', 3)))],
     {
       ...CMD,
-      up: { effects: [command(scaled(dmg(9), per('allyStrikes', 1, undefined, 'hits')))] },
+      up: { effects: [command(scaled(dmg(9), per('allyStrikes', 4)))] },
     },
   ),
   // (Right Hand Hand)
@@ -756,7 +748,7 @@ export const NECROMANCER: CardDef[] = [
     { up: { cost: 1 } },
   ),
   // (Eradicate)
-  g('rare', 'oblivion', 'Unmaking', 'attack', 0, 'foe', [xHits(11)], { x: true, retain: true }),
+  g('rare', 'oblivion', 'Unmaking', 'attack', 0, 'foe', [{ op: 'damage', amount: 11, hits: 0, to: 'target', scale: { by: 'x', into: 'hits' } }], { x: true, retain: true }),
   // (Glimpse Beyond: "ALL players add 3 Souls"; alone, it is you)
   g('rare', 'gather-souls', 'Gather Souls', 'skill', 1, 'none', [addTo('gravesoul', 3, 'draw')], {
     exhaust: true,

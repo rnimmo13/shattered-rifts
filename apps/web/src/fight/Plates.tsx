@@ -5,8 +5,10 @@ import { ON_OR_OFF, KNIFE_MAX, PREP_MAX, forgeLabel, type StatusId, type UnitVie
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
-import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, statusTip } from './info';
+import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, fateBarPct, statusTip } from './info';
 import { Arrow } from '../ui/Arrow';
+import { GameIcon } from '../ui/GameIcon';
+import { STATUS_ICONS, TAUNT_ICON } from '../art/gameIcons';
 
 export interface Placed {
   unit: UnitView;
@@ -31,25 +33,6 @@ export interface PlatesProps {
   scale?: number;
   /** the highest an intent may sit (CSS length): below the top bar */
   intentTop?: string;
-}
-
-/** Thorns: a bramble stem with barbs, drawn instead of a text glyph so it reads at chip size. */
-function ThornIcon() {
-  return (
-    <svg className="chip__icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden>
-      <path
-        d="M3 21 Q9 15 12 12 T21 3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M6.5 17.5 L3 13 L9.5 15 Z M10.5 13.5 L9 6.5 L15 10.5 Z M15 8.5 L16 2 L20.5 7.5 Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
 }
 
 export function UnitPlates({
@@ -99,6 +82,7 @@ export function UnitPlates({
     <div className="plates" aria-hidden={false}>
       {items.map(({ unit: u, x, y, h, w }) => {
         const pct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
+        const fate = u.statuses.doom ?? 0;
         const iv = u.intentView;
         const incoming = u.hp > 0 ? sweeps(u.side) : [];
         const slot = lane.get(u.id) ?? {
@@ -196,9 +180,16 @@ export function UnitPlates({
               </div>
               <div
                 className={`bar${u.barrier > 0 ? ' has-barrier' : ''}`}
-                {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp))}
+                {...tipAttrs(UI_TIPS.hp(u.hp, u.maxHp, fate))}
               >
                 <div className="bar__fill" style={{ width: `${pct}%` }} />
+                {/* Fate builds up from the left of the bar: when it reaches the red's end, this unit dies at the end of its turn (DECISIONS #504) */}
+                {fate > 0 && u.hp > 0 && (
+                  <div
+                    className={`bar__fate${fate >= u.hp ? ' is-lethal' : ''}`}
+                    style={{ width: `${fateBarPct(u.hp, u.maxHp, fate)}%` }}
+                  />
+                )}
                 {/* a phase still to come (an Omen): a notch where it rises */}
                 {u.rise?.map((x, i) => (
                   <i
@@ -234,7 +225,7 @@ export function UnitPlates({
                       text: `Your sharpest ${sharp.weapon} has gained this much damage this fight. Every ${sharp.word} adds more to the copies you have; a copy made later starts fresh.`,
                     })}
                   >
-                    <Arrow dir="up" plain />
+                    <GameIcon art={STATUS_ICONS.keen} />
                     <b>{sharp.amount}</b>
                   </span>
                 )}
@@ -246,7 +237,7 @@ export function UnitPlates({
                       className={`chip chip--${info.tone}${id === 'opening' ? ' chip--open' : ''}`}
                       {...tipAttrs(statusTip(id, n))}
                     >
-                      {id === 'thorns' ? <ThornIcon /> : info.glyph}
+                      <GameIcon art={STATUS_ICONS[id]} />
                       {/* (an Opening is on or off: it reads "Open", not a count, DECISIONS #415) */}
                       {/* (Preparation and knives say their cap, DECISIONS #416) */}
                       {/* (a status that is on or off has no number to show: DECISIONS #492) */}
@@ -264,7 +255,7 @@ export function UnitPlates({
                 })}
                 {u.taunt && (
                   <span className="chip chip--good" {...tipAttrs(UI_TIPS.taunt)}>
-                    ▣
+                    <GameIcon art={TAUNT_ICON} />
                   </span>
                 )}
               </div>

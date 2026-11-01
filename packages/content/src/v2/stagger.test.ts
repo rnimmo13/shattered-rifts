@@ -62,16 +62,19 @@ describe('Stagger', () => {
     expect(hero().barrier).toBe(2);
   });
 
-  it('Blind Drunk hits twice, and once more for every point of Hangover', () => {
-    const hits = (h: number) => {
+  it('Blind Drunk is always 3 hits, each 2 harder per 2 Hangover (DECISIONS #509)', () => {
+    const swing = (h: number) => {
       const s0 = fight(['blind-drunk'], h);
       const hero = s0.sides.a.units.find((u) => u.kind === 'hero')!.id;
-      return play(s0, 'blind-drunk').events.filter(
+      const hits = play(s0, 'blind-drunk').events.filter(
         (e) => e.type === 'damage' && e.source === hero && e.target !== hero,
-      ).length;
+      );
+      expect(hits).toHaveLength(3);
+      return (hits[0] as { amount: number }).amount;
     };
-    expect(hits(0)).toBe(2);
-    expect(hits(3)).toBe(5);
+    expect(swing(0)).toBe(6);
+    expect(swing(3)).toBe(8);
+    expect(swing(8)).toBe(14);
   });
 
   it('Free-for-All: three hits, each at an enemy of its own choosing (two enemies both get hit over a few seeds)', () => {

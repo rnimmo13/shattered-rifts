@@ -262,10 +262,9 @@ export const HUNTER: CardDef[] = [
     'attack',
     2,
     'foe',
-    // Predator: the more cards played this turn, the more it hits (DECISIONS #340)
-    [lifesteal(scaled(dmg(5, 'target', 2), per('played', 1, undefined, 'hits')), 50)],
-    // (upgraded, it costs 1: more damage per hit gains a burst card little)
-    { exhaust: true, up: { cost: 1 } },
+    // Predator: the more cards played this turn, the harder it hits (DECISIONS #340, #507)
+    [lifesteal(scaled(dmg(4, 'target', 2), per('played', 2)), 50)],
+    { exhaust: true, up: { effects: [lifesteal(scaled(dmg(6, 'target', 2), per('played', 2)), 50)] } },
   ),
   // (an Aura: its Mana lasts the rest of the fight, DECISIONS #380)
   k('rare', 'blood-pact', 'Blood Pact', 'power', 1, 'none', [lose(7), maxMana(1)]),
@@ -414,7 +413,7 @@ export const HUNTER: CardDef[] = [
     exhaust: true,
   }),
   k('common', 'wild-swings', 'Wild Swings', 'attack', 1, 'foe', [
-    scaled(dmg(3), per('played', 1, undefined, 'hits')),
+    scaled(dmg(3), per('played', 3)),
   ]),
   k('common', 'shake-loose', 'Shake Loose', 'skill', 1, 'none', [draw(2), barrier(3)], {
     up: { effects: [draw(2), barrier(6)] },

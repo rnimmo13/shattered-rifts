@@ -23,7 +23,7 @@ Every effect converts into points. A card's points, added up, should land on its
 |---|---|---|
 | 0 | **6** | Quick Slash (6), Arc Flash (3 + 1 Exposed), Turn Aside (4 Barrier) |
 | 1 | **10** | Hilt Strike (9 + draw 1), Twin Cut (5 x2), Dirty Hit (8 + 1 Faltering), Stone Skin (9 Barrier), Emberstrike (9 + 1 Arcana) |
-| 2 | **19** | Obsidian Flurry (6 x3), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + Defer a card) |
+| 2 | **19** | Obsidian Flurry (18 at 8 Spell Power), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + Defer a card) |
 | 3 | **28** | Harvest (27, Hold), Skybreaker (26, +1 Mana on a kill), Hammer Fall (32, uncommon) |
 | 4 | **37** | |
 
@@ -70,9 +70,9 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 | Damage to a random enemy | **0.9** per point | Can't focus a kill (Cleaving Throws 3 x3 = 9). |
 | Several hits | same total as one hit | Twin Cut 5 x2 = 10. But every hit gets Might, Primed, Edge and Thorns: in a class with Might sources, take **~1 point off per extra hit**; in a class with none, multi-hit is free flavour. |
 | "Your companions each deal N" | **0.7-1.0 x** a normal attack's number per Thrall | Price it at one companion; the second and third are the build's payoff. 0-cost Commands sit at 100% (Knucklebone 6), 1+ cost at ~70% (Bone Snap 7, Bone Crush 12). |
-| X cost | **~7 points per X** at uncommon (70-80% of the 9-per-Mana slope) | X cards never waste Mana and grow with every Mana effect. Run Through 8/X, Whirling Blade 5 AoE/X. The upgrade is always X+1 (`plus()`). |
+| X cost | **~7 points per X** at uncommon (70-80% of the 9-per-Mana slope) | X cards never waste Mana and grow with every Mana effect. Run Through 8/X, Whirling Blade 5 AoE/X. X cards are the one exception to "never scale hits": Mana is their limit (DECISIONS #509). The upgrade is always X+1 (`plus()`). |
 | Damage that grows ("every copy gains N") | first play at ~90% of budget, then **N x 1.2** for the growth | A card comes round every 2-3 turns, so expect 1-2 more plays (Mounting Fury 9 + 5, Gathering Storm 3 + 2 at 0 cost). |
-| "+N per X" scaling | price at the X you expect **mid-fight**, not the best case | Mastered Strike: 6 + 2 per Strike, about 16-19 in a starter-based deck. Price the median; then check the ceiling with the combo test in §8. Usual X: **3-4 cards in hand** (more in a Hold deck), **1-2 Mana left** in a Patience deck (0-1 otherwise), **1.5 Traps set** in a Trap deck (3 at most). |
+| "+N per X" scaling | **more damage on each hit, never more hits** (DECISIONS #507, #509: Might and Primed add to every hit, so hits that scale multiply them; a fixed few hits are fine, and the rate counts on all of them). Price at the X you expect **mid-fight**, not the best case | Mastered Strike: 6 + 2 per Strike, about 16-19 in a starter-based deck. Price the median; then check the ceiling with the combo test in §8. Usual X: **3-4 cards in hand** (more in a Hold deck), **1-2 Mana left** in a Patience deck (0-1 otherwise), **1.5 Traps set** in a Trap deck (3 at most). |
 
 ---
 
@@ -111,6 +111,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | **Sapped** for a turn (flat damage off) | **1.2 per point per hit** the enemy makes that turn | Withering Touch 8 Sapped (Fleeting) ≈ 8 Barrier. Never worth more than the hit it shrinks. For the rest of the fight: about 3x. |
 | **Bleed**, a fresh stack of N | **65% of the total it will tick**: N(N+1)/2 x 0.65 | It's slow but ignores Barrier. Open Vein 5 (15 ticks) ≈ 10, Barbed Stab 6 + 3 Bleed ≈ 10, Viper's Kiss 7 + Hold ≈ 19 (a 2-cost). Short version: ~1.5 per stack for 1-3 Bleed, ~2 per stack for 5-7. |
 | Bleed added to an existing stack | **~0.65 x N x the turns that stack has left** | Stacking is where Bleed gets strong; the payoffs (Hemorrhage, Bloodburst, Reopen the Wound) are priced on a stack already being there. |
+| **Burn**, a fresh stack of N | **55% of the total it will tick**: N(N+1)/2 x 0.55; added to a stack, **~0.55 x N x the turns it has left** | Bleed's shape, a step cheaper: Barrier still standing at the start of the unit's turn soaks the ticks (it still loses 1), so it does less against whatever holds Barrier (DECISIONS #501). Wildfire 8 Burn = 19.8. A payoff that reads the stack should spend some of it: Flashpoint halves it. |
 | **Fate** | **0.7** per stack (**0.9** to ALL) | Nothing until it reaches the enemy's HP, then everything. Tolling Bell 13 Fate + draw 1, Creeping End 5 Barrier + 7 to all. Weakest against bosses (it has to climb to their HP), strongest as a finisher on regular fights. |
 | Strangled N (loses N per card you play) | **N x the cards you will still play this turn** (~3) | No card applies it now (Garrote, 8 + 2 Strangled ≈ 14, left the pool: DECISIONS #474). |
 | Stunned | Exposed + Faltering + Brittle together, so **~7 per turn** of it, more on a big attacker | Keep it rare. |
@@ -146,7 +147,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Spirit (Focus) | this turn: **1 per totem** in the row (~3); for the fight: **~2.5 per totem** | Spirit Strike 9 + 1 Spirit this turn, Elemental Focus. |
 | Precision (the Old Twelve Gauge's Sharpen, DECISIONS #400) | **2.5** a point | The Gun costs 1, hits every enemy, Holds and comes round 2-3 times a fight (the Obsidian Blade's Sharpen is 0.8: 2 Mana, one target, fewer shots). |
 | A Buckshot Shell (0, 4 to ALL, Consume) | **5.2** | A Dagger that hits every enemy. |
-| Hangover N (lose N HP next turn, never the last) | **-1.5** a stack | HP, at the usual rate; its payoffs are priced on ~3 stacks already there. |
+| Hangover N (lose N% of Max HP next turn, rounded up, never the last) | **-1.5** a stack | HP, at the usual rate: 1 HP a stack on his 88 HP, so a share of Max HP keeps the same price in the Arena (DECISIONS #502). Its payoffs are priced on ~3 stacks already there. |
 | Enter Fury (double attack damage, take 50% more) *(legacy: the archived Monk; his Martial Forms since #419 are in §15)* | **4**, plus the Barbarian's trait per stance entered | Kindle Fury (2, basic: 9 and Fury). Worth the attacks after it this turn; staying in Fury through the enemy turn costs ~6 HP. |
 | Enter Serene (leaving it gives 2 Mana, once a turn) *(legacy, as above)* | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. Since DECISIONS #413 the 2 Mana is the Monk's trait (Inner Fire), not an engine rule; his cards keep these prices, so the trait table counts the same Mana again (about 7.5 a Serene exit) and the two must not be added up. |
 | Fervor *(legacy, as above)* | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
@@ -448,12 +449,13 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 |---|---|---|
 | **SP gained** | **3** a point; next turn **2.55** | A point can power Swords and then a spell. |
 | **Grows N** | **N x 3.6** | The growth rate (N x 1.2) on 3 a point. |
-| **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. |
+| **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. A Sword never adds hits: more damage per step of SP, at most 2 a point across all its hits; the bigger ones strike a fixed 2-4 times (DECISIONS #507, #509). |
+| **Keen N** | **N x 3.5** a turn | About two Swords a turn, at 1-4 hits each (Whispering Edge: Keen 2). |
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
-| **Fracture** | **3.1** a point, **4.1** to ALL | It only adds up, and the k-th Shatter deals 10 + 10k + the Spell Power held: 43 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 50 at 20, 90 at 30, 200 at 50, 650 at 100. Applied at about **5 a Mana** since DECISIONS #499 (Faultline Hex 1: 5, Final Shatter 2: 10, Rupture Script 2: 15 with Consume). That stays over budget at this rate on purpose: Fracture does nothing until it crosses a 10. |
+| **Fracture** | **2.5** a point, **3.3** to ALL | It only adds up, and the k-th Shatter deals 15 + 5k + the Spell Power held: 35.5 per 10 over the first four at the priced 8, less the delay and Barrier (DECISIONS #486, #487, #503; the same 0.72 of that as the old 3.1). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 45 at 20, 75 at 30, 150 at 50, 425 at 100. Applied at about **5 a Mana** since DECISIONS #499 (Faultline Hex 1: 5, Final Shatter 2: 10, Rupture Script 2: 10 with Consume). That stays over budget at this rate on purpose: Fracture does nothing until it crosses a 10. |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
-| **Might** | **15** a stack in a Sword deck, 5 otherwise | About 7.5 hits a turn for 3 turns, less misses. Worth less on a turn the Obsidian Blade swings, one hit without Blade Echo (DECISIONS #488); not repriced. |
-| **Primed** | **6** a stack | Saved for the biggest swing, about 6 hits. |
+| **Might** | **10** a stack in a Sword deck, 5 otherwise | About 3.5 hits a turn for 3 turns, as her Swords no longer add hits (DECISIONS #509). Worth less on a turn the Obsidian Blade swings, one hit without Blade Echo (DECISIONS #488); not repriced. |
+| **Primed** | **4** a stack | Saved for the biggest swing, about 4 hits. |
 | **Obsidian Blade** | **5 + 2 per SP**, 21 at 8 SP | Against a budget of 19 for 2 Mana, with Hold and Opening hand on top (DECISIONS #488). Might and Primed add once a swing, so they buy little here without Blade Echo. |
 | **Blade Echo** | **+1 Blade hit** a copy | 21 more per swing at 8 SP (DECISIONS #488). Copies stack: 42, 63, 84. |
 | **Barrier +1 per 3 SP** | **+3.2** | 2.67 Barrier at the priced 8 SP, x1.2 (DECISIONS #486). +1 per 2 (Unbreakable Crown) is +4.8. |

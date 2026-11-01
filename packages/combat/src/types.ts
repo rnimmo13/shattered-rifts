@@ -16,7 +16,7 @@ export type StatusId =
   | 'faltering' // deals 25% less attack damage (turns)
   | 'might' // +1 attack damage per stack (permanent)
   | 'seared' // takes stacks damage at the start of its turn, then loses 1
-  | 'burn' // (the Shaman's Flame, DECISIONS #421) Burn: exactly as Bleed, a status of its own
+  | 'burn' // (the Shaman's Flame, DECISIONS #421, #501) Burn: as Bleed, but Barrier soaks it, and it ticks before Barrier falls away
   | 'stunned' // counts as Exposed, Faltering and Brittle (never on top of them) for its own count of turns (DECISIONS #310)
   | 'thorns' // reflects stacks damage to attackers (permanent)
   | 'shielded' // ignores the next instance of damage per stack
@@ -40,7 +40,7 @@ export type StatusId =
   | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
   | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
-  | 'hangover' // at the start of its turn it loses this much HP (never below 1), then it clears (KP's drinks; DECISIONS #354)
+  | 'hangover' // at the start of its turn it loses 1% of its Max HP per stack, rounded up (never below 1 HP), then it clears (KP's drinks; DECISIONS #354, #502)
   | 'clutch' // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
   | 'sapped' // its attacks deal this much less damage (it wears off at the end of its own turn when a card puts it on an enemy: one put on during that enemy's turn ends with it)
   | 'cruelty' // your attacks deal 25% more to Exposed enemies
@@ -235,11 +235,11 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 30 at 20, 110 at 100, with none held
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 25 at 20, 65 at 100, with none held
  * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_BASE = 10;
-export const SHATTER_STEP = 10;
+export const SHATTER_BASE = 15;
+export const SHATTER_STEP = 5;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;

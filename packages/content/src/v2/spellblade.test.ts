@@ -127,7 +127,7 @@ describe('Spell Power', () => {
 
   it('there is no cap on spending', () => {
     const s = play(fight(['comet'], { stars: 40 }), 'comet');
-    expect(lost(s)).toBe(20 + 10 * 40);
+    expect(lost(s)).toBe(20 + 7 * 40);
   });
 
   it('there is no choice of amount: one legal play for a target', () => {
@@ -144,8 +144,8 @@ describe('Spell Power', () => {
 
   it('Lava Bomb is the best rate per point she has', () => {
     const rate = (id: string) => lost(play(fight([id], { stars: 11 }), id)) - lost(play(fight([id], { stars: 10 }), id));
-    expect(rate('comet')).toBe(10);
-    expect(rate('devastate')).toBeLessThan(10);
+    expect(rate('comet')).toBe(7);
+    expect(rate('devastate')).toBeLessThan(7);
   });
 
   it('the spending cards are X or X/2, never both', () => {
@@ -188,9 +188,9 @@ describe('what makes the Blade hit harder', () => {
     expect(hero(r).statuses.vigor ?? 0).toBe(0);
   });
 
-  it('Whispering Edge adds to every Sword hit and to nothing else', () => {
+  it('Whispering Edge adds to every Sword and to nothing else', () => {
     const r = play(play(fight(['whispering-edge', BLADE]), 'whispering-edge'), BLADE);
-    expect(lost(r)).toBe(21 + 1);
+    expect(lost(r)).toBe(21 + 2);
     const spell = play(play(fight(['whispering-edge', 'skybolt'], { stars: 0 }), 'whispering-edge'), 'skybolt');
     expect(lost(spell)).toBe(8);
   });
@@ -220,7 +220,7 @@ describe('what makes the Blade hit harder', () => {
   it('Echoing Blade adds a hit to the Blade, and not to other Swords', () => {
     const s = play(fight(['echoing-blade', BLADE, 'obsidian-flurry'], { stars: 8 }), 'echoing-blade');
     expect(lost(play(s, BLADE))).toBe(21 * 2);
-    expect(lost(play(s, 'obsidian-flurry'))).toBe(3 * 7);
+    expect(lost(play(s, 'obsidian-flurry'))).toBe(3 * (4 + 2));
   });
 
   it('Measured Ruin adds to the first spending Spell Attack each turn only', () => {
@@ -235,19 +235,19 @@ describe('what makes the Blade hit harder', () => {
 describe('Fracture and Shatter', () => {
   it('every 10 Shatters it, harder each time, and Fracture only adds up', () => {
     const start = fight(['rupture-script']);
-    foe(start).statuses.fracture = 5;
+    foe(start).statuses.fracture = 15;
     const s = play(start, 'rupture-script');
-    expect(foe(s).statuses.fracture).toBe(20);
-    // (Spell Power 8 on each)
-    expect(lost(s)).toBe(28 + 38);
+    expect(foe(s).statuses.fracture).toBe(25);
+    // (it crosses 20 only: the second Shatter, 25, + Spell Power 8)
+    expect(lost(s)).toBe(33);
   });
 
-  it('the Shatter at 100 deals 110, and ten of them come to 650', () => {
+  it('the Shatter at 100 deals 65, and ten of them come to 425 (DECISIONS #503)', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 96;
     const r = play(s, 'hairline-crack');
     expect(foe(r).statuses.fracture).toBe(100);
-    expect(lost(r)).toBe(110);
+    expect(lost(r)).toBe(65);
     let total = fight(['final-shatter'], { stars: 0 });
     foe(total).statuses.fracture = 0;
     total = play(total, 'final-shatter');
@@ -257,7 +257,7 @@ describe('Fracture and Shatter', () => {
       total = play(total, 'final-shatter');
     }
     expect(foe(total).statuses.fracture).toBe(100);
-    expect(lost(total)).toBe(650);
+    expect(lost(total)).toBe(425);
   });
 
   it('every Shatter adds the Spell Power you hold, and spends none (DECISIONS #487)', () => {
@@ -271,7 +271,7 @@ describe('Fracture and Shatter', () => {
   it('it keeps scaling past 100', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 106;
-    expect(lost(play(s, 'hairline-crack'))).toBe(120);
+    expect(lost(play(s, 'hairline-crack'))).toBe(70);
   });
 
   it('a cleanse does not take Fracture off', () => {
@@ -286,13 +286,13 @@ describe('Fracture and Shatter', () => {
     expect(after.sides.b.units[0]!.statuses.exposed ?? 0).toBe(0);
   });
 
-  it('a card shows a growing Sword\'s real hits and total', () => {
+  it('a bigger Sword shows its fixed hits, its rule and what it comes to now (DECISIONS #509)', () => {
     const s = fight(['storm-of-glass'], { stars: 12 });
     const live = previewCardDamage(db, s, 'T0', foe(s).id);
-    expect(cardText(db, db.cards['storm-of-glass']!, live)).toContain('[[live:same:5]] damage 4 times, 1 more time per 2 Spell Power (10 hits, [[live:calc:50]] total).');
+    expect(cardText(db, db.cards['storm-of-glass']!, live)).toContain('Deal 5 (+1 per 2 Spell Power) damage 4 times');
     hero(s).statuses.might = 2;
     const m = previewCardDamage(db, s, 'T0', foe(s).id);
-    expect(cardText(db, db.cards['storm-of-glass']!, m)).toContain('[[live:up:7]] damage 4 times, 1 more time per 2 Spell Power (10 hits, [[live:calc:70]] total).');
+    expect(cardText(db, db.cards['storm-of-glass']!, m)).toContain('Deal 5 (+1 per 2 Spell Power) damage 4 times');
   });
 
   it('the Blade says its rule, and what it comes to now', () => {
@@ -415,8 +415,8 @@ describe('Fracture and Shatter', () => {
     hero(s).dmgPct = 50;
     const r = play(s, 'final-shatter');
     expect(lost(r)).toBe(10);
-    // (the next Shatter would be the second, 30, halved)
-    expect(lost(play(r, 'breaking-point-hex'))).toBeGreaterThanOrEqual(10 + 15);
+    // (the next Shatter would be the second, 25, halved and rounded down)
+    expect(lost(play(r, 'breaking-point-hex'))).toBeGreaterThanOrEqual(10 + 12);
   });
 
   it('Hungering Void only deepens enemies already marked, and sets off no card-only Aura', () => {
@@ -451,9 +451,9 @@ describe('Fracture and Shatter', () => {
     expect(foe(play(fight(['carry-the-fault']), 'carry-the-fault')).statuses.fracture).toBe(6);
   });
 
-  it('Etching Edge cracks once per hit', () => {
+  it('Etching Edge applies 1 Fracture, and 1 more per 8 Spell Power', () => {
     const s = play(fight(['etching-edge'], { stars: 8 }), 'etching-edge');
-    expect(foe(s).statuses.fracture).toBe(3);
+    expect(foe(s).statuses.fracture).toBe(2);
   });
 
   it('a Fractured arena opponent can be Shattered, and the hit belongs to the side that applied it', () => {
@@ -721,22 +721,22 @@ const CASES: {
   { id: 'last-ember', stars: 0, sp: 2, barrier: 5 },
   { id: 'big-bang', sp: 11 },
   { id: 'the-forgemaster', sp: 14 },
-  { id: 'obsidian-flurry', dmg: 21 },
+  { id: 'obsidian-flurry', dmg: 18 },
   { id: 'cosmic-lance', dmg: 10 },
   { id: 'gleam', dmg: 6, drew: 1 },
-  { id: 'etching-edge', dmg: 6, fracture: 3 },
+  { id: 'etching-edge', dmg: 6, fracture: 2 },
   { id: 'rift-sweep', dmg: 15 },
   { id: 'glass-needle', dmg: 6 },
   { id: 'guarded-cut', dmg: 6, barrier: 6 },
   { id: 'shard-strike', stars: 7, dmg: 6, barrier: 0, sp: 8 },
   { id: 'shard-strike', stars: 9, dmg: 8, barrier: 7, sp: 10 },
-  { id: 'sovereign-strike', dmg: 20 },
+  { id: 'sovereign-strike', dmg: 18 },
   { id: 'crosscut', dmg: 8 },
-  { id: 'fault-piercer', dmg: 20 },
-  { id: 'hammer-and-anvil', dmg: 24, sp: 9 },
-  { id: 'storm-of-glass', dmg: 40 },
+  { id: 'fault-piercer', dmg: 18 },
+  { id: 'hammer-and-anvil', dmg: 20, sp: 9 },
+  { id: 'storm-of-glass', dmg: 36 },
   { id: 'thousand-shards', stars: 3, dmg: 18, sp: 0 },
-  { id: 'obsidian-drill', stars: 4, dmg: 35, sp: 2 },
+  { id: 'obsidian-drill', stars: 4, dmg: 33, sp: 2 },
   { id: 'call-the-blade', sp: 10 },
   { id: 'feint', barrier: 7, status: { vigor: 1 } },
   { id: 'conqueror', status: { vigor: 2 }, drew: 1 },
@@ -756,7 +756,7 @@ const CASES: {
   { id: 'devastate', dmg: 60 },
   { id: 'radiance', stars: 6, dmg: 34 },
   { id: 'dying-star', dmg: 24, foeStatus: { faltering: 2 } },
-  { id: 'comet', dmg: 100 },
+  { id: 'comet', dmg: 76 },
   { id: 'supernova', dmg: 66 },
   { id: 'faultline-hex', fracture: 5 },
   { id: 'spreading-fault', fracture: 4 },
@@ -770,7 +770,7 @@ const CASES: {
   { id: 'collapsing-star', fracture: 9 },
   { id: 'carry-the-fault', fracture: 6 },
   { id: 'deep-fault', fracture: 4 },
-  { id: 'rupture-script', fracture: 15, dmg: 28 },
+  { id: 'rupture-script', fracture: 10, dmg: 28 },
   { id: 'breaking-point-hex', dmg: 28, fracture: 6 },
   { id: 'star-barrier', stars: 6, barrier: 14, sp: 3 },
   { id: 'glass-veil', barrier: 10, sp: 9 },
@@ -838,5 +838,18 @@ describe('every card does what the list says', () => {
       .map((c) => c.id)
       .filter((id) => !covered.has(id));
     expect(missing).toEqual([]);
+  });
+});
+
+describe('a card with nothing to count (DECISIONS #507)', () => {
+  it('shows what it will do: no hit, so its bonuses do not show as damage', () => {
+    const s = fight(['thousand-shards'], { stars: 0 });
+    hero(s).statuses.might = 3;
+    hero(s).statuses.vigor = 4;
+    const shown = JSON.stringify(previewCardDamage(db, s, 'T0', foe(s).id));
+    const before = lost(s);
+    const after = lost(applyAction(db, s, { type: 'play', card: 'T0', target: foe(s).id }).state);
+    expect(after - before).toBe(0);
+    expect(shown).not.toMatch(/:7\b/);
   });
 });

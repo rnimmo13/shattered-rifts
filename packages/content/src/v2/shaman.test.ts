@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
   applyAction,
   cardText,
+  chooseAction,
   clone,
   createCombat,
   legalActions,
@@ -218,6 +219,85 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(s.sides.a.mana).toBe(9 + 2);
     expect(s.sides.a.discard.map((c) => c.card)).toContain('void-drain');
     expect(s.sides.a.exhausted.map((c) => c.card)).not.toContain('spirit-offering');
+  });
+
+  it('Wildfire is a skill that applies 8 Burn and deals nothing (DECISIONS #501)', () => {
+    expect(db.cards['spreading-flames']?.kind).toBe('skill');
+    let s = fight(['spreading-flames']);
+    s = play(s, 'spreading-flames', foe(s).id);
+    expect(lost(s)).toEqual([0]);
+    expect(foe(s).statuses.burn).toBe(8);
+    expect(s.sides.a.mana).toBe(8);
+    s = fight(['spreading-flames+']);
+    s = play(s, 'spreading-flames+', foe(s).id);
+    expect(foe(s).statuses.burn).toBe(10);
+  });
+
+  it('Flashpoint costs 2, deals 12 + 2 per Burn and spends half the Burn, rounded down (DECISIONS #501)', () => {
+    let s = fight(['flash-burn']);
+    foe(s).statuses.burn = 21;
+    s = play(s, 'flash-burn', foe(s).id);
+    expect(lost(s)).toEqual([12 + 42]);
+    expect(foe(s).statuses.burn).toBe(10);
+    expect(s.sides.a.mana).toBe(7);
+    expect(cardText(db, db.cards['flash-burn']!)).toContain('Halve the Burn on the target.');
+    s = fight(['flash-burn+']);
+    s = play(s, 'flash-burn+', foe(s).id);
+    expect(lost(s)).toEqual([16]);
+  });
+
+  it('Burn has to get through the Barrier still standing, Bleed does not, and either way it loses its 1 (DECISIONS #501)', () => {
+    const ticked = (barrier: number, status: 'burn' | 'seared'): CombatState => {
+      const s = fight([]);
+      s.sides.a.totems = [];
+      s.sides.a.runes = [];
+      foe(s).barrier = barrier;
+      foe(s).statuses[status] = 5;
+      return endTurn(s);
+    };
+    expect(lost(ticked(3, 'burn'))).toEqual([2]);
+    expect(lost(ticked(20, 'burn'))).toEqual([0]);
+    expect(foe(ticked(20, 'burn')).statuses.burn).toBe(4);
+    expect(lost(ticked(0, 'burn'))).toEqual([5]);
+    expect(lost(ticked(20, 'seared'))).toEqual([5]);
+  });
+
+  it('Barrier a Burn tick brings (a phase rise) stays; what is left of last turn still falls away (DECISIONS #501)', () => {
+    const s = fight([]);
+    s.sides.a.totems = [];
+    s.sides.a.runes = [];
+    foe(s).hp = 103;
+    foe(s).barrier = 1;
+    foe(s).statuses.burn = 5;
+    foe(s).rise = [{ atPct: 50, barrierPct: 20, might: 0 }];
+    const after = endTurn(s);
+    const plain = fight([]);
+    plain.sides.a.totems = [];
+    plain.sides.a.runes = [];
+    // (what the enemy's own guard move gives)
+    const none = foe(endTurn(plain)).barrier;
+    // (1 soaked, 3 of the other 4 reach the 100 HP floor, and the rise brings 40)
+    expect(foe(after).hp).toBe(100);
+    expect(foe(after).barrier).toBe(40 + none);
+    const kept = fight([]);
+    kept.sides.a.totems = [];
+    kept.sides.a.runes = [];
+    foe(kept).barrier = 30;
+    foe(kept).statuses.burn = 5;
+    expect(foe(endTurn(kept)).barrier).toBe(none);
+    // (Fortified keeps its share of what the tick left: 10 - 4 = 6, 75% of it is 4)
+    const fort = fight([]);
+    fort.sides.a.totems = [];
+    fort.sides.a.runes = [];
+    foe(fort).barrier = 10;
+    foe(fort).statuses.burn = 4;
+    foe(fort).statuses.fortified = 1;
+    expect(foe(endTurn(fort)).barrier).toBe(4 + none);
+  });
+
+  it('a bot counts Burn, so it plays Wildfire', () => {
+    const s = fight(['spreading-flames']);
+    expect(chooseAction(db, s).type).toBe('play');
   });
 
   it('Flame Spear does 16 and 3 Burn; Twin Cinders burns too', () => {
@@ -440,7 +520,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     let h = fight(['harvest-of-ruin']);
     h = play(h, 'harvest-of-ruin');
     expect(h.sides.a.discard.filter((x) => x.card === 'wound')).toHaveLength(3);
-    // (Blighted Chorus: 2 hits, one more per Status card)
+    // (Blighted Chorus: 2 hits, harder per Status card)
     let b = fight(['blighted-chorus']);
     b.sides.a.discard = [
       { id: 'W1', card: 'wound' },
@@ -448,7 +528,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       { id: 'W3', card: 'void-drain' },
     ];
     b = play(b, 'blighted-chorus');
-    expect(lost(b)).toEqual([5 * (2 + 3)]);
+    expect(lost(b)).toEqual([2 * (5 + 2 * 3)]);
     // (Sweep Away: only the Status cards leave the draw pile)
     let w = fight(['sweep-away']);
     w.sides.a.draw = [

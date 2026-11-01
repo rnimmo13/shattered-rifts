@@ -65,13 +65,7 @@ export const NEUTRAL: CardDef[] = [
     0,
     'none',
     [
-      {
-        op: 'damage',
-        amount: 4,
-        hits: 0,
-        to: 'allFoes',
-        scale: { by: 'x', into: 'hits' },
-      },
+      { op: 'damage', amount: 4, hits: 0, to: 'allFoes', scale: { by: 'x', into: 'hits' } },
     ],
     { x: true },
   ),

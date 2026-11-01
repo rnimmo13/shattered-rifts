@@ -58,6 +58,10 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
       (u.statuses.exposed ?? 0) * 2 +
       (u.statuses.faltering ?? 0) * 2 +
       (u.statuses.seared ?? 0) * 1.5 +
+      // (Burn: a step below Bleed, Barrier can soak it, DECISIONS #501)
+      (u.statuses.burn ?? 0) * 1.25 +
+      // (Hangover: what it will cost next turn, which no look-ahead reaches, DECISIONS #502)
+      Math.max(0, Math.min(Math.ceil(((u.statuses.hangover ?? 0) * u.maxHp) / 100), u.hp - 1)) * 0.9 +
       (u.statuses.brittle ?? 0) * 1 +
       // (Stunned is Exposed, Faltering and Brittle at once: DECISIONS #310)
       (u.statuses.stunned ?? 0) * 5 +
@@ -69,7 +73,8 @@ export function evaluate(db: CombatDb, s: CombatState, me: Side): number {
     v +=
       (u.statuses.exposed ?? 0) * 2.5 +
       (u.statuses.faltering ?? 0) * 2 +
-      (u.statuses.seared ?? 0) * 3;
+      (u.statuses.seared ?? 0) * 3 +
+      (u.statuses.burn ?? 0) * 2.5;
     v += (u.statuses.stunned ?? 0) * 6; // (Exposed, Faltering and Brittle at once: DECISIONS #310)
     v += (u.statuses.brittle ?? 0) * 1.5;
     if (!doomed) v += Math.min(u.statuses.doom ?? 0, u.hp) * 0.9;

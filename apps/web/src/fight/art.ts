@@ -300,7 +300,8 @@ function motifOf(c: CardDef): Motif {
   if (has('stars') || has('forge')) return 'crystal';
   if (has('stance')) return 'power';
   if (has('scry') || has('discard')) return 'draw';
-  if (ops.some((o) => o.op === 'status' && o.status === 'seared')) return 'flame';
+  if (ops.some((o) => o.op === 'status' && (o.status === 'seared' || o.status === 'burn')))
+    return 'flame';
   if (
     ops.some(
       (o) =>
@@ -348,7 +349,7 @@ function effectEmblems(c: CardDef): string[] {
       out.push(
         o.status === 'might' || o.status === 'vigor'
           ? 'fist'
-          : o.status === 'seared'
+          : o.status === 'seared' || o.status === 'burn'
             ? 'flame'
             : o.status === 'doom'
               ? 'hourglass'

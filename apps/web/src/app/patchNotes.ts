@@ -29,6 +29,27 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.149.0',
+    date: '2026-11-01',
+    title: 'Big hits, drawn icons, map pens',
+    summary: 'Scaling cards hit harder instead of more often, burst is reined in, and buffs, Boons and piles get real pictures.',
+    notes: [
+      { kind: 'new', text: 'Draw on the map: a pen with six colours, an eraser and a Clear button, to plan your path. Tap a stop with the pen in hand and you still go there.' },
+      { kind: 'new', text: 'Fate now builds up in purple from the left of the HP bar. When it reaches the end of the red it glows: that unit dies at the end of its turn.' },
+      { kind: 'new', text: 'Every buff, debuff, Boon and Warden\'s Heart has its own small icon, an Aura in play shows its card\'s picture, and the draw, discard and Consumed piles are stacks of cards that grow as they fill.' },
+      { kind: 'changed', text: 'Only X cards add hits as they scale. Other cards keep a fixed number of hits and deal more damage on each one, so Might and Primed can\'t multiply out of control. Reverb, Echo and Echoing Blade work as they did.' },
+      { kind: 'changed', text: 'If your target dies during a card\'s aimed attack, the hits left are lost, and so is the card\'s second strike. They no longer jump to another enemy. Enemies and your companions\' own end-of-turn strikes still carry on to the next target.' },
+      { kind: 'changed', text: 'Burn now has to get through Barrier, and it ticks before last turn\'s Barrier falls away.' },
+      { kind: 'changed', text: 'Hangover costs 1% of your Max HP per stack, rounded up: about the same in a run, and a real price in the Arena.' },
+      { kind: 'balance', text: 'Spellblade: each Shatter hits 5 harder than the last, not 10 (20, 25... 65 at 100 Fracture). Rupture Script applies 10. Lava Bomb deals 7 per Spell Power. Thousand Shards deals 6 per Spell Power. Her bigger Swords strike a fixed 2 to 4 times, and Whispering Edge gives 2 Keen.' },
+      { kind: 'balance', text: 'Shaman: Wildfire is a skill that applies 8 Burn. Flashpoint costs 2, deals 12, +2 per Burn, and halves the Burn on its target.' },
+      { kind: 'balance', text: 'Drunkard: Blind Drunk is 3 hits of 6, +2 each per 2 Hangover. Bender is 2 hits of 4, +1 each per 2 Hangover.' },
+      { kind: 'balance', text: 'Rending Fury is one hit of 8, +3 per time you lost HP, at most 45 more. Rattle the Bones gains 3 per earlier command. Apex Frenzy is 2 hits of 4, +2 each per card played, and its upgrade adds damage instead of lowering its cost.' },
+      { kind: 'fixed', text: 'A card that counts something, with nothing to count, lands no hit: no Thorns come back, Primed stays, and its number on the card says so.' },
+    ],
+    heads: 'The rules changed, so old Arena replays no longer play, and a page left open will ask you to reload.',
+  },
+  {
     version: '0.148.0',
     date: '2026-10-31',
     title: 'Neutral and Ancestral cards',

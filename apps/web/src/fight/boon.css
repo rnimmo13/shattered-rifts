@@ -73,3 +73,19 @@
   flex: none;
 }
 
+/* a Boon is a drawn picture on a dark disc with a gold rim (DECISIONS #505) */
+.boon {
+  background: radial-gradient(circle at 35% 30%, #3a3148, #15101f 70%);
+  border: 2px solid var(--c-gold-dark);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.6);
+}
+.boon.boon--heart {
+  background: radial-gradient(circle at 35% 30%, #5a2030, #1c0a12 70%);
+  border-color: #ff8a64;
+  box-shadow: 0 0 10px rgb(255 80 60 / 0.55);
+}
+.boon .gameicon {
+  width: 86%;
+  height: 86%;
+  display: block;
+}

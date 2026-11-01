@@ -2,6 +2,7 @@
 // and the Auras in play. Each part only shows once it matters to the deck, so a Riftwalker without runes never sees an
 // empty totem row.
 
+import { cardArtV2 } from './art';
 import { emblemSvg } from '../art/emblems';
 import { MAX_SNARES, cardText, type CombatDb, type SideView } from '@sr/combat';
 import { tipAttrs, type TipContent } from '../ui/tip';
@@ -129,6 +130,7 @@ export function AuraList(props: { db: CombatDb; me: SideView; panel: string; tit
                 text: c ? cardText(db, c) : '',
               })}
             >
+              {c && <img className="aux__thumb" src={cardArtV2(c)} alt="" />}
               {c?.name ?? 'Aura'}
               {p.copies > 1 ? ` ×${p.copies}` : ''}
             </span>

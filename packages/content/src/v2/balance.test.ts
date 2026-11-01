@@ -70,7 +70,7 @@ describe('balance guard rails', () => {
       if (c.kind === 'power' || !c.exhaust) bad.push(`${c.id} (not consumed)`);
       for (const o of c.effects)
         // (Slip the Leash doubles all your Might with no cap, Robert 2026-10-30)
-        if (o.op === 'scaleStatus' && o.max === undefined && c.id !== 'slip-the-leash' && c.id !== 'slip-the-leash+' && c.id !== 'spreading-flames' && c.id !== 'spreading-flames+')
+        if (o.op === 'scaleStatus' && o.max === undefined && c.id !== 'slip-the-leash' && c.id !== 'slip-the-leash+')
           bad.push(`${c.id} (no cap)`);
     }
     expect(bad).toEqual([]);
@@ -97,7 +97,9 @@ describe('balance guard rails', () => {
         if (!sc || !GROWS.includes(sc.by)) continue;
         const cap = c.exhaust ? 3 : 2;
         // (a count in steps pays its mult once per step: "5 more for every 10 Fate" is half a point per Fate)
-        if ((sc.mult ?? 1) / (sc.step ?? 1) > cap) bad.push(`${c.id}: x${sc.mult} per ${sc.by}`);
+        // (it pays on every hit, so a fixed few hits count too: DECISIONS #509)
+        const hits = o.op === 'damage' ? (o.hits ?? 1) : 1;
+        if (((sc.mult ?? 1) * hits) / (sc.step ?? 1) > cap) bad.push(`${c.id}: x${sc.mult} per ${sc.by}, ${hits} hits`);
       }
     expect(bad).toEqual([]);
   });

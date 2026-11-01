@@ -131,14 +131,14 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(foe(after).hp).toBe(300 - 23 - (10 + 2) - (10 + 10));
   });
 
-  it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits once more for every earlier command', () => {
+  it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits harder for every earlier command', () => {
     let s = fight(['calcify', 'knucklebone', 'rattle-the-bones']);
     s = play(s, 'T0');
     s = play(s, 'T1', foe(s).id);
     expect(foe(s).hp).toBe(300 - 10);
     s = play(s, 'T2', foe(s).id);
-    // one earlier command this turn: 2 hits of 7 + 4
-    expect(foe(s).hp).toBe(300 - 10 - 22);
+    // one earlier command this turn: one hit of 7 + 3 + 4
+    expect(foe(s).hp).toBe(300 - 10 - 14);
   });
 
   it('Bone Crush costs 0 once the Thralls have struck this turn', () => {

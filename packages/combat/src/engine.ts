@@ -136,6 +136,8 @@ interface Act {
   lost: number;
   /** (the Assassin) the units this card's attack hits were aimed at, and whether one of them landed on each (a knife embeds only then) */
   struck: Map<UnitId, boolean>;
+  /** this card's aimed attack has begun on its target: if that target falls, the rest of this act's aimed hits are lost (DECISIONS #508) */
+  aimed?: boolean;
   /** knives this card has pulled so far, and the stacks of a status it has spent (Preparation) */
   extracted: number;
   spentBy: Partial<Record<StatusId, number>>;
@@ -423,6 +425,12 @@ export function modifiedDamage(
 const SCALE_WORDS: Partial<Record<string, string>> = {
   starSpend: 'Spell Power spent',
   stars: 'Spell Power',
+  played: 'cards played',
+  tagDeck: 'Status cards',
+  hpLostFight: 'times you lost HP',
+  skillsInHand: 'Skills in hand',
+  snares: 'Traps',
+  allyStrikes: 'earlier commands',
   missingPct: '% HP missing',
   missingHp: 'HP missing',
   thorns: 'Thorns',
@@ -470,7 +478,8 @@ function applyDamage(
   source: Unit | null,
   t: Unit,
   amount: number,
-  kind: 'attack' | 'direct',
+  // ('burn': not an attack, so nothing that answers attacks, but Barrier soaks it, DECISIONS #501)
+  kind: 'attack' | 'direct' | 'burn',
   overflow = false,
 ): number {
   if (t.hp <= 0) return 0;
@@ -491,7 +500,7 @@ function applyDamage(
     });
     return 0;
   }
-  const blocked = kind === 'attack' ? Math.min(t.barrier, amount) : 0;
+  const blocked = kind === 'direct' ? 0 : Math.min(t.barrier, amount);
   t.barrier -= blocked;
   let lost = Math.min(t.hp, amount - blocked);
   // Buffer: the next time HP would be lost, none is (Barrier has soaked what it could first)
@@ -519,7 +528,7 @@ function applyDamage(
     blocked,
     lost,
     shielded: false,
-    kind,
+    kind: kind === 'burn' ? 'direct' : kind,
     hp: t.hp,
     ...(overflow ? { overflow: true as const } : {}),
   });
@@ -1631,10 +1640,14 @@ function execOp(r: Run, a: Act, op: Op): void {
         execOp(r, a, { ...op, to: 'allFoes' });
         return;
       }
+      // (damage that is only a count, with nothing counted, lands no hit: no Thorns back, and Primed stays, DECISIONS #507)
+      if (countsNothing(r, a, op)) return;
       let hits = op.hits ?? 1;
       if (op.scale?.into === 'hits') hits += scaleValue(r, a, op.scale, a.target);
       // (Blade Echo: the Blade strikes once more per stack, DECISIONS #488)
       if (a.card?.tags?.includes(BLADE_TAG)) hits += stacks(a.actor, 'bladeecho');
+      // (X = 0: no hit, so Primed stays)
+      if (hits <= 0) return;
       const knife = a.card?.tags?.includes(EDGE_TAG) === true;
       const edge = knife ? stacks(a.actor, 'edge') : 0;
       // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
@@ -1683,12 +1696,16 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (r.s.winner) break;
         // (an enemy or companion killed mid-attack, by Reflect or Thorns, lands no more hits)
         if (a.actor.hp <= 0 && a.actor.kind !== 'hero') break;
-        // a target that died mid-attack: the remaining hits find a new one (an enemy by its own rule for choosing, so a
-        // random-picking foe picks again; anyone else the usual way: a minion still standing, then the hero)
+        // (a card's aimed attack is at that one target: when it falls, the hits left are lost, the card's later damage effects too, DECISIONS #508)
+        if (to === 'target' && a.card && a.aimed && (!a.target || a.target.hp <= 0)) break;
+        // otherwise a target that has died finds a new one: an enemy's or a companion's own attack, so one weak unit in front cannot soak it
+        // all (an enemy by its own rule for choosing, so a random-picking foe picks again; anyone else the usual way: a minion, then the
+        // hero), and a new play of a card, as a Reverb or Echo replay starting after its target fell.
         if (to === 'target' && (!a.target || a.target.hp <= 0)) {
           const b = r.db.units[a.actor.def]?.brain;
           a.target = pickFoe(r, a.actor, b?.kind === 'enemy' ? (b.foe ?? 'hero') : 'hero');
         }
+        if (to === 'target' && a.card) a.aimed = true;
         let ts = resolve(r, a, to);
         // a spread of hits: each finds an enemy not struck yet, and stops when every enemy has been
         if (op.distinct && op.to === 'randomFoe') {
@@ -3126,7 +3143,18 @@ function addCardTo(r: Run, sd: SideState, card: CardId, to: 'hand' | 'discard' |
   return inst;
 }
 
-/** What the k-th Shatter on a unit deals: 20, 30, 40... (DECISIONS #486), plus its owner's Spell Power (#487) and what its Deepening adds. */
+/** Damage that is only a count, with nothing counted, lands no hit (DECISIONS #507). (A count of "each" unit is read per unit, so it is left alone.) */
+function countsNothing(r: Run, a: Act, op: { amount: number; scale?: Scale }): boolean {
+  return (
+    op.amount === 0 &&
+    op.scale !== undefined &&
+    op.scale.into !== 'hits' &&
+    op.scale.of !== 'each' &&
+    scaleValue(r, a, op.scale, a.target) <= 0
+  );
+}
+
+/** What the k-th Shatter on a unit deals: 20, 25, 30... (DECISIONS #486, #503), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
   return SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
 }
@@ -3363,14 +3391,26 @@ function fitsFree(r: Run, op: Extract<Op, { op: 'playPile' }>, c: CardInst): boo
   );
 }
 
-/** Bleed (Seared) deals its stacks now and loses 1, as it does at the start of its turn; Burn (the Shaman's, #421) does the same. */
+/** Bleed (Seared) deals its stacks past any Barrier, then loses 1. */
+function searedTick(r: Run, u: Unit): void {
+  const n = stacks(u, 'seared');
+  if (n <= 0 || u.hp <= 0) return;
+  applyDamage(r, null, u, n, 'direct');
+  addStatus(r, u, 'seared', -1);
+}
+
+/** Burn (the Shaman's, #421) deals its stacks, which have to get through Barrier first (#501), then loses 1, blocked or not. */
+function burnTick(r: Run, u: Unit): void {
+  const n = stacks(u, 'burn');
+  if (n <= 0 || u.hp <= 0) return;
+  applyDamage(r, null, u, n, 'burn');
+  addStatus(r, u, 'burn', -1);
+}
+
+/** Bleed and Burn tick now, as they do at the start of the unit's turn. */
 function bleedTick(r: Run, u: Unit): void {
-  for (const st of ['seared', 'burn'] as const) {
-    const n = stacks(u, st);
-    if (n <= 0 || u.hp <= 0) continue;
-    applyDamage(r, null, u, n, 'direct');
-    addStatus(r, u, st, -1);
-  }
+  searedTick(r, u);
+  burnTick(r, u);
 }
 
 /** Picks the card a 'playPile' op plays and takes it out of its pile (null when there is none). */
@@ -3873,38 +3913,48 @@ export const FORTIFIED_KEEP = 0.75;
 /** The most Hangover a unit can carry. */
 export const HANGOVER_MAX = 10;
 
-/** barrier falls away, Seared burns, then (for a hero side) mana refills and the hand is drawn */
+/** Burn meets the Barrier still standing, barrier falls away, Seared burns, then (for a hero side) mana refills and the hand is drawn */
 function startOfTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   // Reflect lasts through the other side's turn, and ends as yours begins
   for (const u of sd.units)
     if (stacks(u, 'reflect') > 0) addStatus(r, u, 'reflect', -stacks(u, 'reflect'));
+  // (assassin) an enemy hero's Virulent makes Bleed and Burn tick more times over
+  const foeHero = heroOf(r.s.sides[other(side)]);
+  const ticks = 1 + (foeHero ? stacks(foeHero, 'virulent') : 0);
+  // Burn ticks while last turn's Barrier still stands: once that falls away there would be nothing for it to get through (#501)
+  const lastTurns = new Map(sd.units.map((u) => [u.id, u.barrier]));
+  const tickFrom = r.ev.length;
+  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) burnTick(r, u);
+  for (const e of r.ev.slice(tickFrom))
+    if (e.type === 'damage' && e.blocked > 0)
+      lastTurns.set(e.target, Math.max(0, (lastTurns.get(e.target) ?? 0) - e.blocked));
   for (const u of sd.units) {
     // (assassin) Blur: this turn change keeps all of it
     if (stacks(u, 'blur') > 0) {
       addStatus(r, u, 'blur', -1);
       continue;
     }
-    if (u.barrier > 0) {
+    // only last turn's falls away: what a Burn tick just brought (a phase rise, a Trap it sprang) is new
+    const old = Math.min(u.barrier, lastTurns.get(u.id) ?? 0);
+    if (old > 0) {
       // Fortified keeps a share of your Barrier through the turn change, Plating keeps up to its stacks; otherwise all of it falls away
-      const fort = stacks(u, 'fortified') > 0 ? Math.floor(u.barrier * FORTIFIED_KEEP) : 0;
-      const kept = Math.min(u.barrier, Math.max(fort, stacks(u, 'plating')));
-      u.barrier = kept;
-      r.ev.push({ type: 'barrierDrop', target: u.id, total: kept });
+      const fort = stacks(u, 'fortified') > 0 ? Math.floor(old * FORTIFIED_KEEP) : 0;
+      const kept = Math.min(old, Math.max(fort, stacks(u, 'plating')));
+      u.barrier += kept - old;
+      r.ev.push({ type: 'barrierDrop', target: u.id, total: u.barrier });
     }
   }
   // Plating wears thinner every turn
   for (const u of sd.units) if (stacks(u, 'plating') > 0) addStatus(r, u, 'plating', -1);
-  // Seared (Bleed) burns; (assassin) an enemy hero's Virulent makes it burn more times over
-  const foeHero = heroOf(r.s.sides[other(side)]);
-  const ticks = 1 + (foeHero ? stacks(foeHero, 'virulent') : 0);
-  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) bleedTick(r, u);
-  // the morning after: Hangover costs that much HP, but never the last one, and it clears (DECISIONS #354)
+  // Seared (Bleed) burns
+  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) searedTick(r, u);
+  // the morning after: each Hangover costs 1% of Max HP, rounded up on the whole, but never the last one, and it clears (DECISIONS #354, #502)
   for (const u of [...sd.units]) {
     const owed = stacks(u, 'hangover');
     if (owed <= 0 || u.hp <= 0) continue;
     addStatus(r, u, 'hangover', -owed);
-    const due = Math.min(owed, u.hp - 1);
+    const due = Math.min(Math.ceil((owed * u.maxHp) / 100), u.hp - 1);
     if (due <= 0) continue;
     const lost = applyDamage(r, null, u, due, 'direct');
     if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp', { lost });
@@ -5369,7 +5419,8 @@ export function previewCardDamage(
     emberLo = emberHi = 0;
     // (hits that grow, or Blade Echo's: how many, and what they come to against each enemy it could hit)
     const echoes = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
-    const growing = op.scale?.into === 'hits' || echoes > 0;
+    // (a fixed few hits whose damage scales show their total too: the number on each hit is not what the card does, DECISIONS #509)
+    const growing = op.scale?.into === 'hits' || echoes > 0 || (op.scale !== undefined && (op.hits ?? 1) > 1);
     const grown = op.scale?.into === 'hits' ? scaleValue(r, a, op.scale, chosen) : 0;
     const hitCount = (op.hits ?? 1) + grown + echoes;
     const sums: number[] = [];
@@ -5385,6 +5436,7 @@ export function previewCardDamage(
           ? op.riposte
           : 0;
       if (rip && chosen) riposted = true;
+      if (countsNothing(r, at, op)) return 0;
       const amt = amountOf(r, at, op.amount, op.scale, t);
       // (each step with the number it leaves, as the engine works it out: additions, then the lone-enemy bonus, then the rest)
       const how: string[] = [String(op.amount)];

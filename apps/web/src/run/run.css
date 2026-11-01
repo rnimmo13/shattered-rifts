@@ -1819,3 +1819,111 @@
   min-height: 0;
   padding: 0.5rem 0 1.5rem;
 }
+
+/* ---- drawing on the map (DECISIONS #506) ---- */
+/* (the dock spans the map or the screen, whichever is narrower, and stays in view while the map scrolls sideways, with the tools centred in it) */
+.mapink__dock {
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  justify-self: start;
+  display: flex;
+  justify-content: center;
+  width: min(100%, calc(100vw - 3rem));
+  margin-bottom: 1rem;
+}
+.mapink {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  padding: 0.35rem 0.6rem;
+  border-radius: 12px;
+  background: rgb(8 10 20 / 0.82);
+  border: 1px solid var(--c-gold-dark);
+}
+.mapink__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.15rem 0.7rem 0.15rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--c-ivory);
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.mapink__tool .gameicon {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.mapink__tool:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.08);
+}
+.mapink__tool.is-on {
+  border-color: var(--c-gold);
+  background: rgb(212 168 75 / 0.2);
+  color: var(--c-gold-light);
+}
+.mapink__tool:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.mapink__colors {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+.mapink__color {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #120b16;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  cursor: pointer;
+}
+.mapink__color.is-on {
+  outline-color: var(--c-gold-light);
+}
+.mapink__color:focus-visible,
+.mapink__tool:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 2px;
+}
+/* the drawing lies over the map; it only catches the pointer with a tool in hand, and then the map can't be scrolled by a finger */
+.mapink__layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: visible;
+  pointer-events: none;
+}
+.mapink__layer.is-pen,
+.mapink__layer.is-eraser {
+  pointer-events: auto;
+  touch-action: none;
+}
+.mapink__layer.is-pen {
+  cursor: crosshair;
+}
+.mapink__layer.is-eraser {
+  cursor: none;
+}
+.mapink__stroke {
+  fill: none;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.75));
+}
+.mapink__rubber {
+  fill: rgb(255 255 255 / 0.14);
+  stroke: #fbf8ef;
+  stroke-width: 1.5;
+}

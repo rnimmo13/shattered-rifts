@@ -322,13 +322,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'starforged-blade',
     ],
     blurb:
-      'A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords strike again and again, spend it on a huge spell, or crack her enemies with Fracture until they Shatter.',
+      'A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords hit harder and harder, spend it on a huge spell, or crack her enemies with Fracture until they Shatter.',
     mechanics: ['Spell Power', 'Swords', 'Spells', 'Fracture'],
     howTo: [
       'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
-      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords strike more often. Might and Primed add to every hit.',
+      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 30 at 20, up to 110 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 25 at 20, up to 65 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {
@@ -365,7 +365,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Window panes and hammer blows get stronger the more HP you are missing, and Clutch Genes makes every attack hit 1% harder for each 1% of your HP you are missing.',
       'You start every fight with the Old Twelve Gauge: it hits EVERY enemy, you keep it in hand, and every Sharpen card (Rack the Slide...) makes it hit harder for the whole fight.',
       'Shells are 0-cost attacks that hit every enemy and are consumed. Playing one can sharpen the gun (Hair Trigger).',
-      'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose that much HP, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',
+      'Drinks (Swig, Liquid Lunch...) give Mana, cards or Might now and Hangover: at the start of your next turn you lose 1% of your Max HP per stack, never your last. Hangover cards hit harder the more of it you carry, and his heals grow with the HP you are missing.',
       "Stagger cards are a drunk's swing: they hit a random enemy instead of one you choose, and hit harder for it.",
     ],
     quotes: [

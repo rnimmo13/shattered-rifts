@@ -176,10 +176,13 @@ describe('the rest of the Ironclad list', () => {
     expect(foeHp(play(s0, 'spiteful-jab'))).toBe(200 - 12);
   });
 
-  it('Rending Fury hits once more for every time you have lost HP this fight', () => {
+  it('Rending Fury hits harder for every time you have lost HP this fight, up to a limit (DECISIONS #507)', () => {
     const s0 = fight(['rending-fury']);
     s0.sides.a.lostHpFight = 3;
-    expect(foeHp(play(s0, 'rending-fury'))).toBe(200 - 4 * 5);
+    expect(foeHp(play(s0, 'rending-fury'))).toBe(200 - (8 + 3 * 3));
+    const long = fight(['rending-fury']);
+    long.sides.a.lostHpFight = 40;
+    expect(foeHp(play(long, 'rending-fury'))).toBe(200 - (8 + 45));
   });
 
   it('Plunder draws until a card that is not an Attack comes up', () => {

@@ -77,7 +77,8 @@ export interface Entry {
 // (56: Shatters, the Spellblade's Barrier, the Obsidian Blade and Echoing Blade, #486-#488)
 // (57: a deck holds 2 copies of an Aura, and the Spellblade's cards apply less Fracture, #498, #499)
 // (58: the Neutral and Ancestral retune, #500)
-export const RULES_VERSION = 58;
+// (59: Burn through Barrier, Hangover as a share of Max HP, Shatter, only X cards scale hits, aimed attacks stay on target, #501-#503, #507-#509)
+export const RULES_VERSION = 59;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

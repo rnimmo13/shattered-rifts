@@ -1297,6 +1297,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? 'Clear your Hangover.'
             : `Lose all your ${sname(o.status)}.`
           : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
+      if (o.mult === 0.5) return `Halve the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
       if (o.status === 'doom') {
         const noun =
           o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';

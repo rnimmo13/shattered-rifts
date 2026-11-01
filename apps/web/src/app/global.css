@@ -938,3 +938,10 @@ body:has(.learn) {
 :where(main) :where(p, dd) {
   max-width: 75ch;
 }
+
+.learn__icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: -0.4em;
+}

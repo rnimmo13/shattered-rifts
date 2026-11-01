@@ -459,10 +459,17 @@ export const KNIGHT: CardDef[] = [
   m('rare', 'bloodied-plate', 'Bloodied Plate', 'power', 1, 'none', [
     on('turnStart', [lose(1), barrier(8)]),
   ]),
-  // (Tear Asunder: one more hit for every time you have lost HP this fight)
-  m('rare', 'rending-fury', 'Rending Fury', 'attack', 2, 'foe', [
-    scaled(dmg(5), per('hpLostFight', 1, undefined, 'hits')),
-  ]),
+  // (Tear Asunder, on one hit: more for every time you have lost HP this fight, and a limit, as a long Arena fight has no other, DECISIONS #507)
+  m(
+    'rare',
+    'rending-fury',
+    'Rending Fury',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(8), { by: 'hpLostFight', mult: 3, max: 45 })],
+    { up: { effects: [scaled(dmg(10), { by: 'hpLostFight', mult: 4, max: 60 })] } },
+  ),
   // (Not Yet)
   m('rare', 'rally', 'Rally', 'skill', 2, 'none', [heal(10)], { exhaust: true }),
 

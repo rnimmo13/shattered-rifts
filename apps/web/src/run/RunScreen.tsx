@@ -549,6 +549,7 @@ export default function RunScreen() {
                     cleared={run.cleared}
                     available={new Set()}
                     onEnter={() => undefined}
+                    inkKey={`${run.seed}:${run.stage}`}
                   />
                 </div>
                 <MapLegend />
@@ -937,6 +938,7 @@ function Body(props: {
               cleared={run.cleared}
               available={available}
               onEnter={(id) => act((r) => enterNode(r, id))}
+              inkKey={`${run.seed}:${run.stage}`}
             />
           </div>
           <MapLegend />

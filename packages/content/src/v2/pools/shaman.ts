@@ -11,7 +11,7 @@
 //   Thunderbird - end of turn: 3+S damage to 2 different random enemies (25% more when one stands);   command: 8+S to every enemy
 //   Elder Tree  - (rare) start of turn: 1 Mana;                     command: 2 Mana
 //   Moon Owl    - (rare) the Dark orb: end of turn: its charge (shared by every Owl, status umbra) grows by 6;   command: 6 + the charge to the weakest enemy, the charge is spent
-// Elements (a spell's tag): Flame - big single-target bursts, Burn as a small extra; Frost - Barrier and Faltering; Storm - every enemy,
+// Elements (a spell's tag): Flame - big single-target bursts and Burn; Frost - Barrier and Faltering; Storm - every enemy,
 // or Forks (2 or 3 different random enemies, 25% more when one stands), and Gathering Storm, which grows.
 //
 // The three elements are the first sort; the totem, Spirit and utility cards are glue.
@@ -122,8 +122,8 @@ export const TOTEMS: TotemDef[] = [
 const i = pool('shaman', 'nexus');
 /** Sapped on every enemy until the end of their next turn (a Storm ward) */
 const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
-/** doubles the target's Burn with no limit (Robert, 2026-10-30; balance.test lets Wildfire off the cap rule, it Consumes) */
-const doubleBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 2, to: 'target' };
+/** Flashpoint spends half the Burn it reads, so burst and ticking are a trade (DECISIONS #501) */
+const halveBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 0.5, to: 'target' };
 const gatheringStorm = (n: number, grow: number): Op[] => [
   scaled(fork(n, 2), per('bonus')),
   forge('gathering-storm', grow),
@@ -155,7 +155,7 @@ export const SHAMAN: CardDef[] = [
     up: { cost: 0 },
   }),
 
-  // --- Flame: big single-target bursts; Burn is a small extra ---
+  // --- Flame: big single-target bursts and Burn ---
   i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('burn', 2, 'target')], {
     ...FLAME,
     up: { effects: [dmg(6, 'target', 2), status('burn', 2, 'target')] },
@@ -164,10 +164,11 @@ export const SHAMAN: CardDef[] = [
     ...FLAME,
     up: { effects: [dmg(19), status('burn', 5, 'target')] },
   }),
-  i('uncommon', 'spreading-flames', 'Wildfire', 'attack', 1, 'foe', [dmg(9), doubleBurn], {
+  // (just a big Burn, DECISIONS #501)
+  i('uncommon', 'spreading-flames', 'Wildfire', 'skill', 1, 'foe', [status('burn', 8, 'target')], {
     ...FLAME,
     exhaust: true,
-    up: { effects: [dmg(12), doubleBurn] },
+    up: { effects: [status('burn', 10, 'target')] },
   }),
   i(
     'uncommon',
@@ -207,10 +208,10 @@ export const SHAMAN: CardDef[] = [
     'flash-burn',
     'Flashpoint',
     'attack',
-    1,
+    2,
     'foe',
-    [scaled(dmg(4), per('burn', 3, 'target'))],
-    { ...FLAME, exhaust: true, up: { effects: [scaled(dmg(8), per('burn', 3, 'target'))] } },
+    [scaled(dmg(12), per('burn', 2, 'target')), halveBurn],
+    { ...FLAME, exhaust: true, up: { effects: [scaled(dmg(16), per('burn', 2, 'target')), halveBurn] } },
   ),
   i(
     'rare',
@@ -557,13 +558,13 @@ export const SHAMAN: CardDef[] = [
     'none',
     [
       { op: 'exhaustCards', amount: 99, any: true, everywhere: true, tag: STATUS_TAG },
-      scaled({ op: 'damage', amount: 8, hits: 0, to: 'randomFoe' }, per('exhaustedNow', 1, undefined, 'hits')),
+      scaled(dmg(0, 'randomFoe'), per('exhaustedNow', 8)),
     ],
     {
       up: {
         effects: [
           { op: 'exhaustCards', amount: 99, any: true, everywhere: true, tag: STATUS_TAG },
-          scaled({ op: 'damage', amount: 11, hits: 0, to: 'randomFoe' }, per('exhaustedNow', 1, undefined, 'hits')),
+          scaled(dmg(0, 'randomFoe'), per('exhaustedNow', 11)),
         ],
       },
     },
@@ -619,7 +620,7 @@ export const SHAMAN: CardDef[] = [
   i('uncommon', 'storm-chant', 'Storm Chant', 'power', 2, 'none', [on('play', [mana(1), plant('thunderbird')], { filter: 'power' })], {
     up: { effects: [on('play', [mana(1), plantN('thunderbird', 2)], { filter: 'power' })] },
   }),
-  // (and Blind Drunk: 2 hits at random, and one more for every Status card in your deck)
+  // (and Blind Drunk: 2 hits at random, harder for every Status card in your deck)
   i(
     'rare',
     'blighted-chorus',
@@ -627,8 +628,8 @@ export const SHAMAN: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(5, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, into: 'hits' })],
-    { ...STORM, up: { effects: [scaled(dmg(6, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, into: 'hits' })] } },
+    [scaled(dmg(5, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, mult: 2 })],
+    { ...STORM, up: { effects: [scaled(dmg(6, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })] } },
   ),
   i('uncommon', 'swift-strike', 'Swift Strike', 'attack', 0, 'foe', [dmg(5), when('played', { atMost: 2 }, [draw(1)])], {
     ...STORM,

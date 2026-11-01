@@ -1,4 +1,4 @@
-// KP's Hangover (DECISIONS #354): drinks pay off now, and at the start of his next turn he loses that much HP, never his last.
+// KP's Hangover (DECISIONS #354, #502): drinks pay off now, and at the start of his next turn he loses 1% of Max HP a stack, never his last.
 
 import { describe, expect, it } from 'vitest';
 import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
@@ -48,6 +48,22 @@ describe("KP's Hangover", () => {
     expect(heroOf(s).statuses.hangover ?? 0).toBe(0);
   });
 
+  it('costs 1% of Max HP a stack, the total rounded up, so a bigger hero pays in step (DECISIONS #502)', () => {
+    let s = fight([], 8);
+    expect(heroOf(s).maxHp).toBe(88);
+    const hp = heroOf(s).hp;
+    s = nextTurn(s);
+    expect(heroOf(s).hp).toBe(hp - 8);
+    let top = fight([], 10);
+    const before = heroOf(top).hp;
+    top = nextTurn(top);
+    expect(heroOf(top).hp).toBe(before - 9);
+    let arena = fight([], 8);
+    heroOf(arena).hp = heroOf(arena).maxHp = 528;
+    arena = nextTurn(arena);
+    expect(heroOf(arena).hp).toBe(528 - 43);
+  });
+
   it('never takes the last HP', () => {
     let s = fight([], 10);
     heroOf(s).hp = 2;
@@ -70,7 +86,7 @@ describe("KP's Hangover", () => {
     s = playCard(s, 'T0');
     expect(s.sides.b.units[0]!.hp).toBe(87); // 5 + 2 x 4
     s = playCard(s, 'T1');
-    expect(s.sides.b.units[0]!.hp).toBe(72); // 3 damage, 1 + 4 times
+    expect(s.sides.b.units[0]!.hp).toBe(75); // 2 hits of 4 + 1 per 2 Hangover (DECISIONS #509)
   });
 
   it('Hair of the Dog clears the Hangover and leaves a smaller one', () => {

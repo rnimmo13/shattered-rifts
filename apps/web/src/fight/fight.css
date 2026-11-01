@@ -1456,9 +1456,6 @@
   justify-items: center;
   text-align: center;
 }
-.chip__icon {
-  vertical-align: -0.12em;
-}
 .fight__aux--auras,
 .fight__aux--auras .aux--powers {
   justify-items: end;
@@ -3695,4 +3692,127 @@ button.totem:disabled {
 }
 .fight--portrait .fight__lumen small {
   display: none;
+}
+
+/* ---- drawn pictures for statuses, and the piles as real stacks of cards (DECISIONS #505) ---- */
+.gameicon {
+  display: block;
+  flex: none;
+}
+.chip .gameicon {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+.plate .chip {
+  width: 2.3rem;
+  height: 2.3rem;
+  background: rgb(10 8 18 / 0.72);
+}
+.plate .chip--good {
+  border-color: rgb(232 193 74 / 0.75);
+}
+.plate .chip--bad {
+  border-color: rgb(255 90 120 / 0.85);
+}
+.plate .chip svg {
+  width: 1.95rem;
+  height: 1.95rem;
+}
+/* (these two keep their gold: an Opening and a sharpened weapon must stand out) */
+.plate .chip--open {
+  background: linear-gradient(180deg, rgb(150 110 24 / 0.92), rgb(46 30 6 / 0.94));
+  border-color: #ffd86a;
+}
+.plate .chip--sharp.is-sharp {
+  background: linear-gradient(180deg, #ffe39a, #e0861e);
+  border-color: #ffe2a0;
+}
+.stance__chip .gameicon,
+.stance__banner .gameicon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.25em;
+}
+/* an Aura in play: its card's picture in a small round frame beside its name */
+.aux__power {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.aux__thumb {
+  flex: none;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--c-gold);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.7);
+}
+/* a pile is its picture: no box behind it, and the name and count sit on plates over the stack */
+.pile,
+.pile--exhaust {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  overflow: visible;
+  align-content: end;
+  justify-items: center;
+  gap: 0.1rem;
+  padding: 0 0 0.35rem;
+  transition: scale 0.12s var(--ease-out);
+}
+.pile:hover {
+  scale: 1.05;
+}
+.pile__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.65));
+  pointer-events: none;
+}
+.pile__label,
+.pile b {
+  position: relative;
+  padding: 0 0.35rem;
+  border-radius: 6px;
+  background: rgb(8 10 20 / 0.82);
+}
+.pile__label {
+  font-size: 0.72rem;
+}
+.fight--portrait .pile {
+  padding: 0 0 0.1rem;
+}
+.fight--portrait .pile__label {
+  display: none;
+}
+.fight--portrait .pile {
+  box-shadow: none;
+}
+/* Fate: a purple band that builds up from the left of the HP bar, across from the Barrier on the right (DECISIONS #504). When it has reached the end of the red, it glows: this unit dies at the end of its turn */
+.bar__fate {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(180deg, #d0a4ff, #8a45e6 55%, #4d2596);
+  box-shadow: 1px 0 0 #e8d4ff;
+  transition: width 0.35s var(--ease-out);
+}
+.bar__fate.is-lethal {
+  animation: bar-fate-lethal 1s ease-in-out infinite alternate;
+}
+@keyframes bar-fate-lethal {
+  to {
+    filter: brightness(1.45);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar__fate.is-lethal {
+    animation: none;
+    filter: brightness(1.3);
+  }
 }

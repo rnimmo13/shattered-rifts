@@ -33,7 +33,7 @@ export const STATUS_INFO: Record<
     name: 'Burn',
     glyph: '♨',
     tone: 'bad',
-    text: 'Burning: takes damage equal to its stacks at the start of its turn, then loses 1 stack (as Bleed does). The Shaman’s Flame.',
+    text: 'Burning: takes damage equal to its stacks at the start of its turn, then loses 1 stack. Unlike Bleed, it has to get through Barrier first, and it ticks before last turn’s Barrier falls away. The Shaman’s Flame.',
   },
   seared: {
     name: 'Bleed',
@@ -119,7 +119,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 30 at 20, 10 more each time, 110 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 25 at 20, 5 more each time, 65 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -228,7 +228,7 @@ export const STATUS_INFO: Record<
     name: 'Hangover',
     glyph: '🍺',
     tone: 'bad',
-    text: "At the start of your next turn you lose this much HP (never your last one), then it clears. It stops at 10. Some of the Drunkard's cards hit harder the more of it you carry.",
+    text: "At the start of your next turn you lose 1% of your Max HP per stack, rounded up (never your last one), then it clears. It stops at 10. Some of the Drunkard's cards hit harder the more of it you carry.",
   },
   holdfast: {
     name: 'Holdfast',
@@ -492,6 +492,12 @@ export const STATUS_INFO: Record<
   },
 };
 
+/** How much of the HP bar the Fate band covers, in %: it stops where the HP does (DECISIONS #504). */
+export function fateBarPct(hp: number, maxHp: number, fate: number): number {
+  if (maxHp <= 0) return 0;
+  return Math.max(0, Math.min(100, (Math.min(fate, hp) / maxHp) * 100));
+}
+
 /** One glyph per totem, for the totem row. */
 export const RUNE_GLYPH: Record<string, string> = {
   spark: '▲',
@@ -666,7 +672,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   sword: {
     name: 'Sword',
-    text: 'An Attack that reads your Spell Power and spends none: most strike more times, and the Obsidian Blade deals more damage. Swinging spends none. Might and Primed add to every hit.',
+    text: 'An Attack that reads your Spell Power and spends none: it deals more damage the more you hold. Swinging spends none. Might and Primed add to every hit.',
   },
   spell: {
     name: 'Spell',
@@ -674,7 +680,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 10 more each time: 20 at 10, 30 at 20, 110 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 5 more each time: 20 at 10, 25 at 20, 65 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',
@@ -947,10 +953,10 @@ export const UI_TIPS = {
     tone: 'good',
     text: 'Absorbs damage before HP is touched. It falls away at the start of its owner’s next turn, so use it the turn you gain it.',
   }),
-  hp: (hp: number, max: number): TipContent => ({
+  hp: (hp: number, max: number, fate = 0): TipContent => ({
     kicker: 'Health',
     title: `${hp} / ${max} HP`,
-    text: 'Hit points. Barrier absorbs damage first; at 0 HP it is defeated.',
+    text: `Hit points. Barrier absorbs damage first; at 0 HP it is defeated.${fate > 0 ? ` The purple part is its ${fate} Fate: if its HP is at or below that at the end of its turn, it dies.` : ''}`,
   }),
   mana: (mana: number, max: number): TipContent => ({
     kicker: 'Resource',
