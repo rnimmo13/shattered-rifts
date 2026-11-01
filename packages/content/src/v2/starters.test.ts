@@ -24,6 +24,7 @@ function fight(hero: Hero, hand: string[]): CombatState {
   s.sides.a.draw = Array.from({ length: 12 }, (_, i) => ({ id: `D${i}`, card: 'defend' }));
   s.sides.a.discard = [];
   s.sides.a.mana = 9;
+  s.sides.a.reserves = 0;
   for (const u of s.sides.b.units) {
     u.hp = u.maxHp = 500;
     u.statuses = {};

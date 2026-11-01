@@ -1831,6 +1831,7 @@
   justify-content: center;
   width: min(100%, calc(100vw - 3rem));
   margin-bottom: 1rem;
+  top: 0.5rem;
 }
 .mapink {
   display: flex;
@@ -1926,4 +1927,11 @@
   fill: rgb(255 255 255 / 0.14);
   stroke: #fbf8ef;
   stroke-width: 1.5;
+}
+
+/* (the map's own box: the grid of .mapwrap sizes to it as it did to the map) */
+.map__holder {
+  display: grid;
+  justify-content: safe center;
+  min-width: 0;
 }

@@ -3,7 +3,14 @@
 // The run is saved to this browser after every step and can be exported to a file.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { COMBAT_DB, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  RIFTWALKERS,
+  ascendancyOf,
+  classNameOf,
+  encounter,
+  type HeroId,
+} from '@sr/content/v2';
 import {
   REALM_LABEL,
   RunError,
@@ -18,12 +25,13 @@ import {
   buyRemoval,
   buyUpgrade,
   upgradedCards,
+  chooseAscendancy,
   chooseCard,
   resolveCost,
   chooseHeart,
   ghostToSettle,
   settleGhost,
-  omenOf,
+  omensOf,
   omensAt,
   chooseEvent,
   claimTrialPrize,
@@ -472,6 +480,7 @@ export default function RunScreen() {
             seed: plan.seed,
             a: {
               hero: run.character,
+              ...(plan.ascendancy ? { ascendancy: plan.ascendancy } : {}),
               deck: plan.deck,
               hp: plan.hp,
               maxHp: plan.maxHp,
@@ -482,6 +491,7 @@ export default function RunScreen() {
             b: plan.ghost
               ? {
                   hero: plan.ghost.hero,
+                  ...(plan.ghost.ascendancy ? { ascendancy: plan.ghost.ascendancy } : {}),
                   deck: plan.ghost.deck,
                   hp: plan.ghost.hp,
                   maxHp: plan.ghost.hp,
@@ -497,7 +507,7 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(RIFTWALKERS[plan.ghost.hero]?.role ?? 'R') ? 'an' : 'a'} ${RIFTWALKERS[plan.ghost.hero]?.role ?? 'Riftwalker'} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Act ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Act ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
@@ -600,6 +610,7 @@ export default function RunScreen() {
                 seed: plan.seed,
                 a: {
                   hero: run.character,
+                  ...(plan.ascendancy ? { ascendancy: plan.ascendancy } : {}),
                   deck: plan.deck,
                   hp: plan.hp,
                   maxHp: plan.maxHp,
@@ -609,6 +620,7 @@ export default function RunScreen() {
                 },
                 b: {
                   hero: plan.ghost.hero,
+                  ...(plan.ghost.ascendancy ? { ascendancy: plan.ghost.ascendancy } : {}),
                   deck: plan.ghost.deck,
                   hp: plan.ghost.hp,
                   maxHp: plan.ghost.hp,
@@ -749,9 +761,9 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: three acts, each ending in a Warden. Win fights,
-          add cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and
-          you lose Resolve; lose all of it and the run collapses.
+          Choose a Riftwalker and begin a run: three acts, each ending in a Warden. Win fights, add
+          cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and you
+          lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
@@ -805,7 +817,18 @@ function RunBar(props: {
   return (
     <header className="runbar">
       <div className="runbar__who">
-        <b>{RIFTWALKERS[run.character].hero.name}</b>
+        <b
+          {...(run.ascendancy
+            ? tipAttrs({
+                kicker: 'Ascendancy',
+                title: classNameOf(run.character, run.ascendancy),
+                tone: 'good',
+                text: ascendancyOf(run.character, run.ascendancy)?.text ?? '',
+              })
+            : {})}
+        >
+          {classNameOf(run.character, run.ascendancy)}
+        </b>
         <span>
           {progressLabel(run.tier, stagesCleared(run))}
           {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfStage(run, run.stage)]}
@@ -839,11 +862,12 @@ function RunBar(props: {
               kicker: 'Rift Omens',
               title: `${omensAt(run.tier).length} ${omensAt(run.tier).length === 1 ? 'Omen' : 'Omens'} at Tier ${run.tier}`,
               tone: 'bad',
-              text: 'Every Rift Tier from II brings an Omen, and they stack. Each grows the deeper you go.',
+              text: 'Omens come with the Rift Tiers from II, and they stack. Each grows the deeper you go.',
               lines: omensAt(run.tier).map((o) => ({ title: o.name, text: o.text(run.tier) })),
             })}
           >
-            <span aria-hidden>☾</span> {omensAt(run.tier).length} Omens
+            <span aria-hidden>☾</span> {omensAt(run.tier).length}{' '}
+            {omensAt(run.tier).length === 1 ? 'Omen' : 'Omens'}
           </span>
         )}
         <span className="resolve" aria-label={`Resolve ${run.resolve} of ${run.maxResolve}`}>
@@ -962,6 +986,34 @@ function Body(props: {
           onSkip={() => act((r) => chooseCard(r, null))}
         />
       );
+    case 'ascend':
+      return (
+        <section className="stage-panel" aria-label="Choose your Ascendancy">
+          <h2 className="stage-panel__title">Ascend</h2>
+          <p className="stage-panel__hint">
+            The Warden falls, and you are not who you were.{' '}
+            {run.context?.shardsGained ? `+${run.context.shardsGained} shards. ` : ''}This is your
+            reward: choose what the {RIFTWALKERS[run.character].hero.name} becomes. It lasts the rest of
+            this run, and it stays with this deck in the Arena.
+          </p>
+          <div className="choices-row">
+            {(run.context?.ascendancies ?? []).map((id) => {
+              const x = ascendancyOf(run.character, id);
+              return x ? (
+                <button
+                  key={id}
+                  className="bigchoice"
+                  onClick={() => act((r) => chooseAscendancy(r, id))}
+                >
+                  <b>{x.name}</b>
+                  <span>{x.text}</span>
+                  <small>Leans into: {x.leans}</small>
+                </button>
+              ) : null;
+            })}
+          </div>
+        </section>
+      );
     case 'gift':
       return (
         <>
@@ -1071,12 +1123,14 @@ function Body(props: {
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
                 <b>Continue to Tier {run.tier + 1}</b>
                 <span>Keep your deck, heal fully, go back to Act 1, one deeper.</span>
-                {omenOf(run.tier + 1) && (
-                  <span className="bigchoice__omen">
-                    A new Omen: <b>{omenOf(run.tier + 1)?.name}</b>.{' '}
-                    {omenOf(run.tier + 1)?.text(run.tier + 1)} The Omens you have grow too.
-                  </span>
-                )}
+                <span className="bigchoice__omen">
+                  {omensOf(run.tier + 1).map((o) => (
+                    <span key={o.id}>
+                      A new Omen: <b>{o.name}</b>. {o.text(run.tier + 1)}{' '}
+                    </span>
+                  ))}
+                  {omensAt(run.tier).length > 0 && 'The Omens you have grow too.'}
+                </span>
               </button>
             ) : (
               <p className="stage-panel__hint">

@@ -141,7 +141,7 @@ export default function GhostDecksScreen() {
                   <td>{g.name}&rsquo;s ghost</td>
                   <td>
                     <span className="board__heroes">
-                      <HeroIcon hero={g.hero} size={24} /> <small>{heroName(g.hero)}</small>
+                      <HeroIcon hero={g.hero} size={24} /> <small>{heroName(g.hero, g.ascendancy)}</small>
                     </span>
                   </td>
                   <td>{progressLabel(g.tier, g.stage ?? undefined)}</td>

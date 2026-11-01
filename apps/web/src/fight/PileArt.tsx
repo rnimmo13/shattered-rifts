@@ -19,7 +19,15 @@ export function PileArt(props: { kind: PileKind; count: number }) {
   const [failed, setFailed] = useState<string | null>(null);
   const src = tier > 0 ? iconUrl(pilePicture(props.kind, tier)) : null;
   if (src && failed !== src) {
-    return <img className="pile__art" src={src} alt="" draggable={false} onError={() => setFailed(src)} />;
+    return (
+      <img
+        className="pile__art"
+        src={src}
+        alt=""
+        draggable={false}
+        onError={() => setFailed(src)}
+      />
+    );
   }
   return (
     <svg className="pile__art" viewBox="0 0 104 146" aria-hidden>

@@ -1,7 +1,7 @@
 // How a saved deck is laid out for reading, like a post-game report: its cards by rarity, best first, repeats stacked with a count.
 
 import type { CardDef } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, isDeckCard, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, isDeckCard, classNameOf } from '@sr/content/v2';
 import type { VaultDeck } from './vault';
 
 /** Best first. */
@@ -63,8 +63,7 @@ export const dateLabel = (ms: number): string =>
       })
     : 'Date unknown';
 
-export const heroName = (hero: string): string =>
-  Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
+export const heroName = (hero: string, ascendancy?: string): string => classNameOf(hero, ascendancy);
 
 /** Where a player is in the campaign, short: "Tier 1 · Act 2/3", or "Tier 2 · Cleared" (an older deck without a stage: just "Tier 1"). */
 export function progressLabel(tier: number, stage?: number): string {

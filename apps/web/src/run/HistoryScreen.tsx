@@ -3,7 +3,7 @@
 
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { syncLists } from './runCloud';
-import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, classNameOf, type HeroId } from '@sr/content/v2';
 import { DIFFICULTY, type Difficulty } from '@sr/campaign';
 import { HeroIcon } from '../ui/HeroIcon';
 import { FightRecap } from '../fight/FightRecap';
@@ -172,7 +172,7 @@ function RunRow(props: {
       <button className="history__runHead" aria-expanded={props.open} onClick={props.onToggle}>
         {hero && <HeroIcon hero={hero} size={40} />}
         <span className="history__runName">
-          <b>{hero ? RIFTWALKERS[hero].hero.name : run.hero}</b>
+          <b>{hero ? classNameOf(hero, run.ascendancy) : run.hero}</b>
           <small>
             {DIFFICULTY[run.difficulty as Difficulty]?.label ?? run.difficulty} · {when(run.at)}
           </small>

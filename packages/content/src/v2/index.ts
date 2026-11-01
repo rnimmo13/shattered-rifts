@@ -9,8 +9,9 @@ import {
 } from '@sr/combat';
 import {
   addTo,
-  barrier,
   plant,
+  barrier,
+  reserves,
   dmg,
   draw,
   heal,
@@ -23,6 +24,7 @@ import {
   stars,
   status,
 } from './build';
+import { ASCENDANCIES, ascendanciesOf, ascendancyOf, ascendedHeroes, type Ascendancy } from './ascendancies';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { TOTEMS } from './pools/shaman';
@@ -76,7 +78,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Knight',
     trait: {
       name: 'Mana Reserves',
-      text: 'Unspent Mana is not lost: it is kept as Reserves, up to your Max Reserves (3). Cards spend your Mana before your Reserves.',
+      text: 'Unspent Mana is not lost: it is kept as Reserves, up to your Max Reserves (3). Cards spend your Mana before your Reserves. Start each fight with 2 Reserves. At the end of your turn, gain 1 Barrier per Reserve you hold.',
+      fightStart: [reserves(2)],
+      triggers: [on('turnEnd', [scaled(barrier(0), per('reserves'))])],
       maxReserves: 3,
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
@@ -92,7 +96,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
     mechanics: ['Barrier', 'Might', 'Exposed', 'Consume', 'Self-damage'],
     howTo: [
-      'Barrier soaks damage, but it falls away at the start of your next turn. Your Plating keeps some of it through the first turns.',
+      'Barrier soaks damage, but it falls away at the start of your next turn. Plating gives you more at the end of each turn, counting down, and Fortified keeps most of it through the turn change.',
       'Exposed enemies take 50% more from your attacks: Sundering Blow and Brace and Press set it up, and your Strikes and Heavy Swing pay it off.',
       'Your cards come in many shapes: hit with your Barrier, pile up Might and hit many times, consume your own cards for value, or pay HP for Mana, cards and Might.',
     ],
@@ -192,7 +196,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
   assassin: {
     realm: 'umbral',
     persona: 'Sylas',
-    role: 'Assassin',
+    role: 'Rogue',
     trait: {
       name: 'Hidden Blades',
       text: 'At the start of your turn, add a Dagger to your hand.',
@@ -201,7 +205,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (the Silent's shape, DECISIONS #368: 70 HP, 5 Strikes, 5 Defends, Neutralize and Survivor)
     hero: {
       id: 'assassin',
-      name: 'Assassin',
+      name: 'Rogue',
       maxHp: 70,
       mana: 3,
       handSize: 5,
@@ -383,12 +387,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse a random enemy with 2 Fate; whenever a card is consumed, with 3.',
+      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Whenever a card is consumed, curse a random enemy with 3.',
       // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit; 2, not 3, #401)
       // (no Fate at the start, #398; a death curses 3, as a consumed card does: 5 had pushed him back to the top, #403)
       turnStart: [raise(2)],
       triggers: [
-        on('allyDies', [status('doom', 2, 'randomFoe')]),
+        // (the one that did it; a sacrifice has no killer, so it curses a random enemy, DECISIONS #518)
+        on('allyDies', [status('doom', 2, 'attackerOrRandom')]),
         on('exhaust', [status('doom', 3, 'randomFoe')]),
       ],
     },
@@ -413,7 +418,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: Raise 2 at the start of every turn; whenever one of your allies dies or a card is consumed, a random enemy is cursed with 3 Fate.',
+      'Grave Chill: Raise 2 at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did), and a card consumed curses a random enemy with 3.',
     ],
   },
 };
@@ -802,6 +807,10 @@ export const encounter = (id: string): Encounter => {
   }
 }
 
+const HERO_DEFS: CombatDb['heroes'] = Object.fromEntries(
+  Object.values(RIFTWALKERS).map((r) => [r.hero.id, { ...r.hero, trait: r.trait }]),
+);
+
 export const COMBAT_DB: CombatDb = {
   // (the Shaman's spirits, DECISIONS #418; the old totem runes of his Defect copy are archived, not loaded)
   totems: Object.fromEntries(TOTEMS.map((t) => [t.id, t])),
@@ -810,9 +819,8 @@ export const COMBAT_DB: CombatDb = {
   boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
   units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
-  heroes: Object.fromEntries(
-    Object.values(RIFTWALKERS).map((r) => [r.hero.id, { ...r.hero, trait: r.trait }]),
-  ),
+  heroes: HERO_DEFS,
+  ascended: ascendedHeroes(HERO_DEFS),
 };
 
 /** Cards a Riftwalker may be offered as rewards: their own pool and Neutral, never basics, tokens or junk. */
@@ -894,7 +902,21 @@ export const COPIES_BY_RARITY: Readonly<Record<string, number>> = {
 export const maxCopiesOf = (rarity: string | undefined, kind?: string): number =>
   COPIES_BY_RARITY[rarity ?? 'common'] ?? (kind === 'power' ? MAX_AURA_COPIES : MAX_COPIES);
 
-export { BOONS, HEARTS, POTIONS };
+export { ASCENDANCIES, BOONS, HEARTS, POTIONS, ascendanciesOf, ascendancyOf, type Ascendancy };
+
+/** What a Riftwalker's trait says, with its Ascendancy's if it has taken one. */
+export function classTrait(hero: string, ascendancy?: string): { name: string; text: string } | null {
+  const own = ascendancy ? ascendancyOf(hero, ascendancy) : undefined;
+  const def = own ? COMBAT_DB.ascended?.[own.id] : COMBAT_DB.heroes[hero];
+  if (!def?.trait) return null;
+  return { name: own?.name ?? def.trait.name, text: def.trait.text };
+}
+
+/** The class a Riftwalker plays as: its Ascendancy's name if it has taken one (Knight, Paladin). */
+export function classNameOf(hero: string, ascendancy?: string): string {
+  const own = ascendancy ? ascendancyOf(hero, ascendancy) : undefined;
+  return own?.name ?? (Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero);
+}
 export { SHELVED_LEGENDARIES, lendLegendaries } from './shelved';
 export { SKINS, currentSkinId, skinDef, type SkinDef } from './cosmetics';
 

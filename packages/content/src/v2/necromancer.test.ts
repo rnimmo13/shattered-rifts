@@ -452,12 +452,24 @@ describe('the small card fixes (DECISIONS #397)', () => {
   });
 });
 
-describe('Grave Chill: 2 Fate a death, none at the start (DECISIONS #398, #403, #413)', () => {
-  it('starts with no Fate, and a Thrall that dies curses an enemy with 2', () => {
+describe('Grave Chill: 2 Fate on the enemy that kills an ally, none at the start (DECISIONS #398, #403, #413, #518)', () => {
+  it('starts with no Fate, and a Thrall that gives itself up curses a random enemy', () => {
     const s = fight(['bone-rain']);
     for (const u of s.sides.b.units) expect(u.statuses.doom ?? 0).toBe(0);
     // Bone Rain: the Thrall strikes and dies
     const out = play(s, 'T0');
     expect(out.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0)).toBe(2);
+  });
+
+  it('the enemy that kills a Thrall takes the 2 Fate, and no other enemy does', () => {
+    const s = fight([], ['squire', 'squire']);
+    const thrall = s.sides.a.units.find((u) => u.kind === 'ally')!;
+    thrall.hp = 1;
+    const { state, events } = applyAction(db, s, { type: 'endTurn' });
+    const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as { source: string } | undefined;
+    expect(hit, 'an enemy strikes the Thrall').toBeDefined();
+    const cursed = state.sides.b.units.filter((u) => (u.statuses.doom ?? 0) > 0);
+    expect(cursed.map((u) => u.id)).toEqual([hit!.source]);
+    expect(cursed[0]!.statuses.doom).toBe(2);
   });
 });

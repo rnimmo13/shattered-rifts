@@ -125,6 +125,7 @@ async function registerSavedGhost(
             hero: d['hero'],
             deck: d['deck'],
             boons: d['boons'],
+            ascendancy: d['ascendancy'],
             tier: d['tier'],
             stage: d['stage'],
             run: typeof d['id'] === 'string' ? runKey(d['id']) : undefined,

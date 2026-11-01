@@ -33,7 +33,7 @@ const KEY = 'sr-vault-v1';
 
 /** The deck a banked run leaves in the Vault. */
 export function deckFromRun(
-  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons' | 'ascendancy'>,
   now: number,
 ): VaultDeck {
   return {
@@ -43,8 +43,10 @@ export function deckFromRun(
     tier: run.tier,
     // (a cleared tier is all 3 stages; the mid-run copies below say where they were taken)
     stage: 3,
-    deck: [...run.deck],
+    // (a Wound is the run's own, not the deck's: DECISIONS #515)
+    deck: run.deck.filter((id) => id !== 'wound'),
     boons: [...run.boons],
+    ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     bankedAt: now,
     // (its deck is the run's, weapon and all: DECISIONS #436)
     weaponCards: true,
@@ -55,13 +57,16 @@ export function deckFromRun(
 export function stagesCleared(run: Pick<RunState, 'phase' | 'stage'>): number {
   if (run.phase === 'loopCleared') return 3;
   // (the Warden's gift comes after the Warden has fallen, so that stage is already beaten)
-  const n = run.phase === 'stageClear' || run.phase === 'gift' ? run.stage : run.stage - 1;
+  const n =
+    run.phase === 'stageClear' || run.phase === 'gift' || run.phase === 'ascend'
+      ? run.stage
+      : run.stage - 1;
   return Math.min(3, Math.max(0, n));
 }
 
 /** A copy of the deck as it stood after stage `after` (0 = the start of the tier). Like every save, it replaces the run's earlier one. */
 export function deckFromStage(
-  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons' | 'ascendancy'>,
   now: number,
   after: number,
 ): VaultDeck {
@@ -70,7 +75,7 @@ export function deckFromStage(
 
 /** A copy of the deck as it is right now, wherever the run is: what the Arena deck is saved from after every stop. */
 export function deckSnapshot(
-  run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons'>,
+  run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons' | 'ascendancy'>,
   now: number,
 ): VaultDeck {
   return { ...deckFromRun(run, now), stage: stagesCleared(run) };
@@ -87,6 +92,7 @@ export function entryFor(d: VaultDeck, name: string): Entry {
     hero: d.hero,
     deck: [...d.deck],
     boons: [...d.boons],
+    ...(d.ascendancy ? { ascendancy: d.ascendancy } : {}),
     tier: d.tier,
     run: runKey(d.id),
     ...(d.stage === undefined ? {} : { stage: d.stage }),
@@ -95,7 +101,7 @@ export function entryFor(d: VaultDeck, name: string): Entry {
 
 /** A readable name for a deck. */
 export function labelOf(d: VaultDeck): string {
-  return `${heroName(d.hero)}: ${tierLabel(d)}`;
+  return `${heroName(d.hero, d.ascendancy)}: ${tierLabel(d)}`;
 }
 
 /** Parse what was saved; anything that is no longer a legal deck is dropped rather than trusted. */

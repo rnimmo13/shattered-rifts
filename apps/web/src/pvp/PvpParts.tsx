@@ -1,7 +1,7 @@
 // The small screens before a game: choosing the deck and who goes first (go first, or go second with more HP), and the reel that decides it when both want the same.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { classNameOf } from '@sr/content/v2';
 import { SECOND_PLAYER_HP, cleanRank, cleanTrophies } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
 import { progressLabel } from './deckLayout';
@@ -80,8 +80,7 @@ export function Portrait(props: { hero: string; size?: number; className?: strin
   );
 }
 
-const heroName = (hero: string): string =>
-  Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero;
+const heroName = (hero: string, ascendancy?: string): string => classNameOf(hero, ascendancy);
 
 /** "Do you want to go first?" Going second means more HP; the same answer from both means the reel decides. */
 /**
@@ -165,7 +164,7 @@ export function ChoosePanel(props: {
                   <HeroIcon hero={d.hero} size={32} />
                   <span>
                     <b>
-                      {heroName(d.hero)} · {progressLabel(d.tier, d.stage)}
+                      {heroName(d.hero, d.ascendancy)} · {progressLabel(d.tier, d.stage)}
                     </b>
                     <small>
                       {d.deck.length} cards

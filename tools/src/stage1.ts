@@ -4,6 +4,7 @@
 import { applyAction, chooseAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
 import {
   availableNodes,
+  chooseAscendancy,
   chooseCard,
   chooseEvent,
   choosePrelude,
@@ -144,6 +145,9 @@ export function playStage1(
       }
       case 'gift':
         run = chooseCard(run, bot === 'draft' ? (run.context?.offers?.[0] ?? null) : null);
+        break;
+      case 'ascend':
+        run = chooseAscendancy(run, run.context?.ascendancies?.[0] ?? '');
         break;
       case 'shrine': {
         const ups = upgradable(run.deck);

@@ -15,6 +15,7 @@ import {
   RETIRED_CARDS,
   isDeckCard,
   MARK_INFO,
+  ascendancyOf,
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
@@ -28,6 +29,7 @@ const PHASES: readonly RunPhase[] = [
   'duel',
   'reward',
   'gift',
+  'ascend',
   'shrine',
   'merchant',
   'event',
@@ -92,7 +94,7 @@ function validContext(r: RunState): boolean {
       )
     );
   }
-  const needsNode: RunPhase[] = ['duel', 'reward', 'gift', 'shrine', 'merchant', 'event'];
+  const needsNode: RunPhase[] = ['duel', 'reward', 'gift', 'ascend', 'shrine', 'merchant', 'event'];
   if (!needsNode.includes(r.phase)) return true;
   const c = r.context;
   if (!isObj(c) || typeof c['nodeId'] !== 'string') return false;
@@ -113,6 +115,12 @@ function validContext(r: RunState): boolean {
     }
     case 'reward':
       return cards(c['offers']);
+    case 'ascend':
+      return (
+        Array.isArray(c['ascendancies']) &&
+        c['ascendancies'].length > 0 &&
+        (c['ascendancies'] as unknown[]).every((id) => ascendancyOf(r.character, id) !== undefined)
+      );
     case 'gift':
       return (
         cards(c['offers']) &&
@@ -416,6 +424,10 @@ export function parseRun(text: string): RunState | null {
   if (signed !== undefined && !isInt(signed, 0, 1000)) return null;
   // (a Legendary Boon waiting to be swapped in: Boons have no rarity now, DECISIONS #497)
   delete (r as { legendOffer?: unknown }).legendOffer;
+  // (an Ascendancy: one of this Riftwalker's that is in the game, or none)
+  const ascendancy = (r as { ascendancy?: unknown }).ascendancy;
+  if (ascendancy !== undefined && !ascendancyOf(r.character, ascendancy))
+    delete (r as { ascendancy?: unknown }).ascendancy;
   // (a Warden's Heart: one that is in the game, or none)
   const heart = (r as { heart?: unknown }).heart;
   if (heart !== undefined && !(typeof heart === 'string' && COMBAT_DB.boons[heart]?.heart === true))

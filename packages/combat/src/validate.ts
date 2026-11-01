@@ -313,8 +313,8 @@ export function validateDb(db: CombatDb): string[] {
     if (!rd.text) errs.push(`rune ${id}: needs text`);
   }
 
-  for (const [id, h] of Object.entries(db.heroes)) {
-    if (h.id !== id) errs.push(`hero key "${id}" does not match its id`);
+  for (const [id, h] of [...Object.entries(db.heroes), ...Object.entries(db.ascended ?? {})]) {
+    if (h.id !== id && db.ascended?.[id] !== h) errs.push(`hero key "${id}" does not match its id`);
     if (h.sigil) checkOps(`hero ${id} sigil`, h.sigil, { aimed: false, snare: false });
     if (h.trait?.clutch) {
       const c = h.trait.clutch;
@@ -342,6 +342,7 @@ export function validateDb(db: CombatDb): string[] {
         // (a trait trigger that answers something done to one enemy aims at it, as an Aura's does: the Assassin's pulls)
         else
           checkOps(`hero ${id} trait`, t.ops, {
+            attacker: t.when === 'allyDies' || t.when === 'allyLost',
             aimed: [
               'opening',
               'riposte',

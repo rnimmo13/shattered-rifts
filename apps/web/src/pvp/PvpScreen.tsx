@@ -278,7 +278,7 @@ export default function PvpScreen() {
             <HeroIcon hero={d.hero} size={36} />
             <span>
               <b>
-                {heroName(d.hero)} · {progressLabel(d.tier, d.stage)}
+                {heroName(d.hero, d.ascendancy)} · {progressLabel(d.tier, d.stage)}
               </b>
               <small>
                 {dateLabel(d.bankedAt)} · {d.deck.length} cards

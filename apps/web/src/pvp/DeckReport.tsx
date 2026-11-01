@@ -31,11 +31,11 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
   const [confirm, setConfirm] = useState(false);
   return (
-    <article className="deckrep" aria-label={`${heroName(deck.hero)}, ${dateLabel(deck.bankedAt)}`}>
+    <article className="deckrep" aria-label={`${heroName(deck.hero, deck.ascendancy)}, ${dateLabel(deck.bankedAt)}`}>
       <header className="deckrep__head">
         <HeroIcon hero={deck.hero} size={44} />
         <div className="deckrep__who">
-          <b>{heroName(deck.hero)}</b>
+          <b>{heroName(deck.hero, deck.ascendancy)}</b>
           <span>
             {progressLabel(deck.tier, deck.stage)} · {dateLabel(deck.bankedAt)} · {deck.deck.length}{' '}
             cards
@@ -49,7 +49,7 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
               <button
                 type="button"
                 className="btn btn--small"
-                aria-label={`Remove the ${heroName(deck.hero)} deck from ${dateLabel(deck.bankedAt)} for good`}
+                aria-label={`Remove the ${heroName(deck.hero, deck.ascendancy)} deck from ${dateLabel(deck.bankedAt)} for good`}
                 onClick={props.onRemove}
               >
                 <span>Remove</span>
@@ -67,7 +67,7 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
             <button
               type="button"
               className="btn btn--small btn--ghost"
-              aria-label={`Remove the ${heroName(deck.hero)} deck from ${dateLabel(deck.bankedAt)}`}
+              aria-label={`Remove the ${heroName(deck.hero, deck.ascendancy)} deck from ${dateLabel(deck.bankedAt)}`}
               onClick={() => setConfirm(true)}
             >
               <span>Remove</span>

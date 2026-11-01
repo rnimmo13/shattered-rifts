@@ -30,9 +30,7 @@ export function ReservesCounter(props: { value: number; max: number }) {
       aria-label={`Reserves ${props.value} of ${props.max}`}
       {...tipAttrs(UI_TIPS.reserves(props.value, props.max))}
     >
-      <span aria-hidden>◈</span>
       <b>{props.value}</b>
-      <small>Reserves</small>
     </div>
   );
 }

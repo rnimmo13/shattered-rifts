@@ -55,7 +55,8 @@ export function describeEffect(e: PreludeEffect): string {
   }
 }
 
-const boonsIn = (effects: readonly PreludeEffect[]): number => effects.filter((e) => e.k === 'boon').length;
+const boonsIn = (effects: readonly PreludeEffect[]): number =>
+  effects.filter((e) => e.k === 'boon').length;
 
 const opt = (id: string, name: string, effects: PreludeEffect[], risky = false): PreludeOption => ({
   id,
@@ -64,7 +65,11 @@ const opt = (id: string, name: string, effects: PreludeEffect[], risky = false):
     effects
       // (several Boons read as one line)
       .filter((e, i) => e.k !== 'boon' || effects.findIndex((x) => x.k === 'boon') === i)
-      .map((e) => (e.k === 'boon' && boonsIn(effects) > 1 ? `Gain ${boonsIn(effects)} random Boons` : describeEffect(e)))
+      .map((e) =>
+        e.k === 'boon' && boonsIn(effects) > 1
+          ? `Gain ${boonsIn(effects)} random Boons`
+          : describeEffect(e),
+      )
       .join('. ') + '.',
   effects,
   ...(risky ? { risky } : {}),
@@ -126,10 +131,7 @@ function blessings(stage: number, hurt: boolean): PreludeOption[] {
       { k: 'upgrade', n: 1 },
     ]),
     opt('cache', 'A Hidden Cache', [{ k: 'shards', n: 120 + stage * 15 }]),
-    opt('lucky-find', 'A Lucky Find', [
-      { k: 'boon' },
-      { k: 'shards', n: 40 },
-    ]),
+    opt('lucky-find', 'A Lucky Find', [{ k: 'boon' }, { k: 'shards', n: 40 }]),
     opt('apothecary', "Apothecary's Satchel", [{ k: 'potion' }, { k: 'upgrade', n: 1 }]),
     // Resolve only helps a run that has lost some (a fresh run is already full)
     ...(hurt
@@ -168,11 +170,7 @@ function bargains(stage: number): PreludeOption[] {
     opt(
       'hungry-rift',
       'The Rift Is Hungry',
-      [
-        { k: 'maxHp', n: -6 },
-        { k: 'boon' },
-        { k: 'boon' },
-      ],
+      [{ k: 'maxHp', n: -6 }, { k: 'boon' }, { k: 'boon' }],
       true,
     ),
     opt(
@@ -206,11 +204,7 @@ function bargains(stage: number): PreludeOption[] {
     opt(
       'haunted-gift',
       'A Haunted Gift',
-      [
-        { k: 'boon' },
-        { k: 'boon' },
-        { k: 'wound', n: 1 },
-      ],
+      [{ k: 'boon' }, { k: 'boon' }, { k: 'wound', n: 1 }],
       true,
     ),
     opt(
@@ -234,13 +228,7 @@ function bargains(stage: number): PreludeOption[] {
     opt(
       'cursed-crown',
       'The Cursed Crown',
-      [
-        { k: 'wound', n: 1 },
-        { k: 'hp', n: 10 },
-        { k: 'boon' },
-        { k: 'boon' },
-        { k: 'boon' },
-      ],
+      [{ k: 'wound', n: 1 }, { k: 'hp', n: 10 }, { k: 'boon' }, { k: 'boon' }, { k: 'boon' }],
       true,
     ),
     opt(
@@ -278,12 +266,140 @@ export function preludeCatalogue(stage = 1): {
   rest: PreludeOption;
   blessings: PreludeOption[];
   bargains: PreludeOption[];
+  /** what a run sees from Tier IV: a better rest, and these on top of what it has not outgrown */
+  ascended: { rest: PreludeOption; blessings: PreludeOption[]; bargains: PreludeOption[] };
 } {
   return {
     rest: opt('rest', 'Rest by the Waymark', [{ k: 'heal', pct: 30 }]),
     blessings: blessings(stage, true),
     bargains: bargains(stage),
+    ascended: {
+      rest: opt('rest', 'Rest by the Waymark', [{ k: 'heal', pct: 45 }]),
+      blessings: ascendedBlessings(stage),
+      bargains: ascendedBargains(stage),
+    },
   };
+}
+
+/** From this Rift Tier on, a run has beaten Tier III's Warden: it is ascended, and is offered more (DECISIONS #517). */
+export const ASCENDED_TIER = 4;
+
+/** What an ascended run can be offered. A blessing here is worth about three of the first tiers'. */
+function ascendedBlessings(stage: number): PreludeOption[] {
+  return [
+    opt('rift-forged', 'Rift-forged', [{ k: 'maxHp', n: 20 }]),
+    opt('hoard', "A Warden's Hoard", [{ k: 'shards', n: 350 + stage * 50 }]),
+    opt('masterwork', 'Masterwork', [{ k: 'upgrade', n: 4 }]),
+    opt('rare-find', 'A Rare Find', [{ k: 'pick', rarity: 'rare' }]),
+    opt('ancestor-gift', "An Ancestor's Gift", [{ k: 'pick', rarity: 'ancestral' }]),
+    opt('twin-trinkets', 'Twin Trinkets', [{ k: 'boon' }, { k: 'boon' }]),
+    opt('ironblood', 'Ironblood', [
+      { k: 'maxHp', n: 12 },
+      { k: 'upgrade', n: 2 },
+    ]),
+  ];
+}
+
+/** An ascended run's bargains, on top of the usual ones. */
+function ascendedBargains(stage: number): PreludeOption[] {
+  return [
+    opt(
+      'ascendant-due',
+      "The Ascendant's Due",
+      [
+        { k: 'hp', n: 12 },
+        { k: 'pick', rarity: 'rare', upgraded: true },
+      ],
+      true,
+    ),
+    opt(
+      'rift-bounty',
+      "The Rift's Bounty",
+      [
+        { k: 'maxHp', n: -8 },
+        { k: 'shards', n: 600 + stage * 60 },
+      ],
+      true,
+    ),
+    opt(
+      'blood-crown',
+      'A Crown of Blood',
+      [{ k: 'hp', n: 15 }, { k: 'boon' }, { k: 'boon' }, { k: 'upgrade', n: 2 }],
+      true,
+    ),
+  ];
+}
+
+/** The first tiers' options an ascended run no longer sees: the ones a better version replaces, the common cards it has outgrown, and bargains a free blessing beats. */
+const OUTGROWN: ReadonlySet<string> = new Set([
+  'hardened',
+  'purse',
+  'cache',
+  'honed',
+  'frame',
+  'whetstone',
+  'pilgrim',
+  'clear-out',
+  'two-gifts',
+  'fresh-steel',
+  'quiet-study',
+  // (bargains that ask a price for less than a free blessing there gives)
+  'blood-price',
+  'blood-for-steel',
+  'call-ancestors',
+  'silver-sale',
+  'hungry-rift',
+  'heavy-purse',
+  'haunted-gift',
+]);
+
+/** What the deck and belt have left to give: an option that could not do all it says is not offered (DECISIONS #517). */
+export interface PreludeRoom {
+  /** plain Strikes and plain Defends left */
+  strikes: number;
+  defends: number;
+  /** Strikes and Defends of any kind that can still be removed or changed */
+  basics: number;
+  /** how many cards can leave before the deck is at its smallest */
+  deckRoom: number;
+  /** cards that can still be upgraded */
+  upgradable: number;
+  /** free places on the potion belt */
+  beltRoom: number;
+  /** is there a card of this kind left for the deck? */
+  canPick: (
+    rarity: Extract<PreludeEffect, { k: 'pick' }>['rarity'],
+    kind?: 'attack' | 'skill',
+  ) => boolean;
+}
+
+const ANY_ROOM: PreludeRoom = {
+  strikes: Infinity,
+  defends: Infinity,
+  basics: Infinity,
+  deckRoom: Infinity,
+  upgradable: Infinity,
+  beltRoom: Infinity,
+  canPick: () => true,
+};
+
+function hasRoom(o: PreludeOption, room: PreludeRoom): boolean {
+  const total = (test: (e: PreludeEffect) => number): number =>
+    o.effects.reduce((sum, e) => sum + test(e), 0);
+  const strikes = total((e) => (e.k === 'remove' && e.only === 'strike' ? e.n : 0));
+  const defends = total((e) => (e.k === 'remove' && e.only === 'defend' ? e.n : 0));
+  const anyBasic = total((e) => (e.k === 'remove' && !e.only ? e.n : 0));
+  const changed = total((e) => (e.k === 'transform' ? e.n : 0));
+  const removed = strikes + defends + anyBasic;
+  return (
+    strikes <= room.strikes &&
+    defends <= room.defends &&
+    removed + changed <= room.basics &&
+    removed <= room.deckRoom &&
+    total((e) => (e.k === 'upgrade' ? e.n : 0)) <= room.upgradable &&
+    total((e) => (e.k === 'potion' ? 1 : 0)) <= room.beltRoom &&
+    o.effects.every((e) => e.k !== 'pick' || room.canPick(e.rarity, e.kind))
+  );
 }
 
 const FLAVOUR: Record<StageRealm, string> = {
@@ -315,10 +431,22 @@ export function makePrelude(
   hurt = false,
   /** how many Boons the run does not hold yet: an option never promises more than that */
   boonsLeft = Infinity,
+  /** what the deck and belt have left to give */
+  room: PreludeRoom = ANY_ROOM,
+  tier = 1,
 ): PreludeOffer {
-  const fits = (o: PreludeOption): boolean => boonsIn(o.effects) <= boonsLeft;
-  const good = blessings(stage, hurt).filter(fits);
-  const risky = bargains(stage).filter(fits);
+  const ascended = tier >= ASCENDED_TIER;
+  const fits = (o: PreludeOption): boolean => boonsIn(o.effects) <= boonsLeft && hasRoom(o, room);
+  const good = (
+    ascended
+      ? [...ascendedBlessings(stage), ...blessings(stage, hurt).filter((o) => !OUTGROWN.has(o.id))]
+      : blessings(stage, hurt)
+  ).filter(fits);
+  const risky = (
+    ascended
+      ? [...ascendedBargains(stage), ...bargains(stage).filter((o) => !OUTGROWN.has(o.id))]
+      : bargains(stage)
+  ).filter(fits);
   if (kind === 'threshold') {
     return {
       kind,
@@ -327,7 +455,11 @@ export function makePrelude(
       options: [...takeDistinct(rng, good, 3), ...takeDistinct(rng, risky, 1)],
     };
   }
-  const options: PreludeOption[] = [preludeCatalogue(stage).rest, ...takeDistinct(rng, good, 2)];
+  const catalogue = preludeCatalogue(stage);
+  const options: PreludeOption[] = [
+    ascended ? catalogue.ascended.rest : catalogue.rest,
+    ...takeDistinct(rng, good, 2),
+  ];
   if (nextInt(rng, 2) === 0) options.push(...takeDistinct(rng, risky, 1));
   return {
     kind,

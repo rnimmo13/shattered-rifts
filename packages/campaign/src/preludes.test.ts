@@ -12,9 +12,10 @@ import {
   parseRun,
   serializeRun,
   type PreludeEffect,
+  type PreludeOption,
   type RunState,
 } from './index';
-import { describeEffect } from './preludes';
+import { ASCENDED_TIER, describeEffect, type PreludeRoom } from './preludes';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
@@ -168,9 +169,14 @@ describe('what each effect does', () => {
 
   it('never promises more Boons than the run can still gain, and says how many at once (DECISIONS #497)', () => {
     for (let i = 0; i < 300; i++) {
-      for (const [left, most] of [[0, 0], [1, 1], [2, 2]] as const) {
+      for (const [left, most] of [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ] as const) {
         const o = makePrelude(seedRng(`boons-left-${i}`), 'threshold', 1, 'aurelion', false, left);
-        for (const x of o.options) expect(x.effects.filter((e) => e.k === 'boon').length).toBeLessThanOrEqual(most);
+        for (const x of o.options)
+          expect(x.effects.filter((e) => e.k === 'boon').length).toBeLessThanOrEqual(most);
       }
       for (const x of makePrelude(seedRng(`boons-text-${i}`), 'threshold', 1, 'aurelion').options) {
         const n = x.effects.filter((e) => e.k === 'boon').length;
@@ -341,5 +347,160 @@ describe('trades at the Threshold (DECISIONS #256)', () => {
     expect(describeEffect({ k: 'pick', rarity: 'common', kind: 'skill', upgraded: true })).toBe(
       'Choose one of three upgraded common Skills for your deck',
     );
+  });
+});
+
+describe('offers that fit the run (DECISIONS #517)', () => {
+  const FULL: PreludeRoom = {
+    strikes: 4,
+    defends: 4,
+    basics: 8,
+    deckRoom: 20,
+    upgradable: 20,
+    beltRoom: 3,
+    canPick: () => true,
+  };
+  const seen = (room: PreludeRoom, tier: number): PreludeOption[] =>
+    Array.from(
+      { length: 400 },
+      (_, i) =>
+        makePrelude(
+          seedRng(`fit-${i}`),
+          i % 2 ? 'stage' : 'threshold',
+          2,
+          'nexus',
+          false,
+          Infinity,
+          room,
+          tier,
+        ).options,
+    ).flat();
+  const effects = (list: PreludeOption[]) => list.flatMap((o) => o.effects);
+
+  it('a deck with no Strikes or Defends left is never offered their removal or trade', () => {
+    const list = seen({ ...FULL, strikes: 0, defends: 0, basics: 0 }, 2);
+    expect(effects(list).filter((e) => e.k === 'remove' || e.k === 'transform')).toEqual([]);
+  });
+
+  it('a deck with one Strike is not offered two to give up', () => {
+    const list = seen({ ...FULL, strikes: 1, defends: 0, basics: 1 }, 2);
+    for (const o of list) {
+      const removed = o.effects.reduce((n, e) => n + (e.k === 'remove' ? e.n : 0), 0);
+      expect(removed, o.id).toBeLessThanOrEqual(1);
+      expect(
+        o.effects.some((e) => e.k === 'remove' && e.only === 'defend'),
+        o.id,
+      ).toBe(false);
+    }
+  });
+
+  it('a deck at its smallest gives up nothing', () => {
+    expect(effects(seen({ ...FULL, deckRoom: 0 }, 2)).some((e) => e.k === 'remove')).toBe(false);
+  });
+
+  it('a full belt is not offered potions, nor a fully upgraded deck upgrades', () => {
+    const list = effects(seen({ ...FULL, beltRoom: 0, upgradable: 0 }, 2));
+    expect(list.some((e) => e.k === 'potion' || e.k === 'upgrade')).toBe(false);
+  });
+
+  it('a card that cannot be found is not promised', () => {
+    const list = seen({ ...FULL, canPick: (r) => r !== 'rare' }, 2);
+    expect(effects(list).some((e) => e.k === 'pick' && e.rarity === 'rare')).toBe(false);
+  });
+
+  it('there is always something to choose', () => {
+    const bare: PreludeRoom = {
+      ...FULL,
+      strikes: 0,
+      defends: 0,
+      basics: 0,
+      deckRoom: 0,
+      upgradable: 0,
+      beltRoom: 0,
+    };
+    for (let i = 0; i < 100; i++)
+      for (const tier of [1, ASCENDED_TIER]) {
+        expect(
+          makePrelude(seedRng(`bare-${i}`), 'threshold', 2, 'nexus', false, 0, bare, tier).options
+            .length,
+        ).toBeGreaterThanOrEqual(3);
+        expect(
+          makePrelude(seedRng(`bare-${i}`), 'stage', 2, 'nexus', false, 0, bare, tier).options
+            .length,
+        ).toBeGreaterThanOrEqual(3);
+      }
+  });
+
+  it('the real run reads its own deck', () => {
+    const r: RunState = {
+      ...newRun('knight', 'fit-real', 'normal'),
+      phase: 'stageClear',
+      deck: [
+        'sundering-blow',
+        'heavy-swing',
+        'brace-and-press',
+        'set-your-shield',
+        'twin-cut',
+        'oath-of-iron',
+        'dawn-smite',
+        'stand-fast',
+        'blood-plate',
+        'rending-fury',
+      ],
+    };
+    for (let i = 0; i < 40; i++) {
+      const after = nextStage({ ...r, seed: `fit-${i}`, rng: seedRng(`fit-${i}`) });
+      const list = after.context?.prelude?.options ?? [];
+      expect(list.length).toBeGreaterThan(0);
+      expect(effects(list).some((e) => e.k === 'remove' || e.k === 'transform')).toBe(false);
+    }
+  });
+});
+
+describe('an ascended run (Tier IV on, DECISIONS #517)', () => {
+  const offers = (tier: number) =>
+    Array.from(
+      { length: 400 },
+      (_, i) =>
+        makePrelude(seedRng(`asc-${i}`), 'stage', 2, 'nexus', false, Infinity, undefined, tier)
+          .options,
+    ).flat();
+
+  it('is offered better things that earlier tiers never see', () => {
+    const ids = (tier: number) => new Set(offers(tier).map((o) => o.id));
+    for (const id of [
+      'rift-forged',
+      'hoard',
+      'masterwork',
+      'rare-find',
+      'ancestor-gift',
+      'twin-trinkets',
+      'ironblood',
+      'ascendant-due',
+      'rift-bounty',
+      'blood-crown',
+    ]) {
+      expect(ids(ASCENDED_TIER).has(id), id).toBe(true);
+      expect(ids(ASCENDED_TIER - 1).has(id), id).toBe(false);
+    }
+  });
+
+  it('is offered no common cards and none of the small blessings', () => {
+    const list = offers(ASCENDED_TIER);
+    expect(
+      list.flatMap((o) => o.effects).some((e) => e.k === 'pick' && e.rarity === 'common'),
+    ).toBe(false);
+    for (const id of ['hardened', 'purse', 'honed'])
+      expect(
+        list.some((o) => o.id === id),
+        id,
+      ).toBe(false);
+  });
+
+  it('rests better', () => {
+    const rest = (tier: number) =>
+      makePrelude(seedRng('r'), 'stage', 2, 'nexus', false, Infinity, undefined, tier).options[0]!;
+    expect(rest(1).effects).toEqual([{ k: 'heal', pct: 30 }]);
+    expect(rest(ASCENDED_TIER).effects).toEqual([{ k: 'heal', pct: 45 }]);
   });
 });

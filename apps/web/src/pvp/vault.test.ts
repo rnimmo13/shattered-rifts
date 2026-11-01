@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
+import { checkEntry, setupFor } from '@sr/pvp';
 import {
   bankInto,
   deckFromRun,
+  deckSnapshot,
   deckFromStage,
   stagesCleared,
   dropFrom,
@@ -142,5 +144,34 @@ describe('the Vault', () => {
     expect(back.map((x) => x.id)).toEqual([good.id]);
     expect(parseVault('{not json')).toEqual([]);
     expect(parseVault(null)).toEqual([]);
+  });
+});
+
+describe('a banked deck leaves its Wounds behind (DECISIONS #515)', () => {
+  it('neither the banked copy nor a stage snapshot holds one', () => {
+    const scarred = { ...run('w'), deck: [...run('w').deck, 'wound', 'wound'] };
+    expect(deckFromRun(scarred, 1).deck).not.toContain('wound');
+    expect(deckSnapshot({ ...scarred, phase: 'map', stage: 1 }, 1).deck).not.toContain('wound');
+  });
+});
+
+describe('an Ascendancy travels with its deck (DECISIONS #519)', () => {
+  it('banked, kept on a reload, sent to the Arena, and its match setup has it', () => {
+    const banked = deckFromRun({ ...run('asc', 4), ascendancy: 'knight:paladin' }, 1);
+    expect(banked.ascendancy).toBe('knight:paladin');
+    expect(parseVault(JSON.stringify([banked]))[0]?.ascendancy).toBe('knight:paladin');
+    const entry = entryFor(banked, 'A');
+    const checked = checkEntry(entry);
+    expect(checked.ok && checked.entry.ascendancy).toBe('knight:paladin');
+    const setup = setupFor('seed', entry, entry);
+    expect(setup.a.ascendancy).toBe('knight:paladin');
+    const b = setup.b as { ascendancy?: string };
+    expect(b.ascendancy).toBe('knight:paladin');
+  });
+
+  it('another class’s is dropped', () => {
+    const banked = deckFromRun({ ...run('asc2', 4), ascendancy: 'monk:zealot' }, 1);
+    const checked = checkEntry(entryFor(banked, 'A'));
+    expect(checked.ok && checked.entry.ascendancy).toBeUndefined();
   });
 });

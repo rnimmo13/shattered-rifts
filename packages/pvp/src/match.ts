@@ -71,8 +71,20 @@ export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
     seed,
     // Boons are left out of the Arena (DECISIONS #236): a deck carries its run's Boons (shown, and used by a ghost Warden in the
     // campaign), but a match between decks is cards only
-    a: { hero: a.hero, deck: [...a.deck], boons: [], ...first },
-    b: { hero: b.hero, deck: [...b.deck], boons: [], ...second },
+    a: {
+      hero: a.hero,
+      deck: [...a.deck],
+      boons: [],
+      ...(a.ascendancy ? { ascendancy: a.ascendancy } : {}),
+      ...first,
+    },
+    b: {
+      hero: b.hero,
+      deck: [...b.deck],
+      boons: [],
+      ...(b.ascendancy ? { ascendancy: b.ascendancy } : {}),
+      ...second,
+    },
   };
 }
 

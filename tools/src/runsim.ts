@@ -11,6 +11,7 @@ import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
 import {
   DIFFICULTY,
   availableNodes,
+  chooseAscendancy,
   chooseCard,
   chooseEvent,
   pickEventCard,
@@ -142,6 +143,9 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
       }
       case 'gift':
         run = chooseCard(run, run.context?.offers?.[0] ?? null);
+        break;
+      case 'ascend':
+        run = chooseAscendancy(run, run.context?.ascendancies?.[0] ?? '');
         break;
       case 'shrine': {
         const ups = upgradable(run.deck);

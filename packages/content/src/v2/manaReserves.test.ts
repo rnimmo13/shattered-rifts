@@ -26,6 +26,7 @@ function fight(hero: 'knight' | 'assassin', hand: string[] = []): CombatState {
     u.intent = null;
   }
   if (hand.length) {
+    s.sides.a.reserves = 0;
     s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
     s.sides.a.draw = Array.from({ length: 12 }, (_, i) => ({ id: `D${i}`, card: 'defend' }));
     s.sides.a.discard = [];
@@ -44,13 +45,13 @@ const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 const lost = (s: CombatState, i = 0): number => 500 - s.sides.b.units[i]!.hp;
 
 describe("the Mana Reserves trait", () => {
-  it('is the Knight’s trait: Max Reserves 3, and no opening Barrier or Plating', () => {
+  it('is the Knight’s trait: Max Reserves 3, 2 Reserves at the start, and no opening Barrier or Plating (DECISIONS #521)', () => {
     const t = RIFTWALKERS.knight.trait;
     expect(t.name).toBe('Mana Reserves');
     expect(t.maxReserves).toBe(3);
     const s = fight('knight');
     expect(s.sides.a.maxReserves).toBe(3);
-    expect(s.sides.a.reserves).toBe(0);
+    expect(s.sides.a.reserves).toBe(2);
     expect(hero(s).barrier).toBe(0);
     expect(hero(s).statuses.plating).toBeUndefined();
   });
@@ -64,6 +65,7 @@ describe("the Mana Reserves trait", () => {
   it('only what is left over is kept, and no more than the Max Reserves', () => {
     const a = fight('knight');
     a.sides.a.mana = 1;
+    a.sides.a.reserves = 0;
     expect(endTurn(a).sides.a.reserves).toBe(1);
     const b = fight('knight');
     b.sides.a.mana = 7;
@@ -72,6 +74,7 @@ describe("the Mana Reserves trait", () => {
     // (full: more unspent Mana is lost)
     expect(endTurn(sb).sides.a.reserves).toBe(3);
     const c = fight('knight');
+    c.sides.a.reserves = 0;
     c.sides.a.mana = 0;
     expect(endTurn(c).sides.a.reserves).toBe(0);
   });

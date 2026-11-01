@@ -3,6 +3,7 @@
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
+import { useEffect, useRef } from 'react';
 import { HeroIcon } from '../ui/HeroIcon';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
 import { useTallMap } from './mapShape';
@@ -124,10 +125,23 @@ export function MapView(props: {
   // (the hook re-renders the map when the screen is turned; a drawing only fits the layout it was drawn on, so each has its own)
   const tall = useTallMap();
   const ink = useMapInk(props.inkKey && `${props.inkKey}:${tall ? 'tall' : 'wide'}`);
+  // (an act is too long for most screens: it opens on where you are, or where you can go)
+  const holder = useRef<HTMLDivElement>(null);
+  const opened = useRef<string | null>(null);
+  const place = `${props.map.stage}:${props.at ?? ''}:${tall ? 'tall' : 'wide'}`;
+  useEffect(() => {
+    if (opened.current === place) return;
+    opened.current = place;
+    holder.current
+      ?.querySelector('.mapnode.is-open, .mapnode.is-here')
+      ?.scrollIntoView({ inline: 'center', block: tall ? 'center' : 'nearest' });
+  }, [place, tall]);
   return (
     <>
       <MapInkTools ink={ink} />
-      {tall ? <TallMap {...props} ink={ink} /> : <WideMap {...props} ink={ink} />}
+      <div ref={holder} className="map__holder">
+        {tall ? <TallMap {...props} ink={ink} /> : <WideMap {...props} ink={ink} />}
+      </div>
     </>
   );
 }
@@ -140,7 +154,7 @@ function WideMap(props: MapProps & { ink: MapInkState }) {
   const PAD = 90;
   const gaps = Math.max(1, map.floors - 1);
   const COL_W = Math.max(
-    150,
+    104,
     Math.min(290, Math.floor((window.innerWidth * 0.9 - 2 * PAD) / gaps)),
   );
   const ROW_H = Math.max(130, Math.min(200, Math.floor(window.innerHeight * 0.22)));
@@ -169,7 +183,7 @@ function WideMap(props: MapProps & { ink: MapInkState }) {
             return (
               <path
                 key={`${n.id}>${t}`}
-                d={`M ${a.x} ${a.y} C ${a.x + 70} ${a.y}, ${b.x - 70} ${b.y}, ${b.x} ${b.y}`}
+                d={`M ${a.x} ${a.y} C ${a.x + COL_W * 0.45} ${a.y}, ${b.x - COL_W * 0.45} ${b.y}, ${b.x} ${b.y}`}
                 className={done ? 'map__edge is-walked' : 'map__edge'}
               />
             );

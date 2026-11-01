@@ -11,7 +11,7 @@ import {
   preludeCatalogue,
 } from '@sr/campaign';
 import type { StatusId } from '@sr/combat';
-import { BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+import { ASCENDANCIES, BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
 import { STATUS_ICONS } from '../art/gameIcons';
@@ -85,8 +85,8 @@ function TierTable() {
   return (
     <>
       <p className="learn__note">
-        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage; each act
-        of a run adds {HP_PER_STAGE}% HP and {DMG_PER_STAGE}% damage.
+        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage, twice that
+        past Tier X; each act of a run adds {HP_PER_STAGE}% HP and {DMG_PER_STAGE}% damage.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>
@@ -137,6 +137,9 @@ function PreludeList() {
       <dl>{[c.rest, ...c.blessings].map(row)}</dl>
       <h4>At a price</h4>
       <dl>{c.bargains.map(row)}</dl>
+      <h4>From Tier IV, once you have beaten Tier III</h4>
+      <p>The rest heals more, these join the offers, and the small blessings and common cards stop coming.</p>
+      <dl>{[c.ascended.rest, ...c.ascended.blessings, ...c.ascended.bargains].map(row)}</dl>
     </>
   );
 }
@@ -190,6 +193,22 @@ function OmenList() {
           </div>
         );
       })}
+    </dl>
+  );
+}
+
+/** Every Ascendancy, by class. */
+function AscendancyList() {
+  return (
+    <dl>
+      {ASCENDANCIES.map((a) => (
+        <div key={a.id} className="learn__row">
+          <dt>
+            {a.name} <i>(from the {RIFTWALKERS[a.hero as keyof typeof RIFTWALKERS].hero.name})</i>
+          </dt>
+          <dd>{a.text}</dd>
+        </div>
+      ))}
     </dl>
   );
 }
@@ -361,8 +380,8 @@ export function LearnScreen() {
           </div>
           <h3>Omens</h3>
           <p>
-            From Tier II every Rift Tier brings an Omen, and they stack: at Tier V you face the
-            Omens of Tiers II to V together. Each grows a little with every tier after it. In a
+            From Tier II the Rift Tiers bring Omens, some two at once, and they stack: at Tier V you
+            face every Omen up to there together. Each grows with every tier after it. In a
             fight they sit at the top right, and the run bar lists the ones in play.
           </p>
           <OmenList />
@@ -382,9 +401,17 @@ export function LearnScreen() {
             Every run opens at <b>The Threshold</b>: three blessings and one option at a price.
             Every act opens at a <b>Waymark</b>: a rest, two blessings, and half the time an
             option at a price. These are all of them (shard amounts grow a little with each act;
-            Resolve is only offered when you are missing some).
+            Resolve is only offered when you are missing some; an option that could not do all it
+            says, like removing Strikes you no longer have, is not offered).
           </p>
           <PreludeList />
+          <h3>Ascendancies</h3>
+          <p>
+            Beat the last Warden of Tier III and your reward is an Ascendancy: one of three, in place
+            of the usual Gift. Your class changes, a new trait joins the old one, and it stays with
+            that run and its deck, in the Arena too.
+          </p>
+          <AscendancyList />
           <h3>Boons</h3>
           <p>
             Boons last for the whole run, and every tier after it. Elites give one; the merchant

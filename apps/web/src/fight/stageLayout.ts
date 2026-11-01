@@ -8,7 +8,7 @@
 //   lists fold into a drawer (DECISIONS #475).
 
 import type { BoardFrame } from '../duel/scene/BattlefieldScene';
-import { handCardWidth, handReserve } from '../hand/fanLayout';
+import { handCardWidth, handReserve, portraitHandBand } from '../hand/fanLayout';
 
 export type StageMode = 'wide' | 'compact' | 'portrait';
 
@@ -29,7 +29,7 @@ export const PORTRAIT = {
   x1: 1370,
   /** the enemies' row (top right) and yours (bottom left) */
   foeY: 560,
-  myY: 1040,
+  myY: 880,
   myMaxY: 1340,
   /** where your hero stands, and how far right your companions may reach */
   heroX: 650,
@@ -56,7 +56,8 @@ export function portraitMyY(width = window.innerWidth, height = window.innerHeig
   const r = boardReserve('portrait', width, height);
   const room = height - r.top - r.bottom;
   const scale = Math.min(width / (frame.x1 - frame.x0), room / (frame.bottom - frame.top));
-  const plate = 70 / scale;
+  // (the name, the health bar and two rows of buffs and debuffs, clear of the potion belt below them)
+  const plate = PORTRAIT_PLATE / scale;
   return Math.max(PORTRAIT.myY, Math.min(PORTRAIT.myMaxY, frame.top + room / scale - plate));
 }
 
@@ -89,10 +90,9 @@ export function boardReserve(
   width = window.innerWidth,
   height = window.innerHeight,
 ): { top: number; bottom: number } {
-  const hand = handReserve(handCardWidth(width, height));
   if (mode === 'portrait')
-    return { top: PORTRAIT_TOP_BAR, bottom: hand + PORTRAIT_CONTROLS + PORTRAIT_STRIP };
-  return { top: 0, bottom: hand };
+    return { top: PORTRAIT_TOP_BAR, bottom: portraitHandBand(height) + PORTRAIT_CONTROLS + PORTRAIT_STRIP };
+  return { top: 0, bottom: handReserve(handCardWidth(width, height)) };
 }
 
 /** Upright: the height of the top bar, and of the row of controls (Mana, End turn, the piles) that sits on the hand. */
@@ -100,3 +100,5 @@ export const PORTRAIT_TOP_BAR = 46;
 export const PORTRAIT_CONTROLS = 58;
 /** ...and of the strip above it (the potion belt, the drawer's button) */
 export const PORTRAIT_STRIP = 50;
+/** ...and how much your hero's plate needs under the feet (px) */
+export const PORTRAIT_PLATE = 85;

@@ -2,6 +2,7 @@
 // Stars, forging, extra Trap triggers. A tiny self-contained ruleset, so nothing here depends on real card data.
 
 import { describe, expect, it } from 'vitest';
+import type { CombatEvent } from './types';
 import {
   applyAction,
   chooseAction,
@@ -1198,18 +1199,35 @@ describe('tier 3: statuses and tricks', () => {
     expect(hero(s).barrier).toBe(Math.floor(before * 0.75));
   });
 
-  it('Plating keeps Barrier through the turn change up to its stacks, then shrinks by 1 each turn', () => {
+  it('Plating gives its number in Barrier at the end of each turn, counting down, and keeps none (DECISIONS #513)', () => {
     let s = start(['give-plating', 'defend', 'defend']);
     s = play(s, 'h0').state; // Plating 2
     s = play(s, 'h1').state;
     s = play(s, 'h2').state;
     expect(hero(s).barrier).toBeGreaterThan(2);
-    s = end(s).state;
-    expect(hero(s).barrier).toBe(2);
+    const gained = (events: readonly CombatEvent[]): number[] =>
+      events.flatMap((e) => (e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : []));
+    let turn = end(s);
+    expect(gained(turn.events)).toEqual([2]);
+    s = turn.state;
+    // (what Plating and the Defends gave falls away as this turn begins: Plating does not hold it)
+    expect(hero(s).barrier).toBe(0);
     expect(hero(s).statuses.plating).toBe(1);
-    s = end(s).state;
-    expect(hero(s).barrier).toBe(1);
+    turn = end(s);
+    expect(gained(turn.events)).toEqual([1]);
+    s = turn.state;
     expect(hero(s).statuses.plating).toBeUndefined();
+    turn = end(s);
+    expect(gained(turn.events)).toEqual([]);
+  });
+
+  it('Brittle cuts what Plating gives', () => {
+    let s = start(['give-plating']);
+    s = play(s, 'h0').state;
+    hero(s).statuses.plating = 4;
+    hero(s).statuses.brittle = 1;
+    const gained = end(s).events.flatMap((e) => (e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : []));
+    expect(gained).toEqual([3]);
   });
 
   it('Holdfast keeps the whole hand for one turn per stack', () => {

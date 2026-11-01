@@ -24,6 +24,8 @@ export interface Entry {
   deck: string[];
   /** the Boons the deck was saved with (shown with it; an Arena match leaves them out, DECISIONS #236) */
   boons: string[];
+  /** the Ascendancy the deck's run took: it comes to the Arena (DECISIONS #519) */
+  ascendancy?: string;
   /** the Rift Tier the deck was banked at (the matchmaker pairs similar tiers first) */
   tier: number;
   /** how many of the tier's 3 stages the deck had cleared when it was saved (3 = the whole tier); absent on older decks */

@@ -22,7 +22,7 @@ const PROTECT = new Set<StatusId>([
 ]);
 const SHARPEN = new Set<StatusId>(['might', 'vigor']);
 /** the targets that are on the other side */
-const FOES = new Set<Sel>(['allFoes', 'randomFoe', 'front', 'weakestFoe', 'attacker']);
+const FOES = new Set<Sel>(['allFoes', 'randomFoe', 'front', 'weakestFoe', 'attacker', 'attackerOrRandom']);
 
 function suitOfOp(o: Op, aimsAtFoe: boolean): Suit | null {
   switch (o.op) {

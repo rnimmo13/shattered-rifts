@@ -64,3 +64,12 @@ describe('the tier table', () => {
     expect(enemyScale(25, 2)).toEqual(enemyScale(20, 2));
   });
 });
+
+describe('past Tier X (DECISIONS #520)', () => {
+  it('the climb is twice as steep', () => {
+    const step = (t: number) => enemyScale(t + 1, 1).hp - enemyScale(t, 1).hp;
+    expect(step(11)).toBe(2 * step(5));
+    expect(enemyScale(10, 1)).toEqual({ hp: 270, dmg: 198 });
+    expect(enemyScale(20, 1)).toEqual({ hp: 670, dmg: 438 });
+  });
+});

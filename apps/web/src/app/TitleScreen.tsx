@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import { MAX_TIER } from '@sr/campaign';
-import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { RIFTWALKERS, classNameOf, type HeroId } from '@sr/content/v2';
 import { BUILD } from '../build';
 import {
   RUN_SLOTS,
@@ -162,7 +162,7 @@ export function TitleScreen() {
                   <button
                     type="button"
                     className="home__play home__play--continue"
-                    aria-label={`Continue the ${RIFTWALKERS[r.run.character].hero.name} run, ${progressLabel(r.run.tier, stagesCleared(r.run))}`}
+                    aria-label={`Continue the ${classNameOf(r.run.character, r.run.ascendancy)} run, ${progressLabel(r.run.tier, stagesCleared(r.run))}`}
                     onClick={() => {
                       setActiveRun(r.id);
                       window.location.hash = '#/run';
@@ -170,7 +170,7 @@ export function TitleScreen() {
                   >
                     <b>Continue run</b>
                     <small>
-                      {RIFTWALKERS[r.run.character].hero.name} ·{' '}
+                      {classNameOf(r.run.character, r.run.ascendancy)} ·{' '}
                       {r.run.phase === 'banked'
                         ? `Tier ${r.run.tier} · Saved`
                         : progressLabel(r.run.tier, stagesCleared(r.run))}
@@ -213,7 +213,7 @@ export function TitleScreen() {
                     <button
                       type="button"
                       className="btn btn--small btn--ghost"
-                      aria-label={`Abandon the ${RIFTWALKERS[r.run.character].hero.name} run at Rift Tier ${r.run.tier}`}
+                      aria-label={`Abandon the ${classNameOf(r.run.character, r.run.ascendancy)} run at Rift Tier ${r.run.tier}`}
                       onClick={() => setDropping(r.id)}
                     >
                       <span>Abandon</span>

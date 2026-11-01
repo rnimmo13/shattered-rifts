@@ -1,7 +1,7 @@
-// Rift Omens (DECISIONS #245): every Rift Tier from II on brings an Omen, and Omens stack, so a run at Tier VII lives under the
-// Omens of Tiers II to VII. Each Omen also grows with the tier you are in, so the early ones still bite deep in the Rift. They make
-// a tier play differently, not just hit harder: enemies rise into a second phase, foes start guarded, the hero starts shaken,
-// rewards and rest grow thinner.
+// Rift Omens (DECISIONS #245, #515): Rift Tiers from II on bring Omens, some two at once and some none, and Omens stack, so a run at
+// Tier VII lives under all of them up to there. Each Omen also grows with the tier you are in, so the early ones still bite deep in
+// the Rift. They make a tier play differently, not just hit harder: enemies rise into a second phase, foes start guarded, the hero
+// starts shaken, rest and rewards grow thin, so a perfect deck is hard to build and going on is a real question.
 //
 // Pure: `omenEffects(tier)` adds up what the Omens of a tier do, and the run applies it where each belongs (a fight's setup, the
 // merchant, a rest, a reward).
@@ -31,6 +31,8 @@ export interface OmenEffects {
   fewerChoices: number;
   /** cards that join your draw pile for each fight (not your deck) */
   fightCards: string[];
+  /** Wounds added to your deck with each new act */
+  actWounds: number;
   /** elite fights bring one more of their weakest enemy */
   swarm: boolean;
   /** percent more damage from Wardens */
@@ -59,26 +61,29 @@ type Steps = { base: number; plusOneEvery: number };
 export const OMEN_TUNING = {
   secondWind: {
     tier: 2,
-    barrierPct: { base: 15, perTier: 1, max: 35 },
-    might: { base: 1, plusOneEvery: 6 },
+    barrierPct: { base: 20, perTier: 1, max: 40 },
+    might: { base: 2, plusOneEvery: 6 },
   },
-  dearerRoads: { tier: 3, pricePct: { base: 10, perTier: 1, max: 30 } },
-  hardenedHides: { tier: 4, thorns: { base: 1, plusOneEvery: 6 } },
-  thinRest: { tier: 5, restPct: { base: 20, perTier: 1, max: 40 } },
-  ralliedFoes: { tier: 6, barrierPct: { base: 10, perTier: 0.5, max: 20 } },
-  leanPurses: { tier: 7, shardsPct: { base: 15, perTier: 1, max: 30 } },
+  timesAreTough: {
+    tier: 3,
+    restPct: { base: 25, perTier: 2, max: 60 },
+    shardsPct: { base: 20, perTier: 2, max: 50 },
+    fewerChoices: 1,
+    pricePct: { base: 25, perTier: 5, max: 110 },
+  },
+  ralliedFoes: { tier: 4, barrierPct: { base: 10, perTier: 0.5, max: 20 } },
+  riftScars: { tier: 5, wounds: { base: 1, plusOneEvery: 7 } },
+  dread: { tier: 6, faltering: { base: 1, plusOneEvery: 6 } },
+  riftStatic: { tier: 7, staticCards: { base: 1, plusOneEvery: 7 } },
   ironclad: { tier: 8, armored: { base: 1, plusOneEvery: 6 } },
-  dread: { tier: 9, faltering: { base: 1, plusOneEvery: 6 } },
-  narrowedFates: { tier: 10, fewerChoices: 1 },
-  riftStatic: { tier: 11, staticCards: { base: 1, plusOneEvery: 7 } },
-  bloodRites: { tier: 12, ritual: 1 },
-  brittleWards: { tier: 13, brittle: { base: 2, plusOneEvery: 4 } },
-  swarming: { tier: 14 },
-  exposedSoul: { tier: 15, exposed: { base: 1, plusOneEvery: 4 } },
-  thirdPhase: { tier: 16, atPct: 25, barrierPct: { base: 20, perTier: 2, max: 28 }, might: 2 },
-  vigilant: { tier: 17, steadfast: 1 },
-  wardensFury: { tier: 18, dmgPct: { base: 10, perTier: 2, max: 14 } },
-  hunted: { tier: 19, firstHit: { base: 4, perTier: 2, max: 6 } },
+  brittleWards: { tier: 8, brittle: { base: 2, plusOneEvery: 4 } },
+  bloodRites: { tier: 9, ritual: 1 },
+  swarming: { tier: 10 },
+  exposedSoul: { tier: 10, exposed: { base: 1, plusOneEvery: 4 } },
+  vigilant: { tier: 12, steadfast: 1 },
+  thirdPhase: { tier: 13, atPct: 25, barrierPct: { base: 20, perTier: 2, max: 28 }, might: 2 },
+  hunted: { tier: 15, firstHit: { base: 4, perTier: 2, max: 6 } },
+  wardensFury: { tier: 17, dmgPct: { base: 10, perTier: 2, max: 14 } },
   riftAwakens: { tier: 20, atPct: 50, barrierPct: 10, might: 1 },
 } satisfies Record<string, { tier: number; [k: string]: number | Grows | Steps }>;
 // ------------------------------------------------------------------------------------------------------------------------------
@@ -107,7 +112,7 @@ const thirdPhase = (t: number): Rise => ({
   might: T.thirdPhase.might,
 });
 
-export const OMENS: Omen[] = [
+const LISTED: Omen[] = [
   {
     tier: T.secondWind.tier,
     id: 'second-wind',
@@ -119,27 +124,31 @@ export const OMENS: Omen[] = [
     apply: (e, t) => void e.bossRise.push(secondWind(t)),
   },
   {
-    tier: T.dearerRoads.tier,
-    id: 'dearer-roads',
-    name: 'Dearer Roads',
-    text: (t) => `Merchants charge ${at(t, T.dearerRoads.tier, T.dearerRoads.pricePct)}% more.`,
-    apply: (e, t) => void (e.pricePct += at(t, T.dearerRoads.tier, T.dearerRoads.pricePct)),
+    tier: T.timesAreTough.tier,
+    id: 'times-are-tough',
+    name: 'Times Are Tough',
+    text: (t) => {
+      const v = T.timesAreTough;
+      const f = v.tier;
+      return `Shrines heal ${at(t, f, v.restPct)}% less, fights pay ${at(t, f, v.shardsPct)}% fewer shards, card rewards offer ${v.fewerChoices === 1 ? 'one card' : `${v.fewerChoices} cards`} fewer (the Warden’s Gift is untouched), and merchants charge ${at(t, f, v.pricePct)}% more.`;
+    },
+    apply: (e, t) => {
+      const v = T.timesAreTough;
+      e.restPct += at(t, v.tier, v.restPct);
+      e.shardsPct += at(t, v.tier, v.shardsPct);
+      e.fewerChoices += v.fewerChoices;
+      e.pricePct += at(t, v.tier, v.pricePct);
+    },
   },
   {
-    tier: T.hardenedHides.tier,
-    id: 'hardened-hides',
-    name: 'Hardened Hides',
-    text: (t) =>
-      `Every enemy starts with ${at(t, T.hardenedHides.tier, T.hardenedHides.thorns)} Thorns.`,
-    apply: (e, t) =>
-      add(e.enemyStatuses, 'thorns', at(t, T.hardenedHides.tier, T.hardenedHides.thorns)),
-  },
-  {
-    tier: T.thinRest.tier,
-    id: 'thin-rest',
-    name: 'Thin Rest',
-    text: (t) => `Resting at a Shrine heals ${at(t, T.thinRest.tier, T.thinRest.restPct)}% less.`,
-    apply: (e, t) => void (e.restPct += at(t, T.thinRest.tier, T.thinRest.restPct)),
+    tier: T.riftScars.tier,
+    id: 'rift-scars',
+    name: 'Rift Scars',
+    text: (t) => {
+      const n = at(t, T.riftScars.tier, T.riftScars.wounds);
+      return `Each new act leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
+    },
+    apply: (e, t) => void (e.actWounds += at(t, T.riftScars.tier, T.riftScars.wounds)),
   },
   {
     tier: T.ralliedFoes.tier,
@@ -153,13 +162,6 @@ export const OMENS: Omen[] = [
         barrierPct: at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct),
         might: 0,
       }),
-  },
-  {
-    tier: T.leanPurses.tier,
-    id: 'lean-purses',
-    name: 'Lean Purses',
-    text: (t) => `Fights pay ${at(t, T.leanPurses.tier, T.leanPurses.shardsPct)}% fewer shards.`,
-    apply: (e, t) => void (e.shardsPct += at(t, T.leanPurses.tier, T.leanPurses.shardsPct)),
   },
   {
     tier: T.ironclad.tier,
@@ -176,14 +178,6 @@ export const OMENS: Omen[] = [
     text: (t) =>
       `You start every fight Faltering for ${turns(at(t, T.dread.tier, T.dread.faltering))} (25% less attack damage).`,
     apply: (e, t) => add(e.heroStatuses, 'faltering', at(t, T.dread.tier, T.dread.faltering)),
-  },
-  {
-    tier: T.narrowedFates.tier,
-    id: 'narrowed-fates',
-    name: 'Narrowed Fates',
-    text: () =>
-      `Card rewards offer ${T.narrowedFates.fewerChoices === 1 ? 'one card' : `${T.narrowedFates.fewerChoices} cards`} fewer (the Warden’s Gift is untouched).`,
-    apply: (e) => void (e.fewerChoices += T.narrowedFates.fewerChoices),
   },
   {
     tier: T.riftStatic.tier,
@@ -279,11 +273,14 @@ export const OMENS: Omen[] = [
   },
 ];
 
+/** Every Omen, in the order they arrive. */
+export const OMENS: Omen[] = [...LISTED].sort((a, b) => a.tier - b.tier);
+
 /** The Omens in force at a tier (every one from Tier II up to it). */
 export const omensAt = (tier: number): Omen[] => OMENS.filter((o) => o.tier <= tier);
 
-/** The Omen a tier brings (none at Tier I). */
-export const omenOf = (tier: number): Omen | undefined => OMENS.find((o) => o.tier === tier);
+/** The Omens a tier brings: some bring two, some none. */
+export const omensOf = (tier: number): Omen[] => OMENS.filter((o) => o.tier === tier);
 
 /** Everything the Omens of a tier do, added up. */
 export function omenEffects(tier: number): OmenEffects {
@@ -299,6 +296,7 @@ export function omenEffects(tier: number): OmenEffects {
     shardsPct: 0,
     fewerChoices: 0,
     fightCards: [],
+    actWounds: 0,
     swarm: false,
     wardenDmgPct: 0,
   };

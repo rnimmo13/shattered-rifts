@@ -3397,9 +3397,9 @@ button.totem:disabled {
 }
 
 /* the row of controls that sits on the hand: Mana and the draw pile on the left, End turn in the middle, the discard pile right
-   (its bottom clear of the hand's band, so the fan may use the whole width) */
+   (its bottom clear of the hand's band, so the grid may use the whole width) */
 .fight--portrait {
-  --ctl-bottom: calc(var(--cw, 82px) * 1.4 + 0.9rem);
+  --ctl-bottom: calc(var(--hand-band, 280px) + 0.3rem);
   --strip-bottom: calc(var(--ctl-bottom) + 3.6rem + 0.5rem);
 }
 .fight--portrait .fight__mana {
@@ -3483,7 +3483,8 @@ button.totem:disabled {
   gap: 0.1rem;
   justify-items: start;
   width: min(36vw, 12rem);
-  max-height: 32%;
+  /* (a long list scrolls in the drawer: this stays clear of your hero's head) */
+  max-height: 20%;
   overflow: hidden;
   padding: 0.3rem 0.45rem;
   border: 1px solid rgb(255 255 255 / 0.14);
@@ -3566,8 +3567,8 @@ button.totem:disabled {
 .fight__peek {
   position: fixed;
   left: 50%;
-  /* (above the lifted card: it rises 0.4 of its width and grows to 1.28, fanLayout) */
-  bottom: calc(var(--cw, 82px) * (1.4 * 1.28 + 0.4) + 0.5rem);
+  /* (above the hand's band) */
+  bottom: calc(var(--hand-band, 280px) + 0.5rem);
   translate: -50% 0;
   z-index: 210;
   display: grid;

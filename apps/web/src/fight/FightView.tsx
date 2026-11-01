@@ -41,14 +41,14 @@ import {
   type Side,
   type Winner,
 } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, classTrait } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import type { VenueId } from '../duel/scene/venue';
 import { loadEffectsMode, profileFor } from '../duel/effects';
 import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
 import { getSound, play, setSound } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
-import { handCardWidth } from '../hand/fanLayout';
+import { handCardWidth, portraitHandBand } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
@@ -1832,7 +1832,7 @@ export function FightView(props: {
   return (
     <div
       className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}`}
-      style={{ '--cw': `${cw}px` } as React.CSSProperties}
+      style={{ '--cw': `${cw}px`, '--hand-band': `${portraitHandBand(window.innerHeight)}px` } as React.CSSProperties}
     >
       <div
         className="fight__stage"
@@ -1960,6 +1960,9 @@ export function FightView(props: {
             preview={preview}
             items={placed}
             heroId={heroUnit?.id ?? null}
+            {...((setup[mySide] as { ascendancy?: string }).ascendancy
+              ? { ascendancy: (setup[mySide] as { ascendancy?: string }).ascendancy as string }
+              : {})}
             targetable={aimSet}
             hover={hoverUnit}
             names
@@ -2789,8 +2792,8 @@ function TurnClock(props: { link: PvpLink; mine: boolean; foe: string }) {
 
 /** A side's Riftwalker trait (none for a side of enemies). */
 function traitOf(s: CombatSetup['a'] | CombatSetup['b']): { name: string; text: string } | null {
-  const hero = (s as { hero?: string }).hero;
-  return hero && Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].trait : null;
+  const { hero, ascendancy } = s as { hero?: string; ascendancy?: string };
+  return hero && Object.hasOwn(RIFTWALKERS, hero) ? classTrait(hero, ascendancy) : null;
 }
 
 /** A Riftwalker's innate trait as a chip in the side column: its name, and what it does on hover. */

@@ -58,6 +58,7 @@ export function shouldAutoSave(before: RunState, after: RunState): boolean {
     // (a Warden is cleared before its Gift is picked, so the Gift card is saved when the pick is made)
     (after.stats.nodesCleared > before.stats.nodesCleared ||
       (before.phase === 'gift' && after.phase !== 'gift') ||
+      (before.phase === 'ascend' && after.phase !== 'ascend') ||
       // (an extra card reward after a Warden's Gift: the stage is cleared when it is picked)
       (before.context?.afterWarden === true && after.phase !== 'reward')) &&
     after.phase !== 'collapsed' &&

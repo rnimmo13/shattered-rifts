@@ -71,7 +71,7 @@ Sigils (a passive on turn 1, so each run has an identity). The original four use
 fight with a Dagger in hand); **Ilvane** *Primed* (start each fight with one Hawk totem); **Solen** *Centred* (start each fight in
 Serene); **Obsidia** *Kindled* (starts with 3 Spell Power and gains 1 a turn; an Obsidian Blade is in her opening hand).
 
-Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Assassin**, Ilvane **Shaman**, Solen **Monk** (was Barbarian, #391), Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
+Role tags (what kind of fighter, shown on every character screen): Maren **Knight**, Rivet **Engineer**, Kesh **Hunter**, Vesper **Trickster**, Quill **Rogue** (shown as Assassin until #519; the id stays `assassin`), Ilvane **Shaman**, Solen **Monk** (was Barbarian, #391), Obsidia **Spellblade**, Mire **Necromancer**. One word, unique per character (`Riftwalker.role`, tested).
 
 ## 3. Engine pieces (all generic ops; never a card id in engine code)
 

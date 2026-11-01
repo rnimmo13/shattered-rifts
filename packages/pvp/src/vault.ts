@@ -1,7 +1,7 @@
 // The Vault: the decks a player has banked. These are the pure rules for a list of them (shared by the browser and the server):
 // how many it holds, banking into it, and cleaning what arrives from outside. Where it is kept is not decided here.
 
-import { V2_DECK_RULES, withStartingWeapons } from '@sr/content/v2';
+import { V2_DECK_RULES, ascendancyOf, withStartingWeapons } from '@sr/content/v2';
 import { checkEntry } from './deck';
 
 export interface VaultDeck {
@@ -14,6 +14,8 @@ export interface VaultDeck {
   deck: string[];
   /** the Boons the run held when it was saved (shown with the deck; a match does not use them) */
   boons: string[];
+  /** the Ascendancy the run took (DECISIONS #519) */
+  ascendancy?: string;
   bankedAt: number;
   /** (DECISIONS #436) its deck holds the starting weapon as a card (missing: saved before; the weapon is added once) */
   weaponCards?: true;
@@ -61,7 +63,8 @@ const sameDeck = (a: VaultDeck, b: VaultDeck): boolean =>
   a.deck.length === b.deck.length &&
   a.deck.every((c, i) => c === b.deck[i]) &&
   a.boons.length === b.boons.length &&
-  a.boons.every((c, i) => c === b.boons[i]);
+  a.boons.every((c, i) => c === b.boons[i]) &&
+  a.ascendancy === b.ascendancy;
 
 /**
  * Put a deck in the Vault. One run keeps one deck: saving the same run again replaces its earlier save (as it stood then) rather than
@@ -126,6 +129,7 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
     ...(checked.entry.stage === undefined ? {} : { stage: checked.entry.stage }),
     deck: checked.entry.deck,
     boons: cleanBoons(o['boons']),
+    ...(ascendancyOf(checked.entry.hero, o['ascendancy']) ? { ascendancy: o['ascendancy'] as string } : {}),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
     weaponCards: true,
   };

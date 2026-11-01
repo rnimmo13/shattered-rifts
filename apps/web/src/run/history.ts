@@ -26,6 +26,7 @@ export interface RunRecord {
   end: RunEnd;
   deck: string[];
   boons: string[];
+  ascendancy?: string;
   maxHp: number;
   duelsWon: number;
   duelsLost: number;
@@ -82,6 +83,7 @@ export function recordOf(
     end,
     deck: [...run.deck],
     boons: [...run.boons, ...(run.heart ? [run.heart] : [])],
+    ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     maxHp: run.maxHp,
     duelsWon: run.stats.duelsWon,
     duelsLost: run.stats.duelsLost,

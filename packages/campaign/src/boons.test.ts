@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOONS, COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
+import { BOONS, COMBAT_DB, HEARTS, RIFTWALKERS } from '@sr/content/v2';
 import {
   RunError,
   buyBoon,
@@ -129,10 +129,11 @@ describe('boons in a run', () => {
     expect(loaded).not.toHaveProperty('legendOffer');
   });
 
-  it('Boons have no rarity, and none gives Mana or a card every turn: only a Heart does, at a price (DECISIONS #496, #497)', () => {
+  it('Boons have no rarity; nothing gives Mana every turn, and only a Heart gives a card, at a price (DECISIONS #496, #497, #516)', () => {
     for (const b of Object.values(COMBAT_DB.boons)) expect(b).not.toHaveProperty('rarity');
     const every = Object.values(COMBAT_DB.boons).filter((x) => x.mana || x.handSize);
-    expect(every.map((x) => x.id).sort()).toEqual(['blood-heart', 'ember-heart', 'gluttons-heart']);
+    expect(every.map((x) => x.id).sort()).toEqual(['gluttons-heart']);
+    expect([...BOONS, ...HEARTS].filter((x) => x.mana)).toEqual([]);
   });
 
   it('Aegis of Ages gives one Shielded, and there is no other Shielded Boon but the Warded Heart', () => {

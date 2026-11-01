@@ -10,8 +10,8 @@
 //
 // Why it looks like this (docs/BALANCE.md; DECISIONS #223, #228-#230): the whole table is one rising ladder. Tier 1 stage 1, 2 and 3,
 // then Tier 2 stage 1 and so on: every step is harder than the one before it, and stage 1 of a tier is always harder than stage 3 of
-// the tier below (Robert: it must never take a step back; the table test checks it). HP and damage climb the same amount every tier,
-// all the way to Tier 20.
+// the tier below (Robert: it must never take a step back; the table test checks it). HP and damage climb the same amount every tier
+// up to Tier 10, and twice that from there to Tier 20 (DECISIONS #520).
 
 export interface TierRow {
   /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
@@ -37,13 +37,17 @@ export const DMG_PER_STAGE = 3;
 /** how many Rift Tiers there are */
 const TIERS = 20;
 
+/** Past this Rift Tier the climb is twice as steep: Tier XI on is meant to be where a run dies (DECISIONS #520). */
+export const STEEP_FROM = 10;
+
 const at = (
   start: number,
   perTier: number,
   perStage: number,
   tier: number,
   stage: number,
-): number => start + (tier - 1) * perTier + (stage - 1) * perStage;
+): number =>
+  start + (tier - 1) * perTier + Math.max(0, tier - STEEP_FROM) * perTier + (stage - 1) * perStage;
 const stages = (start: number, perTier: number, perStage: number, tier: number) =>
   [1, 2, 3].map((st) => at(start, perTier, perStage, tier, st)) as [number, number, number];
 

@@ -43,6 +43,7 @@ export type RunPhase =
   | 'duel' // a fight is waiting to be played at the current node
   | 'reward' // pick a card (or skip)
   | 'gift' // the Warden's Gift: pick one rare card
+  | 'ascend' // Tier III's last Warden fell: choose an Ascendancy
   | 'shrine'
   | 'merchant'
   | 'event'
@@ -255,6 +256,8 @@ export interface GhostBoss {
   hero: HeroId;
   deck: string[];
   boons: string[];
+  /** the Ascendancy its owner took */
+  ascendancy?: string;
   /** how far its owner had got when it was entered */
   tier: number;
   stage: number | null;
@@ -270,6 +273,8 @@ export interface NodeContext {
   offers?: string[];
   /** gift: the Warden's Hearts on offer instead of a card */
   hearts?: string[];
+  /** the Ascendancies on offer after Tier III's last Warden */
+  ascendancies?: string[];
   /** reward: shards already granted for the win */
   shardsGained?: number;
   /** reward: a Boon the fight dropped (already added to the run) */
@@ -344,6 +349,8 @@ export interface RunState {
   removals?: number;
   /** the Warden's Heart this run holds, if any (DECISIONS #246) */
   heart?: string;
+  /** the Ascendancy this run has taken (DECISIONS #519) */
+  ascendancy?: string;
   seed: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */

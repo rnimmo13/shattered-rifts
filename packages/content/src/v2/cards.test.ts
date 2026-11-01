@@ -517,7 +517,7 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
     expect(lostBy('necromancer', 'oblivion')).toBe(11 * 3);
     expect(lostBy('monk', 'berserk-tide')).toBe(4 * 3);
     expect(lostBy('hunter', 'whirling-maul')).toBe(6 * 3);
-    expect(lostBy('knight', 'rift-whirl')).toBe(4 * 3);
+    expect(lostBy('monk', 'rift-whirl')).toBe(4 * 3);
   });
 
   it('an X card at X = 0 lands no hit, and Primed stays', () => {

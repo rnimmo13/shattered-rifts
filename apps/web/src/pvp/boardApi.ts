@@ -160,6 +160,7 @@ export async function fetchTrophies(): Promise<Trophy[] | null> {
 export interface GhostDeckRow {
   name: string;
   hero: string;
+  ascendancy?: string;
   tier: number;
   stage: number | null;
   /** when its owner played it */

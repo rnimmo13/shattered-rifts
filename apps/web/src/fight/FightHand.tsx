@@ -1,4 +1,4 @@
-// The hand: a fan of cards along the bottom. Hover lifts a card; click or drag plays it. A card with no target (or only
+// The hand: a fan of cards along the bottom, or a grid on a screen held upright (DECISIONS #511). Hover lifts a card; click or drag plays it. A card with no target (or only
 // one legal target) plays as soon as you release it above the hand: no arrow, no menus. A card with several possible
 // targets is dropped on one, or clicked and then aimed with the pointer. On a touch screen a tap is the click, and a long press
 // lifts the card to read it, for as long as the finger stays down (DECISIONS #475).
@@ -6,7 +6,7 @@
 import { AimArrow } from './AimArrow';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CardDef, CardInst, CombatDb, LiveDamage } from '@sr/combat';
-import { fanLayout, HAND_SINK } from '../hand/fanLayout';
+import { fanLayout, gridSlots, handGrid, HAND_SINK, portraitHandBand } from '../hand/fanLayout';
 import { FightCard } from './FightCard';
 
 export interface HandCard {
@@ -58,7 +58,7 @@ export interface FightHandProps {
   lockAt?: { x: number; y: number } | null;
   /** a panel is open: the press that closes it does nothing else */
   swallowPress?: boolean;
-  /** the fan may use the whole width (held upright, the controls sit above the hand: DECISIONS #443) */
+  /** held upright, the hand is a grid across the whole width, with the controls above it (DECISIONS #443, #511) */
   fill?: boolean;
   /** the next input is a choice of cards from this hand: clicking one chooses it instead of playing it (DECISIONS #473) */
   picking?: {
@@ -116,7 +116,12 @@ export function FightHand(p: FightHandProps) {
   /** each card's invisible stand-in, for the rect a tooltip sits beside */
   const hitRefs = useRef<(HTMLDivElement | null)[]>([]);
   /** where the cards rest (x from the hand's centre) and how wide they are, for the pointer test */
-  const restRef = useRef<{ xs: number[]; w: number; pitch: number }>({ xs: [], w: 0, pitch: 0 });
+  const restRef = useRef<{ xs: number[]; ys: number[] | null; w: number; pitch: number }>({
+    xs: [],
+    ys: null,
+    w: 0,
+    pitch: 0,
+  });
   const [drag, setDrag] = useState<Drag | null>(null);
   const dragRef = useRef<Drag | null>(null);
   /** a finger is holding a card up to read it: letting go only puts it back */
@@ -154,28 +159,29 @@ export function FightHand(p: FightHandProps) {
       : hover;
   // the widest the fan may spread: not past the corner widgets (but never so tight that the cards pile onto one another)
   // (a side never gives up more than a quarter of the screen, and the fan is never squeezed below three card widths)
-  const reserve = Math.min(cornerReserve(p.cardWidth * 1.4 + 10), window.innerWidth * 0.25);
-  const clear = window.innerWidth - 2 * reserve - p.cardWidth;
+  const grid = p.fill ? handGrid(n, window.innerWidth, portraitHandBand(window.innerHeight)) : null;
+  const w = grid ? grid.cardWidth : p.cardWidth;
+  const reserve = grid ? 0 : Math.min(cornerReserve(w * 1.4 + 10), window.innerWidth * 0.25);
+  const clear = window.innerWidth - 2 * reserve - w;
   const layout = {
-    cardWidth: p.cardWidth,
-    maxSpread: p.fill
-      ? window.innerWidth - p.cardWidth - 12
-      : Math.max(p.cardWidth * 3, Math.min(window.innerWidth * 0.72, p.cardWidth * 0.8 * 9, clear)),
+    cardWidth: w,
+    maxSpread: Math.max(w * 3, Math.min(window.innerWidth * 0.72, w * 0.8 * 9, clear)),
   };
-  const slots = fanLayout(n, {
-    ...layout,
-    focus: drag && !previewing ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null,
-  });
+  const focusSlot = drag && !previewing ? null : focusIdx !== null && focusIdx >= 0 ? focusIdx : null;
+  const slots = grid ? gridSlots(grid, focusSlot) : fanLayout(n, { ...layout, focus: focusSlot });
   // where each card rests when nothing is lifted: the pointer is tested against THIS, so a card that lifts or grows
   // never moves out from under the pointer (which made it twitch up and down)
-  const rest = fanLayout(n, { ...layout, focus: null });
+  const rest = grid ? gridSlots(grid, null) : fanLayout(n, { ...layout, focus: null });
+  // (a grid's cards sit on their rows, a fan's sink a little below the edge of the screen)
+  const sink = grid ? 0 : w * HAND_SINK;
   const restNow = {
     xs: rest.map((r) => r.x),
-    w: p.cardWidth,
+    ys: grid ? rest.map((r) => r.y) : null,
+    w,
     pitch:
       rest.length > 1
         ? Math.abs((rest[1] as { x: number }).x - (rest[0] as { x: number }).x)
-        : p.cardWidth,
+        : w,
   };
   useEffect(() => {
     hoverRef.current = hover;
@@ -188,10 +194,18 @@ export function FightHand(p: FightHandProps) {
   useEffect(() => {
     const onMove = (e: PointerEvent): void => {
       if (e.pointerType === 'touch' || dragRef.current) return;
-      const { xs, w, pitch } = restRef.current;
+      const { xs, ys, w, pitch } = restRef.current;
       const cur = hoverRef.current;
       let next: number | null = null;
-      if (xs.length > 0) {
+      if (ys) {
+        // (a grid: simply the card under the pointer)
+        const x = e.clientX - window.innerWidth / 2;
+        const up = e.clientY - window.innerHeight;
+        const on = xs.findIndex(
+          (cx, i) => Math.abs(x - cx) <= w / 2 && up <= (ys[i] as number) && up >= (ys[i] as number) - w * 1.4,
+        );
+        next = on >= 0 ? on : null;
+      } else if (xs.length > 0) {
         const x = e.clientX - window.innerWidth / 2;
         const h = w * 1.4;
         const bandTop = window.innerHeight - h * 0.97;
@@ -227,7 +241,7 @@ export function FightHand(p: FightHandProps) {
   }, []);
 
   // (the top of the resting hand: a card let go above it plays, and an aimed card turns into the arrow there, DECISIONS #444)
-  const handTop = window.innerHeight - p.cardWidth * 1.35;
+  const handTop = window.innerHeight - (grid ? grid.height : w * 1.35);
   const aboveHand = (y: number): boolean => y < handTop;
   /**
    * A card that is aimed (several targets), dragged up out of the hand towards the enemies, turns into the targeting arrow: the
@@ -307,7 +321,6 @@ export function FightHand(p: FightHandProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drag !== null]);
 
-  const w = p.cardWidth;
   return (
     <div
       className={`fhand${focusIdx !== null && focusIdx >= 0 ? ' is-focused' : ''}`}
@@ -325,13 +338,13 @@ export function FightHand(p: FightHandProps) {
           width: w,
           height: w * 1.4,
           zIndex: dragging ? 500 : s.z,
-          transform: `translate(calc(-50% + ${s.x}px), ${s.y + w * HAND_SINK}px) rotate(${s.rot}deg) scale(${s.scale})`,
+          transform: `translate(calc(-50% + ${s.x}px), ${s.y + sink}px) rotate(${s.rot}deg) scale(${s.scale})`,
         };
         if (dragging && drag && aimingCard?.inst.id === c.inst.id) {
           // aiming: the card waits above where it was picked up, and the arrow does the pointing
           style.position = 'fixed';
           style.left = drag.startX;
-          style.top = window.innerHeight - w * 1.4 * 0.95;
+          style.top = grid ? drag.startY : window.innerHeight - w * 1.4 * 0.95;
           style.bottom = 'auto';
           style.transform = 'translate(-50%, -50%) scale(1.12) rotate(0deg)';
           style.transition = 'left 0.12s, top 0.12s';
@@ -350,7 +363,7 @@ export function FightHand(p: FightHandProps) {
           width: w,
           height: w * 1.4,
           zIndex: hover === i ? 300 : r0.z,
-          transform: `translate(calc(-50% + ${r0.x}px), ${r0.y + w * HAND_SINK}px) rotate(${r0.rot}deg)`,
+          transform: `translate(calc(-50% + ${r0.x}px), ${r0.y + sink}px) rotate(${r0.rot}deg)`,
         };
         return (
           <div key={c.inst.id} className="fhand__pair">
@@ -396,7 +409,8 @@ export function FightHand(p: FightHandProps) {
                 }
                 // a mouse picks up the card that is lifted, whichever stand-in is under the pointer
                 const picked =
-                  e.pointerType !== 'touch' && hover !== null ? (p.cards[hover] ?? c) : c;
+                  // (a grid's cards never move out from under the pointer: it picks the one it is on)
+                  !grid && e.pointerType !== 'touch' && hover !== null ? (p.cards[hover] ?? c) : c;
                 const d: Drag = {
                   id: picked.inst.id,
                   x: e.clientX,
@@ -421,7 +435,7 @@ export function FightHand(p: FightHandProps) {
       {aimingCard && drag && (
         <AimArrow
           className="fhand__arrow"
-          from={{ x: drag.startX, y: window.innerHeight - w * 1.4 * 1.5 }}
+          from={{ x: drag.startX, y: grid ? drag.startY - w * 0.75 : window.innerHeight - w * 1.4 * 1.5 }}
           to={{ x: drag.x, y: drag.y }}
           lock={p.lockAt ?? null}
         />

@@ -18,12 +18,15 @@ import {
   pickEventCard,
   pickDeckCard,
   choosePrelude,
+  chooseAscendancy,
   continueLoop,
   duelPlan,
   enterNode,
   finishDuel,
   floorsOf,
   generateStageMap,
+  MAX_ELITES,
+  MID_FLOOR,
   DIFFICULTY,
   EVENT_FIGHT_ODDS,
   enemyScale,
@@ -107,11 +110,12 @@ describe('stage maps', () => {
       expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
-  it('a run is three stages: seven floors and a Warden, twice, then the Rift of eight floors and Vorthax', () => {
+  it('a run is three stages of 15 floors, a Warden the last of the first two and Vorthax of the Rift (DECISIONS #512)', () => {
+    expect([floorsOf(1) + 1, floorsOf(2) + 1, floorsOf(FINAL_STAGE) + 1]).toEqual([15, 15, 15]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
     expect(first.floors).toBe(floorsOf(1) + 1);
-    expect(first.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('kron');
+    expect(['kron', 'mother-of-static']).toContain(first.nodes.find((n) => n.kind === 'warden')?.enemyId);
     const map = generateStageMap(seedRng('x'), FINAL_STAGE, 'rift', undefined, [
       'umbral',
       'wyldmaw',
@@ -351,6 +355,9 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
       case 'gift':
         run = chooseCard(run, run.context!.offers![0]!);
         break;
+      case 'ascend':
+        run = chooseAscendancy(run, run.context!.ascendancies![0]!);
+        break;
       case 'shrine':
         run = takeShrine(run, { kind: 'rest' });
         break;
@@ -389,7 +396,7 @@ describe('a whole run, played by the bot', () => {
       expect(run.hp).toBeGreaterThan(0);
       expect(parseRun(serializeRun(run))).not.toBeNull();
     }
-  });
+  }, 30000);
 
   it('reachableNodes agrees with availableNodes at the start', () => {
     const r = fresh('knight', 'z');
@@ -649,7 +656,8 @@ describe('the other rooms and the rules around them', () => {
     const el = base.map.nodes.find((n) => n.kind === 'elite');
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
-    expect(finishDuel(run, true, 40).hp).toBe(40 + Math.ceil(base.maxHp * 0.1));
+    // (at least: the Boon an Elite leaves may heal or add HP too)
+    expect(finishDuel(run, true, 40).hp).toBeGreaterThanOrEqual(40 + Math.ceil(base.maxHp * 0.1));
     expect(finishDuel(run, false).resolve).toBe(0);
   });
 
@@ -690,5 +698,60 @@ describe('the heal after a won fight (DECISIONS #285, removed from Kesh in #333)
     };
     expect(won('hunter')).toBe(42);
     expect(won('knight')).toBe(40);
+  });
+});
+
+describe('an act of 15 floors (DECISIONS #512)', () => {
+  const maps = Array.from({ length: 300 }, (_, i) =>
+    generateStageMap(seedRng('fifteen-' + i), 1 + (i % 3), i % 3 === 2 ? 'rift' : 'nexus', 'knight'),
+  );
+  const onFloor = (m: (typeof maps)[number], f: number) => m.nodes.filter((n) => n.floor === f);
+
+  it('has 15 floors, the last the boss alone', () => {
+    for (const m of maps) {
+      expect(m.floors).toBe(15);
+      expect(onFloor(m, 15).map((n) => n.kind)).toEqual(['warden']);
+    }
+  });
+
+  it('rests before the boss, and no floor before it is all Shrines by rule', () => {
+    for (const m of maps) expect(onFloor(m, 14).every((n) => n.kind === 'shrine')).toBe(true);
+    const allShrines = maps.filter((m) => onFloor(m, MID_FLOOR).every((n) => n.kind === 'shrine'));
+    expect(allShrines.length).toBeLessThan(maps.length / 10);
+  });
+
+  it('has a Merchant in each half, and at most 4 Merchants and 6 Elites', () => {
+    for (const m of maps) {
+      const merchants = m.nodes.filter((n) => n.kind === 'merchant');
+      expect(merchants.some((n) => n.floor < MID_FLOOR)).toBe(true);
+      expect(merchants.some((n) => n.floor >= MID_FLOOR)).toBe(true);
+      expect(merchants.length).toBeLessThanOrEqual(4);
+      expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(MAX_ELITES);
+    }
+  });
+
+  it('never has two Merchants, Shrines or Elites in a row', () => {
+    for (const m of maps) {
+      for (const n of m.nodes) {
+        if (n.kind !== 'merchant' && n.kind !== 'shrine' && n.kind !== 'elite') continue;
+        for (const id of n.next) {
+          const after = m.nodes.find((x) => x.id === id)!;
+          expect(after.kind, n.id).not.toBe(n.kind);
+        }
+      }
+    }
+  });
+
+  it('every stop can be reached and leads on to the boss', () => {
+    for (const m of maps) {
+      const seen = new Set(onFloor(m, 1).map((n) => n.id));
+      for (let f = 1; f < 15; f++)
+        for (const n of onFloor(m, f)) {
+          expect(seen.has(n.id), n.id).toBe(true);
+          expect(n.next.length, n.id).toBeGreaterThan(0);
+          n.next.forEach((id) => seen.add(id));
+        }
+      expect(seen.has(onFloor(m, 15)[0]!.id)).toBe(true);
+    }
   });
 });

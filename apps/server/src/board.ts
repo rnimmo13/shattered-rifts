@@ -95,6 +95,7 @@ interface GhostSql extends Record<string, SqlStorageValue> {
   hero: string;
   deck: string;
   boons: string;
+  ascendancy: string | null;
   tier: number;
   stage: number | null;
   wins: number;
@@ -177,6 +178,12 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()
       .some((c) => c.name === 'run');
     if (!hasRun) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN run TEXT');
+    // ... and the Ascendancy its run took (DECISIONS #519)
+    const hasAscendancy = ctx.storage.sql
+      .exec<{ name: string }>("SELECT name FROM pragma_table_info('ghosts')")
+      .toArray()
+      .some((c) => c.name === 'ascendancy');
+    if (!hasAscendancy) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN ascendancy TEXT');
     // a run remembers how it ended (null while it is still going; DECISIONS #292)
     const hasEnded = ctx.storage.sql
       .exec<{ name: string }>("SELECT name FROM pragma_table_info('runs')")
@@ -575,11 +582,12 @@ export class Leaderboard extends DurableObject<Env> {
     const losses = result === 'loss' ? 1 : 0;
     if (this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', id) > 0) {
       this.ctx.storage.sql.exec(
-        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
+        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, ascendancy = ?, run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
         name,
         e.hero,
         JSON.stringify(e.deck),
         JSON.stringify(e.boons),
+        e.ascendancy ?? null,
         e.run ?? null,
         e.tier,
         e.stage ?? null,
@@ -591,13 +599,14 @@ export class Leaderboard extends DurableObject<Env> {
       return true;
     }
     this.ctx.storage.sql.exec(
-      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, ascendancy, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       id,
       owner,
       name,
       e.hero,
       JSON.stringify(e.deck),
       JSON.stringify(e.boons),
+        e.ascendancy ?? null,
       e.run ?? null,
       e.tier,
       e.stage ?? null,
@@ -634,7 +643,7 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, ghost: null, limited: true });
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
-        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
+        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, ascendancy, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
            FROM current_ghosts WHERE last_at >= ?
           ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
         now - 31 * DAY,
@@ -672,6 +681,7 @@ export class Leaderboard extends DurableObject<Env> {
         hero: storedHero(row.hero),
         deck: parseList(row.deck),
         boons: parseList(row.boons),
+        ...(row.ascendancy ? { ascendancy: row.ascendancy } : {}),
         tier: row.tier,
         stage: row.stage,
       },
@@ -687,7 +697,7 @@ export class Leaderboard extends DurableObject<Env> {
     // only what is ranked is read (not the cards), and only the best of them: the upper half is taken from these
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
-        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
+        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, ascendancy, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
            FROM current_ghosts WHERE last_at >= ?
           ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
         now - 31 * DAY,
@@ -712,6 +722,7 @@ export class Leaderboard extends DurableObject<Env> {
           hero: storedHero(row.hero),
           deck: parseList(row.deck),
           boons: parseList(row.boons),
+          ...(row.ascendancy ? { ascendancy: row.ascendancy } : {}),
           tier: row.tier,
           ...(row.stage === null ? {} : { stage: row.stage }),
         },
@@ -818,7 +829,7 @@ export class Leaderboard extends DurableObject<Env> {
   private ghostDecks(now: number): Record<string, unknown> {
     const rows = this.ctx.storage.sql
       .exec<GhostSql>(
-        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
+        `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, ascendancy, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
            FROM current_ghosts WHERE last_at >= ? ORDER BY last_at DESC LIMIT 200`,
         now - 31 * DAY,
       )
@@ -828,6 +839,7 @@ export class Leaderboard extends DurableObject<Env> {
       decks: rows.map((r) => ({
         name: r.owner_name,
         hero: r.hero,
+        ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
         tier: r.tier,
         stage: r.stage,
         wins: r.wins,

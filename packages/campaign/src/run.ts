@@ -22,6 +22,9 @@ import {
   canonicalHero,
   BOONS,
   type HeroId,
+  ascendanciesOf,
+  ascendancyOf,
+  classNameOf,
 } from '@sr/content/v2';
 import {
   CROSSED_MERCHANT_CHANCE,
@@ -138,10 +141,10 @@ export const ELITE_HEAL_PCT = 10;
 
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
-/** What a rest heals in this run (the Omen of Thin Rest takes some away), in HP. */
+/** What a rest heals in this run (the Omen Times Are Tough takes some away), in HP. */
 export const restHeal = (run: RunState): number =>
   Math.ceil(run.maxHp * REST_HEAL * (1 - omenEffects(run.tier).restPct / 100));
-/** A merchant's price in this run (the Omen of Dearer Roads adds to it). */
+/** A merchant's price in this run (the Omen Times Are Tough adds to it). */
 export const shopPrice = (run: RunState, n: number): number =>
   Math.round((n * (100 + omenEffects(run.tier).pricePct)) / 100);
 
@@ -204,6 +207,8 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
 /** Put the start-of-run / start-of-stage choice in front of the player (changes `run`, which must be a copy). */
 function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
   run.phase = 'prelude';
+  // (many options ask about the same few kinds of card)
+  const picks = new Map<string, boolean>();
   run.context = {
     nodeId: '',
     prelude: makePrelude(
@@ -213,6 +218,20 @@ function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
       realmOfStage(run, run.stage),
       run.resolve < run.maxResolve,
       BOONS.length - run.boons.length,
+      {
+        strikes: run.deck.filter((id) => id === 'strike').length,
+        defends: run.deck.filter((id) => id === 'defend').length,
+        basics: run.deck.filter(isPlainBasic).length,
+        deckRoom: run.deck.length - V2_DECK_RULES.minSize,
+        upgradable: run.deck.filter((id) => COMBAT_DB.cards[id]?.upgrade).length,
+        beltRoom: MAX_POTIONS - run.potions.length,
+        canPick: (rarity, kind) => {
+          const key = `${rarity}:${kind ?? ''}`;
+          if (!picks.has(key)) picks.set(key, pickPool(run, rarity, kind).length > 0);
+          return picks.get(key) as boolean;
+        },
+      },
+      run.tier,
     ),
   };
 }
@@ -272,7 +291,7 @@ function nextReward(
   const left = c.extraRewards ?? 0;
   if (left <= 0 || c.nodeId === '') return false;
   const kind = nodeOf(r, c.nodeId).kind;
-  const count = Math.max(2, (r.tier >= 4 ? 4 : 3) - omenEffects(r.tier).fewerChoices);
+  const count = Math.max(2, 3 - omenEffects(r.tier).fewerChoices);
   r.context = {
     nodeId: c.nodeId,
     offers: offerCards(r.rng, r.character, r.deck, kind === 'duel' ? 'duel' : 'elite', count),
@@ -282,6 +301,19 @@ function nextReward(
   };
   r.phase = 'reward';
   return true;
+}
+
+/** The Rift Tier whose last Warden offers an Ascendancy. */
+export const ASCEND_TIER = 3;
+
+/** Take an Ascendancy: the Riftwalker's class changes for the rest of the run, and the tier is cleared. */
+export function chooseAscendancy(run: RunState, id: string): RunState {
+  need(run.phase === 'ascend' && run.context?.ascendancies?.includes(id), 'That Ascendancy is not on offer');
+  need(ascendancyOf(run.character, id), 'That Ascendancy is not this Riftwalker’s');
+  const r = clone(run);
+  r.ascendancy = id;
+  if (!nextReward(r, r.context as NonNullable<RunState['context']>, true)) afterGift(r);
+  return r;
 }
 
 /** After the Warden's Gift: the next stage, or, after the last stage, the loop is cleared (DECISIONS #352). */
@@ -418,7 +450,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             }
           : {}),
       };
-      // the Omen of Dearer Roads: everything costs more (a card held for you keeps the price you were promised)
+      // the Omen Times Are Tough: everything costs more (a card held for you keeps the price you were promised)
       const up = omenEffects(r.tier).pricePct;
       if (up > 0) {
         const m = r.context.merchant;
@@ -487,6 +519,8 @@ export interface FightPlan {
   seed: string;
   /** this Warden is a ghost: the deck to fight (played by the computer), and its HP (the usual Warden below is not fought) */
   ghost?: GhostBoss & { hp: number; dmgPct: number };
+  /** the Ascendancy the run has taken */
+  ascendancy?: string;
   /** what the tier's Omens change about the enemies (DECISIONS #245) */
   mods: EnemyMod[];
   /** what the Omens start you with */
@@ -497,9 +531,9 @@ export interface FightPlan {
  * A ghost Warden grows with the Rift Tier the way every Warden does (DECISIONS #237): its HP is its Riftwalker's own times
  * GHOST_BOSS_HP_BASE at the first tier ghosts come (stage 1), and its HP and damage then rise as the tier table does from there.
  * (Not the table's whole percent: a ghost is a full Riftwalker's deck, which already hits like a player, and a deck from deeper in the
- * Rift is already a stronger deck. Measured with `pnpm arenasim --ghost`: about as often won as the usual Warden at Tiers V, X, XX.)
+ * Rift is already a stronger deck. Doubled from 1.3 on Robert's word, DECISIONS #514: only a campaign ghost has this, not the Arena's.)
  */
-export const GHOST_BOSS_HP_BASE = 1.3;
+export const GHOST_BOSS_HP_BASE = 2.6;
 /** The Max HP a Warden leaves you: 3 to Tier IV, one more every five tiers (4 from Tier V, 5 from Tier X, 7 at Tier XX). */
 export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, tier) / 5);
 
@@ -537,12 +571,15 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
     ? rawDeck.map((c: unknown) => (typeof c === 'string' ? canonicalCard(c) : c))
     : rawDeck;
   const sentBoons = g['boons'];
+  const ascendancy = ascendancyOf(hero, g['ascendancy'])?.id;
   if (!Array.isArray(deck) || deck.length < V2_DECK_RULES.minSize || deck.length > 80) return null;
   // (sanctified and engraved cards are real cards of that deck: isDeckCard knows them)
   if (!deck.every(isDeckCard)) return null;
   if (!Array.isArray(sentBoons) || sentBoons.length > 12) return null;
   // (a ghost saved with a Boon that has been taken out of the game plays without it)
-  const boons = sentBoons.filter((b): b is string => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b));
+  const boons = sentBoons.filter(
+    (b): b is string => typeof b === 'string' && Object.hasOwn(COMBAT_DB.boons, b),
+  );
   const name = typeof g['name'] === 'string' ? g['name'].slice(0, 40) : 'A rival';
   const tier = typeof g['tier'] === 'number' && Number.isInteger(g['tier']) ? g['tier'] : 1;
   const stage = typeof g['stage'] === 'number' && Number.isInteger(g['stage']) ? g['stage'] : null;
@@ -555,6 +592,7 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
     hero: hero as GhostBoss['hero'],
     deck: [...deck],
     boons: [...new Set(boons)],
+    ...(ascendancy ? { ascendancy } : {}),
     tier,
     stage,
   };
@@ -602,7 +640,7 @@ function meetGhost(r: RunState, g: GhostBoss): void {
   // (the latest 25: what one request to the server carries)
   if (g.id) r.ghostsMet = [...(r.ghostsMet ?? []), g.id].slice(-25);
   // said plainly, so nobody takes it for the realm's usual Warden
-  const who = RIFTWALKERS[g.hero]?.role ?? 'Riftwalker';
+  const who = classNameOf(g.hero, g.ascendancy);
   // (whose deck it is stays unsaid: a ghost in the campaign is a nameless challenger)
   r.eventResult = `Ghost Warden! This Warden is ${/^[AEIOU]/.test(who) ? 'an' : 'a'} ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
 }
@@ -639,6 +677,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     units,
     mods: omenMods(omen, units, boss, hpOf),
     heroStatuses: { ...omen.heroStatuses },
+    ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     deck: [...run.deck, ...omen.fightCards],
     hp: run.hp,
     maxHp: run.maxHp,
@@ -775,6 +814,21 @@ export function finishDuel(
     r.eventResult = `The Warden falls: +${sturdier} Max HP.`;
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
+    // Tier III's last Warden: the reward is an Ascendancy, in place of the Gift, a Heart and whatever the Heart of the Rift leaves. A run
+    // past it without one (saved before they came) is offered it at its next last Warden (DECISIONS #519).
+    if (r.stage >= FINAL_STAGE && r.tier >= ASCEND_TIER && !r.ascendancy) {
+      r.context = {
+        nodeId: node.id,
+        ascendancies: ascendanciesOf(r.character).map((a) => a.id),
+        // (an extra card reward the fight earned still comes, after the choice)
+        ...extra,
+        shardsGained: gain,
+        ...(boonGained ? { boonGained } : {}),
+        ...(potionGained ? { potionGained } : {}),
+      };
+      r.phase = 'ascend';
+      return r;
+    }
     if (r.stage >= FINAL_STAGE) {
       // the Heart of the Rift sometimes leaves something behind: a Boon you do not have yet
       if (nextInt(r.rng, 100) < LOOP_BOON_CHANCE) {
@@ -837,7 +891,7 @@ export function finishDuel(
     delete node.bonus;
     if (said.length) r.eventResult = `The spoils: ${said.join(' ')}`;
   }
-  const count = Math.max(2, (r.tier >= 4 ? 4 : 3) - omenEffects(r.tier).fewerChoices);
+  const count = Math.max(2, 3 - omenEffects(r.tier).fewerChoices);
   r.context = {
     nodeId: node.id,
     offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
@@ -877,7 +931,23 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
   return r;
 }
 
+/** The Omen of Rift Scars leaves no more than this many Wounds in a deck. */
+export const MAX_SCARS = 6;
+/** The Omen of Rift Scars: each new act leaves its Wounds in the deck, and the Waymark says so (DECISIONS #515). Call after opening it. */
+function scarDeck(r: RunState): void {
+  let added = 0;
+  const held = r.deck.filter((id) => id === 'wound').length;
+  for (let i = 0; i < omenEffects(r.tier).actWounds && held + i < MAX_SCARS; i++) {
+    r.deck.push('wound');
+    added++;
+  }
+  const offer = r.context?.prelude;
+  if (added > 0 && offer)
+    offer.text += ` Rift Scars: ${added === 1 ? 'a Wound joins' : `${added} Wounds join`} your deck.`;
+}
+
 /** After a Warden: start the next stage. */
+
 export function nextStage(run: RunState): RunState {
   need(run.phase === 'stageClear', 'The act is not cleared yet');
   const r = clone(run);
@@ -893,6 +963,7 @@ export function nextStage(run: RunState): RunState {
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');
+  scarDeck(r);
   return r;
 }
 
@@ -950,6 +1021,19 @@ export function choosePrelude(run: RunState, optionId: string): RunState {
   return r;
 }
 
+/** The cards a pick of this rarity and kind draws from. Draws nothing from the run's random stream. */
+function pickPool(r: RunState, rarity: PickRarity, kind?: 'attack' | 'skill'): string[] {
+  const fits = (id: string) =>
+    COMBAT_DB.cards[id]?.rarity === rarity &&
+    (!kind || COMBAT_DB.cards[id]?.kind === kind) &&
+    canAdd(r.deck, id);
+  const own = rarity === 'ancestral' ? ancestralPool(r.deck) : rewardPool(r.character).filter(fits);
+  const mine = own.filter(
+    (id) => rarity === 'ancestral' || COMBAT_DB.cards[id]?.hero === r.character,
+  );
+  return [...(mine.length >= 3 ? mine : own)];
+}
+
 /**
  * Three different cards of a rarity to choose from: the Riftwalker's own (a Neutral card only when the class runs short), the
  * "+" versions if asked. Ancestral cards have no class.
@@ -960,17 +1044,8 @@ function threeToChoose(
   upgraded: boolean,
   kind?: 'attack' | 'skill',
 ): string[] {
-  const fits = (id: string) =>
-    COMBAT_DB.cards[id]?.rarity === rarity &&
-    (!kind || COMBAT_DB.cards[id]?.kind === kind) &&
-    canAdd(r.deck, id);
-  const own = rarity === 'ancestral' ? ancestralPool(r.deck) : rewardPool(r.character).filter(fits);
-  const mine = own.filter(
-    (id) => rarity === 'ancestral' || COMBAT_DB.cards[id]?.hero === r.character,
-  );
-  const from = mine.length >= 3 ? mine : own;
   const out: string[] = [];
-  const pool = [...from];
+  const pool = pickPool(r, rarity, kind);
   while (out.length < 3 && pool.length)
     out.push(pool.splice(nextInt(r.rng, pool.length), 1)[0] as string);
   return upgraded ? out.map((id) => COMBAT_DB.cards[id]?.upgrade ?? id) : out;
@@ -1567,5 +1642,6 @@ export function continueLoop(run: RunState): RunState {
   r.cleared = [];
   r.at = null;
   openPrelude(r, 'stage');
+  scarDeck(r);
   return r;
 }

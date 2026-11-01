@@ -216,7 +216,7 @@ export const STATUS_INFO: Record<
     name: 'Plating',
     glyph: '⛉',
     tone: 'good',
-    text: 'Your Barrier survives each turn change up to this much, and the number shrinks by 1 every turn.',
+    text: 'At the end of your turn, gain this much Barrier, then this goes down by 1.',
   },
   clutch: {
     name: 'Clutch Genes',
@@ -411,13 +411,13 @@ export const STATUS_INFO: Record<
     name: 'Knives',
     glyph: '†',
     tone: 'bad',
-    text: 'Knives embedded in it by the Assassin (at most 3). They do nothing on their own: his cards pull them out for a payoff, and each one pulled deals 3 damage. They are lost if it dies.',
+    text: 'Knives embedded in it by the Rogue (at most 3). They do nothing on their own: his cards pull them out for a payoff, and each one pulled deals 3 damage. They are lost if it dies.',
   },
   prep: {
     name: 'Preparation',
     glyph: '◔',
     tone: 'good',
-    text: 'The Assassin’s setup, at most 3, kept from turn to turn. Finishers spend it for more damage; ordinary attacks leave it.',
+    text: 'The Rogue’s setup, at most 3, kept from turn to turn. Finishers spend it for more damage; ordinary attacks leave it.',
   },
   // (the Spellblade's, DECISIONS #417)
   twinedge: {
@@ -576,7 +576,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   retain: { name: 'Hold', text: 'It stays in your hand when you end your turn.' },
   reserves: {
     name: 'Reserves',
-    text: 'Mana the Knight kept instead of losing it (his trait), up to his Max Reserves. Cards spend your Mana first and your Reserves after it. Reserves stay until they are spent.',
+    text: 'Mana the Knight kept instead of losing it (his trait), up to his Max Reserves. He starts each fight with 2, and gains 1 Barrier per Reserve at the end of his turn. Cards spend your Mana first and your Reserves after it. Reserves stay until they are spent.',
   },
   defer: {
     name: 'Defer',

@@ -405,7 +405,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Veil Strike, Set the We
 | Patient Guard | 1 | aura | rare | At the end of your turn: Gain 2 (+1 per card in hand) Barrier. |
 | The Long Ambush | 3 | trap | rare | At the start of the enemy turn: Deal 20 damage to ALL enemies, shock ALL enemies for 1 turn and apply 2 Exposed to ALL enemies. |
 
-## Assassin (umbral, 70 HP)
+## Rogue (umbral, 70 HP)
 
 A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.
 

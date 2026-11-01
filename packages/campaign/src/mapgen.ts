@@ -1,5 +1,5 @@
-// Stage maps: a run is three stages. Stages 1 and 2 are each one realm: seven floors and that realm's Warden. Stage 3 is the
-// Rift: eight floors drawing on the two realms the run has not visited, then Vorthax (03_CAMPAIGN §2.1).
+// Stage maps: a run is three stages of 15 floors, the Warden being the last (DECISIONS #512). Stages 1 and 2 are each one realm and end
+// with that realm's Warden. Stage 3 is the Rift, drawing on the two realms the run has not visited, then Vorthax (03_CAMPAIGN §2.1).
 // Generated from the run seed, so a run always has the same maps.
 
 import { nextInt, type RngState } from '@sr/combat';
@@ -12,8 +12,13 @@ export const CROSSED_MERCHANT_CHANCE = 7.5;
 /** A run is this many stages; the last one ends with Vorthax. */
 export const FINAL_STAGE = 3;
 
-/** Floors before the Warden: the Rift (the last stage) is a little longer. */
-export const floorsOf = (stage: number): number => (stage >= FINAL_STAGE ? 8 : 7);
+/** Floors before the Warden, who is the 15th. */
+export const floorsOf = (_stage: number): number => 14;
+/** Where an act's second half begins: each half has its Merchants (DECISIONS #512). */
+export const MID_FLOOR = 8;
+/** At most this many Elites on an act's map, and Merchants in each half of it. */
+export const MAX_ELITES = 6;
+export const MAX_MERCHANTS_A_HALF = 2;
 
 /** at most this many Events in a row along any path */
 export const MAX_EVENTS_IN_A_ROW = 2;
@@ -71,7 +76,7 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
   return list[nextInt(rng, list.length)] as T;
 }
 
-/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3), a Merchant (at most 2), a Shrine (from floor 3), an Event; the rest are fights. */
+/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3), a Merchant (at most MAX_MERCHANTS_A_HALF in each half of the act), a Shrine (from floor 3), an Event; the rest are fights. */
 export const NODE_ODDS = {
   eliteFirst: 22,
   eliteMore: 12,
@@ -95,7 +100,7 @@ function rollKind(
   const eventAt = shrineAt + o.shrine;
   if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? o.eliteFirst : o.eliteMore))
     return 'elite';
-  if (merchantsPlaced < 2 && r >= merchantAt && r < shrineAt) return 'merchant';
+  if (merchantsPlaced < MAX_MERCHANTS_A_HALF && r >= merchantAt && r < shrineAt) return 'merchant';
   if (floor >= 3 && r >= shrineAt && r < eventAt) return 'shrine';
   if (r >= eventAt && r < eventAt + o.event) return 'event';
   return 'duel';
@@ -165,11 +170,12 @@ export function generateStageMap(
   };
 
   const FLOORS = floorsOf(stage);
-  const maxElites = FLOORS >= 7 ? 3 : 2;
+  const maxElites = MAX_ELITES;
   const byFloor: MapNode[][] = [];
   let elites_ = 0;
   let merchants = 0;
   for (let floor = 1; floor <= FLOORS; floor++) {
+    if (floor === MID_FLOOR) merchants = 0;
     const count = floor === FLOORS ? 2 : floor === 1 ? 2 + nextInt(rng, 2) : 2 + nextInt(rng, 3); // 2-4 nodes (2-3 on the first floor)
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
@@ -189,22 +195,16 @@ export function generateStageMap(
         if (crossed) node.crossed = crossed;
       }
       if (kind === 'duel') node.enemyId = regular();
-      if (kind === 'elite') node.enemyId = pick(rng, elites).id;
+      if (kind === 'elite') {
+        // (a different Elite each time while there are any left)
+        const fresh = elites.filter((e) => !used.has(e.id));
+        node.enemyId = pick(rng, fresh.length > 0 ? fresh : elites).id;
+        used.add(node.enemyId);
+      }
       row.push(node);
     }
     byFloor.push(row);
   }
-  // every stage still has a Merchant somewhere: if chance placed none, one takes the place of a plain fight or event in the middle
-  if (!byFloor.some((row) => row.some((n) => n.kind === 'merchant')) && FLOORS >= 3) {
-    const middle = byFloor.slice(1, FLOORS - 1).flat();
-    const plain = middle.filter((n) => n.kind === 'duel' || n.kind === 'event');
-    const spot = pick(rng, plain.length > 0 ? plain : middle);
-    spot.kind = 'merchant';
-    delete spot.enemyId;
-    const crossed = crossedFor(rng, character);
-    if (crossed) spot.crossed = crossed;
-  }
-
   const warden: MapNode = {
     id: `s${stage}-warden`,
     floor: FLOORS + 1,
@@ -242,19 +242,35 @@ export function generateStageMap(
     }
   }
 
-  // never two Merchants in a row on any path: the earlier one becomes a Duel
+  // never two Merchants, Shrines or Elites in a row on any path: the earlier one becomes a Duel
   for (let f = FLOORS - 2; f >= 0; f--) {
     const after = byFloor[f + 1] as MapNode[];
     for (const n of byFloor[f] as MapNode[]) {
       if (
-        n.kind === 'merchant' &&
-        n.next.some((id) => after.find((m) => m.id === id)?.kind === 'merchant')
+        (n.kind === 'merchant' || n.kind === 'shrine' || n.kind === 'elite') &&
+        n.next.some((id) => after.find((m) => m.id === id)?.kind === n.kind)
       ) {
         n.kind = 'duel';
         delete n.crossed;
         n.enemyId = regular();
       }
     }
+  }
+
+  // each half of a stage still has a Merchant somewhere: if none is left, one takes the place of a plain fight or event, away from any other
+  const nextTo = (n: MapNode, kind: NodeKind): boolean =>
+    n.next.some((id) => byFloor[n.floor]?.find((m) => m.id === id)?.kind === kind) ||
+    (byFloor[n.floor - 2] ?? []).some((m) => m.kind === kind && m.next.includes(n.id));
+  for (const part of [byFloor.slice(1, MID_FLOOR - 1), byFloor.slice(MID_FLOOR - 1, FLOORS - 1)]) {
+    const stops = part.flat();
+    if (stops.some((n) => n.kind === 'merchant')) continue;
+    const plain = stops.filter((n) => n.kind === 'duel' || n.kind === 'event');
+    const apart = plain.filter((n) => !nextTo(n, 'merchant'));
+    const spot = pick(rng, apart.length > 0 ? apart : plain.length > 0 ? plain : stops);
+    spot.kind = 'merchant';
+    delete spot.enemyId;
+    const crossed = crossedFor(rng, character);
+    if (crossed) spot.crossed = crossed;
   }
 
   // never more than MAX_EVENTS_IN_A_ROW Events in a row on any path: a third becomes a Duel

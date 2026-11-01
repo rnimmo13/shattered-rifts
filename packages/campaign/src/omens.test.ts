@@ -6,12 +6,15 @@ import {
   MAX_TIER,
   OMENS,
   availableNodes,
+  chooseAscendancy,
   chooseHeart,
   duelPlan,
   enterNode,
+  finishDuel,
   newRun,
+  nextStage,
   omenEffects,
-  omenOf,
+  omensOf,
   omensAt,
   parseRun,
   serializeRun,
@@ -19,13 +22,47 @@ import {
 } from './index';
 
 describe('Rift Omens', () => {
-  it('one comes with every tier from II to the last, and none at Tier I', () => {
+  it('Second Wind at Tier II, Times Are Tough at III, Rallied Foes at IV, and they only add up (DECISIONS #515)', () => {
     expect(omensAt(1)).toHaveLength(0);
+    expect(omensOf(2).map((o) => o.id)).toEqual(['second-wind']);
+    expect(omensOf(3).map((o) => o.id)).toEqual(['times-are-tough']);
+    expect(omensOf(4).map((o) => o.id)).toEqual(['rallied-foes']);
     for (let t = 2; t <= MAX_TIER; t++) {
-      expect(omenOf(t), `Tier ${t}`).toBeDefined();
-      expect(omensAt(t)).toHaveLength(t - 1);
+      expect(omensAt(t).length).toBe(omensAt(t - 1).length + omensOf(t).length);
     }
+    expect(omensAt(MAX_TIER)).toHaveLength(OMENS.length);
     expect(new Set(OMENS.map((o) => o.id)).size).toBe(OMENS.length);
+  });
+
+  it('Times Are Tough: from Tier III Shrines heal less, fights pay less, rewards offer one card fewer, and merchants charge more', () => {
+    const before = omenEffects(2);
+    expect([before.restPct, before.shardsPct, before.fewerChoices, before.pricePct]).toEqual([0, 0, 0, 0]);
+    const t3 = omenEffects(3);
+    expect([t3.restPct, t3.shardsPct, t3.fewerChoices, t3.pricePct]).toEqual([25, 20, 1, 25]);
+    expect(omenEffects(4).pricePct).toBe(30);
+    expect(omenEffects(20).pricePct).toBe(110);
+    expect(omenEffects(20).fewerChoices).toBe(1);
+  });
+
+  it('Second Wind is 20% Barrier and 2 Might at Tier II', () => {
+    expect(omenEffects(2).bossRise).toEqual([{ atPct: 50, barrierPct: 20, might: 2 }]);
+  });
+
+  it('no enemy starts with Thorns from an Omen any more', () => {
+    expect(omenEffects(MAX_TIER).enemyStatuses.thorns ?? 0).toBe(0);
+  });
+
+  it('Rift Scars: from Tier V each new act leaves a Wound in the deck', () => {
+    expect(omenEffects(4).actWounds).toBe(0);
+    expect(omenEffects(5).actWounds).toBe(1);
+    expect(omenEffects(12).actWounds).toBe(2);
+    const run = { ...newRun('knight', 'scars'), tier: 5, phase: 'stageClear' as const };
+    const after = nextStage(run);
+    expect(after.deck.filter((c) => c === 'wound')).toHaveLength(1);
+    expect(after.context?.prelude?.text).toContain('Rift Scars: a Wound joins your deck.');
+    // (no more than 6 in a deck)
+    const full = { ...run, deck: [...run.deck, ...Array.from({ length: 6 }, () => 'wound')] };
+    expect(nextStage(full).deck.filter((c) => c === 'wound')).toHaveLength(6);
   });
 
   it('stack, and grow with the tier', () => {
@@ -107,12 +144,12 @@ describe("Warden's Hearts", () => {
     const r = gift();
     const g = chooseHeart(r, 'gluttons-heart');
     expect(g.heart).toBe('gluttons-heart');
-    expect(g.maxHp).toBe(r.maxHp - 15);
+    expect(g.maxHp).toBe(r.maxHp - 20);
     expect(g.phase).toBe('stageClear');
   });
 
   it('taking another gives the first back', () => {
-    const r = { ...gift('gluttons-heart'), maxHp: 65, hp: 65 };
+    const r = { ...gift('gluttons-heart'), maxHp: 60, hp: 60 };
     const g = chooseHeart(r, 'ember-heart');
     expect(g.heart).toBe('ember-heart');
     expect(g.maxHp).toBe(80);
@@ -122,5 +159,69 @@ describe("Warden's Hearts", () => {
     const r = { ...at(2, 'duel'), heart: 'ember-heart' };
     expect(duelPlan(r)!.boons).toContain('ember-heart');
     expect(parseRun(serializeRun(r))?.heart).toBe('ember-heart');
+  });
+});
+
+describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
+  const beat = (tier: number, stage: number, ascendancy?: string): RunState => {
+    const r = newRun('knight', 'ascend-' + tier);
+    const warden = r.map.nodes.find((n) => n.kind === 'warden')!;
+    const here: RunState = {
+      ...r,
+      tier,
+      stage,
+      phase: 'duel',
+      at: warden.id,
+      ...(ascendancy ? { ascendancy } : {}),
+      context: { nodeId: warden.id },
+    };
+    return finishDuel(here, true, 40);
+  };
+
+  it('Tier III\'s last Warden offers three, in place of the Gift', () => {
+    const r = beat(3, 3);
+    expect(r.phase).toBe('ascend');
+    expect(r.context?.ascendancies).toHaveLength(3);
+    expect(r.context?.offers).toBeUndefined();
+    expect(r.context?.hearts).toBeUndefined();
+  });
+
+  it('no other Warden does', () => {
+    expect(beat(3, 2).phase).toBe('gift');
+    expect(beat(2, 3).phase).toBe('gift');
+    expect(beat(4, 3, 'knight:paladin').phase).toBe('gift');
+  });
+
+  it('a run past Tier III without one, saved before they came, is offered it at its next last Warden', () => {
+    expect(beat(5, 3).phase).toBe('ascend');
+  });
+
+  it('taking one changes the class for the rest of the run and clears the tier', () => {
+    const r = chooseAscendancy(beat(3, 3), 'knight:marshal');
+    expect(r.ascendancy).toBe('knight:marshal');
+    expect(r.phase).toBe('loopCleared');
+    expect(parseRun(serializeRun(r))?.ascendancy).toBe('knight:marshal');
+  });
+
+  it('an extra card reward the fight earned comes after the choice', () => {
+    const r = newRun('knight', 'ascend-extra');
+    const warden = r.map.nodes.find((n) => n.kind === 'warden')!;
+    const won = finishDuel({ ...r, tier: 3, stage: 3, phase: 'duel', at: warden.id, context: { nodeId: warden.id } }, true, 40, [], 0, 1);
+    expect(won.phase).toBe('ascend');
+    const after = chooseAscendancy(won, 'knight:paladin');
+    expect(after.phase).toBe('reward');
+    expect(after.context?.offers?.length).toBeGreaterThan(0);
+  });
+
+  it('cannot take another classâ€™s, or one not on offer', () => {
+    expect(() => chooseAscendancy(beat(3, 3), 'monk:zealot')).toThrow();
+    expect(() => chooseAscendancy(beat(3, 2), 'knight:marshal')).toThrow();
+  });
+
+  it('a save mid-choice comes back, and a save naming another classâ€™s loses it', () => {
+    const r = beat(3, 3);
+    expect(parseRun(serializeRun(r))?.phase).toBe('ascend');
+    const odd = { ...chooseAscendancy(r, 'knight:paladin'), ascendancy: 'monk:zealot' };
+    expect(parseRun(serializeRun(odd))?.ascendancy).toBeUndefined();
   });
 });

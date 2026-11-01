@@ -102,7 +102,7 @@ export const KNIGHT: CardDef[] = [
   ]),
   // (Stone Armor)
   m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 5)], {
-    up: { effects: [status('plating', 7)] },
+    up: { effects: [status('plating', 6)] },
   }),
   // (Colossus: Exposed enemies hit you half as hard until your next turn)
   m('uncommon', 'giants-stance', "Giant's Stance", 'skill', 1, 'none', [

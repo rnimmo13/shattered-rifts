@@ -355,7 +355,8 @@ describe('the Brass Reel is fair', () => {
       expect(n / N).toBeGreaterThan(1 / REEL_PRIZES - 0.025);
       expect(n / N).toBeLessThan(1 / REEL_PRIZES + 0.025);
     }
-  });
+    // (3000 runs, each with a 15-floor map: it needs longer than the default limit on a busy machine)
+  }, 60000);
 
   it('the prizes stand in a different order in almost every event, so no place on the reel is always the same prize', () => {
     const orders = new Set<string>();

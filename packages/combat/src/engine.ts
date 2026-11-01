@@ -55,6 +55,7 @@ import {
   type CardId,
   type CardInst,
   type CombatDb,
+  type HeroDef,
   type HeroTrait,
   type CombatEvent,
   type CombatSetup,
@@ -455,13 +456,13 @@ function scaleWord(def: CardDef, by: string | undefined): string {
 /** The innate trait of the hero on `side` (none for a side of enemies). */
 function traitOf(r: Run, side: Side): HeroTrait | undefined {
   const sd = r.s.sides[side];
-  return sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+  return heroDefOf(r.db, sd)?.trait;
 }
 
 /** An innate trait that depends on HP (Clutch Genes): keep the hero's `clutch` status at their missing HP (or the percent of their max
  * HP they are missing, DECISIONS #429) times the rate, rounded down. */
 function syncClutch(r: Run, sd: SideState): void {
-  const c = sd.hero ? r.db.heroes[sd.hero]?.trait?.clutch : undefined;
+  const c = heroDefOf(r.db, sd)?.trait?.clutch;
   const hero = heroOf(sd);
   if (!c || !hero || hero.hp <= 0) return;
   const missing = Math.max(0, hero.maxHp - hero.hp);
@@ -1015,7 +1016,7 @@ function castElement(r: Run, sd: SideState, cd: CardDef): void {
   if (!el || r.s.winner) return;
   const list = (sd.elementsTurn ??= []);
   if (!list.includes(el)) list.push(el);
-  const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+  const trait = heroDefOf(r.db, sd)?.trait;
   const hero = heroOf(sd);
   const fire = !!trait?.trinity && !!hero && !sd.trinityDone && list.length >= ELEMENTS.length;
   r.ev.push({ type: 'elements', side: sd.id, elements: [...list], trinity: fire });
@@ -1175,6 +1176,9 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       // no attacker at all (a Trap set off by a summon), the front enemy
       if (a.attacker) return a.attacker.hp > 0 ? [a.attacker] : [];
       return foes.length ? [foes[0] as Unit] : [];
+    case 'attackerOrRandom':
+      if (a.attacker && a.attacker.hp > 0) return [a.attacker];
+      return foes.length ? [foes[nextInt(r.s.rng, foes.length)] as Unit] : [];
     case 'weakestFoe':
       return foes.length ? [foes.reduce((m, x) => (x.hp < m.hp ? x : m))] : [];
     case 'biggestAlly': {
@@ -3154,6 +3158,12 @@ function countsNothing(r: Run, a: Act, op: { amount: number; scale?: Scale }): b
   );
 }
 
+/** A side's hero as it plays: the Ascendancy's version if it has taken one (DECISIONS #519). */
+function heroDefOf(db: CombatDb, sd: Pick<SideState, 'hero' | 'ascendancy'>): HeroDef | undefined {
+  if (!sd.hero) return undefined;
+  return (sd.ascendancy ? db.ascended?.[sd.ascendancy] : undefined) ?? db.heroes[sd.hero];
+}
+
 /** What the k-th Shatter on a unit deals: 20, 25, 30... (DECISIONS #486, #503), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
   return SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
@@ -3938,15 +3948,12 @@ function startOfTurn(r: Run, side: Side): void {
     // only last turn's falls away: what a Burn tick just brought (a phase rise, a Trap it sprang) is new
     const old = Math.min(u.barrier, lastTurns.get(u.id) ?? 0);
     if (old > 0) {
-      // Fortified keeps a share of your Barrier through the turn change, Plating keeps up to its stacks; otherwise all of it falls away
-      const fort = stacks(u, 'fortified') > 0 ? Math.floor(old * FORTIFIED_KEEP) : 0;
-      const kept = Math.min(old, Math.max(fort, stacks(u, 'plating')));
+      // Fortified keeps a share of your Barrier through the turn change; otherwise all of it falls away
+      const kept = stacks(u, 'fortified') > 0 ? Math.floor(old * FORTIFIED_KEEP) : 0;
       u.barrier += kept - old;
       r.ev.push({ type: 'barrierDrop', target: u.id, total: u.barrier });
     }
   }
-  // Plating wears thinner every turn
-  for (const u of sd.units) if (stacks(u, 'plating') > 0) addStatus(r, u, 'plating', -1);
   // Seared (Bleed) burns
   for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) searedTick(r, u);
   // the morning after: each Hangover costs 1% of Max HP, rounded up on the whole, but never the last one, and it clears (DECISIONS #354, #502)
@@ -4119,9 +4126,9 @@ function beginHeroTurn(r: Run, side: Side): void {
   const opening = r.s.turn === (side === 'a' ? 1 : 2);
   // the Sigil, then Boons: the fight-start effects once, the turn-start effects every turn
   if (opening) {
-    const sigil = sd.hero ? r.db.heroes[sd.hero]?.sigil : undefined;
+    const sigil = heroDefOf(r.db, sd)?.sigil;
     if (sigil) runOps(r, mkAct(hero), sigil);
-    const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+    const trait = heroDefOf(r.db, sd)?.trait;
     if (trait?.fightStart) runOps(r, mkAct(hero), trait.fightStart);
     for (const t of trait?.triggers ?? [])
       sd.powers.push({
@@ -4143,7 +4150,7 @@ function beginHeroTurn(r: Run, side: Side): void {
       });
   }
   {
-    const trait = sd.hero ? r.db.heroes[sd.hero]?.trait : undefined;
+    const trait = heroDefOf(r.db, sd)?.trait;
     if (trait?.turnStart) runOps(r, mkAct(hero), trait.turnStart);
     syncClutch(r, sd);
   }
@@ -4192,6 +4199,16 @@ function decay(r: Run, side: Side): void {
       u.barrier += plated;
       r.ev.push({ type: 'barrier', target: u.id, amount: plated, total: u.barrier });
       if (u.kind === 'hero') fireTriggers(r, r.s.sides[u.side], 'barrier');
+    }
+    // Plating gives its number in Barrier at the end of the turn, then counts down (DECISIONS #513)
+    const plating = stacks(u, 'plating');
+    if (plating > 0) {
+      const shaken = stacks(u, 'brittle') > 0 || stacks(u, 'stunned') > 0;
+      const gained = shaken ? Math.floor(plating * 0.75) : plating;
+      u.barrier += gained;
+      r.ev.push({ type: 'barrier', target: u.id, amount: gained, total: u.barrier });
+      if (u.kind === 'hero') fireTriggers(r, r.s.sides[u.side], 'barrier');
+      addStatus(r, u, 'plating', -1);
     }
     const ritual = stacks(u, 'ritual');
     if (ritual > 0) addStatus(r, u, 'might', ritual);
@@ -4375,10 +4392,15 @@ const blankSide = (id: Side): SideState => ({
 });
 
 function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
-  const hd = r.db.heroes[h.hero];
-  if (!hd) throw new RulesError(`Unknown hero "${h.hero}"`);
+  const base = r.db.heroes[h.hero];
+  if (!base) throw new RulesError(`Unknown hero "${h.hero}"`);
+  // (an Ascendancy that is not this hero's, or is no more, plays as the hero: a deck saved long ago still plays)
+  const ascended = h.ascendancy ? r.db.ascended?.[h.ascendancy] : undefined;
+  const isOwn = ascended?.id === base.id;
+  const hd = isOwn && ascended ? ascended : base;
   const sd: SideState = {
     ...blankSide(id),
+    ...(isOwn ? { ascendancy: h.ascendancy as string } : {}),
     draw: h.deck.map((card) => {
       cardDef(r.db, card);
       return { id: newId(r.s, 'c'), card };
@@ -4591,7 +4613,7 @@ function pickOptions(p: NonNullable<CombatState['pending']>): string[][] {
 
 /** How many companions a hero's side can have at once: the Riftwalker's own limit, or MAX_ALLIES (DECISIONS #315). */
 export function allyCap(db: CombatDb, sd: SideState): number {
-  return (sd.hero ? db.heroes[sd.hero]?.maxAllies : undefined) ?? MAX_ALLIES;
+  return heroDefOf(db, sd)?.maxAllies ?? MAX_ALLIES;
 }
 
 /** How many companion slots a unit takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383). */

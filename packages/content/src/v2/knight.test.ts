@@ -25,6 +25,7 @@ function fight(hand: string[], deck: string[] = RIFTWALKERS.knight.starter): Com
   s.sides.a.discard = [];
   s.sides.a.exhausted = [];
   s.sides.a.mana = 9;
+  s.sides.a.reserves = 0;
   for (const u of s.sides.b.units) u.hp = u.maxHp = 200;
   return s;
 }
@@ -53,7 +54,7 @@ describe('the knight is the Ironclad shape', () => {
     expect(RIFTWALKERS.knight.hero.maxHp).toBe(80);
     expect(STATUS_IDS).not.toContain('devotion');
     expect(Object.values(db.cards).filter((c) => c.statusCost)).toEqual([]);
-    expect(RIFTWALKERS.knight.trait.triggers).toBeUndefined();
+    expect(RIFTWALKERS.knight.trait.triggers).toHaveLength(1);
   });
 
   it('Sundering Blow hits for 8 and leaves 2 Exposed', () => {

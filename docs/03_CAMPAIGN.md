@@ -42,9 +42,9 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 ```
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)
-   Stage 1 ─ realm A  (seven floors + one of that realm's two Wardens, even odds)
-   Stage 2 ─ realm B  (seven floors + a Warden: that realm's two, or one of the three far realms', each a fifth)
-   Stage 3 ─ the Rift  (eight floors of the two realms not yet visited and the far realms, then Vorthax, Heart of the Rift)
+   Stage 1 ─ realm A  (14 floors + one of that realm's two Wardens, even odds; 15 floors in all, DECISIONS #512)
+   Stage 2 ─ realm B  (14 floors + a Warden: that realm's two, or one of the three far realms', each a fifth)
+   Stage 3 ─ the Rift  (14 floors of the two realms not yet visited and the far realms, then Vorthax, Heart of the Rift)
    (the far realms, Gloomfen / the Hollow Crown / the Far Rifts, have no stage of their own: DECISIONS #437)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
@@ -57,14 +57,14 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
 
 ### 2.1 Stage map
 A run is **three stages** (DECISIONS #160). Each is a branching node map generated from the run seed, with 2–4 nodes
-per floor and paths that branch and merge: **seven floors + the Warden** for Stages 1 and 2, **eight floors + Vorthax**
+per floor and paths that branch and merge: **14 floors + the Warden** for Stages 1 and 2, **14 floors + Vorthax**
 for the Rift (Stage 3, whose fights come from the two realms the run has not visited). The last stop before every Warden is a
 Shrine (every node on that floor); each stage still has a Merchant somewhere before it (DECISIONS #175).
 
 | Node | Icon | What happens | Placement rules |
 |---|---|---|---|
 | **Duel** | ⚔ | A regular realm duelist (12–15 Essence, ~4 min) | All of floor 1; ~40% of other nodes |
-| **Elite** | 💀 | A tough named duelist (full Essence). Better card pick + a **Boon** | Floors 3–4, max 1 per stage, and at least one path avoids it |
+| **Elite** | 💀 | A tough named duelist (full Essence). Better card pick + a **Boon** | From floor 3, at most 6 an act, never two in a row |
 | **Event** | ❔ | Short story choice with risk/reward | ~25% |
 | **Shrine** | ✦ | Restore 1 Resolve **or** Temper a card **or** remove a card | Always on floor 5 |
 | **Merchant** | ⚖ | Spend Shards: cards, Boons, removal, Tempering | ~10%, max 1 per stage |
@@ -234,7 +234,7 @@ Choose 1 of 3 after Elites, from some Events, in Merchants and in the Warden's G
 
 | Boon | Effect |
 |---|---|
-| Ember Heart | Start each duel with +1 max Mana. |
+| Ember Heart | Legacy row: Warden's Hearts are in `packages/content/src/v2/boons.ts` and DECISIONS #516. |
 | Trapsmith's Kit | Your first Trap each duel costs 0. |
 | Second Wind | Once per duel, when you'd drop below 10 Essence, heal 8. |
 | Rift Tutor | Your opening hand always contains a card costing 2 or less. |

@@ -49,6 +49,12 @@ const entry = {
   stage: 2,
 };
 
+describe('a ghost Warden has twice the HP (DECISIONS #514)', () => {
+  it('is 2.6 times its Riftwalker at the first tier ghosts come', () => {
+    expect(ghostBossHp('knight', GHOST_FROM_TIER + 1, 1)).toBe(Math.round(RIFTWALKERS.knight.hero.maxHp * 2.6));
+  });
+});
+
 describe('Wardens that are ghosts', () => {
   it('never before Rift Tier 4, and about a third of the time after', () => {
     for (let tier = 1; tier <= GHOST_FROM_TIER; tier++)

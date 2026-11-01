@@ -11,6 +11,7 @@ import {
   canonicalCard,
   canonicalHero,
   stripRoll,
+  ascendancyOf,
 } from '@sr/content/v2';
 import { MAX_MATCH_DECKS, type Entry } from './protocol';
 
@@ -216,6 +217,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       if (
         typeof b === 'string' &&
         Object.hasOwn(COMBAT_DB.boons, b) &&
+        !COMBAT_DB.boons[b]?.heart &&
         !boons.includes(b) &&
         boons.length < MAX_BOONS
       )
@@ -234,6 +236,10 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       hero,
       deck: held,
       boons,
+      // (only a deck that has beaten Tier III can have one)
+      ...(t >= 3 && ascendancyOf(hero, e['ascendancy'])
+        ? { ascendancy: e['ascendancy'] as string }
+        : {}),
       tier: t,
       ...(stage === null ? {} : { stage }),
       ...(run === null ? {} : { run }),

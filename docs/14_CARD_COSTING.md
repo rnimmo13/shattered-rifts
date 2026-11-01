@@ -82,7 +82,7 @@ So `Deal 10` = `Deal 7, Apply 1 Exposed` = `Deal 4, Apply 2 Exposed` = `Deal 7, 
 |---|---|---|
 | Barrier, now | **1.2** per point | 9 Barrier = 10 damage. Defend 5 = Strike 6. Stone Skin 9, Dawn Smite 5 + 5 Barrier = 11. |
 | Barrier next turn (Guarded, "next turn gain N") | **1.0** per point | Can't be aimed at a known intent. Roll Away 4 + 4 Guarded, Glass Veil 11 + 5. |
-| Plating N | **~2.5** per stack | Only keeps Barrier you already have; shrinks each turn. Stoneskin (5) is a 1-cost uncommon. A Barrier card that gives Plating swaps **2 Barrier for 1 Plating** (2.4 against 2.5): Oath of Iron 8 Barrier became 6 + 2 Plating (the second Plating is extra, DECISIONS #457). |
+| Plating N (gain N Barrier at the end of your turn, then N falls by 1) | a fresh stack: **N(N+1)/2 x 0.9**; added to a stack, **~0.9 x N x the turns it has left** | Bleed's shape: 2 Plating is 3 Barrier fresh (2.7), and about 6 on a stack that is already running, so 2 is worth about 4.5 in a deck that keeps playing it. Barrier at the end of your turn cannot be aimed at a known intent as closely as a card's, but it comes every turn. Stoneskin (5) gives 15 Barrier for 1 Mana, a little over budget for an Aura that changes how she plays; Stoneskin+ is 6 (21). A deck holds 2 copies (DECISIONS #513). |
 | Blur | the Barrier you expect to carry over (~4-5) | Smoke Veil: 5 Barrier + Blur. |
 | Shielded | **~one enemy hit** (10-12 at Tier I) | Great against one big hit, nearly nothing against chip damage. |
 | Cancel a hit (a Trap's "cancel that attack") | **~12**, one Tier I hit | The Trap springs on the first hit of a move and stops that hit only. Mirror Veil, Bait and Switch. |
@@ -557,6 +557,8 @@ Compare Boons with each other. A Boon's points are not a card's points: there is
 | Heal N HP after a fight | **1.5 x N** | |
 | Lose N HP every turn | **-7.5 x N** | A heal after the fight can pay it back in full. |
 | Exposed on you for 2 turns | **~-27** at Tier I | 50% more on ~1.5 hits of 12, two turns running: 18 HP at 1.5. Barrier and Shielded lessen it. It grows with the tier. |
+| Burn on a random enemy each turn, N | **~6 x N** on one enemy | The stack climbs (3, 5, 7, 9, 11 over 5 turns at 3), at Burn's 0.55. Less against a crowd, as it spreads; more in a long Warden fight (8 turns: about 44). Ember Heart. |
+| Plating at the start, N | **N(N+1)/2 x 0.9** | x 0.75 under Brittle. Warded Heart's 7 is 25, 19 under its own Brittle. Bastion Engine answers every tick, unpriced: watch it. |
 | Fight-start effects | their usual rates | Iron Sigil 7, Rift Satchel 7, Aegis of Ages 12, Hex Lantern 9, Hunter's Lens ~7 (one turn, more in a big-hitting deck). |
 | Max HP | **1.5 per HP, once** | The Gilded Crown: 6 Max HP (9 once) and 3 HP a fight (4.5). |
 | Shards after a fight | no rate yet | Shard Purse's 6 is about 36 an act, against about 160 from an act's fights. |

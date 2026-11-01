@@ -1,8 +1,15 @@
 // The DOM layer over the fighters: HP bars with Barrier, status chips and enemy intents. Pure presentation.
 
 import type { CSSProperties } from 'react';
-import { ON_OR_OFF, KNIFE_MAX, PREP_MAX, forgeLabel, type StatusId, type UnitView } from '@sr/combat';
-import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import {
+  ON_OR_OFF,
+  KNIFE_MAX,
+  PREP_MAX,
+  forgeLabel,
+  type StatusId,
+  type UnitView,
+} from '@sr/combat';
+import { RIFTWALKERS, classTrait, type HeroId } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
 import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, fateBarPct, statusTip } from './info';
@@ -22,6 +29,8 @@ export interface Placed {
 export interface PlatesProps {
   items: Placed[];
   heroId: string | null;
+  /** the Ascendancy your hero has taken, for what its plate says */
+  ascendancy?: string;
   targetable: ReadonlySet<string>;
   hover: string | null;
   names: boolean;
@@ -41,6 +50,7 @@ export function UnitPlates({
   hover,
   preview,
   heroId,
+  ascendancy,
   sharp,
   scale = 1,
   intentTop = '7.8rem',
@@ -165,8 +175,8 @@ export function UnitPlates({
                 {...(u.kind === 'hero' && heroId && RIFTWALKERS[heroId as HeroId]
                   ? tipAttrs({
                       kicker: 'Innate',
-                      title: RIFTWALKERS[heroId as HeroId].trait.name,
-                      text: RIFTWALKERS[heroId as HeroId].trait.text,
+                      title: classTrait(heroId, ascendancy)?.name ?? '',
+                      text: classTrait(heroId, ascendancy)?.text ?? '',
                     })
                   : {})}
               >

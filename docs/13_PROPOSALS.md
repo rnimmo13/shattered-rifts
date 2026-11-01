@@ -92,20 +92,20 @@ Numbers are measured against today's Boons (a common is worth about "6 Barrier a
 **Common**
 | Boon | Text | For | Needs |
 |---|---|---|---|
-| Tripwire Coil | Start each fight with a Trap set: when an enemy attacks, deal 5 damage to it. | all | the `setSnare` op from §1 |
-| Mender's Twine | Whenever you Consume a card, heal 1 HP. | all | — |
+| Tripwire Coil | Start each fight with a Trap set: when an enemy attacks, deal 5 damage to it. | all | the `setSnare` op from Â§1 |
+| Mender's Twine | Whenever you Consume a card, heal 1 HP. | all | â€” |
 | Scout's Map | Fights and Elites on the map say what they are before you arrive. | all | campaign only |
-| Kennel Bell | Whenever you summon an ally, it gains 3 Barrier. | Rivet, Kesh, Mire, Ilvane | — |
+| Kennel Bell | Whenever you summon an ally, it gains 3 Barrier. | Rivet, Kesh, Mire, Ilvane | â€” |
 
 **Uncommon**
 | Boon | Text | For | Needs |
 |---|---|---|---|
-| Snareweave | Whenever one of your Traps springs, draw a card. | Vesper, Maren | — |
-| Grave Candle | Whenever one of your allies dies, gain 1 Mana next turn. | Mire, Rivet, Kesh | — |
-| Bloodletter's Cup | Whenever you lose HP to your own card, gain 2 Barrier. | Kesh, Mire | — |
+| Snareweave | Whenever one of your Traps springs, draw a card. | Vesper, Maren | â€” |
+| Grave Candle | Whenever one of your allies dies, gain 1 Mana next turn. | Mire, Rivet, Kesh | â€” |
+| Bloodletter's Cup | Whenever you lose HP to your own card, gain 2 Barrier. | Kesh, Mire | â€” |
 | Second Wind | The first time each fight you fall to half HP, gain 10 Barrier. | all | a "below half HP" trigger |
-| Flowing Sash | Whenever you change stance, gain 2 Barrier. | Solen | — |
-| Star Chart | Whenever you spend Arcana, deal 3 damage to a random enemy. | Obsidia | — |
+| Flowing Sash | Whenever you change stance, gain 2 Barrier. | Solen | â€” |
+| Star Chart | Whenever you spend Arcana, deal 3 damage to a random enemy. | Obsidia | â€” |
 
 **Rare**
 | Boon | Text | For | Needs |
@@ -118,7 +118,7 @@ Numbers are measured against today's Boons (a common is worth about "6 Barrier a
 | Boon | Text | For | Needs |
 |---|---|---|---|
 | Snaremaster's Codex | You can hold 1 more Trap, and the first Trap that springs each turn springs twice. | Vesper, Maren | a per-side Trap cap; "springs twice" |
-| Crown of the Pack | Your allies act twice at the end of the first turn of each fight. | Rivet, Kesh, Mire | — (`actAllies` at fightStart) |
+| Crown of the Pack | Your allies act twice at the end of the first turn of each fight. | Rivet, Kesh, Mire | â€” (`actAllies` at fightStart) |
 | Heart of the Storm | Start each fight in the stance you last ended a fight in. | Solen | the campaign remembers the stance |
 
 **Questions:** which to keep, cut or retune. Also, is restricting a Boon to some Riftwalkers (`for`) okay? It means the

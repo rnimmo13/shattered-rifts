@@ -38,7 +38,7 @@ export type StatusId =
   | 'mirrored' // your next skill card is played twice, per stack
   | 'unbound' // your skills cost 0 and are consumed when played
   | 'fortified' // you keep 75% of your Barrier at the start of your turn instead of losing it all
-  | 'plating' // you keep up to this much Barrier through each turn change, and it shrinks by 1 every turn
+  | 'plating' // at the end of its turn it gains this much Barrier, then this goes down by 1 (DECISIONS #513)
   | 'holdfast' // your whole hand is held at the end of your turn, per stack (one turn each)
   | 'hangover' // at the start of its turn it loses 1% of its Max HP per stack, rounded up (never below 1 HP), then it clears (KP's drinks; DECISIONS #354, #502)
   | 'clutch' // an innate trait's state: you deal this % more attack damage (set by the engine while you are hurt)
@@ -269,6 +269,8 @@ export type Sel =
   /** each of the actor's allies (companions, minions), never the hero */
   | 'allAllies'
   | 'attacker'
+  /** the attacker if there is one still standing, or else a random enemy (a Thrall killed, or one sacrificed: DECISIONS #518) */
+  | 'attackerOrRandom'
   /** the living enemy with the least HP (a Dark orb's awakening) */
   | 'weakestFoe'
   /** your living companion with the most max HP (DECISIONS #383) */
@@ -1139,6 +1141,8 @@ export interface CombatDb {
   boons: Record<string, BoonDef>;
   units: Record<string, UnitDef>;
   heroes: Record<string, HeroDef>;
+  /** a hero as an Ascendancy makes it, by Ascendancy id (DECISIONS #519) */
+  ascended?: Record<string, HeroDef>;
 }
 
 // --- state -------------------------------------------------------------------------------------------------
@@ -1327,6 +1331,8 @@ export interface SnareState {
 }
 
 export interface SideState {
+  /** the Ascendancy this side's hero has taken (DECISIONS #519) */
+  ascendancy?: string;
   id: Side;
   /** nearest the centre first; a hero (if any) is always last */
   units: Unit[];
@@ -1526,6 +1532,8 @@ export interface HeroSetup {
   dmgPct?: number;
   /** statuses the hero starts the fight with (an Omen's Dread, say) */
   statuses?: Partial<Record<StatusId, number>>;
+  /** the Ascendancy this hero has taken: its class and trait for the fight (DECISIONS #519) */
+  ascendancy?: string;
 }
 
 export interface CombatSetup {

@@ -5,7 +5,7 @@ export { V2_DECK_RULES as DECK_RULES } from '@sr/content/v2';
 
 export type * from './types';
 export { removableCards } from './deals';
-export { FINAL_STAGE, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
+export { FINAL_STAGE, MAX_ELITES, MID_FLOOR, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
 export {
   PRICE,
   priceOf,
@@ -47,6 +47,8 @@ export {
   buyRemoval,
   buyUpgrade,
   chooseCard,
+  ASCEND_TIER,
+  chooseAscendancy,
   chooseHeart,
   chooseEvent,
   pickEventCard,
@@ -141,7 +143,7 @@ export {
   OMEN_TUNING,
   omenEffects,
   omenMods,
-  omenOf,
+  omensOf,
   omensAt,
   type Omen,
   type OmenEffects,

@@ -63,7 +63,7 @@ export function LearnOdds() {
         Each card offered is rolled separately, from the Riftwalker&apos;s own cards. If a rarity
         has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
         About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
-        card). A reward offers three cards (four from Tier IV; an Omen can take one away), each
+        card). A reward offers three cards (an Omen takes one away from Tier III), each
         rolled like this.
       </p>
       <table className="learn__table">
@@ -96,7 +96,7 @@ export function LearnOdds() {
         </li>
         <li>
           Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}
-          {POTION_PRICE['rare']} shards, and a Boon {BOON_PRICE}.
+          {POTION_PRICE['rare']} shards, and a Boon {BOON_PRICE}. From Tier III, the Omen Times Are Tough raises them all.
         </li>
         <li>
           {CROSSED_MERCHANT_CHANCE}% of merchants are visitors from another world who sell only one
@@ -107,8 +107,8 @@ export function LearnOdds() {
       <h3>The map</h3>
       <p>
         Each stop in an act (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
-        (the first one in an act, then {NODE_ODDS.eliteMore}%; from the third floor, and only two
-        or three an act), a Merchant {NODE_ODDS.merchant}% (two at most), a Shrine{' '}
+        (the first one in an act, then {NODE_ODDS.eliteMore}%; from the third floor, and at most
+        six an act), a Merchant {NODE_ODDS.merchant}% (one or two in each half of the act), a Shrine{' '}
         {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is always a Shrine), an
         Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a fight. An Event stop
         is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain

@@ -2,8 +2,8 @@
 // events and bargains give one; clearing a loop may leave one. The engine handles mana / handSize / fightStart / turnStart; the
 // campaign handles maxHp / healAfterFight / shardsPerFight. Boons never appear in PvP.
 //
-// Boons have no rarity: every one is worth about the same, 7-15 points a fight (DECISIONS #497; docs/14_CARD_COSTING.md §16). Extra
-// Mana and extra cards every turn are only ever a Warden's Heart, at a price (DECISIONS #496).
+// Boons have no rarity: every one is worth about the same, 7-15 points a fight (DECISIONS #497; docs/14_CARD_COSTING.md §16). Nothing
+// here gives Mana every turn (DECISIONS #496, #516); an extra card every turn is only ever a Warden's Heart, at a price.
 
 import type { BoonDef } from '@sr/combat';
 import { barrier, draw, heal, lose, status } from './build';
@@ -99,25 +99,25 @@ export const HEARTS: BoonDef[] = [
     id: 'ember-heart',
     name: 'Ember Heart',
     heart: true,
-    text: '+1 Mana every turn. Draw one card fewer every turn.',
-    mana: 1,
-    handSize: -1,
+    text: 'At the start of each of your turns, a random enemy gains 3 Burn. You start each fight with 2 Burn.',
+    fightStart: [status('burn', 2)],
+    turnStart: [status('burn', 3, 'randomFoe')],
   },
   {
     id: 'gluttons-heart',
     name: "Glutton's Heart",
     heart: true,
-    text: 'Draw one card more every turn. 15 less Max HP.',
+    text: 'Draw one card more every turn. 20 less Max HP.',
     handSize: 1,
-    maxHp: -15,
+    maxHp: -20,
   },
   {
     id: 'blood-heart',
     name: 'Blood Heart',
     heart: true,
-    text: '+1 Mana every turn. Lose 3 HP at the start of each of your turns.',
-    mana: 1,
-    turnStart: [lose(3)],
+    text: 'Start each fight with 3 Might. Lose 2 HP at the start of each of your turns.',
+    fightStart: [status('might', 3)],
+    turnStart: [lose(2)],
   },
   {
     id: 'thorned-heart',
@@ -130,8 +130,8 @@ export const HEARTS: BoonDef[] = [
     id: 'warded-heart',
     name: 'Warded Heart',
     heart: true,
-    text: 'Start each fight with 16 Barrier and Shielded. At the start of each of your turns, become Brittle (the Barrier you gain is 25% smaller).',
-    fightStart: [barrier(16), status('shielded', 1)],
+    text: 'Start each fight Shielded, with 7 Plating. At the start of each of your turns, become Brittle (the Barrier you gain is 25% smaller).',
+    fightStart: [status('shielded', 1), status('plating', 7)],
     turnStart: [status('brittle', 1)],
   },
 ];

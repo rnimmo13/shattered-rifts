@@ -49,6 +49,66 @@ export function fanLayout(n: number, o: FanOptions): FanSlot[] {
   return out;
 }
 
+/** Held upright, the hand is a grid in a band of fixed height, so nothing above it moves as cards come and go (DECISIONS #511). */
+const GRID_GAP = 6;
+const GRID_PAD = 8;
+const GRID_MAX_WIDTH = 200;
+
+/** How tall the hand's band is on a screen held upright (px): two rows of cards, under a third of the screen, as the board needs the rest. */
+export function portraitHandBand(viewportHeight: number): number {
+  return Math.round(Math.min(viewportHeight * 0.32, 2 * GRID_MAX_WIDTH * 1.4 + 2 * GRID_GAP));
+}
+
+export interface HandGrid {
+  cardWidth: number;
+  /** how far the top of the hand reaches up from the bottom of the screen */
+  height: number;
+  /** how many cards in each row, top row first */
+  rows: number[];
+}
+
+/**
+ * The biggest cards that fit: every row is centred and the cards are all one size, so a hand is always symmetrical and always wholly
+ * readable. A hand of under five is sized as five would be, so the cards keep their size as a hand is played down; one row wins a tie.
+ */
+export function handGrid(n: number, viewportWidth: number, band: number): HandGrid {
+  const sized = Math.max(n, 5);
+  const across = (cols: number): number =>
+    (viewportWidth - 2 * GRID_PAD - (cols - 1) * GRID_GAP) / cols;
+  const oneWidth = Math.min(GRID_MAX_WIDTH, across(sized), (band - GRID_GAP) / 1.4);
+  const twoWidth = Math.min(
+    GRID_MAX_WIDTH,
+    across(Math.ceil(sized / 2)),
+    (band - 2 * GRID_GAP) / 2 / 1.4,
+  );
+  const two = twoWidth > oneWidth;
+  const cardWidth = Math.floor(two ? twoWidth : oneWidth);
+  // (three or fewer always fit on one row; otherwise the top row takes the odd card)
+  const rows = two && n > 3 ? [Math.ceil(n / 2), Math.floor(n / 2)] : [n];
+  const h = cardWidth * 1.4;
+  return { cardWidth, rows, height: rows.length * h + (rows.length - 1) * GRID_GAP + GRID_GAP };
+}
+
+/** Where each card of a grid sits: x from the middle of the screen, y up from the bottom (negative), reading order. */
+export function gridSlots(g: HandGrid, focus: number | null): FanSlot[] {
+  const h = g.cardWidth * 1.4;
+  const out: FanSlot[] = [];
+  g.rows.forEach((count, row) => {
+    const fromBottom = g.rows.length - 1 - row;
+    for (let i = 0; i < count; i++) {
+      const at = out.length;
+      out.push({
+        x: (i - (count - 1) / 2) * (g.cardWidth + GRID_GAP),
+        y: -(GRID_GAP + fromBottom * (h + GRID_GAP)),
+        rot: 0,
+        scale: at === focus ? 1.06 : 1,
+        z: at === focus ? 100 : at,
+      });
+    }
+  });
+  return out;
+}
+
 /** Card width for the hand at the current window size (px). */
 export function handCardWidth(viewportWidth: number, viewportHeight: number): number {
   const wide = Math.round(Math.max(168, Math.min(238, viewportWidth * 0.122)));
