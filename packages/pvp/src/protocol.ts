@@ -76,7 +76,8 @@ export interface Entry {
 // (55: Shard Strike checks its Spell Power after its gain, #485)
 // (56: Shatters, the Spellblade's Barrier, the Obsidian Blade and Echoing Blade, #486-#488)
 // (57: a deck holds 2 copies of an Aura, and the Spellblade's cards apply less Fracture, #498, #499)
-export const RULES_VERSION = 57;
+// (58: the Neutral and Ancestral retune, #500)
+export const RULES_VERSION = 58;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

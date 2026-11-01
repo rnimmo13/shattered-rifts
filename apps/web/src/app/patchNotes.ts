@@ -29,6 +29,25 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.148.0',
+    date: '2026-10-31',
+    title: 'Neutral and Ancestral cards',
+    summary: 'Neutral cards now sit at or a little behind the class cards they resemble, and several Ancestral cards were retuned.',
+    notes: [
+      { kind: 'balance', text: 'Plan Ahead is now common: next turn, 1 extra Mana and 1 extra card (upgraded, 2 cards).' },
+      { kind: 'balance', text: 'Heart of the Rift no longer gives Mana. It is an uncommon that costs 2 (upgraded, 1) and draws 1 card each turn.' },
+      { kind: 'balance', text: 'Attunement costs 3 (upgraded, 2).' },
+      { kind: 'balance', text: 'Nerve Surge is now uncommon: draw 1 card and gain 1 Mana (upgraded, draw 2).' },
+      { kind: 'balance', text: 'Rift Surge is now common. Upgrading Fever Dream adds Hold instead of 3 less.' },
+      { kind: 'balance', text: 'Rift Collapse deals 30 to ALL enemies. Upgrading it raises that to 36 instead of lowering the cost.' },
+      { kind: 'balance', text: 'Ancestral Blade deals 30 (upgraded, 34), and Elder\u2019s Bulwark gives 28 Barrier (upgraded, 32).' },
+      { kind: 'balance', text: 'Echo of Ages gives 2 Might and 2 Thorns (upgraded, 3 Might and 2 Thorns). Lineage costs 1.' },
+      { kind: 'balance', text: 'Upgrading The Long Memory draws 1 card when you play it instead of lowering the cost.' },
+      { kind: 'changed', text: 'Stolen Time is retired. Copies you already have become Rift Surge.' },
+    ],
+    heads: 'Old Arena games and replays no longer play.',
+  },
+  {
     version: '0.147.0',
     date: '2026-10-31',
     title: 'Boons, Auras and Fracture',
