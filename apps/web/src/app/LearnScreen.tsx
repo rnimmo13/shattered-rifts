@@ -444,7 +444,7 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    <GameIcon art={STATUS_ICONS[s.id]} className="learn__icon" /> {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" /> {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>
@@ -461,7 +461,7 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    <GameIcon art={STATUS_ICONS[s.id]} className="learn__icon" /> {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" /> {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>

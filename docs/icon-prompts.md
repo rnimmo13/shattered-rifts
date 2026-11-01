@@ -1,12 +1,14 @@
 # Status, Boon and pile art: prompts for ChatGPT
 
-These replace the placeholder drawings in `apps/web/src/art/gameIcons.ts` and `apps/web/src/fight/PileArt.tsx` (DECISIONS #505). Nine sheets: 6 of buffs and debuffs, 2 of Boons and Warden's Hearts, 1 of piles.
+**Done (DECISIONS #510):** these nine sheets are made and in the game; the prompts stay here for redoing a picture or adding to the set. Re-cut with `powershell -File tools/pack-icons.ps1`.
+
+Nine sheets: 6 of buffs and debuffs, 2 of Boons and Warden's Hearts, 1 of piles.
 
 **How to use**
 1. Attach the Valeria image (`assets-src/heroes/_source/Sunlit Paladin with Shield and Sword.png`) as the style anchor and paste the prompt for sheet 1.
 2. Check it against the checklist below, and regenerate until you like it. **This sheet sets the look of all the others.**
 3. For each later sheet, attach Valeria **and your approved sheet 1**, and paste its prompt. The "Order" line above each prompt is for you, so you can check each picture is in the right place; it is not part of the prompt.
-4. Save each one under its file name in `assets-src/icons/` as a PNG, and tell me. I will build the cutter that cuts them out and wire them into the game, as with the totems and weapons. The placeholders stay until then.
+4. Save each one under its file name in `assets-src/icons/` as a PNG, and run `tools/pack-icons.ps1`. A new picture also needs its id added to the sheet's list in that script and to `PAINTED` in `gameIcons.ts`.
 
 **Checklist for each sheet**
 - The right number of pictures, in the right order and in an even grid.

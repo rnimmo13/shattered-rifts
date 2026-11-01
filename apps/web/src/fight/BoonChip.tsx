@@ -25,7 +25,7 @@ export function BoonChip(props: { id: string; size?: 'small' | 'large' }) {
           : 'A passive that lasts the whole run.',
       })}
     >
-      {art && <GameIcon art={art} />}
+      {art && <GameIcon art={art} pic={b.id} />}
     </span>
   );
 }

@@ -1,6 +1,6 @@
-// Small drawn pictures for buffs, debuffs, Boons and the map's pens (DECISIONS #505). Each one is a single bold object with a dark ink
-// outline and flat shading, so it still reads at chip size: a drop of blood for Bleed, a flame for Burn. All on a 48 x 48 grid.
-// Icons are data: GameIcon.tsx draws them. Original drawings only.
+// Small pictures for buffs, debuffs, Boons and the map's pens. The real art is painted (public/art/icons, cut by tools/pack-icons.ps1 from
+// the sheets in docs/icon-prompts.md, DECISIONS #510). These drawings, on a 48 x 48 grid, are what a retired status and the map's pens show,
+// and what any picture falls back to if its file fails to load. Icons are data: GameIcon.tsx draws them. Original drawings only.
 
 import type { StatusId } from '@sr/combat';
 
@@ -729,3 +729,29 @@ export const TAUNT_ICON: IconArt = mix(shield(C.gold, C.goldLo, C.goldHi), art([
 /** A Boon's picture, if it has one. */
 export const boonIcon = (id: string): IconArt | undefined =>
   Object.hasOwn(BOON_ICONS, id) ? BOON_ICONS[id] : undefined;
+
+// ---- the painted pictures ----
+
+/** The ids with a painted picture in public/art/icons. (Retired statuses have none: they no longer come up.) */
+export const PAINTED: ReadonlySet<string> = new Set(
+  [
+    'seared burn virulent doom fracture stunned exposed faltering brittle debilitated sapped hangover',
+    'noose strangled quarry bladebane might vigor keen lethality cruelty tracking clutch ritual',
+    'thorns shielded bracing ghostly steadfast armored fortified plating sturdy unmovable guarded blur',
+    'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored',
+    'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner',
+    'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',
+    'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages',
+    'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart',
+  ].flatMap((row) => row.split(' ')),
+);
+
+export type PileKind = 'draw' | 'discard' | 'exhaust';
+export const pilePicture = (kind: PileKind, tier: number): string => `pile-${kind}-${tier}`;
+
+/** Every painted file, without its folder or extension. */
+export const paintedFiles = (): string[] => [
+  ...PAINTED,
+  ...(['draw', 'discard', 'exhaust'] as const).flatMap((k) => [1, 2, 3, 4].map((t) => pilePicture(k, t))),
+];
+export const iconUrl = (id: string): string => `${import.meta.env.BASE_URL}art/icons/${id}.png`;

@@ -1,0 +1,101 @@
+[
+  {
+    "filename": "icons-01.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      239,
+      10,
+      240
+    ],
+    "sha256": "6DC6B53B1F3CABBD0FF6F8BEA808FA3C519EB388FB5BA8E94F7FAED589A889DF"
+  },
+  {
+    "filename": "icons-02.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      239,
+      12,
+      241
+    ],
+    "sha256": "A07A192F87BC3E7125AA0776CAD718F9E1119EAA9013E76AC2EE7D48E17A9F71"
+  },
+  {
+    "filename": "icons-03.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      237,
+      12,
+      240
+    ],
+    "sha256": "247A6813F80CB27534B005AD840B52C6999CD4903A107EC85BF993168B8DB885"
+  },
+  {
+    "filename": "icons-04.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      240,
+      13,
+      240
+    ],
+    "sha256": "109DE64C4F73A3DAD16610919F2ED009EE8C633430ECA0CB50D299E88CAA9859"
+  },
+  {
+    "filename": "icons-05.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      238,
+      12,
+      241
+    ],
+    "sha256": "684ECD42DE4DAA9C5415FDC63A27A5E41C4AFB88F39446B5D33D473E5978BDE6"
+  },
+  {
+    "filename": "icons-06.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      240,
+      11,
+      241
+    ],
+    "sha256": "07F131BEB4FD87F3DEC15AA918D3016BEF51ACC6F12B8A4A6C3AB9F6FF936307"
+  },
+  {
+    "filename": "boons-01.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      238,
+      11,
+      240
+    ],
+    "sha256": "158B313D24E69FE844DEB222B17E929419C948C11D4C7855398C8142B406BFE3"
+  },
+  {
+    "filename": "boons-02.png",
+    "width": 1774,
+    "height": 887,
+    "corner_rgb": [
+      241,
+      11,
+      242
+    ],
+    "sha256": "D4BDB90826E15CA3D869A5CAC197FBEE6D14B20D9549B70B024E8BF1A4FC6A32"
+  },
+  {
+    "filename": "piles-01.png",
+    "width": 1536,
+    "height": 1024,
+    "corner_rgb": [
+      239,
+      12,
+      241
+    ],
+    "sha256": "202CA16F7E7E909887DD6058551B9628AAA89BA48C5E1A5BB32FFDA53E26132A"
+  }
+]

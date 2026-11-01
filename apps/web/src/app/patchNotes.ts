@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.150.0',
+    date: '2026-11-01',
+    title: 'Painted icons and card piles',
+    summary: 'Buffs, debuffs, Boons and the card piles now have painted art.',
+    notes: [
+      { kind: 'new', text: 'Every buff, debuff, Boon and Warden\'s Heart has a new painted icon, and the draw, discard and Consumed piles are painted stacks of cards that grow as they fill.' },
+      { kind: 'changed', text: 'Numbers on status icons and piles sit at the bottom right corner with a dark outline, so both the art and the number are easy to see.' },
+    ],
+  },
+  {
     version: '0.149.0',
     date: '2026-11-01',
     title: 'Big hits, drawn icons, map pens',

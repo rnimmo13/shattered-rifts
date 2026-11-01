@@ -225,7 +225,7 @@ export function UnitPlates({
                       text: `Your sharpest ${sharp.weapon} has gained this much damage this fight. Every ${sharp.word} adds more to the copies you have; a copy made later starts fresh.`,
                     })}
                   >
-                    <GameIcon art={STATUS_ICONS.keen} />
+                    <GameIcon art={STATUS_ICONS.keen} pic="keen" />
                     <b>{sharp.amount}</b>
                   </span>
                 )}
@@ -237,12 +237,12 @@ export function UnitPlates({
                       className={`chip chip--${info.tone}${id === 'opening' ? ' chip--open' : ''}`}
                       {...tipAttrs(statusTip(id, n))}
                     >
-                      <GameIcon art={STATUS_ICONS[id]} />
+                      <GameIcon art={STATUS_ICONS[id]} pic={id} />
                       {/* (an Opening is on or off: it reads "Open", not a count, DECISIONS #415) */}
                       {/* (Preparation and knives say their cap, DECISIONS #416) */}
                       {/* (a status that is on or off has no number to show: DECISIONS #492) */}
                       {!ON_OR_OFF.has(id) && (
-                        <b>
+                        <b className={n >= 100 ? 'is-long' : undefined}>
                           {id === 'opening'
                             ? 'Open'
                             : id === 'prep' || id === 'knives'
@@ -255,7 +255,7 @@ export function UnitPlates({
                 })}
                 {u.taunt && (
                   <span className="chip chip--good" {...tipAttrs(UI_TIPS.taunt)}>
-                    <GameIcon art={TAUNT_ICON} />
+                    <GameIcon art={TAUNT_ICON} pic="taunt" />
                   </span>
                 )}
               </div>

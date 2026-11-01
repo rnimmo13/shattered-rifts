@@ -30,7 +30,7 @@ export function StanceChip(props: { unit: Pick<UnitView, 'statuses'> }) {
   const info = STATUS_INFO[stance];
   return (
     <small className={`stance__chip stance__chip--${stance}`} aria-label={`${info.name} stance`}>
-      <GameIcon art={STATUS_ICONS[stance]} /> {info.name}
+      <GameIcon art={STATUS_ICONS[stance]} pic={stance} /> {info.name}
     </small>
   );
 }
@@ -82,7 +82,7 @@ export function StanceAura(props: {
           aria-label={`In the ${info.name} stance. ${LINE[stance]}.`}
         >
           <b>
-            <GameIcon art={STATUS_ICONS[stance]} /> {info.name}
+            <GameIcon art={STATUS_ICONS[stance]} pic={stance} /> {info.name}
           </b>
           <small>{LINE[stance]}</small>
         </div>

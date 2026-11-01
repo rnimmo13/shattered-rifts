@@ -1,3 +1,4 @@
+import { iconUrl, paintedFiles } from './gameIcons';
 // Real artwork, when there is some. Drop PNG/WebP files into apps/web/public/art/ and list them in
 // public/art/manifest.json (see docs/09_ART_BRIEF_V2.md); anything not listed keeps its generated placeholder.
 //
@@ -104,9 +105,18 @@ export function preloadArt(): Promise<void> {
   return loading;
 }
 
+let iconsAsked = false;
+/** Ask for the status, Boon and pile pictures once, so one is there the moment it first comes up in a fight. */
+function preloadIcons(): void {
+  if (iconsAsked) return;
+  iconsAsked = true;
+  for (const id of paintedFiles()) new Image().src = iconUrl(id);
+}
+
 /** Load all the figures (heroes, enemies, companions): what a fight needs before it draws. */
 export function preloadAllArt(): Promise<void> {
   void preloadArt();
+  preloadIcons();
   return Promise.race([(staged as Stages).all.catch(() => undefined), wait(ALL_WAIT_MS)]);
 }
 
