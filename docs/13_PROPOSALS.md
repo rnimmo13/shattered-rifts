@@ -169,6 +169,26 @@ trait (`docs/reworks/SPELLBLADE_SPELL_POWER.md` and this log's #480).
 
 **Open (Robert, 2026-10-31, playing it first):** Fracture may feel cut off from Swords and Spells. Shatters now read Spell Power (DECISIONS #487), but no Fracture card gains any. If it still feels separate after play, the next idea to try: each Shatter gains 1 Spell Power, so cracking an enemy feeds her Swords, her spells and her Barrier.
 
+### 7. A rule of its own for every Warden (first six built 2026-11-01, DECISIONS #528; five still to do)
+
+**Why:** Robert likes how each Slay the Spire 2 boss has a mechanic of its own. Our names, text and numbers, and a rule applies from Tier I.
+
+**Built:** Kron (the Foundry Hatch), The Hollow Benediction (the Acolytes), The Mourning Tide (Low Tide, Beckoning), The Applause Below (Slippery), Seraphine (the Kneeling), Mother of Static (Jamming).
+
+**Still to do (Robert, 2026-11-01: "i dont want to lose track of doing the others"), design to review:**
+
+| Warden | Rough idea |
+|---|---|
+| Gorrmaw | Eats its Spawn to heal and gain Might, so killing them starves it. |
+| The Upside-Down Stag | One turn in three it heals what you would have dealt. |
+| Queen of the Unmade | Raises the cost of your most expensive card each turn. |
+| Event Horizon Regent | Pulls cards from your hand back to the top of your draw pile. |
+| Nyxara | Sets a Trap on you, once enemy Traps exist (proposal 1). |
+
+Vorthax already has three phases and stays as the finale. A rule also applies to the Tier 20 fights that bring these Wardens.
+
+---
+
 ## Kept for later
 
 - **Daily Rift:** everyone plays the same seed with the same Riftwalker and two or three twists, one attempt a day, on

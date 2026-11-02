@@ -98,7 +98,7 @@ cost and effects whose numbers differ by about a third or less.
 | Patient Wall | rare | aura | 2 | At the end of your turn: Gain Barrier equal to 4 times your Reserves. |
 | Raised Hell | rare | aura | 2 | Whenever you draw a card: Play it against a random enemy if it is a Strike card. |
 | Rally | rare | skill | 2 | Heal 10. Consume. |
-| Rending Fury | rare | attack | 2 | Deal 5 damage, 1 more time per time you lost HP this fight. |
+| Rending Fury | rare | attack | 2 | Deal 8 (+3 per time you lost HP this fight, at most +45) damage. |
 | Rite of Recall | rare | aura | 2 | Whenever a card is consumed: Draw 1 card. |
 | Stone Fury | rare | skill | 0 | Turn every Attack in your hand into a Giant Rock. |
 | Stone Stance | rare | aura | 2 | Gain Unmovable. |
@@ -238,7 +238,7 @@ cost and effects whose numbers differ by about a third or less.
 | Throw Scraps | common | skill | 0 | Consume 1 card. Gain 1 Mana. |
 | Trail of Blood | common | aura | 1 | Whenever you summon an ally: Gain 1 Might. |
 | Twin Fang | common | attack | 1 | Deal 6 damage 2 times. Lose 2 HP. |
-| Wild Swings | common | attack | 1 | Deal 3 damage, 1 more time per card played this turn. |
+| Wild Swings | common | attack | 1 | Deal 3 (+3 per card played this turn) damage. |
 | Wounded Wrath | common | aura | 1 | Whenever you lose HP to your own cards or Hangover: Deal 4 damage to a random enemy. |
 | Adrenal Surge | uncommon | skill | 0 | Gain 2 Mana. Draw 1 card. Lose 3 HP. Consume. |
 | Baited Snare | uncommon | trap | 1 | When you or an ally is attacked: Your companions each deal 5 damage and gain 3 Barrier. |
@@ -279,7 +279,7 @@ cost and effects whose numbers differ by about a third or less.
 | Whirling Maul | uncommon | attack | 0 | Deal 6 damage X times to ALL enemies. Lose 3 HP. |
 | Alpha Call | rare | summon | 2 | Summon Pack Alpha (12 HP; at the end of your turn it will deal 6 damage). |
 | Ancient Fury | rare | aura | 2 | At the start of your turn: Gain 2 Might and lose 3 HP. |
-| Apex Frenzy | rare | attack | 2 | Deal 5 damage 2 times, 1 more time per card played this turn. Lifesteal 50%. Consume. |
+| Apex Frenzy | rare | attack | 2 | Deal 4 (+2 per card played this turn) damage 2 times. Lifesteal 50%. Consume. |
 | Berserk Tempo | rare | aura | 2 | At the start of your turn: Gain 1 Mana, draw 1 card and lose 2 HP. |
 | Blood Pact | rare | aura | 1 | Lose 7 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 | Blood Tithe | rare | skill | 0 | Lose 7 HP. Gain 2 Mana. Draw 2 cards. Gain 1 Might. Consume. |
@@ -307,6 +307,7 @@ cost and effects whose numbers differ by about a third or less.
 
 **Near-duplicates:**
 
+- **Spring the Trap** and **Trapline Rider**: Deal 6 (+5 per Trap set) damage. / Deal 4 (+4 per Trap set) damage.
 - **Mark Prey** and **Dread Gaze**: Apply 2 Exposed. / Apply 3 Exposed. Consume.
 - **Flourish** and **Card Sharp**: Deal 7 damage. If you have played a ♥ this turn: Gain 4 Barrier. / Deal 8 damage. If all four suits are showing: Deal 8 damage.
 
@@ -365,7 +366,7 @@ cost and effects whose numbers differ by about a third or less.
 | The Long Game | uncommon | aura | 1 | At the start of your turn: Draw 1 card. |
 | Trap Door | uncommon | aura | 2 | At the start of your turn: Add a Trip Line to your hand. |
 | Trap Net | uncommon | trap | 1 | At the start of the enemy turn: Deal 6 damage to ALL enemies and apply 1 Faltering to ALL enemies. |
-| Trapline Rider | uncommon | attack | 1 | Deal 4 damage, 1 more time per Trap set. |
+| Trapline Rider | uncommon | attack | 1 | Deal 4 (+4 per Trap set) damage. |
 | Trick of the Light | uncommon | skill | 0 | Foresee 2. Gain 2 Barrier. |
 | Tripwire Garrote | uncommon | trap | 1 | When you or an ally is attacked: Deal 7 damage to the attacker and apply 2 Exposed to the attacker. |
 | Wild Card | uncommon | skill | 0 | Draw 1 card. Consume. |
@@ -396,7 +397,7 @@ cost and effects whose numbers differ by about a third or less.
 | Time Bomb | rare | trap | 1 | At the start of the enemy turn: Deal 12 damage to ALL enemies. |
 | Trapper's Dividend | rare | aura | 1 | Whenever one of your Traps is triggered: Draw 1 card and gain 5 Barrier. |
 
-## Assassin (assassin)
+## Rogue (assassin)
 
 79 cards.
 
@@ -438,7 +439,7 @@ cost and effects whose numbers differ by about a third or less.
 | Graveside Cut | uncommon | attack | 1 | Deal 9 (+4 per card discarded this turn) damage. |
 | Knife in the Back | uncommon | attack | 0 | Deal 11 damage. Consume. Opening hand. |
 | Lay Bare | uncommon | skill | 0 | Remove all Barrier from the target. Apply 2 Exposed. Consume. |
-| Needle Rain | uncommon | attack | 1 | Deal 5 damage for each Skill in your hand. |
+| Needle Rain | uncommon | attack | 1 | Deal damage equal to 5 times the number of Skills in your hand. |
 | Nerve Strike | uncommon | attack | 3 | Costs 1 less for each Skill played this turn. Deal 15 damage. |
 | Nimble Deal | uncommon | skill | 1 | Draw 3 cards. Discard 1 card. |
 | Palm Switch | uncommon | skill | 1 | Gain 7 Barrier. Defer a card. |
@@ -553,9 +554,9 @@ cost and effects whose numbers differ by about a third or less.
 | Turning Wheel | uncommon | aura | 1 | At the start of your turn: Your front totem's end-of-turn effect happens now. |
 | Twin Talons | uncommon | attack | 3 | Flame. Deal 9 damage 2 times. Plant 2 Hawks. |
 | Wild Vision | uncommon | skill | 1 | Add a random Aura card from your pool to your hand (it costs 0 this turn). Consume. |
-| Wildfire | uncommon | attack | 1 | Flame. Deal 9 damage. Double the Burn on the target. Consume. |
+| Wildfire | uncommon | skill | 1 | Flame. Apply 8 Burn. Consume. |
 | Absolute Zero | rare | attack | 2 | Frost. Deal 10 (+3 per Faltering on each) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
-| Blighted Chorus | rare | attack | 2 | Storm. Deal 5 damage to a random enemy 2 times, 1 more time per Status card in your deck. |
+| Blighted Chorus | rare | attack | 2 | Storm. Deal 5 (+2 per Status card in your deck) damage to a random enemy 2 times. |
 | Call the Elder Tree | rare | skill | 3 | Plant an Elder Tree. |
 | Call the Moon Owl | rare | skill | 2 | Plant a Moon Owl. |
 | Calm Before the Storm | rare | aura | 1 | At the start of your turn: Apply 3 Sapped to ALL enemies until the end of their next turn. |
@@ -565,8 +566,8 @@ cost and effects whose numbers differ by about a third or less.
 | Doubled Vow | rare | skill | 1 | Your next Aura is played an extra time. Consume. |
 | Echoing Spirit | rare | aura | 3 | The first card you play each turn is played an extra time. Fleeting. |
 | Echoing Strike | rare | attack | 2 | Flame. Deal 18 damage. Add a 0-cost copy of this card to your discard pile. |
-| Flak Burst | rare | attack | 2 | Consume every Status card in your hand, draw pile and discard pile. Deal 8 damage to a random enemy for each card consumed this way. |
-| Flashpoint | rare | attack | 1 | Flame. Deal 4 (+3 per Burn on the target) damage. Consume. |
+| Flak Burst | rare | attack | 2 | Consume every Status card in your hand, draw pile and discard pile. Deal damage equal to 8 times the cards consumed this way to a random enemy. |
+| Flashpoint | rare | attack | 2 | Flame. Deal 12 (+2 per Burn on the target) damage. Halve the Burn on the target. Consume. |
 | Free Hand | rare | aura | 1 | Your 0-cost Attacks deal 3 more damage for the rest of the fight. |
 | Fresh Start | rare | skill | 0 | Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume. |
 | Frostbound | rare | aura | 1 | Whenever you put a debuff on an enemy: Gain 3 Barrier. |
@@ -685,6 +686,7 @@ cost and effects whose numbers differ by about a third or less.
 
 **Near-duplicates:**
 
+- **Tyrant Strike** and **Fault Piercer**: Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. If you spent Spell Power earlier this turn: Apply 2 Exposed. / Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. If the target has Fracture: Apply 2 Fracture.
 - **Spellbolt** and **Falling Shards**: Spell. Deal 8 (+4 per Spell Power spent) damage. / Spell. Deal 9 (+4 per Spell Power spent) damage. If this is fatal: Apply Fracture equal to the Spell Power spent to ALL enemies.
 - **Glass Burst** and **Controlled Release**: Spell. Deal 6 (+4 per Spell Power spent) damage. If you spent 3 or more: Apply 1 Exposed and apply 1 Faltering. / Spell. Deal 8 (+4 per Spell Power spent) damage. If you spent any and you have Spell Power left: Draw 1 card.
 
@@ -697,25 +699,25 @@ cost and effects whose numbers differ by about a third or less.
 | Crack the Shell | common | skill | 1 | Spell. Remove up to 6 Barrier from the target. Apply 4 Fracture. |
 | Deepening Enchantment | common | skill | 1 | Gain 2 Spell Power. Grows 1: this card gains 1 more each time you play it. |
 | Ember Cache | common | skill | 1 | Gain 1 Spell Power. Next turn, gain 3 Spell Power. |
-| Emberstrike | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you played a Spell earlier this turn: Gain 1 Spell Power. |
+| Emberstrike | common | attack | 1 | Sword. Deal 2 (+2 per 3 Spell Power) damage. Gain 1 Spell Power. If you played a Spell earlier this turn: Gain 1 Spell Power. |
 | Empty Crucible | common | skill | 1 | Gain 3 Spell Power. If you had no Spell Power: Gain 2 Spell Power. |
-| Etching Edge | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 4 Spell Power. Each hit applies 1 Fracture. |
+| Etching Edge | common | attack | 1 | Sword. Deal 2 (+2 per 4 Spell Power) damage. Apply 1 (+1 per 8 Spell Power) Fracture. |
 | Faint Ember | common | skill | 1 | Gain 2 Spell Power. Draw 1 card. |
 | Faultline Hex | common | skill | 1 | Spell. Apply 5 Fracture. |
 | Feint | common | skill | 1 | Gain 5 (+1 per 3 Spell Power) Barrier. Gain 1 Primed. |
-| Forged in Fury | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. |
-| Glass Needle | common | attack | 0 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Consume. |
+| Forged in Fury | common | attack | 1 | Sword. Deal 2 (+2 per 3 Spell Power) damage. Gain 1 Spell Power. |
+| Glass Needle | common | attack | 0 | Sword. Deal 2 (+2 per 3 Spell Power) damage. Consume. |
 | Glass Prison | common | skill | 1 | Spell. Gain 5 (+1 per 3 Spell Power) Barrier. Apply 2 Fracture. |
 | Glass Veil | common | skill | 2 | Spell. Gain 8 (+1 per 3 Spell Power) Barrier. Next turn, gain 6 Barrier. Gain 1 Spell Power. |
 | Glassbrand | common | attack | 1 | Spell. Deal 5 damage. Apply 2 Fracture. |
-| Glint | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Draw 1 card. |
-| Guarded Cut | common | attack | 1 | Sword. Deal 2 damage, 1 more time per 4 Spell Power. Gain 4 (+1 per 3 Spell Power) Barrier. |
+| Glint | common | attack | 1 | Sword. Deal 2 (+2 per 3 Spell Power) damage. Draw 1 card. |
+| Guarded Cut | common | attack | 1 | Sword. Deal 2 (+2 per 4 Spell Power) damage. Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Hairline Crack | common | skill | 0 | Spell. Apply 4 Fracture. Consume. |
-| Obsidian Flurry | common | attack | 2 | Sword. Deal 3 damage 3 times, 1 more time per 2 Spell Power. |
+| Obsidian Flurry | common | attack | 2 | Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. |
 | Obsidian Lance | common | attack | 1 | Sword. Deal 6 (+1 per 2 Spell Power) damage. |
 | Pale Ward | common | skill | 1 | Spell. Gain 8 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. |
 | Pressure Point | common | skill | 1 | Spell. Apply 4 Fracture. If this caused a Shatter: Draw 1 card. |
-| Rift Sweep | common | attack | 2 | Sword. Deal 3 damage 3 times, 1 more time per 3 Spell Power to ALL enemies. |
+| Rift Sweep | common | attack | 2 | Sword. Deal 3 (+1 per 3 Spell Power) damage 3 times to ALL enemies. |
 | Spellbolt | common | attack | 1 | Spell. Deal 8 (+4 per Spell Power spent) damage. |
 | Spreading Fault | common | skill | 1 | Spell. Apply 4 Fracture to ALL enemies. |
 | Tempered Bolt | common | attack | 1 | Spell. Deal 6 damage. Gain 1 Spell Power. If you had no Spell Power: Gain 2 Spell Power. |
@@ -728,13 +730,13 @@ cost and effects whose numbers differ by about a third or less.
 | Carry the Fault | uncommon | skill | 1 | Spell. Apply 3 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 6. |
 | Collapsing Vein | uncommon | skill | 2 | Spell. Apply 6 Fracture to ALL enemies. Apply 3 Fracture. |
 | Controlled Release | uncommon | attack | 1 | Spell. Deal 8 (+4 per Spell Power spent) damage. If you spent any and you have Spell Power left: Draw 1 card. |
-| Crosscut | uncommon | attack | 1 | Sword. Deal 2 damage 2 times, 1 more time per 4 Spell Power. If your previous card was a Spell: Deal 2 damage 2 times and gain 1 Spell Power. |
+| Crosscut | uncommon | attack | 1 | Sword. Deal 2 (+1 per 4 Spell Power) damage 2 times. If your previous card was a Spell: Deal 2 damage 2 times and gain 1 Spell Power. |
 | Crowned Edge | uncommon | skill | 1 | Gain 2 Primed until the end of your turn. Draw 1 card. |
 | Deep Fault | uncommon | skill | 2 | Spell. Your Shatters deal 6 more for the rest of the fight. Apply 4 Fracture. Consume. |
 | Deepening Fault | uncommon | aura | 2 | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight. |
 | Falling Shards | uncommon | attack | 1 | Spell. Deal 9 (+4 per Spell Power spent) damage. If this is fatal: Apply Fracture equal to the Spell Power spent to ALL enemies. |
 | Fault Memory | uncommon | skill | 1 | Spell. Apply 4 Fracture. Grows 2: this card gains 2 more each time you play it. |
-| Fault Piercer | uncommon | attack | 2 | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If the target has Fracture: Apply 2 Fracture. |
+| Fault Piercer | uncommon | attack | 2 | Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. If the target has Fracture: Apply 2 Fracture. |
 | Fault Reader | uncommon | aura | 1 | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
 | Final Shatter | uncommon | skill | 2 | Spell. Apply 10 Fracture. If this caused a Shatter: Gain 6 (+1 per 3 Spell Power) Barrier. |
 | Glass Armory | uncommon | aura | 1 | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
@@ -752,34 +754,34 @@ cost and effects whose numbers differ by about a third or less.
 | Pillar of Glass | uncommon | aura | 1 | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Quenched Edge | uncommon | aura | 1 | The first time each turn you play a card that spends Spell Power: Gain 1 Primed. |
 | Recenter | uncommon | skill | 1 | Draw 2 cards. Gain 1 Spell Power. If you played a Sword and a Spell earlier this turn: Gain 2 Spell Power. |
-| Shard Strike | uncommon | attack | 1 | Sword. Deal 2 damage, 1 more time per 3 Spell Power. Gain 1 Spell Power. If you have 9 or more Spell Power: Gain 4 (+1 per 3 Spell Power) Barrier. |
+| Shard Strike | uncommon | attack | 1 | Sword. Deal 2 (+2 per 3 Spell Power) damage. Gain 1 Spell Power. If you have 9 or more Spell Power: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Sigil of Glass | uncommon | aura | 1 | The first time each turn a card spends 3 or more Spell Power: Gain 5 (+1 per 3 Spell Power spent this turn) Barrier. |
 | Sigil of Kindling | uncommon | aura | 1 | The first time each turn a card of yours grows: Gain 2 Spell Power and gain 2 (+1 per 3 Spell Power) Barrier. |
 | Stress the Glass | uncommon | skill | 1 | Spell. Apply 3 (+2 per Spell Power spent) Fracture. |
-| Tyrant Strike | uncommon | attack | 2 | Sword. Deal 4 damage 3 times, 1 more time per 3 Spell Power. If you spent Spell Power earlier this turn: Apply 2 Exposed. |
+| Tyrant Strike | uncommon | attack | 2 | Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. If you spent Spell Power earlier this turn: Apply 2 Exposed. |
 | Warm Anvil | uncommon | aura | 2 | At the start of your turn: Gain 2 Spell Power. |
 | Weight of the Crown | uncommon | skill | 1 +2 Arcana | Gain 1 Might. Apply 1 Sapped to ALL enemies. |
-| Breaking Point | rare | skill | 2 | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 6 Fracture. Consume. |
+| Breaking Point | rare | skill | 2 | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 4 Fracture. Consume. |
 | Cataclysm | rare | attack | 3 | Spell. Deal 18 (+6 per Spell Power spent) damage to ALL enemies. Consume. |
 | Cleaving Edge | rare | aura | 1 | Gain 2 Spell Power. Your Obsidian Blade strikes ALL enemies for the rest of the fight. |
 | Crucible Heart | rare | aura | 1 | The first time each turn a card of yours grows: That card grows 2 more. |
 | Dying Ember | rare | attack | 2 | Spell. Deal 8 (+4 per Spell Power spent) damage to ALL enemies. Apply 2 Faltering to ALL enemies. |
 | Echoing Blade | rare | aura | 2 | Your Obsidian Blade strikes 1 more time for the rest of the fight. |
 | Fated Hand | rare | skill | 1 | Choose 2 cards in your draw pile and put them on top. Draw 2 cards. Gain 1 Spell Power. Consume. |
-| Hammer and Anvil | rare | attack | 2 | Sword. Deal 3 damage 4 times, 1 more time per 2 Spell Power. Gain Spell Power equal to the different enemies your Swords hit this turn. |
-| Lava Bomb | rare | attack | 3 | Spell. Deal 20 (+10 per Spell Power spent) damage. Consume. |
+| Hammer and Anvil | rare | attack | 2 | Sword. Deal 3 (+1 per 3 Spell Power) damage 4 times. Gain Spell Power equal to the different enemies your Swords hit this turn. |
+| Lava Bomb | rare | attack | 3 | Spell. Deal 20 (+7 per Spell Power spent) damage. Consume. |
 | Magma Surge | rare | skill | 0 | Gain 3 Spell Power. Consume. |
 | Measured Ruin | rare | aura | 2 | Gain 2 Measured Ruin for the rest of the fight. |
 | Obsidian Aegis | rare | aura | 1 | At the end of your turn: Gain Barrier equal to half your Spell Power. |
-| Obsidian Drill | rare | attack | 3 | Sword. Deal 7 damage 3 times, 1 more time per Spell Power spent. |
-| Rupture Script | rare | skill | 2 | Spell. Apply 15 Fracture. Consume. |
+| Obsidian Drill | rare | attack | 3 | Sword. Deal 7 (+2 per Spell Power spent) damage 3 times. |
+| Rupture Script | rare | skill | 2 | Spell. Apply 10 Fracture. Consume. |
 | Soul of Steel | rare | skill | 2 | Gain 2 Might. Consume. |
-| Storm of Glass | rare | attack | 3 | Sword. Deal 5 damage 4 times, 1 more time per 2 Spell Power. |
+| Storm of Glass | rare | attack | 3 | Sword. Deal 5 (+1 per 2 Spell Power) damage 4 times. |
 | Tempered Focus | rare | aura | 1 | At the start of your turn: Gain 1 Primed. |
 | The Forgemaster | rare | skill | 2 | Gain 6 Spell Power. Choose a generator in your hand: it yields 2 more for the rest of the fight. Consume. |
-| Thousand Shards | rare | attack | 2 | Sword. Deal 6 damage for each Spell Power spent. Consume. |
+| Thousand Shards | rare | attack | 2 | Sword. Deal damage equal to 6 times the Spell Power spent. Consume. |
 | Unbreakable Crown | rare | skill | 2 | Spell. Gain 18 (+1 per 2 Spell Power) Barrier. Gain 1 Steadfast. Consume. |
-| Whispering Edge | rare | aura | 1 | Gain 1 Keen for the rest of the fight. |
+| Whispering Edge | rare | aura | 1 | Gain 2 Keen for the rest of the fight. |
 
 ## Drunkard (drunkard)
 
@@ -790,6 +792,7 @@ cost and effects whose numbers differ by about a third or less.
 - **Powder Load** and **Aim**: Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight). Consume. / Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). Hold.
 - **Hair Trigger** and **Trigger Discipline**: Whenever you play a shell: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). / Whenever you play an Attack: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight).
 - **Gun Oil** and **Bandolier**: Whenever you play a gun: Gain 3 Barrier. / Whenever you play a shell: Gain 2 Barrier.
+- **Bottle to the Head** and **Bender**: Deal 5 (+2 per Hangover) damage. / Deal 4 (+1 per 2 Hangover) damage 2 times.
 - **Sob Story** and **Liquid Dinner**: Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. / Heal 2 (+1 per 5% HP missing). Draw 1 card. Consume.
 
 ### Cards
@@ -823,7 +826,7 @@ cost and effects whose numbers differ by about a third or less.
 | Bandolier | uncommon | aura | 1 | Whenever you play a shell: Gain 2 Barrier. |
 | Bar Stool | uncommon | attack | 1 | Deal 7 (+1 per 6% HP missing) damage. |
 | Barroom Brawl | uncommon | attack | 2 | Deal 16 damage to ALL enemies. Gain 2 Hangover. |
-| Bender | uncommon | attack | 1 | Deal 3 damage, 1 more time per Hangover. |
+| Bender | uncommon | attack | 1 | Deal 4 (+1 per 2 Hangover) damage 2 times. |
 | Black Out | uncommon | skill | 1 | Gain 14 Barrier. Gain 4 Hangover. |
 | Dead Eye | uncommon | skill | 1 | Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). Apply 1 Exposed to ALL enemies. |
 | Double Tap | uncommon | skill | 1 | Add an Old Twelve Gauge to your hand. |
@@ -858,7 +861,7 @@ cost and effects whose numbers differ by about a third or less.
 | Tin Can Alley | uncommon | attack | 1 | Deal 3 damage 3 times to ALL enemies. |
 | Window Pane | uncommon | skill | 1 | Gain 7 (+1 per 8% HP missing) Barrier. |
 | Ammo Dump | rare | skill | 2 | Add 6 Buckshot Shells to your hand. Consume. |
-| Blind Drunk | rare | attack | 2 | Stagger. Deal 6 damage to a random enemy 2 times, 1 more time per Hangover. |
+| Blind Drunk | rare | attack | 2 | Stagger. Deal 6 (+2 per 2 Hangover) damage to a random enemy 3 times. |
 | Booby-Trapped Window | rare | trap | 2 | When you or an ally is attacked: Cancel that hit and deal 13 damage to the attacker. |
 | Boomstick | rare | attack | 3 | Deal 14 (+2 per consumed card) damage to ALL enemies. |
 | Bottomless Flask | rare | aura | 2 | At the start of your turn: Heal 2 (+1 per 10% HP missing) and draw 1 card. |
@@ -893,7 +896,7 @@ cost and effects whose numbers differ by about a third or less.
 **Near-duplicates:**
 
 - **Knucklebone** and **Helping Hand**: Your companions each deal 6 damage. / Whenever you play a card that costs 2 or more, this returns from your discard pile to your hand. Your companions each deal 4 damage.
-- **Rattle the Bones** and **The Drowned King**: Your companions each deal 7 damage, 1 more time per time your companions have struck this turn. / Your companions each deal 10 damage, plus their own max HP.
+- **Rattle the Bones** and **The Drowned King**: Your companions each deal 7 (+3 per time your companions have struck this turn) damage. / Your companions each deal 10 damage, plus their own max HP.
 - **Dance of Bones** and **Ashfall**: Whenever you play a card that costs 2 or more: Gain 4 Barrier. / Whenever you play a Fleeting card: Gain 4 Barrier.
 
 ### Cards
@@ -945,7 +948,7 @@ cost and effects whose numbers differ by about a third or less.
 | Last Rites | uncommon | skill | 1 | Curse the target with 10 (+5 per 10 Fate on the target) Fate. |
 | Mourning | uncommon | skill | 3 | Costs 1 less for each death this fight. Gain 13 Barrier. |
 | Ossify | uncommon | aura | 1 | Your companions’ attacks deal 4 more damage for the rest of the fight. |
-| Rattle the Bones | uncommon | attack | 1 | Your companions each deal 7 damage, 1 more time per time your companions have struck this turn. |
+| Rattle the Bones | uncommon | attack | 1 | Your companions each deal 7 (+3 per time your companions have struck this turn) damage. |
 | Restless Spirits | uncommon | aura | 1 | Whenever you play a Gravesoul: A random enemy loses 6 HP. |
 | Seize Them | uncommon | attack | 1 | Your companions each deal 5 damage. Apply 3 Quarry until the end of your turn. |
 | Sever the Thread | uncommon | attack | 2 | Deal 13 damage. Add a Gravesoul to your draw pile. Add a Gravesoul to your hand. Add a Gravesoul to your discard pile. |

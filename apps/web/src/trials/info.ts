@@ -7,7 +7,7 @@ export const TRIAL_INFO = {
     name: 'Spin To Win',
     blurb: 'Pay to spin a reel of prizes. Take what it stops on, or pay to spin again.',
     rules: [
-      'Thirteen prizes are on the reel, and you can see all of them. They stand in a different order every time.',
+      'Fifteen prizes are on the reel, and you can see all of them. They stand in a different order every time.',
       'A spin costs 25 shards. The reel scrolls past the pointer and slows to a stop on one prize.',
       'Take it, or pay another 25 shards to let it go and spin again. A new spin never stops on the prize you are holding, and every other prize is equally likely.',
       'Walk away at any time: the shards you have spent are gone, and so is the prize you were holding. Only one prize on the reel is a rare card of yours, the top prize.',

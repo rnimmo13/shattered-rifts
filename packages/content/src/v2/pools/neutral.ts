@@ -295,6 +295,14 @@ export const JUNK: CardDef[] = [
     hero: 'junk',
     tags: ['status'],
   }),
+  // (The Mourning Tide's rule, DECISIONS #528: pay a Mana to be rid of it, or it hurts)
+  card('junk', 'basic', 'beckoning', 'Beckoning', 'skill', 1, 'none', [], {
+    exhaust: true,
+    inHandAtEnd: [{ op: 'loseHp', amount: 4, to: 'self' }],
+    hero: 'junk',
+    source: 'token',
+    tags: ['status'],
+  }),
 ];
 
 // Ancestral cards: powerful, no class, one copy per deck. They are never in the ordinary card rewards: they turn up only in the

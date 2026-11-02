@@ -338,7 +338,7 @@ export function LearnScreen() {
           <dl>
             {[
               ['Fight', 'A normal fight. Win it and pick a card for your deck.'],
-              ['Elite', 'A tougher fight with a better reward, including a Boon.'],
+              ['Elite', 'A tougher fight with a better reward, often a Boon.'],
               [
                 'Event',
                 'A short story with a choice. Some cost HP, some give a gift, some turn into a fight, and some simply go badly.',
@@ -364,7 +364,7 @@ export function LearnScreen() {
           <h3>Resolve</h3>
           <p>
             Losing a fight does not end the run: you spend Resolve (1 for a normal fight or a
-            Warden, 2 for an Elite) and retry it at full HP. When Resolve hits 0 the run collapses.
+            Warden, 2 for an Elite, or for a Warden met at an Elite's stop) and retry it at full HP. When Resolve hits 0 the run collapses.
           </p>
           <h3>Rift Tiers</h3>
           <p>
@@ -419,7 +419,7 @@ export function LearnScreen() {
           <AscendancyList />
           <h3>Boons</h3>
           <p>
-            Boons last for the whole run, and every tier after it. Elites give one; the merchant
+            Boons last for the whole run, and every tier after it. Elites often give one; the merchant
             sells one; some events and Threshold options give one; and beating Vorthax leaves one{' '}
             {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
           </p>

@@ -116,6 +116,7 @@ export const KNIGHT: CardDef[] = [
   // (Impervious)
   m('rare', 'immovable-oath', 'Immovable Oath', 'skill', 2, 'none', [barrier(30)], {
     exhaust: true,
+    up: { retain: true },
   }),
   // (Barricade) Fortified is huge: 3 Mana, 2 upgraded (DECISIONS #349)
   m('rare', 'unbroken-wall', 'Unbroken Wall', 'power', 3, 'none', [status('fortified', 1)], {

@@ -482,8 +482,14 @@ function applyDamage(
   // ('burn': not an attack, so nothing that answers attacks, but Barrier soaks it, DECISIONS #501)
   kind: 'attack' | 'direct' | 'burn',
   overflow = false,
+  // (a Shatter was earned with Fracture and never comes again, so Slippery lets it through)
+  throughSlippery = false,
 ): number {
   if (t.hp <= 0) return 0;
+  if (kind === 'attack' && amount > 0 && !throughSlippery && stacks(t, 'slippery') > 0) {
+    addStatus(r, t, 'slippery', -1);
+    amount = 1;
+  }
   if (kind === 'attack' && stacks(t, 'ghostly') > 0 && amount > 1) amount = 1;
   if (kind === 'attack' && amount > 0 && stacks(t, 'shielded') > 0) {
     addStatus(r, t, 'shielded', -1);
@@ -513,7 +519,8 @@ function applyDamage(
   const rise = t.rise?.[0];
   let rises = false;
   if (rise && lost > 0) {
-    const floor = Math.max(1, Math.ceil((t.maxHp * rise.atPct) / 100));
+    // (rounded down: a boss's moves change at or below the same percent, so at an odd Max HP both still come together)
+    const floor = Math.max(1, Math.floor((t.maxHp * rise.atPct) / 100));
     if (t.hp - lost <= floor) {
       rises = true;
       // (one already at or below it, say after a blow that landed exactly on it, rises without losing more)
@@ -593,7 +600,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   if (a.card?.tags?.includes(BLADE_TAG) && stacks(t, 'bladebane') > 0) amount *= 2;
   const room = t.hp + t.barrier;
   const barrierBefore = t.barrier;
-  const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0;
+  const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0 || stacks(t, 'slippery') > 0;
   const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
   // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
@@ -623,7 +630,8 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       const next = standing.find((u) => u.taunt) ?? standing[0] ?? heroOf(r.s.sides[t.side]);
       if (!next || next.hp <= 0) break;
       const nextRoom = next.hp + next.barrier;
-      const nextCapped = stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0;
+      const nextCapped =
+        stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0 || stacks(next, 'slippery') > 0;
       lost += applyDamage(r, a.actor, next, carried, 'attack', true);
       // (a companion the overflow kills, exactly or through Ghostly too, remembers its killer: Den Mother)
       if (next.kind === 'ally' && next.hp <= 0) next.killedBy = a.actor.id;
@@ -1936,6 +1944,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       gainStars(r, side, amountOf(r, a, op.amount, op.scale, null));
       return;
     case 'summon': {
+      if (op.ifAbsent && side.units.some((x) => x.def === op.unit && x.hp > 0)) return;
       const u = spawn(r, side, op.unit, false, a.actor);
       // (a hero who shares Might: the new companion arrives with it)
       const lead = heroOf(side);
@@ -2140,7 +2149,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'manaNext':
-      side.nextMana += op.amount;
+      (op.foe ? r.s.sides[other(side.id)] : side).nextMana += op.amount;
       return;
     case 'maxMana':
       {
@@ -2155,7 +2164,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     case 'drawNext':
-      side.nextDraw += op.amount;
+      (op.foe ? r.s.sides[other(side.id)] : side).nextDraw += op.amount;
       return;
     case 'discover': {
       const hid = side.hero;
@@ -2466,7 +2475,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'shatterBlast': {
       for (const t of resolve(r, a, op.to)) {
         const dmg = shatterDamage(side, Math.floor(stacks(t, 'fracture') / SHATTER_AT) + 1);
-        applyDamage(r, a.actor, t, modifiedDamage(dmg, a.actor, t, false), 'attack');
+        applyDamage(r, a.actor, t, modifiedDamage(dmg, a.actor, t, false), 'attack', false, true);
       }
       reap(r);
       return;
@@ -3164,7 +3173,7 @@ function heroDefOf(db: CombatDb, sd: Pick<SideState, 'hero' | 'ascendancy'>): He
   return (sd.ascendancy ? db.ascended?.[sd.ascendancy] : undefined) ?? db.heroes[sd.hero];
 }
 
-/** What the k-th Shatter on a unit deals: 20, 25, 30... (DECISIONS #486, #503), plus its owner's Spell Power (#487) and what its Deepening adds. */
+/** What the k-th Shatter on a unit deals: 20, 30, 40... (DECISIONS #486, #523), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
   return SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
 }
@@ -3181,7 +3190,7 @@ function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boo
   for (let k = Math.floor(before / SHATTER_AT) + 1; k <= reached && t.hp > 0 && !r.s.winner; k++) {
     const dmg = shatterDamage(owner, k);
     // (like an Aura's damage: Barrier, Ghostly and Shielded answer it, and the difficulty's damage percent applies)
-    applyDamage(r, hero, t, hero ? modifiedDamage(dmg, hero, t, false) : dmg, 'attack');
+    applyDamage(r, hero, t, hero ? modifiedDamage(dmg, hero, t, false) : dmg, 'attack', false, true);
     a.shattered++;
     reap(r);
     if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
@@ -3800,7 +3809,11 @@ function reap(r: Run): void {
 // --- intents --------------------------------------------------------------------------------------------------------
 
 function pickSimple(r: Run, u: Unit, p: SimplePattern): string {
-  if (p.kind === 'cycle') return p.order[u.patCount % p.order.length] as string;
+  if (p.kind === 'cycle') {
+    const lead = p.lead ?? [];
+    if (u.patCount < lead.length) return lead[u.patCount] as string;
+    return p.order[(u.patCount - lead.length) % p.order.length] as string;
+  }
   // weighted: never the same move three times in a row
   const last2 = u.lastMoves.slice(-2);
   const barred = last2.length === 2 && last2[0] === last2[1] ? last2[1] : null;
@@ -5501,9 +5514,22 @@ export function previewCardDamage(
             : n;
       // (Shielded only stops as many hits as it has stacks; the rest land in full)
       const stopped = t ? Math.min(stacks(t, 'shielded'), hitCount) : 0;
-      sums.push(stopped > 0 && !(at.extracted > 0) ? n * (hitCount - stopped) : dealt * hitCount);
+      // (Slippery caps as many hits as it has stacks)
+      const slip = t ? Math.min(stacks(t, 'slippery'), hitCount) : 0;
+      sums.push(
+        stopped > 0 && !(at.extracted > 0)
+          ? n * (hitCount - stopped)
+          : slip > 0 && dealt === n
+            ? n * (hitCount - slip) + slip * Math.min(1, n)
+            : dealt * hitCount,
+      );
       // (several hits on a Shield: the card says what the ones that land deal)
-      const shown = stopped > 0 && stopped < hitCount && !(at.extracted > 0) ? n : dealt;
+      const shown =
+        stopped > 0 && stopped < hitCount && !(at.extracted > 0)
+          ? n
+          : slip >= hitCount && dealt === n
+            ? Math.min(1, n)
+            : dealt;
       if (dealt >= bestDealt) {
         bestDealt = dealt;
         bestHow = how;

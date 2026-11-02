@@ -88,11 +88,15 @@ export {
   spinCost,
   REEL_KINDS,
   buildElite,
+  twinnable,
 } from './trials';
 export { EVENT_TAG_LABEL, eventOffers, type EventTag } from './odds';
 export {
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
+  ALL_ELITE_TIER,
+  ALL_WARDEN_TIER,
+  eliteFightChance,
   GHOST_BOSS_MIN_TIER,
   ghostCleared,
   GHOST_FROM_TIER,
@@ -116,11 +120,19 @@ export {
   settleGhost,
   checkGhostBoss,
   ghostBossHp,
+  GHOST_ARENA_TIER,
+  GHOST_ARENA_HP_MULT,
   ghostBossDmg,
   wardenMaxHp,
   ghostWanted,
 } from './run';
-export { FIGHT_SHARDS, POTION_DROP_CHANCE, ELITE_HEAL_PCT } from './run';
+export {
+  FIGHT_SHARDS,
+  POTION_DROP_CHANCE,
+  ELITE_HEAL_PCT,
+  ELITE_HEAL_LAST_TIER,
+  eliteRewards,
+} from './run';
 export {
   LOOP_BOON_CHANCE,
   CROSSED_OFFER_CHANCE,

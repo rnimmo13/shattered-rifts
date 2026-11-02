@@ -16,7 +16,7 @@ export const FINAL_STAGE = 3;
 export const floorsOf = (_stage: number): number => 14;
 /** Where an act's second half begins: each half has its Merchants (DECISIONS #512). */
 export const MID_FLOOR = 8;
-/** At most this many Elites on an act's map, and Merchants in each half of it. */
+/** At most this many Elites from the map's own roll (a deeper tier adds more, DECISIONS #524), and Merchants in each half of an act. */
 export const MAX_ELITES = 6;
 export const MAX_MERCHANTS_A_HALF = 2;
 
@@ -76,7 +76,7 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
   return list[nextInt(rng, list.length)] as T;
 }
 
-/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3), a Merchant (at most MAX_MERCHANTS_A_HALF in each half of the act), a Shrine (from floor 3), an Event; the rest are fights. */
+/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3; a deeper tier adds more, see eliteFightChance), a Merchant (at most MAX_MERCHANTS_A_HALF in each half of the act), a Shrine (from floor 3), an Event; the rest are fights. */
 export const NODE_ODDS = {
   eliteFirst: 22,
   eliteMore: 12,
@@ -108,9 +108,36 @@ function rollKind(
 
 /**
  * An Event stop is now and then not an event at all but a fight: this percent of the time it is an Elite (only from the third floor), this
- * percent a plain fight. Decided when the stop is entered, so the map still shows an Event.
+ * percent a plain fight (which a deeper tier can make an Elite, on any floor). Decided when the stop is entered, so the map still shows an Event.
  */
 export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
+
+/** From this Rift Tier every fight is an Elite (DECISIONS #524, #526). */
+export const ALL_ELITE_TIER = 19;
+/** At this Rift Tier every one of those Elites is a Warden's fight (DECISIONS #526). */
+export const ALL_WARDEN_TIER = 20;
+/** The chance (percent) that a plain fight is an Elite instead: none at Tier I, then evenly up to all of them at ALL_ELITE_TIER. */
+export const eliteFightChance = (tier: number): number =>
+  Math.min(100, Math.round(((Math.max(1, tier) - 1) * 100) / (ALL_ELITE_TIER - 1)));
+/** Is this plain fight an Elite at this tier? (No roll at Tier I, so its maps and replays stay as they were.) */
+export const rollEliteFight = (rng: RngState, tier: number): boolean => {
+  const chance = eliteFightChance(tier);
+  return chance > 0 && nextInt(rng, 100) < chance;
+};
+
+/**
+ * The Wardens an act's fights can bring at ALL_WARDEN_TIER: the ones of its realms and of the far realms, so even a first act has a few to
+ * bring. Never Vorthax, who is the Rift's finale.
+ */
+function fightWardens(pool: readonly StageRealm[], stage: number): Encounter[] {
+  const realms = fightRealms(pool, stage);
+  return ENCOUNTERS.filter(
+    (e) =>
+      e.kind === 'warden' &&
+      e.id !== WARDEN_OF.rift &&
+      (realms.includes(e.realm) || FAR_REALMS.includes(e.realm)),
+  );
+}
 
 /** The enemy that ambushes the player at an Event stop (null if the realm has none of that kind). Avoids the stage's own fights when it can. */
 export function ambushEnemy(
@@ -119,10 +146,14 @@ export function ambushEnemy(
   kind: 'duel' | 'elite',
   taken: readonly (string | undefined)[],
   stage = 1,
+  tier = 1,
 ): string | null {
-  const all = fightRealms(pool, stage).flatMap((r) =>
-    enemiesOf(r, kind === 'elite' ? 'elite' : 'regular', stage),
-  );
+  const all =
+    kind === 'elite' && tier >= ALL_WARDEN_TIER
+      ? fightWardens(pool, stage)
+      : fightRealms(pool, stage).flatMap((r) =>
+          enemiesOf(r, kind === 'elite' ? 'elite' : 'regular', stage),
+        );
   const fresh = all.filter((e) => !taken.includes(e.id));
   const from = fresh.length > 0 ? fresh : all;
   return from.length > 0 ? pick(rng, from).id : null;
@@ -283,6 +314,29 @@ export function generateStageMap(
       }
       const mine = n.kind === 'event' ? (run.get(n.id) ?? 1) : 0;
       for (const t of n.next) run.set(t, Math.max(run.get(t) ?? 1, mine + 1));
+    }
+  }
+
+  // deeper tiers turn plain fights into Elites, past the limits above: by ALL_ELITE_TIER there are no plain fights left (DECISIONS #524)
+  if (elites.length > 0) {
+    for (const n of byFloor.flat()) {
+      if (n.kind !== 'duel' || !rollEliteFight(rng, tier)) continue;
+      const fresh = elites.filter((e) => !used.has(e.id));
+      n.kind = 'elite';
+      n.enemyId = pick(rng, fresh.length > 0 ? fresh : elites).id;
+      used.add(n.enemyId);
+    }
+  }
+  // and at the deepest tier each of them is a Warden's fight, played and paid as an Elite: only the last stop ends the act (DECISIONS #526)
+  if (tier >= ALL_WARDEN_TIER) {
+    const wardens = fightWardens(pool, stage);
+    // (the one at the end of the act is met there, while there are others to bring)
+    if (warden.enemyId) used.add(warden.enemyId);
+    for (const n of byFloor.flat()) {
+      if (n.kind !== 'elite' || wardens.length === 0) continue;
+      const fresh = wardens.filter((e) => !used.has(e.id));
+      n.enemyId = pick(rng, fresh.length > 0 ? fresh : wardens).id;
+      used.add(n.enemyId);
     }
   }
 

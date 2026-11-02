@@ -344,12 +344,12 @@ const SPECS: DealSpec[] = [
     text: 'Tents, a fire, and a chest nobody is watching closely enough.',
     opts: [
       [
-        'Rush them: a fight (win: 140 shards and a potion)',
+        'Rush them: a fight, deeper in perhaps an Elite (win: 140 shards and a potion)',
         [fight('duel', [shards(140), potion()])],
         'They were waiting.',
       ],
       [
-        'Steal the chest quietly (an even chance): 90 shards; or you are caught, a fight with no spoils',
+        'Steal the chest quietly (an even chance): 90 shards; or you are caught, a fight with no spoils, deeper in perhaps an Elite',
         [chance(50, [shards(90)], [fight('duel')])],
         'You creep closer.',
       ],
@@ -391,7 +391,7 @@ const SPECS: DealSpec[] = [
     text: 'A nest the size of a cart, full of warm eggs. The mother is close; you can hear her breathing.',
     opts: [
       [
-        'Smash the eggs: a fight (win: +7 max HP and 60 shards)',
+        'Smash the eggs: a fight, deeper in perhaps an Elite (win: +7 max HP and 60 shards)',
         [fight('duel', [maxHp(7), shards(60)])],
         'She is closer than you thought.',
       ],
@@ -430,7 +430,7 @@ const SPECS: DealSpec[] = [
     opts: [
       ['Let it go (lose 50 shards)', [shards(-50)], 'Easy come.', 'optional'],
       [
-        'Chase them down: a fight (win: 60 of their shards)',
+        'Chase them down: a fight, deeper in perhaps an Elite (win: 60 of their shards)',
         [fight('duel', [shards(60)])],
         'They do not run far.',
       ],

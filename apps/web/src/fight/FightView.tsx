@@ -395,6 +395,8 @@ export function FightView(props: {
   topFirst?: React.ReactNode;
   /** what is at stake, shown under the title for the whole fight (a Warden: the Resolve a loss would cost) */
   stakes?: { text: string; tone: 'info' | 'bad' };
+  /** a Warden's rule, in a sentence */
+  rule?: string;
   /** where the fight takes place (the Rift arena by default) */
   venue?: VenueId;
   /** a PvP match: you sit in one seat, the opponent's moves arrive from the server */
@@ -2133,6 +2135,11 @@ export function FightView(props: {
             <div className="fight__title">
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
+              {props.rule && (
+                <span className="fight__stakes fight__stakes--info fight__rule" role="note">
+                  {props.rule}
+                </span>
+              )}
               {props.stakes && (
                 <span className={`fight__stakes fight__stakes--${props.stakes.tone}`} role="note">
                   {props.stakes.text}

@@ -9,6 +9,8 @@ import {
   CROSSED_OFFER_CHANCE,
   ELITE_EVENT_CHANCE,
   ELITE_HEAL_PCT,
+  ELITE_HEAL_LAST_TIER,
+  eliteRewards,
   EVENT_TAG_LABEL,
   FIGHT_SHARDS,
   GHOST_BOSS_HP_BASE,
@@ -21,6 +23,11 @@ import {
   CARD_ODDS,
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
+  ALL_ELITE_TIER,
+  GHOST_ARENA_TIER,
+  GHOST_ARENA_HP_MULT,
+  ALL_WARDEN_TIER,
+  eliteFightChance,
   POTION_DROP_CHANCE,
   POTION_PRICE,
   POTION_WEIGHTS,
@@ -47,6 +54,8 @@ const LANE_LABEL: Record<string, string> = {
   hp: '+10 max HP and heal',
   potion: 'A rare potion',
   thin: 'Remove up to 2 cards of your choice',
+  resolve: '+1 Resolve',
+  twin: 'Copy a card of your choice',
 };
 export function LearnOdds() {
   const events = useMemo(() => eventOffers(), []);
@@ -117,18 +126,34 @@ export function LearnOdds() {
       </p>
 
       <p>
+        Deeper in, plain fights turn into Elites, past those limits: {eliteFightChance(2)}% of them
+        at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10,{' '}
+        {eliteFightChance(15)}% at Tier 15, and every one from Tier {ALL_ELITE_TIER}. At Tier{' '}
+        {ALL_WARDEN_TIER} every one of them is a Warden&apos;s fight, with a Warden&apos;s numbers, paid as an Elite and costing 2 Resolve if lost.
+        Ambushes and fights an event starts follow the same odds.
+      </p>
+
+      <p>
         From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
         being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
         Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
         usual HP at first; its HP and damage then grow with the tier and act like every
-        Warden&apos;s. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
+        Warden&apos;s. From Tier {GHOST_ARENA_TIER} it starts from {GHOST_ARENA_HP_MULT}x, the HP
+        of an Arena fight, and grows from there. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
       </p>
 
       <h3>What a fight pays</h3>
       <ul>
         <li>
-          Shards: {FIGHT_SHARDS.duel} for a fight, {FIGHT_SHARDS.elite} for an Elite,{' '}
+          Shards: {FIGHT_SHARDS.duel} for a fight, {FIGHT_SHARDS.elite} for an Elite at Tier 1,{' '}
           {FIGHT_SHARDS.warden} for a Warden.
+        </li>
+        <li>
+          An Elite pays less the deeper you go, all but its card reward: at Tier 10,{' '}
+          {eliteRewards(10).shards} shards, a {eliteRewards(10).potionPct}% potion chance and a{' '}
+          {eliteRewards(10).boonPct}% Boon chance; from Tier {ALL_ELITE_TIER},{' '}
+          {eliteRewards(ALL_ELITE_TIER).shards} shards, {eliteRewards(ALL_ELITE_TIER).potionPct}% and{' '}
+          {eliteRewards(ALL_ELITE_TIER).boonPct}%.
         </li>
         <li>
           A Warden also leaves you Max HP for good: +{wardenMaxHp(1)} to Tier IV, +{wardenMaxHp(5)}{' '}
@@ -136,16 +161,16 @@ export function LearnOdds() {
         </li>
         <li>
           A potion drops {POTION_DROP_CHANCE.duel}% of the time after a fight and{' '}
-          {POTION_DROP_CHANCE.elite}% after an Elite (if your belt has room). Of potions:{' '}
+          {POTION_DROP_CHANCE.elite}% after an Elite at Tier 1 (if your belt has room). Of potions:{' '}
           {pct(POTION_WEIGHTS.common, total(POTION_WEIGHTS))} common,{' '}
           {pct(POTION_WEIGHTS.uncommon, total(POTION_WEIGHTS))} uncommon,{' '}
           {pct(POTION_WEIGHTS.rare, total(POTION_WEIGHTS))} rare.
         </li>
         <li>
-          Every Elite gives a Boon, any Boon you lack as likely as another (the merchant sells one the
+          At Tier 1 every Elite gives a Boon, any Boon you lack as likely as another (the merchant sells one the
           same way). Wardens give their Gift, not a Boon. Beating Vorthax leaves a Boon{' '}
           {LOOP_BOON_CHANCE}% of the time. An
-          Elite also heals {ELITE_HEAL_PCT}% of your HP.
+          Elite also heals {ELITE_HEAL_PCT}% of your HP, up to Tier {ELITE_HEAL_LAST_TIER}.
         </li>
       </ul>
 
@@ -173,8 +198,8 @@ export function LearnOdds() {
       <p>
         A reel of {REEL_PRIZES} prizes, all in plain sight. The first spin is free, and each spin
         after it costs {ROLL_COST} shards: the reel scrolls past a pointer and slows to a stop on
-        one prize. You may take it, or pay {ROLL_COST} more shards to let it go and spin again, or
-        walk away (the shards you spent are gone).
+        one prize. You may take it, which ends the spinning, or pay {ROLL_COST} more shards to let it
+        go and spin again, or walk away (the shards you spent are gone).
       </p>
       <p>
         <b>Fair by design.</b> What the reel stops on is drawn by the rules before the reel moves,

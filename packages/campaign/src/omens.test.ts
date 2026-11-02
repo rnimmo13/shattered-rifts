@@ -194,6 +194,16 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
 
   it('a run past Tier III without one, saved before they came, is offered it at its next last Warden', () => {
     expect(beat(5, 3).phase).toBe('ascend');
+    // (a run past Tier III without one is offered it at any Warden; a run below that, or with one, is not; DECISIONS #529)
+    expect(beat(4, 1).phase).toBe('ascend');
+    expect(beat(5, 2).phase).toBe('ascend');
+    expect(beat(3, 1).phase).toBe('gift');
+    expect(beat(3, 2).phase).toBe('gift');
+    expect(beat(2, 3).phase).toBe('gift');
+    expect(beat(4, 1, 'knight:paladin').phase).toBe('gift');
+    // (taken mid-tier, the run goes on to its next act)
+    expect(chooseAscendancy(beat(4, 1), 'knight:paladin').phase).toBe('stageClear');
+    expect(() => chooseAscendancy({ ...beat(4, 1), ascendancy: 'knight:marshal' }, 'knight:paladin')).toThrow();
   });
 
   it('taking one changes the class for the rest of the run and clears the tier', () => {

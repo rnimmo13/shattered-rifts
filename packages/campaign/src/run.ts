@@ -32,8 +32,10 @@ import {
   FINAL_STAGE,
   ghostCleared,
   GHOST_FROM_TIER,
+  ALL_ELITE_TIER,
   ambushEnemy,
   generateStageMap,
+  rollEliteFight,
   reachableNodes,
 } from './mapgen';
 
@@ -138,6 +140,24 @@ export const FIGHT_SHARDS = { duel: 15, elite: 36, warden: 65 } as const;
 export const POTION_DROP_CHANCE = { duel: 40, elite: 75 } as const;
 /** Percent of max HP an Elite fight heals when it is won. */
 export const ELITE_HEAL_PCT = 10;
+/** An Elite heals up to and including this Rift Tier, and not after (DECISIONS #526). */
+export const ELITE_HEAL_LAST_TIER = 10;
+/** The chance (percent) that an Elite leaves a Boon once its rewards have faded all the way. */
+export const ELITE_BOON_FLOOR = 10;
+/**
+ * What winning an Elite pays at this tier: Tier I in full, fading evenly until by ALL_ELITE_TIER its shards and potion chance are a plain
+ * fight's and its Boon is rare, as most fights are Elites by then. Its card reward keeps an Elite's rarity chance at every tier (DECISIONS #526).
+ */
+export function eliteRewards(tier: number): { shards: number; potionPct: number; boonPct: number; healPct: number } {
+  const left = Math.max(0, ALL_ELITE_TIER - Math.max(1, tier)) / (ALL_ELITE_TIER - 1);
+  const fade = (floor: number, full: number): number => Math.round(floor + (full - floor) * left);
+  return {
+    shards: fade(FIGHT_SHARDS.duel, FIGHT_SHARDS.elite),
+    potionPct: fade(POTION_DROP_CHANCE.duel, POTION_DROP_CHANCE.elite),
+    boonPct: fade(ELITE_BOON_FLOOR, 100),
+    healPct: tier <= ELITE_HEAL_LAST_TIER ? ELITE_HEAL_PCT : 0,
+  };
+}
 
 /** Fraction of max HP a shrine rest heals. */
 export const REST_HEAL = 0.35;
@@ -309,6 +329,7 @@ export const ASCEND_TIER = 3;
 /** Take an Ascendancy: the Riftwalker's class changes for the rest of the run, and the tier is cleared. */
 export function chooseAscendancy(run: RunState, id: string): RunState {
   need(run.phase === 'ascend' && run.context?.ascendancies?.includes(id), 'That Ascendancy is not on offer');
+  need(!run.ascendancy, 'An Ascendancy cannot be changed');
   need(ascendancyOf(run.character, id), 'That Ascendancy is not this Riftwalker’s');
   const r = clone(run);
   r.ascendancy = id;
@@ -466,14 +487,16 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     case 'event': {
       delete r.eventResult; // (so the next event's result is shown even if its words are the same)
       delete r.eventFlips;
-      // now and then the stop is an ambush: a fight (an Elite from the third floor on) in place of the event. (Maps never put an event on
+      // now and then the stop is an ambush: a fight (an Elite from the third floor on, or by the tier's odds) in place of the event. (Maps never put an event on
       // the first floor, which is all fights, so an event stood on there by hand is left alone.)
       const roll = node.floor >= 2 ? nextInt(r.rng, 100) : 100;
       const ambush: 'duel' | 'elite' | null =
         roll < EVENT_FIGHT_ODDS.elite && node.floor >= 3
           ? 'elite'
           : roll < EVENT_FIGHT_ODDS.elite + EVENT_FIGHT_ODDS.duel
-            ? 'duel'
+            ? rollEliteFight(r.rng, r.tier)
+              ? 'elite'
+              : 'duel'
             : null;
       const foe = ambush
         ? ambushEnemy(
@@ -482,6 +505,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             ambush,
             r.map.nodes.map((n) => n.enemyId),
             r.stage,
+            r.tier,
           )
         : null;
       if (ambush && foe) {
@@ -534,18 +558,21 @@ export interface FightPlan {
  * Rift is already a stronger deck. Doubled from 1.3 on Robert's word, DECISIONS #514: only a campaign ghost has this, not the Arena's.)
  */
 export const GHOST_BOSS_HP_BASE = 2.6;
+/** From this Rift Tier a ghost Warden starts from the Arena's HP, as many times its Riftwalker's own as ARENA_HP_MULT, and rises from there (DECISIONS #527). */
+export const GHOST_ARENA_TIER = 10;
+export const GHOST_ARENA_HP_MULT = 6;
 /** The Max HP a Warden leaves you: 3 to Tier IV, one more every five tiers (4 from Tier V, 5 from Tier X, 7 at Tier XX). */
 export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, tier) / 5);
 
 /** Where a ghost starts: the tier table at the first tier ghosts come, stage 1. */
 const ghostFrom = (): { hp: number; dmg: number } => enemyScale(GHOST_FROM_TIER + 1, 1);
-export const ghostBossHp = (hero: string, tier: number, stage = 1): number =>
-  Math.round(
-    ((RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80) *
-      GHOST_BOSS_HP_BASE *
-      Math.max(ghostFrom().hp, enemyScale(tier, stage).hp)) /
-      ghostFrom().hp,
-  );
+export const ghostBossHp = (hero: string, tier: number, stage = 1): number => {
+  const own = RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
+  const scale = enemyScale(tier, stage).hp;
+  if (tier >= GHOST_ARENA_TIER)
+    return Math.round((own * GHOST_ARENA_HP_MULT * scale) / enemyScale(GHOST_ARENA_TIER, 1).hp);
+  return Math.round((own * GHOST_BOSS_HP_BASE * Math.max(ghostFrom().hp, scale)) / ghostFrom().hp);
+};
 /** A ghost Warden's damage, percent of its cards' numbers: 100 where ghosts start, rising as the tier table's damage does. */
 export const ghostBossDmg = (tier: number, stage = 1): number =>
   Math.max(100, Math.round((100 * enemyScale(tier, stage).dmg) / ghostFrom().dmg));
@@ -657,11 +684,16 @@ export function duelPlan(run: RunState): FightPlan | null {
   const boss = node.kind === 'elite' || node.kind === 'warden';
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
-  if (omen.swarm && node.kind === 'elite' && units.length > 0 && units.length < 4) {
+  // (never a second Warden, at the tier where the Elites are Wardens)
+  if (omen.swarm && node.kind === 'elite' && e.kind !== 'warden' && units.length > 0 && units.length < 4) {
     const weakest = units.reduce((m, id) => (hpOf(id) < hpOf(m) ? id : m));
     units.push(weakest);
   }
   const wardenUp = node.kind === 'warden' ? 1 + omen.wardenDmgPct / 100 : 1;
+  // (a Warden on an Elite stop has no Elite's bump, so the act's own Warden stays its hardest fight; DECISIONS #527)
+  const realElite = node.kind === 'elite' && e.kind !== 'warden';
+  const eliteHpUp = realElite ? 1 + omen.eliteHpPct / 100 : 1;
+  const eliteDmgUp = realElite ? 1 + omen.eliteDmgPct / 100 : 1;
   return {
     ...(ghost
       ? {
@@ -689,12 +721,14 @@ export function duelPlan(run: RunState): FightPlan | null {
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
       (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) *
-        enemyScale(run.tier, run.stage).hp,
+        enemyScale(run.tier, run.stage).hp *
+        eliteHpUp,
     ),
     dmgPct: Math.round(
       (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
         enemyScale(run.tier, run.stage).dmg *
-        wardenUp,
+        wardenUp *
+        eliteDmgUp,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
@@ -775,13 +809,23 @@ export function finishDuel(
     }
   }
   let potionGained: string | undefined;
-  const dropChance = POTION_DROP_CHANCE[node.kind === 'duel' ? 'duel' : 'elite'];
+  const elitePays = eliteRewards(r.tier);
+  const dropChance =
+    node.kind === 'duel'
+      ? POTION_DROP_CHANCE.duel
+      : node.kind === 'elite'
+        ? elitePays.potionPct
+        : POTION_DROP_CHANCE.elite;
   if (r.potions.length < MAX_POTIONS && nextInt(r.rng, 100) < dropChance) {
     potionGained = offerPotion(r.rng);
     r.potions.push(potionGained);
   }
   const gain = Math.round(
-    FIGHT_SHARDS[node.kind === 'duel' ? 'duel' : node.kind === 'elite' ? 'elite' : 'warden'] *
+    (node.kind === 'duel'
+      ? FIGHT_SHARDS.duel
+      : node.kind === 'elite'
+        ? elitePays.shards
+        : FIGHT_SHARDS.warden) *
       (1 - omenEffects(r.tier).shardsPct / 100),
   );
   r.shards += gain;
@@ -797,14 +841,15 @@ export function finishDuel(
   // Elites give Boons; Wardens give their Gift (they used to give a Boon as well, and decks owned every Boon within a few loops).
   // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
   const fromEvent = node.bonus !== undefined;
-  if (node.kind === 'elite' && !fromEvent) {
+  // (no roll while it is certain, so Tier I's runs and replays stay as they were)
+  if (node.kind === 'elite' && !fromEvent && (elitePays.boonPct >= 100 || nextInt(r.rng, 100) < elitePays.boonPct)) {
     const id = offerBoon(r.rng, r.boons);
     if (id) {
       gainBoon(r, id);
       boonGained = id;
     }
   }
-  if (node.kind === 'elite') heal(r, (r.maxHp * ELITE_HEAL_PCT) / 100); // an elite leaves you a little breathing room
+  if (node.kind === 'elite' && elitePays.healPct > 0) heal(r, (r.maxHp * elitePays.healPct) / 100); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
     // a Warden falls: you grow a little sturdier for good (more deeper in, where enemies hit harder; DECISIONS #237), and catch your breath
@@ -815,8 +860,12 @@ export function finishDuel(
     heal(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     // Tier III's last Warden: the reward is an Ascendancy, in place of the Gift, a Heart and whatever the Heart of the Rift leaves. A run
-    // past it without one (saved before they came) is offered it at its next last Warden (DECISIONS #519).
-    if (r.stage >= FINAL_STAGE && r.tier >= ASCEND_TIER && !r.ascendancy) {
+    // past it without one (saved before they came) is offered it at its next Warden of any act (DECISIONS #519, #529). A new run
+    // has chosen by then, as the Tier III offer cannot be passed by, and one already chosen is never offered again.
+    if (
+      !r.ascendancy &&
+      (r.tier > ASCEND_TIER || (r.tier === ASCEND_TIER && r.stage >= FINAL_STAGE))
+    ) {
       r.context = {
         nodeId: node.id,
         ascendancies: ascendanciesOf(r.character).map((a) => a.id),
@@ -1469,21 +1518,23 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
   if (ev.fight) {
     const ctx = r.context as NonNullable<RunState['context']>;
     const node = nodeOf(r, ctx.nodeId);
+    const kind = ev.fight.kind === 'duel' && rollEliteFight(r.rng, r.tier) ? 'elite' : ev.fight.kind;
     const foe = ambushEnemy(
       r.rng,
       enemyRealms(r, r.stage),
-      ev.fight.kind,
+      kind,
       r.map.nodes.map((n) => n.enemyId),
       r.stage,
+      r.tier,
     );
     need(foe, 'There is nothing here to fight');
-    node.kind = ev.fight.kind;
+    node.kind = kind;
     node.enemyId = foe;
     // (the event's own Boon, if the spoils include it, is named now: the event is gone by the time the fight is won)
     node.bonus = pinBoon(ev.fight.bonus ?? [], ev.boonOffer);
     r.context = { nodeId: ctx.nodeId };
     r.phase = 'duel';
-    r.eventResult = `${r.eventResult ? `${r.eventResult} ` : ''}${encounter(foe).name} stands in your way${ev.fight.kind === 'elite' ? ' (an Elite)' : ''}.`;
+    r.eventResult = `${r.eventResult ? `${r.eventResult} ` : ''}${encounter(foe).name} stands in your way${kind === 'elite' ? ' (an Elite)' : ''}.`;
     return r;
   }
   clearNode(r, (r.context as NonNullable<RunState['context']>).nodeId);

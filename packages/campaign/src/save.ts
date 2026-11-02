@@ -247,6 +247,7 @@ function validTrial(t: unknown): boolean {
     typeof p['id'] === 'string' &&
     validDeal(p['deal']) &&
     (p['removeUpTo'] === undefined || isInt(p['removeUpTo'], 1, 5)) &&
+    (p['twin'] === undefined || p['twin'] === true) &&
     (p['choices'] === undefined ||
       (Array.isArray(p['choices']) && p['choices'].length <= 3 && p['choices'].every(hasCard)));
   if (
@@ -263,6 +264,7 @@ function validTrial(t: unknown): boolean {
 }
 
 const DEAL_KINDS = new Set([
+  'resolve',
   'swap',
   'hurt',
   'hurtPct',

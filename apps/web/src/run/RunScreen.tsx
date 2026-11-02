@@ -456,14 +456,15 @@ export default function RunScreen() {
     // a Warden fight always says what is at stake: the Resolve left, and what losing it would leave (DECISIONS #274)
     const atNode = run.map.nodes.find((n) => n.id === run.context?.nodeId);
     const stakes =
-      atNode?.kind === 'warden'
-        ? run.resolve - resolveCost('warden') <= 0
+      atNode &&
+      (atNode.kind === 'warden' || (atNode.enemyId && encounter(atNode.enemyId).kind === 'warden'))
+        ? run.resolve - resolveCost(atNode.kind) <= 0
           ? {
               text: `Resolve ${run.resolve}: lose this Warden fight and the run collapses`,
               tone: 'bad' as const,
             }
           : {
-              text: `Resolve ${run.resolve}: losing this Warden fight costs ${resolveCost('warden')}, leaving ${run.resolve - resolveCost('warden')}`,
+              text: `Resolve ${run.resolve}: losing this Warden fight costs ${resolveCost(atNode.kind)}, leaving ${run.resolve - resolveCost(atNode.kind)}`,
               tone: 'info' as const,
             }
         : undefined;
@@ -473,6 +474,7 @@ export default function RunScreen() {
         <FightView
           key={plan.seed}
           {...(stakes ? { stakes } : {})}
+          {...(!plan.ghost && encounter(plan.encounterId).rule ? { rule: encounter(plan.encounterId).rule } : {})}
           omens={omensAt(run.tier).map((o) => ({ name: o.name, text: o.text(run.tier) }))}
           {...(link
             ? { pvp: link }

@@ -18,6 +18,8 @@ export const PRIZE_MARK: Record<string, { glyph: string; color: string }> = {
   heal: { glyph: '+', color: '#9be08a' },
   hp: { glyph: '♥', color: '#ff8a7a' },
   thin: { glyph: '−', color: '#b9b3c4' },
+  resolve: { glyph: '◆', color: '#ffb3d1' },
+  twin: { glyph: '×2', color: '#8fd9c8' },
 };
 
 export interface LanePrize {

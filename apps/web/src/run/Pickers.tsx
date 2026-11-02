@@ -16,6 +16,7 @@ import {
   upgradePrice,
   ROLL_COST,
   spinCost,
+  twinnable,
   type EventOption,
   type RunState,
   type TrialOffer,
@@ -199,7 +200,7 @@ export function CardOffer(props: {
 export function DeckModal(props: {
   deck: readonly string[];
   title: string;
-  hint?: string;
+  hint?: React.ReactNode;
   onPick?: (id: string) => void;
   /** only these cards can be picked (the rest are shown but dimmed) */
   pickable?: ReadonlySet<string>;
@@ -793,7 +794,10 @@ function shownPrizes(t: TrialOffer): { p: TrialPrize }[] {
   return p ? [{ p }] : [];
 }
 
-/** The Brass Reel's lighter load: pick up to `max` cards of your deck to let go (none is fine), then take it. */
+/**
+ * The Brass Reel's lighter load: the window stays open while up to `max` cards are chosen, and confirming there takes the prize, which
+ * ends the reel. Cancelling lets all of it go, so nothing is ever half chosen beside the Spin again button.
+ */
 function LighterLoad(props: {
   deck: readonly string[];
   max: number;
@@ -808,44 +812,78 @@ function LighterLoad(props: {
     for (const id of chosen) rest.splice(rest.indexOf(id), 1);
     return rest;
   }, [props.deck, chosen]);
-  const pickable = useMemo(() => new Set(removableCards(left)), [left]);
-  const canMore =
-    chosen.length < props.max && left.length > V2_DECK_RULES.minSize && pickable.size > 0;
+  const removable = useMemo(() => new Set(removableCards(left)), [left]);
+  const canMore = chosen.length < props.max && left.length > V2_DECK_RULES.minSize;
+  const pickable = useMemo(() => (canMore ? removable : new Set<string>()), [canMore, removable]);
   return (
     <div className="lighterload">
       <b className="eventopt__name">{props.label}</b>
-      <p>
-        {chosen.length
-          ? `Letting go of: ${chosen.map((id) => COMBAT_DB.cards[id]?.name ?? 'a card').join(', ')}`
-          : 'No cards chosen yet. You may also take it and keep every card.'}
-      </p>
+      <p>Taking this prize ends the reel.</p>
       <div className="choices-row">
-        <button className="btn" disabled={!canMore} onClick={() => setPicking(true)}>
-          <span>{chosen.length ? 'Choose another card' : 'Choose a card to remove'}</span>
+        <button className="btn btn--primary" onClick={() => setPicking(true)}>
+          <span>Choose cards to remove</span>
         </button>
-        {chosen.length > 0 && (
-          <button className="btn btn--small" onClick={() => setChosen([])}>
-            <span>Start over</span>
-          </button>
-        )}
-        <button className="btn btn--primary" onClick={() => props.onTake(chosen)}>
-          <span>
-            {chosen.length
-              ? `Remove ${chosen.length} card${chosen.length === 1 ? '' : 's'}`
-              : 'Keep my deck as it is'}
-          </span>
+        <button className="btn" onClick={() => props.onTake([])}>
+          <span>Take it and keep my deck</span>
         </button>
       </div>
       {picking && (
         <DeckModal
           deck={left}
-          title="Remove a card"
-          hint={`Up to ${props.max} cards.`}
+          title={`Remove up to ${props.max} cards`}
+          hint={
+            <span className="lighterload__picked">
+              <span>
+                {chosen.length
+                  ? `Removing: ${chosen.map((id) => COMBAT_DB.cards[id]?.name ?? 'a card').join(', ')}`
+                  : `Choose up to ${props.max} cards.`}
+              </span>
+              {chosen.length > 0 && (
+                <>
+                  <button className="btn btn--primary btn--small" onClick={() => props.onTake(chosen)}>
+                    <span>
+                      Remove {chosen.length} card{chosen.length === 1 ? '' : 's'}
+                    </span>
+                  </button>
+                  <button className="btn btn--small" onClick={() => setChosen([])}>
+                    <span>Start over</span>
+                  </button>
+                </>
+              )}
+            </span>
+          }
           pickable={pickable}
-          onPick={(id) => {
+          onPick={(id) => setChosen([...chosen, id])}
+          onClose={() => {
             setPicking(false);
-            setChosen([...chosen, id]);
+            setChosen([]);
           }}
+        />
+      )}
+    </div>
+  );
+}
+
+/** The Brass Reel's Twin: choose the card to copy, which takes the prize. */
+function TwinPrize(props: { deck: readonly string[]; label: string; onTake: (id: string) => void }) {
+  const [picking, setPicking] = useState(false);
+  const pickable = useMemo(() => new Set(twinnable(props.deck)), [props.deck]);
+  return (
+    <div className="lighterload">
+      <b className="eventopt__name">{props.label}</b>
+      <p>Taking this prize ends the reel.</p>
+      <div className="choices-row">
+        <button className="btn btn--primary" disabled={pickable.size === 0} onClick={() => setPicking(true)}>
+          <span>{pickable.size ? 'Choose a card to copy' : 'Nothing left to copy'}</span>
+        </button>
+      </div>
+      {picking && (
+        <DeckModal
+          deck={props.deck}
+          title="Copy a card"
+          hint="The card you choose gets a copy in your deck."
+          pickable={pickable}
+          onPick={props.onTake}
           onClose={() => setPicking(false)}
         />
       )}
@@ -999,8 +1037,8 @@ export function EventView(props: {
       {trial && won && (
         <div className="prizes" aria-label="The prize on the table">
           <h3 className="prizes__title" role="status">
-            The reel stopped on this. Take it, or spin again. Walking away loses it, and the shards
-            you spent.
+            The reel stopped on this. Take it and the reel is done, or spin again. Walking away
+            loses it, and the shards you spent.
           </h3>
           <div className="prizes__row">
             {shownPrizes(trial).map(({ p }) => (
@@ -1031,6 +1069,14 @@ export function EventView(props: {
                     onTake={(cards) => props.onPrize(p.id, undefined, cards)}
                   />
                 )}
+                {p.twin && (
+                  <TwinPrize
+                    key={p.id}
+                    deck={props.run.deck}
+                    label={p.label}
+                    onTake={(id) => props.onPrize(p.id, undefined, [id])}
+                  />
+                )}
                 {!p.choices && p.card && (
                   <Pickable
                     id={p.card}
@@ -1042,7 +1088,7 @@ export function EventView(props: {
                 )}
                 {p.boon && <BoonCard id={p.boon} />}
                 {p.potion && <PotionCard id={p.potion} />}
-                {!p.choices && !p.removeUpTo && (
+                {!p.choices && !p.removeUpTo && !p.twin && (
                   <button className="eventopt" onClick={() => props.onPrize(p.id)}>
                     <b className="eventopt__name">{p.label}</b>
                   </button>

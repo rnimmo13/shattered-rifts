@@ -7,6 +7,7 @@ hand from `docs/14_CARD_COSTING.md`; no sim was run.
 **As built, changed from the list below:**
 - **DECISIONS #509:** X-free Swords keep a fixed number of hits, each hit growing with Spell Power: Obsidian Flurry 4 x3 (+1 per 3), Rift Sweep 3 x3 (+1 per 3), Tyrant Strike and Fault Piercer 4 x3 (+1 per 3), Crosscut 2 x2 (+1 per 4), Hammer and Anvil 3 x4 (+1 per 3), Storm of Glass 5 x4 (+1 per 2), Obsidian Drill 7 x3 (+2 per point spent). Whispering Edge gives 2 Keen. This replaces the Sword numbers in #507.
 - **DECISIONS #507:** no Sword or spell adds hits as it scales: a Sword is one hit of its rate x base damage, +rate per step of Spell Power. Obsidian Flurry, Hammer and Anvil and Storm of Glass read every 3; Thousand Shards deals 5 a point, Obsidian Drill 21 + 6; Whispering Edge gives 3 Keen.
+- **DECISIONS #523:** the k-th Shatter deals 10 + 10k (20, 30... 110 at 100), Rupture Script+ applies 11, Breaking Point applies 4 (upgrade 6). This replaces the Shatter numbers in #503 below.
 - **DECISIONS #503:** the k-th Shatter deals 15 + 5k (20, 25... 65 at 100), Rupture Script applies 10 (upgrade 13), Lava Bomb is 20 + 7 per point; the list below keeps the old amounts.
 - **DECISIONS #499:** cards apply about a quarter less Fracture (Rupture Script 15, Faultline Hex 5 and the rest in that entry); the list below keeps the old amounts.
 - **DECISIONS #487:** every Shatter also adds the Spell Power you hold, spending none.

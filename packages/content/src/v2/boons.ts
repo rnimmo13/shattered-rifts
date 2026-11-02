@@ -1,4 +1,4 @@
-// Boons: passives that last a whole run (docs/03_CAMPAIGN.md §5.1, Combat v2). Elites drop them, the merchant sells one, some
+// Boons: passives that last a whole run (docs/03_CAMPAIGN.md §5.1, Combat v2). Elites often drop them, the merchant sells one, some
 // events and bargains give one; clearing a loop may leave one. The engine handles mana / handSize / fightStart / turnStart; the
 // campaign handles maxHp / healAfterFight / shardsPerFight. Boons never appear in PvP.
 //

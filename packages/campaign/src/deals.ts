@@ -82,6 +82,11 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       r.hp = s.n > 0 ? r.hp + s.n : Math.min(r.hp, r.maxHp);
       out.push(`${s.n > 0 ? '+' : ''}${s.n} max HP.`);
       return;
+    case 'resolve':
+      if (r.resolve >= r.maxResolve) fail('Your Resolve is already full');
+      r.resolve = Math.min(r.maxResolve, r.resolve + s.n);
+      out.push(`+${s.n} Resolve.`);
+      return;
     case 'shards':
       if (r.shards + s.n < 0) fail(`You need ${-s.n} shards`);
       r.shards += s.n;

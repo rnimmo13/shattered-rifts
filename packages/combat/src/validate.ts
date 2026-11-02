@@ -3,7 +3,7 @@
 import type { CombatDb, Op, Pattern } from './types';
 
 function patternMoves(p: Pattern): string[] {
-  if (p.kind === 'cycle') return p.order;
+  if (p.kind === 'cycle') return [...(p.lead ?? []), ...p.order];
   if (p.kind === 'weighted') return p.options.map((o) => o.move);
   return p.phases.flatMap((ph) => patternMoves(ph.pattern));
 }

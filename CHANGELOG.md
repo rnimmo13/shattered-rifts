@@ -4,6 +4,17 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed (newest)
+- **Spin To Win:** the window for removing cards stays open while you choose, and removing them takes the prize, so you can't spin after it. Two new prizes: +1 Resolve, and a copy of a card of your choice.
+- **A run already past Tier III without an Ascendancy** is offered one at its next Warden, in place of that Warden's Gift. Nobody can change one they have.
+- **Six Wardens have a rule of their own, from Tier I:** Kron hides behind a Foundry Hatch he keeps reopening, The Hollow Benediction's Acolytes feed it Might, The Mourning Tide has Low Tide and Beckoning cards, The Applause Below is Slippery, Seraphine kneels at half HP, and Mother of Static takes Mana and cards from your next turn. The rule is shown as the fight starts.
+- **Three new Omens, at Tiers 5, 10 and 15:** each makes every phase an enemy rises into carry more Barrier and Might, and makes Elites tougher, up to 15% more Barrier, 3 more Might, 30% more Elite HP and 15% more Elite damage at Tier 15.
+- **Ghost Wardens** have the Arena's HP from Tier 10, and grow from there.
+- **Campaign:** more Elites the deeper you go. From Rift Tier 2 plain fights can be Elites instead, about 5.5% more of them each tier. At Tier 19 every fight is an Elite, and at Tier 20 every fight is a Warden's.
+- **Elite rewards:** Elites stop healing after Tier 10, and their shards, potion chance and Boon chance fade with the tier, down to a plain fight's shards and potion chance and a 10% Boon chance at Tier 19. Their card rewards stay as good.
+- **Immovable Oath+** now Holds, in place of 3 more Barrier.
+- **Spellblade:** each Shatter now hits 10 harder than the last, not 5 (20, 30, 40... 110 at 100 Fracture). Rupture Script+ applies 11 (was 13), and Breaking Point applies 4, 6 upgraded (was 6, 9).
+
 ### Added (newest)
 - **The fight moves:** painted effects for debuffs, buffs, curses, Barrier gained, hit and broken, Bleed and Burn ticking, blows by their weight, potions, summons, deaths and an enemy rising. Cards deal out of the draw pile, trail dust into the discard pile, burn up when Consumed and arc across the screen in a shuffle. A status icon flies from whoever put it there. The HP bar shows a pale trail of what was lost, an intent swings in and shakes as it acts, and a Trap flips up as the screen dims.
 - **Painted potions, enemy intents, map stops and Ascendancy crests.** Choosing an Ascendancy is a moment: the crest rises, the old name burns away and the new one is written in gold. A reward card flies into your deck, and the path from where you stand draws itself in gold.

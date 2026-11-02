@@ -1,7 +1,7 @@
 // The 2026-10-25 event pass (DECISIONS #227): a card of your choice, engraved keywords, fights with spoils, and bad luck.
 
 import { describe, expect, it } from 'vitest';
-import { COMBAT_DB, markOf } from '@sr/content/v2';
+import { COMBAT_DB, encounter, markOf } from '@sr/content/v2';
 import {
   availableNodes,
   chooseEvent,
@@ -90,6 +90,18 @@ describe('events that become fights', () => {
     expect(won.shards).toBeGreaterThanOrEqual(before + 140);
     expect(won.eventResult).toMatch(/spoils/i);
     expect(won.map.nodes.find((n) => n.id === node.id)?.bonus).toBeUndefined();
+  });
+
+  it('at Tier 20 that fight is an Elite: it pays the spoils it promised, and no Boon on top (DECISIONS #524)', () => {
+    const r = chooseEvent({ ...at('bandit-camp'), tier: 20 }, 'd1');
+    const node = r.map.nodes.find((n) => n.id === r.context?.nodeId)!;
+    expect(node.kind).toBe('elite');
+    expect(encounter(node.enemyId!).kind).toBe('warden');
+    expect(r.eventResult).toMatch(/an Elite/);
+    expect(parseRun(serializeRun(r))?.phase).toBe('duel');
+    const won = finishDuel(r, true, r.hp);
+    expect(won.shards).toBeGreaterThanOrEqual(r.shards + 140);
+    expect(won.boons).toEqual(r.boons);
   });
 
   it("a guarded hoard's Boon is named when the fight starts and given when it is won", () => {

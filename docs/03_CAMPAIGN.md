@@ -64,7 +64,7 @@ Shrine (every node on that floor); each stage still has a Merchant somewhere bef
 | Node | Icon | What happens | Placement rules |
 |---|---|---|---|
 | **Duel** | ⚔ | A regular realm duelist (12–15 Essence, ~4 min) | All of floor 1; ~40% of other nodes |
-| **Elite** | 💀 | A tough named duelist (full Essence). Better card pick + a **Boon** | From floor 3, at most 6 an act, never two in a row |
+| **Elite** | 💀 | A tough named duelist (full Essence). Better card pick + a **Boon** | From floor 3, at most 6 an act, never two in a row. From Tier 2, plain fights also turn into Elites, past those limits: about 5.5% more of them each tier, all of them at Tier 19; at Tier 20 all of them are Wardens' fights. No heal after Tier 10, and shards, potions and Boons fade with the tier (DECISIONS #524, #526) |
 | **Event** | ❔ | Short story choice with risk/reward | ~25% |
 | **Shrine** | ✦ | Restore 1 Resolve **or** Temper a card **or** remove a card | Always on floor 5 |
 | **Merchant** | ⚖ | Spend Shards: cards, Boons, removal, Tempering | ~10%, max 1 per stage |
@@ -230,7 +230,7 @@ Decks use realm + Neutral cards. Each enemy also has an AI personality weight se
 ## 5. Boons and Events
 
 ### 5.1 Boons (run-only passives, never in PvP)
-Choose 1 of 3 after Elites, from some Events, in Merchants and in the Warden's Gift. Max 5 per run. Aim for 20 at launch.
+Choose 1 of 3 after Elites (less often in deeper tiers, DECISIONS #526), from some Events, in Merchants and in the Warden's Gift. Max 5 per run. Aim for 20 at launch.
 
 | Boon | Effect |
 |---|---|
@@ -267,7 +267,7 @@ Choose 1 of 3 after Elites, from some Events, in Merchants and in the Warden's G
 | Node | Card reward | Shards (Tier I) | Other |
 |---|---|---|---|
 | Duel | Pick 1 of 3 (or skip) | 15–25 | |
-| Elite | Pick 1 of 3, +1 rarity tier chance | 40–60 | Boon (1 of 3) |
+| Elite | Pick 1 of 3, +1 rarity tier chance | 40–60 | Boon (1 of 3), less often in deeper tiers (DECISIONS #526) |
 | Anomaly | Pick 1 of 3 ×2 | 50 | |
 | Warden | **Warden's Gift** (§2.4) | 100 | Character unlock (Nyxara, first time) |
 | Vorthax | **Warden's Gift** with Prism | 150 | Bank / Continue choice |

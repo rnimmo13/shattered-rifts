@@ -4,7 +4,7 @@
 // and healing on the enemy itself unless it says otherwise, Fate on the hero (it resolves at the end of the hero's own turn),
 // temporary Thorns through the player's next turn, junk cards into the discard pile. Summons fail quietly at the four-enemy cap.
 
-import type { UnitDef } from '@sr/combat';
+import type { Op, UnitDef } from '@sr/combat';
 import {
   barrier,
   cycle,
@@ -32,6 +32,9 @@ const guardAll = (n: number) => barrier(n, 'allFriends');
 const thorns = (n: number) => statusTheirs('thorns', n, 'self');
 const junk = () => wound('foe');
 const statik = () => wound('foe', 'static');
+/** a Beckoning in the hero's hand (The Mourning Tide's rule) */
+const beckon = (): Op => ({ op: 'addCard', card: 'beckoning', to: 'hand', side: 'foe' });
+const slippery = (n = 1) => status('slippery', n);
 /** a boss: one loop, and another at half HP */
 const twoPhase = (first: string[], second: string[]) =>
   phases([100, { kind: 'cycle', order: first }], [50, { kind: 'cycle', order: second }]);
@@ -129,7 +132,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'the-hollow-benediction',
     'The Hollow Benediction',
-    230,
+    190,
     [
       move('blessing', 'Hollow Blessing', hit(14)),
       move('halo', 'Empty Halo', barrier(15)),
@@ -239,8 +242,11 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
       move('overload', 'Overload', hit(24)),
       move('storm', 'Static Storm', hit(8, 3)),
       move('ground', 'Ground Out', barrier(14)),
+      // (her rule: she takes from your next turn, DECISIONS #528)
+      move('cut', 'Power Cut', hit(8), { op: 'manaNext', amount: -1, foe: true }),
+      move('jam', 'Signal Jam', hit(8), { op: 'drawNext', amount: -1, foe: true }),
     ],
-    twoPhase(['crackle', 'broadcast', 'overload'], ['storm', 'ground']),
+    twoPhase(['crackle', 'cut', 'broadcast', 'jam', 'overload'], ['storm', 'cut', 'jam', 'ground']),
   ),
 
   // ---- Wyldmaw ----
@@ -438,13 +444,14 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'the-applause-below',
     'The Applause Below',
-    230,
+    190,
     [
-      move('curtain', 'Curtain Call', barrier(12)),
-      move('encore', 'Encore', hit(16)),
-      move('ovation', 'Standing Ovation', hit(26)),
-      move('clap', 'Thunderous Clapping', hit(7, 3)),
-      move('bow', 'Final Bow', barrier(15)),
+      // (its rule: every move leaves it Slippery, 2 at a time from half HP, DECISIONS #528)
+      move('curtain', 'Curtain Call', barrier(12), slippery()),
+      move('encore', 'Encore', hit(16), slippery()),
+      move('ovation', 'Standing Ovation', hit(26), slippery()),
+      move('clap', 'Thunderous Clapping', hit(7, 3), slippery(2)),
+      move('bow', 'Final Bow', barrier(15), slippery(2)),
     ],
     twoPhase(['curtain', 'encore', 'ovation'], ['clap', 'bow']),
   ),
@@ -541,15 +548,17 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'the-mourning-tide',
     'The Mourning Tide',
-    230,
+    190,
     [
-      move('wave', 'Grey Wave', hit(14)),
+      // (its rule: Low Tide makes it Ghostly through your next turn, and Beckoning punishes holding it, DECISIONS #528)
+      move('lowtide', 'Low Tide', status('ghostly', 2), beckon()),
+      move('wave', 'Grey Wave', hit(14), beckon()),
       move('swell', 'Swell', heal(8), barrier(10)),
       move('flood', 'Flood', hit(24)),
       move('undertow', 'Undertow', fate(8)),
       move('breakers', 'Breakers', hit(10, 2)),
     ],
-    twoPhase(['wave', 'swell', 'flood'], ['undertow', 'breakers']),
+    twoPhase(['wave', 'swell', 'flood', 'lowtide'], ['undertow', 'breakers', 'lowtide']),
   ),
 
   // ---- the Hollow Crown ----

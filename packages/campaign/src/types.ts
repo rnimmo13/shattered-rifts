@@ -85,6 +85,8 @@ export interface TrialPrize {
   potion?: string;
   /** a prize that lets you remove up to this many cards of your choice (none is fine): the cards are named when you take it */
   removeUpTo?: number;
+  /** a card of the deck, chosen when it is taken, gets a copy (see `twinnable`) */
+  twin?: boolean;
 }
 
 export interface TrialOffer {
@@ -193,6 +195,8 @@ export type DealStep =
   | { k: 'potionOf'; id: string }
   /** set (or, with off, clear) a flag on the run that a later event can ask for */
   | { k: 'mark'; id: string; off?: boolean }
+  /** Resolve back, up to the most you can hold */
+  | { k: 'resolve'; n: number }
   | { k: 'chance'; pct: number; win: DealStep[]; lose: DealStep[] }
   /** the player chooses a card of their deck, and it is upgraded / removed / transformed / tagged (the event waits for the pick) */
   | { k: 'choose'; act: DeckChoice; mark?: CardMark }

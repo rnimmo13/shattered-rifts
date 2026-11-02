@@ -305,6 +305,10 @@ export const STATUS_ICONS: Record<StatusId, IconArt> = {
     [p(C.skyHi, SHIELD)],
     [p(C.sky, SHIELD_R), p(C.skyLo, 'M24 3L19 15L28 22L20 31L25 46 M28 22L38 17 M19 15L9 13 M20 31L11 29', 2.2)],
   ),
+  slippery: art(
+    [p(C.skyHi, 'M24 4C24 4 10 20 10 30A14 14 0 0 0 38 30C38 20 24 4 24 4Z')],
+    [p('#9fc7da', 'M24 4C24 4 38 20 38 30A14 14 0 0 1 26 44C33 34 30 16 24 4Z')],
+  ),
   ghostly: art(
     [p(C.skyHi, 'M24 3C14 3 8 11 8 20V45L14 39L19 45L24 39L29 45L34 39L40 45V20C40 11 34 3 24 3Z')],
     [
@@ -737,7 +741,7 @@ export const PAINTED: ReadonlySet<string> = new Set(
   [
     'seared burn virulent doom fracture stunned exposed faltering brittle debilitated sapped hangover',
     'noose strangled quarry bladebane might vigor keen lethality cruelty tracking clutch ritual',
-    'thorns shielded bracing ghostly steadfast armored fortified plating sturdy unmovable guarded blur',
+    'thorns shielded bracing ghostly slippery steadfast armored fortified plating sturdy unmovable guarded blur',
     'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored',
     'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner',
     'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',

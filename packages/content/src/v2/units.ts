@@ -179,13 +179,22 @@ export const ENEMY_UNITS: UnitDef[] = [
       move('chant', 'Choir of Dawn', barrier(10), status('shielded', 1)),
       move('smite', 'Smite', dmg(14)),
       move('bell', 'Judgment Bell', dmg(26)),
+      // (her rule: at half HP she kneels once, Might gone and open to attacks, DECISIONS #528)
+      // (Steadfast goes first, or the Vigilant Omen would stop her Exposed)
+      move(
+        'kneel',
+        'The Kneeling',
+        { op: 'scaleStatus', status: 'might', mult: 0, to: 'self' },
+        { op: 'scaleStatus', status: 'steadfast', mult: 0, to: 'self' },
+        status('exposed', 2),
+      ),
       move('ascend', 'Ascension', summon('gilded-halberdier'), heal(8), status('might', 1)),
       move('radiance', 'Radiant Smite', dmg(18)),
       move('bell2', 'Judgment Bell', dmg(34)),
     ],
     phases(
       [100, { kind: 'cycle', order: ['smite', 'chant', 'bell'] }],
-      [50, { kind: 'cycle', order: ['ascend', 'radiance', 'bell2'] }],
+      [50, { kind: 'cycle', lead: ['kneel'], order: ['ascend', 'radiance', 'bell2'] }],
     ),
   ),
 
@@ -241,22 +250,33 @@ export const ENEMY_UNITS: UnitDef[] = [
     ],
     cycle('signal', 'hack', 'strike'),
   ),
+  // (The Hollow Benediction's rule: while they stand, each Acolyte gives every enemy here Might every turn, DECISIONS #528)
+  foe(
+    'hollow-acolyte',
+    'Hollow Acolyte',
+    30,
+    [move('hymn', 'Hollow Hymn', status('might', 1, 'allFriends'), dmg(2))],
+    cycle('hymn'),
+  ),
+  // (Kron's rule: the Hatch must be broken before any aimed attack reaches him, and he keeps reopening it, DECISIONS #528)
+  foe('foundry-hatch', 'Foundry Hatch', 30, [move('vent', 'Vent Steam', dmg(4))], cycle('vent'), {
+    taunt: true,
+  }),
   foe(
     'kron',
     'KR-0N "Kron", Foundry Overseer',
-    270,
+    190,
     [
-      move('line', 'Production Line', summon('scrap-drone'), barrier(6)),
+      move('reopen', 'Reopen the Hatch', { op: 'summon', unit: 'foundry-hatch', ifAbsent: true }, status('might', 2)),
       move('slam', 'Press', dmg(14)),
       move('charge', 'Charging Orbital Strike', barrier(10)),
       move('orbital', 'Orbital Strike', dmg(17, 'allFoes')),
-      move('assemble', 'Reassemble', summon('scrap-drone'), status('might', 2)),
       move('laser', 'Laser Array', dmg(11, 'target', 2)),
       move('orbital2', 'Orbital Strike', dmg(20, 'allFoes')),
     ],
     phases(
-      [100, { kind: 'cycle', order: ['line', 'slam', 'charge', 'orbital'] }],
-      [50, { kind: 'cycle', order: ['assemble', 'laser', 'orbital2'] }],
+      [100, { kind: 'cycle', order: ['slam', 'charge', 'orbital', 'reopen'] }],
+      [50, { kind: 'cycle', order: ['reopen', 'laser', 'orbital2', 'laser'] }],
     ),
   ),
 

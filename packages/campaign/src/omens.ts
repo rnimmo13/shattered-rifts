@@ -37,6 +37,12 @@ export interface OmenEffects {
   swarm: boolean;
   /** percent more damage from Wardens */
   wardenDmgPct: number;
+  /** added to every phase above: more of the unit's HP as Barrier, and more Might */
+  riseBarrierPct: number;
+  riseMight: number;
+  /** percent more HP and damage on elite fights */
+  eliteHpPct: number;
+  eliteDmgPct: number;
 }
 
 export interface Omen {
@@ -85,6 +91,10 @@ export const OMEN_TUNING = {
   hunted: { tier: 15, firstHit: { base: 4, perTier: 2, max: 6 } },
   wardensFury: { tier: 17, dmgPct: { base: 10, perTier: 2, max: 14 } },
   riftAwakens: { tier: 20, atPct: 50, barrierPct: 10, might: 1 },
+  // (each adds to the ones before it: at Tier XV a phase has 15% more Barrier and 3 more Might, an Elite 30% more HP and 15% more damage; DECISIONS #527)
+  riftHardens: { tier: 5, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
+  riftHardensMore: { tier: 10, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
+  riftHardensMost: { tier: 15, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
 } satisfies Record<string, { tier: number; [k: string]: number | Grows | Steps }>;
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -112,7 +122,29 @@ const thirdPhase = (t: number): Rise => ({
   might: T.thirdPhase.might,
 });
 
+/** One of the Omens that harden phases and Elites: `name` and the numbers of its step, which adds to the steps before it. */
+const hardening = (
+  id: string,
+  name: string,
+  v: { tier: number; riseBarrierPct: number; riseMight: number; eliteHpPct: number; eliteDmgPct: number },
+): Omen => ({
+  tier: v.tier,
+  id,
+  name,
+  text: () =>
+    `Every phase an enemy rises into carries ${v.riseBarrierPct}% more of its HP as Barrier and ${v.riseMight} more Might. Elites (not a Warden met at an Elite's stop) have ${v.eliteHpPct}% more HP and deal ${v.eliteDmgPct}% more damage.`,
+  apply: (e) => {
+    e.riseBarrierPct += v.riseBarrierPct;
+    e.riseMight += v.riseMight;
+    e.eliteHpPct += v.eliteHpPct;
+    e.eliteDmgPct += v.eliteDmgPct;
+  },
+});
+
 const LISTED: Omen[] = [
+  hardening('rift-hardens', 'The Rift Hardens', T.riftHardens),
+  hardening('rift-hardens-more', 'The Rift Hardens Further', T.riftHardensMore),
+  hardening('rift-hardens-most', 'The Rift Hardens Again', T.riftHardensMost),
   {
     tier: T.secondWind.tier,
     id: 'second-wind',
@@ -213,7 +245,7 @@ const LISTED: Omen[] = [
     tier: T.swarming.tier,
     id: 'swarming',
     name: 'Swarming',
-    text: () => 'Elite fights bring one more of their weakest enemy (when there is room).',
+    text: () => 'Elite fights bring one more of their weakest enemy (when there is room). A Warden comes alone.',
     apply: (e) => void (e.swarm = true),
   },
   {
@@ -299,8 +331,20 @@ export function omenEffects(tier: number): OmenEffects {
     actWounds: 0,
     swarm: false,
     wardenDmgPct: 0,
+    riseBarrierPct: 0,
+    riseMight: 0,
+    eliteHpPct: 0,
+    eliteDmgPct: 0,
   };
   for (const o of omensAt(tier)) o.apply(e, tier);
+  const harder = (r: Rise): Rise => ({
+    ...r,
+    barrierPct: r.barrierPct + e.riseBarrierPct,
+    might: r.might + e.riseMight,
+  });
+  e.bossRise = e.bossRise.map(harder);
+  e.leaderRise = e.leaderRise.map(harder);
+  e.allRise = e.allRise.map(harder);
   return e;
 }
 

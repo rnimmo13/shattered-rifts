@@ -88,6 +88,15 @@ describe('the knight is the Ironclad shape', () => {
     for (const u of s.sides.b.units) expect(u.hp).toBe(200 - 15);
   });
 
+  it('Immovable Oath+ is the same 30 Barrier, and Holds', () => {
+    expect(db.cards['immovable-oath']?.retain).toBeFalsy();
+    const up = db.cards['immovable-oath+'];
+    expect(up?.retain).toBe(true);
+    expect(up?.effects).toEqual(db.cards['immovable-oath']?.effects);
+    expect(up?.cost).toBe(2);
+    expect(up?.exhaust).toBe(true);
+  });
+
   it('Mounting Fury grows every time it is played', () => {
     let s = fight(['mounting-fury', 'mounting-fury']);
     s = play(s, 'mounting-fury');

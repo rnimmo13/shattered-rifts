@@ -29,6 +29,7 @@ export type StatusId =
   | 'bracing' // +1 Barrier from every Barrier you gain, per stack (permanent)
   | 'brittle' // Barrier it gains is 25% smaller (turns)
   | 'ghostly' // each hit it takes is capped at 1 damage (turns)
+  | 'slippery' // the next hit it takes is capped at 1 damage, and takes one off (a Warden's rule, DECISIONS #528)
   | 'steadfast' // the next debuff put on it is ignored, per stack
   | 'armored' // at the end of its turn it gains stacks Barrier; losing HP to an attack costs 1 stack
   | 'ritual' // at the end of its turn it gains stacks Might
@@ -120,6 +121,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'bracing',
   'brittle',
   'ghostly',
+  'slippery',
   'steadfast',
   'armored',
   'ritual',
@@ -235,11 +237,11 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 25 at 20, 65 at 100, with none held
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 30 at 20, 110 at 100, with none held
  * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_BASE = 15;
-export const SHATTER_STEP = 5;
+export const SHATTER_BASE = 10;
+export const SHATTER_STEP = 10;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;
@@ -561,7 +563,8 @@ export type Op =
   | { op: 'carryFracture'; amount: number; alone: number }
   /** choose a card in your hand with this tag: it yields this much more for the rest of the fight (The Forgemaster) */
   | { op: 'empower'; amount: number; tag: string }
-  | { op: 'summon'; unit: string }
+  /** `ifAbsent`: nothing happens while one of that unit stands on this side */
+  | { op: 'summon'; unit: string; ifAbsent?: boolean }
   | {
       op: 'addCard';
       card: CardId;
@@ -639,9 +642,9 @@ export type Op =
   | { op: 'reclaim'; amount: number } // bring random Consumed cards back to your hand (never Auras)
   | { op: 'revive' } // your most recently fallen ally returns at half its HP
   // --- tempo and tricks
-  | { op: 'manaNext'; amount: number } // extra Mana at the start of your next turn (negative: Mana you owe)
+  | { op: 'manaNext'; amount: number; foe?: boolean } // extra Mana at the start of your next turn (negative: Mana you owe; `foe`: the other side's)
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
-  | { op: 'drawNext'; amount: number } // extra cards at the start of your next turn
+  | { op: 'drawNext'; amount: number; foe?: boolean } // extra cards at the start of your next turn (negative: fewer; `foe`: the other side's)
   /** add random cards from your own pool (and Neutral) to your hand; `free`: they cost 0 for the rest of the fight */
   /** `neutral`: Neutral cards only; `upgraded`: their "+" versions */
   | {
@@ -959,7 +962,8 @@ export interface CardDef {
 // --- units -------------------------------------------------------------------------------------------------
 
 export type SimplePattern =
-  | { kind: 'cycle'; order: string[] }
+  /** `lead`: moves played once, in order, before the loop starts (each time its phase begins) */
+  | { kind: 'cycle'; order: string[]; lead?: string[] }
   | { kind: 'weighted'; options: { move: string; weight: number }[] };
 
 export type Pattern =

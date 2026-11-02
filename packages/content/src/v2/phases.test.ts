@@ -46,7 +46,7 @@ describe('enemy phases', () => {
     const u = s0.sides.b.units[0]!;
     const s = strike(s0, 0, 999);
     const after = s.sides.b.units.find((x) => x.id === u.id)!;
-    expect(after.hp).toBe(Math.ceil(u.maxHp / 2));
+    expect(after.hp).toBe(Math.floor(u.maxHp / 2));
     expect(after.barrier).toBeGreaterThanOrEqual(Math.ceil(u.maxHp * 0.2));
     expect(after.statuses.might ?? 0).toBeGreaterThanOrEqual(2);
     expect(after.rise).toBeUndefined();
@@ -82,7 +82,7 @@ describe('the edges of a phase', () => {
   it('a blow that lands exactly on the threshold rises there, and the next blow cannot skip the phase', () => {
     const s0 = start();
     const u = s0.sides.b.units[0]!;
-    const floor = Math.ceil(u.maxHp / 2);
+    const floor = Math.floor(u.maxHp / 2);
     const s1 = clone(s0);
     s1.sides.b.units[0]!.hp = floor + 1;
     const s = strike(s1, 0, 0);

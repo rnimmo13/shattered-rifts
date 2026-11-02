@@ -97,6 +97,12 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'Each hit it takes is capped at 1 damage. Fades each turn.',
   },
+  slippery: {
+    name: 'Slippery',
+    glyph: '≈',
+    tone: 'good',
+    text: 'The next hit it takes deals only 1, and takes one stack off. A Shatter gets through, and Bleed and Burn are not hits.',
+  },
   steadfast: {
     name: 'Steadfast',
     glyph: '⛉',
@@ -119,7 +125,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 25 at 20, 5 more each time, 65 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 30 at 20, 10 more each time, 110 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -680,7 +686,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 5 more each time: 20 at 10, 25 at 20, 65 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 10 more each time: 20 at 10, 30 at 20, 110 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',

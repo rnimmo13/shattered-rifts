@@ -595,6 +595,7 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(255,225,130,0.4)',
   },
   // ---- Nexus-9 enemies
+  'foundry-hatch': { hue: 200, light: 0.8, w: 1.2, h: 0.9, accessories: ['spikes'], badge: 'cog', trim: GOLD },
   'scrap-drone': {
     hue: 220,
     light: 0.85,
@@ -708,6 +709,7 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(255,60,80,0.35)',
   },
   // ---- Umbral Veil enemies
+  'hollow-acolyte': { hue: 40, light: 0.8, w: 0.9, accessories: ['hood'], badge: 'eye', trim: GOLD },
   'hooded-acolyte': { hue: 20, accessories: ['hood'], badge: 'web', trim: '#6a3fa8' },
   whisperer: {
     hue: 280,

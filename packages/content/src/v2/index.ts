@@ -332,7 +332,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
       'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 25 at 20, up to 65 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 30 at 20, up to 110 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {
@@ -433,6 +433,8 @@ export interface Encounter {
   kind: EncounterKind;
   /** front to back */
   units: string[];
+  /** a Warden's rule, in a sentence, shown as its fight starts (DECISIONS #528) */
+  rule?: string;
   /** (DECISIONS #437) the first stage it can be met on (missing: 1): a trio waits for the second */
   fromStage?: number;
 }
@@ -450,6 +452,8 @@ const enc = (
   kind,
   units,
 });
+
+const ruled = (e: Encounter, rule: string): Encounter => ({ ...e, rule });
 
 export const ENCOUNTERS: Encounter[] = [
   enc('squire-pair', 'Gilded Squires', 'aurelion', 'regular', 'squire', 'squire'),
@@ -470,7 +474,10 @@ export const ENCOUNTERS: Encounter[] = [
   ),
   enc('aldric', 'Templar-Commander Aldric', 'aurelion', 'elite', 'templar-aldric'),
   enc('maelis', 'High Inquisitor Maelis', 'aurelion', 'elite', 'inquisitor-maelis'),
-  enc('seraphine', 'Seraphine, the Gilded Warden', 'aurelion', 'warden', 'seraphine'),
+  ruled(
+    enc('seraphine', 'Seraphine, the Gilded Warden', 'aurelion', 'warden', 'seraphine'),
+    'The Kneeling: at half HP she kneels once, loses her Might and is open to attacks. Then the Bell tolls harder.',
+  ),
 
   enc('line-technician', 'Line Technician', 'nexus', 'regular', 'line-technician'),
   enc('patrol-unit', 'Patrol Unit 44', 'nexus', 'regular', 'patrol-unit'),
@@ -490,7 +497,10 @@ export const ENCOUNTERS: Encounter[] = [
   ),
   enc('hive-7', 'Hive-7', 'nexus', 'elite', 'hive-7'),
   enc('ghostwire', 'Ghostwire', 'nexus', 'elite', 'ghostwire'),
-  enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'kron'),
+  ruled(
+    enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'foundry-hatch', 'kron'),
+    'The Foundry Hatch: your aimed attacks must break it to reach Kron, and he reopens it, stronger each time.',
+  ),
 
   enc('raptor-pack', 'Raptor Pack', 'wyldmaw', 'regular', 'raptor', 'raptor', 'raptor'),
   enc('raptor-horde', 'Raptor Horde', 'wyldmaw', 'regular', 'raptor', 'raptor', 'raptor', 'raptor'),
@@ -551,12 +561,17 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('prism-magistrate', 'Prism Magistrate', 'aurelion', 'elite', 'prism-magistrate'),
   enc('procession-engine', 'Procession Engine', 'aurelion', 'elite', 'procession-engine'),
-  enc(
-    'the-hollow-benediction',
-    'The Hollow Benediction',
-    'aurelion',
-    'warden',
-    'the-hollow-benediction',
+  ruled(
+    enc(
+      'the-hollow-benediction',
+      'The Hollow Benediction',
+      'aurelion',
+      'warden',
+      'hollow-acolyte',
+      'hollow-acolyte',
+      'the-hollow-benediction',
+    ),
+    'The Acolytes: while they stand, each gives every enemy here 1 Might a turn.',
   ),
   // Nexus
   enc(
@@ -597,7 +612,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('clockwork-guillotine', 'Clockwork Guillotine', 'nexus', 'elite', 'clockwork-guillotine'),
   enc('scrapyard-centipede', 'Scrapyard Centipede', 'nexus', 'elite', 'scrapyard-centipede'),
-  enc('mother-of-static', 'Mother of Static', 'nexus', 'warden', 'mother-of-static'),
+  ruled(
+    enc('mother-of-static', 'Mother of Static', 'nexus', 'warden', 'mother-of-static'),
+    'Jamming: her moves take a Mana or a card from your next turn, and fill your deck with Static.',
+  ),
   // Wyldmaw
   enc(
     'thornback-toad-pair',
@@ -677,7 +695,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('the-borrowed-face', 'The Borrowed Face', 'umbral', 'elite', 'the-borrowed-face'),
   enc('midnight-seamstress', 'Midnight Seamstress', 'umbral', 'elite', 'midnight-seamstress'),
-  enc('the-applause-below', 'The Applause Below', 'umbral', 'warden', 'the-applause-below'),
+  ruled(
+    enc('the-applause-below', 'The Applause Below', 'umbral', 'warden', 'the-applause-below'),
+    'Slippery: each of its moves leaves it Slippery, and each stack makes your next hit deal only 1.',
+  ),
   // Gloomfen
   enc(
     'coffin-nautilus-pair',
@@ -717,7 +738,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('pallbearer-swarm', 'Pallbearer Swarm', 'gloomfen', 'elite', 'pallbearer-swarm'),
   enc('the-unburied-hour', 'The Unburied Hour', 'gloomfen', 'elite', 'the-unburied-hour'),
-  enc('the-mourning-tide', 'The Mourning Tide', 'gloomfen', 'warden', 'the-mourning-tide'),
+  ruled(
+    enc('the-mourning-tide', 'The Mourning Tide', 'gloomfen', 'warden', 'the-mourning-tide'),
+    'Low Tide: after this move every hit on it deals only 1 for your next turn. Beckoning cards hurt you if you hold them.',
+  ),
   // Hollow Crown
   enc(
     'glass-hermit-pair',

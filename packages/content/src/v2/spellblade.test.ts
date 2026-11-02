@@ -238,16 +238,16 @@ describe('Fracture and Shatter', () => {
     foe(start).statuses.fracture = 15;
     const s = play(start, 'rupture-script');
     expect(foe(s).statuses.fracture).toBe(25);
-    // (it crosses 20 only: the second Shatter, 25, + Spell Power 8)
-    expect(lost(s)).toBe(33);
+    // (it crosses 20 only: the second Shatter, 30, + Spell Power 8)
+    expect(lost(s)).toBe(38);
   });
 
-  it('the Shatter at 100 deals 65, and ten of them come to 425 (DECISIONS #503)', () => {
+  it('the Shatter at 100 deals 110, and ten of them come to 650 (DECISIONS #523)', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 96;
     const r = play(s, 'hairline-crack');
     expect(foe(r).statuses.fracture).toBe(100);
-    expect(lost(r)).toBe(65);
+    expect(lost(r)).toBe(110);
     let total = fight(['final-shatter'], { stars: 0 });
     foe(total).statuses.fracture = 0;
     total = play(total, 'final-shatter');
@@ -257,7 +257,7 @@ describe('Fracture and Shatter', () => {
       total = play(total, 'final-shatter');
     }
     expect(foe(total).statuses.fracture).toBe(100);
-    expect(lost(total)).toBe(425);
+    expect(lost(total)).toBe(650);
   });
 
   it('every Shatter adds the Spell Power you hold, and spends none (DECISIONS #487)', () => {
@@ -271,7 +271,7 @@ describe('Fracture and Shatter', () => {
   it('it keeps scaling past 100', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 106;
-    expect(lost(play(s, 'hairline-crack'))).toBe(70);
+    expect(lost(play(s, 'hairline-crack'))).toBe(120);
   });
 
   it('a cleanse does not take Fracture off', () => {
@@ -415,8 +415,8 @@ describe('Fracture and Shatter', () => {
     hero(s).dmgPct = 50;
     const r = play(s, 'final-shatter');
     expect(lost(r)).toBe(10);
-    // (the next Shatter would be the second, 25, halved and rounded down)
-    expect(lost(play(r, 'breaking-point-hex'))).toBeGreaterThanOrEqual(10 + 12);
+    // (the next Shatter would be the second, 30, halved and rounded down)
+    expect(lost(play(r, 'breaking-point-hex'))).toBe(10 + 15);
   });
 
   it('Hungering Void only deepens enemies already marked, and sets off no card-only Aura', () => {
@@ -771,7 +771,7 @@ const CASES: {
   { id: 'carry-the-fault', fracture: 6 },
   { id: 'deep-fault', fracture: 4 },
   { id: 'rupture-script', fracture: 10, dmg: 28 },
-  { id: 'breaking-point-hex', dmg: 28, fracture: 6 },
+  { id: 'breaking-point-hex', dmg: 28, fracture: 4 },
   { id: 'star-barrier', stars: 6, barrier: 14, sp: 3 },
   { id: 'glass-veil', barrier: 10, sp: 9 },
   { id: 'glass-wall', stars: 2, barrier: 15 },

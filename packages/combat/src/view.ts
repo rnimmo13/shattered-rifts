@@ -1297,7 +1297,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return o.to === 'self'
           ? o.status === 'hangover'
             ? 'Clear your Hangover.'
-            : `Lose all your ${sname(o.status)}.`
+            : who === WHO_ENEMY
+              ? `It loses all its ${sname(o.status)}.`
+              : `Lose all your ${sname(o.status)}.`
           : `Remove all ${sname(o.status)}${who[o.to] || ' from the target'}.`;
       if (o.mult === 0.5) return `Halve the ${sname(o.status)}${who[o.to] || ' on the target'}.`;
       if (o.status === 'doom') {
@@ -1350,10 +1352,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'empower':
       return `Choose a generator in your hand: it yields ${o.amount} more for the rest of the fight.`;
     case 'summon':
-      return summonText(db, o.unit, 1, who);
+      return `${summonText(db, o.unit, 1, who)}${o.ifAbsent ? ' (if none stands)' : ''}`;
     case 'addCard': {
       const nm = db.cards[o.card]?.name ?? o.card;
-      const dest = `${o.side === 'self' ? 'your' : 'the enemy'} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;
+      const owner = who === WHO_ENEMY ? (o.side === 'self' ? 'its' : 'your') : o.side === 'self' ? 'your' : 'the enemy';
+      const dest = `${owner} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;
       if (o.scale) {
         const a = amountText(o.times ?? 0, o.scale);
         return a.equal
@@ -1547,6 +1550,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Return ${n} from your discard pile to your hand${up}.`;
     }
     case 'manaNext':
+      if (o.foe) return `Next turn, you have ${Math.abs(o.amount)} ${o.amount < 0 ? 'less' : 'more'} Mana.`;
       return o.amount < 0
         ? `Next turn, lose ${-o.amount} Mana.`
         : `Next turn, gain ${o.amount} extra Mana.`;
@@ -1555,6 +1559,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         ? `From your next turn, gain ${o.amount} more Mana every turn for the rest of the fight.`
         : `Lose ${-o.amount} maximum Mana for the rest of the fight.`;
     case 'drawNext':
+      if (o.foe) return `Next turn, you draw ${Math.abs(o.amount)} ${o.amount < 0 ? 'fewer' : 'more'} ${Math.abs(o.amount) === 1 ? 'card' : 'cards'}.`;
       return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;
     case 'discover': {
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';

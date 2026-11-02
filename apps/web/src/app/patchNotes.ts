@@ -29,6 +29,25 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.152.0',
+    date: '2026-11-01',
+    title: 'Wardens with rules, and a deeper Rift',
+    summary: 'Six Wardens fight by a rule of their own, the Rift gets much harder as the tiers climb, and Spin To Win works better.',
+    notes: [
+      { kind: 'new', text: 'Six Wardens have a rule of their own, shown as the fight starts. Kron hides behind a Foundry Hatch he keeps reopening. The Hollow Benediction\'s Acolytes feed it Might. The Mourning Tide has Low Tide, and Beckoning cards that hurt if you hold them. The Applause Below is Slippery. Seraphine kneels at half HP. Mother of Static takes Mana and cards from your next turn.' },
+      { kind: 'new', text: 'Spin To Win has two new prizes: +1 Resolve, and a copy of a card of your choice.' },
+      { kind: 'changed', text: 'More Elites the deeper you go: from Tier 2 plain fights can be Elites, rising to every fight at Tier 19. At Tier 20 every fight is a Warden.' },
+      { kind: 'changed', text: 'A run already past Tier III without an Ascendancy is offered one at its next Warden.' },
+      { kind: 'balance', text: 'Elites stop healing after Tier 10, and their shards, potion chance and Boon chance fade with the tier. Their card rewards stay as good.' },
+      { kind: 'balance', text: 'Three new Omens at Tiers 5, 10 and 15: every phase an enemy rises into is tougher, and Elites have more HP and deal more damage.' },
+      { kind: 'balance', text: 'Ghost Wardens have the Arena\'s HP from Tier 10, and grow from there.' },
+      { kind: 'balance', text: 'Spellblade: each Shatter hits 10 harder than the last, not 5 (20, 30, 40... 110 at 100 Fracture). Rupture Script+ applies 11. Breaking Point applies 4, or 6 upgraded.' },
+      { kind: 'balance', text: 'Immovable Oath+ now Holds, in place of 3 more Barrier.' },
+      { kind: 'fixed', text: 'Spin To Win: the window for removing cards stays open while you choose, and removing them takes the prize, so you can no longer spin after choosing.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.151.0',
     date: '2026-11-01',
     title: 'Ascendancies and a fight that moves',

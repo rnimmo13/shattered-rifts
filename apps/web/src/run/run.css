@@ -2008,3 +2008,11 @@ img.mapnode__pic {
   justify-content: safe center;
   min-width: 0;
 }
+
+/* the Brass Reel's removal window: what is chosen, and the button that takes it */
+.lighterload__picked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}

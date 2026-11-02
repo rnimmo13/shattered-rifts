@@ -140,7 +140,7 @@ packs; Umbral enemies set Traps of their own and debuff.
 Keeps the structure of `03_CAMPAIGN.md` (map, rewards, shrines, merchant, events, Wardens, Bank/Continue, Tiers):
 
 - **HP persists between fights** like Slay the Spire (confirm): you start the run at the character's max HP, heal
-  at Shrines (rest) and a little after elites. **Resolve** stays as the lives system: reaching 0 HP loses the fight and
+  at Shrines (rest) and a little after elites, through Rift Tier 10. **Resolve** stays as the lives system: reaching 0 HP loses the fight and
   **1 Resolve** (2 for Elite/Warden) and you retry the fight at the HP you entered with; 0 Resolve = Rift Collapse.
 - **Boons** (run relics) become much more important and are scheduled soon after combat is built.
 - Rewards stay "pick 1 of 3 or skip"; Tempering becomes "upgrade a card" (a `+` version).

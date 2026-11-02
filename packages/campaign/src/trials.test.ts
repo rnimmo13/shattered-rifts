@@ -19,6 +19,7 @@ import {
   type RunState,
 } from './index';
 import { EVENTS } from './events';
+import type { TrialPrize } from './types';
 import { clone as cloneRun } from '@sr/combat';
 
 const open = (r: RunState): RunState => ({ ...r, phase: 'map', context: null });
@@ -52,6 +53,79 @@ function spinTo(r: RunState, want: number): RunState {
   }
   throw new Error('the reel never stopped on that prize');
 }
+
+describe('once a prize is taken the reel is done (DECISIONS #530)', () => {
+  const atReel = (seed: string): RunState => {
+    const base = newRun('knight', seed);
+    const r = clone({ ...base, phase: 'event' as const, shards: 500, resolve: 1, maxResolve: 3 });
+    const node = r.map.nodes.find((n) => n.floor === 2)!;
+    r.at = node.id;
+    r.context = { nodeId: node.id, event: buildElite(ELITE_EVENTS[0]!, r) };
+    return r;
+  };
+  const spinTo = (r0: RunState, pred: (p: TrialPrize) => boolean): RunState => {
+    let r = rollTrial(r0);
+    for (let i = 0; i < 400; i++) {
+      const t = r.context!.event!.trial!;
+      if (pred(t.prizes[t.earned![0]!]!)) return r;
+      r = rollTrial({ ...r, shards: 500 });
+    }
+    throw new Error('the reel never stopped there');
+  };
+  const onTable = (r: RunState): TrialPrize => {
+    const t = r.context!.event!.trial!;
+    return t.prizes[t.earned![0]!]!;
+  };
+
+  it('at an event, no spin follows any prize taken, the removal among them', () => {
+    const r = spinTo(atReel('done-thin'), (p) => !!p.removeUpTo);
+    const taken = claimTrialPrize(r, onTable(r).id, undefined, [r.deck[0]!, r.deck[1]!]);
+    expect(taken.deck.length).toBe(r.deck.length - 2);
+    expect(taken.phase).toBe('map');
+    expect(() => rollTrial({ ...taken, shards: 500 })).toThrow();
+  });
+
+  it("at a Gambler's Shrine too", () => {
+    const r0 = atReel('done-shrine');
+    const r = spinTo({ ...r0, phase: 'shrine' }, (p) => !p.choices && !p.removeUpTo && !p.twin);
+    const taken = claimTrialPrize(r, onTable(r).id);
+    expect(taken.context?.event).toBeUndefined();
+    expect(() => rollTrial({ ...taken, shards: 500 })).toThrow();
+  });
+
+  it('+1 Resolve gives one, and is a purse when Resolve is full', () => {
+    const r = spinTo(atReel('done-resolve'), (p) => p.icon === 'resolve');
+    expect(claimTrialPrize(r, onTable(r).id).resolve).toBe(2);
+    const full = { ...atReel('done-full'), resolve: 3 };
+    const ev = buildElite(ELITE_EVENTS[0]!, full);
+    expect(ev.trial!.prizes.some((p) => p.icon === 'resolve')).toBe(false);
+    expect(ev.trial!.prizes).toHaveLength(REEL_PRIZES);
+    expect(ev.trial!.prizes.filter((p) => p.icon === 'shards').length).toBeGreaterThan(1);
+  });
+
+  it('a reel holding +1 Resolve survives a reload (a save that lost it would be unreadable)', () => {
+    const r = eliteRun(1, { resolve: 1, maxResolve: 3 });
+    expect(r.context!.event!.trial!.prizes.some((p) => p.icon === 'resolve')).toBe(true);
+    expect(parseRun(serializeRun(r))?.context?.event?.trial?.prizes.some((p) => p.icon === 'resolve')).toBe(true);
+  });
+
+  it('the Twin copies the card chosen, and refuses a basic card or one not held', () => {
+    const r0 = atReel('done-twin');
+    r0.deck.push('hammer-fall');
+    r0.context!.event = buildElite(ELITE_EVENTS[0]!, r0);
+    const r = spinTo(r0, (p) => !!p.twin);
+    const id = onTable(r).id;
+    expect(() => claimTrialPrize(r, id)).toThrow();
+    expect(() => claimTrialPrize(r, id, undefined, ['strike'])).toThrow();
+    expect(() => claimTrialPrize(r, id, undefined, ['skybreaker'])).toThrow();
+    const taken = claimTrialPrize(r, id, undefined, ['hammer-fall']);
+    expect(taken.deck.filter((c) => c === 'hammer-fall')).toHaveLength(2);
+    expect(taken.phase).toBe('map');
+    const saved = eliteRun(1, { deck: [...r0.deck] });
+    expect(saved.context?.event?.trial?.prizes.some((p) => p.twin)).toBe(true);
+    expect(parseRun(serializeRun(saved))?.context?.event?.trial?.prizes.some((p) => p.twin)).toBe(true);
+  });
+});
 
 describe('elite events', () => {
   it('each offers the reel or a walk away, with every prize already fixed, one for each place on the reel', () => {
