@@ -131,6 +131,22 @@
     border-top: 1px solid rgb(255 255 255 / 0.08);
   }
 }
+/* on a phone or tablet the header stays at the top while a long map scrolls under it (Robert, 2026-11-02) */
+@media (max-width: 52rem), (pointer: coarse) {
+  .runbar {
+    position: sticky;
+    top: 0.35rem;
+    z-index: 40;
+    /* (a deep run's Boons make it tall: it never takes more than a third of the screen, and scrolls inside past that) */
+    max-height: 33vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* (what scrolls into view lands below it, not under it) */
+  html {
+    scroll-padding-top: 9rem;
+  }
+}
 /* a phone: who, then the buttons, then the stats, each on its own line */
 @media (max-width: 40rem) {
   .runbar {
@@ -961,6 +977,41 @@ img.mapnode__pic {
   gap: 0.25rem;
   font-size: 0.9rem;
   color: var(--c-ivory);
+}
+/* the Ascendancies this Riftwalker can become, with what each gives (DECISIONS #537) */
+.picker__ascendTitle {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+}
+.picker__ascendHint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--c-text-dim);
+}
+.picker__ascend {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.3rem 0 0.7rem;
+}
+.picker__ascend dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--c-ivory);
+}
+.picker__ascend dd {
+  margin: 0.1rem 0 0 2.2rem;
+  font-size: 0.88rem;
+  color: var(--c-text-dim);
+}
+.picker__ascendCrest {
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 /* ---- the choice at the start of a run or a stage ---- */

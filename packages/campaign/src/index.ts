@@ -106,6 +106,7 @@ export {
   enemyScale,
   HP_START,
   HP_PER_TIER,
+  HP_STEEP,
   HP_PER_STAGE,
   DMG_START,
   DMG_PER_TIER,

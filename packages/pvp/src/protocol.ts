@@ -26,6 +26,8 @@ export interface Entry {
   boons: string[];
   /** the Ascendancy the deck's run took: it comes to the Arena (DECISIONS #519) */
   ascendancy?: string;
+  /** the run's Max HP when the deck was saved: a ghost Warden of it starts from this, not the class's own (DECISIONS #538); an Arena match leaves it out */
+  maxHp?: number;
   /** the Rift Tier the deck was banked at (the matchmaker pairs similar tiers first) */
   tier: number;
   /** how many of the tier's 3 stages the deck had cleared when it was saved (3 = the whole tier); absent on older decks */
@@ -80,7 +82,7 @@ export interface Entry {
 // (57: a deck holds 2 copies of an Aura, and the Spellblade's cards apply less Fracture, #498, #499)
 // (58: the Neutral and Ancestral retune, #500)
 // (59: Burn through Barrier, Hangover as a share of Max HP, Shatter, only X cards scale hits, aimed attacks stay on target, #501-#503, #507-#509)
-export const RULES_VERSION = 62;
+export const RULES_VERSION = 63;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

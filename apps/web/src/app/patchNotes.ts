@@ -29,6 +29,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.154.0',
+    date: '2026-11-02',
+    title: 'Primed wears off, Wild cards, longer tiers',
+    summary: 'The Monk can no longer bank Primed for one enormous hit, Traps snap shut, Ascendancies are shown everywhere, and the climb is longer and tougher.',
+    notes: [
+      { kind: 'balance', text: 'Primed wears off: yours and your companions\' lose half at the end of your turn, so it can no longer be saved up over many turns.' },
+      { kind: 'balance', text: 'Monk: Inner Fire gives 3 Primed the first time each turn you leave Fury (was 2 every time). Iron Body answers the first time each turn you enter Fury, for 1 HP and 4 Primed (5 upgraded). Thousand Palms deals 5 damage 4 times (was 3 seven times).' },
+      { kind: 'balance', text: 'Wild Card and The Joker show the first suit you are missing (in the order ♠ ♥ ♦ ♣), not all four, and their text says they are Wild. Cards that make your attacks hit harder or twice are ♠, and cards that crack an enemy are ♣.' },
+      { kind: 'changed', text: 'A Trap springing snaps steel jaws shut on whoever set it off, instead of darkening the screen. The Suits panel shows what your next Full Trick deals.' },
+      { kind: 'balance', text: 'Every Rift Tier is one floor longer: Tier 1 is 12 floors with its Warden, Tier 20 an even 50. Enemy HP climbs faster, to ten times its base at Tier 20. Tier 1 maps have more Elites, most often 3.' },
+      { kind: 'changed', text: 'The Gambler\'s Shrine gives one thing a visit: a blessing, or the reel\'s prize in its place. Ghost Wardens start from the Max HP their run had gained.' },
+      { kind: 'new', text: 'Ascendancies are shown on the home screen, in the Sandbox, in the Sanctum and on How to play. The leaderboards open on the Campaign board and show the Ascendancy each run took.' },
+      { kind: 'changed', text: 'On a phone the run header stays at the top while the map scrolls.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.153.0',
     date: '2026-11-01',
     title: 'No more acts: 20 Rift Tiers',

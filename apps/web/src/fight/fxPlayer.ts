@@ -69,7 +69,8 @@ export function playFx(
   const done = (): void => el.remove();
   if (fxStill()) {
     el.style.backgroundPositionX = PEAK_AT;
-    el.animate([{ opacity: 0 }, { opacity: 0.9 }, { opacity: 0 }], { duration: 260 }).onfinish = done;
+    el.animate([{ opacity: 0 }, { opacity: 0.9 }, { opacity: 0 }], { duration: 260 }).onfinish =
+      done;
     return;
   }
   const duration = (o.dur ?? 460) / speed();
@@ -178,7 +179,11 @@ const moved = (el: Element | null | undefined, frames: Keyframe[], duration: num
 
 /** A small bounce: a pile taking a card, a chip being added to, a gem being paid from. */
 export function bump(el: Element | null | undefined, scale = 1.16): void {
-  moved(el, [1, scale, 1].map((k) => ({ transform: `scale(${k})` })), 240);
+  moved(
+    el,
+    [1, scale, 1].map((k) => ({ transform: `scale(${k})` })),
+    240,
+  );
 }
 
 /** A sideways shake: not enough Mana, or an enemy about to act. */
@@ -204,13 +209,63 @@ export function swingIn(el: Element | null | undefined): void {
   if (el && !fxStill()) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160 / speed() });
 }
 
-/** The whole screen dips dark for a beat: a Trap springing. */
-export function dimScreen(duration = 700): void {
-  if (fxStill() || !room()) return;
-  const el = document.createElement('i');
-  el.className = 'fxdim';
-  fxLayer().appendChild(el);
-  el.animate([{ opacity: 0 }, { opacity: 0.55, offset: 0.2 }, { opacity: 0.55, offset: 0.6 }, { opacity: 0 }], {
-    duration: duration / speed(),
-  }).onfinish = () => el.remove();
+// one jaw of a trap: a steel bar with its teeth along the bottom edge (the other jaw is the same, turned over)
+const JAW =
+  '<svg viewBox="0 0 100 34" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
+  '<path d="M4 6 Q50 -6 96 6 L96 16 L89 34 L82 16 L75 34 L68 16 L61 34 L54 16 L46 34 L39 16 L32 34 L25 16 L18 34 L11 16 L4 16 Z" ' +
+  'fill="#c9d0d8" stroke="#16191e" stroke-width="3" stroke-linejoin="round"/>' +
+  '<path d="M8 8 Q50 -2 92 8" fill="none" stroke="#f3f6fa" stroke-width="2" stroke-linecap="round" opacity="0.8"/>' +
+  '</svg>';
+
+/** A Trap springing on someone: two steel jaws swing in from above and below and snap shut on them, then let go. */
+export function trapJaws(at: Spot, size = 200): void {
+  if (!room()) return;
+  const box = document.createElement('i');
+  box.className = 'fxjaws';
+  box.style.left = `${at.x}px`;
+  box.style.top = `${at.y}px`;
+  box.style.width = `${size}px`;
+  box.style.height = `${size * 0.8}px`;
+  const top = document.createElement('i');
+  const bottom = document.createElement('i');
+  top.innerHTML = JAW;
+  bottom.innerHTML = JAW;
+  top.className = 'fxjaws__top';
+  bottom.className = 'fxjaws__bottom';
+  box.append(top, bottom);
+  fxLayer().appendChild(box);
+  const done = (): void => box.remove();
+  if (fxStill()) {
+    // (shut and still: it shows for a moment and fades)
+    top.style.cssText = 'opacity: 1; transform: translateY(14%)';
+    bottom.style.cssText = 'opacity: 1; transform: translateY(-14%)';
+    box.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 420 }).onfinish =
+      done;
+    return;
+  }
+  const k = speed();
+  // open wide, then slammed shut (the last stretch is the snap), held a beat, then gone
+  // (shut, each jaw has gone a little past the middle, so the teeth close between each other)
+  const shut = (from: string, closed: string): Keyframe[] => [
+    { transform: from, opacity: 0 },
+    { transform: from, opacity: 1, offset: 0.25, easing: 'ease-in' },
+    { transform: closed, opacity: 1, offset: 0.4 },
+    { transform: closed, opacity: 1, offset: 0.8 },
+    { transform: closed, opacity: 0 },
+  ];
+  const t = { duration: 900 / k, fill: 'forwards' as const };
+  top.animate(shut('translateY(-55%) rotate(-28deg)', 'translateY(14%) rotate(0deg)'), t);
+  bottom.animate(shut('translateY(55%) rotate(28deg)', 'translateY(-14%) rotate(0deg)'), t);
+  // the snap jolts the whole trap
+  box.animate(
+    [
+      { transform: 'translate(-50%, -50%)' },
+      { transform: 'translate(-50%, -50%)', offset: 0.4 },
+      { transform: 'translate(calc(-50% + 5px), calc(-50% + 3px))', offset: 0.45 },
+      { transform: 'translate(calc(-50% - 4px), calc(-50% - 2px))', offset: 0.5 },
+      { transform: 'translate(-50%, -50%)', offset: 0.56 },
+      { transform: 'translate(-50%, -50%)' },
+    ],
+    { duration: 900 / k },
+  ).onfinish = done;
 }

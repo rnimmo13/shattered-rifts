@@ -295,6 +295,41 @@
   color: var(--c-text-dim);
   font-size: 1.02rem;
 }
+/* the Ascendancies the picked Riftwalker can become (hover one for what it does) */
+.home__ascend {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+}
+.home__ascendKicker {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-gold-light);
+}
+.home__ascend ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home__ascend li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: var(--c-ivory);
+  cursor: help;
+}
+.home__ascendCrest {
+  width: 1.8rem;
+  height: 1.8rem;
+}
 .home__trait b {
   color: var(--c-gold-light);
 }
@@ -425,6 +460,18 @@
   .home__link {
     min-height: 3.2rem;
     padding: 0.35rem 0.3rem;
+  }
+  /* (room for the Ascendancies under the trait, so the icon row still fits a 768px laptop: DECISIONS #537) */
+  .home__show {
+    --show-h: min(44vh, 34rem);
+  }
+  .home__ascend {
+    margin-top: 0;
+    gap: 0.15rem;
+  }
+  .home__ascendCrest {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
 

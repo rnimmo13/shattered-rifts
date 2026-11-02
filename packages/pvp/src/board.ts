@@ -175,6 +175,8 @@ export interface PvpRow {
   player: string;
   name: string;
   hero: string;
+  /** the Ascendancy the deck's run took (DECISIONS #539); absent for one that took none, or a result from before */
+  ascendancy?: string | null;
   won: boolean;
   at: number;
 }
@@ -185,8 +187,8 @@ export interface PvpStanding {
   losses: number;
   /** the Arena trophies they hold (the server adds them to a board it shows) */
   trophies?: TrophyCount;
-  /** the Riftwalkers they played, most played first, each with its own record */
-  heroes: { hero: string; wins: number; losses: number }[];
+  /** the Riftwalkers they played, most played first, each with its own record (one Riftwalker with an Ascendancy and without is two) */
+  heroes: { hero: string; ascendancy?: string; wins: number; losses: number }[];
 }
 
 /** Add up each player's results and rank them: most wins first, then fewest losses, then the earliest to get there. */
@@ -197,7 +199,10 @@ export function standingsPvp(rows: readonly PvpRow[]): (PvpStanding & { player: 
     losses: number;
     lastWin: number;
     latest: number;
-    heroes: Map<string, { wins: number; losses: number; n: number }>;
+    heroes: Map<
+      string,
+      { hero: string; ascendancy?: string; wins: number; losses: number; n: number }
+    >;
   }
   const by = new Map<string, Acc>();
   for (const r of rows) {
@@ -210,7 +215,14 @@ export function standingsPvp(rows: readonly PvpRow[]): (PvpStanding & { player: 
       a.latest = r.at;
       a.name = r.name; // (their newest name is the one shown)
     }
-    const h = a.heroes.get(r.hero) ?? { wins: 0, losses: 0, n: 0 };
+    const key = `${r.hero}|${r.ascendancy ?? ''}`;
+    const h = a.heroes.get(key) ?? {
+      hero: r.hero,
+      ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
+      wins: 0,
+      losses: 0,
+      n: 0,
+    };
     h.n++;
     if (r.won) {
       a.wins++;
@@ -220,7 +232,7 @@ export function standingsPvp(rows: readonly PvpRow[]): (PvpStanding & { player: 
       a.losses++;
       h.losses++;
     }
-    a.heroes.set(r.hero, h);
+    a.heroes.set(key, h);
   }
   return [...by.entries()]
     .sort(
@@ -235,9 +247,14 @@ export function standingsPvp(rows: readonly PvpRow[]): (PvpStanding & { player: 
       name: a.name,
       wins: a.wins,
       losses: a.losses,
-      heroes: [...a.heroes.entries()]
-        .sort((p, q) => q[1].n - p[1].n)
-        .map(([hero, h]) => ({ hero, wins: h.wins, losses: h.losses })),
+      heroes: [...a.heroes.values()]
+        .sort((p, q) => q.n - p.n)
+        .map((h) => ({
+          hero: h.hero,
+          ...(h.ascendancy ? { ascendancy: h.ascendancy } : {}),
+          wins: h.wins,
+          losses: h.losses,
+        })),
     }));
 }
 
@@ -268,6 +285,8 @@ export interface RunRow {
   player: string;
   name: string;
   hero: string;
+  /** the Ascendancy the run took (DECISIONS #539) */
+  ascendancy?: string | null;
   tier: number;
   /** stages cleared in that Rift Tier (0 to 3) */
   stage: number;
@@ -284,6 +303,8 @@ export type RunStatus = 'live' | RunEnd;
 export interface RunStanding {
   name: string;
   hero: string;
+  /** the Ascendancy that run took, shown as its class (DECISIONS #539) */
+  ascendancy?: string;
   tier: number;
   stage: number;
   total: number;
@@ -310,6 +331,7 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
       player: r.player,
       name: r.name,
       hero: r.hero,
+      ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
       tier: r.tier,
       stage: r.stage,
       total: r.total,
@@ -446,6 +468,8 @@ export interface GhostGame {
   ghost: string;
   ownerName: string;
   hero: string;
+  /** the Ascendancy the ghost's run took (DECISIONS #539) */
+  ascendancy?: string | null;
   tier: number;
   stage: number | null;
   ghostWon: boolean;
@@ -459,6 +483,8 @@ export interface GhostStanding {
   /** the name of whoever's deck it was */
   name: string;
   hero: string;
+  /** the Ascendancy its run took, shown as its class (DECISIONS #539) */
+  ascendancy?: string;
   tier: number;
   stage: number | null;
   /** how it did as a ghost in the period */
@@ -475,6 +501,7 @@ export function rankGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): Gho
       s = {
         name: g.ownerName,
         hero: g.hero,
+        ...(g.ascendancy ? { ascendancy: g.ascendancy } : {}),
         tier: g.tier,
         stage: g.stage,
         wins: 0,
@@ -493,9 +520,10 @@ export function rankGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): Gho
   return [...by.values()]
     .sort((x, y) => y.wins - x.wins || x.losses - y.losses || x.name.localeCompare(y.name))
     .slice(0, limit)
-    .map(({ name, hero, tier, stage, wins, losses }) => ({
+    .map(({ name, hero, ascendancy, tier, stage, wins, losses }) => ({
       name,
       hero,
+      ...(ascendancy ? { ascendancy } : {}),
       tier,
       stage,
       wins,

@@ -297,6 +297,8 @@ export async function reportRunEnd(
 export async function reportRun(run: {
   seed: string;
   hero: string;
+  /** the Ascendancy the run took, for the campaign board (DECISIONS #539) */
+  ascendancy?: string | undefined;
   tier: number;
   stage: number;
   name: string;
@@ -304,6 +306,7 @@ export async function reportRun(run: {
   const body: Record<string, unknown> = {
     run: run.seed.slice(0, 64),
     hero: run.hero,
+    ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     tier: run.tier,
     stage: run.stage,
     name: run.name,

@@ -31,6 +31,7 @@ interface Row extends Record<string, SqlStorageValue> {
   deck: string;
   boons: string;
   ascendancy: string | null;
+  max_hp: number | null;
   banked_at: number;
 }
 
@@ -67,6 +68,9 @@ export class Vault extends DurableObject<Env> {
     // ... and the Ascendancy its run took (DECISIONS #519)
     if (!columns.some((c) => c.name === 'ascendancy'))
       ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN ascendancy TEXT');
+    // ... and the run's Max HP (DECISIONS #538)
+    if (!columns.some((c) => c.name === 'max_hp'))
+      ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN max_hp INTEGER');
     // the player's synced lists (run history, Arena matches): one JSON row each (DECISIONS #318)
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS lists (
@@ -152,7 +156,7 @@ export class Vault extends DurableObject<Env> {
   private list(): VaultDeck[] {
     const rows = this.ctx.storage.sql
       .exec<Row>(
-        'SELECT id, hero, tier, stage, deck, boons, ascendancy, banked_at FROM decks ORDER BY banked_at, id',
+        'SELECT id, hero, tier, stage, deck, boons, ascendancy, max_hp, banked_at FROM decks ORDER BY banked_at, id',
       )
       .toArray();
     // a row that cannot be read is left out rather than failing the whole Vault
@@ -165,6 +169,7 @@ export class Vault extends DurableObject<Env> {
         deck: parseJson(r.deck),
         boons: parseJson(r.boons),
         ascendancy: r.ascendancy ?? undefined,
+        maxHp: r.max_hp ?? undefined,
         bankedAt: r.banked_at,
       });
       return d ? [d] : [];
@@ -173,7 +178,7 @@ export class Vault extends DurableObject<Env> {
 
   private put(d: VaultDeck): void {
     this.ctx.storage.sql.exec(
-      'INSERT OR REPLACE INTO decks (id, hero, tier, stage, deck, boons, ascendancy, banked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT OR REPLACE INTO decks (id, hero, tier, stage, deck, boons, ascendancy, max_hp, banked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       d.id,
       d.hero,
       d.tier,
@@ -181,6 +186,7 @@ export class Vault extends DurableObject<Env> {
       JSON.stringify(d.deck),
       JSON.stringify(d.boons),
       d.ascendancy ?? null,
+      d.maxHp ?? null,
       d.bankedAt,
     );
   }

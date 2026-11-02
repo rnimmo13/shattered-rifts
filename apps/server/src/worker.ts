@@ -126,6 +126,8 @@ async function registerSavedGhost(
             deck: d['deck'],
             boons: d['boons'],
             ascendancy: d['ascendancy'],
+            // (the run's Max HP: its ghost Warden starts from it, DECISIONS #538; checkEntry cleans it)
+            maxHp: d['maxHp'],
             tier: d['tier'],
             stage: d['stage'],
             run: typeof d['id'] === 'string' ? runKey(d['id']) : undefined,

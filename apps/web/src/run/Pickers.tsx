@@ -241,7 +241,7 @@ export function ShrineView(props: {
   >(null);
   const [altarOpen, setAltarOpen] = useState(false);
   const [hover, setHover] = useState<CardDef | null>(null);
-  // a Gambler's Shrine (Tier VI and up): two different blessings of seven, and the Brass Reel beside them
+  // a Gambler's Shrine (Tier VI and up): one blessing of seven, or the Brass Reel's prize in its place (DECISIONS #538)
   const g = run.context?.gambler;
   const taken = new Set<ShrineKind>(g?.taken ?? []);
   const canRest = run.hp < run.maxHp;
@@ -256,13 +256,13 @@ export function ShrineView(props: {
     [run.deck, chisel],
   );
   const heal = Math.min(run.maxHp - run.hp, restHeal(run));
-  // the last blessing closes the shrine, so it waits while a prize is on the reel
-  const prizeWaiting = !!g && taken.size > 0 && run.context?.event?.trial?.state === 'won';
+  // a spun reel is the visit's one choice (DECISIONS #538): no blessing while its prize is on the table
+  const prizeWaiting = !!g && run.context?.event?.trial?.state === 'won';
   const tag = (k: ShrineKind, why: string | false) =>
     taken.has(k) ? (
       <i>Taken</i>
     ) : prizeWaiting ? (
-      <i>Take the reel's prize first</i>
+      <i>You spun the reel: take its prize</i>
     ) : why ? (
       <i>{why}</i>
     ) : null;
@@ -303,7 +303,7 @@ export function ShrineView(props: {
       <h2 className="stage-panel__title">{g ? "The Gambler's Shrine" : 'A quiet shrine'}</h2>
       <p className="stage-panel__hint">
         {g
-          ? `Deep in the Rift the shrines deal in wagers. Take ${taken.size === 0 ? 'two different blessings' : 'one more blessing'}, take a free spin of the reel, or walk away.`
+          ? 'Deep in the Rift the shrines deal in wagers. Take one blessing, or spin the reel and take its prize, or walk away. Only one: the shrine closes after it.'
           : 'The rift is thin here. Take one blessing, or walk away.'}
       </p>
       {g?.note && <p className="gshrine__note">{g.note}</p>}
@@ -441,7 +441,7 @@ export function ShrineView(props: {
           hint={pickerHint}
           {...(pickable ? { pickable } : {})}
           onPick={(id) => {
-            // (a Gambler's Shrine stays open for its second blessing: the picker closes either way)
+            // (the picker closes; so does the shrine, as a Gambler's Shrine gives one thing a visit)
             setPicking(null);
             if (picking === 'upgrade' || picking === 'remove')
               props.onTake({ kind: picking, card: id });
@@ -818,7 +818,7 @@ function LighterLoad(props: {
   return (
     <div className="lighterload">
       <b className="eventopt__name">{props.label}</b>
-      <p>Taking this prize ends the reel.</p>
+      <p>Taking this prize ends this stop.</p>
       <div className="choices-row">
         <button className="btn btn--primary" onClick={() => setPicking(true)}>
           <span>Choose cards to remove</span>
@@ -840,7 +840,10 @@ function LighterLoad(props: {
               </span>
               {chosen.length > 0 && (
                 <>
-                  <button className="btn btn--primary btn--small" onClick={() => props.onTake(chosen)}>
+                  <button
+                    className="btn btn--primary btn--small"
+                    onClick={() => props.onTake(chosen)}
+                  >
                     <span>
                       Remove {chosen.length} card{chosen.length === 1 ? '' : 's'}
                     </span>
@@ -865,15 +868,23 @@ function LighterLoad(props: {
 }
 
 /** The Brass Reel's Twin: choose the card to copy, which takes the prize. */
-function TwinPrize(props: { deck: readonly string[]; label: string; onTake: (id: string) => void }) {
+function TwinPrize(props: {
+  deck: readonly string[];
+  label: string;
+  onTake: (id: string) => void;
+}) {
   const [picking, setPicking] = useState(false);
   const pickable = useMemo(() => new Set(twinnable(props.deck)), [props.deck]);
   return (
     <div className="lighterload">
       <b className="eventopt__name">{props.label}</b>
-      <p>Taking this prize ends the reel.</p>
+      <p>Taking this prize ends this stop.</p>
       <div className="choices-row">
-        <button className="btn btn--primary" disabled={pickable.size === 0} onClick={() => setPicking(true)}>
+        <button
+          className="btn btn--primary"
+          disabled={pickable.size === 0}
+          onClick={() => setPicking(true)}
+        >
           <span>{pickable.size ? 'Choose a card to copy' : 'Nothing left to copy'}</span>
         </button>
       </div>
@@ -942,12 +953,7 @@ export function EventView(props: {
       {ev.boonOffer && <BoonCard id={ev.boonOffer} />}
       {card && (
         <div className="offers">
-          <Pickable
-            id={card.id}
-            width={270}
-            own={props.run.character}
-            onHover={setHover}
-          />
+          <Pickable id={card.id} width={270} own={props.run.character} onHover={setHover} />
         </div>
       )}
       {loose && loose.length > 0 && (

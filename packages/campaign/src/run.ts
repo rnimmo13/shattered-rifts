@@ -148,7 +148,12 @@ export const ELITE_BOON_FLOOR = 10;
  * What winning an Elite pays at this tier: Tier I in full, fading evenly until by ALL_ELITE_TIER its shards and potion chance are a plain
  * fight's and its Boon is rare, as most fights are Elites by then. Its card reward keeps an Elite's rarity chance at every tier (DECISIONS #526).
  */
-export function eliteRewards(tier: number): { shards: number; potionPct: number; boonPct: number; healPct: number } {
+export function eliteRewards(tier: number): {
+  shards: number;
+  potionPct: number;
+  boonPct: number;
+  healPct: number;
+} {
   const left = Math.max(0, ALL_ELITE_TIER - Math.max(1, tier)) / (ALL_ELITE_TIER - 1);
   const fade = (floor: number, full: number): number => Math.round(floor + (full - floor) * left);
   return {
@@ -172,7 +177,11 @@ export const shopPrice = (run: RunState, n: number): number =>
 export const realmOfRun = (run: Pick<RunState, 'map'>): StageRealm => run.map.realm;
 
 /** The realm of a tier, chosen as it opens: never the one just walked, and the Rift at the last tier. */
-function realmOfTier(rng: RngState, tier: number, last?: StageRealm): { realm: StageRealm; order: StageRealm[] } {
+function realmOfTier(
+  rng: RngState,
+  tier: number,
+  last?: StageRealm,
+): { realm: StageRealm; order: StageRealm[] } {
   const order = shuffledRealms(rng).filter((x) => x !== last);
   return { realm: tier >= MAX_TIER ? 'rift' : (order[0] as StageRealm), order };
 }
@@ -331,7 +340,10 @@ export const ASCEND_TIER = 3;
 
 /** Take an Ascendancy: the Riftwalker's class changes for the rest of the run, and the tier is cleared. */
 export function chooseAscendancy(run: RunState, id: string): RunState {
-  need(run.phase === 'ascend' && run.context?.ascendancies?.includes(id), 'That Ascendancy is not on offer');
+  need(
+    run.phase === 'ascend' && run.context?.ascendancies?.includes(id),
+    'That Ascendancy is not on offer',
+  );
   need(!run.ascendancy, 'An Ascendancy cannot be changed');
   need(ascendancyOf(run.character, id), 'That Ascendancy is not this Riftwalker’s');
   const r = clone(run);
@@ -392,7 +404,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     case 'shrine':
       r.phase = 'shrine';
-      // deep in the Rift a Shrine is a Gambler's Shrine: two blessings of seven, and the Brass Reel beside them (DECISIONS #234)
+      // deep in the Rift a Shrine is a Gambler's Shrine: one blessing of seven, or the Brass Reel's prize instead (DECISIONS #234, #538)
       if (r.tier >= GAMBLER_TIER) {
         r.context.gambler = makeGambler(r);
         const reel = buildElite(GAMBLER_REEL, r);
@@ -569,8 +581,9 @@ export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, 
 
 /** Where a ghost starts: the tier table at the first tier ghosts come, stage 1. */
 const ghostFrom = (): { hp: number; dmg: number } => enemyScale(GHOST_FROM_TIER + 1, 1);
-export const ghostBossHp = (hero: string, tier: number, stage = 1): number => {
-  const own = RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
+/** (`maxHp`: the Max HP the ghost's run had, gains and all, DECISIONS #538; without it, the class's own) */
+export const ghostBossHp = (hero: string, tier: number, stage = 1, maxHp?: number): number => {
+  const own = maxHp ?? RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
   const scale = enemyScale(tier, stage).hp;
   if (tier >= GHOST_ARENA_TIER)
     return Math.round((own * GHOST_ARENA_HP_MULT * scale) / enemyScale(GHOST_ARENA_TIER, 1).hp);
@@ -616,8 +629,15 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
   // (a ghost is a deck that cleared Tier GHOST_BOSS_MIN_TIER: an older server might send any)
   if (!ghostCleared(tier, stage)) return null;
   const id = typeof g['id'] === 'string' && g['id'].length <= 80 ? g['id'] : undefined;
+  // (the run's Max HP, a whole number in reason: anything else is the class's own)
+  const sentHp = g['maxHp'];
+  const maxHp =
+    typeof sentHp === 'number' && Number.isInteger(sentHp) && sentHp >= 1 && sentHp <= 999
+      ? sentHp
+      : undefined;
   return {
     ...(id ? { id } : {}),
+    ...(maxHp ? { maxHp } : {}),
     name,
     hero: hero as GhostBoss['hero'],
     deck: [...deck],
@@ -688,7 +708,13 @@ export function duelPlan(run: RunState): FightPlan | null {
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
   // (never a second Warden, at the tier where the Elites are Wardens)
-  if (omen.swarm && node.kind === 'elite' && e.kind !== 'warden' && units.length > 0 && units.length < 4) {
+  if (
+    omen.swarm &&
+    node.kind === 'elite' &&
+    e.kind !== 'warden' &&
+    units.length > 0 &&
+    units.length < 4
+  ) {
     const weakest = units.reduce((m, id) => (hpOf(id) < hpOf(m) ? id : m));
     units.push(weakest);
   }
@@ -702,7 +728,7 @@ export function duelPlan(run: RunState): FightPlan | null {
       ? {
           ghost: {
             ...ghost,
-            hp: ghostBossHp(ghost.hero, run.tier),
+            hp: ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp),
             // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
             dmgPct: Math.round(ghostBossDmg(run.tier) * wardenUp),
           },
@@ -845,7 +871,11 @@ export function finishDuel(
   // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
   const fromEvent = node.bonus !== undefined;
   // (no roll while it is certain, so Tier I's runs and replays stay as they were)
-  if (node.kind === 'elite' && !fromEvent && (elitePays.boonPct >= 100 || nextInt(r.rng, 100) < elitePays.boonPct)) {
+  if (
+    node.kind === 'elite' &&
+    !fromEvent &&
+    (elitePays.boonPct >= 100 || nextInt(r.rng, 100) < elitePays.boonPct)
+  ) {
     const id = offerBoon(r.rng, r.boons);
     if (id) {
       gainBoon(r, id);
@@ -1211,10 +1241,10 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(!g || !g.taken.includes(choice.kind), 'You have taken that blessing here already');
   const wager: ShrineKind[] = ['sacrifice', 'dice', 'engrave', 'ledger'];
   need(!!g || !wager.includes(choice.kind), "Only a Gambler's Shrine takes wagers");
-  // (the last blessing closes the shrine: a prize the reel stopped on is taken or spun away first, never lost by it)
+  // (one thing a visit, DECISIONS #538: a reel that was spun is the visit's choice, so its prize is taken or walked away from)
   need(
     !g || g.taken.length < GAMBLER_BLESSINGS - 1 || run.context.event?.trial?.state !== 'won',
-    'Take the prize on the reel first (or walk away from it)',
+    'You spun the reel here: take its prize, or walk away',
   );
   const r = clone(run);
   const gs = (r.context as NonNullable<RunState['context']>).gambler;
@@ -1239,7 +1269,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     wagerAt(r, gs, choice);
   }
   const ctx = r.context as NonNullable<RunState['context']>;
-  // a Gambler's Shrine gives a second, different blessing before it is done
+  // (a Gambler's Shrine that gave more than one blessing would stay open for the next; it gives one since DECISIONS #538)
   if (gs) {
     gs.taken.push(choice.kind);
     if (gs.taken.length < GAMBLER_BLESSINGS) return r;
@@ -1494,7 +1524,8 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
   if (ev.fight) {
     const ctx = r.context as NonNullable<RunState['context']>;
     const node = nodeOf(r, ctx.nodeId);
-    const kind = ev.fight.kind === 'duel' && rollEliteFight(r.rng, r.tier) ? 'elite' : ev.fight.kind;
+    const kind =
+      ev.fight.kind === 'duel' && rollEliteFight(r.rng, r.tier) ? 'elite' : ev.fight.kind;
     const foe = ambushEnemy(
       r.rng,
       enemyRealms(r),
@@ -1628,11 +1659,7 @@ export function claimTrialPrize(
     pick,
     cards,
   );
-  // a Gambler's Shrine's reel gives one prize a visit; the shrine itself stays open for its blessings
-  if (r.phase === 'shrine') {
-    delete ctx.event;
-    return r;
-  }
+  // (a Gambler's Shrine's reel prize is the visit's one choice: the shrine closes with it, DECISIONS #538)
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;

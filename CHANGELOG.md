@@ -5,6 +5,21 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Leaderboards:** the Campaign board comes first and the page opens on it. Every board shows the Ascendancy a run took, with its crest: "Paladin (Knight)". Runs and matches from before this show their class until they are played again.
+- **The Gambler's Shrine gives one thing a visit:** a blessing, or the Spin To Win reel's prize in its place. It closes after either.
+- **Ghost Wardens keep their Max HP:** a ghost Warden's HP starts from the Max HP its run had gained, not its class's base. Decks saved before this play as before until they are saved again.
+- **Enemy HP climbs faster:** +30% a tier to Tier 10 (was +20%) and +64% a tier after it (was +40%), so Tier 20 enemies have ten times their written HP (1000%, was 670%). Damage is unchanged.
+- **Ascendancies on show:** the home screen and the Sandbox list the picked Riftwalker's three Ascendancies (hover one for what it gives), the Sanctum tiles name them and its description gives each one's effect, and How to play lists them under each Riftwalker.
+- **On a phone the run header stays at the top** while the map scrolls.
+- The Play button reads "Start a new campaign run as the <class>, ascend through 20 Rift Tiers and take down the final boss, Vorthax."
+- **Every Rift Tier is one floor longer:** Tier 1 is 12 floors with its Warden, and Tier 20 an even 50. A map already started keeps its length.
+- **The Suits panel shows what your next Full Trick deals**, beside the pips and in its tip, counting the Full Tricks you have made this fight.
+- **Wild cards** (Wild Card, The Joker) show one suit you are missing this turn, not all four, and their text now says they are Wild. **Suits read better:** cards that make your attacks hit harder or twice (Echoing Blow, Second Act, Keen, Echoing Blade...) are ♠, and cards that crack or strip an enemy (Fracture) are ♣; they were ♦.
+- **Iron Body** answers only the first time each turn you enter Fury, and gives more for it: lose 1 HP and gain 4 Primed (5 upgraded).
+- **A Trap springing** no longer darkens the screen: steel jaws snap shut on whoever it caught, and the banner says which Trap was sprung.
+- The Trickster's Full Trick text reads more clearly ("plus 2 for every Full Trick earlier in the fight"), and her how-to says what it really does.
+- **Primed wears off:** your Primed, and your companions', loses half at the end of your turn, so it can no longer be saved up over many turns for one enormous hit. **Monk:** Inner Fire gives 3 Primed the first time each turn you leave Fury (was 2 every time), and **Thousand Palms** hits 5 four times (was 3 seven times).
+- **More Elites on Tier 1:** a map most often has 3 now (it was 2), and seldom just 1. Deeper tiers add more, as before.
 - **Acts are gone.** A run is now 20 Rift Tiers: Tier 1 is 10 floors and a Warden, and each tier is 2 floors longer. A Warden's fall leads straight to the next tier, with no full heal between them. Kron waits for Tier 3, and Vorthax for Tier 20.
 - **Spin To Win:** the window for removing cards stays open while you choose, and removing them takes the prize, so you can't spin after it. Two new prizes: +1 Resolve, and a copy of a card of your choice.
 - **A run already past Tier III without an Ascendancy** is offered one at its next Warden, in place of that Warden's Gift. Nobody can change one they have.

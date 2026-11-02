@@ -1,5 +1,5 @@
-// The Gambler's Shrine (DECISIONS #234): from Rift Tier VI a Shrine offers more, and asks you to wager for some of it. Two
-// different blessings a visit from seven (the three quiet ones, and four wagers that grow with the run), with the Brass Reel in an
+// The Gambler's Shrine (DECISIONS #234): from Rift Tier VI a Shrine offers more, and asks you to wager for some of it. One
+// thing a visit (#538): a blessing from seven (the three quiet ones, and four wagers that grow with the run), with the Brass Reel in an
 // alcove for anyone with shards to spend. You can walk away at any time.
 
 import { nextInt } from '@sr/combat';
@@ -17,8 +17,8 @@ import type { RunState } from './types';
 
 /** From this Rift Tier a Shrine is a Gambler's Shrine. */
 export const GAMBLER_TIER = 6;
-/** How many different blessings a Gambler's Shrine gives a visit. */
-export const GAMBLER_BLESSINGS = 2;
+/** How many blessings a Gambler's Shrine gives a visit: one, or the reel's prize in its place (2 until DECISIONS #538). */
+export const GAMBLER_BLESSINGS = 1;
 
 export type ShrineKind =
   | 'rest'

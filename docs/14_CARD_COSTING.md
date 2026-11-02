@@ -152,7 +152,7 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 | Enter Serene (leaving it gives 2 Mana, once a turn) *(legacy, as above)* | **4**, plus the trait | Still Guard / Vigilance. Leaving Serene on a card: about **+3.5**. Since DECISIONS #413 the 2 Mana is the Monk's trait (Inner Fire), not an engine rule; his cards keep these prices, so the trait table counts the same Mana again (about 7.5 a Serene exit) and the two must not be added up. |
 | Fervor *(legacy, as above)* | **2** a stack | 10 is a Radiant turn (~35-40), but it can't be timed. |
 | Enter Radiant now *(legacy, as above)* | **~31** | Rise Radiant (2, rare, Consume). |
-| Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. |
+| Primed N | **1 per stack per hit** of the next attack | Feint 8 Barrier + 2 Primed, Heat of the Forge 7. Much better before a multi-hit attack. A hero's or companion's Primed loses half (rounded up) as its turn ends (DECISIONS #533): Primed that waits a turn is worth half, and none of it can be banked for a big turn. |
 | Might, rest of fight | **5** per stack | Steel Resolve: 2 for 1 Mana. Also lifts companions' strikes if the class shares Might with them. Attacks only: Aura, totem and Trap damage is flat (DECISIONS #376), so an Aura's damage never scales with Might, Exposed or Faltering. |
 
 ---
@@ -530,7 +530,7 @@ most once a turn, for 1 Mastery (at most 3, kept) and the trait's 3 Barrier. No 
 | "+N per Mastery you have" (read, not spent) | **~1.5** Mastery | he holds 1-2 most turns; it never competes with a spender. Centred Strike (7 +2) = 10 (#426). |
 | "If you did not complete your technique this turn" | **~0.4** of turns | the recovery cards: Unfinished Form, Adapting Flow. |
 | "If your technique is one step from done" | **x0.5** | Ember's Edge. |
-| Primed on the Monk's attacks | **~1.3 hits** | Thousand Palms (7) is the ceiling: Coiled Stance's 3 adds 21 there. |
+| Primed on the Monk's attacks | **~1.3 hits** | Thousand Palms (4 hits since #533; it was 7) is the ceiling: Coiled Stance's 3 adds 12 there. |
 
 The trait, **Martial Forms** (start in Current; a completion gives 1 Mastery and 3 Barrier), prices at ~0.6 x (Kindle Strike's 4 a
 Mastery 3 + 3.6 Barrier) x 4 turns = ~16 with the starter, ~21 in a technique deck, level with the Knight. Nothing loops: no card

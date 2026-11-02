@@ -60,6 +60,7 @@ import {
   type RankBadge,
   type RankedStanding,
 } from '@sr/pvp';
+import { ascendancyOf } from '@sr/content/v2';
 import type { Env } from './env';
 import { CURRENT_GHOSTS_VIEW, UNCLEARED_GHOSTS } from './ghostSql';
 
@@ -77,11 +78,15 @@ const IP_NAME_CLAIMS_PER_DAY = 40;
 const REPLAYS_PER_DAY = 120;
 const isId = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
 const isAddr = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80;
+/** An Ascendancy id that belongs to this Riftwalker, or null (what a browser sends, or an old row, is checked: DECISIONS #539). */
+const boardAscendancy = (hero: unknown, raw: unknown): string | null =>
+  typeof hero === 'string' ? (ascendancyOf(storedHero(hero), raw)?.id ?? null) : null;
 
 interface RunSql extends Record<string, SqlStorageValue> {
   player: string;
   name: string;
   hero: string;
+  ascendancy: string | null;
   tier: number;
   stage: number;
   at: number;
@@ -96,6 +101,7 @@ interface GhostSql extends Record<string, SqlStorageValue> {
   deck: string;
   boons: string;
   ascendancy: string | null;
+  max_hp?: number | null;
   tier: number;
   stage: number | null;
   wins: number;
@@ -184,12 +190,31 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()
       .some((c) => c.name === 'ascendancy');
     if (!hasAscendancy) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN ascendancy TEXT');
+    // ... and the Max HP its run had (DECISIONS #538)
+    const hasMaxHp = ctx.storage.sql
+      .exec<{ name: string }>("SELECT name FROM pragma_table_info('ghosts')")
+      .toArray()
+      .some((c) => c.name === 'max_hp');
+    if (!hasMaxHp) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN max_hp INTEGER');
     // a run remembers how it ended (null while it is still going; DECISIONS #292)
     const hasEnded = ctx.storage.sql
       .exec<{ name: string }>("SELECT name FROM pragma_table_info('runs')")
       .toArray()
       .some((c) => c.name === 'ended');
     if (!hasEnded) ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN ended TEXT');
+    // the Ascendancy a run took, and each side's in an Arena result, for the boards (DECISIONS #539)
+    const columnsOf = (table: string): string[] =>
+      ctx.storage.sql
+        .exec<{ name: string }>(`SELECT name FROM pragma_table_info('${table}')`)
+        .toArray()
+        .map((c) => c.name);
+    if (!columnsOf('runs').includes('ascendancy'))
+      ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN ascendancy TEXT');
+    const pvpColumns = columnsOf('pvp');
+    if (!pvpColumns.includes('winner_asc'))
+      ctx.storage.sql.exec('ALTER TABLE pvp ADD COLUMN winner_asc TEXT');
+    if (!pvpColumns.includes('loser_asc'))
+      ctx.storage.sql.exec('ALTER TABLE pvp ADD COLUMN loser_asc TEXT');
     // The ghosts that can be met and listed: only the latest version of a deck (see ghostSql.ts)
     ctx.storage.sql.exec('DROP VIEW IF EXISTS current_ghosts');
     ctx.storage.sql.exec(CURRENT_GHOSTS_VIEW);
@@ -373,12 +398,28 @@ export class Leaderboard extends DurableObject<Env> {
         loser: string;
         loser_name: string;
         loser_hero: string;
+        winner_asc: string | null;
+        loser_asc: string | null;
         at: number;
       }>('SELECT * FROM pvp WHERE at >= ? AND at < ? ORDER BY at LIMIT 20000', from, to)
       .toArray();
     return rows.flatMap((r): PvpRow[] => [
-      { player: r.winner, name: r.winner_name, hero: r.winner_hero, won: true, at: r.at },
-      { player: r.loser, name: r.loser_name, hero: r.loser_hero, won: false, at: r.at },
+      {
+        player: r.winner,
+        name: r.winner_name,
+        hero: r.winner_hero,
+        ascendancy: r.winner_asc,
+        won: true,
+        at: r.at,
+      },
+      {
+        player: r.loser,
+        name: r.loser_name,
+        hero: r.loser_hero,
+        ascendancy: r.loser_asc,
+        won: false,
+        at: r.at,
+      },
     ]);
   }
 
@@ -582,12 +623,13 @@ export class Leaderboard extends DurableObject<Env> {
     const losses = result === 'loss' ? 1 : 0;
     if (this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', id) > 0) {
       this.ctx.storage.sql.exec(
-        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, ascendancy = ?, run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
+        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, ascendancy = ?, max_hp = COALESCE(?, max_hp), run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
         name,
         e.hero,
         JSON.stringify(e.deck),
         JSON.stringify(e.boons),
         e.ascendancy ?? null,
+        e.maxHp ?? null,
         e.run ?? null,
         e.tier,
         e.stage ?? null,
@@ -599,14 +641,15 @@ export class Leaderboard extends DurableObject<Env> {
       return true;
     }
     this.ctx.storage.sql.exec(
-      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, ascendancy, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, ascendancy, max_hp, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       id,
       owner,
       name,
       e.hero,
       JSON.stringify(e.deck),
       JSON.stringify(e.boons),
-        e.ascendancy ?? null,
+      e.ascendancy ?? null,
+      e.maxHp ?? null,
       e.run ?? null,
       e.tier,
       e.stage ?? null,
@@ -682,6 +725,7 @@ export class Leaderboard extends DurableObject<Env> {
         deck: parseList(row.deck),
         boons: parseList(row.boons),
         ...(row.ascendancy ? { ascendancy: row.ascendancy } : {}),
+        ...(row.max_hp ? { maxHp: row.max_hp } : {}),
         tier: row.tier,
         stage: row.stage,
       },
@@ -784,11 +828,12 @@ export class Leaderboard extends DurableObject<Env> {
         at: number;
         owner_name: string;
         hero: string;
+        ascendancy: string | null;
         tier: number;
         stage: number | null;
       }>(
         `SELECT g.ghost, g.ghost_won, g.human, g.human_name, g.human_hero, g.at,
-                d.owner_name, d.hero, d.tier, d.stage
+                d.owner_name, d.hero, d.ascendancy, d.tier, d.stage
            FROM ghost_games g JOIN current_ghosts d ON d.id = g.ghost
           WHERE g.at >= ? LIMIT 20000`,
         from,
@@ -798,6 +843,7 @@ export class Leaderboard extends DurableObject<Env> {
       ghost: r.ghost,
       ownerName: r.owner_name,
       hero: r.hero,
+      ascendancy: boardAscendancy(r.hero, r.ascendancy),
       tier: r.tier,
       stage: r.stage,
       ghostWon: r.ghost_won === 1,
@@ -897,14 +943,22 @@ export class Leaderboard extends DurableObject<Env> {
     )
       return notCounted();
     this.ctx.storage.sql.exec(
-      'INSERT INTO pvp (at, winner, winner_name, winner_hero, loser, loser_name, loser_hero) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO pvp (at, winner, winner_name, winner_hero, winner_asc, loser, loser_name, loser_hero, loser_asc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       now,
       wid,
       this.claimedName(wid) ?? cleanBoardName(w['name']),
       storedHero(w['hero']),
+      boardAscendancy(
+        w['hero'],
+        (w['entry'] as Record<string, unknown> | undefined)?.['ascendancy'],
+      ),
       lid,
       this.claimedName(lid) ?? cleanBoardName(l['name']),
       storedHero(l['hero']),
+      boardAscendancy(
+        l['hero'],
+        (l['entry'] as Record<string, unknown> | undefined)?.['ascendancy'],
+      ),
     );
     await remember(true);
     // (a counted match is a ranked one: both ratings move)
@@ -1003,6 +1057,17 @@ export class Leaderboard extends DurableObject<Env> {
     // a run counts under the player's username (one is needed to be on the campaign board)
     const name = this.claimedName(b['player']);
     if (!name) return json({ ok: true, counted: false, error: 'no-name' });
+    // (taken for beating Tier III, so a run below it has none)
+    const ascendancy = tier >= 3 ? boardAscendancy(b['hero'], b['ascendancy']) : null;
+    // (an Ascendancy is taken after the Warden of Tier III, when the run has made no new progress: it is recorded as soon as it is told,
+    // once, whether or not the report counts as progress; DECISIONS #539)
+    if (ascendancy)
+      this.ctx.storage.sql.exec(
+        'UPDATE runs SET ascendancy = ? WHERE player = ? AND run = ? AND ascendancy IS NULL',
+        ascendancy,
+        b['player'],
+        run,
+      );
     // the run has ended (it fell, or was abandoned): only a run the board knows is marked, and only once
     if (b['ended'] === 'fell' || b['ended'] === 'abandoned') {
       this.ctx.storage.sql.exec(
@@ -1068,11 +1133,12 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, counted: false, limited: true });
     for (const [key, windowMs, max] of limits) this.within(key, windowMs, max, now);
     this.ctx.storage.sql.exec(
-      'INSERT INTO runs (player, run, name, hero, tier, stage, total, first_at, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       b['player'],
       run,
       name,
       storedHero(b['hero']),
+      ascendancy,
       tier,
       stage,
       total,
@@ -1109,7 +1175,7 @@ export class Leaderboard extends DurableObject<Env> {
     // who made progress this week"; DECISIONS #281)
     const rows = this.ctx.storage.sql
       .exec<RunSql>(
-        'SELECT player, name, hero, tier, stage, at, ended FROM runs WHERE at >= ? LIMIT 20000',
+        'SELECT player, name, hero, ascendancy, tier, stage, at, ended FROM runs WHERE at >= ? LIMIT 20000',
         from,
       )
       .toArray();
@@ -1117,6 +1183,7 @@ export class Leaderboard extends DurableObject<Env> {
       player: r.player,
       name: r.name,
       hero: r.hero,
+      ascendancy: boardAscendancy(r.hero, r.ascendancy),
       tier: r.tier,
       stage: r.stage,
       at: r.at,

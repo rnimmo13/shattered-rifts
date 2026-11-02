@@ -2,7 +2,9 @@
 // the Sandbox both use it, so a Riftwalker is chosen the same way everywhere.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { REALMS, RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { REALMS, RIFTWALKERS, ascendanciesOf, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { crestPic } from '../fight/fxMoments';
+import { Picture } from '../ui/Picture';
 import { heroFigure } from '../fight/art';
 import { ART_READY_EVENT } from '../art/assets';
 import { wornSkin } from '@sr/pvp';
@@ -69,6 +71,24 @@ export function HeroShowcase(props: {
         <p className="home__trait">
           <b>{hero.trait.name}.</b> {hero.trait.text}
         </p>
+        {/* the classes they can become after Tier III (hover one for what it does) */}
+        <div className="home__ascend">
+          <span className="home__ascendKicker">Ascendancies</span>
+          <ul>
+            {ascendanciesOf(picked).map((x) => (
+              <li
+                key={x.id}
+                tabIndex={0}
+                {...tipAttrs({ kicker: `Ascendancy · ${x.leans}`, title: x.name, text: x.text })}
+              >
+                <Picture id={crestPic(x.id)} className="home__ascendCrest">
+                  {null}
+                </Picture>
+                {x.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       <ul className="home__roster" aria-label="Choose a Riftwalker">
         {heroes.map((h) => (

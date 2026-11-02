@@ -33,12 +33,12 @@ spread of them in one turn: a turn that shows all four suits is a full trick. Yo
 | ♦ Diamonds | Cards, Mana and Foresee | Cold Read, Hidden Hand, Sleight of Hand, Saved Breath |
 | ♣ Clubs | Traps and debuffs | every Trap, Mark Prey, Unmask, Cripple |
 
-**A Wild card counts as every suit.**
+**A Wild card shows the first suit you are missing this turn** (all four until DECISIONS #535).
 
 **The suit comes from what a card does**, so no one has to tag 900 cards and a Neutral or Rift-crossed card has a suit too:
 
 1. an Attack is ♠, a Trap is ♣;
-2. otherwise the card's first effect decides: Barrier, healing, Ghostly or Steadfast is ♥; draw, Foresee, Mana or a cost cut is ♦;
+2. otherwise the card's first effect decides (since DECISIONS #535 a status that makes your attacks better, Twinned, Keen, Edge and the like, is ♠, and Fracture or Strip on an enemy is ♣): Barrier, healing, Ghostly or Steadfast is ♥; draw, Foresee, Mana or a cost cut is ♦;
    a debuff on an enemy is ♣;
 3. an Aura takes the suit of what it does each time;
 4. a card can name its suit to override the rule (the Wild cards, and any card the rule gets wrong).
@@ -76,7 +76,7 @@ a good turn); a payoff that needs 3 or more suits comes off about 50% of the tim
 | Fade Back | ♥ | uncommon |
 | Long Con | ♠ | uncommon |
 | Trick of the Light | ♦ | uncommon |
-| Second Act, Pickpocket Master | ♦ | rare |
+| Second Act (♠ since #535), Pickpocket Master | ♦ | rare |
 
 ### New cards (12)
 
@@ -88,10 +88,10 @@ a good turn); a payoff that needs 3 or more suits comes off about 50% of the tim
 | **Cut the Deck** | 1, Skill, uncommon, ♦ | Draw 2 cards. If you have played 3 or more suits this turn: gain 1 Mana. | 7 + 0.5 x 7 = 10.5 / 11.2 |
 | **Queen of Hearts** | 1, Skill, uncommon, ♥ | Gain 5 (+2 per suit played this turn) Barrier. | (5 + 5) x 1.2 = 12 / 11.2 |
 | **Ace of Clubs** | 1, Skill, uncommon, ♣ | Apply 2 Exposed and 1 Faltering. If you have played 3 or more suits this turn: draw 1 card. | 6 + 3 + 0.5 x 3.5 = 10.8 / 11.2 |
-| **Wild Card** | 0, Skill, uncommon, Wild | Counts as every suit. Draw 1 card. | 4 + ~3 (fills a suit) = 7 / 6.7 |
+| **Wild Card** | 0, Skill, uncommon, Wild | Shows the first suit missing (♠ ♥ ♦ ♣; every suit until #535). Draw 1 card. | 4 + ~3 (fills a suit) = 7 / 6.7 |
 | **Royal Flourish** | 2, Attack, rare, ♠ | Deal 7 damage for each suit you have played this turn (this one included). | 7 x 3 = 21; 28 with all four / 23.8 |
 | **Showstopper** | 3, Attack, rare, ♠ | Deal 30 damage. Costs 1 less for each suit you have played this turn. | 30, usually for 1-2 Mana / 35 |
-| **The Joker** | 1, Skill, rare, Wild | Counts as every suit. Add a random card from your pool to your hand; it costs 0 this turn. | ~9 + ~3 = 12 / 12.5 |
+| **The Joker** | 1, Skill, rare, Wild | Shows the first suit missing (as Wild Card). Add a random card from your pool to your hand; it costs 0 this turn. | ~9 + ~3 = 12 / 12.5 |
 | **The Whole Deck** | 1, Aura, rare, ♦ | The first time each turn you have played all four suits: draw 2 cards, and next turn gain 1 Mana. | 11.5 a trick x ~2 tricks in 4 turns = 23 (1.15x of a rare's 2x) |
 | **Masquerade** (reworked; id kept) | 2, Aura, rare, ♦ | Whenever you play a card of a suit you haven't played yet this turn: deal 3 damage to ALL enemies. | ~2.8 new suits a turn x 3.9 = 11 a turn, 44 in 4 turns (1.15x) |
 

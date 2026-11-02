@@ -2,7 +2,7 @@
 // how many it holds, banking into it, and cleaning what arrives from outside. Where it is kept is not decided here.
 
 import { V2_DECK_RULES, ascendancyOf, withStartingWeapons } from '@sr/content/v2';
-import { checkEntry } from './deck';
+import { checkEntry, cleanMaxHp } from './deck';
 
 export interface VaultDeck {
   /** one per cleared loop: the run's seed and Rift Tier */
@@ -16,6 +16,8 @@ export interface VaultDeck {
   boons: string[];
   /** the Ascendancy the run took (DECISIONS #519) */
   ascendancy?: string;
+  /** the run's Max HP when it was saved: its ghost Warden starts from it (DECISIONS #538); absent on older decks */
+  maxHp?: number;
   bankedAt: number;
   /** (DECISIONS #436) its deck holds the starting weapon as a card (missing: saved before; the weapon is added once) */
   weaponCards?: true;
@@ -64,7 +66,8 @@ const sameDeck = (a: VaultDeck, b: VaultDeck): boolean =>
   a.deck.every((c, i) => c === b.deck[i]) &&
   a.boons.length === b.boons.length &&
   a.boons.every((c, i) => c === b.boons[i]) &&
-  a.ascendancy === b.ascendancy;
+  a.ascendancy === b.ascendancy &&
+  a.maxHp === b.maxHp;
 
 /**
  * Put a deck in the Vault. One run keeps one deck: saving the same run again replaces its earlier save (as it stood then) rather than
@@ -129,7 +132,10 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
     ...(checked.entry.stage === undefined ? {} : { stage: checked.entry.stage }),
     deck: checked.entry.deck,
     boons: cleanBoons(o['boons']),
-    ...(ascendancyOf(checked.entry.hero, o['ascendancy']) ? { ascendancy: o['ascendancy'] as string } : {}),
+    ...(ascendancyOf(checked.entry.hero, o['ascendancy'])
+      ? { ascendancy: o['ascendancy'] as string }
+      : {}),
+    ...(cleanMaxHp(o['maxHp']) === null ? {} : { maxHp: cleanMaxHp(o['maxHp']) as number }),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
     weaponCards: true,
   };

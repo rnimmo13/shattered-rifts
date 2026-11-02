@@ -34,8 +34,8 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
 const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
 
 describe('the Monk costing pass', () => {
-  it('Inner Fire gives 1 Fervor for a stance and no Barrier, and 2 Primed on leaving Fury (DECISIONS #412)', () => {
-    const s0 = fight(['rising-ire', 'centre-yourself']);
+  it('Inner Fire gives 1 Fervor for a stance and no Barrier, and 3 Primed the first time each turn he leaves Fury (DECISIONS #412, #533)', () => {
+    const s0 = fight(['rising-ire', 'centre-yourself', 'unburdened-guard']);
     hero(s0).barrier = 0;
     const fervor = hero(s0).statuses.mantra ?? 0;
     const s = play(s0, 'rising-ire');
@@ -43,8 +43,74 @@ describe('the Monk costing pass', () => {
     expect(hero(s).barrier).toBe(0);
     expect(hero(s).statuses.vigor ?? 0).toBe(0); // entering Fury gives none
     const out = play(s, 'centre-yourself'); // Fury to Serene
-    expect(hero(out).statuses.vigor ?? 0).toBe(2);
+    expect(hero(out).statuses.vigor ?? 0).toBe(3);
     expect(hero(out).statuses.mantra ?? 0).toBe(fervor + 2);
+    // (into Fury and out again on the same turn: no more Primed)
+    const again = play(out, 'unburdened-guard');
+    expect(hero(again).statuses.vigor ?? 0).toBe(3);
+  });
+
+  it('Primed loses half (rounded up) as his turn ends, so it cannot be banked turn after turn (DECISIONS #533)', () => {
+    const s0 = fight([]);
+    hero(s0).statuses.vigor = 40;
+    let s = applyAction(db, s0, { type: 'endTurn' }).state;
+    expect(hero(s).statuses.vigor ?? 0).toBe(20);
+    hero(s).statuses.vigor = 3;
+    s.sides.a.hand = [];
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(hero(s).statuses.vigor ?? 0).toBe(1);
+  });
+
+  it('Primed only for this turn goes first, then half of the rest', () => {
+    // (Heat of the Forge 2 for good, Crowned Edge 2 for the turn: 2 left, half of it goes, 1 stays; halving first left 0)
+    const s0 = fight(['forge-heat', 'conqueror']);
+    let s = play(play(s0, 'forge-heat'), 'conqueror');
+    expect(hero(s).statuses.vigor ?? 0).toBe(4);
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(hero(s).statuses.vigor ?? 0).toBe(1);
+  });
+
+  it("an enemy's Primed (the Omen of the Hunted) is not halved as its turn ends", () => {
+    const { state } = createCombat(db, {
+      seed: 'hunted-kept',
+      a: { hero: 'monk', deck: [...RIFTWALKERS.monk.starter] },
+      b: { enemies: ['squire'], mods: [{ statuses: { vigor: 50 } }] },
+    });
+    let s = state;
+    // (until its first attacking move, it keeps all 50)
+    for (let i = 0; i < 6 && !s.winner; i++) {
+      const before = s.sides.b.units[0]!.statuses.vigor ?? 0;
+      s = applyAction(db, s, { type: 'endTurn' }).state;
+      const after = s.sides.b.units[0]?.statuses.vigor ?? 0;
+      expect([before, 0]).toContain(after);
+      if (after === 0) break;
+    }
+  });
+
+  it('Iron Body: 1 HP for 4 Primed the first time each turn he enters Fury, not again (DECISIONS #534)', () => {
+    const s0 = fight(['blood-on-the-sand', 'rising-ire', 'centre-yourself', 'unburdened-guard']);
+    const hp = hero(s0).hp;
+    let s = play(play(s0, 'blood-on-the-sand'), 'rising-ire');
+    expect(hero(s).statuses.vigor ?? 0).toBe(4);
+    expect(hero(s).hp).toBe(hp - 1);
+    // (out of Fury pays Inner Fire's 3)
+    s = play(s, 'centre-yourself');
+    expect(hero(s).statuses.vigor ?? 0).toBe(7);
+    // (into Fury again and out: Iron Body and Inner Fire have both paid this turn)
+    s = play(s, 'unburdened-guard');
+    expect(hero(s).statuses.vigor ?? 0).toBe(7);
+    expect(hero(s).hp).toBe(hp - 1);
+  });
+
+  it('Thousand Palms: 5 damage 4 times', () => {
+    const s0 = fight(['thousand-palms']);
+    const foe = s0.sides.b.units[0]!;
+    foe.hp = foe.maxHp = 500;
+    foe.barrier = 0;
+    foe.statuses = {};
+    hero(s0).statuses = { vigor: 2 };
+    const s = play(s0, 'thousand-palms');
+    expect(500 - s.sides.b.units[0]!.hp).toBe((5 + 2) * 4);
   });
 
   it('Still Guard: 3 Barrier and Serene', () => {

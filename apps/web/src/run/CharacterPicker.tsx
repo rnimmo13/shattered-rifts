@@ -3,7 +3,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ART_READY_EVENT } from '../art/assets';
-import { RIFTWALKERS, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { RIFTWALKERS, ascendanciesOf, heroesByRealm, type HeroId } from '@sr/content/v2';
+import { crestPic } from '../fight/fxMoments';
+import { Picture } from '../ui/Picture';
 import { heroFigure } from '../fight/art';
 import { wornSkin } from '@sr/pvp';
 import { useCosmetics } from '../cosmetics/cosmetics';
@@ -44,6 +46,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     <button
                       key={id}
                       role="radio"
+                      aria-label={x.hero.name}
                       aria-checked={props.value === id}
                       className={`picker__char realm--${x.realm}${props.value === id ? ' is-on' : ''}`}
                       onClick={() => {
@@ -53,7 +56,12 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
                     >
                       <HeroIcon hero={id} size={58} />
                       <span className="picker__name">{x.hero.name}</span>
-                      <span className="picker__realm">{x.mechanics.slice(0, 3).join(' · ')}</span>
+                      {/* (the classes they can become, DECISIONS #537; their mechanics are in the detail beside) */}
+                      <span className="picker__realm">
+                        {ascendanciesOf(id)
+                          .map((a) => a.name)
+                          .join(' · ')}
+                      </span>
                     </button>
                   );
                 })}
@@ -87,6 +95,23 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
               <li key={l}>{l}</li>
             ))}
           </ul>
+          <h3 className="picker__ascendTitle">Ascendancies</h3>
+          <p className="picker__ascendHint">
+            Beat Tier 3 and choose one: the class this run becomes.
+          </p>
+          <dl className="picker__ascend">
+            {ascendanciesOf(props.value).map((a) => (
+              <div key={a.id}>
+                <dt>
+                  <Picture id={crestPic(a.id)} className="picker__ascendCrest">
+                    {null}
+                  </Picture>
+                  {a.name}
+                </dt>
+                <dd>{a.text}</dd>
+              </div>
+            ))}
+          </dl>
           <p className="picker__deckname">
             {c.hero.maxHp} HP · {c.hero.mana} Mana · starter deck of {c.starter.length} cards
             {c.hero.startUnits?.length ? ' · starts with a companion' : ''}

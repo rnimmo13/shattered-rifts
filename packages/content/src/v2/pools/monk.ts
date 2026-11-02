@@ -455,8 +455,9 @@ export const MONK: CardDef[] = [
     'power',
     1,
     'none',
-    [on('stance', [lose(2), status('vigor', 3)], { stance: 'wrath' })],
-    { up: { effects: [on('stance', [lose(1), status('vigor', 3)], { stance: 'wrath' })] } },
+    // (once a turn, and more for it: Fury loops built Primed without end, DECISIONS #534)
+    [on('stance', [lose(1), status('vigor', 4)], { stance: 'wrath', once: true })],
+    { up: { effects: [on('stance', [lose(1), status('vigor', 5)], { stance: 'wrath', once: true })] } },
   ),
   s('uncommon', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [
     dmg(5, 'target', 2),
@@ -477,7 +478,8 @@ export const MONK: CardDef[] = [
   s('uncommon', 'poise', 'Poise', 'power', 1, 'none', [status('bracing', 3)]),
 
   // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
-  s('rare', 'thousand-palms', 'Thousand Palms', 'attack', 2, 'foe', [dmg(3, 'target', 7)]),
+  // (4 hits of 5, was 7 of 3: Primed goes on every hit, and Radiant triples it, DECISIONS #533)
+  s('rare', 'thousand-palms', 'Thousand Palms', 'attack', 2, 'foe', [dmg(5, 'target', 4)]),
   s(
     'rare',
     'unbroken-calm',

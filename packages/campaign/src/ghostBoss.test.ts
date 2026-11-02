@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { seedRng } from '@sr/combat';
-import { RIFTWALKERS } from '@sr/content/v2';
+import { BOONS, HEARTS, RIFTWALKERS } from '@sr/content/v2';
 import {
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
@@ -51,7 +51,27 @@ const entry = {
 
 describe('a ghost Warden has twice the HP (DECISIONS #514)', () => {
   it('is 2.6 times its Riftwalker at the first tier ghosts come', () => {
-    expect(ghostBossHp('knight', GHOST_FROM_TIER + 1, 1)).toBe(Math.round(RIFTWALKERS.knight.hero.maxHp * 2.6));
+    expect(ghostBossHp('knight', GHOST_FROM_TIER + 1, 1)).toBe(
+      Math.round(RIFTWALKERS.knight.hero.maxHp * 2.6),
+    );
+  });
+
+  it("starts from the Max HP its run had gained, not the class's own (DECISIONS #538)", () => {
+    const base = RIFTWALKERS.trickster.hero.maxHp;
+    expect(ghostBossHp('trickster', 5, 1, base + 30)).toBeGreaterThan(
+      ghostBossHp('trickster', 5, 1),
+    );
+    // (twice the Max HP is twice the HP, give or take the rounding)
+    expect(
+      Math.abs(ghostBossHp('trickster', 12, 1, base * 2) - 2 * ghostBossHp('trickster', 12, 1)),
+    ).toBeLessThanOrEqual(1);
+    // what a server sends is checked: a whole number in reason, or the class's own
+    expect(checkGhostBoss({ ...entry, maxHp: base + 30 })?.maxHp).toBe(base + 30);
+    expect(checkGhostBoss({ ...entry, maxHp: 99999 })?.maxHp).toBeUndefined();
+    expect(checkGhostBoss({ ...entry, maxHp: '120' })?.maxHp).toBeUndefined();
+    const run = atWarden(5, true);
+    const plan = duelPlan(attachGhost(run, { ...entry, maxHp: base + 30 }))!;
+    expect(plan.ghost?.hp).toBe(ghostBossHp('trickster', 5, 1, base + 30));
   });
 });
 
@@ -133,7 +153,9 @@ describe('Wardens that are ghosts', () => {
     expect(checkGhostBoss({ ...entry, deck: entry.deck.slice(0, 3) })).toBeNull();
     // (a Boon that has been taken out of the game is played without: DECISIONS #462)
     expect(checkGhostBoss({ ...entry, boons: ['no-such-boon'] })?.boons).toEqual([]);
-    expect(checkGhostBoss({ ...entry, boons: Array.from({ length: 13 }, () => 'iron-sigil') })).toBeNull();
+    expect(
+      checkGhostBoss({ ...entry, boons: Array.from({ length: 13 }, () => 'iron-sigil') }),
+    ).toBeNull();
     expect(checkGhostBoss(null)).toBeNull();
     expect(checkGhostBoss('trickster')).toBeNull();
     // a bad ghost is turned away and the usual Warden is fought
@@ -173,7 +195,11 @@ describe('a Warden leaves you sturdier (DECISIONS #237)', () => {
     for (const tier of [1, 6, 12]) {
       const run = atWarden(tier, false);
       const won = finishDuel(run, true, run.hp);
-      expect(won.maxHp).toBe(run.maxHp + wardenMaxHp(tier));
+      // (a Warden sometimes leaves a Boon too, and some Boons give Max HP of their own)
+      const boonHp = won.boons
+        .filter((b) => !run.boons.includes(b))
+        .reduce((sum, b) => sum + ([...BOONS, ...HEARTS].find((x) => x.id === b)?.maxHp ?? 0), 0);
+      expect(won.maxHp).toBe(run.maxHp + wardenMaxHp(tier) + boonHp);
       expect(won.eventResult).toMatch(/Max HP/);
     }
   });

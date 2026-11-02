@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
 import {
   bankInto,
+  checkEntry,
   cleanDeck,
   cleanVault,
   mergeVaults,
@@ -42,6 +43,17 @@ describe('Vault rules', () => {
     expect(cleanDeck({ ...deck('x'), id: 'has spaces' })?.id).toBe('has_spaces');
     expect(cleanDeck({ ...deck('x'), id: 'a'.repeat(150) })?.id).toHaveLength(100);
     expect(cleanDeck({ ...deck('x'), id: '' })).toBeNull();
+    // the run's Max HP is kept for its ghost Warden (DECISIONS #538), when it is a whole number in reason
+    expect(cleanDeck({ ...deck('x'), maxHp: 112 })?.maxHp).toBe(112);
+    expect(cleanDeck({ ...deck('x'), maxHp: 5000 })?.maxHp).toBeUndefined();
+    expect(checkEntry({ ...deck('x'), name: 'n', maxHp: 112 })).toMatchObject({
+      ok: true,
+      entry: { maxHp: 112 },
+    });
+    expect(
+      checkEntry({ ...deck('x'), name: 'n', maxHp: -3 }).ok &&
+        'maxHp' in (checkEntry({ ...deck('x'), name: 'n', maxHp: -3 }) as { entry: object }).entry,
+    ).toBe(false);
     expect(cleanDeck({ ...deck('x'), hero: 'nobody' })).toBeNull();
     expect(cleanDeck({ ...deck('x'), deck: ['not-a-card'] })).toBeNull();
     expect(cleanDeck({ ...deck('x'), hero: '__proto__' })).toBeNull();

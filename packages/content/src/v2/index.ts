@@ -166,7 +166,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
-      text: 'Start every fight with 6 Barrier and 1 extra card in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 3 damage to a random enemy, 2 more for every Full Trick before it this fight, and draw 1 card.',
+      text: 'Start every fight with 6 Barrier and 1 extra card in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 3 damage to a random enemy, plus 2 for every Full Trick earlier in the fight, and draw 1 card.',
       fightStart: [barrier(6), draw(1)],
       // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick
       // (no 4 Barrier a turn now; the Full Trick grows instead: 5, 8, 11... DECISIONS #398)
@@ -190,7 +190,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
-      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 3 damage to every enemy and a card, and every Full Trick after it in a fight deals 3 more.',
+      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 3 damage to a random enemy and a card, and every Full Trick after it in a fight deals 2 more.',
     ],
   },
   assassin: {
@@ -271,11 +271,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       name: 'Inner Fire',
       // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
       // (leaving Serene's 2 Mana was an engine rule; it is the trait's now, so the trait table counts it: #413)
-      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. Whenever you leave Fury, gain 2 Primed.',
+      // (the Fury exit once a turn too, 3 Primed instead of 2 every time: Fury loops banked Primed without end, #533)
+      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. The first time each turn you leave Fury, gain 3 Primed.',
       triggers: [
         on('stance', [status('mantra', 1)]),
         on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
-        on('stanceLeft', [status('vigor', 2)], { stance: 'wrath' }),
+        on('stanceLeft', [status('vigor', 3)], { stance: 'wrath', once: true }),
       ],
     },
     hero: {
@@ -291,7 +292,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); leaving Fury gives 2 Primed for your next attack.',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); the first time each turn you leave Fury, you gain 3 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',

@@ -2,7 +2,7 @@
 // Randomness only through the seeded PRNG held in the state. The caller never mutates the state it passes in.
 
 import { nextInt, seedRng, shuffle } from './rng';
-import { SUITS, suitOf } from './suits';
+import { SUITS, suitShown } from './suits';
 import {
   DEBUFFS,
   EDGE_TAG,
@@ -1137,7 +1137,6 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
   if (i < 0) return;
   const sn = sd.snares.splice(i, 1)[0];
   if (!sn) return;
-  r.ev.push({ type: 'snareSprung', side, snare: sn.id, card: sn.card });
   const cd = cardDef(r.db, sn.card);
   const attacker =
     t.on === 'foeSummons'
@@ -1147,6 +1146,14 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
         : t.on === 'foeTurn'
           ? null
           : t.attacker;
+  // (`caught`: whoever set it off, for the screen's jaws; none for a Trap that springs as their turn begins)
+  r.ev.push({
+    type: 'snareSprung',
+    side,
+    snare: sn.id,
+    card: sn.card,
+    ...(attacker ? { caught: attacker.id } : {}),
+  });
   runOps(
     r,
     mkAct(hero, { target: attacker, attacker, hit: t.on === 'attacked' ? t.hit : null }),
@@ -3570,18 +3577,16 @@ function playFree(
 }
 
 /**
- * (the Trickster's Suits) A card is being played: its suit shows (a Wild card shows them all). The first time in a turn all four
+ * (the Trickster's Suits) A card is being played: its suit shows (a Wild card shows one that is missing). The first time in a turn all four
  * are showing, the hero's Full Trick goes off and the Auras that wait for it answer. Only a hero whose trait has Suits keeps them.
  */
 function showSuit(r: Run, sd: SideState, cd: CardDef): void {
   const suits = traitOf(r, sd.id)?.suits;
   if (!suits) return;
   const shown = sd.suitsTurn ?? [];
-  const suit = suitOf(cd);
-  const add =
-    suit === 'wild' ? SUITS.filter((x) => !shown.includes(x)) : shown.includes(suit) ? [] : [suit];
-  if (!add.length) return;
-  sd.suitsTurn = SUITS.filter((x) => shown.includes(x) || add.includes(x));
+  const add = suitShown(cd, shown);
+  if (!add) return;
+  sd.suitsTurn = SUITS.filter((x) => shown.includes(x) || x === add);
   const full = sd.suitsTurn.length === SUITS.length && !sd.fullTrickTurn;
   r.ev.push({ type: 'suits', side: sd.id, suits: [...sd.suitsTurn], full });
   if (!full) return;
@@ -3590,7 +3595,7 @@ function showSuit(r: Run, sd: SideState, cd: CardDef): void {
 }
 
 /**
- * The Full Trick a card earned goes off once that card has done what it does (so its 5 damage to every enemy never takes the card's
+ * The Full Trick a card earned goes off once that card has done what it does (so its damage never takes the card's
  * own target from it), and the Auras that wait for it answer.
  */
 function payFullTrick(r: Run, sd: SideState): void {
@@ -4237,6 +4242,12 @@ function decay(r: Run, side: Side): void {
   for (const t of sd.temps.splice(0).reverse()) {
     const u = findUnit(r.s, t.unit);
     if (u && u.hp > 0) addStatus(r, u, t.status, -t.amount);
+  }
+  // a hero's or companion's Primed loses half as its turn ends (rounded up), so it can't be banked for a turn of its own (DECISIONS #533)
+  // (after the Primed that was only for this turn has gone; an enemy's comes only from the Omen of the Hunted, and waits for its first hit)
+  for (const u of sd.units) {
+    const primed = u.kind === 'enemy' || u.hp <= 0 ? 0 : stacks(u, 'vigor');
+    if (primed > 0) addStatus(r, u, 'vigor', -Math.ceil(primed / 2));
   }
   // Doom: a unit at or below its Doom at the end of its own turn is gone
   for (const u of [...sd.units]) {
@@ -5276,10 +5287,8 @@ export function previewCardDamage(
   // (its own suit is shown before its effects, as playing it does: a card that counts your suits counts itself)
   if (def.kind !== 'snare' && traitOf(r, sd.id)?.suits) {
     const shown = sd.suitsTurn ?? [];
-    const suit = suitOf(def);
-    after.sides[sd.id].suitsTurn = SUITS.filter(
-      (x) => shown.includes(x) || suit === 'wild' || suit === x,
-    );
+    const add = suitShown(def, shown);
+    after.sides[sd.id].suitsTurn = SUITS.filter((x) => shown.includes(x) || x === add);
   }
   const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
   const taunters = foes.filter((u) => u.taunt);

@@ -143,7 +143,7 @@ export const STATUS_INFO: Record<
     name: 'Primed',
     glyph: '↯',
     tone: 'good',
-    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent.",
+    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent. Yours and your companions' loses half at the end of your turn.",
   },
   doom: {
     name: 'Fate',

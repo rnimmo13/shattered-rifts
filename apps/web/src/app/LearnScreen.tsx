@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   DMG_PER_TIER,
   HP_PER_TIER,
+  HP_STEEP,
   LOOP_BOON_CHANCE,
   MAX_TIER,
   OMENS,
@@ -86,8 +87,9 @@ function TierTable() {
   return (
     <>
       <p className="learn__note">
-        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage, twice that
-        past Tier X.
+        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage. Past Tier
+        X each tier adds {HP_STEEP}% HP and {2 * DMG_PER_TIER}% damage, up to{' '}
+        {enemyScale(MAX_TIER, 1).hp}% HP at Tier {MAX_TIER}.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>
@@ -132,7 +134,10 @@ function PreludeList() {
       <h4>At a price</h4>
       <dl>{c.bargains.map(row)}</dl>
       <h4>From Tier IV, once you have beaten Tier III</h4>
-      <p>The rest heals more, these join the offers, and the small blessings and common cards stop coming.</p>
+      <p>
+        The rest heals more, these join the offers, and the small blessings and common cards stop
+        coming.
+      </p>
       <dl>{[c.ascended.rest, ...c.ascended.blessings, ...c.ascended.bargains].map(row)}</dl>
     </>
   );
@@ -191,17 +196,20 @@ function OmenList() {
   );
 }
 
-/** Every Ascendancy, by class. */
-function AscendancyList() {
+/** Every Ascendancy, by class; or one class's (on its Riftwalker's page, where the class needs no naming). */
+function AscendancyList(props: { hero?: string }) {
   return (
     <dl>
-      {ASCENDANCIES.map((a) => (
+      {ASCENDANCIES.filter((a) => !props.hero || a.hero === props.hero).map((a) => (
         <div key={a.id} className="learn__row">
           <dt>
             <Picture id={crestPic(a.id)} className="learn__crest">
               {null}
             </Picture>
-            {a.name} <i>(from the {RIFTWALKERS[a.hero as keyof typeof RIFTWALKERS].hero.name})</i>
+            {a.name}{' '}
+            {!props.hero && (
+              <i>(from the {RIFTWALKERS[a.hero as keyof typeof RIFTWALKERS].hero.name})</i>
+            )}
           </dt>
           <dd>{a.text}</dd>
         </div>
@@ -285,8 +293,8 @@ export function LearnScreen() {
           <h2>Start here</h2>
           <p>
             Shattered Rifts is a card-fighting game. You pick a Riftwalker, build a deck as you go,
-            and climb the Rift Tiers. Every fight is a short card battle, and your HP carries
-            from one to the next.
+            and climb the Rift Tiers. Every fight is a short card battle, and your HP carries from
+            one to the next.
           </p>
           <h3>One turn, step by step</h3>
           <Steps
@@ -323,7 +331,8 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            A run is 20 Rift Tiers, each 2 floors longer than the last, and Tier 1 is 11. Each tier is a map:
+            A run is {MAX_TIER} Rift Tiers, each 2 floors longer than the last: Tier 1 is{' '}
+            {floorsOf(1) + 1} and Tier {MAX_TIER} is {floorsOf(MAX_TIER) + 1}. Each tier is a map:
             pick a path from the bottom up, and the Warden waits at the top.
           </p>
           <h3>Places on the map</h3>
@@ -337,7 +346,7 @@ export function LearnScreen() {
               ],
               [
                 'Shrine',
-                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take two different blessings from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, with a free spin of the Spin To Win reel beside them.",
+                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take one blessing from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, or a free spin of the Spin To Win reel instead. Only one: the shrine closes after it.",
               ],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
               ['Warden', 'The boss of the tier. Beat it to heal a little and win back 1 Resolve.'],
@@ -356,7 +365,8 @@ export function LearnScreen() {
           <h3>Resolve</h3>
           <p>
             Losing a fight does not end the run: you spend Resolve (1 for a normal fight or a
-            Warden, 2 for an Elite, or for a Warden met at an Elite's stop) and retry it at full HP. When Resolve hits 0 the run collapses.
+            Warden, 2 for an Elite, or for a Warden met at an Elite's stop) and retry it at full HP.
+            When Resolve hits 0 the run collapses.
           </p>
           <h3>Rift Tiers</h3>
           <p>
@@ -376,8 +386,8 @@ export function LearnScreen() {
           <h3>Omens</h3>
           <p>
             From Tier II the Rift Tiers bring Omens, some two at once, and they stack: at Tier V you
-            face every Omen up to there together. Each grows with every tier after it. In a
-            fight they sit at the top right, and the run bar lists the ones in play.
+            face every Omen up to there together. Each grows with every tier after it. In a fight
+            they sit at the top right, and the run bar lists the ones in play.
           </p>
           <OmenList />
           <h3>Your deck</h3>
@@ -394,24 +404,24 @@ export function LearnScreen() {
           <h3>The Threshold and the Waymarks</h3>
           <p>
             Every run opens at <b>The Threshold</b>: three blessings and one option at a price.
-            Every tier after the first opens at a <b>Waymark</b>: a rest, two blessings, and half the time an
-            option at a price. These are all of them (shard amounts grow a little deeper in;
-            Resolve is only offered when you are missing some; an option that could not do all it
-            says, like removing Strikes you no longer have, is not offered).
+            Every tier after the first opens at a <b>Waymark</b>: a rest, two blessings, and half
+            the time an option at a price. These are all of them (shard amounts grow a little deeper
+            in; Resolve is only offered when you are missing some; an option that could not do all
+            it says, like removing Strikes you no longer have, is not offered).
           </p>
           <PreludeList />
           <h3>Ascendancies</h3>
           <p>
-            Beat the last Warden of Tier III and your reward is an Ascendancy: one of three, in place
-            of the usual Gift. Your class changes, a new trait joins the old one, and it stays with
-            that run and its deck, in the Arena too.
+            Beat the last Warden of Tier III and your reward is an Ascendancy: one of three, in
+            place of the usual Gift. Your class changes, a new trait joins the old one, and it stays
+            with that run and its deck, in the Arena too.
           </p>
           <AscendancyList />
           <h3>Boons</h3>
           <p>
-            Boons last for the whole run, and every tier after it. Elites often give one; the merchant
-            sells one; some events and Threshold options give one; and beating Vorthax leaves one{' '}
-            {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
+            Boons last for the whole run, and every tier after it. Elites often give one; the
+            merchant sells one; some events and Threshold options give one; and beating Vorthax
+            leaves one {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
           </p>
           <BoonList />
           <h3>Warden&rsquo;s Hearts</h3>
@@ -466,7 +476,8 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" /> {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" />{' '}
+                    {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>
@@ -483,7 +494,8 @@ export function LearnScreen() {
               .map((s) => (
                 <div key={s.name} className="learn__row">
                   <dt>
-                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" /> {s.name}
+                    <GameIcon art={STATUS_ICONS[s.id]} pic={s.id} className="learn__icon" />{' '}
+                    {s.name}
                   </dt>
                   <dd>{s.text}</dd>
                 </div>
@@ -517,6 +529,8 @@ export function LearnScreen() {
                       <li key={l}>{l}</li>
                     ))}
                   </ul>
+                  <h5>Ascendancies</h5>
+                  <AscendancyList hero={h} />
                 </div>
               ))}
             </div>

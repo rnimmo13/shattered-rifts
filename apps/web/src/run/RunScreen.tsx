@@ -239,6 +239,7 @@ export default function RunScreen() {
     void reportRun({
       seed: r.seed,
       hero: r.character,
+      ascendancy: r.ascendancy,
       tier: r.tier,
       stage: done,
       name: getName() || 'Riftwalker',
@@ -281,6 +282,7 @@ export default function RunScreen() {
           void reportRun({
             seed: next.seed,
             hero: next.character,
+            ascendancy: next.ascendancy,
             tier: next.tier,
             stage: stagesCleared(next),
             name: getName() || 'Riftwalker',
@@ -473,7 +475,9 @@ export default function RunScreen() {
         <FightView
           key={plan.seed}
           {...(stakes ? { stakes } : {})}
-          {...(!plan.ghost && encounter(plan.encounterId).rule ? { rule: encounter(plan.encounterId).rule } : {})}
+          {...(!plan.ghost && encounter(plan.encounterId).rule
+            ? { rule: encounter(plan.encounterId).rule }
+            : {})}
           omens={omensAt(run.tier).map((o) => ({ name: o.name, text: o.text(run.tier) }))}
           {...(link
             ? { pvp: link }
@@ -786,9 +790,9 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: 20 Rift Tiers, each ending in a Warden. Win fights, add
-          cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and you
-          lose Resolve; lose all of it and the run collapses.
+          Choose a Riftwalker and begin a run: 20 Rift Tiers, each ending in a Warden. Win fights,
+          add cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and
+          you lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
@@ -1029,8 +1033,8 @@ function Body(props: {
           <p className="stage-panel__hint">
             The Warden falls, and you are not who you were.{' '}
             {run.context?.shardsGained ? `+${run.context.shardsGained} shards. ` : ''}This is your
-            reward: choose what the {RIFTWALKERS[run.character].hero.name} becomes. It lasts the rest of
-            this run, and it stays with this deck in the Arena.
+            reward: choose what the {RIFTWALKERS[run.character].hero.name} becomes. It lasts the
+            rest of this run, and it stays with this deck in the Arena.
           </p>
           <div className="choices-row">
             {(run.context?.ascendancies ?? []).map((id) => {

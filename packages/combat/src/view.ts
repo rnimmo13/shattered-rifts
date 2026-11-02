@@ -89,6 +89,8 @@ export interface SideView {
   costTax?: number;
   /** (the Trickster's Suits) the suits showing this turn; missing for a hero without Suits */
   suitsTurn?: Suit[];
+  /** (the Trickster's Suits) the Full Tricks made so far this fight: each makes the next one hit harder */
+  fullTricks?: number;
   /** (the Spellblade) the enchantments on her blade, oldest first; missing for a side that never had one */
   enchants?: Enchant[];
   /** (the Shaman) totem positions (a TotemDef id or null), and whether a totem was commanded this turn */
@@ -311,7 +313,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       etherealPlayed: sd.etherealPlayed ?? 0,
       deaths: sd.deaths ?? 0,
       costTax: sd.costTax ?? 0,
-      ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn] } : {}),
+      ...(sd.suitsTurn ? { suitsTurn: [...sd.suitsTurn], fullTricks: sd.fullTricks ?? 0 } : {}),
       ...(sd.enchants ? { enchants: [...sd.enchants] } : {}),
       ...(sd.totems
         ? {
@@ -2010,6 +2012,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.tags?.includes('flame')) parts.push('Flame.');
   if (c.tags?.includes('frost')) parts.push('Frost.');
   if (c.tags?.includes('storm')) parts.push('Storm.');
+  // (the Trickster's Wild cards, DECISIONS #535)
+  if (c.suit === 'wild') parts.push('Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣).');
   if (c.tags?.includes('prism'))
     parts.push(
       "Prism (for Trinity and your totems' help, it counts as an element you have not cast this turn).",

@@ -20,6 +20,7 @@ export async function syncSavedRuns(): Promise<void> {
         reportRun({
           seed: run.seed,
           hero: run.character,
+          ascendancy: run.ascendancy,
           tier: run.tier,
           stage: done,
           name: getName(),

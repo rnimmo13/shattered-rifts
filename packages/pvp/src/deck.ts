@@ -157,6 +157,14 @@ export function cleanName(raw: unknown): string {
   return name === '' || isProfane(name) ? 'Riftwalker' : name;
 }
 
+/** A run's Max HP as it arrives from outside: a whole number from 1 to MAX_RUN_HP, else none (DECISIONS #538). */
+export const MAX_RUN_HP = 999;
+export function cleanMaxHp(raw: unknown): number | null {
+  return typeof raw === 'number' && Number.isInteger(raw) && raw >= 1 && raw <= MAX_RUN_HP
+    ? raw
+    : null;
+}
+
 /** Check an entry that arrived over the wire (it can be anything) and return a clean copy, or why it is refused. */
 export function checkEntry(raw: unknown): Checked | Rejected {
   if (typeof raw !== 'object' || raw === null) return { ok: false, message: 'No deck was sent.' };
@@ -229,6 +237,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   const stage = typeof st === 'number' && Number.isInteger(st) && st >= 0 && st <= 3 ? st : null;
   const who = typeof e['who'] === 'string' && /^[0-9a-f]{64}$/.test(e['who']) ? e['who'] : null;
   const run = typeof e['run'] === 'string' && /^[0-9a-f]{8,16}$/.test(e['run']) ? e['run'] : null;
+  const maxHp = cleanMaxHp(e['maxHp']);
   return {
     ok: true,
     entry: {
@@ -242,6 +251,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
         : {}),
       tier: t,
       ...(stage === null ? {} : { stage }),
+      ...(maxHp === null ? {} : { maxHp }),
       ...(run === null ? {} : { run }),
       ...(who === null ? {} : { who }),
     },

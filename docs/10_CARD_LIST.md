@@ -358,7 +358,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Veil Strike, Set the We
 | Cut the Deck | 1 | skill | uncommon | Draw 2 cards. If you have played 3 or more suits this turn: Gain 1 Mana. |
 | Queen of Hearts | 1 | skill | uncommon | Gain 5 (+2 per suit played this turn) Barrier. |
 | Ace of Clubs | 1 | skill | uncommon | Apply 2 Exposed. Apply 1 Faltering. If you have played 3 or more suits this turn: Draw 1 card. |
-| Wild Card | 0 | skill | uncommon | Draw 1 card. Consume. |
+| Wild Card | 0 | skill | uncommon | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Draw 1 card. Consume. |
 | Saved Breath | 0 | skill | uncommon | Next turn, gain 2 extra Mana. Foresee 2. Consume. |
 | The Long Game | 1 | aura | uncommon | At the start of your turn: Draw 1 card. |
 | Frozen Moment | 1 | skill | uncommon | Cards in your hand cost 1 less the next time you play them. Consume. |
@@ -393,7 +393,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Veil Strike, Set the We
 | Pickpocket Master | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Royal Flourish | 2 | attack | rare | Deal damage equal to 7 times the suits played this turn. |
 | Showstopper | 3 | attack | rare | Costs 1 less for each suit played this turn. Deal 30 damage. |
-| The Joker | 1 | skill | rare | Add a random card from your pool to your hand (it costs 0 the next time you play it). |
+| The Joker | 1 | skill | rare | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Add a random card from your pool to your hand (it costs 0 the next time you play it). |
 | The Whole Deck | 1 | aura | rare | Whenever you make a Full Trick (all four suits this turn): Draw 2 cards and next turn, gain 1 extra Mana. |
 | Masquerade | 2 | aura | rare | At the end of your turn: Deal damage equal to 3 times the suits played this turn to ALL enemies. |
 | Deep Pockets | 2 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
@@ -661,7 +661,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Kindle Fury, St
 | Inner Sight | 1 | skill | uncommon | Gain 5 Barrier. Foresee 4. |
 | Held Breath | 1 | skill | uncommon | Gain 1 Holdfast. |
 | Rending Hands | 1 | attack | uncommon | Deal 6 damage 2 times. Lose 1 HP. |
-| Iron Body | 1 | aura | uncommon | Whenever you enter Fury: Lose 2 HP and gain 3 Primed. |
+| Iron Body | 1 | aura | uncommon | The first time each turn you enter Fury: Lose 1 HP and gain 4 Primed. |
 | Open Palm | 1 | attack | uncommon | Deal 5 damage 2 times. Leave your stance. |
 | Shield of Faith | 1 | skill | uncommon | Gain 7 Barrier. Gain 1 Fervor. |
 | Poise | 1 | aura | uncommon | Gain 3 Bracing for the rest of the fight. |
@@ -691,7 +691,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Kindle Fury, St
 | Unwavering | 2 | aura | rare | Whenever you discard a card: Gain 4 Barrier and gain 1 Fervor. Whenever a card is consumed: Gain 4 Barrier and gain 1 Fervor. |
 | Mountain's Stillness | 2 | skill | rare | Gain 6 (+3 per card in hand) Barrier. |
 | Breath Between Blows | 1 | aura | rare | Whenever you play a Skill: Gain 2 Barrier. |
-| Thousand Palms | 2 | attack | rare | Deal 3 damage 7 times. |
+| Thousand Palms | 2 | attack | rare | Deal 5 damage 4 times. |
 | Unbroken Calm | 2 | aura | rare | At the start of your turn: Gain 4 Barrier and draw 1 card. |
 | Eye of the Storm | 2 | aura | rare | At the start of your turn: Enter Fury, deal 4 damage to ALL enemies and gain 4 Barrier. |
 

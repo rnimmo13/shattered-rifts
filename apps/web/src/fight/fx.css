@@ -33,10 +33,37 @@
     0 0 10px rgb(255 214 120 / 0.55),
     0 3px 8px rgb(0 0 0 / 0.6);
 }
-.fxdim {
+/* a Trap's jaws (trapJaws): the top jaw meets the bottom one, turned over, in the middle */
+.fxjaws {
   position: absolute;
-  inset: 0;
-  background: #05030c;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 3px 6px rgb(0 0 0 / 0.75));
+}
+.fxjaws__top,
+.fxjaws__bottom {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  opacity: 0;
+}
+/* (both hinge at the left, like a jaw) */
+.fxjaws__top {
+  top: 0;
+  transform-origin: 0% 100%;
+}
+.fxjaws__bottom {
+  bottom: 0;
+  transform-origin: 0% 0%;
+}
+.fxjaws svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* (the bottom jaw is the top one turned over, half a tooth along, so the teeth close between each other) */
+.fxjaws__bottom svg {
+  transform: translateX(7%) scaleY(-1);
 }
 
 /* The moment an Ascendancy is chosen: the screen darkens, the crest rises, the old name burns away and the new one is written in gold. */

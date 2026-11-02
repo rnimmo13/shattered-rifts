@@ -95,6 +95,51 @@ describe('the Arena board', () => {
   });
 });
 
+describe('the Ascendancies on the boards (DECISIONS #539)', () => {
+  it('a run, an Arena player and a ghost show the Ascendancy their run took', () => {
+    const run = rankRuns([
+      {
+        player: 'p',
+        name: 'Ann',
+        hero: 'knight',
+        ascendancy: 'knight:paladin',
+        tier: 4,
+        stage: 0,
+        at: 1,
+      },
+      { player: 'q', name: 'Bo', hero: 'monk', tier: 2, stage: 0, at: 1 },
+    ]);
+    expect(run[0]?.ascendancy).toBe('knight:paladin');
+    expect(run[1]).not.toHaveProperty('ascendancy');
+    // (one Riftwalker played as itself and as an Ascendancy is two entries, each with its own record)
+    const pvp = rankPvp([
+      { player: 'p', name: 'Ann', hero: 'knight', won: true, at: 1 },
+      { player: 'p', name: 'Ann', hero: 'knight', ascendancy: 'knight:paladin', won: true, at: 2 },
+      { player: 'p', name: 'Ann', hero: 'knight', ascendancy: 'knight:paladin', won: false, at: 3 },
+    ]);
+    expect(pvp[0]?.heroes).toEqual([
+      { hero: 'knight', ascendancy: 'knight:paladin', wins: 1, losses: 1 },
+      { hero: 'knight', wins: 1, losses: 0 },
+    ]);
+    const ghost = rankGhosts([
+      {
+        ghost: 'g',
+        ownerName: 'Ann',
+        hero: 'knight',
+        ascendancy: 'knight:paladin',
+        tier: 5,
+        stage: 3,
+        ghostWon: true,
+        human: 'h',
+        humanName: 'Cy',
+        humanHero: 'monk',
+        at: 1,
+      },
+    ]);
+    expect(ghost[0]?.ascendancy).toBe('knight:paladin');
+  });
+});
+
 describe('the campaign board', () => {
   it('counts three stages to a Rift Tier', () => {
     expect(stagesInAll(1, 0)).toBe(0);

@@ -20,7 +20,25 @@ const PROTECT = new Set<StatusId>([
   'bracing',
   'fortified',
 ]);
-const SHARPEN = new Set<StatusId>(['might', 'vigor']);
+// (everything that makes your attacks hit harder or again is an Attack's business: Echoing Blow was ♦ until DECISIONS #535)
+const SHARPEN = new Set<StatusId>([
+  'might',
+  'vigor',
+  'twinned',
+  'edge',
+  'honed',
+  'fanned',
+  'cruelty',
+  'tracking',
+  'empowered',
+  'bladeecho',
+  'marrow',
+  'reaping',
+  'lethality',
+  'deftness',
+  'keen',
+  'ruinous',
+]);
 /** the targets that are on the other side */
 const FOES = new Set<Sel>(['allFoes', 'randomFoe', 'front', 'weakestFoe', 'attacker', 'attackerOrRandom']);
 
@@ -29,6 +47,14 @@ function suitOfOp(o: Op, aimsAtFoe: boolean): Suit | null {
     case 'damage':
     case 'loseHp':
       return o.to === 'self' ? null : 'spades';
+    case 'shatterBlast':
+      return 'spades';
+    // (cracking or stripping an enemy is harm put on them, as a debuff is)
+    case 'fracture':
+    case 'strip':
+      return FOES.has(o.to) || (o.to === 'target' && aimsAtFoe) ? 'clubs' : null;
+    case 'carryFracture':
+      return 'clubs';
     case 'barrier':
     case 'barrierNext':
     case 'heal':
@@ -58,6 +84,16 @@ function suitOfOp(o: Op, aimsAtFoe: boolean): Suit | null {
     default:
       return null;
   }
+}
+
+/**
+ * The suit a card adds to the ones showing this turn, or null if it adds none: its own, or for a Wild card the first one missing
+ * (in the order ♠ ♥ ♦ ♣; it fills one, never all of them: DECISIONS #535).
+ */
+export function suitShown(c: CardDef, shown: readonly Suit[]): Suit | null {
+  const suit = suitOf(c);
+  if (suit === 'wild') return SUITS.find((x) => !shown.includes(x)) ?? null;
+  return shown.includes(suit) ? null : suit;
 }
 
 /** A card's suit: its own if it names one, else an Attack is ♠, a Trap ♣, and anything else takes the suit of its first effect. */

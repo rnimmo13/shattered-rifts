@@ -11,6 +11,8 @@ import {
   type RunStanding,
 } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
+import { Picture } from '../ui/Picture';
+import { crestPic } from '../fight/fxMoments';
 import { TrophyBadges } from './Trophies';
 import { heroName, progressLabel } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
@@ -31,9 +33,10 @@ function timeLeft(now: number, period: Period): string {
   return 'under an hour left';
 }
 
+// (the Campaign board first, and the page opens on it: DECISIONS #539)
 const BOARDS: { id: BoardKind; name: string; blurb: string }[] = [
-  { id: 'pvp', name: 'Arena', blurb: 'Ranks and wins against other players' },
   { id: 'runs', name: 'Campaign', blurb: 'How far runs have got' },
+  { id: 'pvp', name: 'Arena', blurb: 'Ranks and wins against other players' },
   { id: 'ghosts', name: 'Ghosts', blurb: 'The computer-played decks' },
 ];
 
@@ -50,17 +53,34 @@ const HOW: Record<BoardKind | 'ranks', string> = {
 const percent = (wins: number, losses: number): string =>
   wins + losses === 0 ? '' : `${Math.round((100 * wins) / (wins + losses))}%`;
 
+/** A Riftwalker on a board: its class's crest and name once its run took an Ascendancy, else its icon (DECISIONS #539). */
+function Who(props: { hero: string; ascendancy?: string | undefined }) {
+  return props.ascendancy ? (
+    <Picture id={crestPic(props.ascendancy)} size={26}>
+      <HeroIcon hero={props.hero} size={24} />
+    </Picture>
+  ) : (
+    <HeroIcon hero={props.hero} size={24} />
+  );
+}
+
+/** A Riftwalker's name on a board: its Ascendancy's, with the class it grew from ("Paladin (Knight)"). */
+const whoName = (hero: string, ascendancy?: string): string =>
+  ascendancy ? `${heroName(hero, ascendancy)} (${heroName(hero)})` : heroName(hero);
+
 /** The characters a player used, each with its own record. */
-function Characters(props: { heroes: { hero: string; wins: number; losses: number }[] }) {
+function Characters(props: {
+  heroes: { hero: string; ascendancy?: string; wins: number; losses: number }[];
+}) {
   return (
     <span className="board__heroes">
       {props.heroes.map((h) => (
         <span
-          key={h.hero}
+          key={`${h.hero}|${h.ascendancy ?? ''}`}
           className="board__hero"
-          title={`${heroName(h.hero)}: ${h.wins} won, ${h.losses} lost`}
+          title={`${whoName(h.hero, h.ascendancy)}: ${h.wins} won, ${h.losses} lost`}
         >
-          <HeroIcon hero={h.hero} size={24} />
+          <Who hero={h.hero} ascendancy={h.ascendancy} />
           <small>
             {h.wins}–{h.losses}
           </small>
@@ -152,8 +172,9 @@ function YourPlace(props: { rank: number | null; played: string }) {
 type Seen = BoardView<PvpStanding> | BoardView<RunStanding> | GhostView;
 
 export function LeaderboardScreen() {
-  // (the Arena opens on its ranks; its week and month boards, which give the trophies, are a click away)
-  const [tab, setKind] = useState<BoardKind | 'ranks'>('ranks');
+  // (the page opens on the Campaign board; the Arena opens on its ranks, and its week and month boards, which give the trophies, are a
+  // click away)
+  const [tab, setKind] = useState<BoardKind | 'ranks'>('runs');
   // (the ranks board fetches itself: the others share the week/month machinery below)
   const kind: BoardKind = tab === 'ranks' ? 'pvp' : tab;
   const [period, setPeriod] = useState<Period>('week');
@@ -316,9 +337,9 @@ export function LeaderboardScreen() {
                   <span key="n" className="board__name">
                     {s.name}
                   </span>,
-                  <span key="h" className="board__hero">
-                    <HeroIcon hero={s.hero} size={24} />
-                    <small>{heroName(s.hero)}</small>
+                  <span key="h" className="board__hero" title={whoName(s.hero, s.ascendancy)}>
+                    <Who hero={s.hero} ascendancy={s.ascendancy} />
+                    <small>{whoName(s.hero, s.ascendancy)}</small>
                   </span>,
                   <b key="t">{progressLabel(s.tier, s.stage)}</b>,
                   // (the board counts 3 to a cleared tier)
@@ -350,9 +371,9 @@ export function LeaderboardScreen() {
                   <span key="n" className="board__name">
                     {g.name}&rsquo;s ghost
                   </span>,
-                  <span key="h" className="board__hero">
-                    <HeroIcon hero={g.hero} size={24} />
-                    <small>{heroName(g.hero)}</small>
+                  <span key="h" className="board__hero" title={whoName(g.hero, g.ascendancy)}>
+                    <Who hero={g.hero} ascendancy={g.ascendancy} />
+                    <small>{whoName(g.hero, g.ascendancy)}</small>
                   </span>,
                   g.tier,
                   <b key="w">{g.wins}</b>,

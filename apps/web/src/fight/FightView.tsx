@@ -21,7 +21,7 @@ import {
   clone,
   cardText,
   opText,
-  suitOf,
+  suitShown,
   createCombat,
   hashState,
   legalActions,
@@ -116,7 +116,7 @@ import {
   bump as bumpFx,
   centreOf,
   clearFx,
-  dimScreen,
+  trapJaws,
   flyCard,
   flyPicture,
   playFx,
@@ -357,9 +357,7 @@ function WhoTag(props: {
 
 /** The weapons Sharpen grows (the gun's is called Precision), shown as a buff on the hero (DECISIONS #399, #400; the Spellblade's
  * blade reads Spell Power now, not a Sharpen: DECISIONS #480). */
-const SHARPENED = [
-  { card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' },
-] as const;
+const SHARPENED = [{ card: 'old-twelve-gauge', name: 'The Old Twelve Gauge' }] as const;
 
 /** How sharp a side's weapon is: its sharpest copy (a copy made later starts fresh, DECISIONS #441). */
 function sharpOf(
@@ -444,7 +442,10 @@ export function FightView(props: {
   /** choices answered so far: two questions in a row with the same options still open a fresh choice window */
   const [pickCount, setPickCount] = useState(0);
   /** the cards marked so far in a choice made on the hand, and which choice they belong to */
-  const [handPicked, setHandPicked] = useState<{ key: string; cards: string[] }>({ key: '', cards: [] });
+  const [handPicked, setHandPicked] = useState<{ key: string; cards: string[] }>({
+    key: '',
+    cards: [],
+  });
   // (DECISIONS #429) a totem commanded just now: its spirit rises over it on the totem panel for a moment
   const [summon, setSummon] = useState<(TotemSummon & { side: Side }) | null>(null);
   const summonTimer = useRef<number | null>(null);
@@ -730,7 +731,9 @@ export function FightView(props: {
               list.map((f) => (f.id === going.id ? { ...f, burn: true } : f)),
             );
           } else {
-            const at = centreOf(document.querySelector('.pile--exhaust') ?? document.querySelector('.pile--discard'));
+            const at = centreOf(
+              document.querySelector('.pile--exhaust') ?? document.querySelector('.pile--discard'),
+            );
             if (at) playFx('card-burn', at, { size: 160, dur: 560 });
           }
           return;
@@ -982,9 +985,21 @@ export function FightView(props: {
         case 'snareSprung': {
           reduceEvent(db, d, e);
           const name = db.cards[e.card]?.name ?? 'Trap';
-          setBanner(`Trap! ${name}`, e.side === mySide ? 'good' : 'bad');
-          // the card flips up and the screen dims for a beat
-          dimScreen();
+          setBanner(`Trap sprung: ${name}`, e.side === mySide ? 'good' : 'bad');
+          // the card flips up, and jaws snap shut on whoever it caught: the one that set it off, or (a Trap that springs as their
+          // turn begins) the first one on the other side its own effects touch, never anything after it
+          {
+            let caught = e.caught;
+            for (let j = i + 1; !caught && j < Math.min(all.length, i + 8); j++) {
+              const x = all[j]!;
+              if (['act', 'play', 'turnStart', 'turnEnd', 'snareSprung', 'intent'].includes(x.type))
+                break;
+              const id = x.type === 'damage' || x.type === 'status' ? x.target : null;
+              if (id && unitOf(id) && unitOf(id)!.side !== e.side) caught = id;
+            }
+            const at = caught ? spotOf(caught) : null;
+            if (at) trapJaws(at, at.size * 0.9);
+          }
           {
             const trap = db.cards[e.card];
             if (trap) {
@@ -1851,6 +1866,15 @@ export function FightView(props: {
     const hero = view.sides[side].hero;
     const trick = hero ? db.heroes[hero]?.trait?.suits?.fullTrick : undefined;
     const aiming = side === mySide ? (dragCard ?? selectedCard ?? hoverCard) : null;
+    // what the next Full Trick deals: its damage, with what the Full Tricks so far this fight have added (it is no attack, so that is all)
+    const tricks = view.sides[side].fullTricks ?? 0;
+    const trickDmg = (trick ?? []).reduce(
+      (sum, o) =>
+        o.op === 'damage'
+          ? sum + o.amount + (o.scale?.by === 'fullTricks' ? (o.scale.mult ?? 1) * tricks : 0)
+          : sum,
+      0,
+    );
     return (
       <FloatPanel
         id={side === mySide ? 'suits-mine' : 'suits-foe'}
@@ -1859,7 +1883,8 @@ export function FightView(props: {
       >
         <SuitTrack
           shown={shown}
-          preview={aiming ? suitOf(aiming.def) : null}
+          preview={aiming ? suitShown(aiming.def, shown) : null}
+          {...(trickDmg > 0 ? { damage: trickDmg } : {})}
           {...(trick ? { fullTrick: trick.map((o) => opText(db, o)).join(' ') } : {})}
         />
       </FloatPanel>
@@ -2063,7 +2088,12 @@ export function FightView(props: {
   return (
     <div
       className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}`}
-      style={{ '--cw': `${cw}px`, '--hand-band': `${portraitHandBand(window.innerHeight)}px` } as React.CSSProperties}
+      style={
+        {
+          '--cw': `${cw}px`,
+          '--hand-band': `${portraitHandBand(window.innerHeight)}px`,
+        } as React.CSSProperties
+      }
     >
       <div
         className="fight__stage"
@@ -2392,8 +2422,8 @@ export function FightView(props: {
                 shake(document.querySelector('.fight__mana'));
               setBanner(
                 (c.cost ?? c.def.cost) >
-                (game.current?.state.sides[mySide].mana ?? 0) +
-                  (game.current?.state.sides[mySide].reserves ?? 0)
+                  (game.current?.state.sides[mySide].mana ?? 0) +
+                    (game.current?.state.sides[mySide].reserves ?? 0)
                   ? 'Not enough Mana'
                   : 'You cannot play that now',
                 'bad',
@@ -2413,7 +2443,9 @@ export function FightView(props: {
                 db={db}
                 def={hoverCard.def}
                 width={Math.round(Math.min(260, window.innerWidth * 0.56))}
-                playable={pickPool ? pickPool.includes(hoverCard.inst.id) : hoverCard.playable && !waiting}
+                playable={
+                  pickPool ? pickPool.includes(hoverCard.inst.id) : hoverCard.playable && !waiting
+                }
                 dimmed={pickPool ? !pickPool.includes(hoverCard.inst.id) : !hoverCard.playable}
                 {...(hoverCard.inst.bonus ? { bonus: hoverCard.inst.bonus } : {})}
                 {...(hoverCard.cost !== undefined && hoverCard.cost !== hoverCard.def.cost
@@ -2474,7 +2506,9 @@ export function FightView(props: {
                     <PotionButton
                       key={`${id}-${i}`}
                       id={id}
-                      disabled={waiting || finished || watch !== null || (view?.pending ?? null) !== null}
+                      disabled={
+                        waiting || finished || watch !== null || (view?.pending ?? null) !== null
+                      }
                       active={aimPotion === id}
                       onUse={() => {
                         const needs = legal.some(
@@ -2507,9 +2541,12 @@ export function FightView(props: {
           )}
           {handPickNow && view.pending && !finished && (
             <div className="fight__aimbar fight__aimbar--pick" role="status">
-              <b>{pickPrompt(view.pending)}</b> <span>{touch ? 'Tap' : 'Click'} a glowing card.</span>
+              <b>{pickPrompt(view.pending)}</b>{' '}
+              <span>{touch ? 'Tap' : 'Click'} a glowing card.</span>
               {pickSynergy.length > 0 && (
-                <em className="fight__pickSynergy">Premeditate cards come back next turn at 0 Mana.</em>
+                <em className="fight__pickSynergy">
+                  Premeditate cards come back next turn at 0 Mana.
+                </em>
               )}
               {view.pending.min < view.pending.max && (
                 <button
@@ -2569,29 +2606,31 @@ export function FightView(props: {
             )}
           </div>
           {/* (DECISIONS #443) on a small screen the two side columns fold into one drawer, opened by a button with their counts */}
-          {mode === 'portrait' && sideCount.boons + sideCount.auras + sideCount.foe > 0 && !sideOpen && (
-            // (your Boons and Auras at a glance in the room at the top left; tapping it opens the drawer with their whole text)
-            <button
-              className="fight__glance"
-              aria-label="Boons and Auras: open the list"
-              onClick={() => setSideOpen(true)}
-            >
-              {traitOf(setup[mySide]) && <b>{traitOf(setup[mySide])?.name}</b>}
-              {(mine.boons?.length ?? 0) > 0 && (
-                <span className="fight__glanceRow">
-                  ✦ {mine.boons?.length} {mine.boons?.length === 1 ? 'Boon' : 'Boons'}
-                </span>
-              )}
-              {[...new Set((me?.powers ?? []).map((p) => p.card))].map((card) => (
-                <span key={card} className="fight__glanceRow">
-                  ◈ {db.cards[card]?.name ?? 'Aura'}
-                </span>
-              ))}
-              {sideCount.foe > 0 && (
-                <span className="fight__glanceRow is-foe">☾ {sideCount.foe} against you</span>
-              )}
-            </button>
-          )}
+          {mode === 'portrait' &&
+            sideCount.boons + sideCount.auras + sideCount.foe > 0 &&
+            !sideOpen && (
+              // (your Boons and Auras at a glance in the room at the top left; tapping it opens the drawer with their whole text)
+              <button
+                className="fight__glance"
+                aria-label="Boons and Auras: open the list"
+                onClick={() => setSideOpen(true)}
+              >
+                {traitOf(setup[mySide]) && <b>{traitOf(setup[mySide])?.name}</b>}
+                {(mine.boons?.length ?? 0) > 0 && (
+                  <span className="fight__glanceRow">
+                    ✦ {mine.boons?.length} {mine.boons?.length === 1 ? 'Boon' : 'Boons'}
+                  </span>
+                )}
+                {[...new Set((me?.powers ?? []).map((p) => p.card))].map((card) => (
+                  <span key={card} className="fight__glanceRow">
+                    ◈ {db.cards[card]?.name ?? 'Aura'}
+                  </span>
+                ))}
+                {sideCount.foe > 0 && (
+                  <span className="fight__glanceRow is-foe">☾ {sideCount.foe} against you</span>
+                )}
+              </button>
+            )}
           {foldsSide(mode) && sideCount.total > 0 && (
             <button
               className={`fight__sideToggle${sideOpen ? ' is-open' : ''}`}

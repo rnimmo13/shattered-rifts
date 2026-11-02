@@ -876,7 +876,7 @@ export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 
 export interface CardDef {
   id: CardId;
-  /** its suit, when the rule in suits.ts would read it wrong; 'wild' counts as every suit */
+  /** its suit, when the rule in suits.ts would read it wrong; 'wild' shows the first suit missing this turn */
   suit?: Suit | 'wild';
   name: string;
   kind: CardKind;
@@ -1615,7 +1615,8 @@ export type CombatEvent =
   | { type: 'snareSet'; side: Side; snare: string }
   /** the suits showing this turn changed (`full`: all four, a Full Trick) */
   | { type: 'suits'; side: Side; suits: Suit[]; full: boolean }
-  | { type: 'snareSprung'; side: Side; snare: string; card: CardId }
+  /** `caught`: the unit that set the Trap off (none when it springs as the foe's turn begins); display only */
+  | { type: 'snareSprung'; side: Side; snare: string; card: CardId; caught?: UnitId }
   | { type: 'prevented'; unit: UnitId }
   | { type: 'stars'; side: Side; stars: number }
   | { type: 'reserves'; side: Side; reserves: number; max: number }

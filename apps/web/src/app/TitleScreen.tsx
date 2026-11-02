@@ -233,7 +233,7 @@ export function TitleScreen() {
             <small>
               {full
                 ? `You have ${RUN_SLOTS} runs in progress. Finish or abandon one to start another.`
-                : `Start a new campaign run as the ${hero.hero.name}, through ${MAX_TIER} tiers of fights.`}
+                : `Start a new campaign run as the ${hero.hero.name}, ascend through ${MAX_TIER} Rift Tiers and take down the final boss, Vorthax.`}
             </small>
           </button>
           <a className="home__play" href="#/arena">

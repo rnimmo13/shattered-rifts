@@ -261,6 +261,8 @@ export interface GhostBoss {
   boons: string[];
   /** the Ascendancy its owner took */
   ascendancy?: string;
+  /** the Max HP its run had when it was saved: its HP starts from this, not the class's own (DECISIONS #538); absent on older ghosts */
+  maxHp?: number;
   /** how far its owner had got when it was entered */
   tier: number;
   stage: number | null;
@@ -322,8 +324,8 @@ export interface NodeContext {
   };
   shrineUsed?: boolean;
   /**
-   * a Gambler's Shrine (Tier GAMBLER_TIER and up, DECISIONS #234): its altar, chisel and the blessings taken here (two different
-   * ones may be taken), with the Brass Reel beside it in `event` (until its prize is taken)
+   * a Gambler's Shrine (Tier GAMBLER_TIER and up, DECISIONS #234): its altar, chisel and the blessing taken here (one a visit,
+   * or the Brass Reel's prize in its place, DECISIONS #538), with the reel beside it in `event`
    */
   gambler?: GamblerShrine;
   /** prelude: the choice on offer (nodeId is empty) */

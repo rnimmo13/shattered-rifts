@@ -7,6 +7,7 @@ import {
   createCombat,
   legalActions,
   suitOf,
+  viewFor,
   type CombatState,
   type CombatEvent,
 } from '@sr/combat';
@@ -105,10 +106,41 @@ describe('Suits', () => {
     expect(r.state.sides.a.fullTrickTurn).toBe(true);
   });
 
-  it('a Wild card shows every suit at once', () => {
-    const s = play(fight(['wild-card']), 'wild-card').state;
+  it('a Wild card shows one suit you are missing, never all of them (DECISIONS #535)', () => {
+    const alone = play(fight(['wild-card']), 'wild-card').state;
+    expect(alone.sides.a.suitsTurn).toEqual(['spades']);
+    expect(alone.sides.a.fullTrickTurn).toBeFalsy();
+    // (with ♠ ♥ ♣ showing, it is the ♦ that makes the Full Trick)
+    const three = playAll(fight(['strike', 'defend', 'mark-prey', 'wild-card']), [
+      'strike',
+      'defend',
+      'mark-prey',
+    ]).state;
+    expect(three.sides.a.suitsTurn).toHaveLength(3);
+    const s = play(three, 'wild-card').state;
     expect(s.sides.a.suitsTurn).toHaveLength(4);
     expect(s.sides.a.fullTrickTurn).toBe(true);
+    expect(db.cards['wild-card']!.text ?? '').toBe('');
+  });
+
+  it('the view counts the Full Tricks made this fight, so the screen can say what the next one deals', () => {
+    const before = viewFor(db, fight(['wild-card']), 'a').sides.a;
+    expect(before.fullTricks).toBe(0);
+    const three = playAll(fight(['strike', 'defend', 'mark-prey', 'wild-card']), [
+      'strike',
+      'defend',
+      'mark-prey',
+      'wild-card',
+    ]).state;
+    expect(viewFor(db, three, 'a').sides.a.fullTricks).toBe(1);
+    // (a hero without Suits has neither)
+    expect(viewFor(db, fight([], 'knight'), 'a').sides.a.fullTricks).toBeUndefined();
+  });
+
+  it('what makes your attacks better is ♠, and cracking an enemy is ♣ (DECISIONS #535)', () => {
+    expect(suitOf(db.cards['echoing-blow']!)).toBe('spades');
+    expect(suitOf(db.cards['second-act']!)).toBe('spades');
+    expect(suitOf(db.cards['hairline-crack']!)).toBe('clubs');
   });
 
   it('only a hero with Suits keeps them', () => {

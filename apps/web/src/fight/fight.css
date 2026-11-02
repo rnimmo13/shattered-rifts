@@ -2530,6 +2530,24 @@ img.intent__pic {
   border-color: color-mix(in srgb, var(--suit) 70%, transparent);
   animation: suit-next 1s ease-in-out infinite;
 }
+/* what the next Full Trick deals, after the pips */
+.suittrack__dmg {
+  display: grid;
+  place-items: center;
+  min-width: 2.2rem;
+  padding: 0 0.15rem 0 0.4rem;
+  border-left: 1px solid rgb(255 255 255 / 0.18);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  color: #ffd36a;
+}
+.suittrack__dmg small {
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-text-dim, rgb(255 255 255 / 0.6));
+}
 .suittrack.is-full {
   border-color: #ffd36a;
   box-shadow:
