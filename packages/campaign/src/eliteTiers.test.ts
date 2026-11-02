@@ -5,7 +5,7 @@ import { clone, seedRng } from '@sr/combat';
 import { COMBAT_DB, encounter } from '@sr/content/v2';
 import { ALL_ELITE_TIER, ALL_WARDEN_TIER, FINAL_STAGE, ambushEnemy, eliteFightChance, generateStageMap, rollEliteFight, wardenFor } from './mapgen';
 import { omenEffects } from './omens';
-import { ELITE_HEAL_LAST_TIER, ELITE_HEAL_PCT, FIGHT_SHARDS, POTION_DROP_CHANCE, availableNodes, duelPlan, continueLoop, eliteRewards, enterNode, finishDuel, newRun, nextStage } from './run';
+import { ELITE_HEAL_LAST_TIER, ELITE_HEAL_PCT, FIGHT_SHARDS, POTION_DROP_CHANCE, availableNodes, duelPlan, continueLoop, eliteRewards, enterNode, finishDuel, newRun } from './run';
 import type { RunState, StageMap, StageRealm } from './types';
 
 const REALMS: StageRealm[] = ['aurelion', 'nexus', 'wyldmaw', 'umbral'];
@@ -35,10 +35,9 @@ describe('Elites by Rift Tier', () => {
     }
   });
 
-  it('the next act and the next tier build their maps at the run\'s tier', () => {
-    const base: RunState = { ...newRun('knight', 'next'), tier: ALL_WARDEN_TIER, phase: 'stageClear', context: null };
-    expect(count(nextStage(base).map, 'duel')).toBe(0);
-    const looped = continueLoop({ ...base, tier: ALL_ELITE_TIER, stage: FINAL_STAGE, phase: 'loopCleared' });
+  it('the next tier builds its map at its own tier', () => {
+    const base: RunState = { ...newRun('knight', 'next'), phase: 'loopCleared', context: null };
+    const looped = continueLoop({ ...base, tier: ALL_ELITE_TIER });
     expect(looped.tier).toBe(ALL_WARDEN_TIER);
     expect(count(looped.map, 'duel')).toBe(0);
     for (const n of looped.map.nodes) if (n.kind === 'elite') expect(encounter(n.enemyId!).kind).toBe('warden');
@@ -50,7 +49,7 @@ describe('Elites by Rift Tier', () => {
     expect(rollEliteFight(rng, 1)).toBe(false);
     expect(rng).toEqual(before);
     const m = generateStageMap(seedRng('pinned-map'), 1, 'nexus', 'knight');
-    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(`"ddemdeddemededdddeeesdddmddedmsddedeessw"`);
+    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(`"ddemdeddemededdddeeesdddddssw"`);
   });
 
   it('at Tier 19 no fight on any map is a plain one, on any floor of any act', () => {

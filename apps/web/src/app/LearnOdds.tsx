@@ -115,9 +115,9 @@ export function LearnOdds() {
 
       <h3>The map</h3>
       <p>
-        Each stop in an act (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
-        (the first one in an act, then {NODE_ODDS.eliteMore}%; from the third floor, and at most
-        six an act), a Merchant {NODE_ODDS.merchant}% (one or two in each half of the act), a Shrine{' '}
+        Each stop on a map (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
+        (the first one on a map, then {NODE_ODDS.eliteMore}%; from the third floor, and at most
+        about three for every seven floors), a Merchant {NODE_ODDS.merchant}% (one or two in every seven floors), a Shrine{' '}
         {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is always a Shrine), an
         Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a fight. An Event stop
         is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain
@@ -137,7 +137,7 @@ export function LearnOdds() {
         From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
         being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
         Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
-        usual HP at first; its HP and damage then grow with the tier and act like every
+        usual HP at first; its HP and damage then grow with the tier like every
         Warden&apos;s. From Tier {GHOST_ARENA_TIER} it starts from {GHOST_ARENA_HP_MULT}x, the HP
         of an Arena fight, and grows from there. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
       </p>
@@ -168,7 +168,7 @@ export function LearnOdds() {
         </li>
         <li>
           At Tier 1 every Elite gives a Boon, any Boon you lack as likely as another (the merchant sells one the
-          same way). Wardens give their Gift, not a Boon. Beating Vorthax leaves a Boon{' '}
+          same way). Wardens give their Gift, and leave a Boon as well{' '}
           {LOOP_BOON_CHANCE}% of the time. An
           Elite also heals {ELITE_HEAL_PCT}% of your HP, up to Tier {ELITE_HEAL_LAST_TIER}.
         </li>

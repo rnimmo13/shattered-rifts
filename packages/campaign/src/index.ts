@@ -5,7 +5,7 @@ export { V2_DECK_RULES as DECK_RULES } from '@sr/content/v2';
 
 export type * from './types';
 export { removableCards } from './deals';
-export { FINAL_STAGE, MAX_ELITES, MID_FLOOR, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
+export { FINAL_STAGE, depthOf, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
 export {
   PRICE,
   priceOf,
@@ -72,8 +72,7 @@ export {
   RETRY_HP_PCT,
   leaveMerchant,
   newRun,
-  nextStage,
-  realmOfStage,
+  realmOfRun,
   takeShrine,
   leaveShrine,
   type ShrineChoice,

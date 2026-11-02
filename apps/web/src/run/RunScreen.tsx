@@ -48,9 +48,8 @@ import {
   finishDuel,
   leaveMerchant,
   newRun,
-  nextStage,
   parseRun,
-  realmOfStage,
+  realmOfRun,
   takeShrine,
   leaveShrine,
   type Difficulty,
@@ -182,7 +181,7 @@ export default function RunScreen() {
     void autoSaveForArena(r).then((a) => {
       if (runRef.current?.seed !== r.seed) return; // (the run was left in the meantime)
       if (a.kind === 'full') {
-        const at = `${r.seed}:${r.tier}:${r.stage}`;
+        const at = `${r.seed}:${r.tier}`;
         if (fullTold.current.has(at)) return;
         fullTold.current.add(at);
         setArenaNote('full');
@@ -516,7 +515,7 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier} · Act ${run.stage}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
@@ -553,13 +552,13 @@ export default function RunScreen() {
             <div
               className="mapmodal"
               role="dialog"
-              aria-label="Act map"
+              aria-label="Tier map"
               data-realm={run.map.realm}
               onClick={() => setShowMap(false)}
             >
               <div className="mapmodal__panel" onClick={(e) => e.stopPropagation()}>
                 <h2 className="stage-panel__title">
-                  Act {run.stage}: {REALM_LABEL[realmOfStage(run, run.stage)]}
+                  Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
                 </h2>
                 <div className="mapwrap">
                   <MapView
@@ -568,7 +567,7 @@ export default function RunScreen() {
                     cleared={run.cleared}
                     available={new Set()}
                     onEnter={() => undefined}
-                    inkKey={`${run.seed}:${run.stage}`}
+                    inkKey={`${run.seed}:${run.tier}`}
                   />
                 </div>
                 <MapLegend />
@@ -787,7 +786,7 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: three acts, each ending in a Warden. Win fights, add
+          Choose a Riftwalker and begin a run: 20 Rift Tiers, each ending in a Warden. Win fights, add
           cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and you
           lose Resolve; lose all of it and the run collapses.
         </p>
@@ -862,7 +861,7 @@ function RunBar(props: {
         </b>
         <span>
           {progressLabel(run.tier, stagesCleared(run))}
-          {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfStage(run, run.stage)]}
+          {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfRun(run)]}
         </span>
       </div>
       <div className="runbar__stats">
@@ -979,9 +978,9 @@ function Body(props: {
   switch (run.phase) {
     case 'map':
       return (
-        <section className="stage-panel" aria-label="Act map">
+        <section className="stage-panel" aria-label="Tier map">
           <h2 className="stage-panel__title">
-            Act {run.stage}: {REALM_LABEL[realmOfStage(run, run.stage)]}
+            Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
           </h2>
           <p className="stage-panel__hint">
             Choose where to go next. Floors run {tallMap ? 'top to bottom' : 'left to right'}; the
@@ -994,7 +993,7 @@ function Body(props: {
               cleared={run.cleared}
               available={available}
               onEnter={(id) => act((r) => enterNode(r, id))}
-              inkKey={`${run.seed}:${run.stage}`}
+              inkKey={`${run.seed}:${run.tier}`}
             />
           </div>
           <MapLegend />
@@ -1138,34 +1137,30 @@ function Body(props: {
       );
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
-    case 'stageClear':
-      return (
-        <section className="stage-panel" aria-label="Act cleared">
-          <h2 className="stage-panel__title">Act {run.stage} cleared</h2>
-          <p className="stage-panel__hint">
-            The Warden is beaten and the rift seals behind you. Onward to Act {run.stage + 1}.
-          </p>
-          <button className="btn btn--primary" onClick={() => act((r) => nextStage(r))}>
-            <span>Onward</span>
-          </button>
-        </section>
-      );
     case 'loopCleared':
       return (
-        <section className="stage-panel" aria-label="Loop cleared">
-          <h2 className="stage-panel__title">The Heart of the Rift is silent</h2>
+        <section className="stage-panel" aria-label="Tier cleared">
+          <h2 className="stage-panel__title">
+            {run.tier < MAX_TIER ? 'The Warden has fallen' : 'The Heart of the Rift is silent'}
+          </h2>
           <p className="stage-panel__hint">
-            You cleared all three acts at Rift Tier {run.tier}. This deck is already in the Arena.
-            <b> Continue</b> one Tier deeper for harder enemies and better rewards, but if Resolve
-            runs out the run collapses and you can no longer bring its deck to the Arena (past Tier
-            3 it stays as a ghost others may face). Or leave the run parked and come back to it
-            later.
+            You cleared Rift Tier {run.tier}. This deck is already in the Arena.
+            {run.tier < MAX_TIER ? (
+              <>
+                <b> Continue</b> one Tier deeper for harder enemies and better rewards, but if
+                Resolve runs out the run collapses and you can no longer bring its deck to the Arena
+                (past Tier 3 it stays as a ghost others may face). Or leave the run parked and come
+                back to it later.
+              </>
+            ) : (
+              ' You have climbed the whole Rift, and beaten Vorthax at the top of it.'
+            )}
           </p>
           <div className="choices-row">
             {run.tier < MAX_TIER ? (
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
                 <b>Continue to Tier {run.tier + 1}</b>
-                <span>Keep your deck, heal fully, go back to Act 1, one deeper.</span>
+                <span>Keep your deck and your HP. One Tier deeper, and 2 floors longer.</span>
                 <span className="bigchoice__omen">
                   {omensOf(run.tier + 1).map((o) => (
                     <span key={o.id}>

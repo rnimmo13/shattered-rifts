@@ -259,7 +259,7 @@ export const MORE_EVENTS: EventDef[] = (
       weight: 0.9,
       title: 'The deep spring',
       text: 'A well at the bottom of a stair, going down much farther than a well should. The water is thick and warm. You can feel it asking.',
-      needs: (r) => r.stage >= 2,
+      needs: (r) => r.tier >= 2,
       opts: [
         ['Drink deep (two Wounds join your deck): +8 max HP', [maxHp(8), wound(2)]],
         ['Pour a potion in (a potion is lost): heal to full', [losePotion(1), heal(100)]],
@@ -316,7 +316,7 @@ export const MORE_EVENTS: EventDef[] = (
       weight: 0.9,
       title: 'The shrine of your own path',
       text: 'A small, plain shrine to the way you fight, built by someone who walked it before you and did not walk it far. It is not sure you are worthy, and says so.',
-      needs: (r) => r.stage >= 2,
+      needs: (r) => r.tier >= 2,
       opts: [
         [
           'Kneel (lose 20% of your HP): a random rare card of your class joins your deck',

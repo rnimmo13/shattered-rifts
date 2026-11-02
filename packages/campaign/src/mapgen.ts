@@ -1,6 +1,5 @@
-// Stage maps: a run is three stages of 15 floors, the Warden being the last (DECISIONS #512). Stages 1 and 2 are each one realm and end
-// with that realm's Warden. Stage 3 is the Rift, drawing on the two realms the run has not visited, then Vorthax (03_CAMPAIGN §2.1).
-// Generated from the run seed, so a run always has the same maps.
+// Tier maps: a run is 20 Rift Tiers with no acts between them (DECISIONS #531). Tier I is 10 floors and its Warden, and each tier after has
+// 2 floors more. Generated from the run seed, so a run always has the same maps.
 
 import { nextInt, type RngState } from '@sr/combat';
 import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
@@ -9,16 +8,19 @@ import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
 /** The chance (percent) that a merchant on the map is a Rift-crossed stranger selling another Riftwalker's cards. */
 export const CROSSED_MERCHANT_CHANCE = 7.5;
 
-/** A run is this many stages; the last one ends with Vorthax. */
+/** How deep enemy pools reach: the most `depthOf` gives, where the far realms join. */
 export const FINAL_STAGE = 3;
+/** Which enemies a tier can bring: the trios from Tier III, the far realms from Tier VI. (Its difficulty is the tier table's.) */
+export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 : 1);
 
-/** Floors before the Warden, who is the 15th. */
-export const floorsOf = (_stage: number): number => 14;
-/** Where an act's second half begins: each half has its Merchants (DECISIONS #512). */
-export const MID_FLOOR = 8;
-/** At most this many Elites from the map's own roll (a deeper tier adds more, DECISIONS #524), and Merchants in each half of an act. */
-export const MAX_ELITES = 6;
-export const MAX_MERCHANTS_A_HALF = 2;
+/** Floors before the Warden: 10 at Tier I and 2 more each tier (DECISIONS #531). */
+export const floorsOf = (tier: number): number => 8 + 2 * Math.max(1, tier);
+/** A map is cut into stretches of this many floors, each with its own Merchants. */
+export const MERCHANT_STRETCH = 7;
+const MIN_STRETCH = 3;
+/** At most this many Elites by a map's own roll per floor (a deep tier adds more, DECISIONS #524), and Merchants in a stretch. */
+export const MAX_ELITES_A_FLOOR = 6 / 14;
+export const MAX_MERCHANTS_A_STRETCH = 2;
 
 /** at most this many Events in a row along any path */
 export const MAX_EVENTS_IN_A_ROW = 2;
@@ -46,19 +48,19 @@ export function wardenFor(realm: StageRealm): Encounter {
 }
 
 /**
- * (DECISIONS #437) Every Warden a stage of this realm can end with: its first Warden and the ones of the expansion; on the second
- * stage the far realms' Wardens too. The Rift always ends with Vorthax.
+ * (DECISIONS #437, #531) Every Warden a tier in this realm can end with: its first Warden and the ones of the expansion; from the second depth
+ * the far realms' Wardens too, and not one that waits for a deeper tier. Tier XX, the Rift, ends with Vorthax.
  */
-export function wardensFor(realm: StageRealm, stage: number): Encounter[] {
-  if (stage >= FINAL_STAGE || realm === 'rift') return [wardenFor('rift')];
+export function wardensFor(realm: StageRealm, stage: number, tier = 1): Encounter[] {
+  if (realm === 'rift' || tier >= LAST_TIER) return [wardenFor('rift')];
   const first = wardenFor(realm);
   const more = ENCOUNTERS.filter(
     (e) =>
       e.kind === 'warden' &&
       e.id !== first.id &&
-      (e.realm === realm || (stage === FINAL_STAGE - 1 && FAR_REALMS.includes(e.realm))),
+      (e.realm === realm || (stage >= 2 && FAR_REALMS.includes(e.realm))),
   );
-  return [first, ...more];
+  return [first, ...more].filter((e) => (e.fromTier ?? 1) <= tier);
 }
 
 function enemiesOf(realm: string, kind: Encounter['kind'], stage = 1): Encounter[] {
@@ -76,7 +78,7 @@ function pick<T>(rng: RngState, list: readonly T[]): T {
   return list[nextInt(rng, list.length)] as T;
 }
 
-/** The chances (percent) for each middle-floor node: an Elite (the first of a stage, then later ones; from floor 3; a deeper tier adds more, see eliteFightChance), a Merchant (at most MAX_MERCHANTS_A_HALF in each half of the act), a Shrine (from floor 3), an Event; the rest are fights. */
+/** The chances (percent) for each middle-floor node: an Elite (the first of a map, then later ones; from floor 3; a deeper tier adds more, see eliteFightChance), a Merchant (at most MAX_MERCHANTS_A_STRETCH in each stretch), a Shrine (from floor 3), an Event; the rest are fights. */
 export const NODE_ODDS = {
   eliteFirst: 22,
   eliteMore: 12,
@@ -100,7 +102,7 @@ function rollKind(
   const eventAt = shrineAt + o.shrine;
   if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? o.eliteFirst : o.eliteMore))
     return 'elite';
-  if (merchantsPlaced < MAX_MERCHANTS_A_HALF && r >= merchantAt && r < shrineAt) return 'merchant';
+  if (merchantsPlaced < MAX_MERCHANTS_A_STRETCH && r >= merchantAt && r < shrineAt) return 'merchant';
   if (floor >= 3 && r >= shrineAt && r < eventAt) return 'shrine';
   if (r >= eventAt && r < eventAt + o.event) return 'event';
   return 'duel';
@@ -116,6 +118,8 @@ export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
 export const ALL_ELITE_TIER = 19;
 /** At this Rift Tier every one of those Elites is a Warden's fight (DECISIONS #526). */
 export const ALL_WARDEN_TIER = 20;
+/** The last Rift Tier, whose Warden is Vorthax. */
+const LAST_TIER = 20;
 /** The chance (percent) that a plain fight is an Elite instead: none at Tier I, then evenly up to all of them at ALL_ELITE_TIER. */
 export const eliteFightChance = (tier: number): number =>
   Math.min(100, Math.round(((Math.max(1, tier) - 1) * 100) / (ALL_ELITE_TIER - 1)));
@@ -187,7 +191,7 @@ export function generateStageMap(
   stage: number,
   realm: StageRealm,
   character?: string,
-  pool: readonly StageRealm[] = stage >= FINAL_STAGE ? ['umbral', 'wyldmaw'] : [realm],
+  pool: readonly StageRealm[] = realm === 'rift' ? ['umbral', 'wyldmaw'] : [realm],
   tier = 1,
 ): StageMap {
   const regulars = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'regular', stage));
@@ -200,13 +204,14 @@ export function generateStageMap(
     return e.id;
   };
 
-  const FLOORS = floorsOf(stage);
-  const maxElites = MAX_ELITES;
+  const FLOORS = floorsOf(tier);
+  const maxElites = Math.ceil(FLOORS * MAX_ELITES_A_FLOOR);
   const byFloor: MapNode[][] = [];
   let elites_ = 0;
   let merchants = 0;
   for (let floor = 1; floor <= FLOORS; floor++) {
-    if (floor === MID_FLOOR) merchants = 0;
+    // (a last stretch too short to be one joins the one before)
+    if (floor > 1 && (floor - 1) % MERCHANT_STRETCH === 0 && FLOORS - floor >= MIN_STRETCH) merchants = 0;
     const count = floor === FLOORS ? 2 : floor === 1 ? 2 + nextInt(rng, 2) : 2 + nextInt(rng, 3); // 2-4 nodes (2-3 on the first floor)
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
@@ -240,11 +245,12 @@ export function generateStageMap(
     id: `s${stage}-warden`,
     floor: FLOORS + 1,
     kind: 'warden',
-    enemyId: pick(rng, wardensFor(realm, stage)).id,
+    enemyId: pick(rng, wardensFor(realm, stage, tier)).id,
     next: [],
   };
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
-  if (tier > GHOST_FROM_TIER && nextInt(rng, 100) < GHOST_WARDEN_CHANCE) warden.ghost = true;
+  // (never Vorthax: the climb ends with him, DECISIONS #531)
+  if (tier > GHOST_FROM_TIER && realm !== 'rift' && nextInt(rng, 100) < GHOST_WARDEN_CHANCE) warden.ghost = true;
 
   // edges: every node leads forward to 1-2 nodes by position; every node on the next floor is reachable
   for (let f = 0; f < FLOORS; f++) {
@@ -288,12 +294,20 @@ export function generateStageMap(
     }
   }
 
-  // each half of a stage still has a Merchant somewhere: if none is left, one takes the place of a plain fight or event, away from any other
+  // each stretch still has a Merchant somewhere: if none is left, one takes the place of a plain fight or event, away from any other
   const nextTo = (n: MapNode, kind: NodeKind): boolean =>
     n.next.some((id) => byFloor[n.floor]?.find((m) => m.id === id)?.kind === kind) ||
     (byFloor[n.floor - 2] ?? []).some((m) => m.kind === kind && m.next.includes(n.id));
-  for (const part of [byFloor.slice(1, MID_FLOOR - 1), byFloor.slice(MID_FLOOR - 1, FLOORS - 1)]) {
+  const stretches: MapNode[][][] = [];
+  for (let at = 1; at < FLOORS - 1; ) {
+    let end = Math.min(FLOORS - 1, at === 1 ? MERCHANT_STRETCH : at + MERCHANT_STRETCH);
+    if (FLOORS - 1 - end < MIN_STRETCH) end = FLOORS - 1;
+    stretches.push(byFloor.slice(at, end));
+    at = end;
+  }
+  for (const part of stretches) {
     const stops = part.flat();
+    if (stops.length === 0) continue;
     if (stops.some((n) => n.kind === 'merchant')) continue;
     const plain = stops.filter((n) => n.kind === 'duel' || n.kind === 'event');
     const apart = plain.filter((n) => !nextTo(n, 'merchant'));

@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Acts are gone.** A run is now 20 Rift Tiers: Tier 1 is 10 floors and a Warden, and each tier is 2 floors longer. A Warden's fall leads straight to the next tier, with no full heal between them. Kron waits for Tier 3, and Vorthax for Tier 20.
 - **Spin To Win:** the window for removing cards stays open while you choose, and removing them takes the prize, so you can't spin after it. Two new prizes: +1 Resolve, and a copy of a card of your choice.
 - **A run already past Tier III without an Ascendancy** is offered one at its next Warden, in place of that Warden's Gift. Nobody can change one they have.
 - **Six Wardens have a rule of their own, from Tier I:** Kron hides behind a Foundry Hatch he keeps reopening, The Hollow Benediction's Acolytes feed it Might, The Mourning Tide has Low Tide and Beckoning cards, The Applause Below is Slippery, Seraphine kneels at half HP, and Mother of Static takes Mana and cards from your next turn. The rule is shown as the fight starts.

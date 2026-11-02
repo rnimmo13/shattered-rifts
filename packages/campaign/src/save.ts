@@ -34,7 +34,6 @@ const PHASES: readonly RunPhase[] = [
   'merchant',
   'event',
   'prelude',
-  'stageClear',
   'loopCleared',
   'collapsed',
   'banked',
@@ -53,10 +52,10 @@ const isStrArray = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');
 
 function validMap(map: unknown): map is RunState['map'] {
-  if (!isObj(map) || !isInt(map['stage'], 1, FINAL_STAGE) || !isInt(map['floors'], 1, 20))
+  if (!isObj(map) || !isInt(map['stage'], 1, FINAL_STAGE) || !isInt(map['floors'], 1, 60))
     return false;
   const nodes = map['nodes'];
-  if (!Array.isArray(nodes) || nodes.length === 0 || nodes.length > 60) return false;
+  if (!Array.isArray(nodes) || nodes.length === 0 || nodes.length > 240) return false;
   const ids = new Set<string>();
   for (const n of nodes as unknown[]) {
     if (!isObj(n) || typeof n['id'] !== 'string') return false;
@@ -65,7 +64,7 @@ function validMap(map: unknown): map is RunState['map'] {
   if (ids.size !== nodes.length) return false;
   for (const raw of nodes as unknown[]) {
     const n = raw as Partial<MapNode>;
-    if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 20)) return false;
+    if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 60)) return false;
     if (!isStrArray(n.next) || n.next.some((t) => !ids.has(t))) return false;
     if (n.crossed !== undefined && typeof n.crossed !== 'string') return false;
     // (a settled ghost that no longer checks out is dropped, and the usual Warden is fought)
@@ -389,6 +388,11 @@ export function parseRun(text: string): RunState | null {
   if (shop && typeof shop.crossed === 'string') shop.crossed = canonicalHero(shop.crossed);
   if (typeof r.seed !== 'string') return null;
   if (typeof r.character !== 'string' || !Object.hasOwn(RIFTWALKERS, r.character)) return null;
+  // (DECISIONS #531: acts are gone. A run saved between two acts has cleared its tier; one inside an act finishes that map, and that clears it)
+  if ((r.phase as string) === 'stageClear') {
+    r.phase = 'loopCleared';
+    r.context = null;
+  }
   // a run saved at the old starting choice (the kits, then the two uncommons) starts at The Threshold instead (DECISIONS #374)
   if ((r.phase as string) === 'kit' && Array.isArray(r.map?.nodes) && r.rng)
     restartAtThreshold(r as RunState);
@@ -468,6 +472,7 @@ export function parseRun(text: string): RunState | null {
     r.reworkNotice = `The ${name} was rebuilt (${rework.summary}) since this run was saved. Cards that left the ${name}'s pool became their nearest new cards, and a fight that was under way starts again from its first turn.`;
   }
   if (!isInt(r.tier, 1, 99) || !isInt(r.stage, 1, FINAL_STAGE)) return null;
+  r.stage = 1;
   if (!isInt(r.maxResolve, 1, 9) || !isInt(r.resolve, 0, r.maxResolve)) return null;
   if (!isInt(r.shards, 0, 1_000_000)) return null;
   if (!Array.isArray(r.deck) || r.deck.some((id) => !hasCard(id))) return null;

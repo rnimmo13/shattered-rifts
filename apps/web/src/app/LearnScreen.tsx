@@ -2,14 +2,13 @@ import { crestPic } from '../fight/fxMoments';
 import { Picture } from '../ui/Picture';
 import { useState } from 'react';
 import {
-  DMG_PER_STAGE,
   DMG_PER_TIER,
-  HP_PER_STAGE,
   HP_PER_TIER,
   LOOP_BOON_CHANCE,
   MAX_TIER,
   OMENS,
   enemyScale,
+  floorsOf,
   preludeCatalogue,
 } from '@sr/campaign';
 import type { StatusId } from '@sr/combat';
@@ -88,33 +87,26 @@ function TierTable() {
     <>
       <p className="learn__note">
         Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage, twice that
-        past Tier X; each act of a run adds {HP_PER_STAGE}% HP and {DMG_PER_STAGE}% damage.
+        past Tier X.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>
           <tr>
-            <th rowSpan={2}>Rift Tier</th>
-            <th colSpan={3}>Enemy HP (% of base)</th>
-            <th colSpan={3}>Enemy damage (% of base)</th>
-          </tr>
-          <tr>
-            {['Act 1', 'Act 2', 'Act 3', 'Act 1', 'Act 2', 'Act 3'].map((h, i) => (
-              <th key={i}>{h}</th>
-            ))}
+            <th>Rift Tier</th>
+            <th>Floors</th>
+            <th>Enemy HP (% of base)</th>
+            <th>Enemy damage (% of base)</th>
           </tr>
         </thead>
         <tbody>
           {tiers.map((t) => {
-            const stages = [1, 2, 3].map((st) => enemyScale(t, st));
+            const x = enemyScale(t, 1);
             return (
               <tr key={t}>
                 <th>{t}</th>
-                {stages.map((x, i) => (
-                  <td key={'h' + i}>{x.hp}%</td>
-                ))}
-                {stages.map((x, i) => (
-                  <td key={'d' + i}>{x.dmg}%</td>
-                ))}
+                <td>{floorsOf(t) + 1}</td>
+                <td>{x.hp}%</td>
+                <td>{x.dmg}%</td>
               </tr>
             );
           })}
@@ -293,7 +285,7 @@ export function LearnScreen() {
           <h2>Start here</h2>
           <p>
             Shattered Rifts is a card-fighting game. You pick a Riftwalker, build a deck as you go,
-            and fight through three acts. Every fight is a short card battle, and your HP carries
+            and climb the Rift Tiers. Every fight is a short card battle, and your HP carries
             from one to the next.
           </p>
           <h3>One turn, step by step</h3>
@@ -331,7 +323,7 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            A run is three acts, each a little longer than a short dungeon. Each act is a map:
+            A run is 20 Rift Tiers, each 2 floors longer than the last, and Tier 1 is 11. Each tier is a map:
             pick a path from the bottom up, and the Warden waits at the top.
           </p>
           <h3>Places on the map</h3>
@@ -348,7 +340,7 @@ export function LearnScreen() {
                 "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take two different blessings from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, with a free spin of the Spin To Win reel beside them.",
               ],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
-              ['Warden', 'The boss of the act. Beat it to heal a little and win back 1 Resolve.'],
+              ['Warden', 'The boss of the tier. Beat it to heal a little and win back 1 Resolve.'],
             ].map(([n, t]) => (
               <div key={n} className="learn__row">
                 <dt>{n}</dt>
@@ -368,18 +360,16 @@ export function LearnScreen() {
           </p>
           <h3>Rift Tiers</h3>
           <p>
-            Your deck is saved for the Arena as you go (after every stop you finish). Clear all
-            three acts and you can stop there, or <b>Continue</b> to the next Rift Tier: you heal
-            fully and keep your deck, but enemies have more HP and hit harder. Fall (or give up in
+            Your deck is saved for the Arena as you go (after every stop you finish). Beat a
+            tier&apos;s Warden and you can stop there, or <b>Continue</b> to the next Rift Tier: you
+            keep your deck and your HP, and enemies have more HP and hit harder. Fall (or give up in
             the middle of a fight) and the run&apos;s deck leaves the Arena; give up anywhere else
             and it stays. The climb ends at Tier 20.
           </p>
           <div className="learn__tierbox">
             <p>
-              Here is how tough enemies are at every act of every tier, as a percentage of their
-              base HP and damage (Tier I already starts above it). It only ever goes up: every act
-              is harder than the one before it, and Act 1 of the next tier is harder than the Rift
-              of this one.
+              Here is how long every tier is and how tough its enemies are, as a percentage of their
+              base HP and damage. It only ever goes up.
             </p>
             <TierTable />
           </div>
@@ -404,8 +394,8 @@ export function LearnScreen() {
           <h3>The Threshold and the Waymarks</h3>
           <p>
             Every run opens at <b>The Threshold</b>: three blessings and one option at a price.
-            Every act opens at a <b>Waymark</b>: a rest, two blessings, and half the time an
-            option at a price. These are all of them (shard amounts grow a little with each act;
+            Every tier after the first opens at a <b>Waymark</b>: a rest, two blessings, and half the time an
+            option at a price. These are all of them (shard amounts grow a little deeper in;
             Resolve is only offered when you are missing some; an option that could not do all it
             says, like removing Strikes you no longer have, is not offered).
           </p>

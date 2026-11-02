@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { COMBAT_DB, HEARTS } from '@sr/content/v2';
 import {
   MAX_TIER,
+  continueLoop,
   OMENS,
   availableNodes,
   chooseAscendancy,
@@ -12,7 +13,6 @@ import {
   enterNode,
   finishDuel,
   newRun,
-  nextStage,
   omenEffects,
   omensOf,
   omensAt,
@@ -52,17 +52,17 @@ describe('Rift Omens', () => {
     expect(omenEffects(MAX_TIER).enemyStatuses.thorns ?? 0).toBe(0);
   });
 
-  it('Rift Scars: from Tier V each new act leaves a Wound in the deck', () => {
+  it('Rift Scars: from Tier V each new tier leaves a Wound in the deck', () => {
     expect(omenEffects(4).actWounds).toBe(0);
     expect(omenEffects(5).actWounds).toBe(1);
     expect(omenEffects(12).actWounds).toBe(2);
-    const run = { ...newRun('knight', 'scars'), tier: 5, phase: 'stageClear' as const };
-    const after = nextStage(run);
+    const run = { ...newRun('knight', 'scars'), tier: 4, phase: 'loopCleared' as const };
+    const after = continueLoop(run);
     expect(after.deck.filter((c) => c === 'wound')).toHaveLength(1);
     expect(after.context?.prelude?.text).toContain('Rift Scars: a Wound joins your deck.');
     // (no more than 6 in a deck)
     const full = { ...run, deck: [...run.deck, ...Array.from({ length: 6 }, () => 'wound')] };
-    expect(nextStage(full).deck.filter((c) => c === 'wound')).toHaveLength(6);
+    expect(continueLoop(full).deck.filter((c) => c === 'wound')).toHaveLength(6);
   });
 
   it('stack, and grow with the tier', () => {
@@ -145,7 +145,7 @@ describe("Warden's Hearts", () => {
     const g = chooseHeart(r, 'gluttons-heart');
     expect(g.heart).toBe('gluttons-heart');
     expect(g.maxHp).toBe(r.maxHp - 20);
-    expect(g.phase).toBe('stageClear');
+    expect(g.phase).toBe('loopCleared');
   });
 
   it('taking another gives the first back', () => {
@@ -163,13 +163,12 @@ describe("Warden's Hearts", () => {
 });
 
 describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
-  const beat = (tier: number, stage: number, ascendancy?: string): RunState => {
+  const beat = (tier: number, _old: number, ascendancy?: string): RunState => {
     const r = newRun('knight', 'ascend-' + tier);
     const warden = r.map.nodes.find((n) => n.kind === 'warden')!;
     const here: RunState = {
       ...r,
       tier,
-      stage,
       phase: 'duel',
       at: warden.id,
       ...(ascendancy ? { ascendancy } : {}),
@@ -178,7 +177,7 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
     return finishDuel(here, true, 40);
   };
 
-  it('Tier III\'s last Warden offers three, in place of the Gift', () => {
+  it('Tier III\'s Warden offers three, in place of the Gift', () => {
     const r = beat(3, 3);
     expect(r.phase).toBe('ascend');
     expect(r.context?.ascendancies).toHaveLength(3);
@@ -187,22 +186,19 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
   });
 
   it('no other Warden does', () => {
-    expect(beat(3, 2).phase).toBe('gift');
-    expect(beat(2, 3).phase).toBe('gift');
-    expect(beat(4, 3, 'knight:paladin').phase).toBe('gift');
+    expect(beat(1, 1).phase).toBe('gift');
+    expect(beat(2, 1).phase).toBe('gift');
+    expect(beat(4, 1, 'knight:paladin').phase).toBe('gift');
   });
 
-  it('a run past Tier III without one, saved before they came, is offered it at its next last Warden', () => {
+  it('a run past Tier III without one, saved before they came, is offered it at its next Warden', () => {
     expect(beat(5, 3).phase).toBe('ascend');
     // (a run past Tier III without one is offered it at any Warden; a run below that, or with one, is not; DECISIONS #529)
     expect(beat(4, 1).phase).toBe('ascend');
     expect(beat(5, 2).phase).toBe('ascend');
-    expect(beat(3, 1).phase).toBe('gift');
-    expect(beat(3, 2).phase).toBe('gift');
-    expect(beat(2, 3).phase).toBe('gift');
+    expect(beat(2, 1).phase).toBe('gift');
     expect(beat(4, 1, 'knight:paladin').phase).toBe('gift');
-    // (taken mid-tier, the run goes on to its next act)
-    expect(chooseAscendancy(beat(4, 1), 'knight:paladin').phase).toBe('stageClear');
+    expect(chooseAscendancy(beat(4, 1), 'knight:paladin').phase).toBe('loopCleared');
     expect(() => chooseAscendancy({ ...beat(4, 1), ascendancy: 'knight:marshal' }, 'knight:paladin')).toThrow();
   });
 
@@ -225,7 +221,7 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
 
   it('cannot take another classâ€™s, or one not on offer', () => {
     expect(() => chooseAscendancy(beat(3, 3), 'monk:zealot')).toThrow();
-    expect(() => chooseAscendancy(beat(3, 2), 'knight:marshal')).toThrow();
+    expect(() => chooseAscendancy(beat(2, 1), 'knight:marshal')).toThrow();
   });
 
   it('a save mid-choice comes back, and a save naming another classâ€™s loses it', () => {

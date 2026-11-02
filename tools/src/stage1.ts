@@ -175,7 +175,7 @@ export function playStage1(
         if (deckPick?.cards[0]) run = pickDeckCard(run, deckPick.cards[0]);
         break;
       }
-      case 'stageClear':
+      case 'loopCleared':
         res.cleared = true;
         res.cards = run.deck.length - start;
         return res;

@@ -31,7 +31,7 @@ export interface OmenEffects {
   fewerChoices: number;
   /** cards that join your draw pile for each fight (not your deck) */
   fightCards: string[];
-  /** Wounds added to your deck with each new act */
+  /** Wounds added to your deck with each new tier */
   actWounds: number;
   /** elite fights bring one more of their weakest enemy */
   swarm: boolean;
@@ -178,7 +178,7 @@ const LISTED: Omen[] = [
     name: 'Rift Scars',
     text: (t) => {
       const n = at(t, T.riftScars.tier, T.riftScars.wounds);
-      return `Each new act leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
+      return `Each new tier leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
     },
     apply: (e, t) => void (e.actWounds += at(t, T.riftScars.tier, T.riftScars.wounds)),
   },

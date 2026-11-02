@@ -25,18 +25,15 @@ import {
   finishDuel,
   floorsOf,
   generateStageMap,
-  MAX_ELITES,
-  MID_FLOOR,
   DIFFICULTY,
   EVENT_FIGHT_ODDS,
   enemyScale,
   leaveMerchant,
   newRun,
-  nextStage,
   offerCards,
   parseRun,
   reachableNodes,
-  realmOfStage,
+  realmOfRun,
   serializeRun,
   takeShrine,
   upgradable,
@@ -105,13 +102,13 @@ describe('stage maps', () => {
     // (a realm has more than one Warden since DECISIONS #437: the second stage may also end with a far realm's)
     const warden = map.nodes.find((n) => n.kind === 'warden')?.enemyId;
     expect(wardensFor('nexus', 2).map((e) => e.id)).toContain(warden);
-    expect(wardensFor('nexus', 1).map((e) => e.id)).toEqual(['kron', 'mother-of-static']);
+    expect(wardensFor('nexus', 1, 3).map((e) => e.id)).toEqual(['kron', 'mother-of-static']);
     for (const n of map.nodes.filter((x) => x.kind === 'duel' || x.kind === 'elite'))
       expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
-  it('a run is three stages of 15 floors, a Warden the last of the first two and Vorthax of the Rift (DECISIONS #512)', () => {
-    expect([floorsOf(1) + 1, floorsOf(2) + 1, floorsOf(FINAL_STAGE) + 1]).toEqual([15, 15, 15]);
+  it('Tier I is 10 floors and a Warden, each tier 2 floors more, and Tier XX ends with Vorthax (DECISIONS #531)', () => {
+    expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([11, 13, 15, 49]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
     expect(first.floors).toBe(floorsOf(1) + 1);
@@ -120,7 +117,7 @@ describe('stage maps', () => {
       'umbral',
       'wyldmaw',
     ]);
-    expect(map.floors).toBe(floorsOf(FINAL_STAGE) + 1);
+    expect(map.floors).toBe(floorsOf(1) + 1);
     // no path ever has two Merchants in a row
     for (let s = 0; s < 150; s++)
       for (const stage of [1, 2, FINAL_STAGE]) {
@@ -144,7 +141,7 @@ describe('stage maps', () => {
           stage,
           stage >= FINAL_STAGE ? 'rift' : 'aurelion',
         );
-        const last = m.nodes.filter((n) => n.floor === floorsOf(stage));
+        const last = m.nodes.filter((n) => n.floor === floorsOf(1));
         expect(last.length).toBeGreaterThan(0);
         expect(
           last.every((n) => n.kind === 'shrine'),
@@ -166,12 +163,64 @@ describe('stage maps', () => {
     for (const r of realms) expect(['umbral', 'wyldmaw', ...FAR_REALMS]).toContain(r);
   });
 
-  it('every run visits four realms: two as stages, two in the Rift', () => {
-    const run = newRun('knight', 'realms');
-    expect(new Set(run.stageRealms).size).toBe(4);
-    expect(realmOfStage(run, 1)).toBe(run.stageRealms[0]);
-    expect(realmOfStage(run, 2)).toBe(run.stageRealms[1]);
-    expect(realmOfStage(run, 3)).toBe('rift');
+  it('each tier walks a realm, never the same one twice running, and the last is the Rift', () => {
+    let run: RunState = { ...newRun('knight', 'realms'), phase: 'loopCleared', context: null };
+    expect(realmOfRun(run)).toBe(run.stageRealms[0]);
+    for (let t = 2; t <= 20; t++) {
+      const before = realmOfRun(run);
+      const next = continueLoop(run);
+      expect(next.tier).toBe(t);
+      if (t < 20) expect(realmOfRun(next)).not.toBe(before);
+      else {
+        expect(realmOfRun(next)).toBe('rift');
+        expect(next.map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('vorthax');
+      }
+      expect(next.map.floors).toBe(floorsOf(t) + 1);
+      expect(parseRun(serializeRun(next))?.map.floors).toBe(floorsOf(t) + 1);
+      run = { ...next, phase: 'loopCleared', context: null };
+    }
+  });
+
+  it('a run saved inside the old acts carries on: between acts its tier is cleared, inside one it finishes that map', () => {
+    const base = fresh('knight', 'old-act');
+    const between = parseRun(serializeRun({ ...base, stage: 2, phase: 'stageClear' as never, context: null }));
+    expect(between?.phase).toBe('loopCleared');
+    expect(between?.stage).toBe(1);
+    const inside = parseRun(serializeRun({ ...base, tier: 2, stage: 3 }));
+    expect(inside?.stage).toBe(1);
+    expect(inside?.tier).toBe(2);
+    expect(inside?.map.floors).toBe(base.map.floors);
+    // an old Rift map, its ambushes still from the realms it was built on
+    const rift = {
+      ...base,
+      tier: 5,
+      stage: 3,
+      stageRealms: ['nexus', 'aurelion', 'umbral', 'wyldmaw'] as StageRealm[],
+      map: generateStageMap(seedRng('old-rift'), 3, 'rift', 'knight', ['umbral', 'wyldmaw'], 5),
+    };
+    const back = parseRun(serializeRun(rift));
+    expect(back?.map.realm).toBe('rift');
+    expect(back?.stageRealms.slice(-2)).toEqual(['umbral', 'wyldmaw']);
+  });
+
+  it('Tier XX ends with Vorthax himself, never a ghost', () => {
+    for (let i = 0; i < 100; i++) {
+      const m = generateStageMap(seedRng('finale-' + i), 3, 'rift', 'knight', ['umbral', 'wyldmaw'], 20);
+      const w = m.nodes.find((n) => n.kind === 'warden');
+      expect(w?.enemyId).toBe('vorthax');
+      expect(w?.ghost).toBeUndefined();
+    }
+  });
+
+  it('Kron waits for Tier III, and nothing is ever short of a Warden', () => {
+    for (let t = 1; t <= 19; t++)
+      for (const realm of ['aurelion', 'nexus', 'wyldmaw', 'umbral'] as StageRealm[]) {
+        for (const depth of [1, 2, 3]) {
+          const pool = wardensFor(realm, depth, t).map((e) => e.id);
+          expect(pool.length, realm + t).toBeGreaterThan(0);
+          expect(pool.includes('kron')).toBe(realm === 'nexus' && t >= 3);
+        }
+      }
   });
 
   it('is deterministic per seed', () => {
@@ -253,7 +302,7 @@ describe('the run', () => {
     expect(() => enterNode(r, 'nope')).toThrow(RunError);
     expect(() => finishDuel(r, true, 10)).toThrow(RunError);
     expect(() => chooseCard(r, null)).toThrow(RunError);
-    expect(() => nextStage(r)).toThrow(RunError);
+    expect(() => continueLoop(r)).toThrow(RunError);
     const inFight = enterNode(r, availableNodes(r)[0]!.id);
     expect(inFight.phase).toBe('duel');
     expect(duelPlan(inFight)?.deck).toHaveLength(10);
@@ -375,9 +424,6 @@ function botRun(hero: HeroId, seed: string): { run: RunState; fights: number } {
       case 'prelude':
         run = choosePrelude(run, run.context!.prelude!.options[0]!.id);
         break;
-      case 'stageClear':
-        run = nextStage(run);
-        break;
       case 'loopCleared':
         return { run: bank(run), fights };
       default:
@@ -405,11 +451,12 @@ describe('a whole run, played by the bot', () => {
     );
   });
 
-  it('continuing a loop raises the tier and heals', () => {
-    const r = { ...fresh('knight', 'loop'), phase: 'loopCleared' as const, hp: 10 };
+  it('continuing raises the tier, and is no extra rest: only the Warden healed (DECISIONS #531)', () => {
+    const r = { ...fresh('knight', 'loop'), phase: 'loopCleared' as const, hp: 10, resolve: 1 };
     const c = continueLoop(r);
     expect(c.tier).toBe(2);
-    expect(c.hp).toBe(c.maxHp);
+    expect(c.hp).toBe(10);
+    expect(c.resolve).toBe(1);
     expect(c.stage).toBe(1);
   });
 
@@ -616,15 +663,15 @@ describe('the other rooms and the rules around them', () => {
       ),
     ).toBe(true);
     const skipped = chooseCard(won, null);
-    expect(skipped.phase).toBe('stageClear');
+    expect(skipped.phase).toBe('loopCleared');
     expect(skipped.deck).toEqual(won.deck);
     const picked = chooseCard(won, won.context!.offers![0]!);
-    expect(picked.phase).toBe('stageClear');
-    expect(nextStage(picked).stage).toBe(2);
+    expect(picked.phase).toBe('loopCleared');
+    expect(continueLoop(picked).tier).toBe(2);
   });
 
   it('the last Warden leaves its Gift too, and then the loop is cleared (DECISIONS #352)', () => {
-    const base = { ...fresh('knight', 'final-boss'), stage: FINAL_STAGE };
+    const base = fresh('knight', 'final-boss');
     const wardenNode = base.map.nodes.find((n) => n.kind === 'warden')!;
     const run: RunState = {
       ...base,
@@ -701,39 +748,47 @@ describe('the heal after a won fight (DECISIONS #285, removed from Kesh in #333)
   });
 });
 
-describe('an act of 15 floors (DECISIONS #512)', () => {
-  const maps = Array.from({ length: 300 }, (_, i) =>
-    generateStageMap(seedRng('fifteen-' + i), 1 + (i % 3), i % 3 === 2 ? 'rift' : 'nexus', 'knight'),
+describe('a tier of its own length (DECISIONS #531)', () => {
+  // (every tier below Elites everywhere: a stretch cut short was once a Merchant beside a Merchant at Tiers 4, 11 and 18)
+  const tiers = Array.from({ length: 19 }, (_, i) => i + 1);
+  const maps = Array.from({ length: 760 }, (_, i) =>
+    generateStageMap(seedRng('tiered-' + i), 1 + (i % 3), 'nexus', 'knight', ['nexus'], tiers[i % 19]),
   );
   const onFloor = (m: (typeof maps)[number], f: number) => m.nodes.filter((n) => n.floor === f);
 
-  it('has 15 floors, the last the boss alone', () => {
-    for (const m of maps) {
-      expect(m.floors).toBe(15);
-      expect(onFloor(m, 15).map((n) => n.kind)).toEqual(['warden']);
-    }
+  it('has its floors and the boss alone at the end', () => {
+    maps.forEach((m, i) => {
+      expect(m.floors).toBe(floorsOf(tiers[i % 19]!) + 1);
+      expect(onFloor(m, m.floors).map((n) => n.kind)).toEqual(['warden']);
+    });
   });
 
   it('rests before the boss, and no floor before it is all Shrines by rule', () => {
-    for (const m of maps) expect(onFloor(m, 14).every((n) => n.kind === 'shrine')).toBe(true);
-    const allShrines = maps.filter((m) => onFloor(m, MID_FLOOR).every((n) => n.kind === 'shrine'));
+    for (const m of maps) expect(onFloor(m, m.floors - 1).every((n) => n.kind === 'shrine')).toBe(true);
+    const allShrines = maps.filter((m) => onFloor(m, 5).every((n) => n.kind === 'shrine'));
     expect(allShrines.length).toBeLessThan(maps.length / 10);
   });
 
-  it('has a Merchant in each half, and at most 4 Merchants and 6 Elites', () => {
+  it('has a Merchant in every seven floors, and Elites only where a tier adds them past the usual', () => {
     for (const m of maps) {
       const merchants = m.nodes.filter((n) => n.kind === 'merchant');
-      expect(merchants.some((n) => n.floor < MID_FLOOR)).toBe(true);
-      expect(merchants.some((n) => n.floor >= MID_FLOOR)).toBe(true);
-      expect(merchants.length).toBeLessThanOrEqual(4);
-      expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(MAX_ELITES);
+      // (the floors with none between them are never more than two stretches long)
+      const at = merchants.map((n) => n.floor).sort((x, y) => x - y);
+      expect(at[0]!).toBeLessThanOrEqual(9);
+      for (let i = 1; i < at.length; i++) expect(at[i]! - at[i - 1]!).toBeLessThanOrEqual(19);
+      expect(m.floors - at[at.length - 1]!).toBeLessThanOrEqual(14);
+    }
+    const t1 = Array.from({ length: 100 }, (_, i) => generateStageMap(seedRng('t1-e' + i), 1, 'nexus', 'knight'));
+    for (const m of t1) {
+      expect(m.floors).toBe(11);
+      expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(5);
     }
   });
 
   it('never has two Merchants, Shrines or Elites in a row', () => {
     for (const m of maps) {
       for (const n of m.nodes) {
-        if (n.kind !== 'merchant' && n.kind !== 'shrine' && n.kind !== 'elite') continue;
+        if (n.kind !== 'merchant' && n.kind !== 'shrine' && (n.kind !== 'elite' || m.floors !== 11)) continue;
         for (const id of n.next) {
           const after = m.nodes.find((x) => x.id === id)!;
           expect(after.kind, n.id).not.toBe(n.kind);
@@ -745,13 +800,13 @@ describe('an act of 15 floors (DECISIONS #512)', () => {
   it('every stop can be reached and leads on to the boss', () => {
     for (const m of maps) {
       const seen = new Set(onFloor(m, 1).map((n) => n.id));
-      for (let f = 1; f < 15; f++)
+      for (let f = 1; f < m.floors; f++)
         for (const n of onFloor(m, f)) {
           expect(seen.has(n.id), n.id).toBe(true);
           expect(n.next.length, n.id).toBeGreaterThan(0);
           n.next.forEach((id) => seen.add(id));
         }
-      expect(seen.has(onFloor(m, 15)[0]!.id)).toBe(true);
+      expect(seen.has(onFloor(m, m.floors)[0]!.id)).toBe(true);
     }
   });
 });

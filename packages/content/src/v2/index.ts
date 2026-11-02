@@ -433,6 +433,8 @@ export interface Encounter {
   kind: EncounterKind;
   /** front to back */
   units: string[];
+  /** a Warden that waits for this Rift Tier before it can end one (missing: 1; DECISIONS #531) */
+  fromTier?: number;
   /** a Warden's rule, in a sentence, shown as its fight starts (DECISIONS #528) */
   rule?: string;
   /** (DECISIONS #437) the first stage it can be met on (missing: 1): a trio waits for the second */
@@ -498,7 +500,7 @@ export const ENCOUNTERS: Encounter[] = [
   enc('hive-7', 'Hive-7', 'nexus', 'elite', 'hive-7'),
   enc('ghostwire', 'Ghostwire', 'nexus', 'elite', 'ghostwire'),
   ruled(
-    enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'foundry-hatch', 'kron'),
+    { ...enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'foundry-hatch', 'kron'), fromTier: 3 },
     'The Foundry Hatch: your aimed attacks must break it to reach Kron, and he reopens it, stronger each time.',
   ),
 

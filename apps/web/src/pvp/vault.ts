@@ -54,14 +54,15 @@ export function deckFromRun(
 }
 
 /** How many of the tier's stages the run has cleared (3: the tier is cleared). */
-export function stagesCleared(run: Pick<RunState, 'phase' | 'stage'>): number {
-  if (run.phase === 'loopCleared') return 3;
-  // (the Warden's gift comes after the Warden has fallen, so that stage is already beaten)
-  const n =
-    run.phase === 'stageClear' || run.phase === 'gift' || run.phase === 'ascend'
-      ? run.stage
-      : run.stage - 1;
-  return Math.min(3, Math.max(0, n));
+export function stagesCleared(run: Pick<RunState, 'phase'> & { context?: RunState['context'] }): number {
+  // (a tier has no acts now, DECISIONS #531, but the boards and old decks still count 3 for a cleared tier. The Warden's gift comes after
+  // the Warden has fallen, so the tier is already beaten)
+  return run.phase === 'loopCleared' ||
+    run.phase === 'gift' ||
+    run.phase === 'ascend' ||
+    run.context?.afterWarden
+    ? 3
+    : 0;
 }
 
 /** A copy of the deck as it stood after stage `after` (0 = the start of the tier). Like every save, it replaces the run's earlier one. */

@@ -8,7 +8,6 @@ import {
   continueLoop,
   makePrelude,
   newRun,
-  nextStage,
   parseRun,
   serializeRun,
   type PreludeEffect,
@@ -96,13 +95,13 @@ describe('the choice at the start of a run', () => {
     expect(() => choosePrelude({ ...r, phase: 'map', context: null }, 'x')).toThrow(RunError);
   });
 
-  it('a new stage and a new loop open a Waymark with a rest, blessings, and sometimes a bargain', () => {
+  it('a new tier opens a Waymark with a rest, blessings, and sometimes a bargain', () => {
     const base = {
       ...newRun('knight', 'waymark', 'normal'),
-      phase: 'stageClear' as const,
+      phase: 'loopCleared' as const,
       context: null,
     };
-    const next = nextStage(base);
+    const next = continueLoop(base);
     expect(next.phase).toBe('prelude');
     expect(next.context?.prelude?.kind).toBe('stage');
     expect(next.context?.prelude?.options[0]?.id).toBe('rest');
@@ -434,7 +433,7 @@ describe('offers that fit the run (DECISIONS #517)', () => {
   it('the real run reads its own deck', () => {
     const r: RunState = {
       ...newRun('knight', 'fit-real', 'normal'),
-      phase: 'stageClear',
+      phase: 'loopCleared',
       deck: [
         'sundering-blow',
         'heavy-swing',
@@ -449,7 +448,7 @@ describe('offers that fit the run (DECISIONS #517)', () => {
       ],
     };
     for (let i = 0; i < 40; i++) {
-      const after = nextStage({ ...r, seed: `fit-${i}`, rng: seedRng(`fit-${i}`) });
+      const after = continueLoop({ ...r, seed: `fit-${i}`, rng: seedRng(`fit-${i}`) });
       const list = after.context?.prelude?.options ?? [];
       expect(list.length).toBeGreaterThan(0);
       expect(effects(list).some((e) => e.k === 'remove' || e.k === 'transform')).toBe(false);

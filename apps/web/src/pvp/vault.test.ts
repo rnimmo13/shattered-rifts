@@ -28,14 +28,15 @@ const run = (seed: string, tier = 1) => ({
 
 describe('how far a run has got in its tier', () => {
   const at = (phase: string, stage: number) => stagesCleared({ phase, stage } as never);
-  it('counts the stages already beaten', () => {
+  it('counts 3 for a beaten tier and 0 before that, as the boards do', () => {
     expect(at('prelude', 1)).toBe(0);
     expect(at('map', 1)).toBe(0);
-    expect(at('map', 2)).toBe(1);
-    expect(at('stageClear', 1)).toBe(1);
-    expect(at('gift', 2)).toBe(2);
-    expect(at('prelude', 3)).toBe(2);
-    expect(at('loopCleared', 3)).toBe(3);
+    expect(at('gift', 1)).toBe(3);
+    expect(at('ascend', 1)).toBe(3);
+    expect(at('loopCleared', 1)).toBe(3);
+    // (an extra reward picked after the Warden is still a beaten tier)
+    expect(stagesCleared({ phase: 'reward', context: { nodeId: 'w', afterWarden: true } })).toBe(3);
+    expect(stagesCleared({ phase: 'reward', context: { nodeId: 'w' } })).toBe(0);
   });
 
   it('is recorded on the saved deck', () => {
@@ -107,10 +108,10 @@ describe('the Vault', () => {
     expect(labelOf(deckFromRun(run('a', 3), 1))).toBe('Knight: Tier 3 · Cleared');
   });
 
-  it('a copy taken after a stage says so', () => {
+  it('a copy taken inside a tier says only the tier: acts are gone', () => {
     const mid = deckFromStage(run('a', 2), 1, 1);
-    expect(labelOf(mid)).toBe('Knight: Tier 2 · Act 2/3');
-    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Knight: Tier 2 · Act 1/3');
+    expect(labelOf(mid)).toBe('Knight: Tier 2');
+    expect(labelOf(deckFromStage(run('a', 2), 1, 0))).toBe('Knight: Tier 2');
   });
 
   it('saving the same run again replaces its earlier save instead of adding a second', () => {

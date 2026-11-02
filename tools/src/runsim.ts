@@ -25,7 +25,6 @@ import {
   finishDuel,
   leaveMerchant,
   newRun,
-  nextStage,
   takeShrine,
   leaveShrine,
   upgradable,
@@ -106,7 +105,7 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         const by = (k: string) => nodes.find((n) => n.kind === k);
         const pick =
           (hpFrac < 0.7 ? by('shrine') : undefined) ??
-          (hpFrac >= 0.7 && run.stage >= 2 ? by('elite') : undefined) ??
+          (hpFrac >= 0.7 && run.tier >= 2 ? by('elite') : undefined) ??
           by('duel') ??
           by('warden') ??
           by('event') ??
@@ -184,10 +183,6 @@ function playRun(h: HeroId, d: Difficulty, i: number): Result {
         if (deckPick?.cards[0]) run = pickDeckCard(run, deckPick.cards[0]);
         break;
       }
-      case 'stageClear':
-        run = nextStage(run);
-        res.stage = run.stage;
-        break;
       case 'loopCleared':
         res.cleared = true;
         res.stalled = false;

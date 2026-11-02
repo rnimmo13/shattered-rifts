@@ -1,5 +1,6 @@
 // The Rift Tier table: THE place to tune how hard each tier is. Edit the numbers; nothing else needs to change.
 //
+// (Since DECISIONS #531 a run has no acts: fights use a row's first column, and the other two only keep old rows readable.)
 // Each row is one Rift Tier (row 1 = Tier I) and gives enemy HP and attack damage for each of the run's three stages, as a percent
 // of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I itself runs above the base (players
 // found the base too easy, DECISIONS #228; #234, #257, #261).

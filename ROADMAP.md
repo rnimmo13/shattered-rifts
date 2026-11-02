@@ -12,11 +12,11 @@ support funds the full game on Steam.
 ## 🟢 Phase 1: Friends Alpha *(in progress)*
 - The core duel: units, spells, **traps**, and the Chain
 - Three characters: **Ser Maren** (Aurelion), **Rivet** (Nexus-9), **Kesh** (Wyldmaw)
-- Act 1 of the run and its Warden, card rewards, shops and shrines
+- The first Rift Tier and its Warden, card rewards, shops and shrines
 - Save export/import
 
 ## 🔵 Phase 2: The Full Run & PvP Beta
-- All the acts, including the Umbral Veil (the trap realm), and the final boss **Vorthax**
+- All 20 Rift Tiers, including the Umbral Veil (the trap realm), and the final boss **Vorthax**
 - Unlock a fourth character: **Vesper Nightlace**
 - **Stop or Continue:** your deck is saved for PvP as you go; push one Rift Tier deeper and a fall takes it out of the Arena
 - **Rift Tiers I–X**, Boons, events, Tempering, foil and alternate-art drops

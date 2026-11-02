@@ -38,13 +38,13 @@ const inFight = (base: RunState, kind: 'elite' | 'warden' | 'duel'): RunState =>
 };
 
 describe('boons in a run', () => {
-  it('an Elite win drops a boon you did not own (a Warden gives its Gift instead); max HP applies', () => {
+  it('an Elite win drops a boon you did not own (a Warden gives its Gift, and only sometimes one); max HP applies', () => {
     const warden = finishDuel(
       { ...inFight(fresh('knight', 'boon-w'), 'warden'), hp: 30 },
       true,
       30,
     );
-    expect(warden.boons).toEqual([]);
+    expect(warden.boons.length).toBeLessThanOrEqual(1);
     for (let i = 0; i < 20; i++) {
       const run = { ...inFight(fresh('knight', `boon${i}`), 'elite'), hp: 30 };
       const won = finishDuel(run, true, 30);

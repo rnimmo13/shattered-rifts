@@ -48,8 +48,7 @@ export type RunPhase =
   | 'merchant'
   | 'event'
   | 'prelude' // the choice at the start of a run or a stage
-  | 'stageClear' // a stage was just cleared; the next stage begins when the player continues
-  | 'loopCleared' // all three stages done: Bank or Continue
+  | 'loopCleared' // the tier's Warden has fallen: Bank or Continue
   | 'collapsed' // Resolve reached 0: the run and its deck are lost
   | 'banked'; // the deck was banked for PvP
 

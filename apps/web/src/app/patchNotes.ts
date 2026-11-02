@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.153.0',
+    date: '2026-11-01',
+    title: 'No more acts: 20 Rift Tiers',
+    summary: 'A run is now one climb. Each tier is a single map that ends in a Warden, and the next one is harder straight away.',
+    notes: [
+      { kind: 'changed', text: 'Acts are gone. Tier 1 is 10 floors and a Warden, and each tier after it is 2 floors longer, up to 48 and a Warden at Tier 20.' },
+      { kind: 'changed', text: 'Every Warden leads to the next tier. Each still heals you a little and gives back 1 Resolve, but going on no longer heals you fully. Each new tier opens at a Waymark, which always offers a rest.' },
+      { kind: 'changed', text: 'You still choose your Ascendancy for beating Tier 3. Kron now waits for Tier 3, and Vorthax for Tier 20. Tougher enemy groups join from Tier 3, and the far realms from Tier 6.' },
+      { kind: 'changed', text: 'A run in progress finishes the map it is on, and that clears its tier.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.152.0',
     date: '2026-11-01',
     title: 'Wardens with rules, and a deeper Rift',

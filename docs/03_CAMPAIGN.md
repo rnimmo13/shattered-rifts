@@ -1,6 +1,6 @@
 # Shattered Rifts: Campaign, Runs & Seasons
 
-> **Players see Tiers > Acts > Floors (DECISIONS #490).** Where this doc and the code say "stage", read "act": the code, saves and the server keep the name `stage`.
+> **Acts are gone (DECISIONS #531):** a run is 20 Rift Tiers, each one map: Tier I is 10 floors and a Warden, each tier 2 floors more. Anything below that speaks of stages or acts is older. **Players once saw Tiers > Acts > Floors (DECISIONS #490).** Where this doc and the code say "stage", read "act": the code, saves and the server keep the name `stage`.
 
 The campaign is a **run**, in the style of Slay the Spire. Pick a character, start with a small Grimoire, and grow
 it one choice at a time across **five stages**. Clear all five and you face the real decision of the game:

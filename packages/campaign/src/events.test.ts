@@ -55,8 +55,8 @@ const SETUP: Record<string, Partial<RunState>> = {
   'treasure-dig': { marks: ['map'] },
   'dying-lamp': { hp: 20 },
   tollkeeper: { shards: 400 },
-  'deep-spring': { stage: 2, potions: ['healing-philtre'] },
-  'class-shrine': { stage: 2 },
+  'deep-spring': { tier: 2, potions: ['healing-philtre'] },
+  'class-shrine': { tier: 2 },
   'potion-trade': { potions: ['healing-philtre', 'healing-philtre'] },
   'legend-reliquary': {
     deck: [...RIFTWALKERS.knight.starter, 'oath-of-iron', 'foundry-awakens+'],

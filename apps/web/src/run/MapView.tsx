@@ -139,7 +139,7 @@ export function MapView(props: {
   // (an act is too long for most screens: it opens on where you are, or where you can go)
   const holder = useRef<HTMLDivElement>(null);
   const opened = useRef<string | null>(null);
-  const place = `${props.map.stage}:${props.at ?? ''}:${tall ? 'tall' : 'wide'}`;
+  const place = `${props.map.nodes[0]?.id ?? ''}:${props.map.floors}:${props.at ?? ''}:${tall ? 'tall' : 'wide'}`;
   useEffect(() => {
     if (opened.current === place) return;
     opened.current = place;

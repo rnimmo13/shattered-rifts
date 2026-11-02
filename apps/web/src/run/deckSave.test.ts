@@ -13,7 +13,7 @@ describe('when the deck is saved for the Arena by itself', () => {
     expect(shouldAutoSave(stepped(0, 'shrine'), stepped(1))).toBe(true);
   });
   it("when the Warden's Gift has been picked (the Warden itself was cleared before it)", () => {
-    expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'stageClear'))).toBe(true);
+    expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'loopCleared'))).toBe(true);
     expect(shouldAutoSave(stepped(5, 'gift'), stepped(5, 'gift'))).toBe(false);
   });
   it('not in the middle of a stop, for the same count, or for another run', () => {

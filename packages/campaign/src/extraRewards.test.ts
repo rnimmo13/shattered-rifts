@@ -62,7 +62,7 @@ describe('extra card rewards', () => {
     expect(run.context?.extraRewards).toBeUndefined();
     expect(run.context!.offers!.length).toBe(plain.context!.offers!.length + 1);
     const next = chooseCard(run, run.context!.offers![0]!);
-    expect(['stageClear', 'loopCleared']).toContain(next.phase);
+    expect(next.phase).toBe('loopCleared');
   });
 
   it('taking a Warden’s Heart ends the Gift too', () => {
@@ -76,7 +76,7 @@ describe('extra card rewards', () => {
     );
     const heart = run.context?.hearts?.[0];
     if (!heart) return; // (no Heart on offer at this tier: the card path above covers it)
-    expect(['stageClear', 'loopCleared']).toContain(chooseHeart(run, heart).phase);
+    expect(chooseHeart(run, heart).phase).toBe('loopCleared');
   });
 
   it('pays at most MAX_EXTRA_REWARDS (more are dropped, the fight still reports), and refuses a negative count', () => {

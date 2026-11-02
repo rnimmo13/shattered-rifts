@@ -29,7 +29,7 @@ import {
 import {
   CROSSED_MERCHANT_CHANCE,
   EVENT_FIGHT_ODDS,
-  FINAL_STAGE,
+  depthOf,
   ghostCleared,
   GHOST_FROM_TIER,
   ALL_ELITE_TIER,
@@ -168,16 +168,19 @@ export const restHeal = (run: RunState): number =>
 export const shopPrice = (run: RunState, n: number): number =>
   Math.round((n * (100 + omenEffects(run.tier).pricePct)) / 100);
 
-/** Stages 1 and 2 are the first two realms of the run; the last stage is the Rift. */
-export function realmOfStage(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm {
-  if (stage < FINAL_STAGE) return run.stageRealms[stage - 1] as StageRealm;
-  return 'rift';
+/** The realm of the tier being walked. */
+export const realmOfRun = (run: Pick<RunState, 'map'>): StageRealm => run.map.realm;
+
+/** The realm of a tier, chosen as it opens: never the one just walked, and the Rift at the last tier. */
+function realmOfTier(rng: RngState, tier: number, last?: StageRealm): { realm: StageRealm; order: StageRealm[] } {
+  const order = shuffledRealms(rng).filter((x) => x !== last);
+  return { realm: tier >= MAX_TIER ? 'rift' : (order[0] as StageRealm), order };
 }
 
-/** Where a stage's enemies come from: its own realm, or in the Rift the realms not yet visited (an old save has one left). */
-function enemyRealms(run: Pick<RunState, 'stageRealms'>, stage: number): StageRealm[] {
-  if (stage < FINAL_STAGE) return [realmOfStage(run, stage)];
-  const rest = run.stageRealms.slice(FINAL_STAGE - 1);
+/** Where a tier's enemies come from: its own realm, or in the Rift the last two of its order (an old save's Rift map was built from them too). */
+function enemyRealms(run: Pick<RunState, 'stageRealms' | 'map'>): StageRealm[] {
+  if (run.map.realm !== 'rift') return [run.map.realm];
+  const rest = run.stageRealms.slice(-2);
   return rest.length > 0 ? rest : ['umbral'];
 }
 
@@ -234,8 +237,8 @@ function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
     prelude: makePrelude(
       run.rng,
       kind,
-      run.stage,
-      realmOfStage(run, run.stage),
+      depthOf(run.tier),
+      realmOfRun(run),
       run.resolve < run.maxResolve,
       BOONS.length - run.boons.length,
       {
@@ -337,9 +340,9 @@ export function chooseAscendancy(run: RunState, id: string): RunState {
   return r;
 }
 
-/** After the Warden's Gift: the next stage, or, after the last stage, the loop is cleared (DECISIONS #352). */
+/** After the Warden's Gift the tier is cleared (DECISIONS #352, #531). */
 function afterGift(r: RunState): void {
-  r.phase = r.stage >= FINAL_STAGE ? 'loopCleared' : 'stageClear';
+  r.phase = 'loopCleared';
   r.context = null;
 }
 
@@ -501,10 +504,10 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       const foe = ambush
         ? ambushEnemy(
             r.rng,
-            enemyRealms(r, r.stage),
+            enemyRealms(r),
             ambush,
             r.map.nodes.map((n) => n.enemyId),
-            r.stage,
+            depthOf(r.tier),
             r.tier,
           )
         : null;
@@ -699,9 +702,9 @@ export function duelPlan(run: RunState): FightPlan | null {
       ? {
           ghost: {
             ...ghost,
-            hp: ghostBossHp(ghost.hero, run.tier, run.stage),
+            hp: ghostBossHp(ghost.hero, run.tier),
             // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
-            dmgPct: Math.round(ghostBossDmg(run.tier, run.stage) * wardenUp),
+            dmgPct: Math.round(ghostBossDmg(run.tier) * wardenUp),
           },
         }
       : {}),
@@ -721,12 +724,12 @@ export function duelPlan(run: RunState): FightPlan | null {
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
       (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) *
-        enemyScale(run.tier, run.stage).hp *
+        enemyScale(run.tier, 1).hp *
         eliteHpUp,
     ),
     dmgPct: Math.round(
       (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
-        enemyScale(run.tier, run.stage).dmg *
+        enemyScale(run.tier, 1).dmg *
         wardenUp *
         eliteDmgUp,
     ),
@@ -862,10 +865,7 @@ export function finishDuel(
     // Tier III's last Warden: the reward is an Ascendancy, in place of the Gift, a Heart and whatever the Heart of the Rift leaves. A run
     // past it without one (saved before they came) is offered it at its next Warden of any act (DECISIONS #519, #529). A new run
     // has chosen by then, as the Tier III offer cannot be passed by, and one already chosen is never offered again.
-    if (
-      !r.ascendancy &&
-      (r.tier > ASCEND_TIER || (r.tier === ASCEND_TIER && r.stage >= FINAL_STAGE))
-    ) {
+    if (!r.ascendancy && r.tier >= ASCEND_TIER) {
       r.context = {
         nodeId: node.id,
         ascendancies: ascendanciesOf(r.character).map((a) => a.id),
@@ -878,14 +878,12 @@ export function finishDuel(
       r.phase = 'ascend';
       return r;
     }
-    if (r.stage >= FINAL_STAGE) {
-      // the Heart of the Rift sometimes leaves something behind: a Boon you do not have yet
-      if (nextInt(r.rng, 100) < LOOP_BOON_CHANCE) {
-        const left = offerBoon(r.rng, r.boons);
-        if (left) {
-          gainBoon(r, left);
-          r.eventResult = `${r.eventResult} The Heart of the Rift leaves something behind: the Boon ${COMBAT_DB.boons[left]?.name ?? left}.`;
-        }
+    // a fallen Warden sometimes leaves something behind: a Boon you do not have yet
+    if (nextInt(r.rng, 100) < LOOP_BOON_CHANCE) {
+      const left = offerBoon(r.rng, r.boons);
+      if (left) {
+        gainBoon(r, left);
+        r.eventResult = `${r.eventResult} It leaves something behind: the Boon ${COMBAT_DB.boons[left]?.name ?? left}.`;
       }
     }
     // every Warden, the last one too, leaves its Gift: a card, one of two Warden's Hearts, or nothing (DECISIONS #246, #352). It is
@@ -995,28 +993,6 @@ function scarDeck(r: RunState): void {
     offer.text += ` Rift Scars: ${added === 1 ? 'a Wound joins' : `${added} Wounds join`} your deck.`;
 }
 
-/** After a Warden: start the next stage. */
-
-export function nextStage(run: RunState): RunState {
-  need(run.phase === 'stageClear', 'The act is not cleared yet');
-  const r = clone(run);
-  r.stage += 1;
-  r.map = generateStageMap(
-    r.rng,
-    r.stage,
-    realmOfStage(r, r.stage),
-    r.character,
-    enemyRealms(r, r.stage),
-    r.tier,
-  );
-  r.cleared = [];
-  r.at = null;
-  openPrelude(r, 'stage');
-  scarDeck(r);
-  return r;
-}
-
-// ---- the start of a run
 /**
  * A run saved before it left the old starting choice (the kits of DECISIONS #333, the two uncommons of #365): it starts again at
  * The Threshold with the plain starting deck (changes `run`, which must be a copy).
@@ -1521,10 +1497,10 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
     const kind = ev.fight.kind === 'duel' && rollEliteFight(r.rng, r.tier) ? 'elite' : ev.fight.kind;
     const foe = ambushEnemy(
       r.rng,
-      enemyRealms(r, r.stage),
+      enemyRealms(r),
       kind,
       r.map.nodes.map((n) => n.enemyId),
-      r.stage,
+      depthOf(r.tier),
       r.tier,
     );
     need(foe, 'There is nothing here to fight');
@@ -1671,23 +1647,21 @@ export function bank(run: RunState): RunState {
   return r;
 }
 
-/** Push on: one Rift Tier deeper, same deck, back to Stage 1. */
+/** Push on: one Rift Tier deeper, same deck. The Warden's own heal and Resolve are all the rest there is (DECISIONS #531). */
 export function continueLoop(run: RunState): RunState {
   need(run.phase === 'loopCleared', 'You can only continue a cleared loop');
   need(run.tier < MAX_TIER, `Rift Tier ${MAX_TIER} is as deep as it goes`);
   const r = clone(run);
   r.tier += 1;
-  if (r.tier < 8) r.resolve = Math.min(r.maxResolve, r.resolve + 1);
-  // a loop cleared is a loop rested: back to full HP for the next one
-  heal(r, r.maxHp);
   r.stage = 1;
-  r.stageRealms = shuffledRealms(r.rng);
+  const next = realmOfTier(r.rng, r.tier, r.map.realm);
+  r.stageRealms = next.order;
   r.map = generateStageMap(
     r.rng,
-    1,
-    r.stageRealms[0] as StageRealm,
+    depthOf(r.tier),
+    next.realm,
     r.character,
-    undefined,
+    next.realm === 'rift' ? next.order.slice(-2) : [next.realm],
     r.tier,
   );
   r.cleared = [];
