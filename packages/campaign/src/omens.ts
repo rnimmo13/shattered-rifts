@@ -357,6 +357,8 @@ export function omenMods(
   units: readonly string[],
   boss: boolean,
   hpOf: (id: string) => number,
+  /** (DECISIONS #547) the finale: its four quarters are its rises, so the Omens add none to it (their statuses still come) */
+  ownRises = false,
 ): EnemyMod[] {
   const mods: EnemyMod[] = [];
   if (Object.keys(e.enemyStatuses).length) mods.push({ statuses: { ...e.enemyStatuses } });
@@ -372,11 +374,12 @@ export function omenMods(
       rise: [...e.allRise],
     });
   if (boss) {
-    if (Object.keys(e.bossStatuses).length || e.bossRise.length)
+    const rises = ownRises ? [] : e.bossRise;
+    if (Object.keys(e.bossStatuses).length || rises.length)
       mods.push({
         units: [lead],
         ...(Object.keys(e.bossStatuses).length ? { statuses: { ...e.bossStatuses } } : {}),
-        ...(e.bossRise.length ? { rise: [...e.bossRise] } : {}),
+        ...(rises.length ? { rise: [...rises] } : {}),
       });
   } else if (e.leaderRise.length) mods.push({ units: [lead], rise: [...e.leaderRise] });
   return mods;

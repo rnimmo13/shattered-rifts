@@ -203,8 +203,9 @@ export function replayFight(
           lostIn.set(round, (lostIn.get(round) ?? 0) + e.lost);
           // named for what did it: a Trap, the unit's move, the card being played, or (no source) a status ticking
           const src = e.source;
-          const name =
-            trap ??
+          const name = e.fate
+            ? 'Fate'
+            : trap ??
             (src === heroId
               ? `${cause?.side === me ? cause.label : 'Your own cards'} (your own)`
               : src

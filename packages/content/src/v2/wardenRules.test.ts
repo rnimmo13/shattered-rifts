@@ -1,7 +1,15 @@
 // A rule of its own for each of six Wardens (DECISIONS #528).
 
 import { describe, expect, it } from 'vitest';
-import { applyAction, clone, createCombat, legalActions, type CombatState, type Unit } from '@sr/combat';
+import {
+  applyAction,
+  clone,
+  createCombat,
+  legalActions,
+  viewFor,
+  type CombatState,
+  type Unit,
+} from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, encounter } from './index';
 
 function fight(id: string): CombatState {
@@ -40,9 +48,10 @@ function strike(s: CombatState, target: Unit): CombatState {
 }
 
 describe('every rule is told', () => {
-  it('the six Wardens say their rule, and only they do for now', () => {
-    const ruled = ENCOUNTERS.filter((e) => e.rule).map((e) => e.id).sort();
-    expect(ruled).toEqual(['kron', 'mother-of-static', 'seraphine', 'the-applause-below', 'the-hollow-benediction', 'the-mourning-tide']);
+  it('every Warden says its rule (DECISIONS #528, #546)', () => {
+    const wardens = ENCOUNTERS.filter((e) => e.kind === 'warden');
+    expect(wardens.length).toBe(11);
+    for (const e of wardens) expect(e.rule, e.id).toBeTruthy();
   });
 });
 
@@ -194,6 +203,180 @@ describe('Seraphine: the Kneeling', () => {
       expect(unit(c, 'seraphine')!.intent?.move).not.toBe('kneel');
       c = endTurn(c);
     }
+  });
+});
+
+// ---- the other five (DECISIONS #546) ----
+
+const heroOf = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
+
+describe('Gorrmaw: the Hunger', () => {
+  it('Gorge eats every Maw Spawn, 6% of its max HP and 2 Might for each', () => {
+    // (its loop: Spawn, Bite, Spawn, Gorge; so after the second Spawn there are two, and Gorge is next)
+    const t = clone(until(until(fight('gorrmaw'), 'gorrmaw', 'spawn'), 'gorrmaw', 'spawn'));
+    expect(t.sides.b.units.filter((u) => u.def === 'maw-spawn')).toHaveLength(2);
+    const g = unit(t, 'gorrmaw')!;
+    g.hp = g.maxHp - 50;
+    g.statuses.might = 0;
+    g.intent = { move: 'gorge', target: heroOf(t).id };
+    const ate = endTurn(t);
+    expect(ate.sides.b.units.filter((u) => u.def === 'maw-spawn')).toHaveLength(0);
+    expect(unit(ate, 'gorrmaw')!.statuses.might).toBe(4);
+    // (6% of its max HP for each, DECISIONS #547)
+    expect(unit(ate, 'gorrmaw')!.hp).toBe(g.maxHp - 50 + 2 * Math.floor(g.maxHp * 0.06));
+  });
+
+  it('with none to eat it starves: Exposed, no heal', () => {
+    const t = clone(fight('gorrmaw'));
+    t.sides.b.units = t.sides.b.units.filter((u) => u.def !== 'maw-spawn');
+    const g = unit(t, 'gorrmaw')!;
+    g.hp = g.maxHp - 50;
+    g.intent = { move: 'gorge', target: heroOf(t).id };
+    const starved = endTurn(t);
+    expect(unit(starved, 'gorrmaw')!.statuses.exposed ?? 0).toBeGreaterThan(0);
+    expect(unit(starved, 'gorrmaw')!.hp).toBe(g.maxHp - 50);
+  });
+});
+
+describe('The Upside-Down Stag: the Turnover', () => {
+  it('takes your Barrier for its own, then strikes you unguarded', () => {
+    const t = clone(fight('the-upside-down-stag'));
+    const st = unit(t, 'the-upside-down-stag')!;
+    st.intent = { move: 'turnover', target: heroOf(t).id };
+    // (Barrier raised against it, held through the end of the turn)
+    const h = heroOf(t);
+    const hp = h.hp;
+    t.sides.a.hand = [];
+    const r = applyAction(db, t, { type: 'endTurn' }).state;
+    // (no Barrier raised: the full blow lands, and it takes none)
+    expect(hp - heroOf(r).hp).toBeGreaterThanOrEqual(12);
+    const g = clone(t);
+    heroOf(g).statuses.blur = 1;
+    heroOf(g).barrier = 30;
+    const after = applyAction(db, g, { type: 'endTurn' }).state;
+    // (all of it, with the Barrier the Knight's held Reserves add as the turn ends)
+    expect(unit(after, 'the-upside-down-stag')!.barrier).toBeGreaterThanOrEqual(30);
+    expect(heroOf(after).barrier).toBe(0);
+    expect(hp - heroOf(after).hp).toBeGreaterThanOrEqual(12);
+  });
+});
+
+describe('Queen of the Unmade: Unmaking', () => {
+  it('the costliest card of your next hand is Consumed, then it clears', () => {
+    const t = clone(fight('queen-of-the-unmade'));
+    const h = heroOf(t);
+    h.statuses.unmaking = 1;
+    // (a move of hers that Unmakes nothing, so only the one stack is there)
+    unit(t, 'queen-of-the-unmade')!.intent = { move: 'crown', target: h.id };
+    // (a draw pile of 1-cost Strikes with one dearer card in it, all drawn next turn)
+    const dear = Object.values(db.cards).find(
+      (c) => c.cost === 3 && c.hero === 'knight' && !c.unplayable && !c.retain,
+    )!;
+    t.sides.a.hand = [];
+    t.sides.a.discard = [];
+    t.sides.a.draw = ['strike', 'strike', dear.id, 'strike', 'strike', 'strike'].map((card, i) => ({
+      id: `Q${i}`,
+      card,
+    }));
+    const r = endTurn(t);
+    expect(heroOf(r).statuses.unmaking ?? 0).toBe(0);
+    expect(r.sides.a.exhausted.map((c) => c.card)).toEqual([dear.id]);
+    expect(r.sides.a.hand.some((c) => c.card === dear.id)).toBe(false);
+  });
+
+  it('two stacks take two; a card that cannot be played is never chosen', () => {
+    const t = clone(fight('queen-of-the-unmade'));
+    const h = heroOf(t);
+    h.statuses.unmaking = 2;
+    unit(t, 'queen-of-the-unmade')!.intent = { move: 'crown', target: h.id };
+    const three = Object.values(db.cards).find((c) => c.cost === 3 && !c.unplayable && !c.retain)!;
+    const two = Object.values(db.cards).find((c) => c.cost === 2 && !c.unplayable && !c.retain)!;
+    const junk = Object.values(db.cards).find((c) => c.unplayable && c.cost >= 3);
+    t.sides.a.hand = [];
+    t.sides.a.discard = [];
+    t.sides.a.draw = ['strike', two.id, three.id, junk?.id ?? 'strike', 'strike', 'strike'].map(
+      (card, i) => ({ id: `Q${i}`, card }),
+    );
+    const r = endTurn(t);
+    expect(r.sides.a.exhausted.map((c) => c.card)).toEqual([three.id, two.id]);
+    if (junk) expect(r.sides.a.hand.some((c) => c.card === junk.id)).toBe(true);
+  });
+});
+
+describe('Event Horizon Regent: Gravity', () => {
+  it('the costliest unplayed cards fall back on top of the draw pile, one per stack', () => {
+    const t = clone(fight('event-horizon-regent'));
+    heroOf(t).statuses.gravity = 1;
+    const hand = t.sides.a.hand;
+    const dearest = [...hand].sort(
+      (x, y) => (db.cards[y.card]?.cost ?? 0) - (db.cards[x.card]?.cost ?? 0),
+    )[0]!;
+    const r = endTurn(t);
+    // (back on top, so it is in the new hand; the rest went to the discard pile as ever)
+    expect(r.sides.a.hand.some((c) => c.id === dearest.id)).toBe(true);
+    const others = hand.filter((c) => c.id !== dearest.id).map((c) => c.id);
+    expect(others.every((id) => r.sides.a.discard.some((c) => c.id === id))).toBe(true);
+  });
+
+  it('two stacks: costliest on top, judged without this turn’s discount; a held card stays put', () => {
+    const t = clone(fight('event-horizon-regent'));
+    heroOf(t).statuses.gravity = 2;
+    const three = Object.values(db.cards).find((c) => c.cost === 3 && !c.unplayable && !c.retain && !c.ethereal)!;
+    const two = Object.values(db.cards).find((c) => c.cost === 2 && !c.unplayable && !c.retain && !c.ethereal)!;
+    t.sides.a.hand = [
+      { id: 'G0', card: 'strike' },
+      // (free this turn only: it is still the costliest)
+      { id: 'G1', card: three.id, freeTurn: true },
+      { id: 'G2', card: two.id },
+      // (held: it stays in hand whatever it costs)
+      { id: 'G3', card: three.id, retain: true },
+    ];
+    const after = endTurn(t);
+    // (the two went on top, costliest first, so they are the first drawn; the held one never left)
+    const ids = after.sides.a.hand.map((c) => c.id);
+    expect(ids).toEqual(expect.arrayContaining(['G1', 'G2', 'G3']));
+    expect(ids.indexOf('G1')).toBeLessThan(ids.indexOf('G2'));
+    expect(after.sides.a.discard.some((c) => c.id === 'G0')).toBe(true);
+    expect(after.sides.a.discard.some((c) => c.id === 'G1' || c.id === 'G2')).toBe(false);
+  });
+
+  it('every pull adds a stack', () => {
+    const s = until(fight('event-horizon-regent'), 'event-horizon-regent', 'gravity');
+    expect(heroOf(s).statuses.gravity).toBe(1);
+  });
+});
+
+describe('Nyxara: the Veil', () => {
+  it('her intent is hidden from you until you hit her', () => {
+    const s = endTurn(fight('nyxara'));
+    const n = unit(s, 'nyxara')!;
+    expect(n.statuses.veiled ?? 0).toBeGreaterThan(0);
+    const seen = viewFor(db, s, 'a').sides.b.units.find((u) => u.id === n.id)!;
+    expect(seen.intentView?.move).toBe('veiled');
+    expect(seen.intent).toBeNull();
+    const hit = strike(s, n);
+    expect(unit(hit, 'nyxara')!.statuses.veiled ?? 0).toBe(0);
+    const shown = viewFor(db, hit, 'a').sides.b.units.find((u) => u.id === n.id)!;
+    expect(shown.intentView?.move).toBe(unit(hit, 'nyxara')!.intent?.move);
+  });
+
+  it('nothing else in the view tells the hidden move; her own side sees it', () => {
+    const s = endTurn(endTurn(fight('nyxara')));
+    const n = unit(s, 'nyxara')!;
+    const seen = viewFor(db, s, 'a').sides.b.units.find((u) => u.id === n.id)!;
+    expect(seen.lastMoves).toEqual(n.lastMoves.slice(0, -1));
+    expect([seen.pat, seen.patCount, seen.moveCount]).toEqual(['', 0, 0]);
+    const own = viewFor(db, s, 'b').sides.b.units.find((u) => u.id === n.id)!;
+    expect(own.intentView?.move).toBe(n.intent?.move);
+  });
+
+  it('a hit that is blocked still lifts the Veil', () => {
+    const s = clone(endTurn(fight('nyxara')));
+    const n = unit(s, 'nyxara')!;
+    n.statuses.shielded = 1;
+    const hit = strike(s, n);
+    expect(unit(hit, 'nyxara')!.hp).toBe(n.hp);
+    expect(unit(hit, 'nyxara')!.statuses.veiled ?? 0).toBe(0);
   });
 });
 

@@ -100,6 +100,7 @@ export {
   ghostCleared,
   GHOST_FROM_TIER,
   GHOST_WARDEN_CHANCE,
+  ECHO_FROM_TIER,
 } from './mapgen';
 export {
   TIER_TABLE,
@@ -125,7 +126,20 @@ export {
   ghostBossDmg,
   wardenMaxHp,
   ghostWanted,
+  ghostsToSkip,
+  echoOffers,
+  ECHO_HP_PCT,
+  ECHO_OFFERS,
+  GHOST_ENDURING,
+  ECHO_ENDURING,
 } from './run';
+export {
+  buildCache,
+  CACHE_TRAP_CHANCE,
+  CACHE_STASH,
+  CACHE_TRAP_HP_PCT,
+  CACHE_DISARM,
+} from './cache';
 export {
   FIGHT_SHARDS,
   POTION_DROP_CHANCE,

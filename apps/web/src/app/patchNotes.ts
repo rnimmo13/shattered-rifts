@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.158.0',
+    date: '2026-11-02',
+    title: 'Rift Caches, Echoes, every Warden a rule',
+    summary: 'Two new stops on the map, a rule of its own for every Warden, Vorthax rebuilt as the last test of a run, and enemy Barrier and healing that keep up with the Rift Tier.',
+    notes: [
+      { kind: 'new', text: 'Rift Cache, one on every map: no fight. An open one lets you take a Boon, a rare card or a pile of shards. A trapped one holds the Boon and a rare card together, if you spring the trap (HP), reach past it (a Wound) or disarm it (shards). You can always walk away.' },
+      { kind: 'new', text: 'Echo, one on every map from Tier IV: another player\'s deck from the Arena, played by the computer. Beat it to take one of its best cards, with an Elite\'s chance of a Boon; losing costs 2 Resolve, like an Elite.' },
+      { kind: 'changed', text: 'Ghosts in the campaign can\'t be beaten in one turn: a ghost Warden loses at most a quarter of its Max HP a turn, and an Echo at most a third (Enduring). Arena ghosts are unchanged.' },
+      { kind: 'new', text: 'Every Warden has a rule of its own now: Gorrmaw eats its Maw Spawn to heal and grow, the Upside-Down Stag takes your Barrier before it strikes, the Queen of the Unmade Consumes the costliest card of your next hand, the Event Horizon Regent pulls the cards you keep in hand back onto your draw pile, and Nyxara is Veiled until you hit her.' },
+      { kind: 'changed', text: 'Vorthax, the Heart of the Rift, is rebuilt as the last test of a run: four quarters, each with the rules of the Wardens it made, and in the last one the Rift closes on you with Fate every turn. Gorrmaw is gentler: Maw Spawn have 18 HP (was 24).' },
+      { kind: 'balance', text: 'Enemies\' Barrier and healing grow with the Rift Tier, as their HP does: a move that gives 12 Barrier at Tier I gives about 43 at Tier X and 120 at Tier XX. Tier I is unchanged.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.157.0',
     date: '2026-11-02',
     title: 'Painted class crests',

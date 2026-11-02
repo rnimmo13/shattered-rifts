@@ -14,6 +14,7 @@ import {
   finishDuel,
   newRun,
   omenEffects,
+  omenMods,
   omensOf,
   omensAt,
   parseRun,
@@ -229,5 +230,21 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
     expect(parseRun(serializeRun(r))?.phase).toBe('ascend');
     const odd = { ...chooseAscendancy(r, 'knight:paladin'), ascendancy: 'monk:zealot' };
     expect(parseRun(serializeRun(odd))?.ascendancy).toBeUndefined();
+  });
+});
+
+describe('the finale and the Omens (DECISIONS #547)', () => {
+  it("Vorthax's quarters stand in for the rises: none is added, the statuses still are", () => {
+    const e = omenEffects(MAX_TIER);
+    const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
+    const units = ['rift-ward', 'vorthax'];
+    const warden = omenMods(e, units, true, hpOf);
+    const finale = omenMods(e, units, true, hpOf, true);
+    expect(warden.some((m) => m.rise?.length)).toBe(true);
+    const lead = finale.filter((m) => m.units?.includes(1));
+    expect(lead.some((m) => m.rise?.length)).toBe(false);
+    expect(lead.some((m) => Object.keys(m.statuses ?? {}).length > 0)).toBe(
+      Object.keys(e.bossStatuses).length > 0,
+    );
   });
 });

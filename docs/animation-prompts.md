@@ -453,3 +453,24 @@ THE BACKGROUND MUST STAY CLEAN: one plain flat solid magenta (#FF00FF) over the 
 READABLE WHEN SMALL: it will be shown at only 48 pixels, so ONE bold object, centred and large, with a thick unbroken near-black outline and big simple shapes.
 THE PICTURE: a carved stone ring set with three gems, an orange flame gem, an icy pale-blue frost gem and a crackling violet storm gem, evenly spaced, with a thin twist of fire, frost and lightning curling between them.
 ```
+
+## Sheet 17: `icons-07.png` (the Wardens' statuses)
+
+Four status icons for the Wardens' rules. All four are stand-ins today: Slippery wears Ghostly's ghost (DECISIONS #528), and Veiled, Gravity and Unmaking wear copies of Ghostly, Orbit and Fracture (DECISIONS #546). Attach `assets-src/icons/icons-01.png` and `icons-03.png` as the style anchor. Save it as `assets-src/icons/icons-07.png`.
+
+Order: Slippery, Veiled, Gravity, Unmaking.
+
+```
+Create ONE SHEET of 4 separate status icons for a dark-fantasy 2D card-battler, no text.
+The attached images are the STYLE ANCHOR: these belong to the same set as the attached icons, so match their rendering exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).
+
+LAYOUT (critical): a wide landscape image, with 4 separate pictures spaced in an even invisible row of 4 across. Nothing touches or overlaps a neighbour or the edge of the image; leave clear magenta all round each one.
+THE BACKGROUND MUST STAY CLEAN (critical, the game cuts each picture out by this colour): one plain flat solid magenta (#FF00FF) over the WHOLE sheet, no grid lines, cells, frames or badges, no shadow on the ground, no gradient, no texture. Use no magenta or hot pink inside the pictures. NO TEXT anywhere: no letters, numbers, labels or captions.
+READABLE WHEN SMALL (critical): each picture will be shown at only 24 to 48 pixels, so each is ONE bold object, centred and large, with a thick unbroken near-black outline all round its silhouette, big simple shapes and no small details.
+
+THE PICTURES, in this exact order, left to right:
+1. Slippery: a fat glossy pale-blue water drop with a bright streak of shine down one side, a little splash at its foot.
+2. Veiled: a dark violet lace veil drawn over a pale mask, only two faint glowing eyes showing through.
+3. Gravity: a small black sphere with a glowing violet ring around it, three playing cards bending and falling into it.
+4. Unmaking: a gold crown cracking in two down the middle, pale light pouring out of the crack, flakes falling away.
+```

@@ -169,23 +169,15 @@ trait (`docs/reworks/SPELLBLADE_SPELL_POWER.md` and this log's #480).
 
 **Open (Robert, 2026-10-31, playing it first):** Fracture may feel cut off from Swords and Spells. Shatters now read Spell Power (DECISIONS #487), but no Fracture card gains any. If it still feels separate after play, the next idea to try: each Shatter gains 1 Spell Power, so cracking an enemy feeds her Swords, her spells and her Barrier.
 
-### 7. A rule of its own for every Warden (first six built 2026-11-01, DECISIONS #528; five still to do)
+### 7. A rule of its own for every Warden (built: six on 2026-11-01, DECISIONS #528; the other five on 2026-11-02, DECISIONS #546)
 
 **Why:** Robert likes how each Slay the Spire 2 boss has a mechanic of its own. Our names, text and numbers, and a rule applies from Tier I.
 
 **Built:** Kron (the Foundry Hatch), The Hollow Benediction (the Acolytes), The Mourning Tide (Low Tide, Beckoning), The Applause Below (Slippery), Seraphine (the Kneeling), Mother of Static (Jamming).
 
-**Still to do (Robert, 2026-11-01: "i dont want to lose track of doing the others"), design to review:**
+**Built 2026-11-02 (DECISIONS #546):** Gorrmaw (the Hunger: Gorge eats its Maw Spawn; none to eat, it starves), the Upside-Down Stag (the Turnover takes your Barrier), Queen of the Unmade (Unmaking Consumes your costliest card), Event Horizon Regent (Gravity pulls unplayed cards back on top of the draw pile), Nyxara (the Veil hides her intent until she is hit). Three of the rough ideas changed so no two Wardens ask the same thing of you: the Stag's heal-turn was Low Tide again, the Queen's cost rise was Mother of Static's Mana tax, and enemy Traps for Nyxara were never built.
 
-| Warden | Rough idea |
-|---|---|
-| Gorrmaw | Eats its Spawn to heal and gain Might, so killing them starves it. |
-| The Upside-Down Stag | One turn in three it heals what you would have dealt. |
-| Queen of the Unmade | Raises the cost of your most expensive card each turn. |
-| Event Horizon Regent | Pulls cards from your hand back to the top of your draw pile. |
-| Nyxara | Sets a Trap on you, once enemy Traps exist (proposal 1). |
-
-Vorthax already has three phases and stays as the finale. A rule also applies to the Tier 20 fights that bring these Wardens.
+Vorthax was rebuilt on 2026-11-02 (DECISIONS #547) as the finale that uses every Warden's rule, a quarter at a time. A rule also applies to the Tier 20 fights that bring these Wardens.
 
 ---
 

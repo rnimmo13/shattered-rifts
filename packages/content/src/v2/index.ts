@@ -511,16 +511,25 @@ export const ENCOUNTERS: Encounter[] = [
   enc('feral-riftling', 'Feral Riftling', 'wyldmaw', 'regular', 'feral-riftling'),
   enc('packmother-ruhn', 'Packmother Ruhn', 'wyldmaw', 'elite', 'packmother-ruhn'),
   enc('bloated-one', 'The Bloated One', 'wyldmaw', 'elite', 'bloated-one'),
-  enc('gorrmaw', 'Gorrmaw, the Hunger Below', 'wyldmaw', 'warden', 'gorrmaw'),
+  ruled(
+    enc('gorrmaw', 'Gorrmaw, the Hunger Below', 'wyldmaw', 'warden', 'gorrmaw'),
+    'The Hunger: Gorge eats every Maw Spawn, healing and growing stronger for each. Kill them first and it starves, Exposed.',
+  ),
 
   enc('hooded-acolyte', 'Hooded Acolyte', 'umbral', 'regular', 'hooded-acolyte'),
   enc('whisperer', 'The Whisperer', 'umbral', 'regular', 'whisperer'),
   enc('lost-courtier', 'Lost Courtier', 'umbral', 'regular', 'lost-courtier'),
   enc('lamplighter', 'The Lamplighter', 'umbral', 'elite', 'lamplighter'),
   enc('choir-of-silence', 'Choir of Silence', 'umbral', 'elite', 'choir-of-silence'),
-  enc('nyxara', 'Nyxara, the Veiled Matriarch', 'umbral', 'warden', 'nyxara'),
+  ruled(
+    enc('nyxara', 'Nyxara, the Veiled Matriarch', 'umbral', 'warden', 'nyxara'),
+    'The Veil: every move leaves her Veiled, and her intent stays hidden until you hit her.',
+  ),
 
-  enc('vorthax', 'Vorthax, Heart of the Rift', 'all', 'finale', 'vorthax'),
+  ruled(
+    enc('vorthax', 'Vorthax, Heart of the Rift', 'all', 'finale', 'rift-ward', 'vorthax'),
+    'The Heart remembers every Warden: each quarter of its HP it fights with their rules, and at the last it closes the Rift on you, Fate every turn.',
+  ),
 
   // ---- the multiverse expansion (DECISIONS #437): pairs from stage 1, a trio from stage 2, two Elites and a Warden a realm; the
   // Gloomfen, the Hollow Crown and the Far Rifts are not stages of their own: their fights join the Rift (the last stage), and their
@@ -658,7 +667,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('hunger-orchard', 'Hunger Orchard', 'wyldmaw', 'elite', 'hunger-orchard'),
   enc('molting-cathedral', 'Molting Cathedral', 'wyldmaw', 'elite', 'molting-cathedral'),
-  enc('the-upside-down-stag', 'The Upside-Down Stag', 'wyldmaw', 'warden', 'the-upside-down-stag'),
+  ruled(
+    enc('the-upside-down-stag', 'The Upside-Down Stag', 'wyldmaw', 'warden', 'the-upside-down-stag'),
+    'The Turnover: some of its blows first take your Barrier for its own, so Barrier raised against them only shields the Stag.',
+  ),
   // Umbral
   enc(
     'velvet-lamprey-pair',
@@ -784,7 +796,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('the-cracked-heir', 'The Cracked Heir', 'starfall', 'elite', 'the-cracked-heir'),
   enc('molten-reliquary', 'Molten Reliquary', 'starfall', 'elite', 'molten-reliquary'),
-  enc('queen-of-the-unmade', 'Queen of the Unmade', 'starfall', 'warden', 'queen-of-the-unmade'),
+  ruled(
+    enc('queen-of-the-unmade', 'Queen of the Unmade', 'starfall', 'warden', 'queen-of-the-unmade'),
+    'Unmaking: some of her moves Unmake you, and the costliest card in your next hand is Consumed.',
+  ),
   // Far Rifts
   enc(
     'pocket-singularity-pair',
@@ -816,7 +831,10 @@ export const ENCOUNTERS: Encounter[] = [
   },
   enc('planet-eater', 'Planet Eater', 'beyond', 'elite', 'planet-eater'),
   enc('the-missing-frame', 'The Missing Frame', 'beyond', 'elite', 'the-missing-frame'),
-  enc('event-horizon-regent', 'Event Horizon Regent', 'beyond', 'warden', 'event-horizon-regent'),
+  ruled(
+    enc('event-horizon-regent', 'Event Horizon Regent', 'beyond', 'warden', 'event-horizon-regent'),
+    'Gravity: cards you leave in your hand fall back on top of your draw pile, costliest first, one more each time it pulls.',
+  ),
 ];
 
 export const encounter = (id: string): Encounter => {

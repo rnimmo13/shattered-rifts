@@ -82,7 +82,8 @@ export interface Entry {
 // (57: a deck holds 2 copies of an Aura, and the Spellblade's cards apply less Fracture, #498, #499)
 // (58: the Neutral and Ancestral retune, #500)
 // (59: Burn through Barrier, Hangover as a share of Max HP, Shatter, only X cards scale hits, aimed attacks stay on target, #501-#503, #507-#509)
-export const RULES_VERSION = 64;
+// (65: the other five Wardens' rules, Vorthax rebuilt, enemy Barrier and healing by tier, the Enduring status, #546-#550)
+export const RULES_VERSION = 65;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

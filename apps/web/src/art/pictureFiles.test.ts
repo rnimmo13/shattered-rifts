@@ -53,6 +53,7 @@ it('every picture has its file', () => {
     'crossed',
     'ghost',
     'here',
+    'cache',
   ])
     need(`art/icons/map-${k}.png`);
   for (const id of FX_IDS) need(`art/fx/${id}.png`);

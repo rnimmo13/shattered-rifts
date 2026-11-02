@@ -103,6 +103,31 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The next hit it takes deals only 1, and takes one stack off. A Shatter gets through, and Bleed and Burn are not hits.',
   },
+  enduring: {
+    name: 'Enduring',
+    glyph: '⛨',
+    tone: 'good',
+    text: 'It loses at most this percent of its Max HP in any one turn, however hard it is hit.',
+  },
+  // (Wardens' rules, DECISIONS #546)
+  veiled: {
+    name: 'Veiled',
+    glyph: '◐',
+    tone: 'good',
+    text: 'Its intent is hidden. Hit it, even for nothing, and the Veil falls, and you see what it will do. Bleed, Burn and Thorns are not hits.',
+  },
+  gravity: {
+    name: 'Gravity',
+    glyph: '◉',
+    tone: 'bad',
+    text: 'At the end of your turn, this many of the cards left in your hand go back on top of your draw pile instead of the discard pile, costliest first.',
+  },
+  unmaking: {
+    name: 'Unmaking',
+    glyph: '✕',
+    tone: 'bad',
+    text: 'Once your next hand is drawn, the costliest card in it is Consumed for this fight, one per stack. Then it clears.',
+  },
   steadfast: {
     name: 'Steadfast',
     glyph: '⛉',
@@ -113,7 +138,7 @@ export const STATUS_INFO: Record<
     name: 'Armored',
     glyph: '▣',
     tone: 'good',
-    text: 'Gains Barrier equal to its stacks at the end of its turn. Loses a stack each time an attack gets through.',
+    text: 'Gains Barrier equal to its stacks at the end of its turn (an enemy’s grows with the Rift Tier). Loses a stack each time an attack gets through.',
   },
   ritual: {
     name: 'Cadence',
@@ -222,7 +247,7 @@ export const STATUS_INFO: Record<
     name: 'Plating',
     glyph: '⛉',
     tone: 'good',
-    text: 'At the end of your turn, gain this much Barrier, then this goes down by 1.',
+    text: 'At the end of its turn, it gains this much Barrier (an enemy’s grows with the Rift Tier), then this goes down by 1.',
   },
   clutch: {
     name: 'Clutch Genes',

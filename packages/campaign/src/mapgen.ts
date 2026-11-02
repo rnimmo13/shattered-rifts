@@ -185,6 +185,8 @@ export function ghostCleared(tier: number, stage: number | null | undefined): bo
 }
 /** The chance (percent) that a Warden beyond that is a ghost, so players do not meet the same few Wardens over and over. */
 export const GHOST_WARDEN_CHANCE = 35;
+/** From this Rift Tier each map has an Echo: a ghost deck met on the way, for one of its cards (DECISIONS #549). */
+export const ECHO_FROM_TIER = GHOST_FROM_TIER + 1;
 
 export function generateStageMap(
   rng: RngState,
@@ -330,6 +332,28 @@ export function generateStageMap(
       for (const t of n.next) run.set(t, Math.max(run.get(t) ?? 1, mine + 1));
     }
   }
+
+  // one Rift Cache a map, and from ECHO_FROM_TIER one Echo, each on a plain fight of a middle floor, never beside the other (DECISIONS #549).
+  // An Echo keeps its fight: if no ghost can be had for it, that is the fight
+  const placeOn = (kind: 'cache' | 'echo'): void => {
+    const spots = byFloor
+      .flat()
+      .filter(
+        (n) =>
+          n.kind === 'duel' &&
+          n.floor >= 3 &&
+          n.floor <= FLOORS - 2 &&
+          !nextTo(n, 'cache') &&
+          !nextTo(n, 'echo'),
+      );
+    if (spots.length === 0) return;
+    const spot = pick(rng, spots);
+    spot.kind = kind;
+    if (kind === 'cache') delete spot.enemyId;
+    else spot.ghost = true;
+  };
+  placeOn('cache');
+  if (tier >= ECHO_FROM_TIER) placeOn('echo');
 
   // deeper tiers turn plain fights into Elites, past the limits above: by ALL_ELITE_TIER there are no plain fights left (DECISIONS #524)
   if (elites.length > 0) {

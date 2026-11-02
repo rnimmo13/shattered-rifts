@@ -76,6 +76,7 @@ const UNIT_ATTACK: Record<string, AttackSpec> = {
   nyxara: a('stab', '#b79bff'),
   // the Rift
   'rift-shard': a('shoot', '#e0b0ff'),
+  'rift-ward': a('cast', '#ff8af0'),
   vorthax: a('cast', '#ff7ad9'),
   // (the multiverse expansion, DECISIONS #437)
   ...Object.fromEntries(

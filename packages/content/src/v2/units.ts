@@ -12,13 +12,22 @@ import {
   manaNext,
   lose,
   move,
+  per,
   phases,
+  scaled,
   status,
   summon,
   weighted,
   wound,
 } from './build';
 import { MULTIVERSE_UNITS } from './unitsMultiverse';
+
+/** Nyxara's rule: her intent is hidden until you hit her (DECISIONS #546) */
+const veil = () => status('veiled', 1);
+/** Barrier as a share of its own max HP, so it counts at every tier (Vorthax, DECISIONS #547) */
+const ownBarrier = (pct: number) => scaled(barrier(0), per('maxHp', pct / 100, 'each'));
+/** The Rift Closes: Fate on the hero, a share of their max HP (Vorthax's last quarter, DECISIONS #547) */
+const closing = (pct: number) => scaled(status('doom', 0, 'foeHero'), per('maxHp', pct / 100, 'each'));
 
 // --- companions ---------------------------------------------------------------------------------------------
 
@@ -335,22 +344,33 @@ export const ENEMY_UNITS: UnitDef[] = [
     ],
     cycle('belch', 'devour', 'slam'),
   ),
-  foe('maw-spawn', 'Maw Spawn', 33, [move('bite', 'Bite', dmg(10))], cycle('bite')),
+  // (Gorrmaw's food: smaller and gentler than a fighter, as its worth is in being killed before it is eaten, DECISIONS #546; 18, was
+  // 24: two of them to kill every four turns made it as long a fight as the finale, #547)
+  foe('maw-spawn', 'Maw Spawn', 18, [move('bite', 'Bite', dmg(7))], cycle('bite')),
+  // (its rule, DECISIONS #546: Gorge eats every Maw Spawn for 15 HP and 2 Might each; kill them first and it starves, Exposed)
   foe(
     'gorrmaw',
     'Gorrmaw, the Hunger Below',
-    240,
+    200,
     [
-      move('gorge', 'Gorge', heal(8), status('might', 1)),
+      // (6% of its max HP each, not a flat 15: the same share at every tier, DECISIONS #547)
+      move('gorge', 'Gorge', {
+        op: 'devour',
+        unit: 'maw-spawn',
+        heal: 0,
+        healPct: 6,
+        might: 2,
+        none: [status('exposed', 2)],
+      }),
       move('bite', 'Bite', dmg(14)),
       move('spawn', 'Birth Maw Spawn', summon('maw-spawn')),
-      move('frenzy', 'Feeding Frenzy', status('might', 3)),
+      move('brood', 'Brood', summon('maw-spawn'), summon('maw-spawn')),
       move('bite2', 'Ravenous Bite', dmg(17)),
       move('rend', 'Rend', dmg(7, 'target', 3)),
     ],
     phases(
-      [100, { kind: 'cycle', order: ['gorge', 'bite', 'spawn', 'bite'] }],
-      [50, { kind: 'cycle', order: ['frenzy', 'bite2', 'spawn', 'rend'] }],
+      [100, { kind: 'cycle', order: ['spawn', 'bite', 'spawn', 'gorge'] }],
+      [50, { kind: 'cycle', order: ['brood', 'rend', 'gorge', 'bite2'] }],
     ),
   ),
 
@@ -415,15 +435,16 @@ export const ENEMY_UNITS: UnitDef[] = [
   foe(
     'nyxara',
     'Nyxara, the Veiled Matriarch',
-    278,
+    // (260, was 278: her rule, DECISIONS #546, every move leaves her Veiled, her intent hidden until you hit her)
+    260,
     [
-      move('web', 'Weave the Web', barrier(8), status('shielded', 1)),
-      move('whisper', 'She Whispers', status('exposed', 2, 'target'), wound('foe')),
-      move('strike', 'Strike from the Dark', dmg(20)),
-      move('ensnare', 'Ensnare', status('faltering', 2, 'target'), status('seared', 3, 'target')),
-      move('unmask', 'Unmasking', status('exposed', 2, 'target'), wound('foe')),
-      move('ambush', 'Ambush', dmg(22)),
-      move('lash', 'Shadow Lash', dmg(7, 'target', 3)),
+      move('web', 'Weave the Web', barrier(8), status('shielded', 1), veil()),
+      move('whisper', 'She Whispers', status('exposed', 2, 'target'), wound('foe'), veil()),
+      move('strike', 'Strike from the Dark', dmg(20), veil()),
+      move('ensnare', 'Ensnare', status('faltering', 2, 'target'), status('seared', 3, 'target'), veil()),
+      move('unmask', 'Unmasking', status('exposed', 2, 'target'), wound('foe'), veil()),
+      move('ambush', 'Ambush', dmg(22), veil()),
+      move('lash', 'Shadow Lash', dmg(7, 'target', 3), veil()),
     ],
     phases(
       [100, { kind: 'cycle', order: ['web', 'whisper', 'strike', 'ensnare'] }],
@@ -431,28 +452,69 @@ export const ENEMY_UNITS: UnitDef[] = [
     ),
   ),
 
-  // ---- the finale ----
+  // ---- the finale: Vorthax, the Heart of the Rift (DECISIONS #547) ----
+  // It is met only at the end of Tier XX (ten times its written HP, about five times its damage with Warden's Fury, Might from the
+  // Omens' Blood Rites every turn; its quarters stand in for the Omens' rises), so its Barrier and healing are
+  // shares of its max HP: a flat 12 would be nothing there. Every quarter of its HP it fights with the rules of the Wardens it made,
+  // and in the last it closes the Rift: Fate on you every turn, so only a deck that can finish it gets to.
   foe('rift-shard', 'Rift Shard', 21, [move('slice', 'Slice', dmg(7))], cycle('slice')),
+  // (Kron's Hatch and the Benediction's Acolytes at once: it must be broken first, and while it stands every enemy grows)
+  foe(
+    'rift-ward',
+    'Rift Ward',
+    40,
+    [move('hum', 'Resonant Hum', status('might', 1, 'allFriends'), dmg(4))],
+    cycle('hum'),
+    { taunt: true },
+  ),
   foe(
     'vorthax',
     'Vorthax, Heart of the Rift',
-    270,
+    360,
     [
+      // I. The Heart Wakes (Kron, the Hollow Benediction)
       move('shards', 'Crystal Shards', dmg(6, 'target', 3)),
-      move('refract', 'Refract', barrier(12), status('might', 1)),
-      move('gather', 'Gathering Collapse', barrier(8)),
+      move('ward', 'Raise the Ward', { op: 'summon', unit: 'rift-ward', ifAbsent: true }, ownBarrier(4)),
       move('collapse', 'Collapse', dmg(26)),
-      move('shatter', 'The Shattering', dmg(12, 'allFoes'), summon('rift-shard')),
-      move('shardstorm', 'Shard Storm', dmg(5, 'target', 4)),
-      move('core', 'Prismatic Core', status('shielded', 2), barrier(15)),
-      move('beam', 'Prismatic Beam', dmg(17, 'target', 2)),
-      move('rupture', 'Rupture', lose(6, 'target'), dmg(12)),
+      move('refract', 'Refract', ownBarrier(6), status('might', 1)),
+      // II. The Hunger and the Veil (Gorrmaw, Nyxara): every move leaves it Veiled
+      move('shatter', 'The Shattering', dmg(12, 'allFoes'), summon('rift-shard'), summon('rift-shard'), veil()),
+      move('shardstorm', 'Shard Storm', dmg(6, 'target', 3), veil()),
+      move(
+        'feed',
+        'Feed on the Shards',
+        { op: 'devour', unit: 'rift-shard', heal: 0, healPct: 4, might: 1, none: [status('exposed', 2)] },
+        veil(),
+      ),
+      move('reshatter', 'Shatter Again', dmg(10, 'allFoes'), summon('rift-shard'), veil()),
+      move('collapse2', 'Collapse', dmg(30), veil()),
+      // III. The Unmaking (the Queen, the Regent, the Stag, Mother of Static)
+      move('pull', 'The Pull', status('gravity', 2, 'foeHero'), status('unmaking', 1, 'foeHero'), ownBarrier(6)),
+      move('beam', 'Prismatic Beam', dmg(17, 'target', 2), status('unmaking', 1, 'foeHero')),
+      move('turnover', 'Turn the Heart', { op: 'swapBarrier' }, dmg(22)),
+      move(
+        'rupture',
+        'Rupture',
+        lose(6, 'target'),
+        dmg(12),
+        status('gravity', 1, 'foeHero'),
+        { op: 'manaNext', amount: -1, foe: true },
+      ),
+      move('refract2', 'Refract', ownBarrier(6), status('might', 1)),
+      // IV. The Last Light (the Applause Below, and its own): every move leaves it Slippery and curses you with Fate
+      move('core', 'Prismatic Core', status('shielded', 2), ownBarrier(8), status('slippery', 2), closing(10)),
+      move('beam2', 'Prismatic Beam', dmg(17, 'target', 2), status('slippery', 1), closing(8)),
+      move('rupture2', 'Rupture', lose(8, 'target'), dmg(14), status('slippery', 1), closing(8)),
+      move('close', 'The Rift Closes', ownBarrier(5), status('slippery', 1), closing(12)),
     ],
     phases(
-      [100, { kind: 'cycle', order: ['shards', 'refract', 'gather', 'collapse'] }],
-      [66, { kind: 'cycle', order: ['shatter', 'shardstorm', 'refract', 'collapse'] }],
-      [33, { kind: 'cycle', order: ['core', 'beam', 'rupture', 'beam'] }],
+      [100, { kind: 'cycle', order: ['shards', 'ward', 'collapse', 'refract'] }],
+      [75, { kind: 'cycle', lead: ['shatter'], order: ['shardstorm', 'feed', 'reshatter', 'collapse2'] }],
+      [50, { kind: 'cycle', lead: ['pull'], order: ['beam', 'turnover', 'rupture', 'refract2'] }],
+      [25, { kind: 'cycle', lead: ['core'], order: ['beam2', 'rupture2', 'close'] }],
     ),
+    // (when it falls the Ward and its Shards fall too: no fighting on under its Fate)
+    { leader: true },
   ),
 
   // ---- the multiverse expansion (DECISIONS #437): seven realms, 62 more ----

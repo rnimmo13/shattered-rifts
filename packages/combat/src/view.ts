@@ -4,6 +4,7 @@ import { modifiedDamage, activePattern, formProgress, type LiveDamage } from './
 import {
   other,
   clone,
+  enemyGuardFactor,
   TRAIT_POWER,
   DEFENSIVE_TAG,
   STRIKING_TAG,
@@ -142,7 +143,7 @@ export interface CombatView {
 function opIcons(ops: readonly Op[]): IntentIcon[] {
   const out = new Set<IntentIcon>();
   const foeSel = (to: Sel): boolean =>
-    to === 'target' || to === 'allFoes' || to === 'randomFoe' || to === 'front';
+    to === 'target' || to === 'allFoes' || to === 'randomFoe' || to === 'front' || to === 'foeHero';
   for (const o of ops) {
     if (o.op === 'damage' || o.op === 'loseHp') out.add('attack');
     else if (o.op === 'barrier') out.add('defend');
@@ -197,6 +198,17 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
   };
 }
 
+/** what a Veiled unit shows in place of its intent */
+export const VEILED_INTENT: IntentView = {
+  move: 'veiled',
+  name: 'Veiled',
+  text: 'Its intent is hidden. Hit it to see what it will do.',
+  icons: ['special'],
+  damage: null,
+  hits: 0,
+  target: null,
+};
+
 export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentView | null {
   const d = db.units[u.def];
   // (a companion that does nothing on its own, such as a Bone Thrall, shows no intent)
@@ -211,10 +223,23 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
   const dmg = mv.effects.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
   const first = dmg[0];
   const area = areaOf(mv.effects);
+  // (DECISIONS #548) its own Barrier and healing, grown with the tier as the engine grows them
+  const f = s.sides[u.side].hero === null ? enemyGuardFactor(s.tier, s.enemyHpPct) : 1;
+  // (every selector that picks from its own side, as the engine grows anything given to its own side)
+  const own = (to: Sel): boolean =>
+    to === 'self' || to === 'allFriends' || to === 'allAllies' || to === 'biggestAlly';
+  const shown = (o: Op): Op =>
+    f === 1
+      ? o
+      : (o.op === 'barrier' || o.op === 'heal') && !o.scale && own(o.to)
+        ? { ...o, amount: Math.round(o.amount * f) }
+        : o.op === 'devour'
+          ? { ...o, heal: Math.round(o.heal * f) }
+          : o;
   return {
     move: mv.id,
     name: mv.name,
-    text: mv.effects.map((o) => opText(db, o, WHO_ENEMY)).join(' '),
+    text: mv.effects.map((o) => opText(db, shown(o), WHO_ENEMY)).join(' '),
     icons: opIcons(mv.effects),
     // (an enemy's Vigor adds to its next attack: the intent counts it)
     damage: first
@@ -287,6 +312,20 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       id,
       units: sd.units.map((u) => {
         const slots = u.kind === 'ally' ? (db.units[u.def]?.slots ?? 1) : 1;
+        // (Nyxara's rule, DECISIONS #546) a Veiled unit's intent is hidden from the other side until it is hit
+        if (!own && (u.statuses.veiled ?? 0) > 0) {
+          // (nor does what it last did, or where it is in its loop)
+          return {
+            ...clone(u),
+            intent: null,
+            lastMoves: u.lastMoves.slice(0, -1),
+            pat: '',
+            patCount: 0,
+            moveCount: 0,
+            intentView: { ...VEILED_INTENT, icons: [...VEILED_INTENT.icons] },
+            ...(u.kind === 'ally' ? { slots } : {}),
+          };
+        }
         return {
           ...clone(u),
           intentView: describeIntent(db, s, u),
@@ -736,7 +775,12 @@ const UNIT_METRICS: readonly Metric[] = [
 ];
 
 /** Text for a number that may depend on the board: "6", "6 (+2 per Barrier)" or "equal to your Barrier". */
-function amountText(n: number, sc: Scale | undefined): { num: string; equal: boolean } {
+function amountText(
+  n: number,
+  sc: Scale | undefined,
+  /** whose number `each` reads, where the sentence knows ("your", "its") */
+  each = 'their ',
+): { num: string; equal: boolean } {
   if (!sc || sc.into === 'hits') return { num: String(n), equal: false };
   // (a tagged count names its cards: "per consumed Gravesoul", "per Command card in your deck")
   const tagged = sc.tag ? (TAG_NAMES[sc.tag] ?? cap(sc.tag)) : null;
@@ -777,7 +821,7 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
     ? sc.of === 'target'
       ? "the target's "
       : sc.of === 'each'
-        ? 'their '
+        ? each
         : 'your '
     : '';
   // (DECISIONS #434) a capped count says its cap
@@ -1142,7 +1186,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.to === 'allAllies' && who.self === WHO.self && !amountText(o.amount, o.scale).equal)
         return `Each of your allies gains ${at(o.amount, o.scale)} Barrier.`;
       return amountText(o.amount, o.scale).equal
-        ? `Gain Barrier equal to ${amountText(o.amount, o.scale).num}${o.to === 'self' ? '' : who[o.to]}.`
+        ? `Gain Barrier equal to ${amountText(o.amount, o.scale, o.to === 'self' ? (who.self === WHO.self ? 'your ' : 'its ') : 'their ').num}${o.to === 'self' ? '' : who[o.to]}.`
         : `Gain ${at(o.amount, o.scale)} Barrier${o.to === 'self' ? '' : who[o.to]}.`;
     case 'growHp': {
       const n = at(o.amount, o.scale);
@@ -1187,7 +1231,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : o.to === 'target'
               ? 'the target'
               : who[o.to].replace(/^ to /, '') || 'the target';
-        const a = amountText(o.amount, o.scale);
+        const a = amountText(
+          o.amount,
+          o.scale,
+          noun === 'you' || noun === 'yourself' ? 'your ' : noun === 'itself' ? 'its ' : 'their ',
+        );
         return `Curse ${noun} with ${a.equal ? `Fate equal to ${a.num}` : `${a.num} Fate`}.`;
       }
       // an Opening (the Knight's): "The target is left Open." (DECISIONS #415)
@@ -1374,6 +1422,19 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Choose a generator in your hand: it yields ${o.amount} more for the rest of the fight.`;
     case 'summon':
       return `${summonText(db, o.unit, 1, who)}${o.ifAbsent ? ' (if none stands)' : ''}`;
+    case 'devour': {
+      const nm = db.units[o.unit]?.name ?? o.unit;
+      const healed = [o.heal > 0 ? `${o.heal}` : '', o.healPct ? `${o.healPct}% of its max HP` : '']
+        .filter(Boolean)
+        .join(' plus ');
+      const gain = [healed ? `heals ${healed}` : '', o.might > 0 ? `gains ${o.might} Might` : '']
+        .filter(Boolean)
+        .join(' and ');
+      const none = o.none?.length ? ` With none to eat: ${o.none.map((x) => opText(db, x, who)).join(' ')}` : '';
+      return `Eats every ${nm}: for each, it ${gain}.${none}`;
+    }
+    case 'swapBarrier':
+      return 'Takes your Barrier, and gives you its own.';
     case 'addCard': {
       const nm = db.cards[o.card]?.name ?? o.card;
       const owner =

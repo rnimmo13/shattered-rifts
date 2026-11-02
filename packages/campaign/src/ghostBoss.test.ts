@@ -99,9 +99,9 @@ describe('Wardens that are ghosts', () => {
     expect(ghosts / N).toBeLessThan(GHOST_WARDEN_CHANCE / 100 + 0.07);
   });
 
-  it('keeps the usual Warden as the fallback, and only a Warden is ever a ghost', () => {
+  it('keeps the usual Warden as the fallback, and only a Warden or an Echo is ever a ghost', () => {
     const map = generateStageMap(seedRng('fallback'), 1, 'aurelion', 'knight', undefined, 7);
-    for (const n of map.nodes) if (n.ghost) expect(n.kind).toBe('warden');
+    for (const n of map.nodes) if (n.ghost) expect(['warden', 'echo']).toContain(n.kind);
     const w = atWarden(5, true);
     const node = w.map.nodes.find((n) => n.id === w.context!.nodeId)!;
     expect(node.enemyId).toBeTruthy();

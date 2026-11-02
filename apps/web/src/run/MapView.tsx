@@ -16,12 +16,29 @@ const KIND_LABEL: Record<NodeKind, string> = {
   shrine: 'Shrine',
   merchant: 'Merchant',
   warden: 'Warden',
+  echo: 'Echo',
+  cache: 'Rift Cache',
 };
+
+/** The painted marker of each kind of stop (an Echo is a ghost, like a ghost Warden's). */
+const KIND_PIC: Record<NodeKind, string> = {
+  duel: 'map-duel',
+  elite: 'map-elite',
+  event: 'map-event',
+  shrine: 'map-shrine',
+  merchant: 'map-merchant',
+  warden: 'map-warden',
+  echo: 'map-ghost',
+  cache: 'map-cache',
+};
+
+/** What a stop shows as: an Echo whose ghost has not come (yet, or at all) is the plain fight it stands on. */
+const shownKind = (n: MapNode): NodeKind => (n.kind === 'echo' && !n.ghostDeck ? 'duel' : n.kind);
 
 /** The painted marker of a stop (the drawing is what shows if the picture fails to load). */
 function NodeIcon({ kind, pic }: { kind: NodeKind; pic?: string }) {
   return (
-    <Picture id={pic ?? `map-${kind}`} className="mapnode__pic">
+    <Picture id={pic ?? KIND_PIC[kind]} className="mapnode__pic">
       <DrawnIcon kind={kind} />
     </Picture>
   );
@@ -89,6 +106,26 @@ function DrawnIcon({ kind }: { kind: NodeKind }) {
           <path {...common} d="M5 24 L5 11 L11 17 L16 7 L21 17 L27 11 L27 24 Z M5 28 L27 28" />
         </svg>
       );
+    case 'echo':
+      return (
+        <svg viewBox="0 0 32 32" aria-hidden>
+          <path
+            {...common}
+            d="M16 5 C10 5 7 9 7 14 L7 27 L10 25 L13 27 L16 25 L19 27 L22 25 L25 27 L25 14 C25 9 22 5 16 5 Z"
+          />
+          <circle cx="12.5" cy="14" r="1.6" fill="currentColor" />
+          <circle cx="19.5" cy="14" r="1.6" fill="currentColor" />
+        </svg>
+      );
+    case 'cache':
+      return (
+        <svg viewBox="0 0 32 32" aria-hidden>
+          <path
+            {...common}
+            d="M5 14 L27 14 L27 26 L5 26 Z M5 14 C5 8 27 8 27 14 M14 14 L14 18 L18 18 L18 14"
+          />
+        </svg>
+      );
   }
 }
 
@@ -111,6 +148,7 @@ function GhostGlyph() {
 function labelOf(n: MapNode): string {
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
   if (n.kind === 'warden' && n.ghost && n.ghostDeck) return 'Ghost Warden';
+  if (n.kind === 'echo' && !n.ghostDeck) return KIND_LABEL.duel;
   // (a fight or an Elite only says what kind of fight it is: who is waiting is found out on arrival. A Warden is named, as the
   // realm's boss is known in advance)
   if (n.kind === 'warden' && n.enemyId) {
@@ -224,6 +262,8 @@ export function MapLegend() {
     ['event', 'Event'],
     ['shrine', 'Shrine'],
     ['merchant', 'Merchant'],
+    ['cache', 'Rift Cache'],
+    ['echo', 'Echo'],
     ['warden', 'Warden'],
   ];
   return (
@@ -250,14 +290,14 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
   const here = props.at === n.id;
   return (
     <button
-      className={`mapnode mapnode--${n.kind}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
+      className={`mapnode mapnode--${shownKind(n)}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
       style={{ left: p.x, top: p.y }}
       disabled={!open}
       onClick={() => props.onEnter(n.id)}
-      aria-label={`${KIND_LABEL[n.kind]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
+      aria-label={`${KIND_LABEL[shownKind(n)]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
     >
       <NodeIcon
-        kind={n.kind}
+        kind={shownKind(n)}
         {...(done && !here
           ? { pic: 'map-done' }
           : n.crossed

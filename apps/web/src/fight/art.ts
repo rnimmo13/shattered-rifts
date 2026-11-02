@@ -89,6 +89,7 @@ const UNIT: Record<string, [Archetype, Realm]> = {
   nyxara: ['shade', 'umbral'],
   // the finale
   'rift-shard': ['elemental', 'neutral'],
+  'rift-ward': ['elemental', 'neutral'],
   vorthax: ['dragon', 'neutral'],
   // (the multiverse expansion, DECISIONS #437)
   ...Object.fromEntries(

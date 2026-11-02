@@ -35,7 +35,9 @@ describe('the painted effects and pictures are there', () => {
   it('every intent and map stop has its picture', () => {
     for (const i of ['attack', 'defend', 'buff', 'debuff', 'summon', 'special'])
       expect(inPublic(`icons/${intentPic(i, 1, 1)}.png`), i).toBe(true);
-    for (const n of 'duel elite event shrine merchant warden ghost here done crossed'.split(' '))
+    for (const n of 'duel elite event shrine merchant warden ghost here done crossed cache'.split(
+      ' ',
+    ))
       expect(inPublic(`icons/map-${n}.png`), n).toBe(true);
   });
 });

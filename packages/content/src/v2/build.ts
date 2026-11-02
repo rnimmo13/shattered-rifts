@@ -700,14 +700,15 @@ export function foe(
   maxHp: number,
   moves: Move[],
   pattern: Pattern,
-  extra: { opening?: string; foe?: 'hero' | 'lowest' | 'random'; taunt?: boolean } = {},
+  extra: { opening?: string; foe?: 'hero' | 'lowest' | 'random'; taunt?: boolean; leader?: boolean } = {},
 ): UnitDef {
-  const { taunt, ...brainExtra } = extra;
+  const { taunt, leader, ...brainExtra } = extra;
   return {
     id,
     name,
     maxHp,
     ...(taunt ? { taunt } : {}),
+    ...(leader ? { leader } : {}),
     brain: {
       kind: 'enemy',
       moves: Object.fromEntries(moves.map((m) => [m.id, m])),

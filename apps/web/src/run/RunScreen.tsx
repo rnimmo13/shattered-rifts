@@ -30,6 +30,7 @@ import {
   resolveCost,
   chooseHeart,
   ghostToSettle,
+  ghostsToSkip,
   settleGhost,
   omensOf,
   omensAt,
@@ -407,7 +408,8 @@ export default function RunScreen() {
     if (!settling) return;
     let live = true;
     const at = runRef.current;
-    void fetchGhostBoss(at?.tier ?? 1, at?.ghostsMet ?? []).then((g) => {
+    // (never one this run has met, nor one already waiting on this map: a Warden's and an Echo's, DECISIONS #549)
+    void fetchGhostBoss(at?.tier ?? 1, at ? ghostsToSkip(at) : []).then((g) => {
       if (live) act((r) => (ghostToSettle(r)?.id === settling ? settleGhost(r, g) : r));
     });
     return () => {
@@ -422,7 +424,7 @@ export default function RunScreen() {
     let live = true;
     // (read from the ref: the ghost is asked for once per Warden, not again whenever the run changes)
     const at = runRef.current;
-    void fetchGhostBoss(at?.tier ?? 1, at?.ghostsMet ?? []).then((g) => {
+    void fetchGhostBoss(at?.tier ?? 1, at ? ghostsToSkip(at) : []).then((g) => {
       if (live) act((r) => (ghostWanted(r) ? attachGhost(r, g) : r));
     });
     return () => {
@@ -442,30 +444,35 @@ export default function RunScreen() {
 
   // ---- a duel replaces the whole screen ----
   if (run.phase === 'duel' && run.context) {
+    const atNode = run.map.nodes.find((n) => n.id === run.context?.nodeId);
     if (wanted)
       return (
         <main className="run">
           <section className="stage-panel" aria-label="A rival rises">
             <h2 className="stage-panel__title">A rival rises</h2>
             <p className="stage-panel__hint">
-              The Warden here is a ghost: a deck that has fought in the Arena. Summoning it…
+              {atNode?.kind === 'echo'
+                ? 'An Echo: a deck that has fought in the Arena. Summoning it…'
+                : 'The Warden here is a ghost: a deck that has fought in the Arena. Summoning it…'}
             </p>
           </section>
         </main>
       );
     const plan = duelPlan(run);
-    // a Warden fight always says what is at stake: the Resolve left, and what losing it would leave (DECISIONS #274)
-    const atNode = run.map.nodes.find((n) => n.id === run.context?.nodeId);
+    // a Warden fight or an Echo always says what is at stake: the Resolve left, and what losing it would leave (DECISIONS #274, #549)
+    const what = atNode?.kind === 'echo' ? 'Echo' : 'Warden fight';
     const stakes =
       atNode &&
-      (atNode.kind === 'warden' || (atNode.enemyId && encounter(atNode.enemyId).kind === 'warden'))
+      (atNode.kind === 'warden' ||
+        atNode.kind === 'echo' ||
+        (atNode.enemyId && encounter(atNode.enemyId).kind === 'warden'))
         ? run.resolve - resolveCost(atNode.kind) <= 0
           ? {
-              text: `Resolve ${run.resolve}: lose this Warden fight and the run collapses`,
+              text: `Resolve ${run.resolve}: lose this ${what} and the run collapses`,
               tone: 'bad' as const,
             }
           : {
-              text: `Resolve ${run.resolve}: losing this Warden fight costs ${resolveCost(atNode.kind)}, leaving ${run.resolve - resolveCost(atNode.kind)}`,
+              text: `Resolve ${run.resolve}: losing this ${what} costs ${resolveCost(atNode.kind)}, leaving ${run.resolve - resolveCost(atNode.kind)}`,
               tone: 'info' as const,
             }
         : undefined;
@@ -510,6 +517,7 @@ export default function RunScreen() {
                   dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
+                  statuses: plan.ghost.statuses,
                 }
               : {
                   enemies: plan.units,
@@ -519,7 +527,7 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `Ghost Warden: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={`${plan.ghost ? `${atNode?.kind === 'echo' ? 'Echo' : 'Ghost Warden'}: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
@@ -639,6 +647,7 @@ export default function RunScreen() {
                   dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
+                  statuses: plan.ghost.statuses,
                 },
               }}
               names={{ a: 'You', b: plan.ghost.name ? `${plan.ghost.name}'s ghost` : 'Ghost deck' }}

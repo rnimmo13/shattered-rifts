@@ -55,6 +55,7 @@ import {
   type ShrineKind,
 } from './gambler';
 import { makePrelude } from './preludes';
+import { buildCache } from './cache';
 import { omenEffects, omenMods } from './omens';
 import type { EnemyMod, StatusId } from '@sr/combat';
 import {
@@ -396,11 +397,18 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     case 'duel':
     case 'elite':
     case 'warden':
+    case 'echo':
       r.phase = 'duel';
       // (news from an earlier stop, "The Warden falls", say, is not told again as this fight starts)
       delete r.eventResult;
-      // a ghost Warden settled when the stage began is that ghost
+      // a ghost Warden or Echo settled when the stage began is that ghost
       if (node.ghost && node.ghostDeck) meetGhost(r, node.ghostDeck);
+      break;
+    case 'cache':
+      delete r.eventResult;
+      delete r.eventFlips;
+      r.context.event = buildCache(r);
+      r.phase = 'event';
       break;
     case 'shrine':
       r.phase = 'shrine';
@@ -557,7 +565,12 @@ export interface FightPlan {
   /** a seed that changes on each retry, so a lost fight is not replayed identically */
   seed: string;
   /** this Warden is a ghost: the deck to fight (played by the computer), and its HP (the usual Warden below is not fought) */
-  ghost?: GhostBoss & { hp: number; dmgPct: number };
+  ghost?: GhostBoss & {
+    hp: number;
+    dmgPct: number;
+    /** what it starts the fight with: Enduring */
+    statuses: Partial<Record<StatusId, number>>;
+  };
   /** the Ascendancy the run has taken */
   ascendancy?: string;
   /** what the tier's Omens change about the enemies (DECISIONS #245) */
@@ -664,10 +677,33 @@ export function settleGhost(run: RunState, ghost: unknown): RunState {
   const r = clone(run);
   const node = r.map.nodes.find((n) => n.id === at.id) as MapNode;
   const checked = checkGhostBoss(ghost);
-  // (a ghost from above the player's tier, or too far below, is not one: an older server might send it)
-  if (checked && checked.tier <= r.tier && checked.tier >= r.tier - 3) node.ghostDeck = checked;
-  else delete node.ghost;
+  if (checked && ghostFits(run, checked)) node.ghostDeck = checked;
+  else unGhost(node);
   return r;
+}
+
+/**
+ * A checked ghost this run can meet: never from above its tier, nor more than three below it (an older server might send one), nor one the
+ * server was told to skip (met already, or waiting elsewhere on this map).
+ */
+function ghostFits(run: RunState, g: GhostBoss): boolean {
+  if (g.id !== undefined && ghostsToSkip(run).includes(g.id)) return false;
+  return g.tier <= run.tier && g.tier >= run.tier - 3;
+}
+
+/** No ghost could be had for this stop: a Warden is the usual one, an Echo the plain fight it stands on. */
+function unGhost(node: MapNode): void {
+  delete node.ghost;
+  if (node.kind === 'echo') node.kind = 'duel';
+}
+
+/**
+ * The ghosts the server should not send: those already waiting on this map (a Warden's and an Echo's) and those this run has met, the
+ * latest 25 in all (what one request carries; the waiting ones last, so they are never the ones cut).
+ */
+export function ghostsToSkip(run: RunState): string[] {
+  const waiting = run.map.nodes.flatMap((n) => (n.ghostDeck?.id ? [n.ghostDeck.id] : []));
+  return [...(run.ghostsMet ?? []), ...waiting].slice(-25);
 }
 
 /** The ghost for this Warden has arrived (or none could be had: null, and the usual Warden is fought). */
@@ -677,8 +713,8 @@ export function attachGhost(run: RunState, ghost: unknown): RunState {
   const ctx = r.context as NonNullable<RunState['context']>;
   ctx.ghostAsked = true;
   const checked = checkGhostBoss(ghost);
-  // (never from above your tier, nor more than three below it)
-  if (checked && checked.tier <= r.tier && checked.tier >= r.tier - 3) meetGhost(r, checked);
+  if (checked && ghostFits(run, checked)) meetGhost(r, checked);
+  else unGhost(nodeOf(r, ctx.nodeId));
   return r;
 }
 
@@ -691,8 +727,53 @@ function meetGhost(r: RunState, g: GhostBoss): void {
   if (g.id) r.ghostsMet = [...(r.ghostsMet ?? []), g.id].slice(-25);
   // said plainly, so nobody takes it for the realm's usual Warden
   const who = classNameOf(g.hero, g.ascendancy);
+  const a = /^[AEIOU]/.test(who) ? 'an' : 'a';
   // (whose deck it is stays unsaid: a ghost in the campaign is a nameless challenger)
-  r.eventResult = `Ghost Warden! This Warden is ${/^[AEIOU]/.test(who) ? 'an' : 'a'} ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
+  r.eventResult =
+    nodeOf(r, ctx.nodeId).kind === 'echo'
+      ? `Echo! A ghost stands here: ${a} ${who} deck from the Arena (Tier ${g.tier}), played by the computer. Beat it and take one of its cards.`
+      : `Ghost Warden! This Warden is ${a} ${who} deck from the Arena (Tier ${g.tier}), played by the computer.`;
+}
+
+/** An Echo is a ghost met on the way, not a Warden: this share (percent) of a ghost Warden's HP, and its damage without Warden's Fury. */
+export const ECHO_HP_PCT = 60;
+/**
+ * A campaign ghost is Enduring: no turn takes more than this percent of its Max HP, so a burst deck cannot one-shot it (Robert,
+ * 2026-11-02; DECISIONS #549). A ghost Warden lasts at least 4 turns, an Echo at least 3.
+ */
+export const GHOST_ENDURING = 25;
+export const ECHO_ENDURING = 34;
+/** The cards an Echo lays out when it falls: its deck's best, by rarity. */
+export const ECHO_OFFERS = 3;
+const RARITY_RANK: Record<string, number> = {
+  common: 1,
+  uncommon: 2,
+  rare: 3,
+  legendary: 4,
+  ancestral: 4,
+};
+
+/**
+ * The cards a fallen Echo offers (DECISIONS #549): its own cards, sanctified and engraved ones as they were, the rarest first (ties in
+ * a random order), never a basic card or a token, never one your deck cannot take, nor another class's card that would be dead in yours.
+ */
+export function echoOffers(r: RunState, ghost: GhostBoss): string[] {
+  // (a card and its "+" are one card here: the upgraded copy is the one laid out)
+  const best = new Map<string, string>();
+  for (const id of ghost.deck) {
+    const base = id.replace(/\+$/, '');
+    if (!best.get(base)?.endsWith('+')) best.set(base, id);
+  }
+  const fit = [...best.values()].filter((id) => {
+    const c = COMBAT_DB.cards[id];
+    if (!c || !c.rarity || c.rarity === 'basic' || c.source === 'token') return false;
+    if (c.hero && c.hero !== r.character && deadElsewhere(id)) return false;
+    return canAdd(r.deck, id);
+  });
+  const rank = (id: string): number => RARITY_RANK[COMBAT_DB.cards[id]?.rarity ?? ''] ?? 0;
+  return shuffle(r.rng, fit)
+    .sort((x, y) => rank(y) - rank(x))
+    .slice(0, ECHO_OFFERS);
 }
 
 /** What the fight at the current node is. */
@@ -723,20 +804,24 @@ export function duelPlan(run: RunState): FightPlan | null {
   const realElite = node.kind === 'elite' && e.kind !== 'warden';
   const eliteHpUp = realElite ? 1 + omen.eliteHpPct / 100 : 1;
   const eliteDmgUp = realElite ? 1 + omen.eliteDmgPct / 100 : 1;
+  // (an Echo is a share of a ghost Warden; wardenUp is already 1 off a Warden's stop)
+  const echoHp = node.kind === 'echo' ? ECHO_HP_PCT / 100 : 1;
   return {
     ...(ghost
       ? {
           ghost: {
             ...ghost,
-            hp: ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp),
+            hp: Math.round(ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp) * echoHp),
             // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
             dmgPct: Math.round(ghostBossDmg(run.tier) * wardenUp),
+            // (never one-shot: a turn takes at most this share of its Max HP, DECISIONS #549)
+            statuses: { enduring: node.kind === 'echo' ? ECHO_ENDURING : GHOST_ENDURING },
           },
         }
       : {}),
     encounterId: e.id,
     units,
-    mods: omenMods(omen, units, boss, hpOf),
+    mods: omenMods(omen, units, boss, hpOf, e.kind === 'finale'),
     heroStatuses: { ...omen.heroStatuses },
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     deck: [...run.deck, ...omen.fightCards],
@@ -773,7 +858,8 @@ export function duelPlan(run: RunState): FightPlan | null {
 export const RETRY_HP_PCT = 100;
 
 export function resolveCost(kind: MapNode['kind']): number {
-  return kind === 'elite' ? 2 : 1;
+  // (an Echo is a stop you choose to take on, as an Elite is: DECISIONS #549)
+  return kind === 'elite' || kind === 'echo' ? 2 : 1;
 }
 
 /** The most max HP a card can give for good in one fight (Bloodfeast is 3 per kill): a guard against a hand-made result. */
@@ -826,7 +912,8 @@ export function finishDuel(
   r.stats.duelsWon++;
   r.hp = hpLeft;
   // (the "Ghost Warden!" notice belongs to that fight: it is not told again later)
-  if (r.eventResult?.startsWith('Ghost Warden!')) delete r.eventResult;
+  if (r.eventResult?.startsWith('Ghost Warden!') || r.eventResult?.startsWith('Echo!'))
+    delete r.eventResult;
   // whatever you did not drink comes with you (never more than you started with)
   const left = [...run.potions];
   r.potions = [];
@@ -839,10 +926,12 @@ export function finishDuel(
   }
   let potionGained: string | undefined;
   const elitePays = eliteRewards(r.tier);
+  // (an Echo pays as an Elite does, Boon chance and all, with one of its own cards for the card reward; DECISIONS #549, #550)
+  const asElite = node.kind === 'elite' || node.kind === 'echo';
   const dropChance =
     node.kind === 'duel'
       ? POTION_DROP_CHANCE.duel
-      : node.kind === 'elite'
+      : asElite
         ? elitePays.potionPct
         : POTION_DROP_CHANCE.elite;
   if (r.potions.length < MAX_POTIONS && nextInt(r.rng, 100) < dropChance) {
@@ -850,11 +939,7 @@ export function finishDuel(
     r.potions.push(potionGained);
   }
   const gain = Math.round(
-    (node.kind === 'duel'
-      ? FIGHT_SHARDS.duel
-      : node.kind === 'elite'
-        ? elitePays.shards
-        : FIGHT_SHARDS.warden) *
+    (node.kind === 'duel' ? FIGHT_SHARDS.duel : asElite ? elitePays.shards : FIGHT_SHARDS.warden) *
       (1 - omenEffects(r.tier).shardsPct / 100),
   );
   r.shards += gain;
@@ -867,12 +952,12 @@ export function finishDuel(
     if (b?.shardsPerFight) r.shards += b.shardsPerFight;
   }
   let boonGained: string | undefined;
-  // Elites give Boons; Wardens give their Gift (they used to give a Boon as well, and decks owned every Boon within a few loops).
-  // A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
+  // Elites and Echoes give Boons (by the tier's chance); Wardens give their Gift (they used to give a Boon as well, and decks owned every
+  // Boon within a few loops). A fight an event started pays the spoils it promised instead (node.bonus, set even when empty), so no second Boon.
   const fromEvent = node.bonus !== undefined;
   // (no roll while it is certain, so Tier I's runs and replays stay as they were)
   if (
-    node.kind === 'elite' &&
+    asElite &&
     !fromEvent &&
     (elitePays.boonPct >= 100 || nextInt(r.rng, 100) < elitePays.boonPct)
   ) {
@@ -882,7 +967,7 @@ export function finishDuel(
       boonGained = id;
     }
   }
-  if (node.kind === 'elite' && elitePays.healPct > 0) heal(r, (r.maxHp * elitePays.healPct) / 100); // an elite leaves you a little breathing room
+  if (asElite && elitePays.healPct > 0) heal(r, (r.maxHp * elitePays.healPct) / 100); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
     // a Warden falls: you grow a little sturdier for good (more deeper in, where enemies hit harder; DECISIONS #237), and catch your breath
@@ -969,9 +1054,13 @@ export function finishDuel(
     if (said.length) r.eventResult = `The spoils: ${said.join(' ')}`;
   }
   const count = Math.max(2, 3 - omenEffects(r.tier).fewerChoices);
+  // a fallen Echo lays out its own cards (the Omen that takes a choice away does not reach them); with none to give, an Elite's reward
+  const echoed = node.kind === 'echo' && ctx.ghost ? echoOffers(r, ctx.ghost) : [];
   r.context = {
     nodeId: node.id,
-    offers: offerCards(r.rng, r.character, r.deck, node.kind === 'elite' ? 'elite' : 'duel', count),
+    offers: echoed.length
+      ? echoed
+      : offerCards(r.rng, r.character, r.deck, asElite ? 'elite' : 'duel', count),
     ...extra,
     shardsGained: gain,
     ...(boonGained ? { boonGained } : {}),

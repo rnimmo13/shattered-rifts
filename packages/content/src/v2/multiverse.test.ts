@@ -41,11 +41,11 @@ function watch(
 }
 
 describe('the multiverse expansion (DECISIONS #437)', () => {
-  it('adds 62 enemies with unique ids, to 95 with the Hatch and Acolyte of the Warden rules (DECISIONS #528)', () => {
+  it('adds 62 enemies with unique ids, to 96 with the Hatch and Acolyte of the Warden rules (DECISIONS #528) and the Rift Ward (#547)', () => {
     expect(MULTIVERSE_UNITS).toHaveLength(62);
     expect(NEW.size).toBe(62);
-    expect(ENEMY_UNITS).toHaveLength(95);
-    expect(new Set(ENEMY_UNITS.map((u) => u.id)).size).toBe(95);
+    expect(ENEMY_UNITS).toHaveLength(96);
+    expect(new Set(ENEMY_UNITS.map((u) => u.id)).size).toBe(96);
   });
 
   it('each enemy has HP, three or more moves, and a pattern that names only its own moves and uses all of them', () => {

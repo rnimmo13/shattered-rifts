@@ -38,7 +38,16 @@ const PHASES: readonly RunPhase[] = [
   'collapsed',
   'banked',
 ];
-const KINDS: readonly NodeKind[] = ['duel', 'elite', 'event', 'shrine', 'merchant', 'warden'];
+const KINDS: readonly NodeKind[] = [
+  'duel',
+  'elite',
+  'event',
+  'shrine',
+  'merchant',
+  'warden',
+  'echo',
+  'cache',
+];
 const ENEMY_IDS = new Set(ENCOUNTERS.map((e) => e.id));
 
 export function serializeRun(run: RunState): string {
@@ -71,9 +80,12 @@ function validMap(map: unknown): map is RunState['map'] {
     if (n.ghostDeck !== undefined && checkGhostBoss(n.ghostDeck) === null) {
       delete n.ghostDeck;
       delete n.ghost;
+      // (an Echo with no ghost is the plain fight it stands on)
+      if (n.kind === 'echo') n.kind = 'duel';
     }
     if (n.bonus !== undefined && !validDeal(n.bonus)) return false;
-    const fights = n.kind === 'duel' || n.kind === 'elite' || n.kind === 'warden';
+    const fights =
+      n.kind === 'duel' || n.kind === 'elite' || n.kind === 'warden' || n.kind === 'echo';
     if (fights && (typeof n.enemyId !== 'string' || !ENEMY_IDS.has(n.enemyId))) return false;
   }
   return true;

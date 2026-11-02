@@ -349,6 +349,14 @@ export function LearnScreen() {
                 "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take one blessing from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, or a free spin of the Spin To Win reel instead. Only one: the shrine closes after it.",
               ],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
+              [
+                'Rift Cache',
+                'One on every map, with no fight. An open one lets you take one thing: a Boon, a rare card or a pile of shards. A trapped one holds the Boon and a rare card together, if you pay: spring the trap (HP), reach past it (a Wound) or disarm it (shards). You can always walk away.',
+              ],
+              [
+                'Echo',
+                "From Tier IV, one on every map: another player's deck from the Arena, played by the computer. It can't be beaten in one turn. Beat it and take one of its best cards, and maybe a Boon, as an Elite gives; lose and it costs 2 Resolve, like an Elite. If no ghost can be found, it is a plain fight.",
+              ],
               ['Warden', 'The boss of the tier. Beat it to heal a little and win back 1 Resolve.'],
             ].map(([n, t]) => (
               <div key={n} className="learn__row">

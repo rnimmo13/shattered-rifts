@@ -309,6 +309,27 @@ export const STATUS_ICONS: Record<StatusId, IconArt> = {
     [p(C.skyHi, 'M24 4C24 4 10 20 10 30A14 14 0 0 0 38 30C38 20 24 4 24 4Z')],
     [p('#9fc7da', 'M24 4C24 4 38 20 38 30A14 14 0 0 1 26 44C33 34 30 16 24 4Z')],
   ),
+  // (a campaign ghost, DECISIONS #549) an hourglass on a shield: it can only lose so much a turn
+  enduring: mix(
+    shield(C.sky, C.skyLo, C.skyHi),
+    art([], [p(C.white, 'M17 13H31L24 24L31 35H17L24 24Z'), p(C.skyLo, 'M17 13H31M17 35H31', 2.2)]),
+  ),
+  // (Wardens' rules, DECISIONS #546) a veil drawn over a face; a dark well with rings falling in; a crown splitting apart
+  veiled: art(
+    [p(C.violetLo, 'M8 10C14 4 34 4 40 10L42 44C36 40 30 46 24 42C18 46 12 40 6 44Z')],
+    [
+      p(C.violet, 'M12 12C18 8 30 8 36 12L37 38C32 35 28 40 24 37C20 40 16 35 11 38Z'),
+      p(C.violetHi, 'M17 22H22M26 22H31', 2.4),
+    ],
+  ),
+  gravity: art(
+    [p(C.obsidianHi, ring(24, 24, 20)), p(C.violetLo, ring(24, 24, 14))],
+    [p(C.dark, ring(24, 24, 8)), p(C.violetHi, 'M24 4A20 20 0 0 1 44 24', 2.4)],
+  ),
+  unmaking: art(
+    [p(C.goldLo, 'M6 38V14L15 24L24 8L33 24L42 14V38Z')],
+    [p(C.gold, 'M10 34V22L16 28L24 15L32 28L38 22V34Z'), p(C.dark, 'M26 8L21 20L27 27L20 40', 2.6)],
+  ),
   ghostly: art(
     [p(C.skyHi, 'M24 3C14 3 8 11 8 20V45L14 39L19 45L24 39L29 45L34 39L40 45V20C40 11 34 3 24 3Z')],
     [
@@ -745,6 +766,10 @@ export const PAINTED: ReadonlySet<string> = new Set(
     'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored',
     'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner',
     'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',
+    // (Wardens' rules, DECISIONS #546: stand-ins copied from Ghostly, Orbit and Fracture until their own are painted)
+    'veiled gravity unmaking',
+    // (a campaign ghost, DECISIONS #549: a stand-in copied from Fortified until its own is painted)
+    'enduring',
     'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages',
     'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart',
   ].flatMap((row) => row.split(' ')),

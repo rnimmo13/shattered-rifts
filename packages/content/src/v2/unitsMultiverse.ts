@@ -35,6 +35,10 @@ const statik = () => wound('foe', 'static');
 /** a Beckoning in the hero's hand (The Mourning Tide's rule) */
 const beckon = (): Op => ({ op: 'addCard', card: 'beckoning', to: 'hand', side: 'foe' });
 const slippery = (n = 1) => status('slippery', n);
+/** the Queen of the Unmade's rule: the costliest card of your next hand is Consumed (DECISIONS #546) */
+const unmake = () => status('unmaking', 1, 'foeHero');
+/** Event Horizon Regent's rule: one more card left in your hand falls back on top of your draw pile (DECISIONS #546) */
+const gravity = () => status('gravity', 1, 'foeHero');
 /** a boss: one loop, and another at half HP */
 const twoPhase = (first: string[], second: string[]) =>
   phases([100, { kind: 'cycle', order: first }], [50, { kind: 'cycle', order: second }]);
@@ -341,15 +345,18 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'the-upside-down-stag',
     'The Upside-Down Stag',
-    230,
+    // (210, was 230; its rule, DECISIONS #546: the Turnover takes your Barrier before it strikes, so Barrier raised for it is its)
+    210,
     [
       move('gore', 'Root Gore', hit(14)),
       move('grow', 'Overgrow', barrier(12), might()),
+      move('turnover', 'The Turnover', { op: 'swapBarrier' }, hit(12)),
       move('trample', 'Upturned Trample', hit(25)),
       move('kick', 'Hoof and Root', hit(10, 2)),
       move('bark', 'Bark Over', barrier(15)),
+      move('upend', 'Upend', { op: 'swapBarrier' }, hit(8, 2)),
     ],
-    twoPhase(['gore', 'grow', 'trample'], ['kick', 'bark']),
+    twoPhase(['gore', 'grow', 'turnover', 'trample'], ['kick', 'upend', 'bark']),
   ),
 
   // ---- Umbral Veil ----
@@ -653,12 +660,13 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'queen-of-the-unmade',
     'Queen of the Unmade',
-    230,
+    // (210, was 230; her rule, DECISIONS #546: Unmaking Consumes the costliest card of your next hand)
+    210,
     [
-      move('decree', 'Unmaking Decree', hit(14)),
+      move('decree', 'Unmaking Decree', hit(14), unmake()),
       move('crown', 'Crown of Shards', barrier(14), might()),
       move('verdict', 'Royal Verdict', hit(25)),
-      move('shards', 'Shard Rain', hit(9, 3)),
+      move('shards', 'Shard Rain', hit(9, 3), unmake()),
       move('throne', 'Glass Throne', barrier(12)),
     ],
     twoPhase(['decree', 'crown', 'verdict'], ['shards', 'throne']),
@@ -745,12 +753,13 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
   foe(
     'event-horizon-regent',
     'Event Horizon Regent',
-    230,
+    // (210, was 230; its rule, DECISIONS #546: Gravity pulls the cards you leave in hand back on top of your draw pile, more and more)
+    210,
     [
-      move('gravity', 'Gravity Well', hit(12)),
+      move('gravity', 'Gravity Well', hit(12), gravity()),
       move('ring', 'Accretion Ring', barrier(16)),
       move('horizon', 'Past the Horizon', hit(28)),
-      move('debris', 'Debris Storm', hit(9, 3)),
+      move('debris', 'Debris Storm', hit(9, 3), gravity()),
       move('orbit', 'Tight Orbit', barrier(14)),
     ],
     twoPhase(['gravity', 'ring', 'horizon'], ['debris', 'orbit']),

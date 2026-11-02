@@ -4,6 +4,14 @@
 import { useMemo } from 'react';
 import {
   BOON_PRICE,
+  CACHE_DISARM,
+  CACHE_STASH,
+  CACHE_TRAP_CHANCE,
+  CACHE_TRAP_HP_PCT,
+  ECHO_ENDURING,
+  ECHO_FROM_TIER,
+  ECHO_HP_PCT,
+  GHOST_ENDURING,
   LOOP_BOON_CHANCE,
   CROSSED_MERCHANT_CHANCE,
   CROSSED_OFFER_CHANCE,
@@ -123,6 +131,15 @@ export function LearnOdds() {
         is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain
         enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor), played and rewarded
         like any other fight.
+      </p>
+      <p>
+        Every map has one Rift Cache on a middle floor: {CACHE_TRAP_CHANCE}% are trapped (spring it
+        for {CACHE_TRAP_HP_PCT}% of your Max HP, reach past it for a Wound, or disarm it for{' '}
+        {CACHE_DISARM} shards); an open one gives a Boon, a rare card or {CACHE_STASH} shards. From
+        Tier {ECHO_FROM_TIER} every map also has one Echo: a ghost with {ECHO_HP_PCT}% of a ghost
+        Warden&apos;s HP that loses at most {ECHO_ENDURING}% of it in a turn (a ghost Warden,{' '}
+        {GHOST_ENDURING}%), and pays as an Elite does (shards, potion and Boon chances), with one
+        of its own cards for the card reward.
       </p>
 
       <p>

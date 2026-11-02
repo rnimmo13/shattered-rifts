@@ -46,6 +46,7 @@ import {
   other,
   scaledEnemyHp,
   tierMight,
+  enemyGuardFactor,
   clone,
   type Action,
   type Enchant,
@@ -488,6 +489,8 @@ function applyDamage(
   throughSlippery = false,
 ): number {
   if (t.hp <= 0) return 0;
+  // (Nyxara's rule, DECISIONS #546) a hit tears her Veil away, and her intent shows
+  if (kind === 'attack' && stacks(t, 'veiled') > 0) addStatus(r, t, 'veiled', -stacks(t, 'veiled'));
   if (kind === 'attack' && amount > 0 && !throughSlippery && stacks(t, 'slippery') > 0) {
     addStatus(r, t, 'slippery', -1);
     amount = 1;
@@ -517,6 +520,12 @@ function applyDamage(
     addStatus(r, t, 'buffer', -1);
     lost = 0;
   }
+  // Enduring (a campaign ghost, DECISIONS #549): it loses at most this percent of its Max HP in any one turn, so no deck one-shots it
+  const enduring = stacks(t, 'enduring');
+  if (enduring > 0 && lost > 0) {
+    const room = Math.ceil((t.maxHp * enduring) / 100) - (t.lostTurn ?? 0);
+    lost = Math.max(0, Math.min(lost, room));
+  }
   // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
   const rise = t.rise?.[0];
   let rises = false;
@@ -530,6 +539,7 @@ function applyDamage(
     }
   }
   t.hp -= lost;
+  if (enduring > 0) t.lostTurn = (t.lostTurn ?? 0) + lost;
   r.ev.push({
     type: 'damage',
     source: source?.id ?? null,
@@ -1604,6 +1614,16 @@ function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit |
   return base + (sc.max !== undefined ? Math.min(sc.max, v) : v);
 }
 
+/**
+ * (DECISIONS #548) Barrier and healing an enemy gives its own side grow with the tier as its HP does. A share of max HP (`scale`) is
+ * already in step, and a ghost Warden (a hero's deck) is not an enemy unit.
+ */
+function guardOf(r: Run, a: Act, t: Unit, n: number, scaled: boolean): number {
+  if (scaled || n <= 0 || a.actor.kind !== 'enemy' || t.side !== a.actor.side) return n;
+  if (r.s.sides[t.side].hero !== null) return n;
+  return Math.round(n * enemyGuardFactor(r.s.tier, r.s.enemyHpPct));
+}
+
 /** Rune effects get +1 damage / Barrier per Resonance; a totem's command its Rousing and Spirit (`plus`). */
 const resonanceOf = (a: Act): number => (a.rune ? stacks(a.actor, 'resonance') : 0) + a.plus;
 
@@ -1822,7 +1842,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     case 'barrier':
       for (const t of resolve(r, a, op.to)) {
-        let n = amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a);
+        let n =
+          guardOf(r, a, t, amountOf(r, a, op.amount, op.scale, t), !!op.scale) + resonanceOf(a);
         // Unmovable: the first Barrier a card gives you each turn counts double
         if (
           n > 0 &&
@@ -1860,7 +1881,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       return;
     case 'heal':
-      for (const t of resolve(r, a, op.to)) healUnit(r, t, amountOf(r, a, op.amount, op.scale, t));
+      for (const t of resolve(r, a, op.to))
+        healUnit(r, t, guardOf(r, a, t, amountOf(r, a, op.amount, op.scale, t), !!op.scale));
       return;
     case 'cleanse':
       // every debuff on the target is lessened (a Doom that is lowered kills later, or not at all); `all` dispels them for good
@@ -1955,6 +1977,53 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'stars':
       gainStars(r, side, amountOf(r, a, op.amount, op.scale, null));
       return;
+    case 'devour': {
+      // (Gorrmaw's rule, DECISIONS #546) it eats its own: each one heals it and feeds it Might; a side with none starves
+      const eaten = side.units.filter((x) => x.def === op.unit && x.hp > 0 && x.id !== a.actor.id);
+      if (!eaten.length) {
+        if (op.none) runOps(r, a, op.none);
+        return;
+      }
+      // (they fall as the move ends, as a sacrificed companion does; the log shows each one eaten)
+      for (const x of eaten) {
+        r.ev.push({
+          type: 'damage',
+          source: a.actor.id,
+          target: x.id,
+          amount: x.hp,
+          blocked: 0,
+          lost: x.hp,
+          shielded: false,
+          kind: 'direct',
+          hp: 0,
+        });
+        x.hp = 0;
+      }
+      const each =
+        guardOf(r, a, a.actor, op.heal, false) +
+        Math.floor((a.actor.maxHp * (op.healPct ?? 0)) / 100);
+      if (each > 0) healUnit(r, a.actor, each * eaten.length);
+      if (op.might > 0) addStatus(r, a.actor, 'might', op.might * eaten.length);
+      return;
+    }
+    case 'swapBarrier': {
+      // (the Upside-Down Stag's rule, DECISIONS #546) its Barrier and the other hero's change places (a swap, not a gain: Brittle
+      // and what answers gaining Barrier play no part)
+      const them = heroOf(r.s.sides[other(side.id)]);
+      if (!them || them.hp <= 0) return;
+      const pair: [Unit, number][] = [
+        [a.actor, them.barrier],
+        [them, a.actor.barrier],
+      ];
+      for (const [u, next] of pair) {
+        const was = u.barrier;
+        u.barrier = next;
+        if (next < was) r.ev.push({ type: 'barrierDrop', target: u.id, total: next });
+        else if (next > was)
+          r.ev.push({ type: 'barrier', target: u.id, amount: next - was, total: next });
+      }
+      return;
+    }
     case 'summon': {
       if (op.ifAbsent && side.units.some((x) => x.def === op.unit && x.hp > 0)) return;
       const u = spawn(r, side, op.unit, false, a.actor);
@@ -3255,6 +3324,17 @@ function gainStars(r: Run, sd: SideState, n: number): void {
   }
 }
 
+/** The `n` costliest playable cards of these, costliest first (ties: in the order given). A card's cost here is its own, lasting
+ * one: what a status or this turn's count takes off is not counted (an X card counts as 0). */
+function costliest(r: Run, cards: CardInst[], n: number): CardInst[] {
+  return cards
+    .filter((c) => !cardDef(r.db, c.card).unplayable)
+    .map((c, i) => ({ c, i, cost: Math.max(0, costOf(r.db, { units: [], attacksPlayed: 0 }, c)) }))
+    .sort((x, y) => y.cost - x.cost || x.i - y.i)
+    .slice(0, n)
+    .map((x) => x.c);
+}
+
 /** A card (already out of every pile) goes on top of the draw pile. */
 function putOnTop(r: Run, sd: SideState, c: CardInst): void {
   sd.draw.unshift(c);
@@ -3825,6 +3905,9 @@ function reap(r: Run): void {
   if (r.s.winner) return;
   for (const side of ['a', 'b'] as const) {
     const sd = r.s.sides[side];
+    // (a leader that falls takes the rest of its side with it: Vorthax's Ward and Shards, DECISIONS #547)
+    if (sd.hero === null && sd.units.some((u) => u.hp <= 0 && r.db.units[u.def]?.leader))
+      for (const u of sd.units) u.hp = 0;
     const dead = sd.units.filter((u) => u.hp <= 0);
     if (!dead.length) continue;
     sd.units = sd.units.filter((u) => u.hp > 0);
@@ -4074,6 +4157,8 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (r.s.winner) return;
   // (DECISIONS #434) "this turn" for HP lost starts before the turn's own losses (Hangover, Seared), so they count for it
   sd.lostHpTurn = 0;
+  // (Enduring counts the HP lost since either side's turn began)
+  for (const u of [...r.s.sides.a.units, ...r.s.sides.b.units]) delete u.lostTurn;
   startOfTurn(r, side);
   if (r.s.winner) return;
   // the opposing Traps that wait for your turn to begin
@@ -4161,6 +4246,19 @@ function beginHeroTurn(r: Run, side: Side): void {
   }
   for (const nc of (sd.nextCopies ?? []).splice(0))
     for (let i = 0; i < nc.times; i++) addCardTo(r, sd, nc.card, 'hand');
+  // (the Queen of the Unmade's rule, DECISIONS #546) Unmaking: the costliest playable card in hand is Consumed, per stack, then it clears
+  const unmaking = stacks(hero, 'unmaking');
+  if (unmaking > 0) {
+    addStatus(r, hero, 'unmaking', -unmaking);
+    for (const c of costliest(r, sd.hand, unmaking)) {
+      // (Consuming one may have moved another: only what is still in hand goes)
+      if (r.s.winner) return;
+      if (!sd.hand.includes(c)) continue;
+      sd.hand = sd.hand.filter((x) => x !== c);
+      exhaustCard(r, sd, c);
+    }
+    if (r.s.winner) return;
+  }
   const guard = stacks(hero, 'guarded');
   if (guard > 0) {
     addStatus(r, hero, 'guarded', -guard);
@@ -4259,9 +4357,11 @@ function decay(r: Run, side: Side): void {
     if (stacks(u, 'sturdy') > 0) addStatus(r, u, 'sturdy', -stacks(u, 'sturdy'));
   }
   const sd = r.s.sides[side];
+  // (an enemy's Armored and Plating grow with the tier, as its Barrier does: DECISIONS #548)
+  const guard = sd.hero === null ? enemyGuardFactor(r.s.tier, r.s.enemyHpPct) : 1;
   for (const u of [...sd.units]) {
     if (u.hp <= 0) continue;
-    const plated = stacks(u, 'armored');
+    const plated = Math.round(stacks(u, 'armored') * (u.kind === 'enemy' ? guard : 1));
     if (plated > 0) {
       u.barrier += plated;
       r.ev.push({ type: 'barrier', target: u.id, amount: plated, total: u.barrier });
@@ -4271,7 +4371,8 @@ function decay(r: Run, side: Side): void {
     const plating = stacks(u, 'plating');
     if (plating > 0) {
       const shaken = stacks(u, 'brittle') > 0 || stacks(u, 'stunned') > 0;
-      const gained = shaken ? Math.floor(plating * 0.75) : plating;
+      const grown = Math.round(plating * (u.kind === 'enemy' ? guard : 1));
+      const gained = shaken ? Math.floor(grown * 0.75) : grown;
       u.barrier += gained;
       r.ev.push({ type: 'barrier', target: u.id, amount: gained, total: u.barrier });
       if (u.kind === 'hero') fireTriggers(r, r.s.sides[u.side], 'barrier');
@@ -4301,7 +4402,15 @@ function decay(r: Run, side: Side): void {
   // Doom: a unit at or below its Doom at the end of its own turn is gone
   for (const u of [...sd.units]) {
     const doom = stacks(u, 'doom');
-    if (doom > 0 && u.hp > 0 && u.hp <= doom) applyDamage(r, null, u, u.hp, 'direct');
+    if (doom > 0 && u.hp > 0 && u.hp <= doom) {
+      const at = r.ev.length;
+      applyDamage(r, null, u, u.hp, 'direct');
+      // (so a recap can say it was Fate)
+      for (let i = at; i < r.ev.length; i++) {
+        const e = r.ev[i];
+        if (e?.type === 'damage' && e.target === u.id) e.fate = true;
+      }
+    }
   }
   reap(r);
 }
@@ -4310,6 +4419,7 @@ function enemyPhase(r: Run): void {
   const sd = r.s.sides.b;
   r.s.active = 'b';
   r.s.turn++;
+  for (const u of [...r.s.sides.a.units, ...sd.units]) delete u.lostTurn;
   // (an Aura that answers once a round counts its round from here on this side, as a hero's from its turn: DECISIONS #542)
   r.s.sides.b.turnBegan = r.s.turn;
   r.ev.push({ type: 'turnStart', side: 'b', turn: r.s.turn });
@@ -4390,7 +4500,7 @@ function endTurn(r: Run): void {
   const holdAll = !!hero && stacks(hero, 'holdfast') > 0;
   // (assassin) Honed knives Hold; a card drawn to Hold this turn does; what lasted only this turn ends
   const honedKnives = !!hero && stacks(hero, 'honed') > 0;
-  for (const c of hand) {
+  const ends = hand.map((c) => {
     const cd = cardDef(r.db, c.card);
     const held =
       !!cd.retain ||
@@ -4402,14 +4512,31 @@ function endTurn(r: Run): void {
     // (Defer) the 1 off is for the turn the card comes back: left unplayed, it is a full price card again (Robert, 2026-10-30)
     delete c.deferred;
     if (c.sly === 'turn') delete c.sly;
+    return { c, cd, held };
+  });
+  // (Event Horizon Regent's rule, DECISIONS #546) Gravity: the costliest cards that would be discarded go back on top of the draw
+  // pile instead, as many as its stacks (judged once this turn's discounts are gone)
+  const gravity = hero ? stacks(hero, 'gravity') : 0;
+  const pulled =
+    gravity > 0 && !holdAll
+      ? costliest(
+          r,
+          ends.filter((x) => !x.held && !isEthereal(x.cd, x.c)).map((x) => x.c),
+          gravity,
+        )
+      : [];
+  for (const { c, cd, held } of ends) {
     if (isEthereal(cd, c) && !held) exhaustCard(r, sd, c);
     else if (held || holdAll) keep.push(c);
+    else if (pulled.includes(c)) continue;
     else {
       sd.discard.push(c);
       r.ev.push({ type: 'discard', side, card: c.id, def: c.card, routine: true });
     }
   }
   sd.hand = [...keep, ...sd.hand];
+  // (the costliest ends on top)
+  for (const c of [...pulled].reverse()) putOnTop(r, sd, c);
   if (hero && holdAll) addStatus(r, hero, 'holdfast', -1);
   if (sd.mana > 0) r.ev.push({ type: 'mana', side, mana: 0 });
   sd.mana = 0;
