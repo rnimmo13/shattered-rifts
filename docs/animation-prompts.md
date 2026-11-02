@@ -398,3 +398,14 @@ THE PICTURES, in this exact order, left to right, top row first:
 11. A pair of gold wings, open.
 12. A cracked crown with light pouring out of the crack.
 ```
+
+## One crest: `crest-shaman-elementalist.png` (the Elementalist, DECISIONS #542)
+
+The Elementalist replaced the Pyromancer; until this is painted it wears the Pyromancer's brazier. Attach two or three crests from sheets 13-15 as the style anchor.
+
+```
+Create ONE heraldic class crest for a dark-fantasy 2D card-battler, no text, matching the attached crests exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).
+THE BACKGROUND MUST STAY CLEAN: one plain flat solid magenta (#FF00FF) over the whole image, no shadow, no gradient, no frame. Use no magenta or hot pink inside the picture. NO TEXT.
+READABLE WHEN SMALL: it will be shown at only 48 pixels, so ONE bold object, centred and large, with a thick unbroken near-black outline and big simple shapes.
+THE PICTURE: a carved stone ring set with three gems, an orange flame gem, an icy pale-blue frost gem and a crackling violet storm gem, evenly spaced, with a thin twist of fire, frost and lightning curling between them.
+```

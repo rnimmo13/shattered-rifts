@@ -2,7 +2,7 @@
 // the top of the page while it scrolls (the category tabs, and under Riftwalker looks a row of classes), the tile a look is shown on,
 // and the panel a category with nothing in it yet shows.
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { RIFTWALKERS } from '@sr/content/v2';
 import { HEROES, SHOP_TABS, type ShopTab } from './shopTabs';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -120,7 +120,8 @@ export function LookTile(props: {
 }) {
   const inner = (
     <>
-      <img src={props.src} alt="" loading="lazy" />
+      {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
+      <LookPicture src={props.src} />
       {props.tag && <i className="look__tag">{props.tag}</i>}
     </>
   );
@@ -158,4 +159,10 @@ export function SoonPanel(props: { tab: ShopTab; text?: string }) {
       <i>Coming soon</i>
     </div>
   );
+}
+
+function LookPicture(props: { src: string }) {
+  const [failed, setFailed] = useState<string | null>(null);
+  if (!props.src || failed === props.src) return null;
+  return <img src={props.src} alt="" loading="lazy" onError={() => setFailed(props.src)} />;
 }

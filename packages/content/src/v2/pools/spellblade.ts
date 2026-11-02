@@ -52,21 +52,23 @@ const swing = (rate: number, base: number, step: number, to: Sel = 'target'): Op
 const volley = (amount: number, hits: number, step: number, to: Sel = 'target'): Op =>
   scaled(dmg(amount, to, hits), { by: 'stars', step });
 /** a spell's hit: base damage + a rate per point spent */
-const burst = (amount: number, rate: number, to: Sel = 'target'): Op => scaled(dmg(amount, to), SPENT(rate));
+const burst = (amount: number, rate: number, to: Sel = 'target'): Op =>
+  scaled(dmg(amount, to), SPENT(rate));
 const fracture = (amount: number, to: Sel = 'target', marked = false): Op => ({
   op: 'fracture',
   amount,
   to,
   ...(marked ? { marked } : {}),
 });
-/** Etching Edge's cut: 1 Fracture, and 1 more per 8 Spell Power */
-const etch: Op = scaled(fracture(1), { by: 'stars', step: 8 });
+/** Etching Edge's cut: 1 Fracture, and 1 more per 4 Spell Power (per 8 until DECISIONS #542) */
+const etch: Op = scaled(fracture(1), { by: 'stars', step: 4 });
 const shatterUp = (amount: number): Op => ({ op: 'shatterUp', amount });
 const strip = (amount: number): Op => ({ op: 'strip', to: 'target', amount });
 /** Barrier that grows with the Spell Power you hold, on every Barrier of hers (DECISIONS #486) */
 const ward = (amount: number, step = 3): Op => scaled(barrier(amount), { by: 'stars', step });
 /** the same on a card that asks you to be empty: what you have spent this turn takes the place of what you hold */
-const wardSpent = (amount: number): Op => scaled(barrier(amount), { by: 'starsSpentTurn', step: 3 });
+const wardSpent = (amount: number): Op =>
+  scaled(barrier(amount), { by: 'starsSpentTurn', step: 3 });
 
 export const SPELLBLADE: CardDef[] = [
   // --- starter ---
@@ -161,16 +163,9 @@ export const SPELLBLADE: CardDef[] = [
     ...GROWN,
     up: { effects: [ward(15), gain(3)] },
   }),
-  a(
-    'uncommon',
-    'banked-embers',
-    'Banked Embers',
-    'skill',
-    1,
-    'none',
-    [starsNext(3), manaNext(1)],
-    { up: { effects: [starsNext(4), manaNext(1)] } },
-  ),
+  a('uncommon', 'banked-embers', 'Banked Embers', 'skill', 1, 'none', [starsNext(3), manaNext(1)], {
+    up: { effects: [starsNext(4), manaNext(1)] },
+  }),
   a(
     'uncommon',
     'growing-crucible',
@@ -253,9 +248,10 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SWORD],
     up: { effects: [swing(3, 1, 3), draw(1)] },
   }),
-  a('common', 'etching-edge', 'Etching Edge', 'attack', 1, 'foe', [swing(2, 1, 4), etch], {
+  // (1 more damage per 2 Spell Power, not 2 per 4: the same rate, but it moves at every second point, Robert 2026-11-02)
+  a('common', 'etching-edge', 'Etching Edge', 'attack', 1, 'foe', [swing(1, 2, 2), etch], {
     tags: [SWORD],
-    up: { effects: [swing(3, 1, 4), etch] },
+    up: { effects: [swing(1, 5, 2), etch] },
   }),
   a('common', 'rift-sweep', 'Rift Sweep', 'attack', 2, 'none', [volley(3, 3, 3, 'allFoes')], {
     tags: [SWORD],
@@ -311,7 +307,12 @@ export const SPELLBLADE: CardDef[] = [
     [volley(2, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(2, 'target', 2), stars(1)])],
     {
       tags: [SWORD],
-      up: { effects: [volley(3, 2, 4), when('prevSpell', { atLeast: 1 }, [dmg(3, 'target', 2), stars(1)])] },
+      up: {
+        effects: [
+          volley(3, 2, 4),
+          when('prevSpell', { atLeast: 1 }, [dmg(3, 'target', 2), stars(1)]),
+        ],
+      },
     },
   ),
   a(
@@ -346,23 +347,14 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SWORD],
     up: { effects: [volley(7, 4, 2)] },
   }),
-  a(
-    'rare',
-    'thousand-shards',
-    'Thousand Shards',
-    'attack',
-    2,
-    'foe',
-    [burst(0, 6)],
-    {
-      starX: true,
-      exhaust: true,
-      tags: [SWORD],
-      up: {
-        effects: [burst(0, 7)],
-      },
+  a('rare', 'thousand-shards', 'Thousand Shards', 'attack', 2, 'foe', [burst(0, 6)], {
+    starX: true,
+    exhaust: true,
+    tags: [SWORD],
+    up: {
+      effects: [burst(0, 7)],
     },
-  ),
+  }),
   a(
     'rare',
     'obsidian-drill',
@@ -448,7 +440,13 @@ export const SPELLBLADE: CardDef[] = [
     1,
     'none',
     [on('play', [status('vigor', 1)], { once: true, only: { by: 'lastSpend', atLeast: 1 } })],
-    { up: { effects: [on('play', [status('vigor', 2)], { once: true, only: { by: 'lastSpend', atLeast: 1 } })] } },
+    {
+      up: {
+        effects: [
+          on('play', [status('vigor', 2)], { once: true, only: { by: 'lastSpend', atLeast: 1 } }),
+        ],
+      },
+    },
   ),
   a(
     'rare',
@@ -460,9 +458,18 @@ export const SPELLBLADE: CardDef[] = [
     [on('turnStart', [status('vigor', 1)])],
     { up: { innate: true } },
   ),
-  a('rare', 'cleaving-edge', 'Cleaving Edge', 'power', 1, 'none', [stars(2), status('bladesweep', 1)], {
-    up: { effects: [stars(3), status('bladesweep', 1)] },
-  }),
+  a(
+    'rare',
+    'cleaving-edge',
+    'Cleaving Edge',
+    'power',
+    1,
+    'none',
+    [stars(2), status('bladesweep', 1)],
+    {
+      up: { effects: [stars(3), status('bladesweep', 1)] },
+    },
+  ),
   a('rare', 'echoing-blade', 'Echoing Blade', 'power', 2, 'none', [status('bladeecho', 1)], {
     up: { cost: 1 },
   }),
@@ -544,10 +551,7 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     1,
     'foe',
-    [
-      burst(8, 4),
-      when('starSpend', { atLeast: 1 }, [when('stars', { atLeast: 1 }, [draw(1)])]),
-    ],
+    [burst(8, 4), when('starSpend', { atLeast: 1 }, [when('stars', { atLeast: 1 }, [draw(1)])])],
     {
       starHalf: true,
       tags: [SPELL],
@@ -789,7 +793,9 @@ export const SPELLBLADE: CardDef[] = [
     [on('play', [stars(2)], { tag: SWORD, once: true, only: { by: 'prevSpell', atLeast: 1 } })],
     {
       up: {
-        effects: [on('play', [stars(3)], { tag: SWORD, once: true, only: { by: 'prevSpell', atLeast: 1 } })],
+        effects: [
+          on('play', [stars(3)], { tag: SWORD, once: true, only: { by: 'prevSpell', atLeast: 1 } }),
+        ],
       },
     },
   ),
@@ -816,7 +822,11 @@ export const SPELLBLADE: CardDef[] = [
     1,
     'none',
     [on('arcana', [wardSpent(5)], { once: true, only: { by: 'spent', atLeast: 3 } })],
-    { up: { effects: [on('arcana', [wardSpent(7)], { once: true, only: { by: 'spent', atLeast: 3 } })] } },
+    {
+      up: {
+        effects: [on('arcana', [wardSpent(7)], { once: true, only: { by: 'spent', atLeast: 3 } })],
+      },
+    },
   ),
   a(
     'uncommon',
@@ -828,7 +838,9 @@ export const SPELLBLADE: CardDef[] = [
     [on('arcana', [draw(1), wardSpent(3)], { once: true, only: { by: 'stars', atMost: 0 } })],
     {
       up: {
-        effects: [on('arcana', [draw(1), wardSpent(5)], { once: true, only: { by: 'stars', atMost: 0 } })],
+        effects: [
+          on('arcana', [draw(1), wardSpent(5)], { once: true, only: { by: 'stars', atMost: 0 } }),
+        ],
       },
     },
   ),
@@ -847,11 +859,20 @@ export const SPELLBLADE: CardDef[] = [
   }),
 
   // --- defence and selection ---
-  a('common', 'star-barrier', 'Arcane Barrier', 'skill', 1, 'none', [scaled(barrier(5), SPENT(3))], {
-    starHalf: true,
-    tags: [SPELL],
-    up: { effects: [scaled(barrier(8), SPENT(3))] },
-  }),
+  a(
+    'common',
+    'star-barrier',
+    'Arcane Barrier',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(5), SPENT(3))],
+    {
+      starHalf: true,
+      tags: [SPELL],
+      up: { effects: [scaled(barrier(8), SPENT(3))] },
+    },
+  ),
   a('common', 'glass-veil', 'Glass Veil', 'skill', 2, 'none', [ward(8), barrierNext(6), stars(1)], {
     tags: [SPELL],
     up: { effects: [ward(11), barrierNext(6), stars(1)] },
@@ -889,18 +910,14 @@ export const SPELLBLADE: CardDef[] = [
     [
       draw(2),
       stars(1),
-      when('swordsPlayed', { atLeast: 1 }, [
-        when('spellsPlayed', { atLeast: 1 }, [stars(2)]),
-      ]),
+      when('swordsPlayed', { atLeast: 1 }, [when('spellsPlayed', { atLeast: 1 }, [stars(2)])]),
     ],
     {
       up: {
         effects: [
           draw(3),
           stars(1),
-          when('swordsPlayed', { atLeast: 1 }, [
-            when('spellsPlayed', { atLeast: 1 }, [stars(2)]),
-          ]),
+          when('swordsPlayed', { atLeast: 1 }, [when('spellsPlayed', { atLeast: 1 }, [stars(2)])]),
         ],
       },
     },

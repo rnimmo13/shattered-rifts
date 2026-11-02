@@ -99,19 +99,19 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
           <p className="picker__ascendHint">
             Beat Tier 3 and choose one: the class this run becomes.
           </p>
-          <dl className="picker__ascend">
+          {/* a tile each, side by side where there is room (Robert, 2026-11-02: boxes with subtext, as other pages have) */}
+          <ul className="picker__ascend">
             {ascendanciesOf(props.value).map((a) => (
-              <div key={a.id}>
-                <dt>
-                  <Picture id={crestPic(a.id)} className="picker__ascendCrest">
-                    {null}
-                  </Picture>
-                  {a.name}
-                </dt>
-                <dd>{a.text}</dd>
-              </div>
+              <li key={a.id} className="picker__ascTile">
+                <Picture id={crestPic(a.id)} className="picker__ascendCrest">
+                  {null}
+                </Picture>
+                <b>{a.name}</b>
+                <small>{a.leans}</small>
+                <p>{a.text}</p>
+              </li>
             ))}
-          </dl>
+          </ul>
           <p className="picker__deckname">
             {c.hero.maxHp} HP · {c.hero.mana} Mana · starter deck of {c.starter.length} cards
             {c.hero.startUnits?.length ? ' · starts with a companion' : ''}

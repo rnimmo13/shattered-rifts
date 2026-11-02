@@ -102,30 +102,66 @@ export function Grimoire(props: GrimoireProps) {
   });
   const total = entries.length;
   const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
+  const realmTabs = (cls: string) => (
+    <div className={cls} role="tablist" aria-label="Realms">
+      {[{ id: 'all', name: 'Everything' }, ...tabs].map((t) => (
+        <button
+          key={t.id}
+          role="tab"
+          aria-selected={t.id === tab}
+          className={`grim__ribbon grim__ribbon--${t.id === 'all' ? 'other' : t.id}${t.id === tab ? ' is-open' : ''}`}
+          onClick={() => {
+            setTab(t.id);
+            setLeaf(0);
+          }}
+        >
+          <span>{t.name}</span>
+          <b>{t.id === 'all' ? total : tabCount(t.id)}</b>
+        </button>
+      ))}
+    </div>
+  );
+  // a phone: no book, no pages. The realms are a row of chips that slides sideways, and every card of the open one is in a list two
+  // across that scrolls (Robert, 2026-11-02: the book's tabs overlapped and its pages held four cards each)
+  if (narrow) {
+    const across = Math.max(1, (box.w || window.innerWidth) - 16);
+    const phoneWidth = Math.max(110, Math.min(200, Math.floor((across - 10) / 2)));
+    return (
+      <div className={`grim grim--phone grim--${grow ? 'grow' : 'fill'}`} ref={bookRef}>
+        {tabs.length > 1 && realmTabs('grim__chips')}
+        {shown.length === 0 ? (
+          <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
+        ) : (
+          <ul className="grim__list" style={{ gridTemplateColumns: `repeat(2, ${phoneWidth}px)` }}>
+            {shown.map(({ def }, idx) => {
+              const ok = !!props.onPick && (!props.pickable || props.pickable.has(def.id));
+              return (
+                <li
+                  key={`${def.id}-${idx}`}
+                  className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
+                >
+                  <button
+                    className="grim__card"
+                    disabled={!!props.onPick && !ok}
+                    aria-label={props.onPick ? `Choose ${def.name}` : def.name}
+                    onClick={() => ok && props.onPick?.(def.id)}
+                  >
+                    <FightCard db={COMBAT_DB} def={def} width={phoneWidth} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    );
+  }
   return (
     <div
       className={`grim grim--view grim--${grow ? 'grow' : 'fill'}${narrow ? ' grim--narrow' : ''}`}
     >
       <div className="grim__main">
-        {tabs.length > 1 && (
-          <div className="grim__tabs" role="tablist" aria-label="Realms">
-            {[{ id: 'all', name: 'Everything' }, ...tabs].map((t) => (
-              <button
-                key={t.id}
-                role="tab"
-                aria-selected={t.id === tab}
-                className={`grim__ribbon grim__ribbon--${t.id === 'all' ? 'other' : t.id}${t.id === tab ? ' is-open' : ''}`}
-                onClick={() => {
-                  setTab(t.id);
-                  setLeaf(0);
-                }}
-              >
-                <span>{t.name}</span>
-                <b>{t.id === 'all' ? total : tabCount(t.id)}</b>
-              </button>
-            ))}
-          </div>
-        )}
+        {tabs.length > 1 && realmTabs('grim__tabs')}
         <div className={`grim__book grim__book--${spread}`} ref={bookRef}>
           <button
             className="grim__flip"

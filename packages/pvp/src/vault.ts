@@ -133,7 +133,7 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
     deck: checked.entry.deck,
     boons: cleanBoons(o['boons']),
     ...(ascendancyOf(checked.entry.hero, o['ascendancy'])
-      ? { ascendancy: o['ascendancy'] as string }
+      ? { ascendancy: (ascendancyOf(checked.entry.hero, o['ascendancy']) as { id: string }).id }
       : {}),
     ...(cleanMaxHp(o['maxHp']) === null ? {} : { maxHp: cleanMaxHp(o['maxHp']) as number }),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,

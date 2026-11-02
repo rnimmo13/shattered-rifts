@@ -716,7 +716,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Obsidian Flurry | 2 | attack | common | Sword. Deal 4 (+1 per 3 Spell Power) damage 3 times. |
 | Obsidian Lance | 1 | attack | common | Sword. Deal 6 (+1 per 2 Spell Power) damage. |
 | Glint | 1 | attack | common | Sword. Deal 2 (+2 per 3 Spell Power) damage. Draw 1 card. |
-| Etching Edge | 1 | attack | common | Sword. Deal 2 (+2 per 4 Spell Power) damage. Apply 1 (+1 per 8 Spell Power) Fracture. |
+| Etching Edge | 1 | attack | common | Sword. Deal 2 (+1 per 2 Spell Power) damage. Apply 1 (+1 per 4 Spell Power) Fracture. |
 | Rift Sweep | 2 | attack | common | Sword. Deal 3 (+1 per 3 Spell Power) damage 3 times to ALL enemies. |
 | Glass Needle | 0 | attack | common | Sword. Deal 2 (+2 per 3 Spell Power) damage. Consume. |
 | Guarded Cut | 1 | attack | common | Sword. Deal 2 (+2 per 4 Spell Power) damage. Gain 4 (+1 per 3 Spell Power) Barrier. |

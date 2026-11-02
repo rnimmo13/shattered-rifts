@@ -182,7 +182,11 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
     // (its Primed goes into that strike, as an enemy's does: DECISIONS #361)
     damage: first
       ? modifiedDamage(
-          first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0)),
+          // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
+          Math.round(
+            (first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0))) *
+              (1 + (s.sides[u.side].allyPct ?? 0) / 100),
+          ),
           u,
           first.to === 'target' ? front : null,
         )
@@ -568,7 +572,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   prevSpell: { per: 'Spell', equal: 'your previous card being a Spell' },
   swordsPlayed: { per: 'Sword played this turn', equal: 'the Swords played this turn' },
   spellsPlayed: { per: 'Spell played this turn', equal: 'the Spells played this turn' },
-  swordFoes: { per: 'different enemy your Swords hit this turn', equal: 'the different enemies your Swords hit this turn' },
+  swordFoes: {
+    per: 'different enemy your Swords hit this turn',
+    equal: 'the different enemies your Swords hit this turn',
+  },
   fracture: { per: 'Fracture', equal: 'its Fracture' },
   shatteredNow: { per: 'Shatter caused', equal: 'the Shatters caused' },
   runes: { per: 'totem', equal: 'the number of your totems' },
@@ -744,16 +751,16 @@ function amountText(n: number, sc: Scale | undefined): { num: string; equal: boo
               equal: `the number of ${plural(TOTEM_WORDS[sc.rune] ?? cap(sc.rune))} you have`,
             }
           : sc.by === 'hitsTaken'
-          ? // (who was hit is part of the phrase: "per time the target was hit this turn")
-            sc.of === 'target'
-            ? {
-                per: 'time the target was hit this turn',
-                equal: 'the times the target was hit this turn',
-              }
-            : sc.of === 'each'
-              ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
-              : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
-          : METRIC_WORDS[sc.by];
+            ? // (who was hit is part of the phrase: "per time the target was hit this turn")
+              sc.of === 'target'
+              ? {
+                  per: 'time the target was hit this turn',
+                  equal: 'the times the target was hit this turn',
+                }
+              : sc.of === 'each'
+                ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
+                : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
+            : METRIC_WORDS[sc.by];
   const named = sc.by === 'hitsTaken';
   // (half of a number, rounded down: "equal to half your Spell Power")
   if (sc.step === 2 && n === 0 && (sc.mult ?? 1) === 1 && !sc.of)
@@ -941,9 +948,12 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
     return lo === 1 ? 'you spent any' : `you spent ${lo} or more`;
   if (o.by === 'stars' && hi === 0 && lo === undefined) return 'you had no Spell Power';
   if (o.by === 'stars' && lo === 1 && hi === undefined) return 'you have Spell Power left';
-  if (o.by === 'stars' && lo !== undefined && hi === undefined) return `you have ${lo} or more Spell Power`;
-  if (o.by === 'starsSpentTurn' && hi === 0 && lo === undefined) return 'you spent no Spell Power this turn';
-  if (o.by === 'starsSpentTurn' && lo === 1 && hi === undefined) return 'you spent Spell Power earlier this turn';
+  if (o.by === 'stars' && lo !== undefined && hi === undefined)
+    return `you have ${lo} or more Spell Power`;
+  if (o.by === 'starsSpentTurn' && hi === 0 && lo === undefined)
+    return 'you spent no Spell Power this turn';
+  if (o.by === 'starsSpentTurn' && lo === 1 && hi === undefined)
+    return 'you spent Spell Power earlier this turn';
   if (o.by === 'starsSpentTurn' && lo !== undefined && hi === undefined)
     return `you spent ${lo} or more Spell Power earlier this turn`;
   if (o.by === 'prevSpell' && lo === 1) return 'your previous card was a Spell';
@@ -1074,7 +1084,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const tagName = o.scale.tag ? (TAG_NAMES[o.scale.tag] ?? cap(o.scale.tag)) : null;
         const w =
           tagName && o.scale.by === 'tagDeck'
-            ? { per: `${tagName} in your deck`, equal: `the number of ${plural(tagName)} in your deck` }
+            ? {
+                per: `${tagName} in your deck`,
+                equal: `the number of ${plural(tagName)} in your deck`,
+              }
             : METRIC_WORDS[o.scale.by];
         // (the base hits and the hits added per point both show: "2 times, 2 more times per card discarded this turn")
         const hits = o.hits ?? 1;
@@ -1343,10 +1356,16 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale?.by === 'bonus') return `Apply ${o.amount} Fracture${who[o.to]}.`;
       const n = amountText(o.amount, o.scale);
       if (o.marked) return `Apply ${n.num} Fracture to each enemy that has Fracture.`;
-      return n.equal ? `Apply Fracture equal to ${n.num}${who[o.to]}.` : `Apply ${n.num} Fracture${who[o.to]}.`;
+      return n.equal
+        ? `Apply Fracture equal to ${n.num}${who[o.to]}.`
+        : `Apply ${n.num} Fracture${who[o.to]}.`;
     }
     case 'shatterUp':
-      return `Your Shatters deal ${o.amount} more for the rest of the fight.`;
+      return o.pct
+        ? `Your Shatters deal ${o.pct}% more for the rest of the fight.`
+        : `Your Shatters deal ${o.amount} more for the rest of the fight.`;
+    case 'allyPct':
+      return `Your companions' attacks deal ${o.amount}% more for the rest of the fight.`;
     case 'shatterBlast':
       return `Deal the damage of this enemy's next Shatter (this is not a Shatter).`;
     case 'carryFracture':
@@ -1357,7 +1376,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `${summonText(db, o.unit, 1, who)}${o.ifAbsent ? ' (if none stands)' : ''}`;
     case 'addCard': {
       const nm = db.cards[o.card]?.name ?? o.card;
-      const owner = who === WHO_ENEMY ? (o.side === 'self' ? 'its' : 'your') : o.side === 'self' ? 'your' : 'the enemy';
+      const owner =
+        who === WHO_ENEMY
+          ? o.side === 'self'
+            ? 'its'
+            : 'your'
+          : o.side === 'self'
+            ? 'your'
+            : 'the enemy';
       const dest = `${owner} ${o.to === 'hand' ? 'hand' : o.to === 'draw' ? 'draw pile' : 'discard pile'}`;
       if (o.scale) {
         const a = amountText(o.times ?? 0, o.scale);
@@ -1439,31 +1465,31 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               ? `The first time each turn a card spends ${o.only?.atLeast} or more Spell Power`
               : onlyBy === 'stars'
                 ? 'The first time each turn you spend your last Spell Power'
-        : o.when === 'play'
-          ? `${o.once ? 'The first time you play' : 'Whenever you play'} ${playWhat}${o.once ? ' each turn' : ''}`
-          : o.when === 'draw' && o.ethereal
-            ? 'Whenever you draw a Fleeting card'
-            : o.when === 'stance'
-              ? `${o.once ? 'The first time each turn you enter' : 'Whenever you enter'} ${o.stance ? sname(o.stance) : 'a stance'}`
-              : o.when === 'spend' && o.status
-                ? `${o.once ? 'The first time each turn you spend' : 'Whenever you spend'} ${sname(o.status)}`
-                : o.when === 'stanceLeft'
-                  ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
-                  : o.when === 'evoke'
-                    ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
-                    : o.when === 'command' && o.rune
-                      ? `Whenever you command your ${db.totems?.[o.rune]?.name ?? o.rune}`
-                      : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
-                        ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
-                        : nextTurn
-                          ? 'Next turn'
-                          : o.once
-                            ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
-                              (WHEN_TEXT[o.when] ?? o.when).replace(
-                                /^Whenever /,
-                                'The first time each turn ',
-                              )
-                            : (WHEN_TEXT[o.when] ?? o.when);
+                : o.when === 'play'
+                  ? `${o.once ? 'The first time you play' : 'Whenever you play'} ${playWhat}${o.once ? ' each turn' : ''}`
+                  : o.when === 'draw' && o.ethereal
+                    ? 'Whenever you draw a Fleeting card'
+                    : o.when === 'stance'
+                      ? `${o.once ? 'The first time each turn you enter' : 'Whenever you enter'} ${o.stance ? sname(o.stance) : 'a stance'}`
+                      : o.when === 'spend' && o.status
+                        ? `${o.once ? 'The first time each turn you spend' : 'Whenever you spend'} ${sname(o.status)}`
+                        : o.when === 'stanceLeft'
+                          ? `${o.once ? 'The first time each turn you leave' : 'Whenever you leave'} ${o.stance ? sname(o.stance) : 'a stance'}`
+                          : o.when === 'evoke'
+                            ? `Whenever ${rune ? `${article(rune)} ${rune}` : 'a totem'} awakens`
+                            : o.when === 'command' && o.rune
+                              ? `Whenever you command your ${db.totems?.[o.rune]?.name ?? o.rune}`
+                              : (o.when === 'created' || o.when === 'draw') && (o.tag || o.filter)
+                                ? `${o.once ? 'The first time' : 'Whenever'} you ${o.when === 'draw' ? 'draw' : 'create'} ${what}${o.once ? ' each turn' : ''}`
+                                : nextTurn
+                                  ? 'Next turn'
+                                  : o.once
+                                    ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
+                                      (WHEN_TEXT[o.when] ?? o.when).replace(
+                                        /^Whenever /,
+                                        'The first time each turn ',
+                                      )
+                                    : (WHEN_TEXT[o.when] ?? o.when);
       // ("the next time you earn an Opening": an answer that happens once, not a number of turns)
       const once1 = o.times === 1 && o.when !== 'turnStart' && o.when !== 'turnEnd';
       const when = once1
@@ -1486,7 +1512,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : who;
       const said = joinClause(o.ops.map((x) => opText(db, x, inner)));
       // (a Sapped put on an enemy while an enemy is hitting you ends with that enemy turn; one from your own cards, with the coming one)
-      const body = o.when === 'hurt' ? said.split('until the end of their next turn').join("until the end of the enemy's turn") : said;
+      const body =
+        o.when === 'hurt'
+          ? said.split('until the end of their next turn').join("until the end of the enemy's turn")
+          : said;
       const opening = o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when;
       // ("At the end of your turn, if you spent none: ...", not two colons in a row)
       return body.startsWith('If ') ? `${opening}, if ${body.slice(3)}` : `${opening}: ${body}`;
@@ -1552,7 +1581,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Return ${n} from your discard pile to your hand${up}.`;
     }
     case 'manaNext':
-      if (o.foe) return `Next turn, you have ${Math.abs(o.amount)} ${o.amount < 0 ? 'less' : 'more'} Mana.`;
+      if (o.foe)
+        return `Next turn, you have ${Math.abs(o.amount)} ${o.amount < 0 ? 'less' : 'more'} Mana.`;
       return o.amount < 0
         ? `Next turn, lose ${-o.amount} Mana.`
         : `Next turn, gain ${o.amount} extra Mana.`;
@@ -1561,7 +1591,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         ? `From your next turn, gain ${o.amount} more Mana every turn for the rest of the fight.`
         : `Lose ${-o.amount} maximum Mana for the rest of the fight.`;
     case 'drawNext':
-      if (o.foe) return `Next turn, you draw ${Math.abs(o.amount)} ${o.amount < 0 ? 'fewer' : 'more'} ${Math.abs(o.amount) === 1 ? 'card' : 'cards'}.`;
+      if (o.foe)
+        return `Next turn, you draw ${Math.abs(o.amount)} ${o.amount < 0 ? 'fewer' : 'more'} ${Math.abs(o.amount) === 1 ? 'card' : 'cards'}.`;
       return `Next turn, draw ${o.amount} extra card${o.amount === 1 ? '' : 's'}.`;
     case 'discover': {
       const kind = o.kind ? `${KIND_PLURAL[o.kind]?.[0] ?? o.kind} ` : '';
@@ -1693,12 +1724,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `The Bleed on ${whom} deals its damage now.`;
     }
     case 'strip':
-      if (o.amount !== undefined) return `Remove up to ${o.amount} Barrier from the target.`; {
-      const whom =
-        o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
-      // (it takes Steadfast too, but so few enemies have any that saying so only made the cards read as niche: DECISIONS #478)
-      return `Remove all Barrier from ${whom}.`;
-    }
+      if (o.amount !== undefined) return `Remove up to ${o.amount} Barrier from the target.`;
+      {
+        const whom =
+          o.to === 'target' ? 'the target' : who[o.to].replace(/^ to /, '') || 'the target';
+        // (it takes Steadfast too, but so few enemies have any that saying so only made the cards read as niche: DECISIONS #478)
+        return `Remove all Barrier from ${whom}.`;
+      }
     case 'selfCost':
       return `This card costs ${o.amount} less for the rest of the fight.`;
     case 'freeHand':
@@ -1719,7 +1751,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return 'End your turn.';
     case 'growSelf':
       if (o.that) return `That card grows ${o.amount} more.`;
-      if (o.grown) return `Grows ${o.amount}: this card gains ${o.amount} more each time you play it.`;
+      if (o.grown)
+        return `Grows ${o.amount}: this card gains ${o.amount} more each time you play it.`;
       return `This card deals ${o.amount} more damage for the rest of the fight.`;
     case 'copyInHand':
       return `Add a copy of a random ${o.neutral ? 'Neutral ' : ''}card in your hand to your hand.`;
@@ -1858,7 +1891,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         return count > 1 ? `Plant ${count} random totems.` : 'Plant a random totem.';
       const nm = db.totems?.[o.spirit]?.name ?? o.spirit;
       if (count > 1) return `Plant ${count} ${plural(nm)}.`;
-      if (o.scale?.by === 'x') return `Plant ${article(nm)} ${nm} X${o.times ? ` + ${o.times}` : ''} times.`;
+      if (o.scale?.by === 'x')
+        return `Plant ${article(nm)} ${nm} X${o.times ? ` + ${o.times}` : ''} times.`;
       if (o.scale?.by === 'foes') return `Plant ${article(nm)} ${nm} for each enemy.`;
       if (o.scale?.by === 'channeledOf') {
         const k = db.totems?.[o.scale.rune ?? '']?.name ?? 'totem';
@@ -1872,8 +1906,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return (o.amount ?? 1) > 1
         ? `Gain ${o.amount} totem positions.`
         : (o.amount ?? 1) < 0
-        ? 'Lose a totem position (your front totem is pushed out if the row is full).'
-        : 'Gain a totem position.';
+          ? 'Lose a totem position (your front totem is pushed out if the row is full).'
+          : 'Gain a totem position.';
     case 'totemBoost': {
       const nm = TOTEM_WORDS[o.rune] ?? cap(o.rune);
       return `For the rest of the fight, a ${nm} you command deals ${o.amount} more damage (its end-of-turn effect is not changed).`;
@@ -1888,7 +1922,14 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return 'Your front totem moves to the back.';
     case 'totemCommand': {
       const n = o.times ?? 1;
-      const twice = o.scale?.by === 'x' ? ` X${o.times ? ` + ${o.times}` : ''} times` : n === 1 ? '' : n === 2 ? ' twice' : ` ${n} times`;
+      const twice =
+        o.scale?.by === 'x'
+          ? ` X${o.times ? ` + ${o.times}` : ''} times`
+          : n === 1
+            ? ''
+            : n === 2
+              ? ' twice'
+              : ` ${n} times`;
       if (o.spirit === 'all') return `Command every totem, front to back${twice}.`;
       if (o.spirit === 'random') return `Command a random totem${twice}.`;
       if (o.spirit === 'newest') return `Command your newest totem${twice}.`;
@@ -1928,7 +1969,11 @@ function summonText(db: CombatDb, unit: string, n: number, who: Record<Sel, stri
  * The text of one damage effect (or scaled Barrier, with no `o`) with what it would do right now marked in it ([[live:up:9]], [[live:down:3-5]]...): the printed number
  * is replaced, or, when the printed amount is a formula (per Barrier...), the live number follows the sentence in brackets.
  */
-function liveDamageText(text: string, o: Extract<Op, { op: 'damage' }> | null, l: LiveDamage): string {
+function liveDamageText(
+  text: string,
+  o: Extract<Op, { op: 'damage' }> | null,
+  l: LiveDamage,
+): string {
   const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
   // (a card that plays others: how many, and what they come to, DECISIONS #489)
   if (l.played !== undefined) {
@@ -2013,7 +2058,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.tags?.includes('frost')) parts.push('Frost.');
   if (c.tags?.includes('storm')) parts.push('Storm.');
   // (the Trickster's Wild cards, DECISIONS #535)
-  if (c.suit === 'wild') parts.push('Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣).');
+  if (c.suit === 'wild')
+    parts.push('Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣).');
   if (c.tags?.includes('prism'))
     parts.push(
       "Prism (for Trinity and your totems' help, it counts as an element you have not cast this turn).",
@@ -2109,9 +2155,12 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       }
       // ("If this is fatal" is a condition too: the hit stays in its place, and the clause goes with the others)
       const kills = !isTrap && o.op === 'damage' ? o.onKill : undefined;
-      const plain = kills ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>) : o;
+      const plain = kills
+        ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>)
+        : o;
       if (kills) late.push(`If this is fatal: ${joinClause(kills.map((x) => opText(db, x, who)))}`);
-      const l = o.op === 'damage' || o.op === 'barrier' || o.op === 'playPile' ? live?.get(i) : undefined;
+      const l =
+        o.op === 'damage' || o.op === 'barrier' || o.op === 'playPile' ? live?.get(i) : undefined;
       const line = l
         ? liveDamageText(opText(db, plain, who), plain.op === 'damage' ? plain : null, l)
         : opText(db, plain, who);

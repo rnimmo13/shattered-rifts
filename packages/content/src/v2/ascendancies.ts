@@ -3,7 +3,20 @@
 // leaning the deck one way. The banked deck keeps it, so it goes to the Arena and to ghosts. Numbers are a first pass.
 
 import type { CombatDb, HeroDef, HeroTrait, Op } from '@sr/combat';
-import { barrier, draw, growHp, heal, mana, on, per, raise, scaled, status, stars } from './build';
+import {
+  barrier,
+  dmg,
+  draw,
+  growHp,
+  heal,
+  mana,
+  on,
+  per,
+  raise,
+  scaled,
+  status,
+  stars,
+} from './build';
 
 export interface Ascendancy {
   /** `<hero>:<name>`, so a class named after another's id can never be taken for it */
@@ -19,7 +32,7 @@ export interface Ascendancy {
   turnStart?: Op[];
   triggers?: NonNullable<HeroTrait['triggers']>;
   /** fields of the base trait it replaces */
-  set?: Partial<Pick<HeroTrait, 'maxReserves' | 'shareMight' | 'clutch'>>;
+  set?: Partial<Pick<HeroTrait, 'maxReserves' | 'shareMight' | 'clutch' | 'keepBarrier'>>;
   /** companions it starts every fight with, on top of the class's */
   startUnits?: HeroDef['startUnits'];
 }
@@ -44,18 +57,20 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'knight',
     'Paladin',
     'Barrier',
-    'You are Fortified: you keep 75% of your Barrier at the start of your turn.',
+    // (60% of it, not Fortified's 75%: always Fortified was a free rare, DECISIONS #545; a card that Fortifies still keeps 75%)
+    'You keep 60% of your Barrier at the start of your turn (Fortified still keeps 75%).',
     {
-      fightStart: [status('fortified', 1)],
+      set: { keepBarrier: 60 },
     },
   ),
   a(
     'knight',
     'Marshal',
     'Reserves',
-    'Max Reserves 5. At the start of your turn, gain Primed equal to your Reserves.',
+    // (Max Reserves 4, was 5, DECISIONS #545)
+    'Max Reserves 4. At the start of your turn, gain Primed equal to your Reserves.',
     {
-      set: { maxReserves: 5 },
+      set: { maxReserves: 4 },
       turnStart: [scaled(status('vigor', 0), per('reserves'))],
     },
   ),
@@ -63,9 +78,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'knight',
     'Blood Knight',
     'Paying blood',
-    'The first time you lose HP each turn, gain 1 Might.',
+    // (once a round, not once a turn: the enemy's turn is a turn too, so it gave 2 Might a round, DECISIONS #542; and 3 a fight at most,
+    // as Might kept on rising in a long fight, #544)
+    "The first time you lose HP each round (your turn and the enemy's), gain 1 Might, up to 3 Might a fight.",
     {
-      triggers: [on('hurt', [status('might', 1)], { once: true })],
+      triggers: [on('hurt', [status('might', 1)], { round: true, times: 3 })],
     },
   ),
 
@@ -73,19 +90,21 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Foreman',
     'Many machines',
-    'Start each fight with a second Drone. Your companions deal 1 more damage.',
+    // (25% more, not 1 more: a flat point was nothing against Tier XX, DECISIONS #542)
+    "Start each fight with a second Drone. Your companions' attacks deal 25% more damage.",
     {
       startUnits: [{ unit: 'drone', hp: 6 }],
-      fightStart: [status('marrow', 1)],
+      fightStart: [{ op: 'allyPct', amount: 25 }],
     },
   ),
   a(
     'engineer',
     'Golemancer',
     'One big machine',
-    'At the start of your turn, your companions gain 2 more max HP.',
+    // (3, was 2, DECISIONS #545)
+    'At the start of your turn, your companions gain 3 more max HP.',
     {
-      turnStart: [growHp(2, 'allAllies')],
+      turnStart: [growHp(3, 'allAllies')],
     },
   ),
   a(
@@ -98,25 +117,34 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     },
   ),
 
-  a('hunter', 'Beastmaster', 'The pack', 'Your companions share all of your Might, not half.', {
-    set: { shareMight: 1 },
-  }),
+  // (three quarters, not all of it: the full share rose with the hero's Might all fight, DECISIONS #544)
+  a(
+    'hunter',
+    'Beastmaster',
+    'The pack',
+    'Your companions share three quarters of your Might, not half.',
+    {
+      set: { shareMight: 0.75 },
+    },
+  ),
   a(
     'hunter',
     'Reaver',
     'Paying blood',
-    'The first time each turn one of your own effects costs you HP, draw 1 card.',
+    // (and 2 Primed, DECISIONS #545)
+    'The first time each turn one of your own effects costs you HP, draw 1 card and gain 2 Primed.',
     {
-      triggers: [on('loseHp', [draw(1)], { once: true })],
+      triggers: [on('loseHp', [draw(1), status('vigor', 2)], { once: true })],
     },
   ),
   a(
     'hunter',
     'Predator',
     'Big turns',
-    'Whenever you draw a card during your turn, gain 1 Primed.',
+    // (2, was 1: Primed loses half each turn now, DECISIONS #533, #545)
+    'Whenever you draw a card during your turn, gain 2 Primed.',
     {
-      triggers: [on('drawMidTurn', [status('vigor', 1)])],
+      triggers: [on('drawMidTurn', [status('vigor', 2)])],
     },
   ),
 
@@ -124,9 +152,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'trickster',
     'Trapmaster',
     'Traps',
-    'Whenever one of your Traps springs, draw 1 card and gain 3 Barrier.',
+    // (2 Barrier, was 3, DECISIONS #545)
+    'Whenever one of your Traps springs, draw 1 card and gain 2 Barrier.',
     {
-      triggers: [on('snare', [draw(1), barrier(3)])],
+      triggers: [on('snare', [draw(1), barrier(2)])],
     },
   ),
   a('trickster', 'Cardsharp', 'Suits', 'A Full Trick also gives you 1 Mana.', {
@@ -141,9 +170,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'assassin',
     'Assassin',
     'Daggers',
-    'Your Daggers deal 2 more damage, and your first Attack each turn deals 25% more.',
+    // (10%, was 25%: a percentage that grew with the deck, DECISIONS #544)
+    'Your Daggers deal 2 more damage, and your first Attack each turn deals 10% more.',
     {
-      fightStart: [status('edge', 2), status('lethality', 25)],
+      fightStart: [status('edge', 2), status('lethality', 10)],
     },
   ),
   a(
@@ -165,61 +195,110 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     },
   ),
 
-  a('shaman', 'Totemist', 'Totems', 'Start each fight with 2 Spirit.', {
-    fightStart: [status('spirit', 2)],
+  // (1 Spirit and 8 Barrier, was 2 Spirit: a second Spirit from the first turn was the strongest start in the game, DECISIONS #545)
+  a('shaman', 'Totemist', 'Totems', 'Start each fight with 1 Spirit and 8 Barrier.', {
+    fightStart: [status('spirit', 1), barrier(8)],
   }),
   a(
     'shaman',
     'Spiritwalker',
     'Commands',
-    'The first time a totem acts each turn on your order or as it leaves the row, draw 1 card and gain 2 Barrier.',
+    // (4 Barrier, was 2, DECISIONS #545)
+    'The first time a totem acts each turn on your order or as it leaves the row, draw 1 card and gain 4 Barrier.',
     {
-      triggers: [on('command', [draw(1), barrier(2)], { once: true })],
+      triggers: [on('command', [draw(1), barrier(4)], { once: true })],
     },
   ),
-  a('shaman', 'Pyromancer', 'Burn', 'At the start of your turn, a random enemy gains 2 Burn.', {
-    turnStart: [status('burn', 2, 'randomFoe')],
-  }),
+  // (the Elementalist took the Pyromancer's place, DECISIONS #542: one burst for each element the first time it is cast each turn)
+  a(
+    'shaman',
+    'Elementalist',
+    'Elements',
+    'The first time each turn you cast a Flame card, a random enemy gains 3 Burn; a Frost card, gain 3 Barrier; a Storm card, deal 2 damage to ALL enemies.',
+    {
+      triggers: [
+        on('play', [status('burn', 3, 'randomFoe')], { tag: 'flame', once: true }),
+        // (3 and 2, were 4 and 3: casting two elements a turn made it the strongest start, DECISIONS #545)
+        on('play', [barrier(3)], { tag: 'frost', once: true }),
+        on('play', [dmg(2, 'allFoes')], { tag: 'storm', once: true }),
+      ],
+    },
+  ),
 
   a('monk', 'Sage', 'Serene', 'The first time each turn you leave Serene, gain 1 more Mana.', {
     triggers: [on('stanceLeft', [mana(1)], { stance: 'calm', once: true })],
   }),
-  a('monk', 'Zealot', 'Fury', 'Whenever you enter Fury, gain 6 Barrier.', {
-    triggers: [on('stance', [barrier(6)], { stance: 'wrath' })],
+  // (the first time each turn: Fury loops made 14-22 Barrier a turn, DECISIONS #542)
+  a('monk', 'Zealot', 'Fury', 'The first time each turn you enter Fury, gain 6 Barrier.', {
+    triggers: [on('stance', [barrier(6)], { stance: 'wrath', once: true })],
   }),
-  a('monk', 'Sunwalker', 'Radiant', 'Whenever you enter a stance, gain 1 more Fervor.', {
-    triggers: [on('stance', [status('mantra', 1)])],
-  }),
+  // (the first stance each turn, not every one: a Flow deck reached Radiant every turn, DECISIONS #544)
+  a(
+    'monk',
+    'Sunwalker',
+    'Radiant',
+    'The first time each turn you enter a stance, gain 1 more Fervor.',
+    {
+      triggers: [on('stance', [status('mantra', 1)], { once: true })],
+    },
+  ),
 
-  a('spellblade', 'Blademaster', 'Swords', 'Every hit of your Swords deals 2 more damage.', {
-    fightStart: [status('keen', 2)],
-  }),
+  // (Keen 1 and a card for the first Sword each turn, was Keen 2, DECISIONS #545)
+  a(
+    'spellblade',
+    'Blademaster',
+    'Swords',
+    'Every hit of your Swords deals 1 more damage, and the first Sword you play each turn draws 1 card.',
+    {
+      fightStart: [status('keen', 1)],
+      triggers: [on('play', [draw(1)], { tag: 'sword', once: true })],
+    },
+  ),
   a(
     'spellblade',
     'Archmage',
     'Spells',
-    'Start each fight with 3 more Spell Power. Your first Spell Attack each turn that spends Spell Power deals 1 more per point spent.',
+    // (20% more on the first Attack, not 1 more per point spent: what a late deck spends kept on growing, DECISIONS #544)
+    'Start each fight with 3 more Spell Power. Your first Attack each turn deals 20% more.',
     {
-      fightStart: [stars(3), status('ruinous', 1)],
+      fightStart: [stars(3), status('lethality', 20)],
     },
   ),
-  a('spellblade', 'Shatterer', 'Fracture', 'Every Shatter deals 5 more damage.', {
-    fightStart: [{ op: 'shatterUp', amount: 5 }],
+  // (15% more, not 5 more: a percentage grows as the Shatters do, DECISIONS #542)
+  a('spellblade', 'Shatterer', 'Fracture', 'Every Shatter deals 15% more damage.', {
+    fightStart: [{ op: 'shatterUp', amount: 0, pct: 15 }],
   }),
 
-  a('drunkard', 'Brewmaster', 'Hangover', 'At the start of your turn, heal 2 HP.', {
-    turnStart: [heal(2, 'self')],
-  }),
-  a('drunkard', 'Gunslinger', 'The Gun', 'The Old Twelve Gauge starts each fight 3 sharper.', {
-    fightStart: [{ op: 'forge', card: 'old-twelve-gauge', amount: 3 }],
-  }),
+  // (and 1 Might for the turn, DECISIONS #545)
+  a(
+    'drunkard',
+    'Brewmaster',
+    'Hangover',
+    'At the start of your turn, heal 2 HP and gain 1 Might for the turn.',
+    {
+      turnStart: [heal(2, 'self'), status('might', 1, 'self', true)],
+    },
+  ),
+  // (and 2 sharper every turn: 3 once was less than a common card, DECISIONS #542)
+  a(
+    'drunkard',
+    'Gunslinger',
+    'The Gun',
+    'The Old Twelve Gauge starts each fight 3 sharper, and grows 2 sharper at the start of each of your turns.',
+    {
+      fightStart: [{ op: 'forge', card: 'old-twelve-gauge', amount: 3 }],
+      turnStart: [{ op: 'forge', card: 'old-twelve-gauge', amount: 2 }],
+    },
+  ),
   a(
     'drunkard',
     'Deathwish',
     'Low HP',
-    'Clutch Genes gives 2% more attack damage for every 1% of your HP you are missing.',
+    // (1.25%, and at most +100%: uncapped at 2%, Hangover took him to 10% HP for +180%, DECISIONS #542, #544; never less than
+    // the class's own 1%)
+    'Clutch Genes gives 1.25% more attack damage for every 1% of your HP you are missing, up to 100% more.',
     {
-      set: { clutch: { perMissingPct: 2 } },
+      set: { clutch: { perMissingPct: 1.25, max: 100 } },
     },
   ),
 
@@ -237,13 +316,15 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Fateweaver',
     'Fate',
-    'At the start of your turn, curse a random enemy with 3 Fate.',
+    // (2 and a share of the enemy's max HP: a flat 3 was nothing against Tier XX, DECISIONS #542; 5% was too much late, #544)
+    'At the start of your turn, curse a random enemy with 2 Fate, plus 2% of its max HP.',
     {
-      turnStart: [status('doom', 3, 'randomFoe')],
+      turnStart: [scaled(status('doom', 2, 'randomFoe'), per('maxHp', 0.02, 'each'))],
     },
   ),
-  a('necromancer', 'Soulreaper', 'Consume', 'Whenever a card is consumed, gain 2 Barrier.', {
-    triggers: [on('exhaust', [barrier(2)])],
+  // (4, was 2, DECISIONS #545)
+  a('necromancer', 'Soulreaper', 'Consume', 'Whenever a card is consumed, gain 4 Barrier.', {
+    triggers: [on('exhaust', [barrier(4)])],
   }),
 ];
 
@@ -251,11 +332,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
 export const ascendanciesOf = (hero: string): Ascendancy[] =>
   ASCENDANCIES.filter((x) => x.hero === hero);
 
-/** One of a Riftwalker's own Ascendancies, or undefined for anything else (a retired one, a made-up id). */
+/** Ascendancies that have been replaced: a run, deck or ghost saved with the old one has the new one (DECISIONS #542). */
+const RENAMED: Readonly<Record<string, string>> = { 'shaman:pyromancer': 'shaman:elementalist' };
+
+/** One of a Riftwalker's own Ascendancies (a replaced one read as what replaced it), or undefined for anything else (a made-up id). */
 export function ascendancyOf(hero: string, id: unknown): Ascendancy | undefined {
-  return typeof id === 'string'
-    ? ASCENDANCIES.find((x) => x.id === id && x.hero === hero)
-    : undefined;
+  if (typeof id !== 'string') return undefined;
+  const now = RENAMED[id] ?? id;
+  return ASCENDANCIES.find((x) => x.id === now && x.hero === hero);
 }
 
 /** The hero as an Ascendancy makes it: its name, its trait with the new one added. */
@@ -283,10 +367,14 @@ export function ascendedHero(base: HeroDef, x: Ascendancy): HeroDef {
   };
 }
 
-export const ascendedHeroes = (heroes: CombatDb['heroes']): Record<string, HeroDef> =>
-  Object.fromEntries(
+export const ascendedHeroes = (heroes: CombatDb['heroes']): Record<string, HeroDef> => {
+  const out: Record<string, HeroDef> = Object.fromEntries(
     ASCENDANCIES.flatMap((x) => {
       const base = heroes[x.hero];
       return base ? [[x.id, ascendedHero(base, x)]] : [];
     }),
   );
+  // (a replaced one's old id, kept in a saved ghost or a server row, plays as what replaced it: DECISIONS #542)
+  for (const [old, now] of Object.entries(RENAMED)) if (out[now]) out[old] = out[now];
+  return out;
+};

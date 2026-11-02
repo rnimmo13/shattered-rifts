@@ -1,7 +1,7 @@
 // The non-map screens of a run: card rewards and the Warden's Gift, shrine, merchant, event, and the deck viewer.
 
 import { bump, centreOf, flyCard } from '../fight/fxPlayer';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB, MARK_INFO, RIFTWALKERS, V2_DECK_RULES } from '@sr/content/v2';
 import {
@@ -488,6 +488,18 @@ function ShopRow(props: {
   );
 }
 
+/** How wide the Merchant draws its cards: 210 px, or on a phone two to a row (Robert, 2026-11-02: one a row was too few). */
+function useShopCardWidth(): number {
+  const [w, setW] = useState(() => window.innerWidth);
+  useEffect(() => {
+    const on = (): void => setW(window.innerWidth);
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
+  // (the panel's padding and the gap between the two are about 4.5rem in all)
+  return w <= 640 ? Math.max(120, Math.min(210, Math.floor((w - 72) / 2))) : 210;
+}
+
 export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
@@ -503,6 +515,7 @@ export function MerchantView(props: {
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
   const [picking, setPicking] = useState<'remove' | 'upgrade' | null>(null);
+  const cardW = useShopCardWidth();
   const m = props.run.context?.merchant;
   if (!m) return null;
   const shards = props.run.shards;
@@ -555,7 +568,7 @@ export function MerchantView(props: {
               <Pickable
                 id={it.cardId}
                 own={props.run.character}
-                width={210}
+                width={cardW}
                 onHover={setHover}
                 preview
                 badge={

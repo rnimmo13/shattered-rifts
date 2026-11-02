@@ -114,12 +114,15 @@ function validContext(r: RunState): boolean {
     }
     case 'reward':
       return cards(c['offers']);
-    case 'ascend':
-      return (
-        Array.isArray(c['ascendancies']) &&
-        c['ascendancies'].length > 0 &&
-        (c['ascendancies'] as unknown[]).every((id) => ascendancyOf(r.character, id) !== undefined)
-      );
+    case 'ascend': {
+      const offered = Array.isArray(c['ascendancies'])
+        ? (c['ascendancies'] as unknown[]).map((id) => ascendancyOf(r.character, id))
+        : [];
+      if (offered.length === 0 || offered.some((x) => x === undefined)) return false;
+      // (a replaced one is offered as what replaced it, DECISIONS #542)
+      c['ascendancies'] = offered.flatMap((x) => (x ? [x.id] : []));
+      return true;
+    }
     case 'gift':
       return (
         cards(c['offers']) &&
@@ -432,8 +435,11 @@ export function parseRun(text: string): RunState | null {
   delete (r as { legendOffer?: unknown }).legendOffer;
   // (an Ascendancy: one of this Riftwalker's that is in the game, or none)
   const ascendancy = (r as { ascendancy?: unknown }).ascendancy;
-  if (ascendancy !== undefined && !ascendancyOf(r.character, ascendancy))
-    delete (r as { ascendancy?: unknown }).ascendancy;
+  if (ascendancy !== undefined) {
+    const now = ascendancyOf(r.character, ascendancy);
+    if (now) (r as { ascendancy?: string }).ascendancy = now.id;
+    else delete (r as { ascendancy?: unknown }).ascendancy;
+  }
   // (a Warden's Heart: one that is in the game, or none)
   const heart = (r as { heart?: unknown }).heart;
   if (heart !== undefined && !(typeof heart === 'string' && COMBAT_DB.boons[heart]?.heart === true))
@@ -506,7 +512,11 @@ export function parseRun(text: string): RunState | null {
   // (an event laid out by an older build gets its card in the option box: DECISIONS #477)
   const savedEvent = (run.context as { event?: EventCtx } | null | undefined)?.event;
   // (only where the context has been checked: elsewhere a damaged one must not throw)
-  if ((run.phase === 'event' || run.phase === 'shrine') && savedEvent?.options && typeof savedEvent.cardOffer === 'string')
+  if (
+    (run.phase === 'event' || run.phase === 'shrine') &&
+    savedEvent?.options &&
+    typeof savedEvent.cardOffer === 'string'
+  )
     boxNamedCard(savedEvent);
   return run;
 }

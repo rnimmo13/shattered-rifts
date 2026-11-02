@@ -247,7 +247,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       boons,
       // (only a deck that has beaten Tier III can have one)
       ...(t >= 3 && ascendancyOf(hero, e['ascendancy'])
-        ? { ascendancy: e['ascendancy'] as string }
+        ? { ascendancy: (ascendancyOf(hero, e['ascendancy']) as { id: string }).id }
         : {}),
       tier: t,
       ...(stage === null ? {} : { stage }),

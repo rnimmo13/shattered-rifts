@@ -146,7 +146,11 @@ export const maxReserves = (amount: number, turn = false): Op => ({
   ...(turn ? { turn: true } : {}),
 });
 /** Defer a card (or `count`, or up to `count`): it comes back next turn costing 1 less */
-export const defer = (count = 1, upTo = false): Op => ({ op: 'defer', count, ...(upTo ? { upTo: true } : {}) });
+export const defer = (count = 1, upTo = false): Op => ({
+  op: 'defer',
+  count,
+  ...(upTo ? { upTo: true } : {}),
+});
 export const discoverOp = (kind?: CardKind, count = 1, free = false, scale?: Scale): Op => ({
   op: 'discover',
   ...(kind ? { kind } : {}),
@@ -263,6 +267,8 @@ export const on = (
     stance?: Stance;
     temp?: boolean;
     once?: boolean;
+    /** once a round: its side's turn and the other side's after it (DECISIONS #542) */
+    round?: boolean;
     ethereal?: boolean;
     minCost?: number;
     pin?: boolean;

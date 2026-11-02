@@ -470,8 +470,10 @@ function syncClutch(r: Run, sd: SideState): void {
     c.perMissingPct !== undefined
       ? Math.floor((missing * 100 * c.perMissingPct) / Math.max(1, hero.maxHp))
       : Math.floor(missing * (c.perMissingHp ?? 0));
+  // (Deathwish stops at +100%: low enough HP otherwise gave twice that and more, DECISIONS #542)
+  const capped = c.max !== undefined ? Math.min(c.max, want) : want;
   const cur = stacks(hero, 'clutch');
-  if (want !== cur) addStatus(r, hero, 'clutch', want - cur);
+  if (capped !== cur) addStatus(r, hero, 'clutch', capped - cur);
 }
 
 function applyDamage(
@@ -1690,6 +1692,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       // Reaper Form: what your Attacks take off curses the enemy with as much Fate
       const lead = heroOf(side);
       const marrow = a.actor.kind === 'ally' && lead ? stacks(lead, 'marrow') : 0;
+      // (the Foreman: companions' attacks by a percentage, DECISIONS #542)
+      const allyPct = a.actor.kind === 'ally' ? 1 + (side.allyPct ?? 0) / 100 : 1;
       const isAttack = a.card?.kind === 'attack';
       const leth =
         isAttack && lead && side.attacksPlayed === 0 ? 1 + stacks(lead, 'lethality') / 100 : 1;
@@ -1760,7 +1764,8 @@ function execOp(r: Run, a: Act, op: Op): void {
                 marrow) *
                 lone *
                 leth *
-                noose,
+                noose *
+                allyPct,
             ),
             to === 'target' || to === 'front',
           );
@@ -2088,6 +2093,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.stance ? { stance: op.stance } : {}),
         ...(op.temp ? { temp: true } : {}),
         ...(op.once ? { once: true } : {}),
+        ...(op.round ? { round: true } : {}),
         ...(op.ethereal ? { ethereal: true } : {}),
         ...(op.minCost !== undefined ? { minCost: op.minCost } : {}),
         ...(op.pin && a.target ? { target: a.target.id } : {}),
@@ -2476,8 +2482,12 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (any && a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
       return;
     }
+    case 'allyPct':
+      side.allyPct = (side.allyPct ?? 0) + op.amount;
+      break;
     case 'shatterUp':
       side.shatterBonus = (side.shatterBonus ?? 0) + op.amount;
+      if (op.pct) side.shatterPct = (side.shatterPct ?? 0) + op.pct;
       return;
     case 'shatterBlast': {
       for (const t of resolve(r, a, op.to)) {
@@ -2495,7 +2505,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       );
       const most = Math.max(0, ...others.map((u) => stacks(u, 'fracture')));
       const n = others.length === 0 ? op.alone : op.amount + Math.floor(most / 2);
-      if (fractureUnit(r, a, side, dest, n) && a.card && !r.s.winner) fireTriggers(r, side, 'fracture');
+      if (fractureUnit(r, a, side, dest, n) && a.card && !r.s.winner)
+        fireTriggers(r, side, 'fracture');
       return;
     }
     case 'empower': {
@@ -2579,7 +2590,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (n <= 0) return;
       if (!a.pick || (!op.upTo && n >= eligible.length)) {
         // (no choice to make, or no one to ask: the dearest cards)
-        const dear = [...eligible].sort((x, y) => costOf(r.db, side, y) - costOf(r.db, side, x)).slice(0, n);
+        const dear = [...eligible]
+          .sort((x, y) => costOf(r.db, side, y) - costOf(r.db, side, x))
+          .slice(0, n);
         for (const c of dear) {
           side.hand = side.hand.filter((x) => x.id !== c.id);
           deferCard(r, side, c);
@@ -2604,14 +2617,24 @@ function execOp(r: Run, a: Act, op: Op): void {
       const n = Math.max(0, Math.min(op.amount, reservesCap(side) - side.reserves));
       if (n > 0) {
         side.reserves += n;
-        r.ev.push({ type: 'reserves', side: side.id, reserves: side.reserves, max: reservesCap(side) });
+        r.ev.push({
+          type: 'reserves',
+          side: side.id,
+          reserves: side.reserves,
+          max: reservesCap(side),
+        });
       }
       return;
     }
     case 'maxReserves': {
       if (op.turn) side.reservesTurn = (side.reservesTurn ?? 0) + op.amount;
       else side.maxReserves += op.amount;
-      r.ev.push({ type: 'reserves', side: side.id, reserves: side.reserves, max: reservesCap(side) });
+      r.ev.push({
+        type: 'reserves',
+        side: side.id,
+        reserves: side.reserves,
+        max: reservesCap(side),
+      });
       return;
     }
     case 'revive': {
@@ -2767,8 +2790,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!from) return;
       const rest = r.s.sides[from.side].units.filter((u) => u.hp > 0 && u.id !== from.id);
       for (const st of DEBUFFS) {
-          // (Fracture only ever adds up, DECISIONS #483)
-          if (st === 'fracture') continue;
+        // (Fracture only ever adds up, DECISIONS #483)
+        if (st === 'fracture') continue;
         const n = stacks(from, st);
         if (n > 0) for (const u of rest) addStatus(r, u, st, n);
       }
@@ -2901,7 +2924,9 @@ function execOp(r: Run, a: Act, op: Op): void {
     // --- the Shaman's totems (DECISIONS #418)
     case 'plant': {
       // (an X card plants once per X: `scale` reads it, `times` is what is added)
-      const n = op.scale ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null)) : Math.max(1, op.times ?? 1);
+      const n = op.scale
+        ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null))
+        : Math.max(1, op.times ?? 1);
       for (let k = 0; k < n && !r.s.winner; k++) plant(r, a, side, op.spirit);
       return;
     }
@@ -2933,7 +2958,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!list) return;
       if ((op.amount ?? 1) < 0) {
         // (Bulk Up) a position fewer, at least one stays: an empty one goes first, else the front totem is pushed out (it acts as it goes)
-        for (let k = 0; k < -(op.amount ?? 1) && (side.totems?.length ?? 0) > 1 && !r.s.winner; k++) {
+        for (
+          let k = 0;
+          k < -(op.amount ?? 1) && (side.totems?.length ?? 0) > 1 && !r.s.winner;
+          k++
+        ) {
           let cur = side.totems as (string | null)[];
           if (!cur.includes(null)) {
             const hero = heroOf(side);
@@ -3182,7 +3211,9 @@ function heroDefOf(db: CombatDb, sd: Pick<SideState, 'hero' | 'ascendancy'>): He
 
 /** What the k-th Shatter on a unit deals: 20, 30, 40... (DECISIONS #486, #523), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
-  return SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
+  const n = SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
+  // (the Shatterer: a percentage on top, so it grows as the Shatters do, DECISIONS #542)
+  return sd.shatterPct ? Math.floor((n * (100 + sd.shatterPct)) / 100) : n;
 }
 
 /** Fracture on a unit, and a Shatter from the side that applied it for every SHATTER_AT it crosses. Fracture is never removed. A Shatter is
@@ -3197,7 +3228,15 @@ function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boo
   for (let k = Math.floor(before / SHATTER_AT) + 1; k <= reached && t.hp > 0 && !r.s.winner; k++) {
     const dmg = shatterDamage(owner, k);
     // (like an Aura's damage: Barrier, Ghostly and Shielded answer it, and the difficulty's damage percent applies)
-    applyDamage(r, hero, t, hero ? modifiedDamage(dmg, hero, t, false) : dmg, 'attack', false, true);
+    applyDamage(
+      r,
+      hero,
+      t,
+      hero ? modifiedDamage(dmg, hero, t, false) : dmg,
+      'attack',
+      false,
+      true,
+    );
     a.shattered++;
     reap(r);
     if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
@@ -3686,9 +3725,14 @@ function fireTriggers(
     )
       continue;
     if (p.once && p.firedTurn === r.s.turn) continue;
+    // (once a round: not again until this side's next turn begins, so a blow on the other side's turn does not count twice)
+    if (p.round && p.firedTurn !== undefined && p.firedTurn >= (sd.turnBegan ?? 0)) continue;
     if (p.only) {
       const v = metricValue(r, mkAct(hero, { spent: ctx.spent ?? 0 }), p.only.by, undefined, null);
-      if ((p.only.atLeast !== undefined && v < p.only.atLeast) || (p.only.atMost !== undefined && v > p.only.atMost))
+      if (
+        (p.only.atLeast !== undefined && v < p.only.atLeast) ||
+        (p.only.atMost !== undefined && v > p.only.atMost)
+      )
         continue;
     }
     if ((when === 'stance' || when === 'stanceLeft') && p.stance && p.stance !== ctx.stance)
@@ -3702,9 +3746,10 @@ function fireTriggers(
     )
       continue;
     // a limited Aura that brings an ally back is not spent when there is nobody to bring back
-    if (p.left !== undefined && p.ops.some((o) => o.op === 'revive') && !sd.fallen?.length) continue;
+    if (p.left !== undefined && p.ops.some((o) => o.op === 'revive') && !sd.fallen?.length)
+      continue;
     // (it answers now: a once-a-turn Aura is spent for the turn, a limited one has one answer fewer)
-    if (p.once) p.firedTurn = r.s.turn;
+    if (p.once || p.round) p.firedTurn = r.s.turn;
     if (p.left !== undefined && --p.left <= 0) sd.powers = sd.powers.filter((x) => x !== p);
     runOps(
       r,
@@ -3966,8 +4011,10 @@ function startOfTurn(r: Run, side: Side): void {
     // only last turn's falls away: what a Burn tick just brought (a phase rise, a Trap it sprang) is new
     const old = Math.min(u.barrier, lastTurns.get(u.id) ?? 0);
     if (old > 0) {
-      // Fortified keeps a share of your Barrier through the turn change; otherwise all of it falls away
-      const kept = stacks(u, 'fortified') > 0 ? Math.floor(old * FORTIFIED_KEEP) : 0;
+      // Fortified keeps a share of your Barrier through the turn change; a hero whose trait keeps some (the Paladin) keeps that; otherwise
+      // all of it falls away
+      const own = u.kind === 'hero' ? (traitOf(r, u.side)?.keepBarrier ?? 0) / 100 : 0;
+      const kept = Math.floor(old * Math.max(stacks(u, 'fortified') > 0 ? FORTIFIED_KEEP : 0, own));
       u.barrier += kept - old;
       r.ev.push({ type: 'barrierDrop', target: u.id, total: u.barrier });
     }
@@ -4014,6 +4061,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   const sd = r.s.sides[side];
   r.s.active = side;
   r.s.turn++;
+  sd.turnBegan = r.s.turn;
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
   // (the suits clear first, so a card played as the turn begins keeps its suit)
   if (traitOf(r, side)?.suits) {
@@ -4159,6 +4207,7 @@ function beginHeroTurn(r: Run, side: Side): void {
         ...(t.stance ? { stance: t.stance } : {}),
         // (a trait's trigger narrows like an Aura's: once a turn is the Monk's Serene Mana, DECISIONS #413)
         ...(t.once ? { once: true } : {}),
+        ...(t.round ? { round: true } : {}),
         ...(t.ethereal ? { ethereal: true } : {}),
         ...(t.minCost !== undefined ? { minCost: t.minCost } : {}),
         ...(t.maxCost !== undefined ? { maxCost: t.maxCost } : {}),
@@ -4261,6 +4310,8 @@ function enemyPhase(r: Run): void {
   const sd = r.s.sides.b;
   r.s.active = 'b';
   r.s.turn++;
+  // (an Aura that answers once a round counts its round from here on this side, as a hero's from its turn: DECISIONS #542)
+  r.s.sides.b.turnBegan = r.s.turn;
   r.ev.push({ type: 'turnStart', side: 'b', turn: r.s.turn });
   startOfTurn(r, 'b');
   if (r.s.winner) return;
@@ -4597,7 +4648,8 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
   const cd = cardDef(r.db, c.card);
   const sd = r.s.sides[side];
   if (r.s.pending) return false;
-  if (cd.unplayable || costOf(r.db, sd, c) > sd.mana + sd.reserves || (cd.starCost ?? 0) > sd.stars) return false;
+  if (cd.unplayable || costOf(r.db, sd, c) > sd.mana + sd.reserves || (cd.starCost ?? 0) > sd.stars)
+    return false;
   if (cd.statusCost) {
     const hero = sd.units.find((u) => u.kind === 'hero');
     if (!hero || stacks(hero, cd.statusCost.status) < cd.statusCost.amount) return false;
@@ -4987,7 +5039,13 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   // (the Shaman) the totems' boost for the first spell of its element this turn
   let boost = sd.totems ? spellBoost(r, sd, cd) : 0;
   // (Measured Ruin, DECISIONS #480: the first Spell Attack of the turn that spends Spell Power)
-  if (starsSpent > 0 && !sd.ruinUsed && cd.kind === 'attack' && cd.tags?.includes(SPELL_TAG) && stacks(hero, 'ruinous') > 0) {
+  if (
+    starsSpent > 0 &&
+    !sd.ruinUsed &&
+    cd.kind === 'attack' &&
+    cd.tags?.includes(SPELL_TAG) &&
+    stacks(hero, 'ruinous') > 0
+  ) {
     boost += stacks(hero, 'ruinous') * starsSpent;
     sd.ruinUsed = true;
   }
@@ -5323,8 +5381,7 @@ export function previewCardDamage(
   // (each its own step in the breakdown, as the engine adds them: DECISIONS #479)
   const knifeEdge = knife ? stacks(hero, 'edge') : 0;
   const honed = knife && !sd.honedUsed ? stacks(hero, 'honed') : 0;
-  const lethality =
-    def.kind === 'attack' && sd.attacksPlayed === 0 ? stacks(hero, 'lethality') : 0;
+  const lethality = def.kind === 'attack' && sd.attacksPlayed === 0 ? stacks(hero, 'lethality') : 0;
   const leth = 1 + lethality / 100;
   // (Vigor goes into the first damage effect only, as the engine spends it)
   let vigor = def.kind === 'attack' ? stacks(hero, 'vigor') : 0;
@@ -5410,7 +5467,14 @@ export function previewCardDamage(
         for (const u of sim.sides[other(sd.id)].units)
           if (stacks(u, 'shielded') > 0) u.statuses.shielded = stacks(u, 'shielded') - 1;
       }
-      out.set(i, { lo, hi, printed: 0, calc: true, played: piled.length, ...(each ? { each } : {}) });
+      out.set(i, {
+        lo,
+        hi,
+        printed: 0,
+        calc: true,
+        played: piled.length,
+        ...(each ? { each } : {}),
+      });
     }
     // (a Barrier that reads the board shows its real number, worked out as the engine's 'barrier' op does: DECISIONS #486)
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
@@ -5434,8 +5498,10 @@ export function previewCardDamage(
     if (friendly && !mine && op.scale?.of === 'target') return;
     // (Fanned: a Dagger aimed at one enemy hits them all, as the engine does)
     // (Blade Sweep, likewise: the Blade's total is against each enemy)
-    const swept = op.to === 'target' && def.tags?.includes(BLADE_TAG) && stacks(hero, 'bladesweep') > 0;
-    const to = swept || (knife && op.to === 'target' && stacks(hero, 'fanned') > 0) ? 'allFoes' : op.to;
+    const swept =
+      op.to === 'target' && def.tags?.includes(BLADE_TAG) && stacks(hero, 'bladesweep') > 0;
+    const to =
+      swept || (knife && op.to === 'target' && stacks(hero, 'fanned') > 0) ? 'allFoes' : op.to;
     const pool =
       to === 'target'
         ? chosen
@@ -5464,7 +5530,8 @@ export function previewCardDamage(
     // (hits that grow, or Blade Echo's: how many, and what they come to against each enemy it could hit)
     const echoes = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
     // (a fixed few hits whose damage scales show their total too: the number on each hit is not what the card does, DECISIONS #509)
-    const growing = op.scale?.into === 'hits' || echoes > 0 || (op.scale !== undefined && (op.hits ?? 1) > 1);
+    const growing =
+      op.scale?.into === 'hits' || echoes > 0 || (op.scale !== undefined && (op.hits ?? 1) > 1);
     const grown = op.scale?.into === 'hits' ? scaleValue(r, a, op.scale, chosen) : 0;
     const hitCount = (op.hits ?? 1) + grown + echoes;
     const sums: number[] = [];
@@ -5507,7 +5574,9 @@ export function previewCardDamage(
       const noose = t && def.tags?.includes('noose') ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
       if (noose !== 1) how.push(`Noose ×${noose} = ${Math.round(run * lone * leth * noose)}`);
       const n = modifiedDamage(
-        Math.round((amt + knifeEdge + honed + edge + keen + ruin + v + rip + ember) * lone * leth * noose),
+        Math.round(
+          (amt + knifeEdge + honed + edge + keen + ruin + v + rip + ember) * lone * leth * noose,
+        ),
         hero,
         t,
         def.kind === 'attack',

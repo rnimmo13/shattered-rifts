@@ -556,7 +556,10 @@ export type Op =
   /** (DECISIONS #480) apply Fracture; `marked`: only to those that already have some */
   | { op: 'fracture'; amount: number; to: Sel; scale?: Scale; marked?: boolean }
   /** your Shatters deal this much more for the rest of the fight */
-  | { op: 'shatterUp'; amount: number }
+  /** `pct`: every Shatter deals that much more, in percent (DECISIONS #542) */
+  | { op: 'shatterUp'; amount: number; pct?: number }
+  /** your companions' attacks deal this much more, in percent, for the rest of the fight (DECISIONS #542) */
+  | { op: 'allyPct'; amount: number }
   /** deal your current Shatter damage (it is not a Shatter: no Fracture is removed and nothing that answers a Shatter hears of it) */
   | { op: 'shatterBlast'; to: Sel }
   /** apply to the target half the Fracture on your most-cracked other enemy (it keeps its own) plus `amount`; with one enemy, apply `alone` */
@@ -605,6 +608,8 @@ export type Op =
       temp?: boolean;
       /** it answers only the first time each turn (Iteration, Feral) */
       once?: boolean;
+      /** it answers only once a round: from the start of its side's turn to the next, the other side's turn included (DECISIONS #542) */
+      round?: boolean;
       /** 'play' / 'draw': only Fleeting cards */
       ethereal?: boolean;
       /** 'play': only cards that cost at least this much */
@@ -1016,7 +1021,13 @@ export interface HeroTrait {
   fightStart?: Op[];
   turnStart?: Op[];
   triggers?: Extract<Op, { op: 'power' }>[];
-  clutch?: { perMissingHp?: number; perMissingPct?: number };
+  /** the share of Barrier (percent) the hero keeps through the turn change without Fortified (the Paladin, DECISIONS #545); Fortified keeps more */
+  keepBarrier?: number;
+  clutch?: {
+    perMissingHp?: number;
+    perMissingPct?: number;
+    /** the most it gives, in percent (DECISIONS #542) */ max?: number;
+  };
   /** the share of the hero's Might their companions hold (rounded down): 1 shares it all, 0.5 half; a new companion arrives with it */
   shareMight?: number;
   /** HP healed after every fight the hero wins (in a run) */
@@ -1256,6 +1267,8 @@ export interface PowerState {
   /** it ends with this turn (Rage) */
   temp?: boolean;
   once?: boolean;
+  /** once a round (see the op's `round`) */
+  round?: boolean;
   ethereal?: boolean;
   minCost?: number;
   /** the unit it aims at (a pinned power), and the card copy that made it (which does not set it off) */
@@ -1405,6 +1418,12 @@ export interface SideState {
   spentTurn?: number;
   /** (the Spellblade's Spell Power rework, DECISIONS #480) what her Shatters deal on top of SHATTER_DAMAGE; this turn's spending and sequence */
   shatterBonus?: number;
+  /** (DECISIONS #542) what every Shatter of hers deals more, in percent */
+  shatterPct?: number;
+  /** (DECISIONS #542) what the side's companions' attacks deal more, in percent */
+  allyPct?: number;
+  /** the turn number this side's latest turn began on (for an Aura that answers once a round) */
+  turnBegan?: number;
   starsSpentTurn?: number;
   lastSpend?: number;
   lastSpell?: boolean;

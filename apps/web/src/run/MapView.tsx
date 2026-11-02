@@ -8,7 +8,6 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { Picture } from '../ui/Picture';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
 import { useTallMap } from './mapShape';
-import { iconUrl } from '../art/gameIcons';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -267,7 +266,11 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
               ? { pic: 'map-ghost' }
               : {})}
       />
-      {here && <img className="mapnode__here" src={iconUrl('map-here')} alt="" draggable={false} />}
+      {here && (
+        <Picture id="map-here" className="mapnode__here">
+          {null}
+        </Picture>
+      )}
       {n.crossed && (
         <span
           className="mapnode__crossed"

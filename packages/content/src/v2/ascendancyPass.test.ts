@@ -1,0 +1,194 @@
+// The Ascendancy pass (DECISIONS #542): Blood Knight once a round, Deathwish capped, Fateweaver by max HP, the Elementalist, Zealot once a
+// turn, Shatterer and Foreman by a percentage, the Gunslinger's Gun every turn, and an old Pyromancer read as the Elementalist.
+
+import { describe, expect, it } from 'vitest';
+import {
+  applyAction,
+  clone,
+  createCombat,
+  legalActions,
+  viewFor,
+  type CombatState,
+  type Unit,
+} from '@sr/combat';
+import { COMBAT_DB as db, RIFTWALKERS, ascendancyOf } from './index';
+
+function fight(
+  hero: string,
+  ascendancy: string | undefined,
+  hand: string[],
+  enemies: string[] = ['squire'],
+): CombatState {
+  const { state } = createCombat(db, {
+    seed: 'asc-pass-' + (ascendancy ?? hero),
+    a: {
+      hero,
+      deck: RIFTWALKERS[hero as keyof typeof RIFTWALKERS].starter,
+      ...(ascendancy ? { ascendancy } : {}),
+    },
+    b: { enemies },
+  });
+  const s = clone(state);
+  s.sides.a.hand = hand.map((card, i) => ({ id: `H${i}`, card }));
+  s.sides.a.mana = 9;
+  for (const u of s.sides.b.units) {
+    u.hp = u.maxHp = 200;
+    u.barrier = 0;
+    u.statuses = {};
+  }
+  return s;
+}
+const hero = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
+const foe = (s: CombatState): Unit => s.sides.b.units[0]!;
+const play = (s: CombatState, card: string): CombatState => {
+  const inst = s.sides.a.hand.find((c) => c.card === card);
+  const act = legalActions(db, s).find(
+    (a) =>
+      a.type === 'play' &&
+      a.card === inst?.id &&
+      (!('target' in a) || !a.target || a.target === foe(s).id),
+  );
+  expect(act, `${card} playable`).toBeTruthy();
+  return applyAction(db, s, act!).state;
+};
+const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
+
+describe('the Ascendancy pass (DECISIONS #542)', () => {
+  it('Blood Knight: 1 Might once a round, not again for a blow on the enemy turn', () => {
+    let s = play(
+      fight('knight', 'knight:blood-knight', ['draw-blood', 'draw-blood']),
+      'draw-blood',
+    );
+    expect(hero(s).statuses.might ?? 0).toBe(1);
+    s = play(s, 'draw-blood');
+    expect(hero(s).statuses.might ?? 0).toBe(1);
+    // (the squire strikes on its turn: the same round)
+    hero(s).barrier = 0;
+    s = endTurn(s);
+    expect(hero(s).statuses.might ?? 0).toBe(1);
+    // (a new round)
+    s.sides.a.hand = [{ id: 'X', card: 'draw-blood' }];
+    s = play(s, 'draw-blood');
+    expect(hero(s).statuses.might ?? 0).toBe(2);
+  });
+
+  it('Deathwish: 1.25% a point of HP missing, at most +100% (DECISIONS #544)', () => {
+    let s = fight('drunkard', 'drunkard:deathwish', []);
+    hero(s).hp = Math.ceil(hero(s).maxHp * 0.6);
+    hero(s).barrier = 0;
+    s = endTurn(s);
+    const missing = Math.floor(((hero(s).maxHp - hero(s).hp) * 100) / hero(s).maxHp);
+    expect(hero(s).statuses.clutch ?? 0).toBe(Math.min(100, Math.floor(missing * 1.25)));
+    s = fight('drunkard', 'drunkard:deathwish', []);
+    // (77% missing and more: 1.5% a point would be over 115%, so the cap holds it at 100)
+    hero(s).hp = 20;
+    hero(s).barrier = 0;
+    s = endTurn(s);
+    expect(hero(s).hp).toBeGreaterThan(0);
+    expect(hero(s).statuses.clutch).toBe(100);
+  });
+
+  it('Fateweaver: 2 Fate plus 2% of the enemy max HP (DECISIONS #544)', () => {
+    // (the class's own Fate, from its Thralls, comes on top: compared with the same fight without it)
+    const doom = (asc?: string): number =>
+      foe(endTurn(fight('necromancer', asc, []))).statuses.doom ?? 0;
+    expect(doom('necromancer:fateweaver') - doom()).toBe(2 + 4);
+  });
+
+  it('Elementalist: the first Flame card each turn adds 3 Burn, the second none', () => {
+    let s = play(
+      fight('shaman', 'shaman:elementalist', ['spreading-flames', 'spreading-flames']),
+      'spreading-flames',
+    );
+    expect(foe(s).statuses.burn).toBe(8 + 3);
+    s = play(s, 'spreading-flames');
+    expect(foe(s).statuses.burn).toBe(8 + 3 + 8);
+  });
+
+  it('Zealot: 6 Barrier the first time each turn he enters Fury', () => {
+    let s = fight('monk', 'monk:zealot', ['rising-ire', 'centre-yourself', 'unburdened-guard']);
+    hero(s).barrier = 0;
+    s = play(s, 'rising-ire');
+    expect(hero(s).barrier).toBe(6);
+    s = play(play(s, 'centre-yourself'), 'unburdened-guard');
+    // (Shifting Guard's own 2 Barrier only: into Fury again gave none)
+    expect(hero(s).barrier).toBe(6 + 2);
+  });
+
+  it('Shatterer: every Shatter 15% more', () => {
+    const shatter = (asc?: string): number => {
+      const s = fight('spellblade', asc, ['hairline-crack']);
+      foe(s).statuses.fracture = 9;
+      const hp = foe(s).hp;
+      return hp - foe(play(s, 'hairline-crack')).hp;
+    };
+    const plain = shatter();
+    expect(plain).toBeGreaterThan(0);
+    expect(shatter('spellblade:shatterer')).toBe(Math.floor((plain * 115) / 100));
+  });
+
+  it('Foreman: companions hit 25% harder, and their intent says the number that lands', () => {
+    // (one companion, the Engineer's own Drone: the Foreman's second Drone would make any bonus look like more damage)
+    const strike = (pct: number): { landed: number; shown: number | null } => {
+      const s = fight('engineer', undefined, []);
+      if (pct) s.sides.a.allyPct = pct;
+      const drone = s.sides.a.units.find((u) => u.kind === 'ally')!;
+      const shown =
+        viewFor(db, s, 'a').sides.a.units.find((u) => u.id === drone.id)?.intentView?.damage ??
+        null;
+      const after = applyAction(db, s, { type: 'endTurn' });
+      const landed = after.events
+        .filter(
+          (e) =>
+            e.type === 'damage' &&
+            (e as { source: string | null }).source === drone.id &&
+            (e as { target: string }).target === foe(s).id,
+        )
+        .reduce((n, e) => n + (e as { lost: number }).lost + (e as { blocked: number }).blocked, 0);
+      return { landed, shown };
+    };
+    const plain = strike(0);
+    const more = strike(25);
+    expect(plain.landed).toBeGreaterThan(0);
+    expect(more.landed).toBe(Math.round(plain.landed * 1.25));
+    // (what the intent says is what lands, a whole number)
+    expect(more.shown).toBe(more.landed);
+    expect(fight('engineer', 'engineer:foreman', []).sides.a.allyPct).toBe(25);
+  });
+
+  it('Gunslinger: the Gun grows sharper every turn', () => {
+    let s = fight('drunkard', 'drunkard:gunslinger', []);
+    const at = (x: CombatState): number =>
+      JSON.stringify(x.sides.a).match(/"forged":\{[^}]*"old-twelve-gauge":(\d+)/)?.[1]
+        ? Number(JSON.stringify(x.sides.a).match(/"forged":\{[^}]*"old-twelve-gauge":(\d+)/)![1])
+        : -1;
+    const first = at(s);
+    s = endTurn(s);
+    expect(at(s)).toBe(first + 2);
+  });
+
+  it('Blood Knight stops at 3 Might a fight (DECISIONS #544)', () => {
+    let s = fight('knight', 'knight:blood-knight', []);
+    for (let round = 0; round < 5; round++) {
+      s.sides.a.hand = [{ id: `B${round}`, card: 'draw-blood' }];
+      s.sides.a.mana = 9;
+      s = play(s, 'draw-blood');
+      s = endTurn(s);
+      hero(s).hp = hero(s).maxHp;
+    }
+    expect(hero(s).statuses.might).toBe(3);
+  });
+
+  it('Sunwalker: 1 more Fervor the first time each turn, not every stance (DECISIONS #544)', () => {
+    const fervor = (asc?: string): number => {
+      let s = fight('monk', asc, ['rising-ire', 'centre-yourself', 'unburdened-guard']);
+      s = play(play(play(s, 'rising-ire'), 'centre-yourself'), 'unburdened-guard');
+      return (hero(s).statuses.mantra ?? 0) + (hero(s).statuses.radiant ? 10 : 0);
+    };
+    expect(fervor('monk:sunwalker') - fervor()).toBe(1);
+  });
+
+  it('a Pyromancer from an old save is the Elementalist', () => {
+    expect(ascendancyOf('shaman', 'shaman:pyromancer')?.id).toBe('shaman:elementalist');
+  });
+});

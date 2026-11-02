@@ -29,6 +29,22 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.156.0',
+    date: '2026-11-02',
+    title: 'Ascendancies rebalanced, the Elementalist',
+    summary: 'Every Ascendancy is now a good pick in the right deck: none runs away with a long run, and the weakest have been lifted. The Elementalist takes the Pyromancer\'s place.',
+    notes: [
+      { kind: 'balance', text: 'Ascendancies: the strongest early ones come down (Paladin keeps 60% of your Barrier rather than being Fortified, Marshal Max Reserves 4, Trapmaster 2 Barrier, Totemist 1 Spirit and 8 Barrier, Blademaster +1 a Sword hit and a card for the first Sword each turn) and the ones that grew without end are capped (Blood Knight at most 3 Might a fight and once a round, Beastmaster shares three quarters of your Might, Assassin +10% on the first Attack, Sunwalker the first stance each turn, Archmage +20% on the first Attack, Deathwish 1.25% a point of HP missing up to +100%).' },
+      { kind: 'balance', text: 'The weaker ones go up: Foreman companions deal 25% more, Golemancer +3 max HP, Reaver also gives 2 Primed, Predator 2 Primed a draw, Spiritwalker 4 Barrier, Shatterer Shatters 15% more, Zealot 6 Barrier the first Fury each turn, Gunslinger +2 Precision every turn, Brewmaster also 1 Might for the turn, Fateweaver 2 Fate plus 2% of the enemy\'s max HP, Soulreaper 4 Barrier.' },
+      { kind: 'new', text: 'The Elementalist replaces the Pyromancer: the first Flame card each turn adds 3 Burn, the first Frost card 3 Barrier, the first Storm card 2 damage to all enemies. A run that took the Pyromancer has the Elementalist.' },
+      { kind: 'balance', text: 'Etching Edge deals 1 more per 2 Spell Power (was 2 per 4) and applies 1 more Fracture per 4 Spell Power (was per 8).' },
+      { kind: 'changed', text: 'Phones: the run header at the top of the map is much smaller, with HP, shards, potions and Boons in one row you slide sideways; the Merchant shows two cards to a row; the map\'s drawing pens are gone on touch screens; the Grimoire is a list of every card two across with the realms as chips.' },
+      { kind: 'changed', text: 'The Sanctum shows each Ascendancy as a tile: crest, what it leans into, and what it gives.' },
+      { kind: 'fixed', text: 'No picture can show as broken: every one is checked to exist, and the few without a fallback have one.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.155.0',
     date: '2026-11-02',
     title: 'Phones: hold to read',

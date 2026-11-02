@@ -45,9 +45,28 @@ describe('Ascendancies', () => {
   });
 
   it('take effect', () => {
-    expect(hero(fight('knight', 'knight:paladin')).statuses.fortified).toBe(1);
-    expect(hero(fight('knight')).statuses.fortified ?? 0).toBe(0);
-    expect(fight('knight', 'knight:marshal').sides.a.maxReserves).toBe(5);
+    // (the Paladin keeps 60% of last turn's Barrier, not Fortified's 75%: DECISIONS #545)
+    // (Barrier as the next turn begins, from 60 held at the end of this one: the enemies' blows take the same off both)
+    // (the same seed for both, so the same blows land: only the share kept differs, and it is at most 60% of what was held)
+    const kept = (asc?: string): number => {
+      const s = createCombat(db, {
+        seed: 'paladin-keep',
+        a: {
+          hero: 'knight',
+          deck: RIFTWALKERS.knight.starter,
+          ...(asc ? { ascendancy: asc } : {}),
+        },
+        b: { enemies: ['squire', 'squire'] },
+      }).state;
+      hero(s).barrier = 60;
+      return hero(applyAction(db, s, { type: 'endTurn' }).state).barrier;
+    };
+    const plain = kept();
+    const paladin = kept('knight:paladin');
+    expect(paladin).toBeGreaterThan(plain);
+    expect(paladin - plain).toBeLessThanOrEqual(Math.floor(60 * 0.6));
+    expect(hero(fight('knight', 'knight:paladin')).statuses.fortified ?? 0).toBe(0);
+    expect(fight('knight', 'knight:marshal').sides.a.maxReserves).toBe(4);
     expect(fight('knight').sides.a.maxReserves).toBe(3);
     const foreman = fight('engineer', 'engineer:foreman').sides.a.units.filter(
       (u) => u.kind === 'ally',

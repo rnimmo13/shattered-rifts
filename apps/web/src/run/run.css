@@ -994,20 +994,54 @@ img.mapnode__pic {
 }
 .picker__ascend {
   display: grid;
-  gap: 0.45rem;
-  margin: 0.3rem 0 0.7rem;
+  /* three across where there is room, each the same width; stacked on a phone */
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.7rem;
+  margin: 0.4rem 0 0.9rem;
+  padding: 0;
+  list-style: none;
 }
-.picker__ascend dt {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 600;
-  color: var(--c-ivory);
+/* an Ascendancy as a tile: crest, name, what it leans into, and what it gives (the look of the choices at a Waymark) */
+.picker__ascTile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: 0.65rem;
+  row-gap: 0.15rem;
+  align-items: start;
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.92), rgb(8 10 20 / 0.96)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark)) border-box;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.45);
 }
-.picker__ascend dd {
-  margin: 0.1rem 0 0 2.2rem;
-  font-size: 0.88rem;
+.picker__ascTile .picker__ascendCrest {
+  grid-row: 1 / span 2;
+  width: 2.6rem;
+  height: 2.6rem;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.6));
+}
+.picker__ascTile b {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  letter-spacing: 0.04em;
+  color: var(--c-gold-light);
+  line-height: 1.15;
+}
+.picker__ascTile small {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--c-text-dim);
+}
+.picker__ascTile p {
+  grid-column: 1 / -1;
+  margin: 0.4rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--c-ivory);
 }
 .picker__ascendCrest {
   width: 1.8rem;
@@ -2066,4 +2100,134 @@ img.mapnode__pic {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
+}
+
+/* ---- a phone's run header, kept small (Robert, 2026-11-02: it took over a quarter of the screen as the map scrolled under it) ----
+   the name and where the run is on one line, small buttons, and everything else in one row that slides sideways: HP, shards and
+   Resolve first, then potions, Boons, the Heart and the Omens */
+@media (max-width: 40rem) {
+  .runbar {
+    gap: 0.3rem;
+    padding: 0.4rem 0.6rem;
+    max-height: none;
+    overflow: visible;
+  }
+  .runbar__who {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .runbar__who b {
+    flex: none;
+    font-size: 0.95rem;
+  }
+  .runbar__who span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.78rem;
+  }
+  .runbar__crest {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+  .runbar__actions {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .runbar__actions .btn--small,
+  .runbar__arena {
+    min-height: 1.85rem;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.68rem;
+  }
+  .runbar__stats {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0.55rem;
+    padding-top: 0.3rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    /* (the far edge fades, so it reads as a row that goes on) */
+    mask-image: linear-gradient(90deg, #000 calc(100% - 1.6rem), transparent);
+  }
+  /* (room at the end, so the last item can be slid clear of the fade) */
+  .runbar__stats::after {
+    content: '';
+    flex: none;
+    width: 1.6rem;
+    order: 99;
+  }
+  .runbar__stats::-webkit-scrollbar {
+    display: none;
+  }
+  .runbar__stats > * {
+    flex: none;
+  }
+  .runbar__stats .shards,
+  .runbar__stats .resolve {
+    order: -1;
+  }
+  .runbar__stats .boons {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+  }
+  .runbar__stats .boon,
+  .runbar__stats .potionchip {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .shards b {
+    font-size: 1rem;
+  }
+  html {
+    scroll-padding-top: 7rem;
+  }
+}
+/* drawing on the map needs a mouse or a pen: on a touch screen the pen bar is gone (Robert: it does not work there) */
+@media (pointer: coarse) {
+  .mapink__dock {
+    display: none;
+  }
+}
+
+/* the Merchant on a phone: two cards to a row (their width is set in Pickers.tsx), with smaller buttons under them */
+@media (max-width: 40rem) {
+  .shop__cards {
+    gap: 0.9rem 0.6rem;
+  }
+  /* (an item is as wide as its card, so two sit side by side; it was 210 px, wider than a phone's half) */
+  .shop__item {
+    width: calc(50% - 0.3rem);
+    max-width: 210px;
+  }
+  .shop__item .btn--small {
+    width: 100%;
+  }
+  .shop__item .btn--small {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  .shop__later {
+    font-size: 0.72rem;
+  }
+}
+/* a potion in the run header's row fits its circle */
+.runbar .potionchip {
+  overflow: hidden;
+}
+.runbar .potionchip .flask {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+}
+/* the Sanctum's Ascendancy tiles on a phone: one a row, so all three are the same width */
+@media (max-width: 40rem) {
+  .picker__ascend {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
