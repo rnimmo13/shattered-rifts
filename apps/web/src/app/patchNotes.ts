@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.157.0',
+    date: '2026-11-02',
+    title: 'Painted class crests',
+    summary: 'Every class now has a painted crest, in the same style as the Ascendancy crests.',
+    notes: [
+      { kind: 'changed', text: 'Painted class crests on the title screen, the Sanctum, the pickers, the fight plates and the leaderboards. The badge on cards keeps its symbol.' },
+      { kind: 'new', text: 'The Elementalist has its own crest: a stone ring set with flame, frost and storm gems.' },
+    ],
+  },
+  {
     version: '0.156.0',
     date: '2026-11-02',
     title: 'Ascendancies rebalanced, the Elementalist',

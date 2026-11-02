@@ -2027,6 +2027,9 @@
   flex: none;
   filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.55));
 }
+.heroicon--crest {
+  object-fit: contain;
+}
 .picker__title .heroicon {
   margin-right: 0.6rem;
   vertical-align: middle;

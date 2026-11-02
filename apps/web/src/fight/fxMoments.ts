@@ -127,3 +127,5 @@ export function intentPic(icon: string, damage: number | null, hits: number): st
 
 /** The painted crest of an Ascendancy (`knight:blood-knight` is crest-knight-blood-knight). */
 export const crestPic = (ascendancyId: string): string => `crest-${ascendancyId.replace(':', '-')}`;
+/** The painted crest of a class itself (`knight` is crest-knight; the class-01 sheet). */
+export const classCrestPic = (hero: string): string => `crest-${hero}`;

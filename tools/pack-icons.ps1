@@ -225,7 +225,9 @@ $sheets = @(
   @{ d = $fxDir; f = 'map-01'; c = 4; r = 3; s = $icon; ids = 'map-duel map-elite map-event map-shrine map-merchant map-warden map-ghost map-here map-done map-crossed -chest -door' -split ' ' },
   @{ d = $fxDir; f = 'ascend-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight-paladin crest-knight-marshal crest-knight-blood-knight crest-engineer-foreman crest-engineer-golemancer crest-engineer-overclocker crest-hunter-beastmaster crest-hunter-reaver crest-hunter-predator crest-trickster-trapmaster crest-trickster-cardsharp crest-trickster-seer' -split ' ' },
   @{ d = $fxDir; f = 'ascend-02'; c = 4; r = 3; s = $crest; ids = 'crest-assassin-assassin crest-assassin-bladedancer crest-assassin-bloodletter crest-shaman-totemist crest-shaman-spiritwalker crest-shaman-pyromancer crest-monk-sage crest-monk-zealot crest-monk-sunwalker crest-spellblade-blademaster crest-spellblade-archmage crest-spellblade-shatterer' -split ' ' },
-  @{ d = $fxDir; f = 'ascend-03'; c = 4; r = 3; s = $crest; ids = 'crest-drunkard-brewmaster crest-drunkard-gunslinger crest-drunkard-deathwish crest-necromancer-bonelord crest-necromancer-fateweaver crest-necromancer-soulreaper -banner -gold-wreath -silver-wreath -flame -wings -crown' -split ' ' }
+  @{ d = $fxDir; f = 'ascend-03'; c = 4; r = 3; s = $crest; ids = 'crest-drunkard-brewmaster crest-drunkard-gunslinger crest-drunkard-deathwish crest-necromancer-bonelord crest-necromancer-fateweaver crest-necromancer-soulreaper -banner -gold-wreath -silver-wreath -flame -wings -crown' -split ' ' },
+  @{ d = $fxDir; f = 'class-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight crest-engineer -hunter-bow crest-trickster crest-assassin crest-shaman crest-monk crest-spellblade crest-necromancer crest-drunkard crest-shaman-elementalist -random' -split ' ' },
+  @{ d = $fxDir; f = 'class-hunter'; c = 1; r = 1; s = $crest; ids = @('crest-hunter') }
 )
 $effects = @(
   @{ f = 'fx-potions'; ids = 'potion-drink potion-heal potion-shatter potion-explode' -split ' ' },

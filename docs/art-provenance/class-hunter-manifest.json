@@ -1,0 +1,21 @@
+{
+  "created": "2026-11-02",
+  "generator": "built-in image_gen",
+  "model_version": "not exposed",
+  "prompt_source": "docs/animation-prompts.md#one-crest-crest-hunterpng-the-hunter-redone",
+  "filename": "class-hunter.png",
+  "destination": "assets-src/fx/class-hunter.png",
+  "references": [
+    "assets-src/fx/class-01.png",
+    "apps/web/public/art/figures/hero-hunter.png"
+  ],
+  "prompt": "Create ONE heraldic class crest for a dark-fantasy 2D card-battler, no text, matching the attached crests exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left). It belongs to the same set as the attached sheet of crests.\nTHE BACKGROUND MUST STAY CLEAN: one plain flat solid magenta (#FF00FF) over the whole image, no shadow, no gradient, no frame. Use no magenta or hot pink inside the picture. NO TEXT.\nREADABLE WHEN SMALL: it will be shown from 32 to 120 pixels, so ONE bold object, centred and large, with a thick unbroken near-black outline and big simple shapes. No thin lines: every part is thick enough to read at 32 pixels.\nTHE PICTURE, main colour coral red: a broad bone-white spearhead, point up, its shaft bound in coral-red cloth with two red-and-white feathers hanging from it, in front of three wide coral-red claw slashes torn diagonally behind it, like the attached figure's spear.",
+  "attempts": 1,
+  "status": "Generated and visually checked; pending Robert's approval. Source crest only; not cut or integrated.",
+  "review": "Single upward bone spearhead with coral-red binding, two red-and-white feathers and three diagonal red claw slashes. Bold outline and magenta background. No text. Spear follows the supplied Hunter figure.",
+  "sha256": "4e49c21a48327d1297310da29d07a5e743e51833dd4b22e2d620a9607ad49828",
+  "dimensions": [
+    1312,
+    1199
+  ]
+}

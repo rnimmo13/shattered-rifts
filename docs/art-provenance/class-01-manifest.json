@@ -1,0 +1,39 @@
+{
+  "created": "2026-11-02",
+  "generator": "built-in image_gen",
+  "model_version": "not exposed",
+  "prompt_source": "docs/animation-prompts.md#sheet-16",
+  "filename": "class-01.png",
+  "destination": "assets-src/fx/class-01.png",
+  "references": [
+    "assets-src/fx/ascend-01.png",
+    "assets-src/fx/ascend-02.png"
+  ],
+  "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-0218ef45-f348-4175-8fea-422aa5857f1e.png",
+  "columns": 4,
+  "rows": 3,
+  "type": "class_crests",
+  "order": [
+    "Knight",
+    "Engineer",
+    "Hunter",
+    "Trickster",
+    "Rogue",
+    "Shaman",
+    "Monk",
+    "Spellblade",
+    "Necromancer",
+    "Drunkard",
+    "Elementalist",
+    "Random"
+  ],
+  "prompt": "Create ONE SHEET of 12 separate heraldic class crests for a dark-fantasy 2D card-battler, no text.\nThe attached images are the STYLE ANCHOR: these new crests belong to the same set as the attached crests, so match their rendering exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).\n\nLAYOUT (critical): a wide landscape image, with 12 separate pictures spaced in an even invisible grid of 4 across and 3 down. Nothing touches or overlaps a neighbour or the edge of the image; leave clear magenta all round each one.\nTHE BACKGROUND MUST STAY CLEAN (critical, the game cuts each picture out by this colour): one plain flat solid magenta (#FF00FF) over the WHOLE sheet, no grid lines, cells, frames or badges, no shadow on the ground, no gradient, no texture. Use no magenta or hot pink inside the pictures. NO TEXT anywhere: no letters, numbers, labels or captions.\nREADABLE WHEN SMALL (critical): each picture will be shown from 32 to 120 pixels, so each is ONE bold object, centred and large, with a thick unbroken near-black outline all round its silhouette, big simple shapes and no small details. Each has one main colour, given below, so the twelve are easy to tell apart. All share the same viewing angle, outline weight and lighting, so they look like one set.\n\nTHE PICTURES, in this exact order, left to right, top row first:\n1. Pale gold: a closed knight's great helm in polished steel and gold, a gold sun on its brow, a longsword standing upright behind it.\n2. Bright cyan: a riveted iron gauntlet gripping a brass gear with a glowing cyan core.\n3. Coral red: a drawn hunting bow with an arrow nocked, a wolf's fang charm hanging from the grip.\n4. Violet: a violet domino mask over a single tall playing card with a blank face, the card tilted behind it.\n5. Crimson: two slim throwing knives crossed point down, crimson-wrapped grips, a red gleam on each edge.\n6. Leaf green: a carved wooden spirit mask with glowing green eyes and three feathers rising above it.\n7. Warm orange: a closed fist wrapped in cloth tape, inside a ring of large wooden prayer beads.\n8. Steel silver: a faceted black obsidian shard set in a silver sword hilt, a cold silver-blue rune glowing on the shard.\n9. Sickly green: a horned skull with a green lantern flame burning in its brow.\n10. Bottle green and rust: a round bottle-green bottle, its cork popped, a rust-red shotgun shell lying across it.\n11. A carved stone ring set with three gems, an orange flame gem, an icy pale-blue frost gem and a crackling violet storm gem, evenly spaced, with a thin twist of fire, frost and lightning curling between them.\n12. Deep violet and gold: a swirling violet rift portal in a cracked gold ring.\n\nChecklist: each crest's main colour matches its number above, and none looks like its class's Ascendancy crests (the Knight's must not look like the Paladin's winged shield, the Engineer's like the Overclocker's gear, the Monk's like the Zealot's fist).",
+  "attempts": 1,
+  "status": "Generated and visually checked; pending Robert's approval. Source sheet only; not cut or wired into game.",
+  "review": "12 crests in row-major order, matching the supplied reference rendering. No labels or captions. Main colour families and three-element ring present. Some decorative embellishments beyond literal prompt: sun rays behind Knight, gold filigree on Trickster mask. Background requires tolerant magenta keying like existing sheets.",
+  "sha256": "507dbd734c984143c7df447a047dfc274fba682e49d9c79bff2dfa5afffe91c8",
+  "dimensions": [
+    1536,
+    1024
+  ]
+}

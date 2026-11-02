@@ -1,8 +1,12 @@
-// A Riftwalker's own icon: their emblem on a round plate in their colour. Every character has a different symbol and colour,
-// so they can be told apart at a glance on the title screen, the pickers, the fight plates and the card book.
+// A Riftwalker's own icon: their painted class crest (class-01 sheet), or, on a card or if the picture fails, their emblem on a
+// round plate in their colour. Every character has a different symbol and colour, so they can be told apart at a glance on the
+// title screen, the pickers, the fight plates and the card book.
 
 import { useId } from 'react';
+import { RIFTWALKERS, canonicalHero } from '@sr/content/v2';
 import { HERO_COLOR, HERO_EMBLEM, emblemSvg } from '../art/emblems';
+import { Picture } from './Picture';
+import { classCrestPic } from '../fight/fxMoments';
 
 export function HeroIcon(props: {
   hero: string;
@@ -10,6 +14,29 @@ export function HeroIcon(props: {
   plate?: boolean;
   title?: string;
   /** 'dark': a dark plate with a ring and emblem in the character's colour (for cards, where a bright plate would melt into the gold frame) */
+  tone?: 'bright' | 'dark';
+}) {
+  // (an id from an old save or the server is read through its current name; one the game doesn't know keeps the emblem)
+  const hero = canonicalHero(props.hero);
+  if (props.tone === 'dark' || props.plate === false || !Object.hasOwn(RIFTWALKERS, hero))
+    return <EmblemIcon {...props} />;
+  return (
+    <Picture
+      id={classCrestPic(hero)}
+      className="heroicon heroicon--crest"
+      size={props.size ?? 40}
+      {...(props.title ? { alt: props.title } : {})}
+    >
+      <EmblemIcon {...props} />
+    </Picture>
+  );
+}
+
+function EmblemIcon(props: {
+  hero: string;
+  size?: number;
+  plate?: boolean;
+  title?: string;
   tone?: 'bright' | 'dark';
 }) {
   const { hero, size = 40, plate = true, tone = 'bright' } = props;

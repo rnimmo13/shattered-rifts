@@ -502,7 +502,8 @@ img.mapnode__pic {
   line-height: 0;
   filter: drop-shadow(0 0 4px rgb(0 0 0 / 0.8));
 }
-.mapnode__crossed svg {
+.mapnode__crossed svg,
+.mapnode__crossed img {
   width: 1.7rem;
   height: 1.7rem;
 }

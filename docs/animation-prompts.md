@@ -1,6 +1,6 @@
 # Animation and effect art: prompts for ChatGPT
 
-These add the small touches that make a card game feel alive: a card flying to the discard pile, a shield splitting when an enemy is Exposed, a potion shattering. Fifteen sheets: one of potions, nine of animated effects, three of Ascendancy crests, and two more stills I'm suggesting (enemy intents, map stops).
+These add the small touches that make a card game feel alive: a card flying to the discard pile, a shield splitting when an enemy is Exposed, a potion shattering. Sixteen sheets: one of potions, nine of animated effects, three of Ascendancy crests, one of class crests, and two more stills I'm suggesting (enemy intents, map stops).
 
 **How to use**
 1. Attach the Valeria image (`assets-src/heroes/_source/Sunlit Paladin with Shield and Sword.png`) and `assets-src/icons/icons-01.png` as style anchors, and paste one prompt. Those two keep this art matching the icons already in the game.
@@ -399,9 +399,53 @@ THE PICTURES, in this exact order, left to right, top row first:
 12. A cracked crown with light pouring out of the crack.
 ```
 
+## Sheet 16: `class-01.png` (the ten class crests)
+
+The classes' own crests, painted to match the Ascendancy crests. Today each class is a flat one-colour symbol on a round plate (`apps/web/src/art/emblems.ts`). These replace that plate wherever a class is shown: the title screen, the pickers, the fight plates, the leaderboards and the card book. Card art keeps the flat symbols. Each crest keeps its class's colour so the classes still read apart at a glance, and each is a different object from its three Ascendancy crests. The Elementalist is on this sheet too, so the single prompt below is only needed if it comes out wrong here.
+
+Attach `ascend-01.png` and `ascend-02.png` as the style anchor, not the Valeria image: these should look like the same set as those.
+
+Order: Knight, Engineer, Hunter, Trickster, Rogue, Shaman, Monk, Spellblade, Necromancer, Drunkard, Elementalist, a spare for the Random pick.
+
+```
+Create ONE SHEET of 12 separate heraldic class crests for a dark-fantasy 2D card-battler, no text.
+The attached images are the STYLE ANCHOR: these new crests belong to the same set as the attached crests, so match their rendering exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).
+
+LAYOUT (critical): a wide landscape image, with 12 separate pictures spaced in an even invisible grid of 4 across and 3 down. Nothing touches or overlaps a neighbour or the edge of the image; leave clear magenta all round each one.
+THE BACKGROUND MUST STAY CLEAN (critical, the game cuts each picture out by this colour): one plain flat solid magenta (#FF00FF) over the WHOLE sheet, no grid lines, cells, frames or badges, no shadow on the ground, no gradient, no texture. Use no magenta or hot pink inside the pictures. NO TEXT anywhere: no letters, numbers, labels or captions.
+READABLE WHEN SMALL (critical): each picture will be shown from 32 to 120 pixels, so each is ONE bold object, centred and large, with a thick unbroken near-black outline all round its silhouette, big simple shapes and no small details. Each has one main colour, given below, so the twelve are easy to tell apart. All share the same viewing angle, outline weight and lighting, so they look like one set.
+
+THE PICTURES, in this exact order, left to right, top row first:
+1. Pale gold: a closed knight's great helm in polished steel and gold, a gold sun on its brow, a longsword standing upright behind it.
+2. Bright cyan: a riveted iron gauntlet gripping a brass gear with a glowing cyan core.
+3. Coral red: a broad bone-white spearhead bound in coral-red cloth with two hanging feathers, three wide claw slashes behind it.
+4. Violet: a violet domino mask over a single tall playing card with a blank face, the card tilted behind it.
+5. Crimson: two slim throwing knives crossed point down, crimson-wrapped grips, a red gleam on each edge.
+6. Leaf green: a carved wooden spirit mask with glowing green eyes and three feathers rising above it.
+7. Warm orange: a closed fist wrapped in cloth tape, inside a ring of large wooden prayer beads.
+8. Steel silver: a faceted black obsidian shard set in a silver sword hilt, a cold silver-blue rune glowing on the shard.
+9. Sickly green: a horned skull with a green lantern flame burning in its brow.
+10. Bottle green and rust: a round bottle-green bottle, its cork popped, a rust-red shotgun shell lying across it.
+11. A carved stone ring set with three gems, an orange flame gem, an icy pale-blue frost gem and a crackling violet storm gem, evenly spaced, with a thin twist of fire, frost and lightning curling between them.
+12. Deep violet and gold: a swirling violet rift portal in a cracked gold ring.
+```
+
+**Checklist for this sheet:** each crest's main colour matches its number above, and none looks like its class's Ascendancy crests (the Knight's must not look like the Paladin's winged shield, the Engineer's like the Overclocker's gear, the Monk's like the Zealot's fist).
+
+## One crest: `crest-hunter.png` (the Hunter, redone)
+
+Sheet 16 gave the Hunter a bow, but she carries none: her figure has a bone cleaver and a feathered spear, and her cards are blood, the Hound and the pack, and feasting. This crest uses her spear and claws, and keeps clear of her Ascendancy crests (Beastmaster's wolf head, Reaver's cleaver, Predator's cat skull). Attach `class-01.png` and `assets-src/heroes/` Kesh's figure (`apps/web/public/art/figures/hero-hunter.png`) as the style anchor. Save it as `assets-src/fx/class-hunter.png`.
+
+```
+Create ONE heraldic class crest for a dark-fantasy 2D card-battler, no text, matching the attached crests exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left). It belongs to the same set as the attached sheet of crests.
+THE BACKGROUND MUST STAY CLEAN: one plain flat solid magenta (#FF00FF) over the whole image, no shadow, no gradient, no frame. Use no magenta or hot pink inside the picture. NO TEXT.
+READABLE WHEN SMALL: it will be shown from 32 to 120 pixels, so ONE bold object, centred and large, with a thick unbroken near-black outline and big simple shapes. No thin lines: every part is thick enough to read at 32 pixels.
+THE PICTURE, main colour coral red: a broad bone-white spearhead, point up, its shaft bound in coral-red cloth with two red-and-white feathers hanging from it, in front of three wide coral-red claw slashes torn diagonally behind it, like the attached figure's spear.
+```
+
 ## One crest: `crest-shaman-elementalist.png` (the Elementalist, DECISIONS #542)
 
-The Elementalist replaced the Pyromancer; until this is painted it wears the Pyromancer's brazier. Attach two or three crests from sheets 13-15 as the style anchor.
+The Elementalist replaced the Pyromancer; until this is painted it wears the Pyromancer's brazier. It is number 11 on sheet 16, so use this only if that one comes out wrong. Attach two or three crests from sheets 13-15 as the style anchor.
 
 ```
 Create ONE heraldic class crest for a dark-fantasy 2D card-battler, no text, matching the attached crests exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).

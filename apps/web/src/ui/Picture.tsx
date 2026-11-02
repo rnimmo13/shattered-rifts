@@ -8,6 +8,8 @@ export function Picture(props: {
   className?: string;
   /** its height and width in pixels, if the style sheet does not set them */
   size?: number;
+  /** what it shows, for a screen reader; without it the picture is decoration */
+  alt?: string;
   /** what shows without the picture */
   children: ReactNode;
 }) {
@@ -18,7 +20,7 @@ export function Picture(props: {
       {...(props.className ? { className: props.className } : {})}
       {...(props.size ? { width: props.size, height: props.size } : {})}
       src={iconUrl(props.id)}
-      alt=""
+      alt={props.alt ?? ''}
       draggable={false}
       onError={() => setFailed(props.id)}
     />

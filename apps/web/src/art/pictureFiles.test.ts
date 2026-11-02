@@ -3,9 +3,9 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { it, expect } from 'vitest';
-import { ASCENDANCIES, POTIONS } from '@sr/content/v2';
+import { ASCENDANCIES, POTIONS, RIFTWALKERS } from '@sr/content/v2';
 import { paintedFiles } from './gameIcons';
-import { FX_IDS, crestPic } from '../fight/fxMoments';
+import { FX_IDS, classCrestPic, crestPic } from '../fight/fxMoments';
 
 const pub = resolve(__dirname, '../../public');
 // (what git has: without git, a copy from a zip say, that part of the check is skipped)
@@ -39,6 +39,7 @@ it('every picture has its file', () => {
   for (const id of paintedFiles()) need(`art/icons/${id}.png`);
   for (const p of Object.values(POTIONS)) need(`art/icons/potion-${p.id}.png`);
   for (const a of ASCENDANCIES) need(`art/icons/${crestPic(a.id)}.png`);
+  for (const h of Object.keys(RIFTWALKERS)) need(`art/icons/${classCrestPic(h)}.png`);
   for (const k of ['attack', 'defend', 'buff', 'debuff', 'summon', 'special', 'big', 'multi'])
     need(`art/icons/intent-${k}.png`);
   for (const k of [
