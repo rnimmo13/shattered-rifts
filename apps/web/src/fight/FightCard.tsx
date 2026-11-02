@@ -152,6 +152,9 @@ export interface FightCardProps {
   note?: string;
 }
 
+/** Narrower than this (px), a card's rules are set larger for their size, so a phone's hand can be read (card.css). */
+const SMALL_CARD = 130;
+
 /** A Combat v2 card, drawn with the shared card frame (same canonical size and scaling as every other card). */
 export const FightCard = memo(
   forwardRef<HTMLDivElement, FightCardProps>(function FightCard(
@@ -167,7 +170,9 @@ export const FightCard = memo(
       // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
       () =>
         rulesFor(db, def, live) +
-        (bonus && !(live && [...live.values()].some((l) => !l.barrier)) ? ` ${forgeLabel(def.forgeWord ?? 'Sharpen')}: +${bonus}.` : '') +
+        (bonus && !(live && [...live.values()].some((l) => !l.barrier))
+          ? ` ${forgeLabel(def.forgeWord ?? 'Sharpen')}: +${bonus}.`
+          : '') +
         (note ? ` ${note.replace(KEYWORDS, '**$1**')}` : ''),
       [db, def, bonus, live, note],
     );
@@ -192,7 +197,7 @@ export const FightCard = memo(
     return (
       <div
         ref={ref}
-        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${element || kind ? ' card--element' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        className={`card card--${realm}${owner ? ` card--hero-${owner}` : ''} card--${rarity} card--rar-${rarityRaw}${upgraded ? ' card--upgraded' : ''}${width < SMALL_CARD ? ' card--small' : ''}${element || kind ? ' card--element' : ''}${bonus ? ' card--sharpened' : ''}${playable ? ' is-playable' : ''}${dimmed ? ' is-dimmed' : ''}`}
         style={style}
         data-card={def.id}
       >

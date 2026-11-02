@@ -3928,8 +3928,10 @@ button.totem:disabled {
 .pile--exhaust {
   right: 8rem;
 }
+/* held upright, Consumed stands just left of the discard pile (an `auto` here once dropped it at the left edge, over Mana) */
 .fight--portrait .pile--exhaust {
-  right: auto;
+  left: auto;
+  right: 4.2rem;
 }
 .fight--portrait .pile {
   grid-template-columns: auto;
@@ -4002,4 +4004,34 @@ button.totem:disabled {
   right: -0.25rem;
   bottom: 0;
   font-size: 1.15rem;
+}
+
+/* ---- phones (Robert, 2026-11-02) ---- */
+/* a phone on its side: Consumed stands beside the discard pile, where End turn was, and End turn moves one pile further in while
+   there is a Consumed pile (above the discard pile it covered the battle log and the nearest enemy) */
+@media (max-height: 600px) {
+  .fight--compact .pile--exhaust {
+    right: calc(1.4rem + 5.2rem + 0.6rem);
+  }
+  .fight--compact:has(.pile--exhaust) .fight__end {
+    right: calc(1.4rem + 2 * (5.2rem + 0.6rem));
+  }
+}
+/* a potion's picture fits its slot on the belt, however small the belt is (it was a fixed size, and spilled out over the statuses) */
+.fight__potions .potionbtn {
+  overflow: hidden;
+  padding: 0.15rem;
+}
+.fight__potions .potionbtn .flask {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
+/* the narrowest phones (320 px): End turn fits between the draw pile and Consumed */
+@media (max-width: 340px) {
+  .fight--portrait .fight__end {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+  }
 }

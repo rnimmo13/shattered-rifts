@@ -56,6 +56,8 @@ const GRID_MAX_WIDTH = 200;
 
 /** How tall the hand's band is on a screen held upright (px): two rows of cards, under a third of the screen, as the board needs the rest. */
 export function portraitHandBand(viewportHeight: number): number {
+  // (a taller band would make the cards bigger, but the board would push your companions into the enemies' plates: card.css sets a
+  // small card's words bigger instead, Robert 2026-11-02)
   return Math.round(Math.min(viewportHeight * 0.32, 2 * GRID_MAX_WIDTH * 1.4 + 2 * GRID_GAP));
 }
 
@@ -117,7 +119,8 @@ export function handCardWidth(viewportWidth: number, viewportHeight: number): nu
     return Math.round(Math.max(72, Math.min(wide, viewportWidth * 0.21, viewportHeight * 0.17)));
   // a phone on its side (a short window): the cards shrink so the hand takes under a quarter of the screen
   if (viewportHeight < 600 || viewportWidth < 700)
-    return Math.round(Math.max(72, Math.min(wide, viewportHeight * 0.24, viewportWidth * 0.2)));
+    // (0.27 of the height, was 0.24: bigger cards to read on a phone, Robert 2026-11-02)
+    return Math.round(Math.max(72, Math.min(wide, viewportHeight * 0.27, viewportWidth * 0.2)));
   // a tablet held sideways: a fifth of the height, so the board has room above
   if (viewportWidth < 1200 && viewportHeight < 900)
     return Math.round(Math.min(wide, viewportHeight * 0.2));

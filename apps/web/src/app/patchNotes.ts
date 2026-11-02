@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.155.0',
+    date: '2026-11-02',
+    title: 'Phones: hold to read',
+    summary: 'On a phone you can now read every tooltip, and the fight screen fits better.',
+    notes: [
+      { kind: 'new', text: 'Hold a finger on anything that has a tooltip (statuses, potions, Mana, the piles, Boons, an enemy\'s intent) to read it. Holding does nothing else, and the next touch closes it.' },
+      { kind: 'fixed', text: 'The Consumed pile no longer covers Mana on a phone held upright, or End turn on a phone on its side.' },
+      { kind: 'fixed', text: 'Potions fit their slots on the belt, instead of spilling over your statuses.' },
+      { kind: 'changed', text: 'Card text is bigger on small cards, and cards are a little bigger on a phone held sideways.' },
+    ],
+  },
+  {
     version: '0.154.0',
     date: '2026-11-02',
     title: 'Primed wears off, Wild cards, longer tiers',

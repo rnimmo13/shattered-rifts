@@ -121,6 +121,8 @@ export function UnitPlates({
             {u.kind !== 'hero' && iv && (
               <div
                 data-intent={u.id}
+                // (its tip shows on hover or focus: a long press on a touch screen focuses it, ui/Tooltip.tsx)
+                data-press-focus
                 className={`intent intent--${iv.icons[0] ?? 'special'}${u.kind === 'ally' ? ' intent--ally' : ''}`}
                 style={intentStyle}
                 aria-label={`${iv.name}: ${iv.text}`}
@@ -128,11 +130,7 @@ export function UnitPlates({
               >
                 <span className="intent__icons">
                   {iv.icons.map((i) => (
-                    <Picture
-                      key={i}
-                      id={intentPic(i, iv.damage, iv.hits)}
-                      className="intent__pic"
-                    >
+                    <Picture key={i} id={intentPic(i, iv.damage, iv.hits)} className="intent__pic">
                       {i === 'buff' ? (
                         <Arrow dir="up" />
                       ) : i === 'debuff' ? (

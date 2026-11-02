@@ -517,6 +517,14 @@ body:has(.learn) {
 [data-tip] {
   pointer-events: auto;
 }
+/* (on a touch screen a long press reads a tip: it must not select the words or open the browser's own menu) */
+@media (pointer: coarse) {
+  [data-tip] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
 
 .tip--keywords {
   gap: 0.4rem;

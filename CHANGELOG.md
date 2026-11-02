@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Phones:** a long press on anything with a tooltip (statuses, potions, Mana, the piles, Boons, an enemy's intent...) shows it, as a mouse resting on it would, and does nothing else. The Consumed pile no longer covers Mana (upright) or End turn (sideways: End turn makes room for it). Potions fit their slots on the belt. A small card's words are bigger, and cards are a little bigger on a phone held sideways.
 - **Leaderboards:** the Campaign board comes first and the page opens on it. Every board shows the Ascendancy a run took, with its crest: "Paladin (Knight)". Runs and matches from before this show their class until they are played again.
 - **The Gambler's Shrine gives one thing a visit:** a blessing, or the Spin To Win reel's prize in its place. It closes after either.
 - **Ghost Wardens keep their Max HP:** a ghost Warden's HP starts from the Max HP its run had gained, not its class's base. Decks saved before this play as before until they are saved again.

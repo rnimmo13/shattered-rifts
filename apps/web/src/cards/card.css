@@ -274,6 +274,18 @@
 .card__rules--xl {
   font-size: 36px;
 }
+/* a small card (a phone's hand): its rules a size bigger, so they can be read (they still fit the box: the longest is xl). An upright
+   phone's cards cannot grow instead: the board above needs the height (stageLayout.test.ts) */
+.card--small .card__rules--s {
+  font-size: 66px;
+}
+.card--small .card__rules--m {
+  font-size: 52px;
+}
+.card--small .card__rules--l {
+  font-size: 45px;
+}
+/* (the longest keep their usual size: a note or a Sharpen added in a fight can make them longer still) */
 .card__rules p {
   margin: 0;
 }
