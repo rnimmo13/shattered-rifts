@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { PendingView } from '@sr/combat';
 import { COMBAT_DB as db } from '@sr/content/v2';
-import { isHandPick, pickStep, premeditateIn } from './handPick';
+import { isHandPick, pickStep, pickVerb, premeditateIn } from './handPick';
 
 const card = (id: string) => ({ id, card: 'strike' });
 const pending = (over: Partial<PendingView>): PendingView => ({
@@ -13,9 +13,10 @@ const pending = (over: Partial<PendingView>): PendingView => ({
 });
 
 describe('picking from the hand', () => {
-  it('a discard or Defer among cards in hand is made on the hand', () => {
+  it('a discard, Defer or Consume among cards in hand is made on the hand', () => {
     expect(isHandPick(pending({}), ['a', 'b', 'c'])).toBe(true);
     expect(isHandPick(pending({ kind: 'defer' }), ['a', 'b'])).toBe(true);
+    expect(isHandPick(pending({ kind: 'exhaust' }), ['a', 'b'])).toBe(true);
   });
   it('anything else keeps the window', () => {
     expect(isHandPick(pending({ kind: 'scry' }), ['a', 'b'])).toBe(false);
@@ -34,6 +35,12 @@ describe('picking from the hand', () => {
     ];
     expect(premeditateIn(pending({ pool }), db)).toEqual(['p', 'g']);
     expect(premeditateIn(pending({ kind: 'defer', pool }), db)).toEqual([]);
+  });
+  it('a marked card says what will happen to it', () => {
+    expect(pickVerb(pending({}))).toBe('Discard');
+    expect(pickVerb(pending({ kind: 'defer' }))).toBe('Defer');
+    expect(pickVerb(pending({ kind: 'exhaust' }))).toBe('Consume');
+    expect(pickVerb(pending({ kind: 'enchant' }))).toBe('Chosen');
   });
   it('one click is the whole choice of one card', () => {
     expect(pickStep([], 'a', { pool: ['a', 'b'], max: 1 })).toEqual({ chosen: ['a'], submit: true });

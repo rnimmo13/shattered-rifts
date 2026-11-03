@@ -66,6 +66,8 @@ export interface FightHandProps {
     chosen: readonly string[];
     /** the choosable cards that gain from being chosen (Premeditate, when discarding): they stand out from the rest */
     synergy: readonly string[];
+    /** what happens to a marked card ("Discard", "Defer"), shown on it */
+    verb: string;
     onPick: (card: HandCard) => void;
   } | null;
 }
@@ -95,7 +97,28 @@ const TOUCH_SLOP = 12;
  * How far in from each side of the screen the corner widgets (Mana and the draw pile, End turn and the discard pile, the battle log) reach
  * into the hand's band. The fan keeps inside this, so a full hand is not hidden under them.
  */
-function cornerReserve(handHeight: number): number {
+function cornerReserve(handHeight: number, cards: number): number {
+  // (measuring the widgets forces a layout: the hand re-draws on every hover and every move of a drag, so measure again only
+  // when the window, the card size or the hand changed, or half a second has passed (a widget that grew); never trust a 0,
+  // they may not be drawn yet)
+  // (a 0 is trusted once the hand has been up a moment: on a wide screen nothing reaches into it)
+  const key = `${window.innerWidth}x${window.innerHeight}:${handHeight}:${cards}`;
+  const now = performance.now();
+  if (reserveCache.key !== key) {
+    reserveCache.key = key;
+    reserveCache.since = now;
+  } else if (
+    now - reserveCache.at < 500 &&
+    (reserveCache.value > 0 || now - reserveCache.since > 300)
+  )
+    return reserveCache.value;
+  reserveCache.at = now;
+  reserveCache.value = measureReserve(handHeight);
+  return reserveCache.value;
+}
+const reserveCache = { key: '', value: 0, at: 0, since: 0 };
+
+function measureReserve(handHeight: number): number {
   const mid = window.innerWidth / 2;
   const top = window.innerHeight - handHeight;
   let reserve = 0;
@@ -161,7 +184,7 @@ export function FightHand(p: FightHandProps) {
   // (a side never gives up more than a quarter of the screen, and the fan is never squeezed below three card widths)
   const grid = p.fill ? handGrid(n, window.innerWidth, portraitHandBand(window.innerHeight)) : null;
   const w = grid ? grid.cardWidth : p.cardWidth;
-  const reserve = grid ? 0 : Math.min(cornerReserve(w * 1.4 + 10), window.innerWidth * 0.25);
+  const reserve = grid ? 0 : Math.min(cornerReserve(w * 1.4 + 10, n), window.innerWidth * 0.25);
   const clear = window.innerWidth - 2 * reserve - w;
   const layout = {
     cardWidth: w,
@@ -337,7 +360,8 @@ export function FightHand(p: FightHandProps) {
         const style: CSSProperties = {
           width: w,
           height: w * 1.4,
-          zIndex: dragging ? 500 : s.z,
+          // (the lifted card stands above a dragged one too, a card dropped back on the hand sinks from 500 under it; and below the aiming arrow, 520)
+          zIndex: dragging ? 500 : focusSlot === i ? 510 : marked ? 200 + s.z : s.z,
           transform: `translate(calc(-50% + ${s.x}px), ${s.y + sink}px) rotate(${s.rot}deg) scale(${s.scale})`,
         };
         if (dragging && drag && aimingCard?.inst.id === c.inst.id) {
@@ -363,26 +387,33 @@ export function FightHand(p: FightHandProps) {
           width: w,
           height: w * 1.4,
           zIndex: hover === i ? 300 : r0.z,
-          transform: `translate(calc(-50% + ${r0.x}px), ${r0.y + sink}px) rotate(${r0.rot}deg)`,
+          // (a marked card stands 2.6rem up out of the fan, and can be clicked where it stands)
+          transform: `translate(calc(-50% + ${r0.x}px), calc(${r0.y + sink}px - ${marked ? 2.6 : 0}rem)) rotate(${r0.rot}deg)`,
         };
         return (
           <div key={c.inst.id} className="fhand__pair">
             <div
               data-inst={c.inst.id}
-              className={`fhand__slot${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}${pickable && !marked ? ' is-pickable' : ''}${marked ? ' is-picked' : ''}${p.picking?.synergy.includes(c.inst.id) ? ' is-synergy' : ''}`}
+              className={`fhand__slot${focusSlot === i ? ' is-lifted' : ''}${dragging ? ' is-dragging' : ''}${sel ? ' is-selected' : ''}${c.playable && !p.locked ? ' is-playable' : ''}${pickable && !marked ? ' is-pickable' : ''}${marked ? ' is-picked' : ''}${p.picking?.synergy.includes(c.inst.id) ? ' is-synergy' : ''}`}
               style={style}
             >
               <FightCard
                 db={p.db}
                 def={c.def}
                 width={w}
-                playable={(c.playable && !p.locked) || pickable}
+                // (while choosing, the gold ring is the only glow: the blue one for a card you can play would compete with it)
+                playable={p.picking ? false : c.playable && !p.locked}
                 dimmed={p.picking ? !pickable : !c.playable}
                 {...(c.inst.bonus ? { bonus: c.inst.bonus } : {})}
                 {...(c.cost !== undefined && c.cost !== c.def.cost ? { cost: c.cost } : {})}
                 {...(p.live?.has(c.inst.id) ? { live: p.live.get(c.inst.id)! } : {})}
                 {...(instNote(c.inst, c.def) ? { note: instNote(c.inst, c.def)! } : {})}
               />
+              {marked && p.picking && (
+                <span className="fhand__mark">
+                  <span aria-hidden>✓</span> {p.picking.verb}
+                </span>
+              )}
             </div>
             <div
               className={`fhand__hit${dragging ? ' is-dragging' : ''}`}

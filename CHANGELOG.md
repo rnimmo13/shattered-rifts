@@ -5,6 +5,9 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Clearer hand choices:** when you discard, Defer or Consume from your hand, the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume...) above it, and the prompt counts how many you have chosen. The old pulsing glow, which was slow to draw, is gone.
+- **Smoother hand:** a card lifts the moment the pointer reaches it, and a card you move off sinks back under its neighbours as it shrinks instead of flickering behind the next one.
+- **Wide Arc** now adds 2 Daggers (3 upgraded), was 4 (5): being Fanned for the whole fight is the card, the Daggers just start it off.
 - **Shorter tiers:** each Rift Tier is now one floor longer than the last, not two: Tier I is 11 floors with its Warden, Tier X 20, Tier XX 30 (was 50). A full run is a third shorter. To keep the HP pool you can build, an Elite's Max HP spoil is now +3.
 - **A beatable climb:** deep tiers are now hard because enemies take much longer to kill, not because they kill you in one blow. Enemy damage rises more slowly (Tier X 171% of the written numbers, was 198%; Tier XX 294%, was 438%), enemy HP rises evenly to Tier XVII and steeply over the last three (Tier X 450%, was 360%; Tier XX still 1000%), and enemy Barrier and healing grow at half the rate of their HP. Hunted's first-hit bonus goes to the strongest enemy only, and Exposed Soul stays at one turn.
 - **Elite spoils:** after an Elite, choose its shards, extra Max HP, or a heal of 15% of your Max HP, then your card. Build a deep HP pool for the long tiers, or take the shards.

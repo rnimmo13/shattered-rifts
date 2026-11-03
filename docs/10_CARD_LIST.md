@@ -473,7 +473,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Cool Head | 3 | skill | uncommon | Premeditate. Gain 1 Mana. |
 | Killing Stroke | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
 | Inked Blades | 1 | skill | rare | Add 2 Inked Daggers to your hand. |
-| Wide Arc | 2 | aura | rare | Gain Fanned. Add 4 Daggers to your hand. |
+| Wide Arc | 2 | aura | rare | Gain Fanned. Add 2 Daggers to your hand. |
 | Recall the Blades | 2 | skill | rare | Play every Dagger in your consumed pile against the target; they go back there. |
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
 | Into the Shadows | 2 | skill | rare | Defer up to 3 cards. Discard your hand. Gain Poised. |

@@ -138,7 +138,7 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
 
   it('Wide Arc (Fan of Knives) makes knives hit every enemy', () => {
     let s = play(fight(['wide-arc']), 'wide-arc');
-    expect(inHand(s, 'sleeve-knife')).toBe(4);
+    expect(inHand(s, 'sleeve-knife')).toBe(2);
     s = play(s, 'sleeve-knife');
     expect(foeHp(s, 0)).toBe(196);
     expect(foeHp(s, 1)).toBe(196);

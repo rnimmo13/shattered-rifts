@@ -4,6 +4,7 @@
 
 import {
   lazy,
+  startTransition,
   Suspense,
   useCallback,
   useEffect,
@@ -85,7 +86,7 @@ import { CardHover } from './CardHover';
 import { preloadAllArt, realSkinFigure } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
-import { isHandPick, pickStep, premeditateIn, prompt as pickPrompt } from './handPick';
+import { isHandPick, pickStep, pickVerb, premeditateIn, prompt as pickPrompt } from './handPick';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
@@ -2390,6 +2391,7 @@ export function FightView(props: {
                     pool: pickPool,
                     chosen: pickedNow,
                     synergy: pickSynergy,
+                    verb: view?.pending ? pickVerb(view.pending) : 'Chosen',
                     onPick: (c) => chooseInHand(c.inst.id),
                   }
                 : null
@@ -2432,8 +2434,12 @@ export function FightView(props: {
               refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
             }}
             onHover={(c, r) => {
-              setHoverCard(c);
-              setHoverRect(c && r ? r : null);
+              // (the hand lifts the card itself, at once; the rest of the screen, the tooltip and the previews, follows when it
+              // can, so re-drawing it all never holds up the card under the pointer)
+              startTransition(() => {
+                setHoverCard(c);
+                setHoverRect(c && r ? r : null);
+              });
             }}
           />
           {hoverCard && hoverRect && !selected && !dragCard && mode === 'portrait' && (
@@ -2542,7 +2548,12 @@ export function FightView(props: {
           {handPickNow && view.pending && !finished && (
             <div className="fight__aimbar fight__aimbar--pick" role="status">
               <b>{pickPrompt(view.pending)}</b>{' '}
-              <span>{touch ? 'Tap' : 'Click'} a glowing card.</span>
+              <span>{touch ? 'Tap' : 'Click'} a card ringed in gold.</span>
+              {view.pending.max > 1 && (
+                <span className="fight__pickCount">
+                  {pickedNow.length} of {view.pending.max} chosen
+                </span>
+              )}
               {pickSynergy.length > 0 && (
                 <em className="fight__pickSynergy">
                   Premeditate cards come back next turn at 0 Mana.

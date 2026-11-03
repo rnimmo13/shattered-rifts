@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.162.0',
+    date: '2026-11-03',
+    title: 'A smoother hand, clearer choices',
+    summary: 'Cards lift the moment you point at them, choosing cards to discard, Defer or Consume is plain to see, and Wide Arc makes fewer Daggers.',
+    notes: [
+      { kind: 'changed', text: 'A card lifts the moment the pointer reaches it, and the one you move off sinks back under its neighbours instead of flickering behind the next card.' },
+      { kind: 'changed', text: 'Discarding, Deferring or Consuming from your hand: the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume) above it, and the prompt counts how many you have chosen.' },
+      { kind: 'balance', text: 'Wide Arc adds 2 Daggers (3 upgraded), was 4 (5).' },
+    ],
+    heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
+  },
+  {
     version: '0.161.0',
     date: '2026-11-03',
     title: 'Shorter tiers',

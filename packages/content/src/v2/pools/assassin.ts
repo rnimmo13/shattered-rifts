@@ -247,8 +247,8 @@ export const ASSASSIN: CardDef[] = [
     'power',
     2,
     'none',
-    [status('fanned', 1), addTo('sleeve-knife', 4)],
-    { up: { effects: [status('fanned', 1), addTo('sleeve-knife', 5)] } },
+    [status('fanned', 1), addTo('sleeve-knife', 2)],
+    { up: { effects: [status('fanned', 1), addTo('sleeve-knife', 3)] } },
   ),
   // (Knife Trap)
   q('rare', 'recall-the-blades', 'Recall the Blades', 'skill', 2, 'foe', [knifeTrap(false)], {

@@ -29,6 +29,28 @@ export function pickStep(
   return { chosen: next, submit: next.length >= p.max };
 }
 
+/** The word on a card marked in a choice from the hand, so it is plain what will happen to it. */
+export function pickVerb(p: PendingView): string {
+  switch (p.kind) {
+    case 'discard':
+      return 'Discard';
+    case 'defer':
+      return 'Defer';
+    case 'exhaust':
+      return 'Consume';
+    case 'topdeck':
+      return 'On top';
+    case 'transform':
+      return 'Transform';
+    case 'copy':
+      return 'Copy';
+    case 'empower':
+      return 'Empower';
+    default:
+      return 'Chosen';
+  }
+}
+
 /** The sentence that asks for a choice. */
 export function prompt(p: PendingView): string {
   if (p.kind === 'enchant')
