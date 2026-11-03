@@ -270,5 +270,27 @@ foreach ($sheet in $effects) {
   $strips += $sheet.ids.Length
   $keyed.Dispose()
 }
+# every Rare's own effect (docs/rare-fx-prompts.md, DECISIONS #567): the sheets in assets-src/fx/rare, cut by the row order in
+# docs/card-art/rare-fx-sheets.json into apps/web/public/art/fx/rare/<card id>.png, and an index of the cards that have one and where each
+# plays (from docs/card-art/rare-fx.json), which the fight reads; a sheet not made yet is skipped
+$rareSrc = Join-Path $fxDir 'rare'
+$rareOut = Join-Path $stripDir 'rare'
+New-Item -ItemType Directory -Force $rareOut | Out-Null
+$rareSheets = Get-Content -Raw (Join-Path $root 'docs/card-art/rare-fx-sheets.json') | ConvertFrom-Json
+$rareFx = Get-Content -Raw (Join-Path $root 'docs/card-art/rare-fx.json') | ConvertFrom-Json
+$rareIndex = [ordered]@{}
+$rares = 0
+foreach ($sheet in $rareSheets) {
+  $sp = Join-Path $rareSrc "$($sheet.name).png"
+  if (-not (Test-Path $sp)) { continue }
+  $src = [System.Drawing.Bitmap]::FromFile($sp)
+  $keyed = [IconCut]::Key($src, $false)
+  $src.Dispose()
+  $ids = [string[]]$sheet.ids
+  [IconCut]::Strips($keyed, 6, $ids.Length, $frame, $room, $sheet.name, [string[]]($ids | ForEach-Object { Join-Path $rareOut "$_.png" }))
+  $keyed.Dispose()
+  foreach ($id in $ids) { $rareIndex[$id] = $rareFx.$id.at; $rares++ }
+}
+($rareIndex | ConvertTo-Json -Compress) | Set-Content -Encoding utf8 (Join-Path $rareOut 'index.json')
 if ([IconCut]::Log) { Write-Warning ([IconCut]::Log) }
-"icons: $made pictures in apps/web/public/art/icons, $strips effects in apps/web/public/art/fx"
+"icons: $made pictures in apps/web/public/art/icons, $strips effects in apps/web/public/art/fx, $rares Rare effects in apps/web/public/art/fx/rare"

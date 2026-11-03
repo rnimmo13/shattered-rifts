@@ -36,7 +36,8 @@
     "arenasim": "pnpm --filter @sr/tools arenasim",
     "pvp:dev": "pnpm --filter @sr/server dev",
     "cardprompts:extra": "pnpm --filter @sr/tools cardprompts:extra",
-    "cardprompts:missing": "pnpm --filter @sr/tools cardprompts:missing"
+    "cardprompts:missing": "pnpm --filter @sr/tools cardprompts:missing",
+    "fxprompts:rare": "pnpm --filter @sr/tools fxprompts:rare"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -1,0 +1,744 @@
+[
+ {
+  "name": "rare-knight-01",
+  "hero": "knight",
+  "ids": [
+   "ashen-reckoning",
+   "bastion-engine",
+   "bloodfeast",
+   "bloodied-plate"
+  ]
+ },
+ {
+  "name": "rare-knight-02",
+  "hero": "knight",
+  "ids": [
+   "burn-it-all",
+   "crimson-offering",
+   "crippling-blow",
+   "cruel-streak"
+  ]
+ },
+ {
+  "name": "rare-knight-03",
+  "hero": "knight",
+  "ids": [
+   "double-down",
+   "fan-the-flames",
+   "flailing-blows",
+   "forsake"
+  ]
+ },
+ {
+  "name": "rare-knight-04",
+  "hero": "knight",
+  "ids": [
+   "gilded-bulwark",
+   "immovable-oath",
+   "inner-furnace",
+   "oath-unbroken"
+  ]
+ },
+ {
+  "name": "rare-knight-05",
+  "hero": "knight",
+  "ids": [
+   "patient-wall",
+   "raised-hell",
+   "rally",
+   "rending-fury"
+  ]
+ },
+ {
+  "name": "rare-knight-06",
+  "hero": "knight",
+  "ids": [
+   "rite-of-recall",
+   "stone-fury",
+   "stone-stance",
+   "unbroken-wall"
+  ]
+ },
+ {
+  "name": "rare-knight-07",
+  "hero": "knight",
+  "ids": [
+   "unforgiving-drill",
+   "unholy-pact",
+   "unravel",
+   "vow-fulfilled"
+  ]
+ },
+ {
+  "name": "rare-knight-08",
+  "hero": "knight",
+  "ids": [
+   "warlords-oath",
+   "wildfire"
+  ]
+ },
+ {
+  "name": "rare-engineer-01",
+  "hero": "engineer",
+  "ids": [
+   "backup-core",
+   "build-generator",
+   "chain-reaction",
+   "command-chip"
+  ]
+ },
+ {
+  "name": "rare-engineer-02",
+  "hero": "engineer",
+  "ids": [
+   "critical-mass",
+   "double-time",
+   "dreadnought",
+   "drone-carrier"
+  ]
+ },
+ {
+  "name": "rare-engineer-03",
+  "hero": "engineer",
+  "ids": [
+   "emp",
+   "final-volley",
+   "full-salvo",
+   "full-throttle"
+  ]
+ },
+ {
+  "name": "rare-engineer-04",
+  "hero": "engineer",
+  "ids": [
+   "grand-assembly",
+   "heavy-hitter",
+   "heavy-industry",
+   "hive-mind"
+  ]
+ },
+ {
+  "name": "rare-engineer-05",
+  "hero": "engineer",
+  "ids": [
+   "legion",
+   "mass-production",
+   "overclock-core",
+   "overclocked-legion"
+  ]
+ },
+ {
+  "name": "rare-engineer-06",
+  "hero": "engineer",
+  "ids": [
+   "particle-cannon",
+   "perpetual-motion",
+   "railgun",
+   "reactor"
+  ]
+ },
+ {
+  "name": "rare-engineer-07",
+  "hero": "engineer",
+  "ids": [
+   "reactor-meltdown",
+   "siege-engine",
+   "swarm-surge",
+   "foundry-awakens"
+  ]
+ },
+ {
+  "name": "rare-engineer-08",
+  "hero": "engineer",
+  "ids": [
+   "war-engine"
+  ]
+ },
+ {
+  "name": "rare-hunter-01",
+  "hero": "hunter",
+  "ids": [
+   "alpha-call",
+   "ancient-fury",
+   "apex-maw",
+   "berserk-tempo"
+  ]
+ },
+ {
+  "name": "rare-hunter-02",
+  "hero": "hunter",
+  "ids": [
+   "blood-pact",
+   "blood-tithe",
+   "bloodmoon-hunt",
+   "bloodsong"
+  ]
+ },
+ {
+  "name": "rare-hunter-03",
+  "hero": "hunter",
+  "ids": [
+   "bloodstorm",
+   "death-or-glory",
+   "den-mother",
+   "dire-wolf"
+  ]
+ },
+ {
+  "name": "rare-hunter-04",
+  "hero": "hunter",
+  "ids": [
+   "hunger-unbound",
+   "killing-spree",
+   "pack-frenzy",
+   "red-frenzy"
+  ]
+ },
+ {
+  "name": "rare-hunter-05",
+  "hero": "hunter",
+  "ids": [
+   "rising-howl",
+   "scar-tissue",
+   "scarred-warrior",
+   "skullcrusher"
+  ]
+ },
+ {
+  "name": "rare-hunter-06",
+  "hero": "hunter",
+  "ids": [
+   "slip-the-leash",
+   "hunger-unleashed",
+   "wild-hunt"
+  ]
+ },
+ {
+  "name": "rare-trickster-01",
+  "hero": "trickster",
+  "ids": [
+   "bait-and-switch",
+   "between-worlds",
+   "blindside",
+   "compound-fear"
+  ]
+ },
+ {
+  "name": "rare-trickster-02",
+  "hero": "trickster",
+  "ids": [
+   "coup-de-grace",
+   "culling",
+   "deep-pockets",
+   "hunters-eye"
+  ]
+ },
+ {
+  "name": "rare-trickster-03",
+  "hero": "trickster",
+  "ids": [
+   "masquerade",
+   "master-trapper",
+   "opening-strike",
+   "misdirection"
+  ]
+ },
+ {
+  "name": "rare-trickster-04",
+  "hero": "trickster",
+  "ids": [
+   "patient-hunter",
+   "perfect-alibi",
+   "pickpocket-master",
+   "royal-flourish"
+  ]
+ },
+ {
+  "name": "rare-trickster-05",
+  "hero": "trickster",
+  "ids": [
+   "second-act",
+   "showstopper",
+   "silencing-snare",
+   "spring-the-trap"
+  ]
+ },
+ {
+  "name": "rare-trickster-06",
+  "hero": "trickster",
+  "ids": [
+   "the-joker",
+   "the-long-ambush",
+   "the-perfect-trap",
+   "the-whole-deck"
+  ]
+ },
+ {
+  "name": "rare-trickster-07",
+  "hero": "trickster",
+  "ids": [
+   "time-bomb",
+   "trappers-dividend"
+  ]
+ },
+ {
+  "name": "rare-assassin-01",
+  "hero": "assassin",
+  "ids": [
+   "blood-scent",
+   "bloodburst",
+   "double-trick",
+   "final-bow"
+  ]
+ },
+ {
+  "name": "rare-assassin-02",
+  "hero": "assassin",
+  "ids": [
+   "grand-scheme",
+   "inked-blades",
+   "into-the-shadows",
+   "killing-stroke"
+  ]
+ },
+ {
+  "name": "rare-assassin-03",
+  "hero": "assassin",
+  "ids": [
+   "mantle-of-night",
+   "marked-for-death",
+   "nimble-routine",
+   "patient-hands"
+  ]
+ },
+ {
+  "name": "rare-assassin-04",
+  "hero": "assassin",
+  "ids": [
+   "razor-skin",
+   "recall-the-blades",
+   "recurring-dream",
+   "hemorrhage"
+  ]
+ },
+ {
+  "name": "rare-assassin-05",
+  "hero": "assassin",
+  "ids": [
+   "rush-of-blood",
+   "sapping-wound",
+   "serpents-coil",
+   "serrated-edges"
+  ]
+ },
+ {
+  "name": "rare-assassin-06",
+  "hero": "assassin",
+  "ids": [
+   "shadow-echo",
+   "slow-murder",
+   "steel-monsoon",
+   "stilled-time"
+  ]
+ },
+ {
+  "name": "rare-assassin-07",
+  "hero": "assassin",
+  "ids": [
+   "wide-arc"
+  ]
+ },
+ {
+  "name": "rare-shaman-01",
+  "hero": "shaman",
+  "ids": [
+   "absolute-zero",
+   "blighted-chorus",
+   "call-the-elder-tree",
+   "call-the-moon-owl"
+  ]
+ },
+ {
+  "name": "rare-shaman-02",
+  "hero": "shaman",
+  "ids": [
+   "calm-before-the-storm",
+   "carve-the-spirit-pole",
+   "chain-of-calls",
+   "consuming-dusk"
+  ]
+ },
+ {
+  "name": "rare-shaman-03",
+  "hero": "shaman",
+  "ids": [
+   "doubled-vow",
+   "echoing-spirit",
+   "echoing-strike",
+   "flak-burst"
+  ]
+ },
+ {
+  "name": "rare-shaman-04",
+  "hero": "shaman",
+  "ids": [
+   "flash-burn",
+   "free-hand",
+   "fresh-start",
+   "frostbound"
+  ]
+ },
+ {
+  "name": "rare-shaman-05",
+  "hero": "shaman",
+  "ids": [
+   "hail-chant",
+   "hawk-banner",
+   "heart-of-the-pyre",
+   "inferno"
+  ]
+ },
+ {
+  "name": "rare-shaman-06",
+  "hero": "shaman",
+  "ids": [
+   "phoenix-feather",
+   "return-of-the-free",
+   "salvage-spirit",
+   "shattering-call"
+  ]
+ },
+ {
+  "name": "rare-shaman-07",
+  "hero": "shaman",
+  "ids": [
+   "spent-strike",
+   "spirit-walk",
+   "storm-sovereign",
+   "thunder-beam"
+  ]
+ },
+ {
+  "name": "rare-shaman-08",
+  "hero": "shaman",
+  "ids": [
+   "thunder-memory",
+   "ward-of-the-spirits",
+   "wellspring"
+  ]
+ },
+ {
+  "name": "rare-monk-01",
+  "hero": "monk",
+  "ids": [
+   "all-seeing",
+   "ascendant-form",
+   "ashes-of-restraint",
+   "breath-between-blows"
+  ]
+ },
+ {
+  "name": "rare-monk-02",
+  "hero": "monk",
+  "ids": [
+   "burning-litany",
+   "eye-of-the-storm",
+   "final-account",
+   "scrawl"
+  ]
+ },
+ {
+  "name": "rare-monk-03",
+  "hero": "monk",
+  "ids": [
+   "gentle-return",
+   "last-rites-of-flame",
+   "litany",
+   "spirit-shield"
+  ]
+ },
+ {
+  "name": "rare-monk-04",
+  "hero": "monk",
+  "ids": [
+   "perfect-balance",
+   "perfect-calm",
+   "radiant-heart",
+   "rage-of-ages"
+  ]
+ },
+ {
+  "name": "rare-monk-05",
+  "hero": "monk",
+  "ids": [
+   "rage-unbound",
+   "rampage-of-ire",
+   "meditate",
+   "rise-radiant"
+  ]
+ },
+ {
+  "name": "rare-monk-06",
+  "hero": "monk",
+  "ids": [
+   "serenity-incarnate",
+   "still-flame-ascendant",
+   "surge-of-ire",
+   "thousand-palms"
+  ]
+ },
+ {
+  "name": "rare-monk-07",
+  "hero": "monk",
+  "ids": [
+   "tide-of-peace",
+   "unbroken-calm",
+   "unwavering",
+   "wrath-incarnate"
+  ]
+ },
+ {
+  "name": "rare-spellblade-01",
+  "hero": "spellblade",
+  "ids": [
+   "breaking-point-hex",
+   "supernova",
+   "cleaving-edge",
+   "crucible-heart"
+  ]
+ },
+ {
+  "name": "rare-spellblade-02",
+  "hero": "spellblade",
+  "ids": [
+   "dying-star",
+   "echoing-blade",
+   "fated-hand",
+   "hammer-and-anvil"
+  ]
+ },
+ {
+  "name": "rare-spellblade-03",
+  "hero": "spellblade",
+  "ids": [
+   "comet",
+   "big-bang",
+   "measured-ruin",
+   "obsidian-aegis"
+  ]
+ },
+ {
+  "name": "rare-spellblade-04",
+  "hero": "spellblade",
+  "ids": [
+   "obsidian-drill",
+   "rupture-script",
+   "soul-of-steel",
+   "storm-of-glass"
+  ]
+ },
+ {
+  "name": "rare-spellblade-05",
+  "hero": "spellblade",
+  "ids": [
+   "tempered-focus",
+   "the-forgemaster",
+   "thousand-shards",
+   "unbreakable-crown"
+  ]
+ },
+ {
+  "name": "rare-spellblade-06",
+  "hero": "spellblade",
+  "ids": [
+   "whispering-edge"
+  ]
+ },
+ {
+  "name": "rare-drunkard-01",
+  "hero": "drunkard",
+  "ids": [
+   "ammo-dump",
+   "blind-drunk",
+   "booby-trapped-window",
+   "boomstick"
+  ]
+ },
+ {
+  "name": "rare-drunkard-02",
+  "hero": "drunkard",
+  "ids": [
+   "bottomless-flask",
+   "bottoms-up",
+   "broken-window-theory",
+   "extended-mag"
+  ]
+ },
+ {
+  "name": "rare-drunkard-03",
+  "hero": "drunkard",
+  "ids": [
+   "fire-in-the-hole",
+   "glass-jaw",
+   "gunmetal-soul",
+   "hammer-time"
+  ]
+ },
+ {
+  "name": "rare-drunkard-04",
+  "hero": "drunkard",
+  "ids": [
+   "hot-brass",
+   "ironsights",
+   "last-call",
+   "last-orders"
+  ]
+ },
+ {
+  "name": "rare-drunkard-05",
+  "hero": "drunkard",
+  "ids": [
+   "one-more-round",
+   "pass-out",
+   "rack-and-ruin",
+   "ricochet"
+  ]
+ },
+ {
+  "name": "rare-drunkard-06",
+  "hero": "drunkard",
+  "ids": [
+   "rock-bottom",
+   "rolling-thunder",
+   "scattergun-symphony",
+   "the-glass-palace"
+  ]
+ },
+ {
+  "name": "rare-drunkard-07",
+  "hero": "drunkard",
+  "ids": [
+   "last-shell",
+   "the-twelve-gauge-opera",
+   "trigger-discipline",
+   "whiskey-miracle"
+  ]
+ },
+ {
+  "name": "rare-necromancer-01",
+  "hero": "necromancer",
+  "ids": [
+   "ashfall",
+   "call-the-departed",
+   "common-grave",
+   "death-grip"
+  ]
+ },
+ {
+  "name": "rare-necromancer-02",
+  "hero": "necromancer",
+  "ids": [
+   "echo-of-the-dead",
+   "ever-watchful",
+   "fen-offering",
+   "final-reckoning"
+  ]
+ },
+ {
+  "name": "rare-necromancer-03",
+  "hero": "necromancer",
+  "ids": [
+   "gallows",
+   "gather-souls",
+   "grave-colossus",
+   "mark-of-ending"
+  ]
+ },
+ {
+  "name": "rare-necromancer-04",
+  "hero": "necromancer",
+  "ids": [
+   "phylactery",
+   "reapers-mantle",
+   "reaping-scythe",
+   "requiem"
+  ]
+ },
+ {
+  "name": "rare-necromancer-05",
+  "hero": "necromancer",
+  "ids": [
+   "shared-agony",
+   "soul-harvest",
+   "soul-tithe",
+   "ghostform"
+  ]
+ },
+ {
+  "name": "rare-necromancer-06",
+  "hero": "necromancer",
+  "ids": [
+   "spreading-rot",
+   "the-drowned-king",
+   "the-last-toll",
+   "oblivion"
+  ]
+ },
+ {
+  "name": "rare-necromancer-07",
+  "hero": "necromancer",
+  "ids": [
+   "unquiet-rest",
+   "wailing-cry",
+   "whispers-beyond"
+  ]
+ },
+ {
+  "name": "rare-neutral-01",
+  "hero": "neutral",
+  "ids": [
+   "attunement",
+   "bell-of-judgment",
+   "echoing-blow",
+   "faceless-courtier"
+  ]
+ },
+ {
+  "name": "rare-neutral-02",
+  "hero": "neutral",
+  "ids": [
+   "gilded-guard",
+   "gorrmaws-tooth",
+   "assembly-arm",
+   "maw-spawn-egg"
+  ]
+ },
+ {
+  "name": "rare-neutral-03",
+  "hero": "neutral",
+  "ids": [
+   "nyxaras-web",
+   "orbital-uplink",
+   "override-virus",
+   "purging-light"
+  ]
+ },
+ {
+  "name": "rare-neutral-04",
+  "hero": "neutral",
+  "ids": [
+   "rift-collapse",
+   "rift-resonance",
+   "rift-smithing",
+   "seraphines-oath"
+  ]
+ },
+ {
+  "name": "rare-neutral-05",
+  "hero": "neutral",
+  "ids": [
+   "the-hunger-below",
+   "unmasking"
+  ]
+ }
+]

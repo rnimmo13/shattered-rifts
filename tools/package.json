@@ -26,7 +26,8 @@
     "ghostsim": "tsx src/ghostsim.ts",
     "arenasim": "tsx src/arenasim.ts",
     "cardprompts:extra": "tsx src/cardprompts-extra.ts",
-    "cardprompts:missing": "tsx src/cardprompts-missing.ts"
+    "cardprompts:missing": "tsx src/cardprompts-missing.ts",
+    "fxprompts:rare": "tsx src/rarefx.ts"
   },
   "dependencies": {
     "@sr/campaign": "workspace:*",

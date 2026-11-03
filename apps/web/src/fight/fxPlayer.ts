@@ -4,6 +4,7 @@
 
 import { getBaseSpeed } from '../duel/scene/timescale';
 import { loadEffectsMode, markEffectsMode, prefersReducedMotion } from '../duel/effects';
+import { stripRoll } from '@sr/content/v2';
 import { FX_IDS, type FxId } from './fxMoments';
 import './fx.css';
 
@@ -49,12 +50,70 @@ export function clearFx(): void {
   layer?.replaceChildren();
 }
 
+interface StripOpts {
+  size?: number;
+  dur?: number;
+  angle?: number;
+  flip?: boolean;
+  squash?: number;
+}
+
 /** One effect, centred on a point of the window. `angle` turns it (a trail is painted moving right), `flip` mirrors it. */
-export function playFx(
-  id: FxId,
-  at: Spot,
-  o: { size?: number; dur?: number; angle?: number; flip?: boolean; squash?: number } = {},
-): void {
+export function playFx(id: FxId, at: Spot, o: StripOpts = {}): void {
+  playStrip(fxUrl(id), at, o);
+}
+
+// --- every Rare's own effect (DECISIONS #567) ---------------------------------------------------------------------------
+
+/** Where a Rare's effect plays: on its target, on the hero who played it, or over the whole enemy line. */
+export type CardFxAt = 'target' | 'self' | 'all';
+let cardFx: Record<string, CardFxAt> | null = null;
+let cardFxLoading: Promise<void> | null = null;
+const cardFxUrl = (card: string): string => `${import.meta.env.BASE_URL}art/fx/rare/${card}.png`;
+
+/** Reads which cards have their own effect (safe to call again; a list that does not come lets the next fight try again). */
+export function loadCardFx(): Promise<void> {
+  cardFxLoading ??= (async () => {
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}art/fx/rare/index.json`, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(String(res.status));
+      cardFx = (await res.json()) as Record<string, CardFxAt>;
+    } catch {
+      cardFxLoading = null;
+    }
+  })();
+  return cardFxLoading;
+}
+
+/** Asks ahead for the effects of these cards only (the deck in a fight): all of them together are far too big to fetch at once. */
+const cardFxAsked = new Set<string>();
+export async function preloadCardFx(cards: Iterable<string>): Promise<void> {
+  await loadCardFx();
+  for (const card of cards) {
+    const id = baseCard(card);
+    if (!cardFx?.[id] || cardFxAsked.has(id)) continue;
+    cardFxAsked.add(id);
+    new Image().src = cardFxUrl(id);
+  }
+}
+
+/** Where this card's own effect plays, or null if it has none (yet). An upgrade, a rolled or an engraved card plays its base card's. */
+const baseCard = (card: string): string => {
+  const id = stripRoll(card);
+  return id.endsWith('+') ? id.slice(0, -1) : id;
+};
+
+export function cardFxAt(card: string): CardFxAt | null {
+  return cardFx?.[baseCard(card)] ?? null;
+}
+
+/** A card's own effect, centred on a point of the window. */
+export function playCardFx(card: string, at: Spot, o: StripOpts = {}): void {
+  if (!cardFxAt(card)) return;
+  playStrip(cardFxUrl(baseCard(card)), at, { dur: 620, ...o });
+}
+
+function playStrip(url: string, at: Spot, o: StripOpts): void {
   if (!room()) return;
   const size = o.size ?? 220;
   const el = document.createElement('i');
@@ -63,7 +122,7 @@ export function playFx(
   el.style.top = `${at.y}px`;
   el.style.width = `${size}px`;
   el.style.height = `${size * (o.squash ?? 1)}px`;
-  el.style.backgroundImage = `url("${fxUrl(id)}")`;
+  el.style.backgroundImage = `url("${url}")`;
   el.style.transform = `translate(-50%, -50%) rotate(${o.angle ?? 0}deg)${o.flip ? ' scaleX(-1)' : ''}`;
   fxLayer().appendChild(el);
   const done = (): void => el.remove();

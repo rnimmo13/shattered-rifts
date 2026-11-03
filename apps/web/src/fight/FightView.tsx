@@ -125,6 +125,10 @@ import {
   flyPicture,
   playFx,
   preloadFx,
+  cardFxAt,
+  loadCardFx,
+  preloadCardFx,
+  playCardFx,
   shake,
   swingIn,
   type Spot,
@@ -606,6 +610,7 @@ export function FightView(props: {
   // --- painted effects ----------------------------------------------------------------------------
   useEffect(() => {
     preloadFx();
+    void loadCardFx();
     return clearFx;
   }, []);
   /** Where a unit stands on the page, and how big an effect on it is. */
@@ -820,6 +825,46 @@ export function FightView(props: {
             // a card aimed at someone lifts out of the hand and flies to them
             const to = e.target !== null && e.side === mySide ? spotOf(e.target) : null;
             if (to) flyCard(handSpot(), to, { dur: 200, arc: 50, size: 60, trail: 'trail-draw' });
+            // a Rare's own painted effect (DECISIONS #567): on its target, on the hero, or over the enemy line; an attack's lands with
+            // the blow, anything else as it is played (a Trap the other side set stays hidden)
+            const fxAt = cardFxAt(def.id);
+            const ownFx =
+              fxAt && (e.side === mySide || def.kind !== 'snare')
+                ? (): void => {
+                    const foeIds = d.sides[e.side === 'a' ? 'b' : 'a'].units
+                      .filter((u) => u.hp > 0)
+                      .map((u) => u.id);
+                    if (fxAt === 'self') {
+                      const at = spotOf(hero);
+                      if (at) playCardFx(def.id, at, { size: at.size * 1.3 });
+                      return;
+                    }
+                    if (fxAt === 'all') {
+                      const spots = foeIds.map(spotOf).filter((s): s is NonNullable<typeof s> => !!s);
+                      if (!spots.length) return;
+                      const xs = spots.map((s) => s.x);
+                      const big = Math.max(...spots.map((s) => s.size));
+                      playCardFx(
+                        def.id,
+                        {
+                          x: (Math.min(...xs) + Math.max(...xs)) / 2,
+                          y: spots.reduce((n, s) => n + s.y, 0) / spots.length,
+                        },
+                        { size: Math.min(620, Math.max(...xs) - Math.min(...xs) + big * 1.2) },
+                      );
+                      return;
+                    }
+                    // (a card with no target of its own plays on the first enemy it strikes)
+                    let aim = e.target;
+                    for (let j = i + 1; !aim && j < all.length; j++) {
+                      const n = all[j];
+                      if (!n || n.type === 'play' || n.type === 'act' || n.type === 'turnEnd') break;
+                      if (n.type === 'damage' && n.source === hero) aim = n.target;
+                    }
+                    const at = spotOf(aim ?? foeIds[0] ?? hero);
+                    if (at) playCardFx(def.id, at, { size: at.size * 1.25 });
+                  }
+                : null;
             if (def.kind === 'attack') {
               // (a Spell is cast and a card that hits them all plays across them all, DECISIONS #565)
               const by = unitOf(hero);
@@ -832,9 +877,17 @@ export function FightView(props: {
               const foes = d.sides[e.side === 'a' ? 'b' : 'a'].units
                 .filter((u) => u.hp > 0)
                 .map((u) => u.id);
-              await sc.fighters.attack(hero, e.target ?? null, undefined, def, motion, foes);
+              await sc.fighters.attack(
+                hero,
+                e.target ?? null,
+                ownFx ?? undefined,
+                def,
+                motion,
+                foes,
+              );
             } else {
               castBy.current = null;
+              ownFx?.();
               sc.fighters.act(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
               await wait(160);
@@ -1256,6 +1309,10 @@ export function FightView(props: {
             movesRef.current = [];
             onResumeFailed?.();
           }
+        }
+        {
+          const me = from.sides[mySide];
+          void preloadCardFx([...me.hand, ...me.draw, ...me.discard].map((c) => c.card));
         }
         if (resumedAt > 0 || finishing) {
           game.current = { state: from, display: clone(from) };

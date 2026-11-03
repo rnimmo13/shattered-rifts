@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Every Rare has its own effect:** all 286 Rare cards play their own painted animation when played, on their target, on the hero, or across the whole enemy line, so the Rares no longer look alike.
 - **Campaign leaderboard:** the Tiers cleared column is gone; the Class and the Ascendancy a run took now have a column each, and "Where they are" is now just the Tier.
 - **Swords swing, Spells are cast:** the Spellblade's Spells (Lava Bomb, Molten Ruin...) leave the blade sheathed and fly from her hand as ember, and their hits land as spells, not cuts. **Cards that hit every enemy look like it:** a blade sweeps through them all in one cut, a spell rains fire on each from above, and a gun or thrown knife goes to each. Fanned Daggers and the Blade under Blade Sweep count.
 - **Fracture builds faster:** Faultline Hex applies 7 (9 upgraded, was 5), Pressure Point 6 (8, was 4), Spreading Fault 5 to every enemy (7, was 4), Hairline Crack 5 (7, was 4), Fault Memory 5 and grows by 3 (was 4 and 2), Hungering Void 3 a turn (4, was 2).

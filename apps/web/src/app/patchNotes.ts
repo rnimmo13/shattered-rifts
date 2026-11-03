@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.168.0',
+    date: '2026-11-03',
+    title: 'Every Rare has its own effect',
+    summary: 'All 286 Rare cards now play their own painted effect, so no two Rares look alike when played.',
+    notes: [
+      { kind: 'new', text: 'Every Rare plays its own painted effect: on its target as the blow lands, on your hero for a Skill or an Aura, or across the whole enemy line for a card that hits them all.' },
+      { kind: 'changed', text: 'A fight only fetches the effects of the Rares in your deck, so it opens as fast as before.' },
+    ],
+  },
+  {
     version: '0.167.0',
     date: '2026-11-03',
     title: 'Fracture, Fault Lines and new attacks',
