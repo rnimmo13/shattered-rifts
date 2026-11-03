@@ -334,7 +334,7 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            A run is {MAX_TIER} Rift Tiers, each 2 floors longer than the last: Tier 1 is{' '}
+            A run is {MAX_TIER} Rift Tiers, one floor longer than the last: Tier 1 is{' '}
             {floorsOf(1) + 1} and Tier {MAX_TIER} is {floorsOf(MAX_TIER) + 1}. Each tier is a map:
             pick a path from the bottom up, and the Warden waits at the top.
           </p>

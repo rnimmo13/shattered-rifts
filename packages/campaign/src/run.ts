@@ -1082,8 +1082,8 @@ export function finishDuel(
   return r;
 }
 
-/** An Elite's spoil of Max HP (DECISIONS #555): small, as a run wins a few hundred Elites, so it builds a pool over the long tiers. */
-export const ELITE_SPOIL_MAX_HP = 2;
+/** An Elite's spoil of Max HP (DECISIONS #555): small, as a run wins about two hundred Elites, so it builds a pool over the long tiers (2 until #556 shortened the maps). */
+export const ELITE_SPOIL_MAX_HP = 3;
 /** An Elite's spoil of healing: this percent of Max HP (DECISIONS #555). */
 export const ELITE_SPOIL_HEAL_PCT = 15;
 export type Spoil = 'shards' | 'maxHp' | 'heal';

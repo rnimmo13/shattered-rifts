@@ -85,7 +85,8 @@ export interface Entry {
 // (65: the other five Wardens' rules, Vorthax rebuilt, enemy Barrier and healing by tier, the Enduring status, #546-#550)
 // (66: Enduring gone, campaign ghosts leave you Faltering, a Fanned Dagger spreads all it aims, #551-#553)
 // (67: enemy HP and damage retuned, Barrier and healing at half HP's rate, Hunted on the strongest enemy, #555)
-export const RULES_VERSION = 67;
+// (68: each tier one floor longer than the last, 30 at Tier XX, the Elite Max HP spoil +3, #556)
+export const RULES_VERSION = 68;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

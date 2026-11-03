@@ -1,5 +1,5 @@
-// Tier maps: a run is 20 Rift Tiers with no acts between them (DECISIONS #531). Tier I is 11 floors and its Warden, and each tier after has
-// 2 floors more, so Tier XX is 49 and its Warden, 50 in all (#536). Generated from the run seed, so a run always has the same maps.
+// Tier maps: a run is 20 Rift Tiers with no acts between them (DECISIONS #531). Tier I is 10 floors and its Warden, and each tier after has
+// 1 floor more, so Tier XX is 29 and its Warden, 30 in all (#556; 2 more a tier and 50 at Tier XX until then, #536). Generated from the run seed, so a run always has the same maps.
 
 import { nextInt, type RngState } from '@sr/combat';
 import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
@@ -13,8 +13,8 @@ export const FINAL_STAGE = 3;
 /** Which enemies a tier can bring: the trios from Tier III, the far realms from Tier VI. (Its difficulty is the tier table's.) */
 export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 : 1);
 
-/** Floors before the Warden: 11 at Tier I and 2 more each tier, 49 at Tier XX (DECISIONS #531, #536). */
-export const floorsOf = (tier: number): number => 9 + 2 * Math.max(1, tier);
+/** Floors before the Warden: 10 at Tier I and 1 more each tier, 29 at Tier XX (DECISIONS #531, #556). */
+export const floorsOf = (tier: number): number => 9 + Math.max(1, tier);
 /** A map is cut into stretches of this many floors, each with its own Merchants. */
 export const MERCHANT_STRETCH = 7;
 const MIN_STRETCH = 3;

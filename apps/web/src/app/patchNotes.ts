@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.161.0',
+    date: '2026-11-03',
+    title: 'Shorter tiers',
+    summary: 'Each Rift Tier is one floor longer than the last, not two, so a full run is a third shorter, and Elites give more Max HP to make up for it.',
+    notes: [
+      { kind: 'changed', text: 'Tier I is 11 floors with its Warden, Tier X 20 and Tier XX 30 (was 12, 30 and 50).' },
+      { kind: 'balance', text: 'An Elite\'s Max HP spoil is now +3 (was +2), so the HP pool you can build over a run stays about the same with fewer Elites.' },
+    ],
+    heads: 'A run already under way keeps its current map; the next tier you reach uses the new length. Reload the page if the game asks you to.',
+  },
+  {
     version: '0.160.0',
     date: '2026-11-02',
     title: 'A beatable climb, Elite spoils',

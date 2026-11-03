@@ -108,7 +108,7 @@ describe('stage maps', () => {
   });
 
   it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Vorthax (DECISIONS #531, #536)', () => {
-    expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([12, 14, 16, 50]);
+    expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([11, 12, 13, 30]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
     expect(first.floors).toBe(floorsOf(1) + 1);
@@ -780,7 +780,7 @@ describe('a tier of its own length (DECISIONS #531)', () => {
     }
     const t1 = Array.from({ length: 100 }, (_, i) => generateStageMap(seedRng('t1-e' + i), 1, 'nexus', 'knight'));
     for (const m of t1) {
-      expect(m.floors).toBe(12);
+      expect(m.floors).toBe(floorsOf(1) + 1);
       expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(5);
     }
   });
@@ -788,7 +788,7 @@ describe('a tier of its own length (DECISIONS #531)', () => {
   it('never has two Merchants, Shrines or Elites in a row', () => {
     for (const m of maps) {
       for (const n of m.nodes) {
-        if (n.kind !== 'merchant' && n.kind !== 'shrine' && (n.kind !== 'elite' || m.floors !== 12)) continue;
+        if (n.kind !== 'merchant' && n.kind !== 'shrine' && (n.kind !== 'elite' || m.floors !== floorsOf(1) + 1)) continue;
         for (const id of n.next) {
           const after = m.nodes.find((x) => x.id === id)!;
           expect(after.kind, n.id).not.toBe(n.kind);
