@@ -739,7 +739,8 @@ export const SHAMAN: CardDef[] = [
     exhaust: true,
     up: { effects: [reshuffle, draw(6)] },
   }),
-  i('rare', 'thunder-memory', 'Thunder Memory', 'skill', 3, 'none', [{ op: 'plant', spirit: 'thunderbird', scale: { by: 'channeledOf', rune: 'thunderbird' } }], {
+  // (1 more than it counts since DECISIONS #560: the Shaman's starting Thunderbird made that 1, and it is gone)
+  i('rare', 'thunder-memory', 'Thunder Memory', 'skill', 3, 'none', [{ op: 'plant', spirit: 'thunderbird', times: 1, scale: { by: 'channeledOf', rune: 'thunderbird' } }], {
     exhaust: true,
     up: { exhaust: false },
   }),

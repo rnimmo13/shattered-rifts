@@ -78,8 +78,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Knight',
     trait: {
       name: 'Mana Reserves',
-      text: 'Unspent Mana is not lost: it is kept as Reserves, up to your Max Reserves (3). Cards spend your Mana before your Reserves. Start each fight with 2 Reserves. At the end of your turn, gain 1 Barrier per Reserve you hold.',
-      fightStart: [reserves(2)],
+      text: 'Unspent Mana is not lost: it is kept as Reserves, up to your Max Reserves (3). Cards spend your Mana before your Reserves. Start each fight with 1 Reserve. At the end of your turn, gain 1 Barrier per Reserve you hold.',
+      fightStart: [reserves(1)], // (2 until DECISIONS #560)
       triggers: [on('turnEnd', [scaled(barrier(0), per('reserves'))])],
       maxReserves: 3,
     },
@@ -176,8 +176,8 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
     starter: [
-      ...rep('strike', 4),
-      ...rep('defend', 2),
+      ...rep('strike', 3), // (4 Strikes and 2 Defends until DECISIONS #560)
+      ...rep('defend', 3),
       'veil-strike',
       'set-the-web',
       'pick-a-card',
@@ -206,7 +206,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'assassin',
       name: 'Rogue',
-      maxHp: 70,
+      maxHp: 75, // (70 until DECISIONS #560)
       mana: 3,
       handSize: 5,
     },
@@ -234,9 +234,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (rebuilt a third time 2026-10-29 to Robert's direction, DECISIONS #430: the totem cycle; Trinity and the totems' help are gone)
     trait: {
       name: 'The Totem Cycle',
-      text: 'You start with a Hawk, a Bear and a Thunderbird totem, in that order. Each does something every turn while it stands. A command makes your front totem act and consumes it; planting into a full row pushes the front one out, and it acts as it goes. Spirit never goes down: each point adds 1 to every totem number (not the Elder Tree or the Moon Owl).',
+      text: 'You start with a Hawk and a Bear totem, in that order. Each does something every turn while it stands. A command makes your front totem act and consumes it; planting into a full row pushes the front one out, and it acts as it goes. Spirit never goes down: each point adds 1 to every totem number (not the Elder Tree or the Moon Owl).',
       totems: 3,
-      fightStart: [plant('hawk'), plant('bear'), plant('thunderbird')],
+      fightStart: [plant('hawk'), plant('bear')], // (and a Thunderbird until DECISIONS #560)
     },
     hero: {
       id: 'shaman',
@@ -282,7 +282,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     hero: {
       id: 'monk',
       name: 'Monk',
-      maxHp: 82,
+      maxHp: 78, // (82 until DECISIONS #560)
       mana: 3,
       handSize: 5,
       sigil: [stance('calm')],
@@ -305,7 +305,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Spellblade',
     trait: {
       name: 'Kindled',
-      text: 'Start each fight with 3 Spell Power. At the start of your turn, gain 1.',
+      text: 'Start each fight with 4 Spell Power. At the start of your turn, gain 1.',
       turnStart: [stars(1)],
     },
     // (Spell Power and Fracture, DECISIONS #480)
@@ -315,7 +315,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 75,
       mana: 3,
       handSize: 5,
-      sigil: [stars(3)],
+      sigil: [stars(4)], // (3 until DECISIONS #559)
     },
     // (the Obsidian Blade is a card of her deck, in her opening hand, removable: DECISIONS #436; Kindled's Sharpen made it before)
     starter: [
@@ -330,7 +330,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords hit harder and harder, spend it on a huge spell, or crack her enemies with Fracture until they Shatter.',
     mechanics: ['Spell Power', 'Swords', 'Spells', 'Fracture'],
     howTo: [
-      'Spell Power lasts the whole fight. You start every fight with 3 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
+      'Spell Power lasts the whole fight. You start every fight with 4 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
       'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
       'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 30 at 20, up to 110 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',

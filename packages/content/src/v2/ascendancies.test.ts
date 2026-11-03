@@ -102,9 +102,9 @@ describe('Ascendancies', () => {
 });
 
 describe("the Knight's foundation (DECISIONS #521)", () => {
-  it('starts every fight with 2 Reserves, and Barrier for what is held at the end of the turn', () => {
+  it('starts every fight with 1 Reserve (2 until DECISIONS #560), and Barrier for what is held at the end of the turn', () => {
     const s = fight('knight');
-    expect(s.sides.a.reserves).toBe(2);
+    expect(s.sides.a.reserves).toBe(1);
     const { state, events } = applyAction(db, s, { type: 'endTurn' });
     // (3 unspent Mana fills his Reserves to 3, and that much Barrier comes)
     const gained = events.flatMap((e) =>

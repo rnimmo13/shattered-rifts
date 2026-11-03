@@ -206,7 +206,7 @@ describe('card text says where a condition stops (DECISIONS #485)', () => {
 });
 
 describe('second resources have a way in and a way out from the first hand', () => {
-  // (the way in is the 3 Spell Power every fight starts with and the 1 Kindled adds each turn; a spell can spend any of it, DECISIONS #480)
+  // (the way in is the 4 Spell Power every fight starts with and the 1 Kindled adds each turn; a spell can spend any of it, DECISIONS #480)
   it('The spellblade starts every fight with Spell Power to spend, and her starter both makes and spends it', () => {
     const starter = RIFTWALKERS.spellblade.starter.map((id) => db.cards[id]!);
     expect(starter.some((c) => c.effects.some((o) => o.op === 'stars' && o.amount > 0))).toBe(true);
@@ -217,7 +217,7 @@ describe('second resources have a way in and a way out from the first hand', () 
         a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
         b: { enemies: ['squire'] },
       });
-      expect(state.sides.a.stars, `seed ${i}`).toBe(4);
+      expect(state.sides.a.stars, `seed ${i}`).toBe(5);
     }
   });
 });

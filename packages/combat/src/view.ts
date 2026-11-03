@@ -1957,7 +1957,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale?.by === 'foes') return `Plant ${article(nm)} ${nm} for each enemy.`;
       if (o.scale?.by === 'channeledOf') {
         const k = db.totems?.[o.scale.rune ?? '']?.name ?? 'totem';
-        return `Plant ${article(nm)} ${nm} for each ${k} you have planted this fight.`;
+        // (a base to start from: `times` planted, then one more for each)
+        return o.times
+          ? `Plant ${o.times === 1 ? `${article(nm)} ${nm}` : `${o.times} ${plural(nm)}`}, plus one for each ${k} you have planted this fight.`
+          : `Plant ${article(nm)} ${nm} for each ${k} you have planted this fight.`;
       }
       return `Plant ${article(nm)} ${nm}.`;
     }

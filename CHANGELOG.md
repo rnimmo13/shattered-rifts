@@ -5,6 +5,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Starting decks evened out:** the Shaman starts with a Hawk and a Bear (no Thunderbird); the Knight with 1 Reserve (was 2); the Monk has 78 Max HP (was 82); the Rogue 75 (was 70); the Trickster starts with 3 Strikes and 3 Defends (was 4 and 2). Thunder Memory plants a Thunderbird, plus one for each planted this fight, so it still works without the starting one.
+- **The Spellblade starts stronger:** Gather Power also gains Barrier (2, +1 per 3 Spell Power: 3 when a fight opens), and Kindled starts her with 4 Spell Power (was 3).
 - **Cinderfall** costs 0 Mana: Spell Power is its whole price (it still spends half yours for 4 damage + 4 a point). Upgraded it deals 6 + 4 a point (was 7 + 4).
 - **Clearer hand choices:** when you discard, Defer or Consume from your hand, the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume...) above it, and the prompt counts how many you have chosen. The old pulsing glow, which was slow to draw, is gone.
 - **Smoother hand:** a card lifts the moment the pointer reaches it, and a card you move off sinks back under its neighbours as it shrinks instead of flickering behind the next one.

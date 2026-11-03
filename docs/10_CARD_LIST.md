@@ -315,7 +315,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 
 A masked trickster who always sees the next move coming. No companions: Traps, Exposed and a deck of tricks.
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Veil Strike, Set the Web, Pick a Card, Pinprick Trap
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the Web, Pick a Card, Pinprick Trap
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -405,7 +405,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Veil Strike, Set the We
 | Patient Guard | 1 | aura | rare | At the end of your turn: Gain 2 (+1 per card in hand) Barrier. |
 | The Long Ambush | 3 | trap | rare | At the start of the enemy turn: Deal 20 damage to ALL enemies, shock ALL enemies for 1 turn and apply 2 Exposed to ALL enemies. |
 
-## Rogue (umbral, 70 HP)
+## Rogue (umbral, 75 HP)
 
 A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.
 
@@ -603,9 +603,9 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Salvage Spirit | 1 | aura | rare | Whenever you create a Status card: Plant a random totem. |
 | Ward of the Spirits | 2 | aura | rare | The next time you would lose HP, you lose none instead. |
 | Fresh Start | 0 | skill | rare | Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume. |
-| Thunder Memory | 3 | skill | rare | Plant a Thunderbird for each Thunderbird you have planted this fight. Consume. |
+| Thunder Memory | 3 | skill | rare | Plant a Thunderbird, plus one for each Thunderbird you have planted this fight. Consume. |
 
-## Monk (aurelion, 82 HP)
+## Monk (aurelion, 78 HP)
 
 A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.
 
@@ -704,7 +704,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Cinderfall | 0+X/2◆ | attack | basic | Spell. Deal 4 (+4 per Spell Power spent) damage. |
-| Gather Power | 1 | skill | basic | Gain 2 Spell Power. |
+| Gather Power | 1 | skill | basic | Gain 2 (+1 per 3 Spell Power) Barrier. Gain 2 Spell Power. |
 | Obsidian Ward | 1 | skill | basic | Spell. Gain 7 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. |
 | Forged in Fury | 1 | attack | common | Sword. Deal 2 (+2 per 3 Spell Power) damage. Gain 1 Spell Power. |
 | Deepening Enchantment | 1 | skill | common | Gain 2 Spell Power. Grows 1: this card gains 1 more each time you play it. |

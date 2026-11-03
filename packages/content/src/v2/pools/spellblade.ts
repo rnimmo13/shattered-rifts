@@ -78,10 +78,11 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [burst(6, 4)] },
   }),
-  a('basic', 'gather-light', 'Gather Power', 'skill', 1, 'none', [gain(2)], {
+  // (Barrier since DECISIONS #559, 3 at her opening 5 Spell Power: it was the starter's one card that did nothing the turn it was played)
+  a('basic', 'gather-light', 'Gather Power', 'skill', 1, 'none', [ward(2), gain(2)], {
     tags: [GENERATOR],
     ...GROWN,
-    up: { effects: [gain(3)] },
+    up: { effects: [ward(2), gain(3)] },
   }),
   // (her early Barrier, and the way into Spell Power: DECISIONS #483)
   a('basic', 'obsidian-ward', 'Obsidian Ward', 'skill', 1, 'none', [ward(7), gain(1)], {

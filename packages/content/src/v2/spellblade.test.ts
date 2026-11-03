@@ -101,15 +101,15 @@ describe('the pool', () => {
 });
 
 describe('Spell Power', () => {
-  it('every fight opens with 3, and Kindled adds 1 each turn', () => {
+  it('every fight opens with 4, and Kindled adds 1 each turn', () => {
     const { state } = createCombat(db, {
       seed: 'sp',
       a: { hero: 'spellblade', deck: RIFTWALKERS.spellblade.starter },
       b: { enemies: ['squire'] },
     });
-    expect(state.sides.a.stars).toBe(4);
+    expect(state.sides.a.stars).toBe(5);
     const next = applyAction(db, state, { type: 'endTurn' }).state;
-    expect(next.sides.a.stars).toBe(5);
+    expect(next.sides.a.stars).toBe(6);
   });
 
   it('X spends all of it', () => {
@@ -673,6 +673,9 @@ describe('her Barrier scales with Spell Power (DECISIONS #486)', () => {
     expect(at(3, 'obsidian-ward')).toBe(8);
     expect(at(27, 'obsidian-ward')).toBe(16);
     expect(at(27, 'unbreakable-crown')).toBe(18 + 13);
+    // (Gather Power, DECISIONS #559: its Barrier reads what you hold before its gain, 3 at the 5 she opens with)
+    expect(at(5, 'gather-light')).toBe(3);
+    expect(at(9, 'gather-light')).toBe(5);
   });
 
   it('it reads the card before its own gain, as the text is written', () => {

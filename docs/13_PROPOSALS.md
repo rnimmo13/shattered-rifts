@@ -188,6 +188,12 @@ Vorthax was rebuilt on 2026-11-02 (DECISIONS #547) as the finale that uses every
 - **A guided first fight:** one scripted fight that introduces Mana, Barrier, Traps and allies one at a time.
   *(Robert, 2026-10-27: okay, but later.)*
 - **Music:** Robert will work on it.
+- **Every late-game build at B- or better:** a 2026-11-03 audit graded each class's builds for Tier X-XX (S breaks the late
+  game ... D not viable). Weakest: the Monk has nothing that grows turn to turn (best build B; Fury brawler and Serene wall C);
+  Engineer Wide drones C and Traps D; Drunkard Hangover C and Stagger D; Trickster Full Trick C; Knight Consume C; Necromancer
+  Gravesoul churn and Fleeting C; Shaman totem command C. Support shells that aren't meant to win a fight alone (Frost Shaman)
+  are exempt. Flagged but left as they are: Echoing Strike (its copies make copies), Heavy Hitter with Golemancer, Gallows.
+  *(Robert, 2026-11-03: "keep a note about my preference for weaker builds to be stronger at some point"; not now.)*
 
 ## Decided against (so they aren't proposed again)
 

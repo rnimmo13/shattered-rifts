@@ -88,7 +88,8 @@ export interface Entry {
 // (68: each tier one floor longer than the last, 30 at Tier XX, the Elite Max HP spoil +3, #556)
 // (69: Wide Arc makes 2 Daggers, #557)
 // (70: Cinderfall costs 0 Mana, #558)
-export const RULES_VERSION = 70;
+// (71: starting decks evened out, Gather Power, Kindled 4, Thunder Memory, #559, #560)
+export const RULES_VERSION = 71;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

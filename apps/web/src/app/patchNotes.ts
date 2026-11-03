@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.164.0',
+    date: '2026-11-03',
+    title: 'Starting decks evened out',
+    summary: 'Every class starts closer to the others: the strongest starts are trimmed, and the Spellblade, Rogue and Trickster start sturdier.',
+    notes: [
+      { kind: 'balance', text: 'Spellblade: Gather Power also gains 2 (+1 per 3 Spell Power) Barrier, and Kindled starts her with 4 Spell Power (was 3).' },
+      { kind: 'balance', text: 'Shaman: starts with a Hawk and a Bear totem; the Thunderbird is no longer in the starting row. Thunder Memory plants a Thunderbird, plus one for each planted this fight.' },
+      { kind: 'balance', text: 'Knight: starts each fight with 1 Reserve (was 2).' },
+      { kind: 'balance', text: 'Monk: 78 Max HP (was 82). Rogue: 75 Max HP (was 70).' },
+      { kind: 'balance', text: 'Trickster: starts with 3 Strikes and 3 Defends (was 4 and 2).' },
+    ],
+    heads: 'Reload the page if the game asks you to; old Arena replays will not play. A run already under way keeps its Max HP.',
+  },
+  {
     version: '0.163.0',
     date: '2026-11-03',
     title: 'Cinderfall for free',

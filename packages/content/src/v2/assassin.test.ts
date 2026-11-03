@@ -54,7 +54,7 @@ const inHand = (s: CombatState, id: string): number =>
   s.sides.a.hand.filter((c) => c.card === id).length;
 
 describe('Sylas is the Silent shape', () => {
-  it('starts with four Strikes, two Defends, Hobbling Jab (Neutralize), Duck and Weave (Survivor), Fang and Claw and Pocket Blades, at 70 HP', () => {
+  it('starts with four Strikes, two Defends, Hobbling Jab (Neutralize), Duck and Weave (Survivor), Fang and Claw and Pocket Blades, at 75 HP (70 until DECISIONS #560)', () => {
     expect(RIFTWALKERS.assassin.starter).toEqual([
       ...Array<string>(4).fill('strike'),
       ...Array<string>(2).fill('defend'),
@@ -63,7 +63,7 @@ describe('Sylas is the Silent shape', () => {
       'fang-and-claw',
       'pocket-blades',
     ]);
-    expect(RIFTWALKERS.assassin.hero.maxHp).toBe(70);
+    expect(RIFTWALKERS.assassin.hero.maxHp).toBe(75);
     expect(RIFTWALKERS.assassin.trait.name).toBe('Hidden Blades');
   });
 

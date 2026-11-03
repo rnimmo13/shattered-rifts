@@ -45,13 +45,13 @@ const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 const lost = (s: CombatState, i = 0): number => 500 - s.sides.b.units[i]!.hp;
 
 describe("the Mana Reserves trait", () => {
-  it('is the Knight’s trait: Max Reserves 3, 2 Reserves at the start, and no opening Barrier or Plating (DECISIONS #521)', () => {
+  it('is the Knight’s trait: Max Reserves 3, 1 Reserve at the start (2 until DECISIONS #560), and no opening Barrier or Plating (DECISIONS #521)', () => {
     const t = RIFTWALKERS.knight.trait;
     expect(t.name).toBe('Mana Reserves');
     expect(t.maxReserves).toBe(3);
     const s = fight('knight');
     expect(s.sides.a.maxReserves).toBe(3);
-    expect(s.sides.a.reserves).toBe(2);
+    expect(s.sides.a.reserves).toBe(1);
     expect(hero(s).barrier).toBe(0);
     expect(hero(s).statuses.plating).toBeUndefined();
   });
@@ -188,7 +188,7 @@ describe('the Reserves cards', () => {
   it('Patient Wall: 4 Barrier for every Reserve at the end of the turn (Mana just kept counts)', () => {
     let s = fight('knight', ['patient-wall']);
     s = play(s, 'patient-wall');
-    // (2 Reserves already, and the 1 Mana left over is kept first: 3 Reserves, 12 Barrier)
+    // (2 Reserves set by hand, and the 1 Mana left over is kept first: 3 Reserves, 12 Barrier)
     s.sides.a.reserves = 2;
     s.sides.a.mana = 1;
     const res = applyAction(db, s, { type: 'endTurn' });
