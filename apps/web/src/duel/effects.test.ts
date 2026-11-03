@@ -28,6 +28,21 @@ describe('effects profiles', () => {
     expect(r.maxResolution).toBeLessThan(full.maxResolution);
   });
 
+  it('Low graphics quality keeps everything still at rest, in either mode (DECISIONS #570)', () => {
+    stubMatchMedia(false);
+    for (const mode of ['full', 'reduced'] as const) {
+      const p = profileFor(mode, 'low');
+      expect(p.low).toBe(true);
+      expect(p.particles).toBe(0);
+      expect(p.fogSpeed).toBe(0);
+      expect(p.parallax).toBe(0);
+      expect(p.pulse).toBe(0);
+      expect(p.maxResolution).toBeLessThanOrEqual(1);
+      expect(p.still).toBe(false); // the blows and effects of a card still play
+    }
+    expect(profileFor('full').low).toBe(false);
+  });
+
   it('prefers-reduced-motion stops everything from moving, in either mode', () => {
     stubMatchMedia(true);
     for (const mode of ['full', 'reduced'] as const) {

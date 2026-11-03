@@ -17,9 +17,39 @@ export interface EffectsProfile {
   pulse: number;
   /** Render resolution cap (devicePixelRatio ceiling). */
   maxResolution: number;
+  /** Low graphics quality: nothing moves at rest, and the board is only drawn while something is happening (DECISIONS #570). */
+  low: boolean;
 }
 
+/** The graphics quality setting (DECISIONS #570): High is the full look; Low keeps the board still at rest, for a machine that
+ * draws without a graphics card, where anything moving makes the browser redraw the whole screen. */
+export type GraphicsQuality = 'high' | 'low';
+
 const KEY = 'sr.effects';
+const GRAPHICS_KEY = 'sr.graphics';
+
+export function loadGraphicsQuality(): GraphicsQuality {
+  try {
+    if (localStorage.getItem(GRAPHICS_KEY) === 'low') return 'low';
+  } catch {
+    /* storage can be unavailable (private windows): fall through */
+  }
+  return 'high';
+}
+
+/** Lets the style sheets see it: Low stops the looping decorations. */
+export function markGraphicsQuality(q: GraphicsQuality = loadGraphicsQuality()): void {
+  if (typeof document !== 'undefined') document.documentElement.dataset['graphics'] = q;
+}
+
+export function saveGraphicsQuality(q: GraphicsQuality): void {
+  markGraphicsQuality(q);
+  try {
+    localStorage.setItem(GRAPHICS_KEY, q);
+  } catch {
+    /* non-fatal */
+  }
+}
 
 export function prefersReducedMotion(): boolean {
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -49,8 +79,21 @@ export function saveEffectsMode(mode: EffectsMode): void {
   }
 }
 
-export function profileFor(mode: EffectsMode): EffectsProfile {
+export function profileFor(mode: EffectsMode, quality: GraphicsQuality = 'high'): EffectsProfile {
   const still = prefersReducedMotion();
+  if (quality === 'low') {
+    // (no ambient motion at all; the blows, hits and effects of a card still play)
+    return {
+      mode,
+      still,
+      particles: 0,
+      fogSpeed: 0,
+      parallax: 0,
+      pulse: 0,
+      maxResolution: 1,
+      low: true,
+    };
+  }
   if (mode === 'reduced') {
     return {
       mode,
@@ -60,6 +103,7 @@ export function profileFor(mode: EffectsMode): EffectsProfile {
       parallax: 0,
       pulse: still ? 0 : 0.4,
       maxResolution: 1.25,
+      low: false,
     };
   }
   return {
@@ -70,5 +114,6 @@ export function profileFor(mode: EffectsMode): EffectsProfile {
     parallax: still ? 0 : 1,
     pulse: still ? 0 : 1,
     maxResolution: 2,
+    low: false,
   };
 }

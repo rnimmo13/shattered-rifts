@@ -125,6 +125,8 @@ export interface FighterHost {
   contactTex?: Texture;
   profile: () => EffectsProfile;
   sound: (name: string) => void;
+  /** something changed at once, not by a tween: on Low graphics the board is drawn again for this long (DECISIONS #570) */
+  wake?: (ms: number) => void;
 }
 
 /**
@@ -240,6 +242,7 @@ export class Fighters {
 
   /** Make the set of figures match `list`: add new ones (with a pop-in), slide existing ones to their slots. */
   sync(list: FighterSpec[], opts: { instant?: boolean } = {}): void {
+    this.h.wake?.(150);
     const keep = new Set(list.map((s) => s.id));
     for (const f of [...this.all.values()])
       if (!keep.has(f.spec.id) && !f.dying) this.remove(f.spec.id);
@@ -1065,6 +1068,7 @@ export class Fighters {
 
   /** Light a ring under the figures that can be targeted. */
   setTargetable(ids: ReadonlySet<string> | null): void {
+    this.h.wake?.(150);
     for (const f of this.all.values()) {
       const on = ids?.has(f.spec.id) === true;
       if (f.targetable === on) continue;
@@ -1076,6 +1080,7 @@ export class Fighters {
   /** Emphasise one figure (the one under the pointer while aiming): it grows a little and its ring burns bright. */
   setHover(id: string | null): void {
     this.locked = id;
+    this.h.wake?.(150);
     for (const f of this.all.values()) {
       const k = f.spec.id === id ? 1.05 : 1;
       if (f.busy === 0 && !f.dying)
@@ -1085,10 +1090,14 @@ export class Fighters {
 
   tick(t: number, still: boolean): void {
     if (this.destroyed) return;
+    // (on becoming still, every figure settles back to rest once instead of freezing mid-breath)
+    if (still && !this.wasStill) this.settle();
+    this.wasStill = still;
     for (const f of this.all.values()) {
       if (f.targetable) {
         const lit = f.spec.id === this.locked;
-        f.ring.alpha = lit ? 0.95 : 0.32 + 0.3 * Math.sin(t * 5);
+        // (steady when nothing may move: reduced motion, or Low graphics, which draws the board only now and then)
+        f.ring.alpha = lit ? 0.95 : still ? 0.55 : 0.32 + 0.3 * Math.sin(t * 5);
         const w = f.width * (lit ? 1.6 : 1.3);
         f.ring.scale.set(w / 128, (w * 0.4) / 128);
         f.ring.tint = lit ? 0xffe39a : 0xff4a6e;
@@ -1111,6 +1120,28 @@ export class Fighters {
         f.prop.rotation = Math.sin(t * 1.1 + f.phase) * 0.05;
       }
     }
+  }
+
+  private wasStill = false;
+  /** Every figure at rest: the idle breathing and a flyer's bob at their middle. */
+  private settle(): void {
+    for (const f of this.all.values()) {
+      if (f.dying || f.busy > 0) continue;
+      const hover = f.spec.hover ?? 0;
+      if (hover) {
+        f.air.y = -hover;
+        f.contact.alpha = 0.32;
+        f.shadow.alpha = 0.3;
+      }
+      f.sprite.scale.y = f.spec.height / f.spec.canvas.height;
+      f.aura.alpha = f.spec.isHero ? 0.2 : 0.1;
+      if (f.prop && f.spec.prop) {
+        const k = f.spec.height / f.spec.canvas.height;
+        f.prop.y = (f.spec.prop.y - f.spec.canvas.height) * k;
+        f.prop.rotation = 0;
+      }
+    }
+    this.h.wake?.(100);
   }
 
   /** The fight ended: the loser crumples, the winner stands tall. */

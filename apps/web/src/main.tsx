@@ -12,8 +12,11 @@ import './duel/duel.css';
 import { App } from './app/App';
 import { loadSkin, preloadArt } from './art/assets';
 import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
+import { markGraphicsQuality } from './duel/effects';
 
 applyCssTokens();
+// (Low graphics stops the looping decorations on every screen, not only in a fight: DECISIONS #570)
+markGraphicsQuality();
 
 // A tab left open across a deploy asks for chunks that no longer exist ("Failed to fetch dynamically imported module").
 // Load the new version once instead of showing an error; a second failure within 30 s is shown as it is.

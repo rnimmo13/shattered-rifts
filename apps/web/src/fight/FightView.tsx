@@ -47,7 +47,13 @@ import {
 import { COMBAT_DB, RIFTWALKERS, classTrait } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import type { VenueId } from '../duel/scene/venue';
-import { loadEffectsMode, profileFor } from '../duel/effects';
+import {
+  loadEffectsMode,
+  loadGraphicsQuality,
+  profileFor,
+  saveGraphicsQuality,
+  type GraphicsQuality,
+} from '../duel/effects';
 import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
 import { getSound, play, setSound } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
@@ -587,6 +593,7 @@ export function FightView(props: {
   const [live, setLive] = useState<CombatState | null>(null);
   const [seenTips, setSeenTips] = useState<Set<string>>(loadSeen);
   const [tipsOn, setTipsOn] = useState(loadTipsOn);
+  const [graphics, setGraphics] = useState<GraphicsQuality>(loadGraphicsQuality);
 
   // --- floating numbers ------------------------------------------------------------------------------
   const float = useCallback((unitId: string, text: string, tone: Float['tone']) => {
@@ -1267,7 +1274,13 @@ export function FightView(props: {
     // used once they are in (an attack before then keeps its drawn effects)
     void loadWeaponArt();
     preloadAllArt()
-      .then(() => BattlefieldScene.create(el, profileFor(loadEffectsMode()), props.venue))
+      .then(() =>
+        BattlefieldScene.create(
+          el,
+          profileFor(loadEffectsMode(), loadGraphicsQuality()),
+          props.venue,
+        ),
+      )
       .then((s) => {
         if (cancelled) {
           s.destroy();
@@ -2160,6 +2173,24 @@ export function FightView(props: {
         }}
       >
         <span>{sound ? 'Sound on' : 'Sound off'}</span>
+      </button>
+      {/* (Low keeps the board still at rest, for a machine without a graphics card: DECISIONS #570) */}
+      <button
+        className="btn btn--small btn--ghost"
+        aria-pressed={graphics === 'low'}
+        {...tipAttrs({
+          kicker: 'Graphics quality',
+          title: graphics === 'low' ? 'Low' : 'High',
+          text: 'High is the full look. Low stops the drifting fog, floating motes and other motion at rest, so the game runs smoothly on a computer that is slow to draw. Cards, blows and effects play the same on both.',
+        })}
+        onClick={() => {
+          const next: GraphicsQuality = graphics === 'low' ? 'high' : 'low';
+          saveGraphicsQuality(next);
+          setGraphics(next);
+          scene.current?.setProfile(profileFor(loadEffectsMode(), next));
+        }}
+      >
+        <span>{graphics === 'low' ? 'Graphics: Low' : 'Graphics: High'}</span>
       </button>
     </div>
   );

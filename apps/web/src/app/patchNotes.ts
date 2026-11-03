@@ -29,6 +29,15 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.171.0',
+    date: '2026-11-03',
+    title: 'Graphics quality',
+    summary: 'A Graphics quality setting: Low keeps the game smooth on a computer that is slow to draw.',
+    notes: [
+      { kind: 'new', text: 'Graphics: High or Low, in a fight\'s top bar beside Tips and Sound. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same. High is the full look and stays the default.' },
+    ],
+  },
+  {
     version: '0.170.0',
     date: '2026-11-03',
     title: 'Knight Uncommon effects, the Swarmwright crest',

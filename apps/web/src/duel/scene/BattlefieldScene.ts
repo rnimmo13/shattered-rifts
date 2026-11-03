@@ -7,7 +7,8 @@
 // All numbers that control cost (particle cap, fog speed, parallax, pulse, resolution) come from an
 // EffectsProfile, so "reduced effects" and prefers-reduced-motion are handled in one place.
 
-import { Application, Container, Sprite, Texture, TilingSprite } from 'pixi.js';
+import { Application, Container, Sprite, Texture, TilingSprite, UPDATE_PRIORITY } from 'pixi.js';
+import gsap from 'gsap';
 import { color, hex, stage } from '../../design/tokens';
 import type { EffectsProfile } from '../effects';
 import { floorTop, rows } from './layout';
@@ -148,7 +149,12 @@ export class BattlefieldScene {
   private parallax = { x: 0, y: 0 };
   private destroyed = false;
   private onResize = () => this.applyResolution();
+  /** Low graphics: the board is drawn until this time (performance.now ms) even with nothing tweening (DECISIONS #570) */
+  private awakeUntil = 0;
+  private lastDrawn = 0;
   private onPointer = (e: PointerEvent) => {
+    // (a hover or an aim changes the rings and the locked target at once: show it on the next frame)
+    this.wake(150);
     const r = this.host.getBoundingClientRect();
     this.pointer.x = ((e.clientX - r.left) / Math.max(1, r.width)) * 2 - 1;
     this.pointer.y = ((e.clientY - r.top) / Math.max(1, r.height)) * 2 - 1;
@@ -264,6 +270,7 @@ export class BattlefieldScene {
       contactTex: tex(contactTexture(128)),
       profile: () => this.profile,
       sound: (n) => this.onSound(n as SoundName),
+      wake: (ms) => this.wake(ms),
     });
 
     // --- atmosphere over the board ---
@@ -285,6 +292,38 @@ export class BattlefieldScene {
     app.renderer.on('resize', () => this.fit());
     host.addEventListener('pointermove', this.onPointer);
     app.ticker.add((t) => this.tick(t.deltaMS / 1000));
+    // the board draws itself: every frame on High, and on Low only while something is happening (DECISIONS #570)
+    // (Pixi added its own draw as `app.render` with `app` as its context, and removes a listener by that same pair)
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    app.ticker.remove(app.render, app);
+    app.ticker.add(() => this.draw(), undefined, UPDATE_PRIORITY.LOW);
+  }
+
+  /** Keep drawing the board for a while (something changed that is not a tween: a hover, a resize). */
+  wake(ms: number): void {
+    this.awakeUntil = Math.max(this.awakeUntil, performance.now() + ms);
+  }
+
+  /**
+   * On Low graphics nothing moves at rest, so a frame is drawn only while a tween, a shake or a hit-stop runs (and a moment after,
+   * so a tween's last values show), for a moment after a hover, an aim or a change to the fighters, and a few times a second besides.
+   * Without a graphics card a drawn frame makes the browser redraw the whole screen, so a still board is what keeps the rest of the
+   * page smooth.
+   */
+  private draw(): void {
+    if (this.destroyed) return;
+    const now = performance.now();
+    if (this.profile.low) {
+      // (the top-level tweens and timelines: a timeline counts as running through its gaps and its instant steps)
+      const busy =
+        this.shakeAmp > 0 ||
+        this.hitStopTimer !== null ||
+        gsap.globalTimeline.getChildren(false, true, true).some((t) => t.isActive());
+      if (busy) this.wake(80);
+      else if (now >= this.awakeUntil && now - this.lastDrawn < 250) return;
+    }
+    this.lastDrawn = now;
+    this.app.render();
   }
 
   private makeFog(
@@ -346,6 +385,7 @@ export class BattlefieldScene {
     if (p.parallax === 0) this.parallax = { x: 0, y: 0 };
     this.applyResolutionIfReady();
     this.moteLayer.visible = p.particles > 0;
+    this.wake(200);
   }
 
   private applyResolutionIfReady(): void {
@@ -438,8 +478,9 @@ export class BattlefieldScene {
       this.shards.x = -PAD_X + Math.sin(t * 0.13) * 9;
     }
 
-    this.fighters.tick(t, p.still);
-    this.arenaProps?.update(t, p.still);
+    // (on Low the fighters stand still and the arena's props hang still: only what a card does moves)
+    this.fighters.tick(t, p.still || p.low);
+    this.arenaProps?.update(t, p.still || p.low);
 
     // pointer parallax: the far layers shift a little more than the near ones
     if (p.parallax > 0) {
@@ -488,6 +529,7 @@ export class BattlefieldScene {
     const res = Math.max(0.5, base * this.resScale);
     this.app.renderer.resize(this.host.clientWidth, this.host.clientHeight, res);
     this.fit();
+    this.wake(200);
   }
 
   getStats(): SceneStats {
