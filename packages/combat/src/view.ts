@@ -1102,6 +1102,7 @@ export const forgeLabel = (word: string): string => (word === 'Sharpen' ? 'Sharp
 export const ON_OR_OFF: ReadonlySet<string> = new Set([
   'fortified',
   'fanned',
+  'bladesweep',
   'poised',
   'sturdy',
   'unmovable',

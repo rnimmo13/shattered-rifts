@@ -340,6 +340,17 @@ describe('Fracture and Shatter', () => {
     );
   });
 
+  it('under Blade Sweep the Blade asks for no target: one play, every enemy struck (DECISIONS #561)', () => {
+    const plays = (s: CombatState) =>
+      legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0');
+    const s = fight([BLADE], { stars: 4, foes: 3 });
+    expect(plays(s)).toHaveLength(3);
+    hero(s).statuses.bladesweep = 1;
+    expect(plays(s)).toHaveLength(1);
+    const r = play(s, BLADE);
+    for (const i of [0, 1, 2]) expect(lost(r, i)).toBe(5 + 2 * 4);
+  });
+
   it('the Blade reads as what the engine really does: swept and Shielded', () => {
     const swept = fight([BLADE], { stars: 12, foes: 2 });
     hero(swept).statuses.bladesweep = 1;

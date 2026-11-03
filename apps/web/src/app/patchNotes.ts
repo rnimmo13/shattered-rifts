@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.165.0',
+    date: '2026-11-03',
+    title: 'A sweeping Blade',
+    summary: 'Under Blade Sweep the Obsidian Blade needs no aiming.',
+    notes: [
+      { kind: 'changed', text: 'While Blade Sweep is up, the Obsidian Blade plays straight away with no aiming, as it strikes every enemy.' },
+      { kind: 'fixed', text: 'The Blade Sweep buff no longer shows a "1": more of it changes nothing.' },
+    ],
+    heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
+  },
+  {
     version: '0.164.0',
     date: '2026-11-03',
     title: 'Starting decks evened out',

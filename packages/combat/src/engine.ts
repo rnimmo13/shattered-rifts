@@ -1176,6 +1176,8 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
     case 'target':
       // (Fanned: everything a Dagger aims at one enemy lands on them all, its Faltering as well as its damage, DECISIONS #552)
       if (a.card?.tags?.includes(EDGE_TAG) && stacks(a.actor, 'fanned') > 0) return foes;
+      // (Blade Sweep: the same for the Obsidian Blade, whatever else it aims at one enemy, DECISIONS #561)
+      if (a.card?.tags?.includes(BLADE_TAG) && stacks(a.actor, 'bladesweep') > 0) return foes;
       return a.target && a.target.hp > 0 ? [a.target] : [];
     case 'self':
       return a.actor.hp > 0 ? [a.actor] : [];
@@ -4906,8 +4908,10 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
       // like Recall the Blades: DECISIONS #492, #552)
       const lead = heroOf(sd);
       const fanned = lead && stacks(lead, 'fanned') > 0 && aimsOnlyDaggers(cd);
+      // (nor for the Obsidian Blade under Blade Sweep: it strikes every enemy, DECISIONS #561)
+      const swept = lead && stacks(lead, 'bladesweep') > 0 && cd.tags?.includes(BLADE_TAG) === true;
       const foes = legalFoes(r, side, cd);
-      for (const t of fanned ? foes.slice(0, 1) : foes)
+      for (const t of fanned || swept ? foes.slice(0, 1) : foes)
         plays.push({ type: 'play', card: c.id, target: t.id });
     } else
       for (const t of sd.units)

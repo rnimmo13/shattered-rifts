@@ -380,7 +380,7 @@ export const STATUS_INFO: Record<
     name: 'Blade Sweep',
     glyph: '⟷',
     tone: 'good',
-    text: 'Your Obsidian Blade strikes every enemy instead of one.',
+    text: 'Your Obsidian Blade strikes every enemy instead of one, so it needs no aiming.',
   },
   bladeecho: {
     name: 'Blade Echo',
