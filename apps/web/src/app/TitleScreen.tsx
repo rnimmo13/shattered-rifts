@@ -21,6 +21,7 @@ import { stagesCleared } from '../pvp/vault';
 import { StoreIcon } from './StoreIcon';
 import { HomeLinks } from './HomeLinks';
 import { PlayerChip } from './PlayerChip';
+import { SettingsButton } from '../ui/SettingsButton';
 import { HERO_COLOR } from '../art/emblems';
 import { HeroShowcase } from './HeroShowcase';
 import { getHero, rememberHero } from './heroChoice';
@@ -91,7 +92,10 @@ export function TitleScreen() {
     <main className="home" style={{ '--accent': color } as CSSProperties}>
       <div className="home__bar">
         <span className="home__eyebrow">Friends alpha · working title</span>
-        <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
+        <span className="home__barEnd">
+          <SettingsButton />
+          <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
+        </span>
       </div>
 
       <div className="home__body">

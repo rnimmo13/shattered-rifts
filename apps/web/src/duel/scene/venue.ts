@@ -189,7 +189,23 @@ export function loadVenueArt(id: VenueId): Promise<VenueArt | null> {
 }
 
 /** A painted skyline backdrop: sky gradient, then the Riftwalker's card-art scene scaled up, then a haze at the horizon. */
+// (painted once per look and kept between fights: DECISIONS #572)
+const keptWalls = new Map<string, HTMLCanvasElement>();
 export function sceneWall(art: SceneArt): HTMLCanvasElement {
+  const key = JSON.stringify(art);
+  let c = keptWalls.get(key);
+  if (!c) {
+    c = paintSceneWall(art);
+    keptWalls.set(key, c);
+    // (about 8 MB each: only the last two are kept)
+    for (const old of keptWalls.keys()) {
+      if (keptWalls.size <= 2) break;
+      keptWalls.delete(old);
+    }
+  }
+  return c;
+}
+function paintSceneWall(art: SceneArt): HTMLCanvasElement {
   const W = FULL_W;
   const H = floorTop + PAD_Y + 40;
   const c = makeCanvas(W, H);

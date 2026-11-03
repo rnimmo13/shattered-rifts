@@ -5,7 +5,10 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Fewer stutters:** card art is painted ahead of time instead of the moment a card is first drawn, painted effects are prepared before they first play, and a fight opens faster after the first one. **A performance report** in Settings records a while of play and gives a short report of any stutters to copy and send in.
+- **A Settings menu,** from the title screen, the run's bar and a fight's top bar: Sound and Volume, Graphics quality (High or Low), Effects (Full or Reduced), Fullscreen, Tips, and Show every tip again. It replaces the fight's Tips, Sound and Graphics buttons, and a change applies at once.
 - **Graphics quality: High or Low.** A new button in a fight's top bar. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same; High is the full look and stays the default.
+- **Lighter fight animations:** painted effects move as clipped strips, enemy intent badges bob without changing layout, and shields pulse without redrawing blurred shadows. Busy turns cap overlapping effects to reduce stutter.
 - **Every Uncommon has its own effect:** all 371 Uncommon cards play their own painted animation when played, as the Rares do. **The Swarmwright has its own crest** (four machines in a diamond).
 - **The Overclocker is now the Swarmwright:** the Engineer's third Ascendancy has a 4th companion slot, the only class with one (four Light machines, or a Heavy and two Light, or a Colossal and one Light). Its companions gain 1 Primed at the start of each turn (was 2). A run that took the Overclocker carries on as the Swarmwright.
 - **Every Rare has its own effect:** all 286 Rare cards play their own painted animation when played, on their target, on the hero, or across the whole enemy line, so the Rares no longer look alike.

@@ -1315,6 +1315,50 @@ export function cardArtUrl(def: CardDef): string {
   return u;
 }
 
+/**
+ * Paints these cards' art ahead of time, one card at a time when the page is idle, and compresses it off the main thread
+ * (canvas.toBlob), so a card drawn into the hand for the first time shows at once instead of stalling a frame while it is
+ * painted and encoded (DECISIONS #572). Safe to call again; returns a function that stops what is still waiting.
+ */
+export function prewarmCardArt(defs: readonly CardDef[]): () => void {
+  const queue = defs.filter((d, i) => !urlCache.has(d.id) && defs.findIndex((x) => x.id === d.id) === i);
+  let stopped = false;
+  type Deadline = { timeRemaining: () => number; didTimeout: boolean };
+  type Idle = (cb: (d?: Deadline) => void, o?: { timeout: number }) => number;
+  const idle: Idle =
+    typeof window !== 'undefined' && 'requestIdleCallback' in window
+      ? (cb, o) => (window as unknown as { requestIdleCallback: Idle }).requestIdleCallback(cb, o)
+      : (cb) => window.setTimeout(cb, 50);
+  const next = (d?: Deadline): void => {
+    if (stopped) return;
+    // (a card takes a few milliseconds to paint: wait for an idle moment with room for it, unless it has waited too long)
+    if (d && !d.didTimeout && d.timeRemaining() < 8) {
+      idle(next, { timeout: 1000 });
+      return;
+    }
+    const def = queue.shift();
+    if (!def) return;
+    if (urlCache.has(def.id)) {
+      idle(next, { timeout: 500 });
+      return;
+    }
+    const win = cardArt(def).window;
+    win.toBlob(
+      (blob) => {
+        // (a card drawn meanwhile was painted at once: keep that one)
+        if (blob && blob.size > 64 && !urlCache.has(def.id)) urlCache.set(def.id, URL.createObjectURL(blob));
+        idle(next, { timeout: 500 });
+      },
+      'image/webp',
+      0.88,
+    );
+  };
+  idle(next, { timeout: 500 });
+  return () => {
+    stopped = true;
+  };
+}
+
 const avatarCache = new Map<string, HTMLCanvasElement>();
 /** A standing figure for a Riftwalker or enemy: a cut-out like a monster's, painted in a realm's colours. */
 export function avatarCutout(kind: Archetype, realm: Realm, seedKey: string): HTMLCanvasElement {

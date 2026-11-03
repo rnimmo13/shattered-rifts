@@ -14,9 +14,10 @@ export interface Spot {
 }
 
 /** No more than this many at once: a many-hit turn drops the extras rather than slowing the screen. */
-const MAX_LIVE = 40;
+const MAX_LIVE = 12;
 /** The frame at its fullest, which is all that shows when nothing may move. */
-const PEAK_AT = '60%';
+const PEAK_FRAME = 3;
+const FRAME_COUNT = 6;
 
 const fxUrl = (id: FxId): string => `${import.meta.env.BASE_URL}art/fx/${id}.png`;
 
@@ -37,12 +38,43 @@ const room = (): boolean => fxLayer().childElementCount < MAX_LIVE;
 const speed = (): number => Math.max(0.1, getBaseSpeed());
 export const fxStill = (): boolean => prefersReducedMotion() || loadEffectsMode() === 'reduced';
 
+/**
+ * Fetches a strip and decodes it ahead of time, keeping the decoded picture alive (DECISIONS #572): a browser fetches an
+ * <img> early but only decodes it the first time it is drawn, which is a stall on the frame an effect first plays. The newest
+ * WARM_MAX are kept; an older one is let go (and decoded again if it plays).
+ */
+// (a decoded 6-frame strip is about 1 MB of memory: the shared strips and one deck's Rares and Uncommons fit well under this)
+const WARM_MAX = 80;
+const warm = new Map<string, HTMLImageElement>();
+/** the shared strips (hits, buffs, debuffs) play in every fight: they are kept for good, and only card strips make way */
+const pinned = new Map<string, HTMLImageElement>();
+function warmUp(url: string, keep = false): void {
+  if (pinned.has(url)) return;
+  const had = warm.get(url);
+  if (had) {
+    // (seen again: it moves to the newest place, so the cards of the deck in hand are the last to go)
+    warm.delete(url);
+    warm.set(url, had);
+    return;
+  }
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+  (keep ? pinned : warm).set(url, img);
+  // (a strip that fails to load or decode just plays cold)
+  void img.decode().catch(() => undefined);
+  for (const old of warm.keys()) {
+    if (warm.size <= WARM_MAX) break;
+    warm.delete(old);
+  }
+}
+
 /** Asks for the strips ahead of time, so the first of each does not arrive late. */
 let preloaded = false;
 export function preloadFx(): void {
   if (preloaded) return;
   preloaded = true;
-  for (const id of FX_IDS) new Image().src = fxUrl(id);
+  for (const id of FX_IDS) warmUp(fxUrl(id), true);
 }
 
 /** Clears whatever is still playing (the fight has closed). */
@@ -98,14 +130,11 @@ export function loadCardFx(): Promise<void> {
 }
 
 /** Asks ahead for the effects of these cards only (the deck in a fight): all of them together are far too big to fetch at once. */
-const cardFxAsked = new Set<string>();
+// (asked again each fight: one let go since is warmed again, and one still warm moves to the newest place)
 export async function preloadCardFx(cards: Iterable<string>): Promise<void> {
   await loadCardFx();
-  for (const card of cards) {
-    const id = baseCard(card);
-    if (!cardFx[id] || cardFxAsked.has(id)) continue;
-    cardFxAsked.add(id);
-    new Image().src = cardFxUrl(id);
+  for (const card of new Set([...cards].map(baseCard))) {
+    if (cardFx[card]) warmUp(cardFxUrl(card));
   }
 }
 
@@ -134,23 +163,32 @@ function playStrip(url: string, at: Spot, o: StripOpts): void {
   el.style.top = `${at.y}px`;
   el.style.width = `${size}px`;
   el.style.height = `${size * (o.squash ?? 1)}px`;
-  el.style.backgroundImage = `url("${url}")`;
   el.style.transform = `translate(-50%, -50%) rotate(${o.angle ?? 0}deg)${o.flip ? ' scaleX(-1)' : ''}`;
+  // Clip one frame of a wide strip. Moving the strip with a transform lets the browser
+  // composite the animation instead of repainting a background on every frame.
+  const strip = document.createElement('i');
+  strip.className = 'fxs__strip';
+  strip.style.backgroundImage = `url("${url}")`;
+  el.appendChild(strip);
   fxLayer().appendChild(el);
   const done = (): void => el.remove();
   if (fxStill()) {
-    el.style.backgroundPositionX = PEAK_AT;
+    strip.style.transform = `translateX(-${(PEAK_FRAME / FRAME_COUNT) * 100}%)`;
     el.animate([{ opacity: 0 }, { opacity: 0.9 }, { opacity: 0 }], { duration: 260 }).onfinish =
       done;
     return;
   }
   const duration = (o.dur ?? 460) / speed();
-  // (six frames at 0%, 20%... 100% of the strip; the last ones fade too, as a few of them end with something still standing)
-  el.animate([{ backgroundPositionX: '0%' }, { backgroundPositionX: '120%' }], {
-    duration,
-    easing: 'steps(6, end)',
-    fill: 'forwards',
-  });
+  // Hold each of the six frames for an equal beat, including the last one. Never
+  // slide between frames or step past the strip into an empty seventh frame.
+  strip.animate(
+    Array.from({ length: FRAME_COUNT + 1 }, (_, i) => ({
+      transform: `translateX(-${(Math.min(i, FRAME_COUNT - 1) / FRAME_COUNT) * 100}%)`,
+      offset: i / FRAME_COUNT,
+      easing: 'steps(1, end)',
+    })),
+    { duration, fill: 'forwards' },
+  );
   el.animate([{ opacity: 1 }, { opacity: 1, offset: 0.68 }, { opacity: 0 }], {
     duration,
     fill: 'forwards',

@@ -47,19 +47,16 @@ import {
 import { COMBAT_DB, RIFTWALKERS, classTrait } from '@sr/content/v2';
 import { BattlefieldScene } from '../duel/scene/BattlefieldScene';
 import type { VenueId } from '../duel/scene/venue';
-import {
-  loadEffectsMode,
-  loadGraphicsQuality,
-  profileFor,
-  saveGraphicsQuality,
-  type GraphicsQuality,
-} from '../duel/effects';
+import { loadEffectsMode, loadGraphicsQuality, profileFor } from '../duel/effects';
+import { useSettingsChanged, type SettingKind } from '../app/settings';
+import { perfNote } from '../app/perfReport';
+import { SettingsButton } from '../ui/SettingsButton';
 import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
-import { getSound, play, setSound } from '../audio/sfx';
+import { play } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
 import { handCardWidth, portraitHandBand } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
-import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
+import { heroFigure, heroProp, hoverOf, prewarmCardArtV2, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
 import { WardenRule } from './WardenRule';
 import { playAnywayHelps, scrapChoices } from './scrapChoices';
@@ -98,7 +95,7 @@ import { PickModal } from './PickModal';
 import { isHandPick, pickStep, pickVerb, premeditateIn, prompt as pickPrompt } from './handPick';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
-import { loadSeen, loadTipsOn, nextTip, saveSeen, saveTipsOn } from './tips';
+import { loadSeen, loadTipsOn, nextTip, saveSeen } from './tips';
 import { AuraList, LumenCounter, ReservesCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
 import { ShieldBubble } from './ShieldBubble';
@@ -549,7 +546,6 @@ export function FightView(props: {
   }, [flourishes]);
   const [result, setResult] = useState<FightResult | null>(null);
   const speed = DEFAULT_SPEED;
-  const [sound, setSoundOn] = useState(getSound().on);
   const [pile, setPile] = useState<{ title: string; cards: CardDef[] } | null>(null);
   const [sceneObj, setSceneObj] = useState<BattlefieldScene | null>(null);
   const [, bump] = useState(0);
@@ -593,7 +589,14 @@ export function FightView(props: {
   const [live, setLive] = useState<CombatState | null>(null);
   const [seenTips, setSeenTips] = useState<Set<string>>(loadSeen);
   const [tipsOn, setTipsOn] = useState(loadTipsOn);
-  const [graphics, setGraphics] = useState<GraphicsQuality>(loadGraphicsQuality);
+  // a change in the Settings menu applies at once, mid-fight (DECISIONS #571)
+  const applySettings = useCallback((kind: SettingKind) => {
+    if (kind === 'tips') {
+      setTipsOn(loadTipsOn());
+      setSeenTips(loadSeen());
+    } else scene.current?.setProfile(profileFor(loadEffectsMode(), loadGraphicsQuality()));
+  }, []);
+  useSettingsChanged(applySettings);
 
   // --- floating numbers ------------------------------------------------------------------------------
   const float = useCallback((unitId: string, text: string, tone: Float['tone']) => {
@@ -615,10 +618,14 @@ export function FightView(props: {
   }, []);
 
   // --- painted effects ----------------------------------------------------------------------------
+  const stopArtWarm = useRef<(() => void) | null>(null);
   useEffect(() => {
     preloadFx();
     void loadCardFx();
-    return clearFx;
+    return () => {
+      clearFx();
+      stopArtWarm.current?.();
+    };
   }, []);
   /** Where a unit stands on the page, and how big an effect on it is. */
   const spotOf = useCallback((unitId: string): (Spot & { size: number }) | null => {
@@ -692,6 +699,14 @@ export function FightView(props: {
         sc.fighters.sync(specsFrom(db, d, mySide, skinOf.current, modeRef.current));
       const unitOf = (id: string) =>
         d.sides.a.units.concat(d.sides.b.units).find((u) => u.id === id);
+      // (what is on screen, for a performance report's stalls: DECISIONS #572)
+      perfNote(
+        e.type === 'play'
+          ? `shows ${e.side === mySide ? 'your' : 'their'} ${db.cards[e.def]?.name ?? 'card'}`
+          : e.type === 'turnStart'
+            ? `${e.side === mySide ? 'your' : 'their'} turn starts`
+            : `shows ${e.type}`,
+      );
       switch (e.type) {
         case 'turnStart': {
           reduceEvent(db, d, e);
@@ -1273,6 +1288,8 @@ export function FightView(props: {
     // real artwork (if any was supplied) is loaded before the first figure or card is drawn; the weapons load alongside and are
     // used once they are in (an attack before then keeps its drawn effects)
     void loadWeaponArt();
+    const opened = performance.now();
+    perfNote('a fight is opening');
     preloadAllArt()
       .then(() =>
         BattlefieldScene.create(
@@ -1282,6 +1299,7 @@ export function FightView(props: {
         ),
       )
       .then((s) => {
+        perfNote(`the battlefield is built (${Math.round(performance.now() - opened)} ms after opening)`);
         if (cancelled) {
           s.destroy();
           return;
@@ -1325,7 +1343,11 @@ export function FightView(props: {
         }
         {
           const me = from.sides[mySide];
-          void preloadCardFx([...me.hand, ...me.draw, ...me.discard].map((c) => c.card));
+          const ids = [...me.hand, ...me.draw, ...me.discard].map((c) => c.card);
+          void preloadCardFx(ids);
+          // (each card's painted art, in idle moments, before it is first drawn: DECISIONS #572)
+          stopArtWarm.current?.();
+          stopArtWarm.current = prewarmCardArtV2(ids.flatMap((id) => db.cards[id] ?? []));
         }
         if (resumedAt > 0 || finishing) {
           game.current = { state: from, display: clone(from) };
@@ -1458,7 +1480,12 @@ export function FightView(props: {
       const g = game.current;
       if (!g || g.state.winner || cancelledRef.current) return false;
       try {
+        // (the time each step takes goes in a performance report, if one is recording: DECISIONS #572)
+        const played =
+          a.type === 'play' ? g.state.sides[seat].hand.find((c) => c.id === a.card)?.card : undefined;
+        const t0 = performance.now();
         const r = applyAction(db, g.state, a);
+        const t1 = performance.now();
         g.state = r.state;
         movesRef.current.push({ seat, action: a });
         setLive(r.state);
@@ -1468,12 +1495,17 @@ export function FightView(props: {
           show(g.display);
         }
         setLegal(legalFor(r.state));
+        const t2 = performance.now();
         setSelected(null);
         setAimPotion(null);
         setReleasing(null);
         if (!history) enqueue(r.events, r.state, pvp ? seat !== mySide : undefined);
         // a campaign fight keeps every move, so a reload can resume it
         if (!history && !pvp) onMove?.(a);
+        if (!history)
+          perfNote(
+            `${a.type}${played ? ` ${db.cards[played]?.name ?? played}` : ''}: rules ${(t1 - t0).toFixed(1)} ms, legal moves ${(t2 - t1).toFixed(1)} ms, events ${r.events.length}, saving ${(performance.now() - t2).toFixed(1)} ms`,
+          );
         return true;
       } catch (err) {
         console.warn('[fight] illegal action', err);
@@ -2152,46 +2184,10 @@ export function FightView(props: {
       {props.topExtra}
     </>
   );
+  // (sound, tips and graphics are in the Settings menu now: DECISIONS #571)
   const fightOpts = (
     <div className="fight__opts">
-      <button
-        className="btn btn--small btn--ghost"
-        aria-pressed={tipsOn}
-        onClick={() => {
-          saveTipsOn(!tipsOn);
-          setTipsOn(!tipsOn);
-        }}
-      >
-        <span>{tipsOn ? 'Tips on' : 'Tips off'}</span>
-      </button>
-      <button
-        className="btn btn--small btn--ghost"
-        aria-pressed={sound}
-        onClick={() => {
-          setSound({ on: !sound });
-          setSoundOn(!sound);
-        }}
-      >
-        <span>{sound ? 'Sound on' : 'Sound off'}</span>
-      </button>
-      {/* (Low keeps the board still at rest, for a machine without a graphics card: DECISIONS #570) */}
-      <button
-        className="btn btn--small btn--ghost"
-        aria-pressed={graphics === 'low'}
-        {...tipAttrs({
-          kicker: 'Graphics quality',
-          title: graphics === 'low' ? 'Low' : 'High',
-          text: 'High is the full look. Low stops the drifting fog, floating motes and other motion at rest, so the game runs smoothly on a computer that is slow to draw. Cards, blows and effects play the same on both.',
-        })}
-        onClick={() => {
-          const next: GraphicsQuality = graphics === 'low' ? 'high' : 'low';
-          saveGraphicsQuality(next);
-          setGraphics(next);
-          scene.current?.setProfile(profileFor(loadEffectsMode(), next));
-        }}
-      >
-        <span>{graphics === 'low' ? 'Graphics: Low' : 'Graphics: High'}</span>
-      </button>
+      <SettingsButton />
     </div>
   );
 

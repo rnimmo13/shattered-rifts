@@ -1,0 +1,148 @@
+/* The Settings menu (DECISIONS #571). No backdrop blur: it would be costly on a computer without a graphics card, the very
+   one that comes here for the Low setting. */
+.settings {
+  position: fixed;
+  inset: 0;
+  /* (over the painted effects (900) and the Ascend moment (950), under the tips (1000)) */
+  z-index: 960;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(4 5 11 / 0.8);
+}
+.settings__panel {
+  display: grid;
+  gap: 1.1rem;
+  width: min(36rem, 100%);
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  padding: 1.2rem 1.4rem 1.4rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgb(20 32 74 / 0.98), rgb(8 10 20 / 0.99)) padding-box,
+    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, var(--c-violet)) border-box;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.6);
+}
+.settings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.settings__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: var(--c-gold-light);
+}
+.settings__group {
+  display: grid;
+  gap: 0.7rem;
+}
+.settings__group h3 {
+  margin: 0;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--c-gold-light);
+}
+.settings__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.settings__label {
+  display: grid;
+  gap: 0.15rem;
+  flex: 1 1 14rem;
+  max-width: 36ch;
+}
+.settings__label small {
+  color: var(--c-text-dim);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.settings__control {
+  flex: 0 0 auto;
+}
+.settings__choice {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+.settings__range {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.settings__range input {
+  width: 10rem;
+  accent-color: var(--c-gold-light);
+}
+.settings__range output {
+  min-width: 3ch;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text-dim);
+}
+@media (max-width: 30rem) {
+  .settings__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .settings__range input {
+    flex: 1;
+  }
+}
+
+/* the performance report (DECISIONS #572): the pill while recording, and the report in the menu */
+.perfpill {
+  position: fixed;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 955;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.45rem 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(10 12 24 / 0.92);
+  color: var(--c-text);
+  font-size: 0.85rem;
+}
+.perfpill__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #ff4a5c;
+}
+.settings__report {
+  display: grid;
+  gap: 0.5rem;
+}
+.settings__report textarea {
+  width: 100%;
+  min-height: 12rem;
+  resize: vertical;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(0 0 0 / 0.35);
+  color: var(--c-text);
+  font: 0.75rem/1.4 ui-monospace, Consolas, monospace;
+}
+.settings__reportRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}/* (a hint beside a button) */
+.settings__hint {
+  color: var(--c-text-dim);
+  font-size: 0.8rem;
+}

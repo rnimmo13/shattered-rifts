@@ -2,6 +2,8 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { ART_READY_EVENT } from '../art/assets';
 import { BuildBadge } from '../ui/BuildBadge';
 import { TooltipLayer } from '../ui/Tooltip';
+import { SettingsPanel } from '../ui/SettingsPanel';
+import { PerfRecorder } from '../ui/PerfRecorder';
 import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { CreditsScreen } from './CreditsScreen';
@@ -58,6 +60,9 @@ export function App() {
       <Screens key={atHome ? artVersion : 0} hash={hash} />
       <BuildBadge />
       <TooltipLayer />
+      {/* (one Settings menu for every screen, opened by a Settings button: DECISIONS #571) */}
+      <SettingsPanel />
+      <PerfRecorder />
     </>
   );
 }

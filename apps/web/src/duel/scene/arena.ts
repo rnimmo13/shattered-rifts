@@ -213,7 +213,31 @@ export async function loadArena(id: VenueId): Promise<ArenaPack | null> {
  * floorTextures). The tile is laid on the floor plane and run through the live light: a bright pool in the middle,
  * a band of coloured light along the Rift line, haze toward the far edge.
  */
+// (the floor is built pixel by pixel, the costliest part of opening a fight: built once per picture and layout and kept between
+// fights, DECISIONS #572; a canvas has no lasting name, so it is built each time)
+const keptFloors = new Map<string, HTMLCanvasElement>();
 export function tiledFloor(
+  img: HTMLImageElement | HTMLCanvasElement,
+  W: number,
+  H: number,
+  half: number,
+  look: { tone: [number, number, number]; rift: [number, number, number]; tile: number },
+): HTMLCanvasElement {
+  if (!(img instanceof HTMLImageElement) || !img.src) return buildTiledFloor(img, W, H, half, look);
+  const key = JSON.stringify([img.src, W, H, half, look]);
+  let c = keptFloors.get(key);
+  if (!c) {
+    c = buildTiledFloor(img, W, H, half, look);
+    keptFloors.set(key, c);
+    // (about 3 MB each: only the last two arenas are kept, which covers fighting on in the same place)
+    for (const old of keptFloors.keys()) {
+      if (keptFloors.size <= 2) break;
+      keptFloors.delete(old);
+    }
+  }
+  return c;
+}
+function buildTiledFloor(
   img: HTMLImageElement | HTMLCanvasElement,
   W: number,
   H: number,

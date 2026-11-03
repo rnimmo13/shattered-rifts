@@ -26,6 +26,13 @@
   flex-wrap: wrap;
   min-height: 2.4rem;
 }
+/* the Settings button and the player chip, together at the bar's right (DECISIONS #571) */
+.home__barEnd {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
 .home__eyebrow {
   font-size: 0.9rem;
   letter-spacing: 0.3em;

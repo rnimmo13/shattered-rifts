@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.173.0',
+    date: '2026-11-03',
+    title: 'Settings, and fewer stutters',
+    summary: 'A Settings menu on every screen, fewer stutters, and a performance report to send in if the game still stutters.',
+    notes: [
+      { kind: 'new', text: 'A Settings menu, from the title screen, the run\'s bar and a fight\'s top bar: Sound and Volume, Graphics quality, Effects, Fullscreen, Tips, and Show every tip again. It replaces the fight\'s Tips, Sound and Graphics buttons.' },
+      { kind: 'new', text: 'Settings, Performance report: record a while of play and copy a short report of any stutters to send in.' },
+      { kind: 'changed', text: 'Fewer stutters: card art is painted ahead of time, painted effects are prepared before they first play, effects move more lightly and at most 12 play at once, and a fight opens faster after the first one.' },
+    ],
+  },
+  {
     version: '0.172.0',
     date: '2026-11-03',
     title: 'Every Uncommon has its own effect',

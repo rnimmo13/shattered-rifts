@@ -11,6 +11,7 @@ import { bespokeHero, heroProp } from '../art/heroFigures';
 import {
   avatarCutout,
   cardArtUrl,
+  prewarmCardArt,
   type ArtCard,
   type Archetype,
   type Realm,
@@ -393,6 +394,11 @@ export function cardArtSpec(c: CardDef): ArtCard {
 
 /** The painted art window for a v2 card (a data URL): the placeholder, and what shows if a real picture fails to load. */
 export const paintedCardArt = (c: CardDef): string => cardArtUrl(cardArtSpec(c));
+
+/** Paints the art of these cards in the background (those with no real picture), before they are first drawn (DECISIONS #572). */
+export function prewarmCardArtV2(cards: readonly CardDef[]): () => void {
+  return prewarmCardArt(cards.filter((c) => !realCardArt(c.id)).map(cardArtSpec));
+}
 
 /** The art window for a v2 card: its real picture if there is one, else the painted one. */
 export function cardArtV2(c: CardDef): string {

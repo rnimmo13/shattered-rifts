@@ -64,6 +64,7 @@ import { venueFor } from '../duel/scene/venue';
 import { SceneBackdrop } from './SceneBackdrop';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { tipAttrs } from '../ui/tip';
+import { SettingsButton } from '../ui/SettingsButton';
 import { Toast } from '../ui/Toast';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
@@ -960,6 +961,7 @@ function RunBar(props: {
         >
           <span>Arena</span>
         </a>
+        <SettingsButton />
         <button className="btn btn--small runbar__deck" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
         </button>

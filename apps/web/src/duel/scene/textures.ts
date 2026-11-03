@@ -14,6 +14,17 @@ export const PAD_X = 560;
 export const PAD_Y = 320;
 export const FULL_W = stage.width + PAD_X * 2;
 
+/**
+ * The painted textures are kept after the first fight (DECISIONS #572): painting them all as a fight opened was a stall of
+ * about half a second, every fight. Each is the same picture every time for the same arguments, so it is painted once; a
+ * scene makes its own Pixi texture from it (and destroys that, not the canvas, when it closes).
+ */
+const keptTextures = new Map<string, unknown>();
+function kept<T>(key: string, paint: () => T): T {
+  if (!keptTextures.has(key)) keptTextures.set(key, paint());
+  return keptTextures.get(key) as T;
+}
+
 export function makeCanvas(w: number, h: number): HTMLCanvasElement {
   const c = document.createElement('canvas');
   c.width = Math.max(1, Math.round(w));
@@ -99,6 +110,9 @@ function fillPoly(g: CanvasRenderingContext2D, poly: [number, number][]): void {
 }
 
 export function skyTexture(): HTMLCanvasElement {
+  return kept('sky', () => paintSkyTexture());
+}
+function paintSkyTexture(): HTMLCanvasElement {
   const W = FULL_W;
   const H = 640;
   const c = makeCanvas(W, H);
@@ -235,6 +249,9 @@ export function skyTexture(): HTMLCanvasElement {
 
 /** Floating rock islands drifting in the sky (their own layer so they can drift and parallax). */
 export function shardsTexture(): HTMLCanvasElement {
+  return kept('shards', () => paintShardsTexture());
+}
+function paintShardsTexture(): HTMLCanvasElement {
   const W = FULL_W;
   const H = 520;
   const c = makeCanvas(W, H);
@@ -286,6 +303,9 @@ export function shardsTexture(): HTMLCanvasElement {
 
 /** Broken cathedral ruins on the far horizon, two depth layers, with windows lit by the rift. */
 export function ruinsTexture(): HTMLCanvasElement {
+  return kept('ruins', () => paintRuinsTexture());
+}
+function paintRuinsTexture(): HTMLCanvasElement {
   const W = FULL_W;
   const H = 360;
   const c = makeCanvas(W, H);
@@ -571,6 +591,9 @@ export interface FloorTextures {
 }
 
 export function floorTextures(): FloorTextures {
+  return kept('floor', () => paintFloorTextures());
+}
+function paintFloorTextures(): FloorTextures {
   const HALF = 2;
   const W = FULL_W / HALF;
   const H = Math.ceil((stage.height + PAD_Y - floorTop) / HALF);
@@ -735,6 +758,9 @@ export function floorTextures(): FloorTextures {
 
 /** A tileable cloud texture; alpha carries the shape. Tint it on the sprite. */
 export function fogTexture(seed: number, base = 6, fadeV = false): HTMLCanvasElement {
+  return kept(`fog:${seed}:${base}:${fadeV}`, () => paintFogTexture(seed, base, fadeV));
+}
+function paintFogTexture(seed: number, base = 6, fadeV = false): HTMLCanvasElement {
   const size = 512;
   const c = makeCanvas(size, size);
   const g = ctx2d(c);
@@ -762,6 +788,9 @@ export function fogTexture(seed: number, base = 6, fadeV = false): HTMLCanvasEle
 /** A soft round glow (white; tint on the sprite). */
 /** A dark blob with a firm core and a short falloff: the contact shadow under a figure's feet. */
 export function contactTexture(size = 128): HTMLCanvasElement {
+  return kept(`contact:${size}`, () => paintContactTexture(size));
+}
+function paintContactTexture(size = 128): HTMLCanvasElement {
   const c = makeCanvas(size, size);
   const g = ctx2d(c);
   const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
@@ -775,6 +804,9 @@ export function contactTexture(size = 128): HTMLCanvasElement {
 }
 
 export function glowTexture(size = 128, hardness = 0): HTMLCanvasElement {
+  return kept(`glow:${size}:${hardness}`, () => paintGlowTexture(size, hardness));
+}
+function paintGlowTexture(size = 128, hardness = 0): HTMLCanvasElement {
   const c = makeCanvas(size, size);
   const g = ctx2d(c);
   const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
@@ -791,6 +823,9 @@ export function glowTexture(size = 128, hardness = 0): HTMLCanvasElement {
 
 /** Dark edges and a heavier bottom, so the eye stays on the centre of the board (scaled to the screen). */
 export function vignetteTexture(): HTMLCanvasElement {
+  return kept('vignette', () => paintVignetteTexture());
+}
+function paintVignetteTexture(): HTMLCanvasElement {
   const W = stage.width;
   const H = stage.height;
   const c = makeCanvas(W, H);

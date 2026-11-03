@@ -195,7 +195,9 @@ export class BattlefieldScene {
     app.canvas.style.height = '100%';
     app.stage.addChild(this.world);
 
-    const tex = (c: HTMLCanvasElement) => Texture.from(c);
+    // (a texture of this scene's own, never Pixi's shared one: the painted canvases are kept between fights, DECISIONS #572,
+    // and a scene that closes destroys its textures, which must not take another scene's with them)
+    const tex = (c: HTMLCanvasElement) => Texture.from(c, true);
     this.glowTex = tex(glowTexture(128));
 
     // --- backdrop ---
@@ -333,7 +335,7 @@ export class BattlefieldScene {
     y: number,
     height: number,
   ): TilingSprite {
-    const tex = Texture.from(fogTexture(seed, 6, true));
+    const tex = Texture.from(fogTexture(seed, 6, true), true);
     tex.source.style.addressMode = 'repeat';
     const f = new TilingSprite({ texture: tex, width: FULL_W, height });
     f.x = -PAD_X;
