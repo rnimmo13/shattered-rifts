@@ -2232,3 +2232,153 @@ img.mapnode__pic {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---- painted scenes behind a stop (SceneBackdrop.tsx): an event's place, the merchant, the shrine ---- */
+.run:has(.scenebg) {
+  isolation: isolate;
+}
+.scenebg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.scenebg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* the picture's subject stands left of centre: keep it in view on a narrow screen */
+  object-position: 32% 40%;
+  opacity: 0;
+  transform: scale(1.03);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 6s var(--ease-out);
+}
+.scenebg--in img {
+  opacity: 1;
+  transform: scale(1);
+}
+/* a scrim, so the panels read over the picture */
+.scenebg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(6 5 14 / 0.55),
+      transparent 22%,
+      transparent 70%,
+      rgb(6 5 14 / 0.85)
+    ),
+    rgb(6 5 14 / 0.62);
+}
+.scenebg--dim::after {
+  background:
+    linear-gradient(180deg, rgb(6 5 14 / 0.5), transparent 25%, transparent 70%, rgb(6 5 14 / 0.8)),
+    rgb(6 5 14 / 0.74);
+}
+/*
+ * An event over its picture. The words stand on the picture's darkened side with no box around them, as part of the scene: on a
+ * wide screen down the quiet right of it, starting a little inside the fade so they overlap the art, centred top to bottom; on a
+ * narrower one the picture is shown clear across the top and fades to dark, and the event rises over the foot of the fade.
+ */
+.scenebg--side {
+  background: #06050e;
+}
+.scenebg--side img {
+  height: 64vh;
+  object-position: 30% 45%;
+}
+.scenebg--side::after {
+  background: linear-gradient(
+    180deg,
+    rgb(6 5 14 / 0.35) 0%,
+    transparent 14%,
+    transparent 26%,
+    rgb(6 5 14 / 0.78) 42%,
+    #06050e 58%
+  );
+}
+.scenebg--side + .stage-panel {
+  justify-self: center;
+  width: min(42rem, 100%);
+  margin-top: max(9rem, 33vh);
+  justify-items: stretch;
+  text-align: left;
+  gap: 1.1rem;
+}
+.scenebg--side + .stage-panel .stage-panel__title {
+  justify-self: start;
+  font-size: clamp(1.7rem, 4.6vw, 2.6rem);
+  line-height: 1.15;
+  text-shadow:
+    0 2px 14px rgb(0 0 0 / 0.9),
+    0 0 26px rgb(143 91 255 / 0.45);
+}
+/* a thin gold rule under the title, fading out to the right */
+.scenebg--side + .stage-panel .stage-panel__title::after {
+  content: '';
+  display: block;
+  width: min(12rem, 60%);
+  height: 2px;
+  margin-top: 0.7rem;
+  background: linear-gradient(90deg, var(--c-gold-light), transparent);
+}
+.scenebg--side + .stage-panel .stage-panel__hint--event {
+  max-width: 38rem;
+  font-size: 1.12rem;
+  line-height: 1.7;
+  color: #efe6d6;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 0.95);
+}
+.scenebg--side + .stage-panel .eventopts {
+  width: 100%;
+}
+@media (min-width: 75rem) {
+  .scenebg--side img {
+    height: 100%;
+    object-position: 32% 40%;
+  }
+  .scenebg--side::after {
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgb(6 5 14 / 0.12) 38%,
+        rgb(6 5 14 / 0.7) 56%,
+        rgb(6 5 14 / 0.9) 70%,
+        rgb(6 5 14 / 0.94)
+      ),
+      linear-gradient(
+        180deg,
+        rgb(6 5 14 / 0.4),
+        transparent 18%,
+        transparent 80%,
+        rgb(6 5 14 / 0.6)
+      );
+  }
+  .scenebg--side + .stage-panel {
+    /* centred in the right 45% of the screen, so it always starts inside the picture's fade */
+    justify-self: end;
+    width: min(46rem, 40vw);
+    margin: 0 max(0px, calc((45vw - min(46rem, 40vw)) / 2 - clamp(0.8rem, 3vw, 2.5rem))) 0 0;
+    /* centred in the screen below the run's header (a long event grows past it and scrolls as before) */
+    min-height: calc(100dvh - 9rem);
+    align-content: center;
+  }
+  .scenebg--side + .stage-panel .stage-panel__hint--event {
+    font-size: clamp(1.12rem, 0.95vw, 1.3rem);
+  }
+  .scenebg--side + .stage-panel .stage-panel__title {
+    font-size: clamp(2rem, 2.4vw, 3rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scenebg img {
+    transition: none;
+    transform: none;
+  }
+}

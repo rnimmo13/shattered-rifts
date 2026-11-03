@@ -8,10 +8,10 @@ import {
   CACHE_STASH,
   CACHE_TRAP_CHANCE,
   CACHE_TRAP_HP_PCT,
-  ECHO_ENDURING,
+  ECHO_FALTERING,
   ECHO_FROM_TIER,
   ECHO_HP_PCT,
-  GHOST_ENDURING,
+  GHOST_FALTERING,
   LOOP_BOON_CHANCE,
   CROSSED_MERCHANT_CHANCE,
   CROSSED_OFFER_CHANCE,
@@ -137,8 +137,8 @@ export function LearnOdds() {
         for {CACHE_TRAP_HP_PCT}% of your Max HP, reach past it for a Wound, or disarm it for{' '}
         {CACHE_DISARM} shards); an open one gives a Boon, a rare card or {CACHE_STASH} shards. From
         Tier {ECHO_FROM_TIER} every map also has one Echo: a ghost with {ECHO_HP_PCT}% of a ghost
-        Warden&apos;s HP that loses at most {ECHO_ENDURING}% of it in a turn (a ghost Warden,{' '}
-        {GHOST_ENDURING}%), and pays as an Elite does (shards, potion and Boon chances), with one
+        Warden&apos;s HP. You start a fight with it Faltering for {ECHO_FALTERING} turns (a ghost
+        Warden, {GHOST_FALTERING}), and it pays as an Elite does (shards, potion and Boon chances), with one
         of its own cards for the card reward.
       </p>
 
@@ -155,8 +155,8 @@ export function LearnOdds() {
         being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
         Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
         usual HP at first; its HP and damage then grow with the tier like every
-        Warden&apos;s. From Tier {GHOST_ARENA_TIER} it starts from {GHOST_ARENA_HP_MULT}x, the HP
-        of an Arena fight, and grows from there. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
+        Warden&apos;s. From Tier {GHOST_ARENA_TIER} it takes the HP of an Arena fight
+        ({GHOST_ARENA_HP_MULT}x, grown with the tier), about 15% more, and grows from there. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
       </p>
 
       <h3>What a fight pays</h3>

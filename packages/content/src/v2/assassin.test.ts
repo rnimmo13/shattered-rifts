@@ -507,10 +507,45 @@ describe('the rest of the Silent’s tricks', () => {
       expect(foe(r, 1).hp).toBe(200 - 4);
     });
 
-    it('an Inked Dagger still asks: its Faltering needs one enemy', () => {
+    it('a Fanned Inked Dagger asks for no target, and its Faltering lands on every enemy (DECISIONS #552)', () => {
       const s = fight(['inked-knife']);
+      const plays = () => legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0');
+      expect(plays()).toHaveLength(2);
       hero(s).statuses.fanned = 1;
-      expect(legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0')).toHaveLength(2);
+      expect(plays()).toHaveLength(1);
+      const r = applyAction(db, s, plays()[0]!).state;
+      expect(foe(r, 0).hp).toBe(200 - 5);
+      expect(foe(r, 1).hp).toBe(200 - 5);
+      expect(foe(r, 0).statuses.faltering).toBe(1);
+      expect(foe(r, 1).statuses.faltering).toBe(1);
+    });
+
+    it('Fanned Recall the Blades asks for no target, and its Daggers hit every enemy (DECISIONS #552)', () => {
+      const s = fight(['recall-the-blades']);
+      s.sides.a.exhausted = [
+        { id: 'K1', card: 'sleeve-knife' },
+        { id: 'K2', card: 'inked-knife' },
+      ];
+      const plays = () => legalActions(db, s).filter((a) => a.type === 'play' && a.card === 'T0');
+      expect(plays()).toHaveLength(2);
+      hero(s).statuses.fanned = 1;
+      expect(plays()).toHaveLength(1);
+      const r = applyAction(db, s, plays()[0]!).state;
+      expect(foe(r, 0).hp).toBe(200 - 4 - 5);
+      expect(foe(r, 1).hp).toBe(200 - 4 - 5);
+      expect(foe(r, 1).statuses.faltering).toBe(1);
+    });
+
+    it('without Fanned, Recall the Blades still asks, and only the chosen enemy is hit', () => {
+      const s = fight(['recall-the-blades']);
+      s.sides.a.exhausted = [{ id: 'K1', card: 'inked-knife' }];
+      const at = legalActions(db, s).find(
+        (a) => a.type === 'play' && a.card === 'T0' && a.target === foe(s, 1).id,
+      )!;
+      const r = applyAction(db, s, at).state;
+      expect(foe(r, 0).hp).toBe(200);
+      expect(foe(r, 0).statuses.faltering ?? 0).toBe(0);
+      expect(foe(r, 1).hp).toBe(200 - 5);
     });
 
     it('Fanned shows every enemy, as it hits them all', () => {

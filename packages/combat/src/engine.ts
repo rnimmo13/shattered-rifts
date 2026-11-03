@@ -520,12 +520,6 @@ function applyDamage(
     addStatus(r, t, 'buffer', -1);
     lost = 0;
   }
-  // Enduring (a campaign ghost, DECISIONS #549): it loses at most this percent of its Max HP in any one turn, so no deck one-shots it
-  const enduring = stacks(t, 'enduring');
-  if (enduring > 0 && lost > 0) {
-    const room = Math.ceil((t.maxHp * enduring) / 100) - (t.lostTurn ?? 0);
-    lost = Math.max(0, Math.min(lost, room));
-  }
   // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
   const rise = t.rise?.[0];
   let rises = false;
@@ -539,7 +533,6 @@ function applyDamage(
     }
   }
   t.hp -= lost;
-  if (enduring > 0) t.lostTurn = (t.lostTurn ?? 0) + lost;
   r.ev.push({
     type: 'damage',
     source: source?.id ?? null,
@@ -1181,6 +1174,8 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
   const foes = r.s.sides[other(a.actor.side)].units.filter((u) => u.hp > 0);
   switch (sel) {
     case 'target':
+      // (Fanned: everything a Dagger aims at one enemy lands on them all, its Faltering as well as its damage, DECISIONS #552)
+      if (a.card?.tags?.includes(EDGE_TAG) && stacks(a.actor, 'fanned') > 0) return foes;
       return a.target && a.target.hp > 0 ? [a.target] : [];
     case 'self':
       return a.actor.hp > 0 ? [a.actor] : [];
@@ -4157,8 +4152,6 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (r.s.winner) return;
   // (DECISIONS #434) "this turn" for HP lost starts before the turn's own losses (Hangover, Seared), so they count for it
   sd.lostHpTurn = 0;
-  // (Enduring counts the HP lost since either side's turn began)
-  for (const u of [...r.s.sides.a.units, ...r.s.sides.b.units]) delete u.lostTurn;
   startOfTurn(r, side);
   if (r.s.winner) return;
   // the opposing Traps that wait for your turn to begin
@@ -4419,7 +4412,6 @@ function enemyPhase(r: Run): void {
   const sd = r.s.sides.b;
   r.s.active = 'b';
   r.s.turn++;
-  for (const u of [...r.s.sides.a.units, ...sd.units]) delete u.lostTurn;
   // (an Aura that answers once a round counts its round from here on this side, as a hero's from its turn: DECISIONS #542)
   r.s.sides.b.turnBegan = r.s.turn;
   r.ev.push({ type: 'turnStart', side: 'b', turn: r.s.turn });
@@ -4887,6 +4879,16 @@ function releaseIds(action: Extract<Action, { type: 'play' }>): UnitId[] {
   return rel === undefined ? [] : Array.isArray(rel) ? rel : [rel];
 }
 
+/** Does Fanned leave this card nothing to aim? A Dagger (all it aims spreads), or a card whose only aimed effects play Daggers. */
+function aimsOnlyDaggers(cd: CardDef): boolean {
+  if (cd.tags?.includes(EDGE_TAG)) return true;
+  const aimed = cd.effects.filter((e) => JSON.stringify(e).includes('"target"'));
+  return (
+    aimed.length > 0 &&
+    aimed.every((e) => e.op === 'playPile' && e.tag === EDGE_TAG && e.aim === 'target')
+  );
+}
+
 export function legalActions(db: CombatDb, s: CombatState): Action[] {
   if (s.winner) return [];
   if (s.pending) return pickOptions(s.pending).map((cards): Action => ({ type: 'pick', cards }));
@@ -4900,13 +4902,10 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
     const plays: Extract<Action, { type: 'play' }>[] = [];
     if (cd.target === 'none') plays.push({ type: 'play', card: c.id });
     else if (cd.target === 'foe') {
-      // (a Fanned Dagger hits every enemy, so there is nothing to choose, unless something else on it needs one enemy: DECISIONS #492)
+      // (a Fanned Dagger hits every enemy, so there is nothing to choose; nor for a card whose only aim is the Daggers it plays,
+      // like Recall the Blades: DECISIONS #492, #552)
       const lead = heroOf(sd);
-      const fanned =
-        cd.tags?.includes(EDGE_TAG) &&
-        lead &&
-        stacks(lead, 'fanned') > 0 &&
-        !cd.effects.some((e) => e.op !== 'damage' && JSON.stringify(e).includes('"to":"target"'));
+      const fanned = lead && stacks(lead, 'fanned') > 0 && aimsOnlyDaggers(cd);
       const foes = legalFoes(r, side, cd);
       for (const t of fanned ? foes.slice(0, 1) : foes)
         plays.push({ type: 'play', card: c.id, target: t.id });

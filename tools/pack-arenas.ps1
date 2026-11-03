@@ -3,7 +3,8 @@
 #   assets-src/arenas/backdrops/*.png  wide scenery panoramas -> apps/web/public/art/arenas/<venue>/backdrop.jpg
 #   assets-src/arenas/props/*.png      3x3 prop sheets        -> apps/web/public/art/arenas/<venue>/props/<name>.png + props.json
 #   assets-src/arenas/floors/*.png     4x2 floor tile sheet   -> apps/web/public/art/arenas/<venue>/floor.png (made seamless)
-# Venue ids are the fight screen's (duel/scene/venue.ts): castle factory forest cave glass swamp alley rift.
+# Venue ids are the fight screen's (duel/scene/venue.ts): the eight realm arenas, a second site for each, a Warden's own
+# (boss-<name>) and the Crossing; the table under "arenas" below lists them.
 # Run: powershell -File tools/pack-arenas.ps1
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
@@ -268,7 +269,10 @@ $minions = @(
   @{ file = 'enemies/redo-1.png'; frac = 0.1; cols = 3; rows = 2
      ids = 'acid-spitter', 'maw-spawn', 'hooded-acolyte', 'ghostwire', 'feral-riftling', 'bloated-one'; flip = @() },
   @{ file = 'enemies/redo-2.png'; frac = 0.1; cols = 3; rows = 2
-     ids = 'whisperer', 'choir-of-silence', 'nyxara', 'packmother-ruhn', 'gorrmaw', 'vorthax'; flip = @() }
+     ids = 'whisperer', 'choir-of-silence', 'nyxara', 'packmother-ruhn', 'gorrmaw', 'vorthax'; flip = @() },
+  # what stands beside the Wardens (docs/art-wrapup-prompts.md): Kron's Hatch, the Benediction's Acolytes, Vorthax's Ward
+  @{ file = 'enemies/warden-helpers.png'; frac = 0.1; cols = 3; rows = 1
+     ids = 'foundry-hatch', 'hollow-acolyte', 'rift-ward'; flip = @() }
 )
 $figDir = Join-Path $pub 'figures'
 foreach ($m in $minions) {
@@ -315,10 +319,33 @@ $arenas = @{
   factory = @{ backdrop = 'nexus'; props = 'nexus'; floor = 1 }
   forest  = @{ backdrop = 'wyldmaw'; props = 'wyldmaw'; floor = 2 }
   cave    = @{ backdrop = 'umbral'; props = 'umbral'; floor = 3 }
-  glass   = @{ backdrop = $null; props = $null; floor = 4 }
+  glass   = @{ backdrop = 'hollowcrown'; props = 'hollowcrown'; floor = 4 }
   swamp   = @{ backdrop = 'gloomfen'; props = 'gloomfen'; floor = 5 }
-  alley   = @{ backdrop = $null; props = $null; floor = 6 }
-  rift    = @{ backdrop = 'rift'; props = $null; floor = 7 }
+  alley   = @{ backdrop = 'midden'; props = 'midden'; floor = 6 }
+  rift    = @{ backdrop = 'rift'; props = 'rift'; floor = 7 }
+  # a second site for each realm, and the Far Rifts (docs/scene-prompts.md section 2; floors on floors-2)
+  ramparts = @{ backdrop = 'aurelion-ramparts'; props = 'aurelion-ramparts'; floor = 0; fsheet = 'floors-2' }
+  dock     = @{ backdrop = 'nexus-dock'; props = 'nexus-dock'; floor = 1; fsheet = 'floors-2' }
+  canopy   = @{ backdrop = 'wyldmaw-canopy'; props = 'wyldmaw-canopy'; floor = 2; fsheet = 'floors-2' }
+  garden   = @{ backdrop = 'umbral-garden'; props = 'umbral-garden'; floor = 3; fsheet = 'floors-2' }
+  stilts   = @{ backdrop = 'gloomfen-stilts'; props = 'gloomfen-stilts'; floor = 4; fsheet = 'floors-2' }
+  bazaar   = @{ backdrop = 'hollowcrown-bazaar'; props = 'hollowcrown-bazaar'; floor = 5; fsheet = 'floors-2' }
+  cellar   = @{ backdrop = 'midden-cellar'; props = 'midden-cellar'; floor = 6; fsheet = 'floors-2' }
+  farrift  = @{ backdrop = 'far-rifts'; props = 'far-rifts'; floor = 7; fsheet = 'floors-2' }
+  # each Warden's own arena (section 3; floors on floors-3 and floors-4), and the Crossing for ghosts and PvP (section 4)
+  'boss-seraphine'   = @{ backdrop = 'boss-seraphine'; props = 'boss-seraphine'; floor = 0; fsheet = 'floors-3' }
+  'boss-benediction' = @{ backdrop = 'boss-benediction'; props = 'boss-benediction'; floor = 1; fsheet = 'floors-3' }
+  'boss-kron'        = @{ backdrop = 'boss-kron'; props = 'boss-kron'; floor = 2; fsheet = 'floors-3' }
+  'boss-static'      = @{ backdrop = 'boss-static'; props = 'boss-static'; floor = 3; fsheet = 'floors-3' }
+  'boss-gorrmaw'     = @{ backdrop = 'boss-gorrmaw'; props = 'boss-gorrmaw'; floor = 4; fsheet = 'floors-3' }
+  'boss-stag'        = @{ backdrop = 'boss-stag'; props = 'boss-stag'; floor = 5; fsheet = 'floors-3' }
+  'boss-nyxara'      = @{ backdrop = 'boss-nyxara'; props = 'boss-nyxara'; floor = 6; fsheet = 'floors-3' }
+  'boss-applause'    = @{ backdrop = 'boss-applause'; props = 'boss-applause'; floor = 7; fsheet = 'floors-3' }
+  'boss-tide'        = @{ backdrop = 'boss-tide'; props = 'boss-tide'; floor = 0; fsheet = 'floors-4' }
+  'boss-queen'       = @{ backdrop = 'boss-queen'; props = 'boss-queen'; floor = 1; fsheet = 'floors-4' }
+  'boss-regent'      = @{ backdrop = 'boss-regent'; props = 'boss-regent'; floor = 2; fsheet = 'floors-4' }
+  'boss-vorthax'     = @{ backdrop = 'boss-vorthax'; props = 'boss-vorthax'; floor = 3; fsheet = 'floors-4' }
+  crossing           = @{ backdrop = 'crossing'; props = 'crossing'; floor = 4; fsheet = 'floors-4' }
 }
 # the backdrop is baked to the scene's sky size (stage + padding: 3040 x 690) with the horizon at y = 655
 $skyW = 3040; $skyH = 690; $horizon = 655; $artW = 2560
@@ -362,8 +389,9 @@ foreach ($v in $arenas.Keys) {
     }
   }
 
-  # floor: one tile of the 4x2 sheet, margin trimmed, made seamless
-  $fp = Join-Path $src 'arenas/floors/floors.png'
+  # floor: one tile of a 4x2 sheet (floors.png unless the venue names another), margin trimmed, made seamless
+  $fsheet = if ($a.fsheet) { $a.fsheet } else { 'floors' }
+  $fp = Join-Path $src "arenas/floors/$fsheet.png"
   if ((Test-Path $fp) -and $a.floor -ge 0) {
     $fs = Open-Bmp $fp
     $tw = [int]($fs.Width / 4); $th = [int]($fs.Height / 2); $m = 10

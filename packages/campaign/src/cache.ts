@@ -82,5 +82,5 @@ export function buildCache(r: RunState): EventCtx {
     opts,
   };
   // (the Boon is shown beside the options, as an event's Boon is)
-  return { ...make(spec, r), ...(boonId ? { boonOffer: boonId } : {}) };
+  return { ...make(spec, r), scene: spec.id, ...(boonId ? { boonOffer: boonId } : {}) };
 }

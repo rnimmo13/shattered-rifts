@@ -45,6 +45,8 @@ const FIRE = 0xffa040;
 const TEAL = 0x40ffe0;
 const CYAN = 0x50d8ff;
 const AMBER = 0xffc060;
+const VIOLET = 0xb070ff;
+const GREEN = 0x90f070;
 
 export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
   castle: {
@@ -101,15 +103,7 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     rift: [90, 230, 220],
     tile: 5,
   },
-  glass: {
-    pattern: 'scatter',
-    far: [],
-    ground: [],
-    hang: [],
-    tone: [0.92, 0.82, 0.86],
-    rift: [255, 150, 70],
-    tile: 4,
-  },
+  glass: look('scatter', { 3: AMBER, 6: AMBER }, [0.92, 0.82, 0.86], [255, 150, 70], 4),
   swamp: {
     pattern: 'gap',
     far: [0, 1, 2],
@@ -125,25 +119,73 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
     rift: [150, 255, 140],
     tile: 4,
   },
-  alley: {
-    pattern: 'right',
-    far: [],
-    ground: [],
-    hang: [],
-    tone: [0.84, 0.82, 0.86],
-    rift: [255, 190, 100],
-    tile: 4,
-  },
-  rift: {
-    pattern: 'scatter',
-    far: [],
-    ground: [],
-    hang: [],
-    tone: [0.9, 0.86, 1],
-    rift: [140, 100, 255],
-    tile: 4,
-  },
+  alley: look('right', { 3: FIRE, 6: AMBER }, [0.84, 0.82, 0.86], [255, 190, 100], 4),
+  rift: look(
+    'scatter',
+    { 3: VIOLET, 4: CYAN, 5: VIOLET, 6: CYAN },
+    [0.9, 0.86, 1],
+    [140, 100, 255],
+    4,
+  ),
+
+  // a second site for each realm, and the Far Rifts
+  ramparts: look('flanks', { 6: FIRE }, [0.86, 0.82, 0.78], [255, 210, 120], 5),
+  dock: look('right', { 3: TEAL, 6: CYAN }, [0.82, 0.88, 0.94], [90, 210, 255], 4),
+  canopy: look('scatter', { 3: GREEN }, [0.8, 0.78, 0.68], [150, 255, 140], 5),
+  garden: look('gap', { 3: TEAL, 6: TEAL }, [0.82, 0.86, 0.98], [90, 230, 220], 5),
+  stilts: look('left', { 3: GREEN, 6: GREEN }, [0.78, 0.84, 0.74], [150, 255, 140], 4),
+  bazaar: look('flanks', { 3: AMBER, 6: AMBER }, [0.94, 0.84, 0.76], [255, 170, 80], 4),
+  cellar: look('right', { 4: AMBER, 6: AMBER }, [0.9, 0.8, 0.7], [255, 190, 100], 4),
+  farrift: look('scatter', { 3: CYAN, 4: CYAN, 6: CYAN }, [0.82, 0.84, 1], [120, 170, 255], 4),
+
+  // each Warden's own arena
+  'boss-seraphine': look('flanks', { 3: FIRE, 6: AMBER }, [0.86, 0.82, 0.76], [255, 220, 130], 5),
+  'boss-benediction': look('flanks', { 3: AMBER }, [0.82, 0.8, 0.8], [255, 210, 150], 5),
+  'boss-kron': look('left', { 3: FIRE, 5: CYAN, 6: FIRE }, [0.86, 0.84, 0.86], [255, 140, 60], 4),
+  'boss-static': look(
+    'flanks',
+    { 3: CYAN, 5: CYAN, 6: CYAN },
+    [0.8, 0.86, 0.94],
+    [120, 230, 255],
+    4,
+  ),
+  'boss-gorrmaw': look('scatter', { 6: FIRE }, [0.86, 0.74, 0.7], [255, 110, 80], 5),
+  'boss-stag': look('gap', { 3: TEAL, 6: GREEN }, [0.8, 0.88, 0.86], [120, 255, 210], 5),
+  'boss-nyxara': look('flanks', { 3: VIOLET, 6: VIOLET }, [0.84, 0.8, 0.94], [190, 120, 255], 5),
+  'boss-applause': look('flanks', { 3: AMBER, 6: AMBER }, [0.9, 0.78, 0.8], [255, 120, 140], 4),
+  'boss-tide': look('gap', { 3: AMBER, 6: AMBER }, [0.76, 0.82, 0.8], [170, 255, 200], 4),
+  'boss-queen': look('flanks', { 6: AMBER }, [0.94, 0.84, 0.76], [255, 160, 70], 4),
+  'boss-regent': look('scatter', { 3: CYAN, 6: CYAN }, [0.82, 0.82, 0.98], [200, 160, 255], 4),
+  'boss-vorthax': look('flanks', { 3: VIOLET, 6: CYAN }, [0.88, 0.84, 1], [160, 110, 255], 4),
+
+  // the Crossing: ghosts and PvP; symmetric, so neither side has the better half
+  crossing: look('flanks', { 3: CYAN, 6: CYAN }, [0.88, 0.86, 1], [150, 120, 255], 4),
 };
+
+/**
+ * The look of an arena whose sheet follows the prompt layout (docs/scene-prompts.md): 0-2 tall silhouettes far back, 3-6 props on the
+ * ground (the glowing ones named, with their light colour), 7-8 hanging from the top of the screen.
+ */
+function look(
+  pattern: Pattern,
+  glows: Record<number, number>,
+  tone: [number, number, number],
+  rift: [number, number, number],
+  tile: number,
+): ArenaLook {
+  return {
+    pattern,
+    far: [0, 1, 2],
+    ground: [3, 4, 5, 6].map((i) => {
+      const color = glows[i];
+      return color === undefined ? { i } : { i, glow: { color, at: 0.4 } };
+    }),
+    hang: [7, 8],
+    tone,
+    rift,
+    tile,
+  };
+}
 
 function loadImage(url: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {

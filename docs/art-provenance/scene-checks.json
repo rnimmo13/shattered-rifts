@@ -1,0 +1,1766 @@
+[
+  {
+    "path": "arenas/backdrops/boss-seraphine.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "5e6b9d06c4ce126edfa8abcbfdc6975c3c838e03887d07972e0a12a92a0d763c"
+  },
+  {
+    "path": "arenas/props/boss-seraphine.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "66de8f36c9d760928ef03663a3da38cbda35b828193511427caa3a678ec77df1"
+  },
+  {
+    "path": "arenas/backdrops/boss-benediction.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "f64c8cfe39450dac448125637ed7d50d1366318619b7ea226a1e25290a735db2"
+  },
+  {
+    "path": "arenas/props/boss-benediction.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "78578f6cddba5c1e619a02b1496dc12540a3fbdb434745fb04f399040e83f42a"
+  },
+  {
+    "path": "arenas/backdrops/boss-kron.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "3c92576e280d526420bf7227c33d4e9f7be70e760c36f2bc1fb5099e8a0dc7df"
+  },
+  {
+    "path": "arenas/props/boss-kron.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "c758a2a20d249370fab0f2383529f2e0df882064736c16fcc864354d8b4741f1"
+  },
+  {
+    "path": "arenas/backdrops/boss-static.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "9d0eeb0cc924d30fd1fd5fab527ccaa1285858b500d22a828fda7638907027e3"
+  },
+  {
+    "path": "arenas/props/boss-static.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "228a5bdbd9de580b2e80cefd66ff5e67bcaef2db7492493a3d8e7878e6714945"
+  },
+  {
+    "path": "arenas/backdrops/boss-gorrmaw.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "68c646ede4a9394fb4cccf015e78fbbdcee4c5da61f826b5048350bddd1ac3d0"
+  },
+  {
+    "path": "arenas/props/boss-gorrmaw.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "90bd6e20c005b42e904229f123d65867b882095ae6c63b2862db1a1758392fe3"
+  },
+  {
+    "path": "arenas/backdrops/boss-stag.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "f2aa7c7d8d9ae3ccfe096854e0e1cb6eca9d3889d303f50cec3f04bf0c95c806"
+  },
+  {
+    "path": "arenas/props/boss-stag.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "d7560eec4c138a41bf84ddbd4a70bf1f87f40de63e50cbaa7f29a5624c60360a"
+  },
+  {
+    "path": "arenas/backdrops/boss-nyxara.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "ce9d78098bb37693ffe7c26b519b341d5171e8f2b3459dc628e03f456f9d5bcc"
+  },
+  {
+    "path": "arenas/props/boss-nyxara.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "711906f8bf2b0797de26e1270dcc4204426f6e28966c71f4994d60d477137402"
+  },
+  {
+    "path": "arenas/backdrops/boss-applause.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "1439085a0f7eecd3b661b6e9f8614c68a0f9d59f66be5d09c2a46694ccc38d60"
+  },
+  {
+    "path": "arenas/props/boss-applause.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "4bee3fdcfe72af01864749f33bdfdb02b349e4686d7a304b45666f2c2e62359c"
+  },
+  {
+    "path": "arenas/backdrops/boss-tide.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "e3f852028df8870ede229209b43b19963174698e98d7420cc57826edf09bc030"
+  },
+  {
+    "path": "arenas/props/boss-tide.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "5bc5d6bee3b1fea2935bd281a83436f5d9e40748869edfa75e609e1d78434790"
+  },
+  {
+    "path": "arenas/backdrops/boss-queen.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "b271a354bf4a81895c7de9c1d9784280911e6f57b7048b60fe1832adf28e4aa9"
+  },
+  {
+    "path": "arenas/props/boss-queen.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "1e1430b145bcbc95605aef729f0e0ed9e2c8403bf95c4f5691b8b9280f89938d"
+  },
+  {
+    "path": "arenas/backdrops/boss-regent.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "8b39cf0cef9fa8282749099c35b7323e1f7ab1de1b72c57829be04ac5e3a5ad0"
+  },
+  {
+    "path": "arenas/props/boss-regent.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "cb741e38f6673dcd5a9bd4dc4dd78e980d3d456b341f6007b64bdc04bd8d81cd"
+  },
+  {
+    "path": "arenas/backdrops/boss-vorthax.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "c87f5c1e79f37b93a1168c114c34e2532c1742e0214d8e0dac7f6d239c1632c4"
+  },
+  {
+    "path": "arenas/props/boss-vorthax.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "b4c6f1721f89327dd9a49c197a1ff962815bd3420d29c070c5ec40d2c3072a3e"
+  },
+  {
+    "path": "arenas/floors/floors-3.png",
+    "dimensions": [
+      2048,
+      1024
+    ],
+    "nativeDimensions": [
+      1774,
+      887
+    ],
+    "sha256": "bc9f708d7ff2313b3a8b53434e5c1c01796f0306e6f14b2c7b9f44c2c4d9d680"
+  },
+  {
+    "path": "arenas/floors/floors-4.png",
+    "dimensions": [
+      2048,
+      1024
+    ],
+    "nativeDimensions": [
+      1774,
+      887
+    ],
+    "sha256": "0aca3fabc445a883fc9a6cc3d17bc503ef1ae1f2df29a3204d62a176f179c4ee"
+  },
+  {
+    "path": "arenas/backdrops/crossing.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "f152b0dae411e94c812ed94a20697d50345bb0367506d7aa01e7e44b5f37bdae"
+  },
+  {
+    "path": "arenas/props/crossing.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "625315cf39878ded92ba8ab1e41ecb6075bbc4dcfe0d67597afa54d8eecdf004"
+  },
+  {
+    "path": "events/merchant.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5596c851c2f94f2333c29ed8458ffe75e0ac3268e29bae35d06337a0da4a5fbb"
+  },
+  {
+    "path": "events/shrine.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "1ebaf2126a9a8bcdd4dc3a5d326ec1ee3b8fa93b7878b1e3555ef42caf3ef22e"
+  },
+  {
+    "path": "events/cache.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "024f140a786916cc9d52fb31b82edb8eaa72b557e05bb5bef2fc1592dae22ea9"
+  },
+  {
+    "path": "events/cache-open.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "6b9b10e0d61f7b0d58a834d3517ca2f01be9aae77c1fe0b3b26dd6304f8c8d29"
+  },
+  {
+    "path": "events/cache-trapped.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "576ba713082d337234ae18a7dba02f75bc653e078a7218cf04fe36e6c468bee4"
+  },
+  {
+    "path": "events/altar.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "19c48364d7891c5f61e2bb94779ece189e8e2ca40daa7ec4b6cf9c73d2ebe6a6"
+  },
+  {
+    "path": "events/ancestors.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e3e64b854cf35166376016f6cb3dd66b5af3d897e4c2ca7335ab3e8907a6a89b"
+  },
+  {
+    "path": "events/stranger.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "b516b3b18ab56edf7d118654910ddde8aaea0e5725f9112e8f471016a84568b2"
+  },
+  {
+    "path": "events/sanctify.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "a929043a91ff8a38c1d35568a186589e8f70f9f9e83fce1135c266ddac7e4130"
+  },
+  {
+    "path": "events/gambler.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "2fa0f4136d203ba1f5c2c7d2cec9b3c9c92c0bc799c8d5daec2f642966bd8b3f"
+  },
+  {
+    "path": "events/traveller.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "bc35d40c463afe7728bab87b60d74d78c13f708128baa8073f15e65d318a2b56"
+  },
+  {
+    "path": "events/idol.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "45d9b5fd9cdb3c80552c3c686684c4de65874f40915f4d15f07a66381b304ea8"
+  },
+  {
+    "path": "events/well.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e8be575c00fe8fac5b552c1f0ebd7b7e34a31db48ac092e96ec39b855a497248"
+  },
+  {
+    "path": "events/shoal.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "20580fa68202d45c7ff754dd3b284b2d4005af8d8a859157554a65f6a5a30b94"
+  },
+  {
+    "path": "events/forge.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "2dc580199db25c247fe64e3801abf2e5dd2b53e6c42db12549d2ee6ca3781802"
+  },
+  {
+    "path": "events/wheel.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e5bd98ec68b0127c724778819e3b7ef1fa91ea46ceec0f2af09999561ff77312"
+  },
+  {
+    "path": "events/gilded.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "ed488e9158d29f8566382b20962c1285467a40d6860f767c4cad7a7046459a6f"
+  },
+  {
+    "path": "events/bonfire.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "f28c7c3a7233c6a53a299f11cd65e0d99bafe3dedee547d8325040a9fa3690bc"
+  },
+  {
+    "path": "events/alchemist.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d1ca18b380f1fab53e7a40d4fecd2082352f3f7f21386ef964e7095b282e8235"
+  },
+  {
+    "path": "events/ferry.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "6b7cfecb4d7d3f783cf661c11444dca0d6a4e29a7f51c08691e6798d15d79532"
+  },
+  {
+    "path": "events/hourglass.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "a2d6a073b047cb279d70f34397bbaa378c9373fdeda9fe8683d3c05cf7d9e278"
+  },
+  {
+    "path": "events/silent-choir.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "a29656621325ca8c257551f774fc954b3ab3ae8b977a36369d32d73fccb3f5bb"
+  },
+  {
+    "path": "events/beggar.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "c869d68e04793c1944cdce007285968f1b45c1e7cc226181bd748627a422eb21"
+  },
+  {
+    "path": "events/scales.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "c551d75a88f7cfd4572516943fd7cc740e11fc2b63105d14fbdcec197b9406eb"
+  },
+  {
+    "path": "events/reliquary.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "7d4185a8df27ea9102235b610adb4715258ab4a85b26e952ec25cfcac387c277"
+  },
+  {
+    "path": "events/hungry-door.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "785f99b9d6c57b5018304425fcbfded428cb15879947e1a1c988f9eb0535d558"
+  },
+  {
+    "path": "events/wagon.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "fc1610bb171b3b208da3d8b5d435b96139a722508b86ffd05741d835d584bc83"
+  },
+  {
+    "path": "events/crossroads.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "3e1845fe9cf0c71727d15285ada2b2572e9d8b24a8a4b949304f13702b07accc"
+  },
+  {
+    "path": "events/echo-vault.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d27ae4485520dd713d5157d8126cedd6e33d3930c152ee7c2abc708e76680d9d"
+  },
+  {
+    "path": "events/mud-sworn.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "514dd45465d9f9561896bb6a328beb35f22615bfc699a581c79d623b63bb7601"
+  },
+  {
+    "path": "events/geyser.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "989c822dab69d5fdb53f1fa86bdf3f8fd73a03e4615ae89346a88240d1969625"
+  },
+  {
+    "path": "events/gravedigger.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d7743e23ebac78bc9aaea7864e83761ee0933e0ab7ca1e8dae428014b36aa9fa"
+  },
+  {
+    "path": "events/rust-eater.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "7bc579850ee86ade619196f6d0b112aadc5037a996e51fddaee66b5eb7e5b792"
+  },
+  {
+    "path": "events/brewer.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5af5da4445b7747a5a6f54aeb7810f3d57208a751e909d43f2a09862af2e294d"
+  },
+  {
+    "path": "events/pact.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e3d67fd165356896c923847a49b319b4ab5ea9da68aa4a9df71b254141d806f9"
+  },
+  {
+    "path": "events/purse.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "c1c9b07bcbe5034dd173dfa3739f4d3a34eb47ecbd579f2f92d3cde8a0e78322"
+  },
+  {
+    "path": "events/patient-mirror.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "fe4691591af4fed7384a14e1b1e1615f4d7ebd60ba1f76c1989de4c6a4a12be5"
+  },
+  {
+    "path": "events/lantern-thief.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "62c206f154c5317b75a17b51af411189caffe87026eea46bf2c5c54c8db62dac"
+  },
+  {
+    "path": "events/rift-fever.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "89255bdf581acee57189aa94baf17843da6f3b1dbb3ab4f792a313d769923a57"
+  },
+  {
+    "path": "events/wishing-stone.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "3a288afc9ede33d54aa634580eadc68421e188aeae82eaa251c9c39f342d840e"
+  },
+  {
+    "path": "events/bell-tower.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "8368ebf7d3e687ee9d1073bc3563cf4007fcc4ff0fc6e2b0faaa14402c808441"
+  },
+  {
+    "path": "events/pilgrims.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "b2938a0c568970f45aaadb244ecd85f934a3d3851ada2adf418a890dceba785a"
+  },
+  {
+    "path": "events/legend-reliquary.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "eef46b7b80e4d37959299a97fe6cd0aa8e0eb9d902b8803620c1feea991a2bca"
+  },
+  {
+    "path": "events/echo-bargain.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "580f2a3187f72d87924e4cbceae3484e2094444c9108e111100ed5611210b52c"
+  },
+  {
+    "path": "events/fading-saint.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "545a5ced6638c91bd45557bcb956ae95f014559b682e3233a54b13c5dd489cf9"
+  },
+  {
+    "path": "events/mirror-of-fates.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d3479a9793a16fcd12e706c706df24e8b6a9fc78008a7aeca3c8517ad30c6a3b"
+  },
+  {
+    "path": "events/rift-pilgrim.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "928cda5f286244b8c628e5b6bb53fc2fd942363ad27a909e798202ea75b00174"
+  },
+  {
+    "path": "events/hungering-blade.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "25ecd435e877e10f9a4faf74028248be953ea30361af7cd4d3c1ef22fce56b5a"
+  },
+  {
+    "path": "events/smugglers-cache.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "c62638f8b94bed5c0675ed59c56437f41eb1509a9765dceddbacb59372f6bd1a"
+  },
+  {
+    "path": "events/open-rift.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "4485d8780656288904d39632203acc9762d387524b02aae2ab22b75dcd5a7f13"
+  },
+  {
+    "path": "events/walkers-cairn.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "6be8e927735cb9550c9a0497926d7a0254a8a1c616ae1592b803422262e4df0b"
+  },
+  {
+    "path": "events/rift-broker.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "60e7e0e2cf482a02da2c9ab7446f9206b3487e041b926a9156041164952717d5"
+  },
+  {
+    "path": "events/card-swap.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e3664ef6d23494c34fd85cc99dd3c50d1e70b0caa53c963c704d741f44090b5a"
+  },
+  {
+    "path": "events/tithe-stone.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "18808eb29592ba5c17fd9526a353791155e51baf10eaf240063b0485059a7b04"
+  },
+  {
+    "path": "events/torn-grimoire.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "92641ce290aefe08109b95006effe35f31b7ac0ed0d32e6d3094a4f87024674e"
+  },
+  {
+    "path": "events/buried-map.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "20e2b844d82b222bb6b5861d591cd108da37221a5565eefb8435eb0f6c28cdea"
+  },
+  {
+    "path": "events/treasure-dig.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5bd9202fac6ad7408b3241f966cc0bbb026c81390f95e3e056891dc6e4ae693d"
+  },
+  {
+    "path": "events/hollow-feast.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "9bbaf26d535366888fc0c6d38d2d42383efa0e980afcaa2a1294d8bc586b8d3d"
+  },
+  {
+    "path": "events/tax-collector.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "4d9b8957b7d726e681b659f7676f43f0d50b8251edbaf6420454ce54897bc245"
+  },
+  {
+    "path": "events/sundered-bridge.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "32bb31396eee55b9caf01ca2dcaf4de227c2a79ff244e98daf354ec5298bbb2a"
+  },
+  {
+    "path": "events/parasite.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e6143a5ffa912d54259998d72ed22dcffc2c118621d1db03c91bbb65652040d4"
+  },
+  {
+    "path": "events/cursed-forge.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d8c92f0a37e98496ffce69abab6926e6d8c0d82ab86c9cf1334c732d9469c720"
+  },
+  {
+    "path": "events/deep-spring.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "fb017f1248701dd477393eb3cb4187f97b1d7eac52486f7c0421e33d4dda9722"
+  },
+  {
+    "path": "events/pale-dealer.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5091032bebb2dba3d87c44482f515abbfce335f7e7500206166df9e692391c87"
+  },
+  {
+    "path": "events/dying-lamp.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "b55253c4b4bc62d93d11e2fd94c74309eaa77ed0594732d0ba12065767f66e46"
+  },
+  {
+    "path": "events/tollkeeper.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5091be5ae7466bdd5895658ec65c8b18cd2e558c2d1c5405aad3b17b7050c905"
+  },
+  {
+    "path": "events/class-shrine.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "cd34c12c732e5e68a84d7d3810b386c1425de03bf3fcc61a8821843cb4a9c701"
+  },
+  {
+    "path": "events/potion-trade.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "431a02c117d309e59be65a5360271250ee8622c0f1041ce5e6e0c830e128deba"
+  },
+  {
+    "path": "events/smelter.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "015cadc5c40dd58fdeed616261652e9ce778cf66df683fb76e6674c585d71a5f"
+  },
+  {
+    "path": "events/binders-table.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "b678d8b4108d739949f9a37e9e30b868b8ef42f642bb8cbc489a1225ee7fb714"
+  },
+  {
+    "path": "events/the-fence.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "a30050018a9dc7d86f72b5e0ba70c7300e1a2af942fcce917baa61a537a27a1f"
+  },
+  {
+    "path": "events/step-up.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "e190dd82051f39cc26320c0106ee7df04ff56b8a0ba92b3041b23a6eba1a8d0f"
+  },
+  {
+    "path": "events/smith.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "2de4ecb0b803b40554634c1e3e3f91593f2691b338462536646c6d2a7dc54cf5"
+  },
+  {
+    "path": "events/scrapyard.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "236a7382ceadcdb10d4ff612a21d000b7ff84418d94349e4bf6fad9250eda962"
+  },
+  {
+    "path": "events/shifter.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "0522139af4b69b4d958a8aa433ac6a5ada4557ba554155f93d63ccdd5626a2df"
+  },
+  {
+    "path": "events/mirror.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "0656f1fb621179c5b614c42e4f880c4e7775f0f7458016866c46cbae18b86b25"
+  },
+  {
+    "path": "events/healer.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "f4873fda9f08900950d764f0e07c82714148fd1d01f672799feeb489ef69f02d"
+  },
+  {
+    "path": "events/collector.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "a1a13ac5616dfeb6b2040479d6a9a802075f6ab3a9753c02443e075b4a65a58e"
+  },
+  {
+    "path": "events/moth-shrine.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "f2c4afa4421839bd4d4652d023b4a9419dfedbb7f15f0bf7dc9a029b4b004442"
+  },
+  {
+    "path": "events/frost-garden.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "ffae4e2e93ab3d1f65ca8064457ed6fec68dfefaba4d194c137ba43b387bfb14"
+  },
+  {
+    "path": "events/old-soldiers.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "77e5b0be10b9da43b3f95f36104cea7b9b828a4a40cbf7cb663e2dd20ece6aab"
+  },
+  {
+    "path": "events/ash-market.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "170b03ca5429f36247ce1dff0383957ec2778f6446ea116ff1b0a4359d095795"
+  },
+  {
+    "path": "events/unmaker.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "521fc1de2c7bfd9cf5edaf319b245c2aa58b97d297ee5179e9827e3773ab4fcd"
+  },
+  {
+    "path": "events/twin-pools.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "d1779aa940eb7a1e560d72fcb6097d38e9cee2a45ee0cdaf11067a18ce4f6ef2"
+  },
+  {
+    "path": "events/mending-tree.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "cc1831e2177061d8cf79eaaf8123159955448f899d0ecfab2a0ccc51997c4e77"
+  },
+  {
+    "path": "events/engraver.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "5ed761f1d9bde2e662b415b5802c0b1350d6c5fe5ecfd2ceb86d657bb8bb07d6"
+  },
+  {
+    "path": "events/patient-monk.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "25ec07a62182424e99ebdb12338edc26c57a426dd31777c8db984aacb05c3ca5"
+  },
+  {
+    "path": "events/cold-kiln.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "cd255a60e27dc361123e335ffb53db1ad85731f44f6365b585b67ebbd505a5f1"
+  },
+  {
+    "path": "events/dead-adventurer.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "1e5b10baf68c47d5713ddddb8edcb9ae3222f182a4df31c41285e07578da1fbb"
+  },
+  {
+    "path": "events/bandit-camp.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "926109f3646ec877ce5d5c77d782cdde664a6236df8c6e10aa90d866daca656c"
+  },
+  {
+    "path": "events/guarded-hoard.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "3858e946dfa801911694522fbc223284a943fae1f8a018c01b2f639e96513dc3"
+  },
+  {
+    "path": "events/champion.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "40c7542daacaee941ce3c0f7cdfe5e79a1073b19faf6f4670d0f2516c0a7123f"
+  },
+  {
+    "path": "events/nest.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "37d26f78a0844d66b7b3968cca608a67c36ba9d0bb35cfdfe65c4f7921d4c140"
+  },
+  {
+    "path": "events/rift-storm.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "05d7eef2aba80d66e219b649c7e9fab79d2b337e0aa15d36e1759927ed2fc004"
+  },
+  {
+    "path": "events/pickpockets.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "c624c12145cb64bc63cd4110af45383dfb9edf7f532055b3022a67db83edcb93"
+  },
+  {
+    "path": "events/cave-in.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "568c2164c70f4cd0cfc91a3a55bb149feaf325097477ea09e84ec8024fb405b4"
+  },
+  {
+    "path": "events/cursed-coin.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "nativeDimensions": [
+      1536,
+      1024
+    ],
+    "sha256": "46eeded5b25df42ff710c1e5d91bca3d488219f6e6ee6a7bf2af086ac9ec57bf"
+  },
+  {
+    "path": "arenas/backdrops/hollowcrown.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "fb5bafe2fb34a7b9f96b8142122d16a2e1b98f8553f9cc8c0e782740bdb073f5"
+  },
+  {
+    "path": "arenas/props/hollowcrown.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "68ccd2465fb7e0512b4a900de970d9e5e5c8e62e14e92253bad2580222fa6449"
+  },
+  {
+    "path": "arenas/backdrops/midden.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "12560406c07070b03868a316d51d1b146a20620f2a44658c01a537f644da6959"
+  },
+  {
+    "path": "arenas/props/midden.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "b6bd69ef1cbd9fb4e464b2fe26c5f9f2feb9d5a90d0f6536ee4194de15629f91"
+  },
+  {
+    "path": "arenas/props/rift.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "67bd1b47efaaaa5b8142a991d0ec4d5df95af84ab8af773d57cbdb04a1373659"
+  },
+  {
+    "path": "arenas/backdrops/aurelion-ramparts.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "249e40f68eb127ed34c65b8e78a165e00a0bdbba44c43a1983fc6ce4bda375a0"
+  },
+  {
+    "path": "arenas/props/aurelion-ramparts.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "4c111381ed3313ffb8b664bcd966142fa3549105f3cc8450a82d1e0e3f4e9aab"
+  },
+  {
+    "path": "arenas/backdrops/nexus-dock.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "247b8ccdc8b4c2e25cbbca48b38dff6207cab417c9452226815f84cdc08639ea"
+  },
+  {
+    "path": "arenas/props/nexus-dock.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "eea87909cd4b4de71aa8847a488f3fda95b5a54f4473b20803b507b9052f25a3"
+  },
+  {
+    "path": "arenas/backdrops/wyldmaw-canopy.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "353d276b6e2292f2d8dbfa64afd98243ca7457b33cc1b6597abe5b5a188051c7"
+  },
+  {
+    "path": "arenas/props/wyldmaw-canopy.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "805fe38bd93f93872169bbd9c461659e8da93b8819c9777e52e4fcd4be0e198f"
+  },
+  {
+    "path": "arenas/backdrops/umbral-garden.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "a8a78b18b9e2dc80e0571b74bf5181473bd060039cd0ab65e13e4142c28f577a"
+  },
+  {
+    "path": "arenas/props/umbral-garden.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "28a88361b7fd0ff4d027683cbbbcc6b05c1893f0ddd9d8c05a813402bb5a7bec"
+  },
+  {
+    "path": "arenas/backdrops/gloomfen-stilts.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "8f70fbe593f693a62730e43f7a4664a8373945cd8d68f64ac7fd17bc5a2f3e06"
+  },
+  {
+    "path": "arenas/props/gloomfen-stilts.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "c3b1c00f334c12e991f655bca57020d89d6540ef6776eefa7aa2828fdbc0185b"
+  },
+  {
+    "path": "arenas/backdrops/hollowcrown-bazaar.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "194702d7b30ff71ca217e73d3a6a4831faac2c302134886182cb4fea9ef6b9a5"
+  },
+  {
+    "path": "arenas/props/hollowcrown-bazaar.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "dc20aa23467b1612c6abee5624a51acdaaca04e83f8ab68cd8c73320b18dcf02"
+  },
+  {
+    "path": "arenas/backdrops/midden-cellar.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "430366956d43d1ee5af8c36599d619c4954859eeb2a4d54ad2bee918ed789e96"
+  },
+  {
+    "path": "arenas/props/midden-cellar.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "8017a7c526d0b0ccb5488e31e06d586baa23407bbdf01aaaac90795d33ec5e2e"
+  },
+  {
+    "path": "arenas/backdrops/far-rifts.png",
+    "dimensions": [
+      3072,
+      1024
+    ],
+    "nativeDimensions": [
+      2172,
+      724
+    ],
+    "sha256": "808f3f523e226e0f369b7e2ccd3e1cf6392968944173a9a122f1c11a3297c927"
+  },
+  {
+    "path": "arenas/props/far-rifts.png",
+    "dimensions": [
+      2048,
+      2048
+    ],
+    "nativeDimensions": [
+      1254,
+      1254
+    ],
+    "sha256": "f5c36ab208c4aa129d30ee7f4abdb777a86fbbcd8dcf115dcf2806db988a10fc"
+  },
+  {
+    "path": "arenas/floors/floors-2.png",
+    "dimensions": [
+      2048,
+      1024
+    ],
+    "nativeDimensions": [
+      1774,
+      887
+    ],
+    "sha256": "90e23010ebaec42139025cd5eeee8cc2d73582223fff63346929cd5b1617d4f3"
+  }
+]

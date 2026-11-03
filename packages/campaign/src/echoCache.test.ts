@@ -5,10 +5,10 @@ import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import {
   CACHE_STASH,
-  ECHO_ENDURING,
+  ECHO_FALTERING,
   ECHO_FROM_TIER,
   ECHO_HP_PCT,
-  GHOST_ENDURING,
+  GHOST_FALTERING,
   availableNodes,
   chooseEvent,
   duelPlan,
@@ -119,14 +119,14 @@ describe('the Echo', () => {
     expect(ghostToSettle(run)).toBeNull();
   });
 
-  it('is a share of a ghost Warden, Enduring, and costs 2 Resolve', () => {
+  it('is a share of a ghost Warden, leaves you Faltering, and costs 2 Resolve', () => {
     const { run, echo } = withEcho();
     const r = enterNode(before(run, echo.id), echo.id);
     expect(r.phase).toBe('duel');
     expect(r.eventResult).toMatch(/^Echo!/);
     const plan = duelPlan(r)!;
     expect(plan.ghost?.hp).toBe(Math.round((ghostBossHp('knight', 5, 1) * ECHO_HP_PCT) / 100));
-    expect(plan.ghost?.statuses.enduring).toBe(ECHO_ENDURING);
+    expect(plan.heroStatuses.faltering).toBe(ECHO_FALTERING);
     expect(finishDuel(r, false).resolve).toBe(r.resolve - 2);
   });
 
@@ -156,7 +156,7 @@ describe('an Echo pays like an Elite', () => {
 });
 
 describe('a ghost Warden', () => {
-  it('is Enduring too', () => {
+  it('leaves you Faltering too', () => {
     for (let i = 0; i < 400; i++) {
       const map = mapAt(5, `gw-${i}`);
       const w = map.nodes.find((n) => n.kind === 'warden')!;
@@ -166,7 +166,7 @@ describe('a ghost Warden', () => {
         run = settleGhost(run, ghost(at.id));
       run = { ...run, phase: 'duel', context: { nodeId: w.id } };
       run = enterNode(before(run, w.id), w.id);
-      expect(duelPlan(run)!.ghost?.statuses.enduring).toBe(GHOST_ENDURING);
+      expect(duelPlan(run)!.heroStatuses.faltering).toBe(GHOST_FALTERING);
       return;
     }
     throw new Error('no ghost Warden');

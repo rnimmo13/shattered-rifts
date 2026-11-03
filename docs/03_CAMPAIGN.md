@@ -69,7 +69,7 @@ Shrine (every node on that floor); each stage still has a Merchant somewhere bef
 | **Shrine** | ✦ | Restore 1 Resolve **or** Temper a card **or** remove a card | Always on floor 5 |
 | **Merchant** | ⚖ | Spend Shards: cards, Boons, removal, Tempering | ~10%, max 1 per stage |
 | **Rift Cache** | chest | No fight. Open (60%): take a Boon, a rare card or 75 shards. Trapped (40%): the Boon and a rare card together, for 15% of Max HP, a Wound or 60 shards (DECISIONS #549) | One a map, floors 3 to two before the last, on a plain fight |
-| **Echo** | ghost | A ghost deck from the Arena (60% of a ghost Warden's HP, Enduring 34%: never one-shot). Pays as an Elite does (shards, potion and Boon chances) and one of its best cards; losing costs 2 Resolve (DECISIONS #549, #550) | One a map from Tier IV, like the Cache; a plain fight if no ghost is found |
+| **Echo** | ghost | A ghost deck from the Arena (60% of a ghost Warden's HP; you start the fight Faltering 2, a ghost Warden 3, DECISIONS #553). Pays as an Elite does (shards, potion and Boon chances) and one of its best cards; losing costs 2 Resolve (DECISIONS #549, #550) | One a map from Tier IV, like the Cache; a plain fight if no ghost is found |
 | **Anomaly** | ✷ | A duel under a random Rift rule, double rewards | Tier II+, ~5% |
 | **Warden** | 👑 | The realm boss | After floor 5 |
 

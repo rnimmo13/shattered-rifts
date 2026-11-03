@@ -57,7 +57,8 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
-import { venueForRealm } from '../duel/scene/venue';
+import { venueFor } from '../duel/scene/venue';
+import { SceneBackdrop } from './SceneBackdrop';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { tipAttrs } from '../ui/tip';
 import { Toast } from '../ui/Toast';
@@ -493,7 +494,7 @@ export default function RunScreen() {
                 onMove: (a: Action) => appendFightMove(duelKey(run), plan.seed, a),
                 onResumeFailed: () => clearFightLog(duelKey(run)),
               })}
-          venue={venueForRealm(encounter(plan.encounterId).realm)}
+          venue={venueFor(encounter(plan.encounterId), plan.seed, !!plan.ghost)}
           db={COMBAT_DB}
           setup={{
             seed: plan.seed,
@@ -517,7 +518,6 @@ export default function RunScreen() {
                   dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
-                  statuses: plan.ghost.statuses,
                 }
               : {
                   enemies: plan.units,
@@ -647,7 +647,6 @@ export default function RunScreen() {
                   dmgPct: plan.ghost.dmgPct,
                   boons: plan.ghost.boons,
                   potions: [],
-                  statuses: plan.ghost.statuses,
                 },
               }}
               names={{ a: 'You', b: plan.ghost.name ? `${plan.ghost.name}'s ghost` : 'Ghost deck' }}
@@ -1113,40 +1112,49 @@ function Body(props: {
       );
     case 'shrine':
       return (
-        <ShrineView
-          run={run}
-          onTake={(choice) => act((r) => takeShrine(r, choice))}
-          onLeave={() => act((r) => leaveShrine(r))}
-          onRoll={() => act((r) => rollTrial(r))}
-          onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
-        />
+        <>
+          <SceneBackdrop scene="shrine" mode="dim" />
+          <ShrineView
+            run={run}
+            onTake={(choice) => act((r) => takeShrine(r, choice))}
+            onLeave={() => act((r) => leaveShrine(r))}
+            onRoll={() => act((r) => rollTrial(r))}
+            onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
+          />
+        </>
       );
     case 'merchant':
       return (
-        <MerchantView
-          run={run}
-          onBuy={(i) => act((r) => buyCard(r, i))}
-          onHold={(i) => act((r) => holdCard(r, i))}
-          onRelease={(i) => act((r) => releaseHold(r, i))}
-          onBuyBoon={() => act((r) => buyBoon(r))}
-          onBuyPotion={(i) => act((r) => buyPotion(r, i))}
-          onSellPotion={(i) => act((r) => sellPotion(r, i))}
-          onRemove={(card) => act((r) => buyRemoval(r, card))}
-          onUpgrade={(card) => act((r) => buyUpgrade(r, card))}
-          onLeave={() => act((r) => leaveMerchant(r))}
-        />
+        <>
+          <SceneBackdrop scene="merchant" mode="dim" />
+          <MerchantView
+            run={run}
+            onBuy={(i) => act((r) => buyCard(r, i))}
+            onHold={(i) => act((r) => holdCard(r, i))}
+            onRelease={(i) => act((r) => releaseHold(r, i))}
+            onBuyBoon={() => act((r) => buyBoon(r))}
+            onBuyPotion={(i) => act((r) => buyPotion(r, i))}
+            onSellPotion={(i) => act((r) => sellPotion(r, i))}
+            onRemove={(card) => act((r) => buyRemoval(r, card))}
+            onUpgrade={(card) => act((r) => buyUpgrade(r, card))}
+            onLeave={() => act((r) => leaveMerchant(r))}
+          />
+        </>
       );
     case 'event':
       return (
-        <EventView
-          key={run.context?.nodeId}
-          run={run}
-          onChoose={(id) => act((r) => chooseEvent(r, id))}
-          onRoll={() => act((r) => rollTrial(r))}
-          onPickCard={(i) => act((r) => pickEventCard(r, i))}
-          onPickDeck={(id) => act((r) => pickDeckCard(r, id))}
-          onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
-        />
+        <>
+          <SceneBackdrop scene={run.context?.event?.scene} mode="side" />
+          <EventView
+            key={run.context?.nodeId}
+            run={run}
+            onChoose={(id) => act((r) => chooseEvent(r, id))}
+            onRoll={() => act((r) => rollTrial(r))}
+            onPickCard={(i) => act((r) => pickEventCard(r, i))}
+            onPickDeck={(id) => act((r) => pickDeckCard(r, id))}
+            onPrize={(id, pick, cards) => act((r) => claimTrialPrize(r, id, pick, cards))}
+          />
+        </>
       );
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;

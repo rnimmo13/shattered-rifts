@@ -78,6 +78,7 @@ export {
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
+export { EVENTS } from './events';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
   ELITE_EVENTS,
@@ -130,8 +131,8 @@ export {
   echoOffers,
   ECHO_HP_PCT,
   ECHO_OFFERS,
-  GHOST_ENDURING,
-  ECHO_ENDURING,
+  GHOST_FALTERING,
+  ECHO_FALTERING,
 } from './run';
 export {
   buildCache,

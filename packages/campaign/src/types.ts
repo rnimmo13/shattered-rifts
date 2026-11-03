@@ -307,6 +307,8 @@ export interface NodeContext {
     potions?: { id: string; price: number; sold: boolean }[];
   };
   event?: {
+    /** the painted scene behind it: the event's id (missing on an elite event, and on one saved by an older build) */
+    scene?: string;
     title: string;
     text: string;
     options: EventOption[];

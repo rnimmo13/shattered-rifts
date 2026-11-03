@@ -30,7 +30,6 @@ export type StatusId =
   | 'brittle' // Barrier it gains is 25% smaller (turns)
   | 'ghostly' // each hit it takes is capped at 1 damage (turns)
   | 'slippery' // the next hit it takes is capped at 1 damage, and takes one off (a Warden's rule, DECISIONS #528)
-  | 'enduring' // it loses at most this percent of its Max HP in any one turn (a campaign ghost, DECISIONS #549; permanent)
   // (Wardens' rules, DECISIONS #546)
   | 'veiled' // its intent is hidden from the other side until it is hit; any hit takes it all off
   | 'gravity' // at the end of your turn, up to this many cards left in your hand go on top of your draw pile, costliest first
@@ -56,7 +55,7 @@ export type StatusId =
   // (the Silent-shaped assassin's pieces: DECISIONS #368)
   | 'virulent' // Bleed on your enemies deals its damage this many more times each turn (and loses 1 each time)
   | 'honed' // your Daggers Hold, and the first one you play each turn deals this much more
-  | 'fanned' // your Daggers hit ALL enemies
+  | 'fanned' // your Daggers hit ALL enemies (all they aim spreads, DECISIONS #552)
   | 'tracking' // your attacks deal 50% more to Faltering enemies
   | 'guarded' // at the start of your next turn you gain this much Barrier, then it clears
   | 'blur' // your Barrier is not removed at the start of your next turn (one turn per stack)
@@ -127,7 +126,6 @@ export const STATUS_IDS: readonly StatusId[] = [
   'brittle',
   'ghostly',
   'slippery',
-  'enduring',
   'veiled',
   'gravity',
   'unmaking',
@@ -1214,8 +1212,6 @@ export interface Unit {
   lastMoves: string[];
   /** attack hits it has taken this turn (Hammer and Anvil) */
   hitsTaken?: number;
-  /** HP it has lost since the current turn began, kept only while it is Enduring */
-  lostTurn?: number;
   /**
    * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises
    * into the next phase (Barrier, Might). Set by a setup's enemy mods (the campaign's Omens), never by a card.

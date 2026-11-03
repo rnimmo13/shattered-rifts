@@ -217,6 +217,8 @@ $sheets = @(
   @{ d = $iconDir; f = 'icons-04'; c = 4; r = 3; s = $icon; ids = 'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored' -split ' ' },
   @{ d = $iconDir; f = 'icons-05'; c = 4; r = 3; s = $icon; ids = 'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner' -split ' ' },
   @{ d = $iconDir; f = 'icons-06'; c = 4; r = 3; s = $icon; ids = 'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell' -split ' ' },
+  # the Wardens' statuses (docs/animation-prompts.md sheet 17): in a row of four
+  @{ d = $iconDir; f = 'icons-07'; c = 4; r = 1; s = $icon; ids = 'slippery veiled gravity unmaking' -split ' ' },
   @{ d = $iconDir; f = 'boons-01'; c = 4; r = 3; s = $icon; ids = 'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages' -split ' ' },
   @{ d = $iconDir; f = 'boons-02'; c = 4; r = 2; s = $icon; ids = 'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart spirit -plain-heart' -split ' ' },
   @{ d = $iconDir; f = 'piles-01'; c = 4; r = 3; s = $pile; ids = $pileIds },
@@ -242,7 +244,9 @@ $effects = @(
 )
 $made = 0
 foreach ($sheet in $sheets) {
-  $src = [System.Drawing.Bitmap]::FromFile((Join-Path $sheet.d "$($sheet.f).png"))
+  $sp = Join-Path $sheet.d "$($sheet.f).png"
+  if (-not (Test-Path $sp)) { "skip $($sheet.f) (not made yet)"; continue }
+  $src = [System.Drawing.Bitmap]::FromFile($sp)
   $keyed = [IconCut]::Key($src, $false)
   $src.Dispose()
   $cells = [IconCut]::Cells($keyed, $sheet.c, $sheet.r, $sheet.f)

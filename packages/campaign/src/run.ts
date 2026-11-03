@@ -568,8 +568,6 @@ export interface FightPlan {
   ghost?: GhostBoss & {
     hp: number;
     dmgPct: number;
-    /** what it starts the fight with: Enduring */
-    statuses: Partial<Record<StatusId, number>>;
   };
   /** the Ascendancy the run has taken */
   ascendancy?: string;
@@ -586,8 +584,13 @@ export interface FightPlan {
  * Rift is already a stronger deck. Doubled from 1.3 on Robert's word, DECISIONS #514: only a campaign ghost has this, not the Arena's.)
  */
 export const GHOST_BOSS_HP_BASE = 2.6;
-/** From this Rift Tier a ghost Warden starts from the Arena's HP, as many times its Riftwalker's own as ARENA_HP_MULT, and rises from there (DECISIONS #527). */
-export const GHOST_ARENA_TIER = 10;
+/**
+ * From this Rift Tier a ghost Warden has the Arena's HP, as many times its Riftwalker's own as ARENA_HP_MULT at Tier GHOST_ARENA_AT's
+ * table, and rises from there (DECISIONS #527): about 15% over the curve below it. Tier X at first, Tier XIII since #551.
+ */
+export const GHOST_ARENA_TIER = 13;
+/** The tier whose table the Arena's HP is matched to (where the bump first came, #527). */
+const GHOST_ARENA_AT = 10;
 export const GHOST_ARENA_HP_MULT = 6;
 /** The Max HP a Warden leaves you: 3 to Tier IV, one more every five tiers (4 from Tier V, 5 from Tier X, 7 at Tier XX). */
 export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, tier) / 5);
@@ -599,7 +602,7 @@ export const ghostBossHp = (hero: string, tier: number, stage = 1, maxHp?: numbe
   const own = maxHp ?? RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
   const scale = enemyScale(tier, stage).hp;
   if (tier >= GHOST_ARENA_TIER)
-    return Math.round((own * GHOST_ARENA_HP_MULT * scale) / enemyScale(GHOST_ARENA_TIER, 1).hp);
+    return Math.round((own * GHOST_ARENA_HP_MULT * scale) / enemyScale(GHOST_ARENA_AT, 1).hp);
   return Math.round((own * GHOST_BOSS_HP_BASE * Math.max(ghostFrom().hp, scale)) / ghostFrom().hp);
 };
 /** A ghost Warden's damage, percent of its cards' numbers: 100 where ghosts start, rising as the tier table's damage does. */
@@ -738,11 +741,11 @@ function meetGhost(r: RunState, g: GhostBoss): void {
 /** An Echo is a ghost met on the way, not a Warden: this share (percent) of a ghost Warden's HP, and its damage without Warden's Fury. */
 export const ECHO_HP_PCT = 60;
 /**
- * A campaign ghost is Enduring: no turn takes more than this percent of its Max HP, so a burst deck cannot one-shot it (Robert,
- * 2026-11-02; DECISIONS #549). A ghost Warden lasts at least 4 turns, an Echo at least 3.
+ * You start a fight with a campaign ghost Faltering for this many turns (25% less attack damage), on top of any the Omens give, so a
+ * burst deck does not simply one-shot it (Robert, 2026-11-02; DECISIONS #553, in place of #549's Enduring).
  */
-export const GHOST_ENDURING = 25;
-export const ECHO_ENDURING = 34;
+export const GHOST_FALTERING = 3;
+export const ECHO_FALTERING = 2;
 /** The cards an Echo lays out when it falls: its deck's best, by rarity. */
 export const ECHO_OFFERS = 3;
 const RARITY_RANK: Record<string, number> = {
@@ -814,15 +817,22 @@ export function duelPlan(run: RunState): FightPlan | null {
             hp: Math.round(ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp) * echoHp),
             // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
             dmgPct: Math.round(ghostBossDmg(run.tier) * wardenUp),
-            // (never one-shot: a turn takes at most this share of its Max HP, DECISIONS #549)
-            statuses: { enduring: node.kind === 'echo' ? ECHO_ENDURING : GHOST_ENDURING },
           },
         }
       : {}),
     encounterId: e.id,
     units,
     mods: omenMods(omen, units, boss, hpOf, e.kind === 'finale'),
-    heroStatuses: { ...omen.heroStatuses },
+    heroStatuses: {
+      ...omen.heroStatuses,
+      // (a campaign ghost leaves you Faltering, on top of Dread's: DECISIONS #553)
+      ...(ghost
+        ? {
+            faltering:
+              (omen.heroStatuses.faltering ?? 0) + (node.kind === 'echo' ? ECHO_FALTERING : GHOST_FALTERING),
+          }
+        : {}),
+    },
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     deck: [...run.deck, ...omen.fightCards],
     hp: run.hp,

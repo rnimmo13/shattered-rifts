@@ -309,11 +309,6 @@ export const STATUS_ICONS: Record<StatusId, IconArt> = {
     [p(C.skyHi, 'M24 4C24 4 10 20 10 30A14 14 0 0 0 38 30C38 20 24 4 24 4Z')],
     [p('#9fc7da', 'M24 4C24 4 38 20 38 30A14 14 0 0 1 26 44C33 34 30 16 24 4Z')],
   ),
-  // (a campaign ghost, DECISIONS #549) an hourglass on a shield: it can only lose so much a turn
-  enduring: mix(
-    shield(C.sky, C.skyLo, C.skyHi),
-    art([], [p(C.white, 'M17 13H31L24 24L31 35H17L24 24Z'), p(C.skyLo, 'M17 13H31M17 35H31', 2.2)]),
-  ),
   // (Wardens' rules, DECISIONS #546) a veil drawn over a face; a dark well with rings falling in; a crown splitting apart
   veiled: art(
     [p(C.violetLo, 'M8 10C14 4 34 4 40 10L42 44C36 40 30 46 24 42C18 46 12 40 6 44Z')],
@@ -768,8 +763,6 @@ export const PAINTED: ReadonlySet<string> = new Set(
     'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',
     // (Wardens' rules, DECISIONS #546: stand-ins copied from Ghostly, Orbit and Fracture until their own are painted)
     'veiled gravity unmaking',
-    // (a campaign ghost, DECISIONS #549: a stand-in copied from Fortified until its own is painted)
-    'enduring',
     'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages',
     'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart',
   ].flatMap((row) => row.split(' ')),

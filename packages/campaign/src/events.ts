@@ -340,11 +340,15 @@ export function rollEvent(r: RunState): EventCtx {
   const total = pool.reduce((n, e) => n + e.weight, 0);
   let x = nextInt(r.rng, Math.round(total * 100)) / 100;
   for (const e of pool) {
-    if (x < e.weight) return pinOptions(r, e.build(r));
+    if (x < e.weight) return withScene(pinOptions(r, e.build(r)), e.id);
     x -= e.weight;
   }
-  return pinOptions(r, (pool[pool.length - 1] as EventDef).build(r));
+  const last = pool[pool.length - 1] as EventDef;
+  return withScene(pinOptions(r, last.build(r)), last.id);
 }
+
+/** The event's painted scene is named by its id (the screen shows public/art/events/<scene>.jpg when there is one). */
+export const withScene = (ev: EventCtx, scene: string): EventCtx => ({ ...ev, scene });
 
 /**
  * The hand-written options that touch a random card (an upgrade, a copy, a card thrown away, a transform) pick it now, when the event

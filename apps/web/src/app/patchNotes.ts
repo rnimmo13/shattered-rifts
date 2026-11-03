@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.159.0',
+    date: '2026-11-02',
+    title: 'Painted events, Warden arenas, the Crossing',
+    summary: 'Every event has its own painted scene, every Warden fights in an arena of its own, each realm has a second place to fight, and ghosts and Arena matches meet in the Crossing.',
+    notes: [
+      { kind: 'new', text: 'Every event has its own painted scene, and so do the Rift Caches, the merchant and the shrine. On a wide screen the event stands in the dark side of its picture; on a phone the picture shows across the top.' },
+      { kind: 'new', text: 'Every Warden fights in an arena of its own: Kron by his foundry Hatch, Nyxara in her veiled throne room, the Applause Below in an opera house, the Event Horizon Regent at the edge of a black hole, and Vorthax at the Heart of the Rift, among others.' },
+      { kind: 'new', text: 'Each realm has a second place to fight (castle ramparts, a skydock, a jungle canopy, a moonlit garden, a stilt village, a desert bazaar, a tavern cellar), and the Far Rifts have their own observatory. The Hollow Crown and the Midden have their painted arenas at last.' },
+      { kind: 'new', text: 'Ghost Wardens, Echoes and every Arena match are fought in the Crossing, a colosseum stitched together from every world.' },
+      { kind: 'changed', text: 'Campaign ghosts no longer have Enduring: you start against an Echo Faltering for 2 turns, and against a ghost Warden for 3. Ghost Wardens get the Arena\'s HP from Tier XIII, not Tier X.' },
+      { kind: 'changed', text: 'A Fanned Dagger never needs aiming: Inked Daggers and Recall the Blades play straight away while you are Fanned, and an Inked Dagger\'s Faltering lands on every enemy, like its damage.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.158.0',
     date: '2026-11-02',
     title: 'Rift Caches, Echoes, every Warden a rule',

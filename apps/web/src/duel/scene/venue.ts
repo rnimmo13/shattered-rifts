@@ -6,8 +6,42 @@ import { FULL_W, PAD_Y, makeCanvas } from './textures';
 import { paintScene } from '../../art/scenes';
 import { rng } from './noise';
 
+/** A Warden's own arena (boss-<name>, see BOSS_VENUE). */
+export type BossVenueId =
+  | 'boss-seraphine'
+  | 'boss-benediction'
+  | 'boss-kron'
+  | 'boss-static'
+  | 'boss-gorrmaw'
+  | 'boss-stag'
+  | 'boss-nyxara'
+  | 'boss-applause'
+  | 'boss-tide'
+  | 'boss-queen'
+  | 'boss-regent'
+  | 'boss-vorthax';
+
 export type VenueId =
-  'rift' | 'cave' | 'castle' | 'factory' | 'forest' | 'glass' | 'swamp' | 'alley';
+  | 'rift'
+  | 'cave'
+  | 'castle'
+  | 'factory'
+  | 'forest'
+  | 'glass'
+  | 'swamp'
+  | 'alley'
+  // a second site for each realm, and the Far Rifts' own
+  | 'ramparts'
+  | 'dock'
+  | 'canopy'
+  | 'garden'
+  | 'stilts'
+  | 'bazaar'
+  | 'cellar'
+  | 'farrift'
+  | BossVenueId
+  // the Rift-crossed arena: ghosts (a ghost Warden, an Echo) and the Arena's PvP
+  | 'crossing';
 
 /** Painted-skyline venues: each reuses a Riftwalker's card-art scene (art/scenes.ts) as a far backdrop. */
 const SCENE_VENUES = {
@@ -61,7 +95,58 @@ const SCENE_VENUES = {
   },
 } as const;
 
-/** Which venue a realm's fights use. Realms not listed fight in the Rift arena. */
+/** Each Warden's own arena, by encounter id. */
+export const BOSS_VENUE: Record<string, BossVenueId> = {
+  seraphine: 'boss-seraphine',
+  'the-hollow-benediction': 'boss-benediction',
+  kron: 'boss-kron',
+  'mother-of-static': 'boss-static',
+  gorrmaw: 'boss-gorrmaw',
+  'the-upside-down-stag': 'boss-stag',
+  nyxara: 'boss-nyxara',
+  'the-applause-below': 'boss-applause',
+  'the-mourning-tide': 'boss-tide',
+  'queen-of-the-unmade': 'boss-queen',
+  'event-horizon-regent': 'boss-regent',
+  vorthax: 'boss-vorthax',
+};
+
+/** A realm's second site (its other fights are split between the two). */
+const SECOND_SITE: Partial<Record<VenueId, VenueId>> = {
+  castle: 'ramparts',
+  factory: 'dock',
+  forest: 'canopy',
+  cave: 'garden',
+  swamp: 'stilts',
+  glass: 'bazaar',
+  alley: 'cellar',
+};
+
+/**
+ * Where a fight takes place: a Warden in its own arena, a ghost (a ghost Warden or an Echo) in the Crossing, and any other
+ * fight at one of its realm's two sites, picked by the fight's seed (so a resumed or replayed fight keeps its place; a retry
+ * after a loss has a new seed, and may move to the other site).
+ */
+export function venueFor(
+  enc: { id: string; realm?: string },
+  seed: string | number,
+  ghost = false,
+): VenueId {
+  if (ghost) return 'crossing';
+  const boss = BOSS_VENUE[enc.id];
+  if (boss) return boss;
+  const first = venueForRealm(enc.realm);
+  const second = SECOND_SITE[first];
+  return second && seedHash(String(seed)) % 2 === 1 ? second : first;
+}
+
+function seedHash(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (Math.imul(h, 31) + seed.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** Which venue a realm's fights use (the first of its two sites). Realms not listed fight in the Rift arena. */
 export function venueForRealm(realm: string | undefined): VenueId {
   switch (realm) {
     case 'aurelion':
@@ -78,6 +163,8 @@ export function venueForRealm(realm: string | undefined): VenueId {
       return 'swamp';
     case 'midden':
       return 'alley';
+    case 'beyond':
+      return 'farrift';
     default:
       return 'rift';
   }
@@ -95,10 +182,10 @@ export interface SceneArt {
 
 export type VenueArt = SceneArt;
 
-/** The skyline look of a venue; null (so the Rift arena is used) for 'rift' and 'cave', which have no skyline of their own. */
+/** The skyline look of a venue; null (so the Rift arena is used) for a venue with no skyline of its own. */
 export function loadVenueArt(id: VenueId): Promise<VenueArt | null> {
-  if (id === 'rift' || id === 'cave') return Promise.resolve(null);
-  return Promise.resolve({ id: 'scene', ...SCENE_VENUES[id] });
+  if (!Object.hasOwn(SCENE_VENUES, id)) return Promise.resolve(null);
+  return Promise.resolve({ id: 'scene', ...SCENE_VENUES[id as keyof typeof SCENE_VENUES] });
 }
 
 /** A painted skyline backdrop: sky gradient, then the Riftwalker's card-art scene scaled up, then a haze at the horizon. */

@@ -103,12 +103,6 @@ export const STATUS_INFO: Record<
     tone: 'good',
     text: 'The next hit it takes deals only 1, and takes one stack off. A Shatter gets through, and Bleed and Burn are not hits.',
   },
-  enduring: {
-    name: 'Enduring',
-    glyph: '⛨',
-    tone: 'good',
-    text: 'It loses at most this percent of its Max HP in any one turn, however hard it is hit.',
-  },
   // (Wardens' rules, DECISIONS #546)
   veiled: {
     name: 'Veiled',
@@ -320,7 +314,7 @@ export const STATUS_INFO: Record<
     name: 'Fanned',
     glyph: '✷',
     tone: 'good',
-    text: 'Your Daggers hit ALL enemies.',
+    text: 'Your Daggers hit ALL enemies, and what they put on one enemy (Faltering) lands on all of them. They need no aiming.',
   },
   tracking: {
     name: 'Tracking',

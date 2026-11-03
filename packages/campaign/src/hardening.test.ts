@@ -65,14 +65,14 @@ describe('the Rift hardens at Tiers 5, 10 and 15', () => {
   });
 });
 
-describe('a ghost Warden from Tier 10', () => {
-  it('jumps to six times its Riftwalker at Tier 10, never falls after that, and is unchanged below it', () => {
-    expect(GHOST_ARENA_TIER).toBe(10);
-    expect(ghostBossHp('knight', 10, 1)).toBe(480);
-    expect(ghostBossHp('knight', 10, 1)).toBeGreaterThan(ghostBossHp('knight', 9, 3));
-    expect(ghostBossHp('knight', 9, 1)).toBe(Math.round((80 * 2.6 * enemyScale(9, 1).hp) / enemyScale(4, 1).hp));
+describe('a ghost Warden from Tier 13', () => {
+  it('jumps to the Arena HP at Tier 13 (DECISIONS #551), never falls after that, and is unchanged below it', () => {
+    expect(GHOST_ARENA_TIER).toBe(13);
+    expect(ghostBossHp('knight', 13, 1)).toBe(Math.round((80 * 6 * enemyScale(13, 1).hp) / enemyScale(10, 1).hp));
+    expect(ghostBossHp('knight', 13, 1)).toBeGreaterThan(ghostBossHp('knight', 12, 3));
+    expect(ghostBossHp('knight', 12, 1)).toBe(Math.round((80 * 2.6 * enemyScale(12, 1).hp) / enemyScale(4, 1).hp));
     let last = 0;
-    for (let tier = 10; tier <= 20; tier++) {
+    for (let tier = 4; tier <= 20; tier++) {
       for (let stage = 1; stage <= 3; stage++) {
         expect(ghostBossHp('knight', tier, stage)).toBeGreaterThan(last);
         last = ghostBossHp('knight', tier, stage);
