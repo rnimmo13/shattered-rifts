@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.167.0',
+    date: '2026-11-03',
+    title: 'Fracture, Fault Lines and new attacks',
+    summary: 'The Spellblade\'s Fracture builds faster and gets a new Aura, Spells are cast instead of swung, and cards that hit every enemy look like it.',
+    notes: [
+      { kind: 'new', text: 'Fault Lines (Spellblade, uncommon Aura, 2 Mana, 1 upgraded): whenever you play a Sword or a Spell, apply 2 Fracture to its target, or the enemy with the most Fracture.' },
+      { kind: 'balance', text: 'More Fracture: Faultline Hex 7 (9), Pressure Point 6 (8), Spreading Fault 5 to every enemy (7), Hairline Crack 5 (7), Fault Memory 5 and grows by 3, Hungering Void 3 a turn (4).' },
+      { kind: 'balance', text: 'Final Shatter applies 8 Fracture (was 10, which always set off a Shatter). Its Barrier, now 12 (16), comes only when it does: play it on an enemy with 2 or more Fracture.' },
+      { kind: 'changed', text: 'The Spellblade\'s Spells are cast from her hand as ember instead of swung with the blade, and land as spells.' },
+      { kind: 'changed', text: 'Cards that hit every enemy play across them all: a blade cuts through each in one sweep, a spell rains fire on each, a gun or a thrown knife goes to each.' },
+      { kind: 'changed', text: 'Campaign leaderboard: Tiers cleared is gone; Class and Ascendancy have a column each, and the Tier is just its number.' },
+    ],
+    heads: 'Card numbers changed: Arena matches need both players on this version.',
+  },
+  {
     version: '0.166.0',
     date: '2026-11-03',
     title: 'Warden rules fold away',

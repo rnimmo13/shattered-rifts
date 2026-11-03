@@ -143,7 +143,13 @@ export interface CombatView {
 function opIcons(ops: readonly Op[]): IntentIcon[] {
   const out = new Set<IntentIcon>();
   const foeSel = (to: Sel): boolean =>
-    to === 'target' || to === 'allFoes' || to === 'randomFoe' || to === 'front' || to === 'foeHero';
+    to === 'target' ||
+    to === 'allFoes' ||
+    to === 'randomFoe' ||
+    to === 'front' ||
+    to === 'foeHero' ||
+    to === 'weakestFoe' ||
+    to === 'targetOrMostFracture';
   for (const o of ops) {
     if (o.op === 'damage' || o.op === 'loseHp') out.add('attack');
     else if (o.op === 'barrier') out.add('defend');
@@ -425,6 +431,7 @@ const WHO: Record<Sel, string> = {
   weakestFoe: ' to the enemy with the least HP',
   biggestAlly: ' to your biggest companion',
   foeHero: ' to the enemy hero',
+  targetOrMostFracture: ' to its target (or the enemy with the most Fracture)',
 };
 /** The same targets as seen from an enemy's move: "you" are the other side. */
 const WHO_ENEMY: Record<Sel, string> = {
@@ -441,6 +448,7 @@ const WHO_ENEMY: Record<Sel, string> = {
   weakestFoe: ' to your unit with the least HP',
   biggestAlly: ' to its biggest ally',
   foeHero: ' to you',
+  targetOrMostFracture: ' to its target (or your unit with the most Fracture)',
 };
 const KIND_PLURAL: Record<string, string[]> = {
   attack: ['Attack'],
@@ -1497,8 +1505,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'power': {
       // (a card kind by its player-facing name: an Aura, a Trap; DECISIONS #304)
       const KIND_WORD: Record<string, string> = { power: 'Aura', snare: 'Trap' };
+      const tagged = (t: string) => `${article(TAG_NAMES[t] ?? t)} ${TAG_NAMES[t] ?? t}`;
       const what = o.tag
-        ? `${article(TAG_NAMES[o.tag] ?? o.tag)} ${TAG_NAMES[o.tag] ?? o.tag}`
+        ? `${tagged(o.tag)}${o.orTag ? ` or ${tagged(o.orTag)}` : ''}`
         : o.filter
           ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}`
           : 'a card';

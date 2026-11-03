@@ -47,6 +47,8 @@ const COST_CUT_AURAS = [
   'patient-hands',
   // on/off, a Mana engine, or a card or machine every turn
   'dutch-courage',
+  // (it answers every Sword and Spell, so more per play would be too much: DECISIONS #564)
+  'fault-lines',
   'rolling-thunder',
   'backup-core',
   'command-chip',

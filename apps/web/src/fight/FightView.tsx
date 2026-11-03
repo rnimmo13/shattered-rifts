@@ -29,6 +29,8 @@ import {
   viewFor,
   previewCardDamage,
   ON_OR_OFF,
+  BLADE_TAG,
+  EDGE_TAG,
   type LiveDamage,
   type Action,
   type CardDef,
@@ -99,7 +101,7 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { attackFor } from './attackStyles';
+import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
 import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
 import { replayFight, type FightMove, type FightReplay } from './recap';
@@ -498,6 +500,8 @@ export function FightView(props: {
   const actor = useRef<string | null>(null);
   /** a potion is being used: what heals now is the potion */
   const drinking = useRef(false);
+  /** the hero whose Spell is landing now: its blows show as a spell's (DECISIONS #565) */
+  const castBy = useRef<string | null>(null);
 
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -817,8 +821,20 @@ export function FightView(props: {
             const to = e.target !== null && e.side === mySide ? spotOf(e.target) : null;
             if (to) flyCard(handSpot(), to, { dur: 200, arc: 50, size: 60, trail: 'trail-draw' });
             if (def.kind === 'attack') {
-              await sc.fighters.attack(hero, e.target ?? null, undefined, def);
+              // (a Spell is cast and a card that hits them all plays across them all, DECISIONS #565)
+              const by = unitOf(hero);
+              const tags = def.tags ?? [];
+              const spread =
+                ((by?.statuses.fanned ?? 0) > 0 && tags.includes(EDGE_TAG)) ||
+                ((by?.statuses.bladesweep ?? 0) > 0 && tags.includes(BLADE_TAG));
+              const motion = cardMotion(by?.def ?? '', def, spread);
+              castBy.current = motion.spell ? hero : null;
+              const foes = d.sides[e.side === 'a' ? 'b' : 'a'].units
+                .filter((u) => u.hp > 0)
+                .map((u) => u.id);
+              await sc.fighters.attack(hero, e.target ?? null, undefined, def, motion, foes);
             } else {
+              castBy.current = null;
               sc.fighters.act(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
               await wait(160);
@@ -830,6 +846,7 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           actor.current = e.unit;
           drinking.current = false;
+          castBy.current = null;
           // (its intent shakes as it goes)
           shake(document.querySelector(`[data-intent="${CSS.escape(e.unit)}"]`));
           // look ahead for what this unit hits, so the lunge goes the right way
@@ -885,7 +902,9 @@ export function FightView(props: {
           } else if (e.kind === 'attack' && e.lost > 0) {
             const by = e.source ? unitOf(e.source) : undefined;
             const spec = by ? attackFor(by.def, by.kind === 'hero') : undefined;
-            fxOn(hitFx(e.lost, spec?.kind), e.target, {
+            // (a Spell's blow lands as a spell, not a cut)
+            const kind = by && castBy.current === by.id ? 'cast' : spec?.kind;
+            fxOn(hitFx(e.lost, kind), e.target, {
               // (painted swinging to the right: an attack from the right of the screen is mirrored)
               flip: (by ? shown(by.side, mySide) : 'a') === 'b',
             });
@@ -1040,6 +1059,7 @@ export function FightView(props: {
           reduceEvent(db, d, e);
           actor.current = null;
           drinking.current = false;
+          castBy.current = null;
           return;
         case 'gameOver':
           reduceEvent(db, d, e);

@@ -14,7 +14,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { Picture } from '../ui/Picture';
 import { crestPic } from '../fight/fxMoments';
 import { TrophyBadges } from './Trophies';
-import { heroName, progressLabel } from './deckLayout';
+import { heroName } from './deckLayout';
 import { viewBoard, type BoardKind, type BoardView, type GhostView } from './boardApi';
 import { RankedBoard } from './RankedBoard';
 import { seasonLeft } from './seasonText';
@@ -328,7 +328,8 @@ export function LeaderboardScreen() {
               />
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
-                head={['Player', 'Character', 'Where they are', 'Tiers cleared', 'Status']}
+                // (the class and the Ascendancy it took, each in its own column; no Tiers cleared, DECISIONS #566)
+                head={['Player', 'Class', 'Ascendancy', 'Tier', 'Status']}
                 numeric={[3]}
                 rows={view.board as RunStanding[]}
                 you={view.you as (RunStanding & { rank: number }) | null}
@@ -337,13 +338,22 @@ export function LeaderboardScreen() {
                   <span key="n" className="board__name">
                     {s.name}
                   </span>,
-                  <span key="h" className="board__hero" title={whoName(s.hero, s.ascendancy)}>
-                    <Who hero={s.hero} ascendancy={s.ascendancy} />
-                    <small>{whoName(s.hero, s.ascendancy)}</small>
+                  <span key="h" className="board__hero" title={heroName(s.hero)}>
+                    <HeroIcon hero={s.hero} size={24} />
+                    <small>{heroName(s.hero)}</small>
                   </span>,
-                  <b key="t">{progressLabel(s.tier, s.stage)}</b>,
-                  // (the board counts 3 to a cleared tier)
-                  Math.floor(s.total / 3),
+                  s.ascendancy ? (
+                    <span key="a" className="board__hero" title={heroName(s.hero, s.ascendancy)}>
+                      <Who hero={s.hero} ascendancy={s.ascendancy} />
+                      <small>{heroName(s.hero, s.ascendancy)}</small>
+                    </span>
+                  ) : (
+                    <span key="a" className="board__none" title="No Ascendancy yet">
+                      <span aria-hidden>&mdash;</span>
+                      <span className="sr-only">None yet</span>
+                    </span>
+                  ),
+                  <b key="t">{s.tier}</b>,
                   // (still going, or how it ended; DECISIONS #292)
                   <span key="s" className={`board__status board__status--${s.status ?? 'live'}`}>
                     {s.status === 'fell' ? 'Fell' : s.status === 'abandoned' ? 'Abandoned' : 'Live'}

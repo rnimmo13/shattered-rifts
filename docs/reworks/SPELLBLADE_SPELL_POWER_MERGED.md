@@ -4,6 +4,8 @@
 ChatGPT's draft (`SPELLBLADE_SPELL_POWER_CHATGPT.md`) was the main version; this replaces it and `SPELLBLADE_SPELL_POWER.md`. Every card is priced by
 hand from `docs/14_CARD_COSTING.md`; no sim was run.
 
+- **DECISIONS #564:** Fracture back up for 1 Mana: Faultline Hex 7 (9), Pressure Point 6 (8), Spreading Fault 5 to ALL (7), Hairline Crack 5 (7), Fault Memory 5 and Grows 3 (7), Hungering Void 3 a turn (4). New uncommon Aura **Fault Lines** (2 Mana, 1 upgraded): whenever you play a Sword or a Spell, apply 2 Fracture to its target (or the enemy with the most Fracture); about 2.5 Swords and Spells a turn, 5 Fracture a turn, priced against Hungering Void+ (row below).
+- **DECISIONS #563:** Final Shatter applies 8 (upgrade 8), and its Barrier on a Shatter is 12 (16) + 1 per 3 Spell Power: 2 less Fracture, the Barrier (about 70% of plays) doubled.
 **As built, changed from the list below:**
 - **DECISIONS #509:** X-free Swords keep a fixed number of hits, each hit growing with Spell Power: Obsidian Flurry 4 x3 (+1 per 3), Rift Sweep 3 x3 (+1 per 3), Tyrant Strike and Fault Piercer 4 x3 (+1 per 3), Crosscut 2 x2 (+1 per 4), Hammer and Anvil 3 x4 (+1 per 3), Storm of Glass 5 x4 (+1 per 2), Obsidian Drill 7 x3 (+2 per point spent). Whispering Edge gives 2 Keen. This replaces the Sword numbers in #507.
 - **DECISIONS #507:** no Sword or spell adds hits as it scales: a Sword is one hit of its rate x base damage, +rate per step of Spell Power. Obsidian Flurry, Hammer and Anvil and Storm of Glass read every 3; Thousand Shards deals 5 a point, Obsidian Drill 21 + 6; Whispering Edge gives 3 Keen.
@@ -198,6 +200,7 @@ Priced at the amount spent in the rates table.
 | Pillar of Glass | U | 1 | Aura. After your first card each turn that causes a Shatter: 4 Barrier | 6 Barrier | 15.4 / 16.8 | K† |
 | Fault Reader | U | 1 | Aura. After your first card each turn that causes a Shatter: draw 1, 2 Barrier | 4 Barrier | 17.3 / 16.8 | N† |
 | Glass Armory | U | 1 | Aura. After your first Sword each turn that follows a Spell: gain 2 SP | Gain 3 | 14.4 / 16.8 | K |
+| Fault Lines | U | 2 | Aura. Whenever you play a Sword or a Spell: apply 2 to its target (or the enemy with the most Fracture) | Costs 1 | ~5 Fracture a turn on one enemy, against Hungering Void+ (4 to each marked enemy for 1 Mana) with no mark needed; at 2 Mana about even, at 1 (upgraded) above it in a fight with one enemy (DECISIONS #564) | N |
 
 ## Spell and generator Auras (6)
 

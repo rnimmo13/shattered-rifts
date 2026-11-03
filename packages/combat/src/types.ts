@@ -287,7 +287,9 @@ export type Sel =
   /** your living companion with the most max HP (DECISIONS #383) */
   | 'biggestAlly'
   /** (DECISIONS #437 review) the other side's hero, past any companion in front of it (an enemy's Fate) */
-  | 'foeHero';
+  | 'foeHero'
+  /** the card's target if it still stands, or else the living enemy with the most Fracture (the first of them on a tie; DECISIONS #564) */
+  | 'targetOrMostFracture';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the
@@ -617,6 +619,8 @@ export type Op =
       /** 'play': only cards of this kind / with this tag; 'stance' / 'stanceLeft': only entering / leaving this stance */
       filter?: CardKind;
       tag?: string;
+      /** 'play': cards with this tag answer too ("a Sword or a Spell", DECISIONS #564) */
+      orTag?: string;
       stance?: Stance;
       /** it ends with this turn (Rage) */
       temp?: boolean;
@@ -1279,6 +1283,8 @@ export interface PowerState {
   ops: Op[];
   filter?: CardKind;
   tag?: string;
+  /** cards with this tag answer too (DECISIONS #564) */
+  orTag?: string;
   stance?: Stance;
   /** it ends with this turn (Rage) */
   temp?: boolean;

@@ -7,7 +7,7 @@ import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
 import type { CardDef } from '@sr/combat';
-import type { AttackSpec } from './attackStyles';
+import type { AttackSpec, CardMotion } from './attackStyles';
 import {
   MOTION_KIND,
   WEAPON_LOOK,
@@ -26,6 +26,7 @@ import {
   orb,
   puff,
   ring,
+  skyfall,
   slashArc,
   streak,
   thrownBlade,
@@ -450,30 +451,49 @@ export class Fighters {
 
   /** Attack the target in the figure's own style (a slash, a shot, a spell...) and call `onHit` at contact. */
   /** `card`: the card that made the attack, when a hero played one (it picks the weapon: KP's hammer or his shotgun...) */
+  /** `motion` and `foes`: a Spell is cast, not swung, and a card that hits every enemy plays across all of `foes` (DECISIONS #565) */
   attack(
     id: string,
     targetId: string | null,
     onHit?: () => void,
     card?: CardDef | null,
+    motion?: CardMotion,
+    foes?: readonly string[],
   ): Promise<void> {
     const f = this.all.get(id);
-    const t = targetId ? this.all.get(targetId) : undefined;
     if (!f || f.dying || this.h.profile().still) {
       onHit?.();
       return Promise.resolve();
     }
+    const all = (foes ?? [])
+      .map((x) => this.all.get(x))
+      .filter((x): x is Fighter => !!x && !x.dying);
+    const spread = motion?.aoe && all.length > 1 ? all : null;
+    // (a sweep comes first to the nearest of them; a card with no target and one enemy left goes at that one)
+    const t = spread
+      ? spread.reduce((m, x) => (Math.abs(x.x - f.x) < Math.abs(m.x - f.x) ? x : m))
+      : targetId
+        ? this.all.get(targetId)
+        : all.length === 1
+          ? all[0]
+          : undefined;
     const dir = f.spec.side === 'a' ? 1 : -1;
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
     const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
     const tex = wid ? weaponTexture(wid) : undefined;
-    const weapon = wid && tex ? { id: wid, tex, look: WEAPON_LOOK[wid] } : null;
-    const spec: AttackSpec = weapon
+    let weapon = wid && tex ? { id: wid, tex, look: WEAPON_LOOK[wid] } : null;
+    let spec: AttackSpec = weapon
       ? { ...f.spec.attack, kind: MOTION_KIND[weapon.look.motion] }
       : f.spec.attack;
+    // a Spell from a hero who swings a blade is cast from the hand instead (one who casts already keeps the staff)
+    if (motion?.spell && spec.kind !== 'shoot' && spec.kind !== 'throw' && spec.kind !== 'cast') {
+      weapon = null;
+      spec = { kind: 'cast', tint: motion.spellTint ?? spec.tint };
+    }
     const kind = spec.kind;
     return kind === 'shoot' || kind === 'throw' || kind === 'cast'
-      ? this.rangedAttack(f, t, dir, spec, weapon, onHit)
-      : this.meleeAttack(f, t, dir, spec, weapon, onHit);
+      ? this.rangedAttack(f, t, dir, spec, weapon, onHit, spread)
+      : this.meleeAttack(f, t, dir, spec, weapon, onHit, spread);
   }
 
   /**
@@ -551,6 +571,7 @@ export class Fighters {
     spec: AttackSpec,
     weapon: Wielded | null,
     onHit?: () => void,
+    spread: Fighter[] | null = null,
   ): Promise<void> {
     const kind = spec.kind;
     const m =
@@ -609,9 +630,14 @@ export class Fighters {
         this.h.sound('attackHit');
         // the weapon picture replaces the drawn blow; the painted dust or sparks land with it
         // (no painted frames, say one of them failed to load: the drawn blow instead, so a hit never looks like nothing)
-        if (!weapon || !this.meleeFrames(f, t, dir, spec)) this.meleeFx(f, t, dir, spec);
-        onHit?.();
-        resolve(); // the caller carries on at contact; the figure springs home on its own
+        // (the hit must always land, even if an effect fails to draw)
+        try {
+          if (spread) this.sweepFx(f, spread, dir, spec, weapon !== null);
+          else if (!weapon || !this.meleeFrames(f, t, dir, spec)) this.meleeFx(f, t, dir, spec);
+        } finally {
+          onHit?.();
+          resolve(); // the caller carries on at contact; the figure springs home on its own
+        }
       });
       tl.to(f.body.scale, { x: 1.14, y: 0.84, duration: 0.07 });
       tl.to({}, { duration: 0.05 });
@@ -630,6 +656,44 @@ export class Fighters {
     }
     const at = t ? this.chest(t) : { x: f.root.x + dir * 80, y: this.chest(f).y };
     return this.frames('spark', at, size);
+  }
+
+  /**
+   * A blow that hits every enemy: one flat cut runs through them all, nearest first, with a streak along the line it follows
+   * (and the painted sparks on each, with a weapon in hand).
+   */
+  private sweepFx(
+    f: Fighter,
+    foes: Fighter[],
+    dir: number,
+    spec: AttackSpec,
+    painted: boolean,
+  ): void {
+    const c = this.fxCtx();
+    const line = [...foes].sort((p, q) => Math.abs(p.x - f.x) - Math.abs(q.x - f.x));
+    const at = line.map((x) => this.chest(x));
+    const first = at[0];
+    const last = at[at.length - 1];
+    if (first && last)
+      void streak(
+        c,
+        { x: first.x - dir * 90, y: first.y },
+        { x: last.x + dir * 90, y: last.y },
+        spec.tint,
+        0.16,
+        6,
+      );
+    line.forEach((x, i) => {
+      const p = at[i]!;
+      const size = Math.max(80, Math.min(160, x.spec.height * 0.6));
+      slashArc(c, p, dir, spec.tint, { tilt: 0.1, size: size * 1.3, delay: i * 0.05 });
+      this.track(
+        gsap.delayedCall(i * 0.05, () => {
+          burst(c, p, spec.tint, 6, 40);
+          if (painted) this.frames('spark', p, size);
+        }),
+      );
+    });
   }
 
   /** What appears on the target at the moment a melee blow lands. */
@@ -685,6 +749,7 @@ export class Fighters {
     spec: AttackSpec,
     weapon: Wielded | null,
     onHit?: () => void,
+    spread: Fighter[] | null = null,
   ): Promise<void> {
     const { kind, tint, hits = 1 } = spec;
     const held = weapon ? this.wield(f, weapon, dir) : null;
@@ -747,6 +812,26 @@ export class Fighters {
         };
         try {
           const muzzle = tip();
+          if (spread) {
+            if (held && kind === 'throw') held.holder.alpha = 0;
+            if (held && weapon?.look.motion === 'fire' && muzzle)
+              this.frames('muzzle', muzzle, 150, dir < 0, [0.12, 0.5]);
+            // (the hit lands when the last of them does, or in 1.5 s at the latest: the fight never waits on a lost tween)
+            void Promise.race([
+              this.spreadShot(f, spread, dir, spec, muzzle ?? from, held ? weapon : null),
+              new Promise<void>((done) => setTimeout(done, 1500)),
+            ])
+              .catch(() => undefined)
+              .then(() => {
+                try {
+                  this.h.sound('attackHit');
+                } finally {
+                  onHit?.();
+                  resolve();
+                }
+              });
+            return;
+          }
           if (held && weapon?.look.motion === 'fire') {
             // the kick of the gun, and the painted flash and smoke at its muzzle
             this.track(
@@ -833,6 +918,74 @@ export class Fighters {
       tl.to(f.body.scale, { x: 1, y: 1, duration: 0.2, ease: ease.pop.gsap }, '<');
       tl.to(f.body, { rotation: 0, duration: 0.2, ease: ease.pop.gsap }, '<');
     });
+  }
+
+  /**
+   * A ranged card that hits every enemy: a spell rains on each of them from above after a flare in the hand, a gun or a thrower
+   * sends one shot or knife to each. Resolves when the last has landed.
+   */
+  private spreadShot(
+    f: Fighter,
+    foes: Fighter[],
+    dir: number,
+    spec: AttackSpec,
+    from: Pt,
+    weapon: Wielded | null,
+  ): Promise<void> {
+    const c = this.fxCtx();
+    const { kind, tint } = spec;
+    const runs = foes.map((x, i) => {
+      const to = this.chest(x);
+      const dist = Math.hypot(to.x - from.x, to.y - from.y);
+      if (kind === 'cast') return skyfall(c, to, dir, tint, 0.08 + i * 0.07);
+      if (kind === 'shoot')
+        return streak(c, from, to, tint, Math.max(0.1, dist / 3800), 3).then(() =>
+          burst(c, to, tint, 5, 30),
+        );
+      if (weapon) {
+        const k = new Sprite(weapon.tex);
+        k.anchor.set(0.5);
+        k.scale.set(
+          ((f.spec.height * weapon.look.size) / Math.max(1, weapon.tex.width)) * dir,
+          (f.spec.height * weapon.look.size) / Math.max(1, weapon.tex.width),
+        );
+        k.position.set(from.x, from.y);
+        k.zIndex = 6000;
+        this.h.container.addChild(k);
+        const time = Math.max(0.16, dist / 2400);
+        return new Promise<void>((done) => {
+          this.track(
+            gsap.to(k, {
+              x: to.x,
+              y: to.y,
+              rotation: dir * Math.PI * 4,
+              duration: time,
+              delay: i * 0.04,
+              ease: 'none',
+              onComplete: () => {
+                try {
+                  if (!k.destroyed) k.destroy();
+                  this.frames('spark', to, 140);
+                } finally {
+                  done();
+                }
+              },
+            }),
+          );
+        });
+      }
+      // (knives leave 40 ms apart, as with the weapon picture)
+      return new Promise<void>((done) => {
+        this.track(gsap.delayedCall(i * 0.04, done));
+      })
+        .then(() => thrownBlade(c, from, to, tint, Math.max(0.16, dist / 2400)))
+        .then(() => burst(c, to, tint, 6, 36));
+    });
+    if (kind === 'cast') {
+      puff(c, from, tint, 46, 0.22);
+      ring(c, from, tint, 50, 50);
+    }
+    return Promise.all(runs).then(() => undefined);
   }
 
   /** A non-attacking action (casting, guarding, summoning): a quick hop and glow. */

@@ -5,6 +5,11 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Campaign leaderboard:** the Tiers cleared column is gone; the Class and the Ascendancy a run took now have a column each, and "Where they are" is now just the Tier.
+- **Swords swing, Spells are cast:** the Spellblade's Spells (Lava Bomb, Molten Ruin...) leave the blade sheathed and fly from her hand as ember, and their hits land as spells, not cuts. **Cards that hit every enemy look like it:** a blade sweeps through them all in one cut, a spell rains fire on each from above, and a gun or thrown knife goes to each. Fanned Daggers and the Blade under Blade Sweep count.
+- **Fracture builds faster:** Faultline Hex applies 7 (9 upgraded, was 5), Pressure Point 6 (8, was 4), Spreading Fault 5 to every enemy (7, was 4), Hairline Crack 5 (7, was 4), Fault Memory 5 and grows by 3 (was 4 and 2), Hungering Void 3 a turn (4, was 2).
+- **New Spellblade Aura, Fault Lines** (uncommon, 2 Mana, 1 upgraded): whenever you play a Sword or a Spell, apply 2 Fracture to its target (or the enemy with the most Fracture). Her Swords and Spells now feed a Fracture deck.
+- **Final Shatter** applies 8 Fracture (was 10, which always set off a Shatter): its Barrier, now 12 (16 upgraded, was 6), comes only when it does, so play it on an enemy with 2 or more Fracture.
 - **Warden rules fold away:** a Warden's rule shows in full as the fight starts, with "Got it"; after that it is just its name on the line under the title, and tapping the name opens it again. On a phone it no longer covers the enemies' next moves.
 - **Blade Sweep:** while it is up, the Obsidian Blade plays with no aiming (it strikes every enemy), and the buff no longer shows a meaningless "1".
 - **Starting decks evened out:** the Shaman starts with a Hawk and a Bear (no Thunderbird); the Knight with 1 Reserve (was 2); the Monk has 78 Max HP (was 82); the Rogue 75 (was 70); the Trickster starts with 3 Strikes and 3 Defends (was 4 and 2). Thunder Memory plants a Thunderbird, plus one for each planted this fight, so it still works without the starting one.

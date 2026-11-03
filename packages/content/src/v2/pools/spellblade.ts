@@ -618,13 +618,13 @@ export const SPELLBLADE: CardDef[] = [
   }),
 
   // --- Fracture ---
-  a('common', 'faultline-hex', 'Faultline Hex', 'skill', 1, 'foe', [fracture(5)], {
+  a('common', 'faultline-hex', 'Faultline Hex', 'skill', 1, 'foe', [fracture(7)], {
     tags: [SPELL],
-    up: { effects: [fracture(7)] },
+    up: { effects: [fracture(9)] },
   }),
-  a('common', 'spreading-fault', 'Spreading Fault', 'skill', 1, 'none', [fracture(4, 'allFoes')], {
+  a('common', 'spreading-fault', 'Spreading Fault', 'skill', 1, 'none', [fracture(5, 'allFoes')], {
     tags: [SPELL],
-    up: { effects: [fracture(5, 'allFoes')] },
+    up: { effects: [fracture(7, 'allFoes')] },
   }),
   a(
     'common',
@@ -633,10 +633,10 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'foe',
-    [fracture(4), when('shatteredNow', { atLeast: 1 }, [draw(1)])],
+    [fracture(6), when('shatteredNow', { atLeast: 1 }, [draw(1)])],
     {
       tags: [SPELL],
-      up: { effects: [fracture(5), when('shatteredNow', { atLeast: 1 }, [draw(1)])] },
+      up: { effects: [fracture(8), when('shatteredNow', { atLeast: 1 }, [draw(1)])] },
     },
   ),
   a('common', 'glass-prison', 'Glass Prison', 'skill', 1, 'foe', [ward(5), fracture(2)], {
@@ -647,10 +647,10 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [strip(10), fracture(4)] },
   }),
-  a('common', 'hairline-crack', 'Hairline Crack', 'skill', 0, 'foe', [fracture(4)], {
+  a('common', 'hairline-crack', 'Hairline Crack', 'skill', 0, 'foe', [fracture(5)], {
     exhaust: true,
     tags: [SPELL],
-    up: { effects: [fracture(5)] },
+    up: { effects: [fracture(7)] },
   }),
   a(
     'uncommon',
@@ -673,11 +673,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     1,
     'foe',
-    [scaled(fracture(4), per('bonus')), grows(2)],
+    [scaled(fracture(5), per('bonus')), grows(3)],
     {
       tags: [SPELL],
       ...GROWN,
-      up: { effects: [scaled(fracture(6), per('bonus')), grows(2)] },
+      up: { effects: [scaled(fracture(7), per('bonus')), grows(3)] },
     },
   ),
   a(
@@ -687,10 +687,11 @@ export const SPELLBLADE: CardDef[] = [
     'skill',
     2,
     'foe',
-    [fracture(10), when('shatteredNow', { atLeast: 1 }, [ward(6)])],
+    // (8, not 10, so "if this caused a Shatter" asks for 2 already on the target; the Barrier is the payoff, DECISIONS #563)
+    [fracture(8), when('shatteredNow', { atLeast: 1 }, [ward(12)])],
     {
       tags: [SPELL],
-      up: { effects: [fracture(13), when('shatteredNow', { atLeast: 1 }, [ward(6)])] },
+      up: { effects: [fracture(8), when('shatteredNow', { atLeast: 1 }, [ward(16)])] },
     },
   ),
   a(
@@ -762,8 +763,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnEnd', [fracture(2, 'allFoes', true)])],
-    { up: { effects: [on('turnEnd', [fracture(3, 'allFoes', true)])] } },
+    [on('turnEnd', [fracture(3, 'allFoes', true)])],
+    { up: { effects: [on('turnEnd', [fracture(4, 'allFoes', true)])] } },
   ),
   a(
     'uncommon',
@@ -784,6 +785,17 @@ export const SPELLBLADE: CardDef[] = [
     'none',
     [on('shatter', [draw(1), ward(2)], { once: true })],
     { up: { effects: [on('shatter', [draw(1), ward(4)], { once: true })] } },
+  ),
+  // (Fracture that builds from her other cards: every Sword and Spell cracks, DECISIONS #564)
+  a(
+    'uncommon',
+    'fault-lines',
+    'Fault Lines',
+    'power',
+    2,
+    'none',
+    [on('play', [fracture(2, 'targetOrMostFracture')], { tag: SWORD, orTag: SPELL })],
+    { up: { cost: 1 } },
   ),
   a(
     'uncommon',

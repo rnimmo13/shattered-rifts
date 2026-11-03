@@ -1213,6 +1213,11 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       const h = heroOf(r.s.sides[other(a.actor.side)]);
       return h && h.hp > 0 ? [h] : [];
     }
+    case 'targetOrMostFracture':
+      if (a.target && a.target.hp > 0 && a.target.side !== a.actor.side) return [a.target];
+      return foes.length
+        ? [foes.reduce((m, x) => (stacks(x, 'fracture') > stacks(m, 'fracture') ? x : m))]
+        : [];
   }
 }
 
@@ -2156,6 +2161,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ops: op.ops,
         ...(op.filter ? { filter: op.filter } : {}),
         ...(op.tag ? { tag: op.tag } : {}),
+        ...(op.orTag ? { orTag: op.orTag } : {}),
         ...(op.stance ? { stance: op.stance } : {}),
         ...(op.temp ? { temp: true } : {}),
         ...(op.once ? { once: true } : {}),
@@ -3774,7 +3780,8 @@ function fireTriggers(
     if (!sd.powers.includes(p)) continue;
     if (when === 'play' && played) {
       if (p.filter && p.filter !== played.kind) continue;
-      if (p.tag && !played.tags?.includes(p.tag)) continue;
+      if (p.tag && !played.tags?.includes(p.tag) && !(p.orTag && played.tags?.includes(p.orTag)))
+        continue;
       if (p.minCost !== undefined && (ctx.cost ?? played.cost) < p.minCost) continue;
       if (p.ethereal && !isEthereal(played, ctx.inst)) continue;
       if (p.maxCost !== undefined && lastingCost(played, ctx.inst ?? null) > p.maxCost) continue;
@@ -4297,6 +4304,7 @@ function beginHeroTurn(r: Run, side: Side): void {
         ops: t.ops,
         ...(t.filter ? { filter: t.filter } : {}),
         ...(t.tag ? { tag: t.tag } : {}),
+        ...(t.orTag ? { orTag: t.orTag } : {}),
         ...(t.stance ? { stance: t.stance } : {}),
         // (a trait's trigger narrows like an Aura's: once a turn is the Monk's Serene Mana, DECISIONS #413)
         ...(t.once ? { once: true } : {}),
@@ -5641,7 +5649,11 @@ export function previewCardDamage(
             : foes
         : to === 'front'
           ? foes.slice(0, 1)
-          : to === 'allFoes' || to === 'randomFoe' || to === 'weakestFoe'
+          : to === 'targetOrMostFracture'
+            ? chosen
+              ? [chosen]
+              : foes
+            : to === 'allFoes' || to === 'randomFoe' || to === 'weakestFoe'
             ? foes
             : null;
     if (!pool) return;

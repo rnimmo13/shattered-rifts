@@ -49,6 +49,22 @@ const DB: CombatDb = {
     [strike[0], { ...strike[1], upgrade: 'strike+' }],
     c('defend', { effects: [{ op: 'barrier', amount: 5, to: 'self' }] }),
     c('filler', { cost: 0, effects: [{ op: 'barrier', amount: 1, to: 'self' }] }),
+    // (a power answering either of two tags, and the "its target, or the most cracked" aim: DECISIONS #564)
+    power('fault', 'play', [{ op: 'fracture', amount: 2, to: 'targetOrMostFracture' }], {
+      tag: 'sword',
+      orTag: 'spell',
+    }),
+    c('sw', { cost: 0, kind: 'attack', target: 'foe', tags: ['sword'], effects: foeAtk }),
+    c('sp', { cost: 0, tags: ['spell'], effects: [] }),
+    c('both', { cost: 0, kind: 'attack', target: 'foe', tags: ['sword', 'spell'], effects: foeAtk }),
+    c('untagged', { cost: 0, kind: 'attack', target: 'foe', effects: foeAtk }),
+    c('slay', {
+      cost: 0,
+      kind: 'attack',
+      target: 'foe',
+      tags: ['sword'],
+      effects: [{ op: 'damage', amount: 999, to: 'target' }],
+    }),
     // choices
     c('survivor', {
       effects: [
@@ -1555,5 +1571,46 @@ describe('a Stunned hero loses no turn and no cards (DECISIONS #310)', () => {
     // (it wears off at the end of b's turn)
     s = end(s).state;
     expect(heroOf(s.sides.b)!.statuses.stunned ?? 0).toBe(0);
+  });
+});
+
+describe('a power that answers either of two tags, aimed at its target or the most cracked enemy (DECISIONS #564)', () => {
+  const ready = (hand: string[]) => {
+    let s = start(['fault', ...hand], { enemies: ['dummy', 'dummy'] });
+    s = play(s, 'h0').state;
+    for (const u of s.sides.b.units) u.statuses = {};
+    return s;
+  };
+
+  it('answers a card with either tag, once for a card with both, and never an untagged one', () => {
+    const s = ready(['sw', 'both', 'untagged']);
+    const a = play(s, 'h1', foe(s, 1).id).state;
+    expect(foe(a, 1).statuses.fracture).toBe(2);
+    const b = play(a, 'h2', foe(a, 1).id).state;
+    expect(foe(b, 1).statuses.fracture).toBe(4);
+    const n = play(b, 'h3', foe(b, 1).id).state;
+    expect(foe(n, 1).statuses.fracture).toBe(4);
+    expect(cardText(DB, DB.cards['fault']!)).toContain('Whenever you play a Sword or a Spell');
+  });
+
+  it('with no target, the enemy with the most Fracture; on a tie (all at 0 too) the first of them', () => {
+    const s = ready(['sp', 'sp']);
+    const a = play(s, 'h1').state;
+    expect(foe(a, 0).statuses.fracture).toBe(2);
+    expect(foe(a, 1).statuses.fracture ?? 0).toBe(0);
+    foe(a, 1).statuses.fracture = 5;
+    const b = play(a, 'h2').state;
+    expect(foe(b, 1).statuses.fracture).toBe(7);
+  });
+
+  it('a target the card killed passes it to the most cracked enemy left', () => {
+    const s = ready(['slay']);
+    foe(s, 1).statuses.fracture = 1;
+    foe(s, 0).hp = 5;
+    const [slain, other] = [foe(s, 0).id, foe(s, 1).id];
+    const r = play(s, 'h1', slain).state;
+    const find = (id: string) => r.sides.b.units.find((u) => u.id === id);
+    expect((find(slain)?.hp ?? 0) <= 0).toBe(true);
+    expect(find(other)!.statuses.fracture).toBe(3);
   });
 });

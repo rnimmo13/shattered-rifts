@@ -2,6 +2,7 @@
 // the engine never sees this. The kind picks the animation (see Fighters.attack and attackFx.ts), the tint colours the
 // slash arc, tracer or spell, and `hits` repeats it (a double slash, a shotgun spread).
 
+import { SPELL_TAG, type CardDef } from '@sr/combat';
 import { MULTIVERSE_UNIT_ART } from '../art/multiverseUnits';
 
 export type AttackKind =
@@ -89,4 +90,41 @@ const UNIT_ATTACK: Record<string, AttackSpec> = {
 
 export function attackFor(def: string, isHero: boolean): AttackSpec {
   return (isHero ? HERO_ATTACK[def] : UNIT_ATTACK[def]) ?? PLAIN_ATTACK;
+}
+
+/** a hero's spells, when they look unlike the weapon they swing (the Spellblade's ember) */
+const SPELL_TINT: Record<string, string> = {
+  spellblade: '#ff8a3a',
+};
+
+/** How a card a hero plays moves on the stage (DECISIONS #565): a Spell is cast and never swung, and a card that hits every enemy
+ * plays across all of them (a sweep for a blade, a rain of fire for a spell, a shot or a knife at each for the rest). */
+export interface CardMotion {
+  spell: boolean;
+  aoe: boolean;
+  /** the colour of the hero's spells, if they have their own */
+  spellTint?: string;
+}
+
+/** Any damage in these ops (and in the ops they hold: a "when", an "on kill") that goes to every enemy. */
+function hitsAll(ops: readonly unknown[]): boolean {
+  return ops.some((o) => {
+    if (!o || typeof o !== 'object') return false;
+    const op = o as { op?: string; to?: string };
+    if (op.op === 'damage' && op.to === 'allFoes') return true;
+    // (an Aura it sets up hits later, on its own: not this card's blow)
+    if (op.op === 'power') return false;
+    return Object.values(o).some((v) => Array.isArray(v) && hitsAll(v));
+  });
+}
+
+/** `spread`: something on the hero makes this one card hit them all (Fanned on a Dagger, Blade Sweep on the Obsidian Blade). */
+export function cardMotion(hero: string, card: CardDef, spread = false): CardMotion {
+  const spell = card.tags?.includes(SPELL_TAG) === true;
+  const tint = SPELL_TINT[hero];
+  return {
+    spell,
+    aoe: spread || hitsAll(card.effects),
+    ...(spell && tint ? { spellTint: tint } : {}),
+  };
 }

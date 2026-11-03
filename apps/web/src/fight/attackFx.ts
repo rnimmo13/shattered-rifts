@@ -266,3 +266,27 @@ export function impact(c: FxCtx, at: Pt, tint: string, size = 90): void {
   puff(c, at, tint, size * 0.32, 0.14);
   burst(c, at, tint, 8, size * 0.5);
 }
+
+/** A spell falling on the target from high above (a spell that hits every enemy rains on each). Resolves as it lands. */
+export function skyfall(c: FxCtx, at: Pt, dir: number, tint: string, delay = 0): Promise<void> {
+  return new Promise((resolve) => {
+    // (it always resolves: the fight waits on it)
+    c.track(
+      gsap.delayedCall(delay, () => {
+        try {
+          const from = { x: at.x - dir * 70, y: at.y - 300 };
+          void orb(c, from, at, tint, 0.2, 14).then(() => {
+            try {
+              ring(c, at, tint, 64, 24);
+              burst(c, at, tint, 8, 48);
+            } finally {
+              resolve();
+            }
+          });
+        } catch {
+          resolve();
+        }
+      }),
+    );
+  });
+}

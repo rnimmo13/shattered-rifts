@@ -76,7 +76,7 @@ export const CRIT_HIT = 25;
 export function hitFx(lost: number, kind?: AttackKind): FxId {
   if (lost >= CRIT_HIT) return 'hit-crit';
   if (lost >= HEAVY_HIT) return 'hit-heavy';
-  return kind === 'shoot' || kind === 'throw' ? 'hit-pierce' : 'hit-slash';
+  return kind === 'shoot' || kind === 'throw' || kind === 'cast' ? 'hit-pierce' : 'hit-slash';
 }
 
 /** A potion thrown over every enemy, with no one target picked. */

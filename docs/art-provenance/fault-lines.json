@@ -1,0 +1,25 @@
+{
+  "id": "fault-lines",
+  "created": "2026-11-03",
+  "request": "docs/card-art/fault-lines.md",
+  "prompt": "Create ONE card-art picture for a card-battler game, 1600 x 1200 (landscape 4:3), no text.\nThe attached images are the STYLE ANCHOR: match their painted fantasy game-art rendering exactly (crisp dark outlines, rich saturated colour, cel shading with glowing light effects). The background is softer than the main subject so the subject pops.\n\nWORLD: the Spellblade, a warrior of black volcanic glass: white hair, black armour with gold trim, a long black glass sword; her face turned to the viewer or in profile. A volcanic glass desert at dusk: black obsidian, ember-orange cracks, violet sheen, floating shards, purple-orange sky. Enemies are rock golems of cracked dark stone.\nTHE VISUAL LANGUAGE: SPELL POWER is violet and ember light stored inside the black glass of the sword. FRACTURE is thin glowing ember-and-violet cracks spreading through a target; it is a curse, so show the cracks spreading, not an explosion.\n\nTHE PICTURE: \"Fault Lines\" (an Aura: every sword swing and every spell she makes leaves cracks in her enemy). Use the name only to understand the idea; never write it.\nDraw: The Spellblade mid-motion, her black glass sword trailing a violet-and-ember arc in one hand and a small violet sigil glowing in her open other hand. From both the sword's arc and the sigil, thin glowing crack-lines run through the air like veins of light and reach a large rock golem on the right, where they sink in and spread across its chest as a web of ember-and-violet cracks. The lines connect her to the cracks: the feeling of a lasting curse that every move feeds. A calm, deliberate pose, not an explosion. One clear subject that reads at thumbnail size, light from the upper left.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, gore, characters facing away, explosions, the golem shattering.",
+  "references": [
+    "D:\\Code\\ShatteredRifts\\apps\\web\\public\\art\\cards\\collapsing-star.jpg",
+    "D:\\Code\\ShatteredRifts\\apps\\web\\public\\art\\cards\\hammer-and-anvil.jpg"
+  ],
+  "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-231d4dbb-0ce0-4371-8365-7530c67d00ff.png",
+  "generator": "built-in image_gen",
+  "modelVersion": "Not exposed by tool",
+  "approved": false,
+  "status": "Generated; pending human review and cutting",
+  "normalization": "Bicubic resize to requested 1600x1200; no cropping",
+  "nativeDimensions": [
+    1448,
+    1086
+  ],
+  "finalDimensions": [
+    1600,
+    1200
+  ],
+  "sha256": "9D03C07E589E1F126E6DE6E19519609B8416C798EB045FC1627A0273BF5EC35E"
+}

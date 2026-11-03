@@ -264,6 +264,8 @@ export const on = (
   narrow: {
     filter?: CardKind;
     tag?: string;
+    /** cards with this tag answer too (DECISIONS #564) */
+    orTag?: string;
     stance?: Stance;
     temp?: boolean;
     once?: boolean;

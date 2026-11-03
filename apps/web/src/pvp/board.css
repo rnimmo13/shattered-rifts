@@ -56,6 +56,10 @@
 .board__hero small {
   color: var(--c-text-dim);
 }
+/* (no Ascendancy taken yet) */
+.board__none {
+  color: var(--c-text-dim);
+}
 .board__you {
   display: grid;
   gap: 0.4rem;
