@@ -1,5 +1,7 @@
 # Art wrap-up: everything the game still draws a stand-in for (checked 2026-11-02)
 
+**Done 2026-11-02:** all four were made and cut (`pack-arenas.ps1`, `pack-icons.ps1`, `pack-cards.ps1 -Only <sheet>`, `pack-scenes.ps1`); the elite events name their scenes. Every unit, card, status and event now has its own art.
+
 The game was checked piece by piece against its art files:
 - every unit that can stand on the board (enemies, summons, companions)
 - every card

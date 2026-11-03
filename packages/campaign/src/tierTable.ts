@@ -12,8 +12,8 @@
 // Why it looks like this (docs/BALANCE.md; DECISIONS #223, #228-#230): the whole table is one rising ladder. Tier 1 stage 1, 2 and 3,
 // then Tier 2 stage 1 and so on: every step is harder than the one before it, and stage 1 of a tier is always harder than stage 3 of
 // the tier below (Robert: it must never take a step back; the table test checks it). HP and damage climb the same amount every tier
-// up to Tier 10, and more steeply from there to Tier 20 (DECISIONS #520): damage twice as fast, HP by HP_STEEP a tier, so Tier XX
-// enemies have ten times their written HP (#536).
+// up to STEEP_FROM, a straight line, and more steeply over the last three tiers (DECISIONS #555): enemies grow tankier much faster than
+// they grow harder-hitting, so Tier XX enemies have ten times their written HP (#536) but under three times their damage.
 
 export interface TierRow {
   /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
@@ -24,25 +24,27 @@ export interface TierRow {
 
 /** enemy HP at Tier I stage 1, percent of the written numbers */
 export const HP_START = 90;
-/** added to enemy HP for every Rift Tier up (percentage points; 20 until DECISIONS #536) */
-export const HP_PER_TIER = 30;
-/** added to enemy HP for every Rift Tier past STEEP_FROM (percentage points): 90 + 9 x 30 + 10 x 64 = 1000 at Tier XX (#536) */
-export const HP_STEEP = 64;
+/** added to enemy HP for every Rift Tier up (percentage points; 20 until DECISIONS #536, 30 until #555) */
+export const HP_PER_TIER = 40;
+/** added to enemy HP for every Rift Tier past STEEP_FROM (percentage points): 90 + 16 x 40 + 3 x 90 = 1000 at Tier XX (#536, #555) */
+export const HP_STEEP = 90;
 /** added to enemy HP for each stage inside a tier (percentage points) */
 export const HP_PER_STAGE = 5;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
 export const DMG_START = 90;
-/** added to enemy damage for every Rift Tier up (percentage points) */
-export const DMG_PER_TIER = 12;
+/** added to enemy damage for every Rift Tier up (percentage points; 12 until DECISIONS #555) */
+export const DMG_PER_TIER = 9;
+/** added to enemy damage for every Rift Tier past STEEP_FROM (percentage points): 90 + 16 x 9 + 3 x 20 = 294 at Tier XX (#555; was 438) */
+export const DMG_STEEP = 20;
 /** added to enemy damage for each stage inside a tier (percentage points) */
 export const DMG_PER_STAGE = 3;
 
 /** how many Rift Tiers there are */
 const TIERS = 20;
 
-/** Past this Rift Tier the climb is twice as steep: Tier XI on is meant to be where a run dies (DECISIONS #520). */
-export const STEEP_FROM = 10;
+/** Past this Rift Tier the climb is steeper: Tiers XVIII to XX are the last, brutal stretch (DECISIONS #555; Tier X until then, #520). */
+export const STEEP_FROM = 17;
 
 // (a tier past STEEP_FROM adds `steep` in place of `perTier`)
 const at = (
@@ -62,7 +64,7 @@ const stages = (start: number, perTier: number, steep: number, perStage: number,
 
 export const TIER_TABLE: readonly TierRow[] = Array.from({ length: TIERS }, (_, i) => ({
   hp: stages(HP_START, HP_PER_TIER, HP_STEEP, HP_PER_STAGE, i + 1),
-  dmg: stages(DMG_START, DMG_PER_TIER, 2 * DMG_PER_TIER, DMG_PER_STAGE, i + 1),
+  dmg: stages(DMG_START, DMG_PER_TIER, DMG_STEEP, DMG_PER_STAGE, i + 1),
 }));
 
 const rowOf = (tier: number): TierRow => {

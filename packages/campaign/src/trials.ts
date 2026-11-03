@@ -40,7 +40,9 @@ export const ROLL_COST = 25;
 
 /** The cards of a deck the reel's Twin can copy: anything past a basic card, while the deck rules have room for one more. */
 export const twinnable = (deck: readonly string[]): string[] =>
-  [...new Set(deck)].filter((id) => COMBAT_DB.cards[id]?.rarity !== 'basic' && canAdd([...deck], id));
+  [...new Set(deck)].filter(
+    (id) => COMBAT_DB.cards[id]?.rarity !== 'basic' && canAdd([...deck], id),
+  );
 
 /** What the next spin costs: the first spin at a reel is free (Robert, 2026-10-26; DECISIONS #283), every one after it ROLL_COST. */
 export function spinCost(trial: { rolls?: number } | undefined): number {
@@ -287,7 +289,8 @@ export function buildElite(spec: EliteSpec, r: RunState): EventCtx {
 export function rollElite(r: RunState): EventCtx | null {
   if (nextInt(r.rng, 100) >= ELITE_EVENT_CHANCE) return null;
   const spec = ELITE_EVENTS[nextInt(r.rng, ELITE_EVENTS.length)] as EliteSpec;
-  return buildElite(spec, r);
+  // (its painted scene is named by its id, as every event's is)
+  return { ...buildElite(spec, r), scene: spec.id };
 }
 
 /**

@@ -1,0 +1,102 @@
+[
+  {
+    "path": "enemies/warden-helpers.png",
+    "nativeWidth": 1774,
+    "nativeHeight": 887,
+    "width": 2048,
+    "height": 1024,
+    "sha256": "B76983A1AFB6DA759B57767F162DD53E6FCB10E70E9F35BCF5DF19D27533FD8D",
+    "projectCopyMatches": true,
+    "normalization": "Bicubic resize; no crop"
+  },
+  {
+    "path": "icons/icons-07.png",
+    "nativeWidth": 2172,
+    "nativeHeight": 724,
+    "width": 2172,
+    "height": 724,
+    "sha256": "B343E7D6FDB1CB3B8FCEA777A7C9E231895164E8AAC6BD1AF9F0D61270D4A408",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "events/brass-cascade.png",
+    "nativeWidth": 1536,
+    "nativeHeight": 1024,
+    "width": 1536,
+    "height": 1024,
+    "sha256": "5DAB77B14878A7CAAA02B520407082E976901F73690679B452A679716E588A31",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "events/brass-pegboard.png",
+    "nativeWidth": 1536,
+    "nativeHeight": 1024,
+    "width": 1536,
+    "height": 1024,
+    "sha256": "31CBBF02AD07D823336A355966A8A98E1534A840B2589CEC88FDA3B9B1BCFC67",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "events/copper-chute.png",
+    "nativeWidth": 1536,
+    "nativeHeight": 1024,
+    "width": 1536,
+    "height": 1024,
+    "sha256": "FC65B0C27A7E93C013C27DA0CA14ED0ADFF4A8246C632F6E40AD085C3D7E5766",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "events/silver-sluice.png",
+    "nativeWidth": 1536,
+    "nativeHeight": 1024,
+    "width": 1536,
+    "height": 1024,
+    "sha256": "668A3905D0E1748FB52286F7129772077281BF8AA1B2AE99F4755E4748AF32ED",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "events/gilded-drop.png",
+    "nativeWidth": 1536,
+    "nativeHeight": 1024,
+    "width": 1536,
+    "height": 1024,
+    "sha256": "6F628F4E8CA4FA539D1E3EBC646EF6FD08C7ABD238F22B71DDF0E5ECD5E3B22F",
+    "projectCopyMatches": true,
+    "normalization": "None"
+  },
+  {
+    "path": "cards/engineer-m01.png",
+    "nativeWidth": 1448,
+    "nativeHeight": 1086,
+    "width": 2400,
+    "height": 1800,
+    "sha256": "CB44B843501A0400A1E9517885B67BCC28C69E866B8B6BC0DDBE4526370479B5",
+    "projectCopyMatches": true,
+    "normalization": "Bicubic resize; no crop"
+  },
+  {
+    "path": "cards/spellblade-m01.png",
+    "nativeWidth": 1448,
+    "nativeHeight": 1086,
+    "width": 2400,
+    "height": 1800,
+    "sha256": "46C28119CF12B705AF3CE20BB625608274038B1C43FF3E575C93118D917241E8",
+    "projectCopyMatches": true,
+    "normalization": "Bicubic resize; no crop"
+  },
+  {
+    "path": "cards/drunkard-m01.png",
+    "nativeWidth": 1448,
+    "nativeHeight": 1086,
+    "width": 2400,
+    "height": 1800,
+    "sha256": "8E24DF34A5B3C4DC23892006F6F0414F62DF97CB3DE38F8BA9A764EF39D9C375",
+    "projectCopyMatches": true,
+    "normalization": "Bicubic resize; no crop"
+  }
+]

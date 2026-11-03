@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.160.0',
+    date: '2026-11-02',
+    title: 'A beatable climb, Elite spoils',
+    summary: 'The deep tiers are hard because enemies take longer to kill, not because they kill you in one blow, and Elites let you choose shards, Max HP or a heal.',
+    notes: [
+      { kind: 'balance', text: 'Enemy damage rises more slowly: Tier X deals 171% of the written numbers (was 198%) and Tier XX 294% (was 438%). Enemy HP rises evenly to Tier XVII and steeply over the last three: Tier X has 450% (was 360%), Tier XX still 1000%.' },
+      { kind: 'balance', text: 'Enemy Barrier and healing grow at half the rate of their HP: about 5.5 times the written number at Tier XX (was 10).' },
+      { kind: 'changed', text: 'Hunted: only the strongest enemy\'s first attack hits harder. Exposed Soul lasts one turn at every tier.' },
+      { kind: 'new', text: 'Elite spoils: after an Elite or an Echo, choose its shards, +2 Max HP, or a heal of 15% of your Max HP, then your card. Build a deep HP pool for the long tiers.' },
+      { kind: 'new', text: 'Kron\'s Foundry Hatch, the Hollow Acolytes and Vorthax\'s Rift Ward have their own figures; Slippery, Veiled, Gravity and Unmaking their own icons; the Spin To Win machines their scenes; and every card its own picture.' },
+    ],
+    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+  },
+  {
     version: '0.159.0',
     date: '2026-11-02',
     title: 'Painted events, Warden arenas, the Crossing',

@@ -1550,11 +1550,11 @@ export const tierHp = (tier: number): number => {
 export const scaledEnemyHp = (base: number, tier: number, hpPct: number): number =>
   Math.max(1, Math.round(base * tierHp(tier) * (hpPct / 100)));
 /**
- * (DECISIONS #548) An enemy's own Barrier and healing grow as its HP does, so a "12 Barrier" turn still counts deep in a run: the
- * same factor as its HP, never below the written number (Tier I is as it was).
+ * (DECISIONS #548) An enemy's own Barrier and healing grow with its HP, so a "12 Barrier" turn still counts deep in a run: at half the
+ * rate (#555), so an enemy with 10x its written HP guards and heals 5.5x, and never below the written number (Tier I is as it was).
  */
 export const enemyGuardFactor = (tier: number, hpPct: number): number =>
-  Math.max(1, tierHp(tier) * (hpPct / 100));
+  Math.max(1, 1 + (tierHp(tier) * (hpPct / 100) - 1) / 2);
 /** Might for enemies at a Rift Tier: one more each tier, up to 12 (it stopped at 6 before, so the deep tiers stopped getting meaner). */
 export const tierMight = (tier: number): number => Math.min(12, Math.max(0, tier - 1));
 

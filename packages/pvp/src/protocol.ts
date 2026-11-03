@@ -84,7 +84,8 @@ export interface Entry {
 // (59: Burn through Barrier, Hangover as a share of Max HP, Shatter, only X cards scale hits, aimed attacks stay on target, #501-#503, #507-#509)
 // (65: the other five Wardens' rules, Vorthax rebuilt, enemy Barrier and healing by tier, the Enduring status, #546-#550)
 // (66: Enduring gone, campaign ghosts leave you Faltering, a Fanned Dagger spreads all it aims, #551-#553)
-export const RULES_VERSION = 66;
+// (67: enemy HP and damage retuned, Barrier and healing at half HP's rate, Hunted on the strongest enemy, #555)
+export const RULES_VERSION = 67;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

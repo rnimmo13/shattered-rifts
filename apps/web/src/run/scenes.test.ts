@@ -3,7 +3,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { EVENTS } from '@sr/campaign';
+import { ELITE_EVENTS, EVENTS } from '@sr/campaign';
 import { ENCOUNTERS } from '@sr/content/v2';
 import { ARENA_LOOK } from '../duel/scene/arena';
 import { BOSS_VENUE, venueFor, type VenueId } from '../duel/scene/venue';
@@ -12,9 +12,10 @@ import { arenaFor } from '../pvp/arenaVenue';
 const pub = resolve(__dirname, '../../public/art');
 
 describe('event scenes', () => {
-  it('every event, the Rift Caches, the merchant and the shrine have a scene', () => {
+  it('every event, the elite events, the Rift Caches, the merchant and the shrine have a scene', () => {
     const ids = [
       ...EVENTS.map((e) => e.id),
+      ...ELITE_EVENTS.map((e) => e.id),
       'cache-open',
       'cache-trapped',
       'merchant',

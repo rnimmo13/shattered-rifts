@@ -5,7 +5,14 @@ export { V2_DECK_RULES as DECK_RULES } from '@sr/content/v2';
 
 export type * from './types';
 export { removableCards } from './deals';
-export { FINAL_STAGE, depthOf, floorsOf, generateStageMap, reachableNodes, wardenFor } from './mapgen';
+export {
+  FINAL_STAGE,
+  depthOf,
+  floorsOf,
+  generateStageMap,
+  reachableNodes,
+  wardenFor,
+} from './mapgen';
 export {
   PRICE,
   priceOf,
@@ -47,6 +54,11 @@ export {
   buyRemoval,
   buyUpgrade,
   chooseCard,
+  chooseSpoil,
+  spoilAmounts,
+  ELITE_SPOIL_MAX_HP,
+  ELITE_SPOIL_HEAL_PCT,
+  type Spoil,
   ASCEND_TIER,
   chooseAscendancy,
   chooseHeart,
@@ -112,7 +124,9 @@ export {
   HP_PER_STAGE,
   DMG_START,
   DMG_PER_TIER,
+  DMG_STEEP,
   DMG_PER_STAGE,
+  STEEP_FROM,
 } from './tierTable';
 export { upgradedCards } from './upgrades';
 export {

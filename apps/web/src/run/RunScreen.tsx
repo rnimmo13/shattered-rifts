@@ -27,6 +27,9 @@ import {
   upgradedCards,
   chooseAscendancy,
   chooseCard,
+  chooseSpoil,
+  spoilAmounts,
+  type Spoil,
   resolveCost,
   chooseHeart,
   ghostToSettle,
@@ -1027,6 +1030,13 @@ function Body(props: {
           potion={run.context?.potionGained}
           onPick={(id) => act((r) => chooseCard(r, id))}
           onSkip={() => act((r) => chooseCard(r, null))}
+          spoilTaken={run.context?.spoilTaken}
+          spoils={(() => {
+            const amt = spoilAmounts(run);
+            return amt
+              ? { ...amt, onTake: (sp: Spoil) => act((r) => chooseSpoil(r, sp)) }
+              : undefined;
+          })()}
         />
       );
     case 'ascend':

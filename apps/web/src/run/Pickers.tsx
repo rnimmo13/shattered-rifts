@@ -28,6 +28,7 @@ import {
   engravable,
   ledgerGain,
   type ShrineChoice,
+  type Spoil,
   type ShrineKind,
 } from '@sr/campaign';
 import { FightCard } from '../fight/FightCard';
@@ -149,44 +150,78 @@ export function CardOffer(props: {
   onSkip?: (() => void) | undefined;
   /** the player's Riftwalker, to tag cards from another one */
   character?: string | undefined;
+  /** an Elite's spoils, still to choose (DECISIONS #555): the cards wait until one is taken */
+  spoils?:
+    { shards: number; maxHp: number; heal: number; onTake: (spoil: Spoil) => void } | undefined;
+  /** the spoil already taken on this page, for the hint ("+2 Max HP") */
+  spoilTaken?: string | undefined;
 }) {
   const [hover, setHover] = useState<CardDef | null>(null);
+  const sp = props.spoils;
   return (
     <section className="stage-panel" aria-label={props.title}>
-      <h2 className="stage-panel__title">{props.title}</h2>
+      <h2 className="stage-panel__title">{sp ? 'Choose your spoils' : props.title}</h2>
       <p className="stage-panel__hint">
-        {props.hint}
-        {props.shards ? ` You also found ${props.shards} shards.` : ''}
+        {sp
+          ? `A hard fight won. Take one: shards for the merchant, Max HP for the long tiers ahead, or a breather now.${props.offers.length ? ' A card comes next.' : ''}`
+          : props.hint}
+        {!sp && props.spoilTaken
+          ? ` Your spoils: ${props.spoilTaken}.`
+          : !sp && props.shards
+            ? ` You also found ${props.shards} shards.`
+            : ''}
       </p>
       {props.boon && <BoonCard id={props.boon} note="A new Boon, yours for the rest of the run." />}
       {props.potion && <PotionCard id={props.potion} note="Added to your belt." />}
-      <div className="offers">
-        {props.offers.map((id) => (
-          <Pickable
-            key={id}
-            id={id}
-            width={290}
-            own={props.character}
-            onHover={setHover}
-            onClick={(e) => {
-              // the card you took flies into your deck
-              const from = centreOf(e.currentTarget);
-              const deck = document.querySelector('.runbar__deck');
-              const to = centreOf(deck);
-              if (from && to)
-                flyCard(from, to, {
-                  dur: 420,
-                  arc: 80,
-                  size: 90,
-                  trail: 'trail-draw',
-                  onArrive: () => bump(deck),
-                });
-              props.onPick(id);
-            }}
-          />
-        ))}
-      </div>
-      {props.onSkip && (
+      {sp && (
+        <div className="eventopts spoils">
+          <button className="eventopt" onClick={() => sp.onTake('maxHp')}>
+            <b className="eventopt__name">+{sp.maxHp} Max HP</b>
+            <span>Yours for the rest of the run: a deeper pool for the tiers ahead.</span>
+          </button>
+          <button className="eventopt" onClick={() => sp.onTake('shards')}>
+            <b className="eventopt__name">+{sp.shards} shards</b>
+            <span>For the merchant: cards, removals, upgrades and Boons.</span>
+          </button>
+          <button className="eventopt" disabled={sp.heal <= 0} onClick={() => sp.onTake('heal')}>
+            <b className="eventopt__name">{sp.heal > 0 ? `Heal ${sp.heal} HP` : 'Heal'}</b>
+            <span>
+              {sp.heal > 0
+                ? 'Catch your breath after a hard fight.'
+                : 'You are already at full HP.'}
+            </span>
+          </button>
+        </div>
+      )}
+      {!sp && (
+        <div className="offers">
+          {props.offers.map((id) => (
+            <Pickable
+              key={id}
+              id={id}
+              width={290}
+              own={props.character}
+              onHover={setHover}
+              onClick={(e) => {
+                // the card you took flies into your deck
+                const from = centreOf(e.currentTarget);
+                const deck = document.querySelector('.runbar__deck');
+                const to = centreOf(deck);
+                if (from && to)
+                  flyCard(from, to, {
+                    dur: 420,
+                    arc: 80,
+                    size: 90,
+                    trail: 'trail-draw',
+                    onArrive: () => bump(deck),
+                  });
+                props.onPick(id);
+              }}
+            />
+          ))}
+        </div>
+      )}
+      {!sp && props.onSkip && (
         <button className="btn" onClick={props.onSkip}>
           <span>Skip (keep your deck lean)</span>
         </button>

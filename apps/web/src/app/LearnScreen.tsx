@@ -3,8 +3,10 @@ import { Picture } from '../ui/Picture';
 import { useState } from 'react';
 import {
   DMG_PER_TIER,
+  DMG_STEEP,
   HP_PER_TIER,
   HP_STEEP,
+  STEEP_FROM,
   LOOP_BOON_CHANCE,
   MAX_TIER,
   OMENS,
@@ -87,9 +89,10 @@ function TierTable() {
   return (
     <>
       <p className="learn__note">
-        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage. Past Tier
-        X each tier adds {HP_STEEP}% HP and {2 * DMG_PER_TIER}% damage, up to{' '}
-        {enemyScale(MAX_TIER, 1).hp}% HP at Tier {MAX_TIER}.
+        Every Rift Tier up adds {HP_PER_TIER}% enemy HP and {DMG_PER_TIER}% enemy damage: enemies
+        grow tankier much faster than they grow harder-hitting. Past Tier {roman(STEEP_FROM)} each
+        tier adds {HP_STEEP}% HP and {DMG_STEEP}% damage, up to {enemyScale(MAX_TIER, 1).hp}% HP and{' '}
+        {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>

@@ -20,7 +20,7 @@ import {
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
-import { MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
+import { FIGHT_SHARDS, MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
 
 export const RUN_SAVE_VERSION = 2;
 
@@ -125,7 +125,15 @@ function validContext(r: RunState): boolean {
       return !!node?.enemyId;
     }
     case 'reward':
-      return cards(c['offers']);
+      return (
+        cards(c['offers']) &&
+        // (an Elite's spoils: never more shards than an Elite pays, DECISIONS #555)
+        (c['spoils'] === undefined ||
+          (isObj(c['spoils']) &&
+            Number.isInteger(c['spoils']['shards']) &&
+            c['spoils']['shards'] >= 0 &&
+            c['spoils']['shards'] <= FIGHT_SHARDS.elite))
+      );
     case 'ascend': {
       const offered = Array.isArray(c['ascendancies'])
         ? (c['ascendancies'] as unknown[]).map((id) => ascendancyOf(r.character, id))

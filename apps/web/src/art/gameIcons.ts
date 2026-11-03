@@ -761,7 +761,7 @@ export const PAINTED: ReadonlySet<string> = new Set(
     'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored',
     'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner',
     'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',
-    // (Wardens' rules, DECISIONS #546: stand-ins copied from Ghostly, Orbit and Fracture until their own are painted)
+    // (the Wardens' rules, DECISIONS #546: painted on icons-07, with Slippery)
     'veiled gravity unmaking',
     'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages',
     'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart',

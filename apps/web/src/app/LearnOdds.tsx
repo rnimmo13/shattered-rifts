@@ -19,6 +19,8 @@ import {
   ELITE_HEAL_PCT,
   ELITE_HEAL_LAST_TIER,
   eliteRewards,
+  ELITE_SPOIL_HEAL_PCT,
+  ELITE_SPOIL_MAX_HP,
   EVENT_TAG_LABEL,
   FIGHT_SHARDS,
   GHOST_BOSS_HP_BASE,
@@ -171,6 +173,11 @@ export function LearnOdds() {
           {eliteRewards(10).boonPct}% Boon chance; from Tier {ALL_ELITE_TIER},{' '}
           {eliteRewards(ALL_ELITE_TIER).shards} shards, {eliteRewards(ALL_ELITE_TIER).potionPct}% and{' '}
           {eliteRewards(ALL_ELITE_TIER).boonPct}%.
+        </li>
+        <li>
+          An Elite&rsquo;s shards are one of its spoils: after the fight you choose its shards, +
+          {ELITE_SPOIL_MAX_HP} Max HP for good, or a heal of {ELITE_SPOIL_HEAL_PCT}% of your Max HP,
+          then your card.
         </li>
         <li>
           A Warden also leaves you Max HP for good: +{wardenMaxHp(1)} to Tier IV, +{wardenMaxHp(5)}{' '}

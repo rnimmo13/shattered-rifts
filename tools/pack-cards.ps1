@@ -4,6 +4,11 @@
 # The cells are found from the navy gutters between the pictures; if the gutters can not be found the sheet is cut into
 # equal cells with a small inset. Sheets that are not in assets-src/cards yet are skipped, and those cards keep their
 # painted placeholder. Run: powershell -File tools/pack-cards.ps1
+# -Only engineer-m01,drunkard-m01 cuts just those sheets (a full run re-cuts every sheet, and some old sheets' lists no longer match
+# the pictures already in the game).
+param([string[]]$Only = @())
+# (powershell -File passes "a,b" as one string)
+$Only = @($Only | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot
@@ -70,6 +75,7 @@ if (Test-Path $archiveList) {
   foreach ($sh in $archive) { $sh | Add-Member -NotePropertyName dir -NotePropertyValue (Join-Path $srcDir '_cut') -Force }
 }
 $sheets = @($listed | Where-Object { $_.name -notmatch '-m\d+$' }) + $archive + @($listed | Where-Object { $_.name -match '-m\d+$' })
+if ($Only.Count -gt 0) { $sheets = @($sheets | ForEach-Object { $_ } | Where-Object { $Only -contains $_.name -and -not $_.PSObject.Properties['dir'] }) }
 $done = 0
 foreach ($sh in $sheets) {
   $dir = if ($sh.PSObject.Properties['dir']) { $sh.dir } else { $srcDir }
@@ -111,7 +117,7 @@ foreach ($sh in $sheets) {
 "$done card pictures"
 # Individual corrections override older sheet art.
 $individualDir = Join-Path $srcDir 'individual'
-if (Test-Path $individualDir) {
+if ($Only.Count -eq 0 -and (Test-Path $individualDir)) {
   foreach ($file in Get-ChildItem $individualDir -Filter *.png) {
     $img = [System.Drawing.Image]::FromFile($file.FullName)
     $out = New-Object System.Drawing.Bitmap 640, 480

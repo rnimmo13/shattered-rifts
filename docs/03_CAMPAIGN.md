@@ -64,7 +64,7 @@ Shrine (every node on that floor); each stage still has a Merchant somewhere bef
 | Node | Icon | What happens | Placement rules |
 |---|---|---|---|
 | **Duel** | ⚔ | A regular realm duelist (12–15 Essence, ~4 min) | All of floor 1; ~40% of other nodes |
-| **Elite** | 💀 | A tough named duelist (full Essence). Better card pick + a **Boon** | From floor 3, at most 6 an act, never two in a row. From Tier 2, plain fights also turn into Elites, past those limits: about 5.5% more of them each tier, all of them at Tier 19; at Tier 20 all of them are Wardens' fights. No heal after Tier 10, and shards, potions and Boons fade with the tier (DECISIONS #524, #526) |
+| **Elite** | 💀 | A tough named duelist (full Essence). A choice of spoils (its shards, +2 Max HP, or a heal of 15% of Max HP; DECISIONS #555), then a better card pick + a **Boon** | From floor 3, at most 6 an act, never two in a row. From Tier 2, plain fights also turn into Elites, past those limits: about 5.5% more of them each tier, all of them at Tier 19; at Tier 20 all of them are Wardens' fights. No heal after Tier 10, and shards, potions and Boons fade with the tier (DECISIONS #524, #526) |
 | **Event** | ❔ | Short story choice with risk/reward | ~25% |
 | **Shrine** | ✦ | Restore 1 Resolve **or** Temper a card **or** remove a card | Always on floor 5 |
 | **Merchant** | ⚖ | Spend Shards: cards, Boons, removal, Tempering | ~10%, max 1 per stage |

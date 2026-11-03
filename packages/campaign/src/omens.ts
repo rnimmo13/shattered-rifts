@@ -19,6 +19,8 @@ export interface OmenEffects {
   enemyStatuses: Partial<Record<StatusId, number>>;
   /** what elites and Wardens start with */
   bossStatuses: Partial<Record<StatusId, number>>;
+  /** what the strongest enemy of every fight starts with (DECISIONS #555) */
+  leadStatuses: Partial<Record<StatusId, number>>;
   /** what you start every fight with */
   heroStatuses: Partial<Record<StatusId, number>>;
   /** percent more on everything a merchant sells */
@@ -85,7 +87,8 @@ export const OMEN_TUNING = {
   brittleWards: { tier: 8, brittle: { base: 2, plusOneEvery: 4 } },
   bloodRites: { tier: 9, ritual: 1 },
   swarming: { tier: 10 },
-  exposedSoul: { tier: 10, exposed: { base: 1, plusOneEvery: 4 } },
+  // (one turn at every tier: it grew to three, and with a crowd's first blows it killed a full-HP hero before they could act; #555)
+  exposedSoul: { tier: 10, exposed: { base: 1, plusOneEvery: 99 } },
   vigilant: { tier: 12, steadfast: 1 },
   thirdPhase: { tier: 13, atPct: 25, barrierPct: { base: 20, perTier: 2, max: 28 }, might: 2 },
   hunted: { tier: 15, firstHit: { base: 4, perTier: 2, max: 6 } },
@@ -126,7 +129,13 @@ const thirdPhase = (t: number): Rise => ({
 const hardening = (
   id: string,
   name: string,
-  v: { tier: number; riseBarrierPct: number; riseMight: number; eliteHpPct: number; eliteDmgPct: number },
+  v: {
+    tier: number;
+    riseBarrierPct: number;
+    riseMight: number;
+    eliteHpPct: number;
+    eliteDmgPct: number;
+  },
 ): Omen => ({
   tier: v.tier,
   id,
@@ -245,7 +254,8 @@ const LISTED: Omen[] = [
     tier: T.swarming.tier,
     id: 'swarming',
     name: 'Swarming',
-    text: () => 'Elite fights bring one more of their weakest enemy (when there is room). A Warden comes alone.',
+    text: () =>
+      'Elite fights bring one more of their weakest enemy (when there is room). A Warden comes alone.',
     apply: (e) => void (e.swarm = true),
   },
   {
@@ -287,8 +297,9 @@ const LISTED: Omen[] = [
     id: 'hunted',
     name: 'Hunted',
     text: (t) =>
-      `Every enemy's first attack deals ${at(t, T.hunted.tier, T.hunted.firstHit)} more damage.`,
-    apply: (e, t) => add(e.enemyStatuses, 'vigor', at(t, T.hunted.tier, T.hunted.firstHit)),
+      `The strongest enemy's first attack deals ${at(t, T.hunted.tier, T.hunted.firstHit)} more damage.`,
+    // (the strongest enemy only: on every enemy, a swarm's first blows carried the bonus six times; DECISIONS #555)
+    apply: (e, t) => add(e.leadStatuses, 'vigor', at(t, T.hunted.tier, T.hunted.firstHit)),
   },
   {
     tier: T.riftAwakens.tier,
@@ -322,6 +333,7 @@ export function omenEffects(tier: number): OmenEffects {
     allRise: [],
     enemyStatuses: {},
     bossStatuses: {},
+    leadStatuses: {},
     heroStatuses: {},
     pricePct: 0,
     restPct: 0,
@@ -373,6 +385,8 @@ export function omenMods(
       ...(ownRise ? { units: units.map((_, i) => i).filter((i) => i !== lead) } : {}),
       rise: [...e.allRise],
     });
+  if (Object.keys(e.leadStatuses).length)
+    mods.push({ units: [lead], statuses: { ...e.leadStatuses } });
   if (boss) {
     const rises = ownRises ? [] : e.bossRise;
     if (Object.keys(e.bossStatuses).length || rises.length)

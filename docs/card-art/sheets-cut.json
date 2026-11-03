@@ -937,5 +937,78 @@
   "ids": [
    "raise-thrall"
   ]
+ },
+ {
+  "name": "engineer-m01-2",
+  "hero": "engineer",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "critical-mass",
+   "final-volley",
+   "full-throttle"
+  ]
+ },
+ {
+  "name": "spellblade-m01-2",
+  "hero": "spellblade",
+  "cols": 3,
+  "rows": 1,
+  "ids": [
+   "guarded-cut",
+   "obsidian-ward"
+  ],
+  "cells": [
+   [
+    16,
+    18,
+    790,
+    614
+   ],
+   [
+    810,
+    18,
+    1593,
+    614
+   ]
+  ]
+ },
+ {
+  "name": "drunkard-m01-2",
+  "hero": "drunkard",
+  "cols": 3,
+  "rows": 2,
+  "ids": [
+   "take-it-on-the-chin",
+   "bar-fight",
+   "drunken-swing",
+   "pane-up"
+  ],
+  "cells": [
+   [
+    22,
+    22,
+    792,
+    638
+   ],
+   [
+    818,
+    22,
+    1586,
+    638
+   ],
+   [
+    1611,
+    22,
+    2378,
+    638
+   ],
+   [
+    22,
+    662,
+    792,
+    1260
+   ]
+  ]
  }
 ]

@@ -829,7 +829,8 @@ export function duelPlan(run: RunState): FightPlan | null {
       ...(ghost
         ? {
             faltering:
-              (omen.heroStatuses.faltering ?? 0) + (node.kind === 'echo' ? ECHO_FALTERING : GHOST_FALTERING),
+              (omen.heroStatuses.faltering ?? 0) +
+              (node.kind === 'echo' ? ECHO_FALTERING : GHOST_FALTERING),
           }
         : {}),
     },
@@ -952,7 +953,8 @@ export function finishDuel(
     (node.kind === 'duel' ? FIGHT_SHARDS.duel : asElite ? elitePays.shards : FIGHT_SHARDS.warden) *
       (1 - omenEffects(r.tier).shardsPct / 100),
   );
-  r.shards += gain;
+  // (an Elite's or an Echo's shards are one of its spoils, chosen on the reward page: DECISIONS #555)
+  if (!asElite) r.shards += gain;
   // a Riftwalker whose trait heals after a won fight (Kesh's Pack Instinct; DECISIONS #285)
   const traitHeal = COMBAT_DB.heroes[r.character]?.trait?.healAfterFight;
   if (traitHeal) heal(r, traitHeal);
@@ -1072,11 +1074,61 @@ export function finishDuel(
       ? echoed
       : offerCards(r.rng, r.character, r.deck, asElite ? 'elite' : 'duel', count),
     ...extra,
-    shardsGained: gain,
+    ...(asElite ? { spoils: { shards: gain } } : { shardsGained: gain }),
     ...(boonGained ? { boonGained } : {}),
     ...(potionGained ? { potionGained } : {}),
   };
   r.phase = 'reward';
+  return r;
+}
+
+/** An Elite's spoil of Max HP (DECISIONS #555): small, as a run wins a few hundred Elites, so it builds a pool over the long tiers. */
+export const ELITE_SPOIL_MAX_HP = 2;
+/** An Elite's spoil of healing: this percent of Max HP (DECISIONS #555). */
+export const ELITE_SPOIL_HEAL_PCT = 15;
+export type Spoil = 'shards' | 'maxHp' | 'heal';
+
+/** What each spoil gives on this reward page, for the screen. */
+export function spoilAmounts(
+  run: RunState,
+): { shards: number; maxHp: number; heal: number } | null {
+  const sp = run.context?.spoils;
+  if (!sp) return null;
+  return {
+    shards: sp.shards,
+    maxHp: ELITE_SPOIL_MAX_HP,
+    heal: Math.min(run.maxHp - run.hp, Math.ceil((run.maxHp * ELITE_SPOIL_HEAL_PCT) / 100)),
+  };
+}
+
+/** Take one of an Elite's spoils (`r` is a copy): the shards, Max HP, or a heal. */
+function takeSpoil(r: RunState, spoil: Spoil): void {
+  const c = r.context as NonNullable<RunState['context']>;
+  const sp = c.spoils;
+  need(sp, 'There are no spoils to take');
+  if (spoil === 'shards') {
+    r.shards += sp.shards;
+    c.shardsGained = sp.shards;
+    c.spoilTaken = `+${sp.shards} shards`;
+  } else if (spoil === 'maxHp') {
+    r.maxHp += ELITE_SPOIL_MAX_HP;
+    r.hp += ELITE_SPOIL_MAX_HP;
+    c.spoilTaken = `+${ELITE_SPOIL_MAX_HP} Max HP`;
+  } else {
+    const before = r.hp;
+    heal(r, (r.maxHp * ELITE_SPOIL_HEAL_PCT) / 100);
+    c.spoilTaken = `healed ${r.hp - before} HP`;
+  }
+  delete c.spoils;
+}
+
+/** Choose an Elite's spoils on its reward page (DECISIONS #555). */
+export function chooseSpoil(run: RunState, spoil: Spoil): RunState {
+  need(run.phase === 'reward' && run.context?.spoils, 'There are no spoils to take');
+  need(spoil === 'shards' || spoil === 'maxHp' || spoil === 'heal', 'Unknown spoil');
+  need(spoil !== 'heal' || run.hp < run.maxHp, 'You are already at full HP');
+  const r = clone(run);
+  takeSpoil(r, spoil);
   return r;
 }
 
@@ -1087,6 +1139,8 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
   need(ctx?.offers, 'There is nothing on offer');
   const r = clone(run);
   const c = r.context as NonNullable<RunState['context']>;
+  // (spoils left untaken are the shards, as an Elite paid before there was a choice)
+  if (c.spoils) takeSpoil(r, 'shards');
   if (cardId === null) {
     // any card reward, the Warden's Gift included, can be skipped
   } else {

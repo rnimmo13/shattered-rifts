@@ -1,0 +1,307 @@
+{
+  "sourceDocument": "docs/art-wrapup-prompts.md",
+  "created": "2026-11-02",
+  "generator": "built-in image_gen",
+  "modelVersion": "Not exposed by tool",
+  "approval": "Pending human review",
+  "integration": "Source images only; cutters and runtime integration not run",
+  "promptNotes": [
+    "Removed franchise comparison from prompt boilerplate per project original-IP rules.",
+    "Valeria used as style anchor; actual hero portraits added as identity references for the three card sheets.",
+    "Card sheets retain requested 2400x1800 canvas with unused space navy. Native generation dimensions normalized without cropping."
+  ],
+  "assets": [
+    {
+      "path": "enemies/warden-helpers.png",
+      "kind": "helpers",
+      "prompt": "Create ONE CHARACTER SHEET of three enemy figures for a card-battler game, 2048 x 1024, no text.\nThe first attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes, slightly chunky proportions). Do NOT copy her character. The other attached images are the three bosses these figures serve: match each figure's materials, colours and trim to its boss.\n\nLAYOUT (critical): three separate full-body figures on a plain flat dark navy background (#14181f), in a row of 3 across, each fully inside its own third with wide empty margin; nothing touching or overlapping; no grid lines, no labels, no text, no floor, no cast shadows. EVERY figure faces LEFT (three-quarter view toward the left), as if squaring up to a hero on their left.\n\nTHE THREE, in this exact order, left to right:\n1. FOUNDRY HATCH (Kron's; it stands in front of him and must be broken first): a squat, wide armoured furnace door that walks. A heavy round riveted iron hatch, as big as the figure, set in a thick steel frame on two short stumpy piston legs. Molten orange light leaks from the seams round the hatch and through a small barred viewport in it; yellow-and-black hazard stripes on the frame; two teal indicator lamps on top; a big locking wheel in the middle of the hatch. Solid, stubborn and immovable, a living blast door, no face. Same orange, teal, steel and soot as the attached Kron.\n2. HOLLOW ACOLYTE (the Hollow Benediction's; two stand beside it): a small hollow suit of priestly armour with nobody inside, in the same ivory-white plate, gold trim and royal-blue cloth as the attached Hollow Benediction. Where the face should be, an open helm with darkness inside; in the empty chest, a small dim golden sun glowing through the gaps. It swings a gold censer on a chain, trailing warm gold incense smoke, and wears a blue-and-gold sash with a sun emblem. About half the height of a soldier, devout and eerie, not monstrous.\n3. RIFT WARD (Vorthax's; it shields the Heart of the Rift): a floating obelisk of dark cracked stone, taller than it is wide, hovering just above the ground, split by bright glowing violet-and-cyan rift seams like the attached Vorthax. Three jagged crystal shards orbit it, and a glowing abstract rift sigil (a ring and a split, NO letters or runes that read as writing) is carved in its face. A thin shimmering dome of violet light just around it. No face, no limbs: a ward, not a creature.\n\nDraw the Foundry Hatch and the Rift Ward about the size of a big soldier, the Acolyte smaller.\nPALETTE: each figure in its boss's colours; soft rim light from the upper left.\n\nNEGATIVE: text, letters, numbers, labels, readable runes, grid lines, UI, frame, border, watermark, logo, floor, ground shadow, scenery, photorealism, gritty textures, figures facing right.\n",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png",
+        "D:\\Code\\ShatteredRifts\\apps\\web\\public\\art\\figures\\kron.png",
+        "D:\\Code\\ShatteredRifts\\apps\\web\\public\\art\\figures\\the-hollow-benediction.png",
+        "D:\\Code\\ShatteredRifts\\apps\\web\\public\\art\\figures\\vorthax.png"
+      ],
+      "width": 2048,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-f8625928-047a-4a3d-b911-d234461943e8.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "icons/icons-07.png",
+      "kind": "icons",
+      "prompt": "Create ONE SHEET of 4 separate status icons for a dark-fantasy 2D card-battler, no text.\nThe attached images are the STYLE ANCHOR: these belong to the same set as the attached icons, so match their rendering exactly (hand-painted dark-fantasy look, bold clean near-black outlines, rich saturated colours, simple painted shading, a small bright highlight, light from the upper left).\n\nLAYOUT (critical): a wide landscape image, with 4 separate pictures spaced in an even invisible row of 4 across. Nothing touches or overlaps a neighbour or the edge of the image; leave clear magenta all round each one.\nTHE BACKGROUND MUST STAY CLEAN (critical, the game cuts each picture out by this colour): one plain flat solid magenta (#FF00FF) over the WHOLE sheet, no grid lines, cells, frames or badges, no shadow on the ground, no gradient, no texture. Use no magenta or hot pink inside the pictures. NO TEXT anywhere: no letters, numbers, labels or captions.\nREADABLE WHEN SMALL (critical): each picture will be shown at only 24 to 48 pixels, so each is ONE bold object, centred and large, with a thick unbroken near-black outline all round its silhouette, big simple shapes and no small details.\n\nTHE PICTURES, in this exact order, left to right:\n1. Slippery: a fat glossy pale-blue water drop with a bright streak of shine down one side, a little splash at its foot.\n2. Veiled: a dark violet lace veil drawn over a pale mask, only two faint glowing eyes showing through.\n3. Gravity: a small black sphere with a glowing violet ring around it, three playing cards bending and falling into it.\n4. Unmaking: a gold crown cracking in two down the middle, pale light pouring out of the crack, flakes falling away.\n",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png",
+        "D:\\Code\\ShatteredRifts\\assets-src\\icons\\icons-01.png",
+        "D:\\Code\\ShatteredRifts\\assets-src\\icons\\icons-03.png"
+      ],
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-982dc69e-4fc8-444e-b16c-5661211896b6.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "events/brass-cascade.png",
+      "kind": "events",
+      "prompt": "You are painting EVENT SCENES for a dark-fantasy card-battler game. Each event is a place the player stumbles on while travelling through the Rift (a broken multiverse). I will send one event per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image (Valeria). Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Do NOT copy her character. These are BACKGROUNDS, so render them a little softer and moodier than a character: atmospheric haze, strong directional light, a storybook stage-set feel.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge, no border, no frame.\nCOMPOSITION (critical, every image):\n- The FOCAL SUBJECT (the object, figure or creature named in the event) sits in the LEFT 60% of the image, at mid-distance, clearly readable as a silhouette.\n- The RIGHT 40% is calmer: darker, less detail, mostly sky, wall, fog or shadow, because a text panel sits over it. Nothing important there.\n- The bottom 15% is darker ground, because buttons sit over it.\n- An eye-level view, as if the traveller just walked up to it. The traveller is NOT in the picture.\n- One strong light source per scene; deep shadows around the edges (a soft vignette).\n- Non-player figures named in the event (a ferryman, a gambler, a smith) ARE drawn, mid-distance, stylised, faces mostly in shade.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black for the shadows, with each scene's own accent colour from its message. Faint violet-and-cyan rift cracks may appear in the sky or ground as a recurring motif, but subtly.\n\nNEGATIVE (every image): readable text, letters, numbers, signs with words, UI, frame, border, watermark, logo, the player character, heroes, photorealism, gritty grainy textures, gore.\n\nEVENT: A tall brass prize machine standing against a ruined stone wall, a window of spinning prizes (cards, bottles, a glowing trinket) in its chest, a coin slot glowing beside it, a hand-painted sign hung on a nail (no readable words). Ivy and fallen stones around it. Accent: polished brass, warm amber.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+      ],
+      "width": 1536,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-6052ce80-af15-4fd7-86c3-26130a9c0e33.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "events/brass-pegboard.png",
+      "kind": "events",
+      "prompt": "You are painting EVENT SCENES for a dark-fantasy card-battler game. Each event is a place the player stumbles on while travelling through the Rift (a broken multiverse). I will send one event per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image (Valeria). Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Do NOT copy her character. These are BACKGROUNDS, so render them a little softer and moodier than a character: atmospheric haze, strong directional light, a storybook stage-set feel.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge, no border, no frame.\nCOMPOSITION (critical, every image):\n- The FOCAL SUBJECT (the object, figure or creature named in the event) sits in the LEFT 60% of the image, at mid-distance, clearly readable as a silhouette.\n- The RIGHT 40% is calmer: darker, less detail, mostly sky, wall, fog or shadow, because a text panel sits over it. Nothing important there.\n- The bottom 15% is darker ground, because buttons sit over it.\n- An eye-level view, as if the traveller just walked up to it. The traveller is NOT in the picture.\n- One strong light source per scene; deep shadows around the edges (a soft vignette).\n- Non-player figures named in the event (a ferryman, a gambler, a smith) ARE drawn, mid-distance, stylised, faces mostly in shade.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black for the shadows, with each scene's own accent colour from its message. Faint violet-and-cyan rift cracks may appear in the sky or ground as a recurring motif, but subtly.\n\nNEGATIVE (every image): readable text, letters, numbers, signs with words, UI, frame, border, watermark, logo, the player character, heroes, photorealism, gritty grainy textures, gore.\n\nEVENT: A very old brass reel machine in a quiet market square at dusk, older than the crooked houses around it, gleaming with fresh oil, a long lever on its side, fifteen prizes behind its round glass turning past a pointer. Accent: brass, dusk violet, lamplight.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+      ],
+      "width": 1536,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-3e600cdf-5dc3-44f0-a553-a79914958aae.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "events/copper-chute.png",
+      "kind": "events",
+      "prompt": "You are painting EVENT SCENES for a dark-fantasy card-battler game. Each event is a place the player stumbles on while travelling through the Rift (a broken multiverse). I will send one event per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image (Valeria). Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Do NOT copy her character. These are BACKGROUNDS, so render them a little softer and moodier than a character: atmospheric haze, strong directional light, a storybook stage-set feel.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge, no border, no frame.\nCOMPOSITION (critical, every image):\n- The FOCAL SUBJECT (the object, figure or creature named in the event) sits in the LEFT 60% of the image, at mid-distance, clearly readable as a silhouette.\n- The RIGHT 40% is calmer: darker, less detail, mostly sky, wall, fog or shadow, because a text panel sits over it. Nothing important there.\n- The bottom 15% is darker ground, because buttons sit over it.\n- An eye-level view, as if the traveller just walked up to it. The traveller is NOT in the picture.\n- One strong light source per scene; deep shadows around the edges (a soft vignette).\n- Non-player figures named in the event (a ferryman, a gambler, a smith) ARE drawn, mid-distance, stylised, faces mostly in shade.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black for the shadows, with each scene's own accent colour from its message. Faint violet-and-cyan rift cracks may appear in the sky or ground as a recurring motif, but subtly.\n\nNEGATIVE (every image): readable text, letters, numbers, signs with words, UI, frame, border, watermark, logo, the player character, heroes, photorealism, gritty grainy textures, gore.\n\nEVENT: A copper-and-brass machine crowded with bottles, cards and trinkets turning in its window, beside it a tinker asleep on a stool with his hat over his eyes, a lever with a little hand-written note tied to it (no readable words). Accent: copper, bottle green, candlelight.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+      ],
+      "width": 1536,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-962c3e04-67bb-4b89-b0f8-7632764233d4.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "events/silver-sluice.png",
+      "kind": "events",
+      "prompt": "You are painting EVENT SCENES for a dark-fantasy card-battler game. Each event is a place the player stumbles on while travelling through the Rift (a broken multiverse). I will send one event per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image (Valeria). Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Do NOT copy her character. These are BACKGROUNDS, so render them a little softer and moodier than a character: atmospheric haze, strong directional light, a storybook stage-set feel.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge, no border, no frame.\nCOMPOSITION (critical, every image):\n- The FOCAL SUBJECT (the object, figure or creature named in the event) sits in the LEFT 60% of the image, at mid-distance, clearly readable as a silhouette.\n- The RIGHT 40% is calmer: darker, less detail, mostly sky, wall, fog or shadow, because a text panel sits over it. Nothing important there.\n- The bottom 15% is darker ground, because buttons sit over it.\n- An eye-level view, as if the traveller just walked up to it. The traveller is NOT in the picture.\n- One strong light source per scene; deep shadows around the edges (a soft vignette).\n- Non-player figures named in the event (a ferryman, a gambler, a smith) ARE drawn, mid-distance, stylised, faces mostly in shade.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black for the shadows, with each scene's own accent colour from its message. Faint violet-and-cyan rift cracks may appear in the sky or ground as a recurring motif, but subtly.\n\nNEGATIVE (every image): readable text, letters, numbers, signs with words, UI, frame, border, watermark, logo, the player character, heroes, photorealism, gritty grainy textures, gore.\n\nEVENT: A water-driven brass machine by a stream: a small waterwheel turns its reel, water trickling down a wooden chute, prizes on the reel glinting wet, mist and moss. Accent: silver water, brass, cool green.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+      ],
+      "width": 1536,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-cbfd5898-d13a-4167-a67e-73f66d57c696.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "events/gilded-drop.png",
+      "kind": "events",
+      "prompt": "You are painting EVENT SCENES for a dark-fantasy card-battler game. Each event is a place the player stumbles on while travelling through the Rift (a broken multiverse). I will send one event per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image (Valeria). Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Do NOT copy her character. These are BACKGROUNDS, so render them a little softer and moodier than a character: atmospheric haze, strong directional light, a storybook stage-set feel.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge, no border, no frame.\nCOMPOSITION (critical, every image):\n- The FOCAL SUBJECT (the object, figure or creature named in the event) sits in the LEFT 60% of the image, at mid-distance, clearly readable as a silhouette.\n- The RIGHT 40% is calmer: darker, less detail, mostly sky, wall, fog or shadow, because a text panel sits over it. Nothing important there.\n- The bottom 15% is darker ground, because buttons sit over it.\n- An eye-level view, as if the traveller just walked up to it. The traveller is NOT in the picture.\n- One strong light source per scene; deep shadows around the edges (a soft vignette).\n- Non-player figures named in the event (a ferryman, a gambler, a smith) ARE drawn, mid-distance, stylised, faces mostly in shade.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black for the shadows, with each scene's own accent colour from its message. Faint violet-and-cyan rift cracks may appear in the sky or ground as a recurring motif, but subtly.\n\nNEGATIVE (every image): readable text, letters, numbers, signs with words, UI, frame, border, watermark, logo, the player character, heroes, photorealism, gritty grainy textures, gore.\n\nEVENT: A grand gilded prize machine in a hall with no roof, open to a starry sky, prizes on red velvet turning past a pointer, a bowl of coins on a cushion before it and a polite attendant in livery standing to one side. Accent: gold, velvet red, starlight blue.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+      ],
+      "width": 1536,
+      "height": 1024,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-1844608e-5481-461a-a9e2-225a6d999d11.png",
+      "attempts": 1,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration"
+    },
+    {
+      "path": "cards/engineer-m01.png",
+      "kind": "cards",
+      "prompt": "Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.\n\nWORLD: Rivet, an engineer with a hovering drone. A tinkerer of machines. She starts every fight with a Drone and builds an army of them. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Critical Mass\" (attack): Deal 10 (+3 per Might) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.\n2. \"Final Volley\" (attack): Deal 6 (+10 per ally) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.\n3. \"Full Throttle\" (skill): Each of your companions gains 3 Primed. All your allies act now. All your allies act now. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly engineer-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, one row; all three cells are painted. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.\n\nREFERENCE ROLES: Image 1 is STYLE ONLY (Valeria); Image 2 is the character identity reference. Rivet has curly brown hair, cyan respirator mask covering nose and mouth, teal engineer coat, orange/brass mechanical tools, and a hovering drone. Match image 2 for her identity. No blonde hair, ponytail, paladin armor or shield.\nRender exactly the requested card scenes and preserve the layout; use the second image only for hero appearance, not its portrait framing. Keep panels landscape 4:3 and remainder flat navy.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png",
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\engineer.png"
+      ],
+      "width": 2400,
+      "height": 1800,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-3dcac8d3-6f3a-4dbb-89cb-89d8f25f3e0e.png",
+      "attempts": 2,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration",
+      "discarded_attempt": {
+        "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-d58e2365-d325-464c-9063-935cdf641a6d.png",
+        "prompt": "Create ONE ILLUSTRATION SHEET of 3 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left.\n\nWORLD: Rivet, an engineer with a hovering drone. A tinkerer of machines. She starts every fight with a Drone and builds an army of them. World: a teal-and-orange foundry of machines: hazard stripes, steel, glowing cyan, sparks and steam.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Critical Mass\" (attack): Deal 10 (+3 per Might) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.\n2. \"Final Volley\" (attack): Deal 6 (+10 per ally) damage. Consume. Show a dynamic strike caught mid-action. A little more dramatic and detailed.\n3. \"Full Throttle\" (skill): Each of your companions gains 3 Primed. All your allies act now. All your allies act now. Consume. Show a defensive or tactical moment, calm and clear. A little more dramatic and detailed.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly engineer-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, one row; all three cells are painted. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.",
+        "references": [
+          "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+        ],
+        "reason": "Hero appearance did not match source portrait"
+      }
+    },
+    {
+      "path": "cards/spellblade-m01.png",
+      "kind": "cards",
+      "prompt": "Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.\n\nWORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords hit harder and harder, spend it on a huge spell, or crack her enemies with Fracture until they Shatter. World: a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Guarded Cut\" (attack): Sword. Deal 2 (+2 per 4 Spell Power) damage. Gain 4 (+1 per 3 Spell Power) Barrier. Show a dynamic strike caught mid-action.\n2. \"Obsidian Ward\" (skill): Spell. Gain 7 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. Show a defensive or tactical moment, calm and clear.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly spellblade-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, one row; column 3 is empty navy. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.\n\nREFERENCE ROLES: Image 1 is STYLE ONLY (Valeria); Image 2 is the character identity reference. Obsidia has black/dark-purple OBSIDIAN skin with glowing ember cracks, SHORT WHITE hair, a pointed golden crown, and purple black gold clothing. Match image 2 for her identity and volcanic-glass anatomy; no pale human skin and no brown hair.\nRender exactly the requested card scenes and preserve the layout; use the second image only for hero appearance, not its portrait framing. Keep panels landscape 4:3 and remainder flat navy.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png",
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\spellblade.png"
+      ],
+      "width": 2400,
+      "height": 1800,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-f07d7e8d-99a3-49b6-9d06-17d98ddab0cf.png",
+      "attempts": 2,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration",
+      "discarded_attempt": {
+        "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-97947171-bf08-4477-be27-21bb052e3c5b.png",
+        "prompt": "Create ONE ILLUSTRATION SHEET of 2 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 1 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.\n\nWORLD: Obsidia, a queen of black volcanic glass with floating shards. A spellblade of black glass and ember. Stores Spell Power in her blade: hold it and her Swords hit harder and harder, spend it on a huge spell, or crack her enemies with Fracture until they Shatter. World: a volcanic glass desert: black obsidian, ember-orange cracks, violet sheen, floating arcana stars.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Guarded Cut\" (attack): Sword. Deal 2 (+2 per 4 Spell Power) damage. Gain 4 (+1 per 3 Spell Power) Barrier. Show a dynamic strike caught mid-action.\n2. \"Obsidian Ward\" (skill): Spell. Gain 7 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. Show a defensive or tactical moment, calm and clear.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly spellblade-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, one row; column 3 is empty navy. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.",
+        "references": [
+          "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+        ],
+        "reason": "Hero appearance did not match source portrait"
+      }
+    },
+    {
+      "path": "cards/drunkard-m01.png",
+      "kind": "cards",
+      "prompt": "Create ONE ILLUSTRATION SHEET of 4 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 2 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.\n\nWORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Take It on the Chin\" (skill): Lose 3 HP. Gain 10 Barrier. Draw 1 card. Show a defensive or tactical moment, calm and clear.\n2. \"Bar Fight\" (attack): Deal 7 (+3 per time you lost HP this turn, at most +9) damage. Show a dynamic strike caught mid-action.\n3. \"Drunken Swing\" (attack): Deal 14 damage. Gain 3 Hangover. Show a dynamic strike caught mid-action.\n4. \"Pane Up\" (skill): Gain 5 (+1 per 11% HP missing) Barrier. Show a defensive or tactical moment, calm and clear.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly drunkard-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, two rows; only row 2 column 1 is painted, and row 2 columns 2 and 3 are empty navy. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.\n\nREFERENCE ROLES: Image 1 is STYLE ONLY (Valeria); Image 2 is the character identity reference. KP is a SHORT FAT BALD dwarf with a broad BARE scalp, brown beard, patched green coat over cream shirt, hammer, shotgun and window-pane trolley. Match image 2 for his identity. Absolutely no topknot or hair on scalp, no red hair.\nRender exactly the requested card scenes and preserve the layout; use the second image only for hero appearance, not its portrait framing. Keep panels landscape 4:3 and remainder flat navy.",
+      "references": [
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png",
+        "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\drunkard.png"
+      ],
+      "width": 2400,
+      "height": 1800,
+      "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-581f1cdd-414d-465f-842e-be3127ceb8d7.png",
+      "attempts": 2,
+      "generator": "built-in image_gen",
+      "model_version": "not exposed",
+      "created": "2026-11-02",
+      "status": "Generated; pending Robert's approval and integration",
+      "discarded_attempt": {
+        "source": "C:\\Users\\rnimm\\.codex\\generated_images\\01a19d60-f043-7742-ad04-3df7f8e3e30c\\exec-9e99fd86-941d-49e6-9947-6e8aa5af6d1a.png",
+        "prompt": "Create ONE ILLUSTRATION SHEET of 4 separate card-art pictures for a card-battler game, 2400 x 1800, no text.\nThe attached image (Valeria) is the STYLE ANCHOR: match its cartoon game-art rendering exactly (bold clean dark outlines, flat saturated colours, simple cel shading, crisp polished shapes). Do NOT copy her character; paint scenes and objects. Backgrounds are softer and less contrasty than the main subject so the subject pops.\n\nLAYOUT (critical): a clean 3 x 2 grid of landscape 4:3 pictures (each about 760 x 570), separated by thin flat dark navy (#14181f) gutters, with NO frames, NO borders, NO captions, NO text, NO numbers. Every picture fills its own cell completely; nothing crosses a gutter. Each picture has ONE clear subject in the middle that reads at thumbnail size, a simple scene behind it, light from the upper left. Leave any unused cells plain dark navy.\n\nWORLD: KP, a boisterous drunk dwarf with a shotgun and bottles. A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot. World: the rift's rubbish dump: rusty junk, green bottle glass, amber oil-drum firelight, a deep blue-black sky.\n\nTHE PICTURES, in this exact order, left to right, top row first. Use the card name and its effect only to decide what to draw; never write the name:\n1. \"Take It on the Chin\" (skill): Lose 3 HP. Gain 10 Barrier. Draw 1 card. Show a defensive or tactical moment, calm and clear.\n2. \"Bar Fight\" (attack): Deal 7 (+3 per time you lost HP this turn, at most +9) damage. Show a dynamic strike caught mid-action.\n3. \"Drunken Swing\" (attack): Deal 14 damage. Gain 3 Hangover. Show a dynamic strike caught mid-action.\n4. \"Pane Up\" (skill): Gain 5 (+1 per 11% HP missing) Barrier. Show a defensive or tactical moment, calm and clear.\n\nNEGATIVE: text, letters, numbers, captions, labels, UI, card frames, borders, watermark, logo, photorealism, gritty texture, nudity, characters facing away.\n\nFILE: when the image is done, save it as a PNG file named exactly drunkard-m01.png and give me a download link to that file.\n\nCanvas clarification: retain the 2400 x 1800 sheet. Each individual illustrated panel is landscape 4:3, about 760 x 570 pixels. Arrange three columns at the top, two rows; only row 2 column 1 is painted, and row 2 columns 2 and 3 are empty navy. Leave all remaining canvas space below the panel rows plain flat dark navy #14181f. Keep a narrow navy outer margin and thin navy gutters, with no frames. Do not stretch the individual panels vertically.",
+        "references": [
+          "D:\\Code\\ShatteredRifts\\assets-src\\heroes\\_source\\Sunlit Paladin with Shield and Sword.png"
+        ],
+        "reason": "Hero appearance did not match source portrait"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "path": "enemies/warden-helpers.png",
+      "nativeWidth": 1774,
+      "nativeHeight": 887,
+      "width": 2048,
+      "height": 1024,
+      "sha256": "B76983A1AFB6DA759B57767F162DD53E6FCB10E70E9F35BCF5DF19D27533FD8D",
+      "projectCopyMatches": true,
+      "normalization": "Bicubic resize; no crop"
+    },
+    {
+      "path": "icons/icons-07.png",
+      "nativeWidth": 2172,
+      "nativeHeight": 724,
+      "width": 2172,
+      "height": 724,
+      "sha256": "B343E7D6FDB1CB3B8FCEA777A7C9E231895164E8AAC6BD1AF9F0D61270D4A408",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "events/brass-cascade.png",
+      "nativeWidth": 1536,
+      "nativeHeight": 1024,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "5DAB77B14878A7CAAA02B520407082E976901F73690679B452A679716E588A31",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "events/brass-pegboard.png",
+      "nativeWidth": 1536,
+      "nativeHeight": 1024,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "31CBBF02AD07D823336A355966A8A98E1534A840B2589CEC88FDA3B9B1BCFC67",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "events/copper-chute.png",
+      "nativeWidth": 1536,
+      "nativeHeight": 1024,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "FC65B0C27A7E93C013C27DA0CA14ED0ADFF4A8246C632F6E40AD085C3D7E5766",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "events/silver-sluice.png",
+      "nativeWidth": 1536,
+      "nativeHeight": 1024,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "668A3905D0E1748FB52286F7129772077281BF8AA1B2AE99F4755E4748AF32ED",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "events/gilded-drop.png",
+      "nativeWidth": 1536,
+      "nativeHeight": 1024,
+      "width": 1536,
+      "height": 1024,
+      "sha256": "6F628F4E8CA4FA539D1E3EBC646EF6FD08C7ABD238F22B71DDF0E5ECD5E3B22F",
+      "projectCopyMatches": true,
+      "normalization": "None"
+    },
+    {
+      "path": "cards/engineer-m01.png",
+      "nativeWidth": 1448,
+      "nativeHeight": 1086,
+      "width": 2400,
+      "height": 1800,
+      "sha256": "CB44B843501A0400A1E9517885B67BCC28C69E866B8B6BC0DDBE4526370479B5",
+      "projectCopyMatches": true,
+      "normalization": "Bicubic resize; no crop"
+    },
+    {
+      "path": "cards/spellblade-m01.png",
+      "nativeWidth": 1448,
+      "nativeHeight": 1086,
+      "width": 2400,
+      "height": 1800,
+      "sha256": "46C28119CF12B705AF3CE20BB625608274038B1C43FF3E575C93118D917241E8",
+      "projectCopyMatches": true,
+      "normalization": "Bicubic resize; no crop"
+    },
+    {
+      "path": "cards/drunkard-m01.png",
+      "nativeWidth": 1448,
+      "nativeHeight": 1086,
+      "width": 2400,
+      "height": 1800,
+      "sha256": "8E24DF34A5B3C4DC23892006F6F0414F62DF97CB3DE38F8BA9A764EF39D9C375",
+      "projectCopyMatches": true,
+      "normalization": "Bicubic resize; no crop"
+    }
+  ]
+}

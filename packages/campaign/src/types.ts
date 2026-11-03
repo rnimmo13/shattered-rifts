@@ -284,6 +284,13 @@ export interface NodeContext {
   ascendancies?: string[];
   /** reward: shards already granted for the win */
   shardsGained?: number;
+  /**
+   * reward, after an Elite or an Echo: its spoils, still to be chosen (DECISIONS #555): these shards, ELITE_SPOIL_MAX_HP Max HP, or a
+   * heal of ELITE_SPOIL_HEAL_PCT of Max HP. Gone once one is taken; a card chosen first takes the shards.
+   */
+  spoils?: { shards: number };
+  /** reward: the spoil taken, for the screen to show */
+  spoilTaken?: string;
   /** reward: a Boon the fight dropped (already added to the run) */
   boonGained?: string;
   /** reward: a Potion the fight dropped (already in your belt) */

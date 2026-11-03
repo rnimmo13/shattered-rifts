@@ -1390,38 +1390,5 @@
    "wound",
    "static"
   ]
- },
- {
-  "name": "engineer-m01",
-  "hero": "engineer",
-  "cols": 3,
-  "rows": 1,
-  "ids": [
-   "critical-mass",
-   "final-volley",
-   "full-throttle"
-  ]
- },
- {
-  "name": "spellblade-m01",
-  "hero": "spellblade",
-  "cols": 3,
-  "rows": 1,
-  "ids": [
-   "guarded-cut",
-   "obsidian-ward"
-  ]
- },
- {
-  "name": "drunkard-m01",
-  "hero": "drunkard",
-  "cols": 3,
-  "rows": 2,
-  "ids": [
-   "take-it-on-the-chin",
-   "bar-fight",
-   "drunken-swing",
-   "pane-up"
-  ]
  }
 ]

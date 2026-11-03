@@ -1,4 +1,4 @@
-// An enemy's own Barrier and healing grow with the tier, as its HP does (DECISIONS #548).
+// An enemy's own Barrier and healing grow with the tier, at half the rate its HP does (DECISIONS #548, #555).
 
 import { describe, expect, it } from 'vitest';
 import { applyAction, clone, createCombat, describeIntent, type CombatState, type Unit } from '@sr/combat';
@@ -32,23 +32,23 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
     expect(barrierAfter(90, 'hooded-acolyte', 'chant')).toBe(7);
   });
 
-  it('ten times at ten times the HP', () => {
-    expect(barrierAfter(1000, 'hooded-acolyte', 'chant')).toBe(70);
+  it('five and a half times at ten times the HP (half the rate, DECISIONS #555)', () => {
+    expect(barrierAfter(1000, 'hooded-acolyte', 'chant')).toBe(39);
   });
 
-  it('healing too (the Bloated One’s Devour heals 8 as written)', () => {
+  it('healing too (the Bloated One’s Devour heals 8 as written: 3x at 5x the HP)', () => {
     const s = fight(['bloated-one'], 500);
     const u = first(s, 'bloated-one');
     u.hp = 100;
     u.intent = { move: 'devour', target: s.sides.a.units[0]!.id };
-    expect(first(applyAction(db, s, { type: 'endTurn' }).state, 'bloated-one').hp).toBe(140);
+    expect(first(applyAction(db, s, { type: 'endTurn' }).state, 'bloated-one').hp).toBe(124);
   });
 
   it('the intent shows the grown number', () => {
     const s = fight(['hooded-acolyte'], 1000);
     const u = first(s, 'hooded-acolyte');
     u.intent = { move: 'chant', target: s.sides.a.units[0]!.id };
-    expect(describeIntent(db, s, u)?.text).toContain('70 Barrier');
+    expect(describeIntent(db, s, u)?.text).toContain('39 Barrier');
   });
 
   it('an enemy’s Armored grows too; a hero’s does not', () => {
@@ -56,7 +56,7 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
     const u = first(s, 'hooded-acolyte');
     u.statuses.armored = 3;
     u.intent = { move: 'stab', target: s.sides.a.units[0]!.id };
-    expect(first(applyAction(db, s, { type: 'endTurn' }).state, 'hooded-acolyte').barrier).toBe(30);
+    expect(first(applyAction(db, s, { type: 'endTurn' }).state, 'hooded-acolyte').barrier).toBe(17);
     const h = s.sides.a.units.find((x) => x.kind === 'hero')!;
     h.statuses.armored = 3;
     s.sides.a.hand = [];
@@ -67,7 +67,7 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
       e.type === 'barrier' && e.target === h.id ? [e.amount] : [],
     );
     expect(gained).toContain(3);
-    expect(gained.every((n) => n < 30)).toBe(true);
+    expect(gained.every((n) => n < 17)).toBe(true);
   });
 
   it('a share of max HP is not grown twice (Vorthax’s Refract)', () => {
