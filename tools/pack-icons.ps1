@@ -225,7 +225,7 @@ $sheets = @(
   @{ d = $fxDir; f = 'potions-01'; c = 4; r = 3; s = $icon; ids = 'potion-fire-flask potion-guard-draught potion-mana-vial potion-swift-draught potion-might-tonic potion-healing-philtre potion-ember-bomb potion-frost-phial potion-stun-tonic potion-ward-elixir -flask -vial' -split ' ' },
   @{ d = $fxDir; f = 'intents-01'; c = 4; r = 3; s = $icon; ids = 'intent-attack intent-multi intent-big intent-defend intent-buff intent-debuff intent-summon intent-special -trap -charge -flee -sleep' -split ' ' },
   @{ d = $fxDir; f = 'map-01'; c = 4; r = 3; s = $icon; ids = 'map-duel map-elite map-event map-shrine map-merchant map-warden map-ghost map-here map-done map-crossed map-cache -door' -split ' ' },
-  @{ d = $fxDir; f = 'ascend-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight-paladin crest-knight-marshal crest-knight-blood-knight crest-engineer-foreman crest-engineer-golemancer crest-engineer-overclocker crest-hunter-beastmaster crest-hunter-reaver crest-hunter-predator crest-trickster-trapmaster crest-trickster-cardsharp crest-trickster-seer' -split ' ' },
+  @{ d = $fxDir; f = 'ascend-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight-paladin crest-knight-marshal crest-knight-blood-knight crest-engineer-foreman crest-engineer-golemancer crest-engineer-swarmwright crest-hunter-beastmaster crest-hunter-reaver crest-hunter-predator crest-trickster-trapmaster crest-trickster-cardsharp crest-trickster-seer' -split ' ' },
   @{ d = $fxDir; f = 'ascend-02'; c = 4; r = 3; s = $crest; ids = 'crest-assassin-assassin crest-assassin-bladedancer crest-assassin-bloodletter crest-shaman-totemist crest-shaman-spiritwalker crest-shaman-pyromancer crest-monk-sage crest-monk-zealot crest-monk-sunwalker crest-spellblade-blademaster crest-spellblade-archmage crest-spellblade-shatterer' -split ' ' },
   @{ d = $fxDir; f = 'ascend-03'; c = 4; r = 3; s = $crest; ids = 'crest-drunkard-brewmaster crest-drunkard-gunslinger crest-drunkard-deathwish crest-necromancer-bonelord crest-necromancer-fateweaver crest-necromancer-soulreaper -banner -gold-wreath -silver-wreath -flame -wings -crown' -split ' ' },
   @{ d = $fxDir; f = 'class-01'; c = 4; r = 3; s = $crest; ids = 'crest-knight crest-engineer -hunter-bow crest-trickster crest-assassin crest-shaman crest-monk crest-spellblade crest-necromancer crest-drunkard crest-shaman-elementalist -random' -split ' ' },
@@ -270,27 +270,32 @@ foreach ($sheet in $effects) {
   $strips += $sheet.ids.Length
   $keyed.Dispose()
 }
-# every Rare's own effect (docs/rare-fx-prompts.md, DECISIONS #567): the sheets in assets-src/fx/rare, cut by the row order in
-# docs/card-art/rare-fx-sheets.json into apps/web/public/art/fx/rare/<card id>.png, and an index of the cards that have one and where each
-# plays (from docs/card-art/rare-fx.json), which the fight reads; a sheet not made yet is skipped
-$rareSrc = Join-Path $fxDir 'rare'
-$rareOut = Join-Path $stripDir 'rare'
-New-Item -ItemType Directory -Force $rareOut | Out-Null
-$rareSheets = Get-Content -Raw (Join-Path $root 'docs/card-art/rare-fx-sheets.json') | ConvertFrom-Json
-$rareFx = Get-Content -Raw (Join-Path $root 'docs/card-art/rare-fx.json') | ConvertFrom-Json
-$rareIndex = [ordered]@{}
-$rares = 0
-foreach ($sheet in $rareSheets) {
-  $sp = Join-Path $rareSrc "$($sheet.name).png"
-  if (-not (Test-Path $sp)) { continue }
-  $src = [System.Drawing.Bitmap]::FromFile($sp)
-  $keyed = [IconCut]::Key($src, $false)
-  $src.Dispose()
-  $ids = [string[]]$sheet.ids
-  [IconCut]::Strips($keyed, 6, $ids.Length, $frame, $room, $sheet.name, [string[]]($ids | ForEach-Object { Join-Path $rareOut "$_.png" }))
-  $keyed.Dispose()
-  foreach ($id in $ids) { $rareIndex[$id] = $rareFx.$id.at; $rares++ }
+# every Rare's and Uncommon's own effect (docs/<rarity>-fx-prompts.md, DECISIONS #567, #568): the sheets in assets-src/fx/<rarity>, cut by
+# the row order in docs/card-art/<rarity>-fx-sheets.json into apps/web/public/art/fx/<rarity>/<card id>.png, and an index of the cards that
+# have one and where each plays (from docs/card-art/<rarity>-fx.json), which the fight reads; a sheet not made yet is skipped
+$cardFxCounts = @()
+foreach ($rarity in 'rare', 'uncommon') {
+  $sheetsPath = Join-Path $root "docs/card-art/$rarity-fx-sheets.json"
+  if (-not (Test-Path $sheetsPath)) { continue }
+  $cfSrc = Join-Path $fxDir $rarity
+  $cfOut = Join-Path $stripDir $rarity
+  New-Item -ItemType Directory -Force $cfOut | Out-Null
+  $cfSheets = Get-Content -Raw $sheetsPath | ConvertFrom-Json
+  $cfFx = Get-Content -Raw (Join-Path $root "docs/card-art/$rarity-fx.json") | ConvertFrom-Json
+  $cfIndex = [ordered]@{}
+  foreach ($sheet in $cfSheets) {
+    $sp = Join-Path $cfSrc "$($sheet.name).png"
+    if (-not (Test-Path $sp)) { continue }
+    $src = [System.Drawing.Bitmap]::FromFile($sp)
+    $keyed = [IconCut]::Key($src, $false)
+    $src.Dispose()
+    $ids = [string[]]$sheet.ids
+    [IconCut]::Strips($keyed, 6, $ids.Length, $frame, $room, $sheet.name, [string[]]($ids | ForEach-Object { Join-Path $cfOut "$_.png" }))
+    $keyed.Dispose()
+    foreach ($id in $ids) { if ($cfFx.$id) { $cfIndex[$id] = $cfFx.$id.at } }
+  }
+  ($cfIndex | ConvertTo-Json -Compress) | Set-Content -Encoding utf8 (Join-Path $cfOut 'index.json')
+  $cardFxCounts += "$($cfIndex.Count) $rarity effects in apps/web/public/art/fx/$rarity"
 }
-($rareIndex | ConvertTo-Json -Compress) | Set-Content -Encoding utf8 (Join-Path $rareOut 'index.json')
 if ([IconCut]::Log) { Write-Warning ([IconCut]::Log) }
-"icons: $made pictures in apps/web/public/art/icons, $strips effects in apps/web/public/art/fx, $rares Rare effects in apps/web/public/art/fx/rare"
+"icons: $made pictures in apps/web/public/art/icons, $strips effects in apps/web/public/art/fx, $($cardFxCounts -join ', ')"

@@ -290,7 +290,7 @@ export const FightCard = memo(
             {frame > 0 && (
               <span
                 className="card__frame"
-                title={`${FRAME_NAME[frame]}: takes ${frame} of your 3 companion slots`}
+                title={`${FRAME_NAME[frame]}: takes ${frame} companion slot${frame === 1 ? '' : 's'}`}
               >
                 {' '}
                 {'●'.repeat(frame)}

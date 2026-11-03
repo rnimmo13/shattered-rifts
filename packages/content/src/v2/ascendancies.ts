@@ -35,6 +35,8 @@ export interface Ascendancy {
   set?: Partial<Pick<HeroTrait, 'maxReserves' | 'shareMight' | 'clutch' | 'keepBarrier'>>;
   /** companions it starts every fight with, on top of the class's */
   startUnits?: HeroDef['startUnits'];
+  /** companion slots, in place of the class's (DECISIONS #569) */
+  maxAllies?: number;
 }
 
 const a = (
@@ -107,13 +109,16 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
       turnStart: [growHp(3, 'allAllies')],
     },
   ),
+  // (the Overclocker until DECISIONS #569: the only class with a 4th companion slot; 1 Primed each, was 2, as there can be one more
+  // to take it)
   a(
     'engineer',
-    'Overclocker',
-    'Primed machines',
-    'At the start of your turn, each of your companions gains 2 Primed.',
+    'Swarmwright',
+    'A fourth machine',
+    'You have a 4th companion slot. At the start of your turn, each of your companions gains 1 Primed.',
     {
-      turnStart: [status('vigor', 2, 'allAllies')],
+      maxAllies: 4,
+      turnStart: [status('vigor', 1, 'allAllies')],
     },
   ),
 
@@ -333,7 +338,10 @@ export const ascendanciesOf = (hero: string): Ascendancy[] =>
   ASCENDANCIES.filter((x) => x.hero === hero);
 
 /** Ascendancies that have been replaced: a run, deck or ghost saved with the old one has the new one (DECISIONS #542). */
-const RENAMED: Readonly<Record<string, string>> = { 'shaman:pyromancer': 'shaman:elementalist' };
+const RENAMED: Readonly<Record<string, string>> = {
+  'shaman:pyromancer': 'shaman:elementalist',
+  'engineer:overclocker': 'engineer:swarmwright',
+};
 
 /** One of a Riftwalker's own Ascendancies (a replaced one read as what replaced it), or undefined for anything else (a made-up id). */
 export function ascendancyOf(hero: string, id: unknown): Ascendancy | undefined {
@@ -348,7 +356,8 @@ export function ascendedHero(base: HeroDef, x: Ascendancy): HeroDef {
   return {
     ...base,
     name: x.name,
-    ...(x.startUnits ? { startUnits: [...(base.startUnits ?? []), ...x.startUnits] } : {}),
+    ...(x.maxAllies ? { maxAllies: x.maxAllies } : {}),
+    ...(x.startUnits ?{ startUnits: [...(base.startUnits ?? []), ...x.startUnits] } : {}),
     trait: {
       ...trait,
       ...x.set,

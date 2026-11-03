@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.169.0',
+    date: '2026-11-03',
+    title: 'The Swarmwright',
+    summary: 'The Overclocker is now the Swarmwright: the only class with a 4th companion slot.',
+    notes: [
+      { kind: 'changed', text: 'The Engineer\'s Overclocker is now the Swarmwright, with a 4th companion slot (four Light machines, a Heavy and two Light, or a Colossal and one Light). No other class has one.' },
+      { kind: 'balance', text: 'Swarmwright companions gain 1 Primed at the start of your turn (the Overclocker gave 2), as there can be one more of them.' },
+      { kind: 'changed', text: 'A run, banked deck or ghost that took the Overclocker carries on as the Swarmwright.' },
+    ],
+    heads: 'Rules changed: Arena matches need both players on this version.',
+  },
+  {
     version: '0.168.0',
     date: '2026-11-03',
     title: 'Every Rare has its own effect',

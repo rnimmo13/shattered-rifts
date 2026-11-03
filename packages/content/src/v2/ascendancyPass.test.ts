@@ -192,3 +192,38 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(ascendancyOf('shaman', 'shaman:pyromancer')?.id).toBe('shaman:elementalist');
   });
 });
+
+describe('the Swarmwright (DECISIONS #569)', () => {
+  // play Deploy Drones while one fits without releasing a companion; how many companions stand then
+  const fill = (asc?: string): number => {
+    let s = fight('engineer', asc, Array.from({ length: 6 }, () => 'deploy-drone'));
+    for (;;) {
+      const inst = s.sides.a.hand.find((c) => c.card === 'deploy-drone');
+      const act = legalActions(db, s).find(
+        (a) => a.type === 'play' && a.card === inst?.id && !('release' in a && a.release),
+      );
+      if (!inst || !act) break;
+      s = applyAction(db, s, act).state;
+    }
+    return s.sides.a.units.filter((u) => u.kind === 'ally').length;
+  };
+
+  it('has a 4th companion slot; the Engineer and his other Ascendancies have 3', () => {
+    expect(fill()).toBe(3);
+    expect(fill('engineer:foreman')).toBe(3);
+    expect(fill('engineer:swarmwright')).toBe(4);
+  });
+
+  it('gives each companion 1 Primed at the start of the turn', () => {
+    let s = fight('engineer', 'engineer:swarmwright', ['deploy-drone']);
+    s = endTurn(play(s, 'deploy-drone'));
+    const allies = s.sides.a.units.filter((u) => u.kind === 'ally');
+    expect(allies.length).toBeGreaterThan(0);
+    for (const u of allies) expect(u.statuses.vigor ?? 0).toBeGreaterThanOrEqual(1);
+  });
+
+  it('an Overclocker from an old save is the Swarmwright', () => {
+    expect(ascendancyOf('engineer', 'engineer:overclocker')?.id).toBe('engineer:swarmwright');
+    expect(db.ascended?.['engineer:overclocker']?.maxAllies).toBe(4);
+  });
+});

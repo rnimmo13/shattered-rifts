@@ -1,0 +1,1486 @@
+{
+ "ace-of-clubs": {
+  "at": "target",
+  "row": "a heavy violet club-suit shape with three round lobes swells over the target, drops like a mace in a deep teal thump, its lobes burst outward, then fade."
+ },
+ "adrenal-surge": {
+  "at": "self",
+  "row": "a jagged crimson lightning vein bolts upward through a bone spine shape, every vertebra flares bright red, then the glow ebbs to moss green."
+ },
+ "afterglow": {
+  "at": "self",
+  "row": "a spent violet flame shrinks to nothing, then a soft wide halo of ember-orange light blooms where it was, glows warmly at its fullest, and slowly fades like a sunset."
+ },
+ "all-or-nothing": {
+  "at": "self",
+  "row": "a pair of ivory dice with teal pips tumble and spin inside a crimson ring, hit a peak flash, shatter, re-form whole in the same instant, then fade."
+ },
+ "arc-relay": {
+  "at": "all",
+  "row": "a chain of crackling cyan lightning hops low from point to point across the enemy line, each hop flaring orange, then the arcs fizzle into drifting static."
+ },
+ "army-of-the-drowned": {
+  "at": "self",
+  "row": "black water swells into a wide whirlpool, two rows of pale green skeletal spear tips rise out of it in ranks, glow bright in unison, then water streams off them and they dim."
+ },
+ "ash-chant": {
+  "at": "all",
+  "row": "a wide low cloud of grey ash drifts across the enemy line, glowing orange flecks ignite inside it, the whole cloud flares into a flat sheet of embers, then settles as falling cinders."
+ },
+ "assemble": {
+  "at": "self",
+  "row": "a teal command ring pulses outward from a small steel beacon, three sharp chevrons light orange one after another around it, then the beacon blinks off and the ring fades."
+ },
+ "at-the-threshold": {
+  "at": "self",
+  "row": "a tall dark stone archway rises from mist, a sheet of pale green light fills its opening and thickens into a solid glowing wall, flares violet at the edges, then fades to grey."
+ },
+ "baited-snare": {
+  "at": "self",
+  "row": "a looped vine noose lies around a glowing crimson bait chunk, the loop snaps tight and whips upward, then it hangs still and fades."
+ },
+ "bandolier": {
+  "at": "self",
+  "row": "a worn leather belt of brass shells wraps around in a wide diagonal loop, each shell glints amber in sequence along it, then the belt tightens into a steady sash and dims."
+ },
+ "banked-embers": {
+  "at": "self",
+  "row": "a small mound of black ash forms, a hidden ember core glows through its cracks and swells to a bright orange heartbeat, then the glow banks down to a low steady smoulder under the ash."
+ },
+ "bar-stool": {
+  "at": "target",
+  "row": "a three-legged wooden bar stool spins through the air legs first, smashes into the target and splinters into flying wooden shards with an amber flash, then the pieces clatter down."
+ },
+ "barroom-brawl": {
+  "at": "all",
+  "row": "a wide tumbling cloud of dust spreads along the enemy line, chair legs, mugs and bottles fly out of it in all directions with amber flashes, then the cloud settles and clears."
+ },
+ "battle-rhythm": {
+  "at": "self",
+  "row": "a crimson bone pendulum swings left and right, leaving red arcs that stack faster with each swing, then it slows and stills in a green glow."
+ },
+ "bender": {
+  "at": "target",
+  "row": "a long rusty bent pipe whips around in a loose looping curve, smacks the target twice with amber sparks, then wobbles off in a dizzy spiral and fades."
+ },
+ "berserk-tide": {
+  "at": "target",
+  "row": "a rapid barrage of small round golden fist-shaped flame bursts pounds the target in a rising stack, the cluster flares into one blazing mass, then collapses into scattered sparks."
+ },
+ "berserkers-rage": {
+  "at": "self",
+  "row": "a red-gold flame aura spikes up around a center point in jagged pulses, each spike leaves a thin blue plate flake hanging in the air, then the flames die and the flakes drop away."
+ },
+ "bitter-breath": {
+  "at": "self",
+  "row": "a cold grey breath cloud rolls out in a wide plume, scraps of burnt ash swept up inside it harden into a shimmering blue barrier haze, then the plume thins away."
+ },
+ "bitter-lesson": {
+  "at": "self",
+  "row": "a dark grey thorny bramble knot coils tight around a small ember, the ember bursts it open with a teal flash, two bright sparks fly out of the broken thorns, then all fades."
+ },
+ "black-out": {
+  "at": "self",
+  "row": "a blue-black curtain of darkness drops down in a thick heavy sheet, a faint amber ring glows at its centre like a dimming lamp, then everything goes still and nearly black."
+ },
+ "bladewall": {
+  "at": "self",
+  "row": "a row of upright black glass sword blades thrusts up from the ground side by side like a fence, their edges flare violet and ember at full height, then the blades sink back as dust."
+ },
+ "blood-bond": {
+  "at": "self",
+  "row": "crimson ribbons braid out from a single central drop of blood toward several points, each end blooming into a small bone disc, then the braid loosens and fades."
+ },
+ "blood-fire": {
+  "at": "self",
+  "row": "a single crimson flame flickers on a gold wick, a red drop falls from it and bursts into a low ring of fire racing outward, then the ring burns out into embers."
+ },
+ "blood-mist": {
+  "at": "all",
+  "row": "a low rolling crimson fog bank spreads across the whole enemy line with teal sparks glittering inside it, thickens to deep red, then thins away into haze."
+ },
+ "blood-on-the-sand": {
+  "at": "self",
+  "row": "a thick bar of red-gold iron glows on a marble anvil-stone, a crimson drop falls and sizzles on it, the metal blazes white hot at its peak, then cools to dull bronze."
+ },
+ "bloodied-howl": {
+  "at": "all",
+  "row": "a long low crimson sound wave rolls across the enemy line like a ripple in mist, red cracks open along its crest, then it thins to green haze."
+ },
+ "blueprint": {
+  "at": "self",
+  "row": "a sheet of glowing teal blueprint grid unrolls flat, thin white lines sketch a small drone outline on it, then the outline lifts off and the grid rolls away."
+ },
+ "blur-of-claws": {
+  "at": "target",
+  "row": "a ring of curved bone talons spins around the target faster and faster, it tightens into a bright red blur, then flings outward in shards."
+ },
+ "bolt-hole": {
+  "at": "self",
+  "row": "a small round dark hole opens in a violet floor, a teal streak dives into it like a burrowing fox, the hole rim glows gold, then seals and fades."
+ },
+ "bonded-dead": {
+  "at": "self",
+  "row": "two pale green flames on opposite sides lean in, a twisting knot of bone links forms between them, a violet heartbeat pulses through the knot, then it settles to a slow ember glow."
+ },
+ "bone-collar": {
+  "at": "self",
+  "row": "a small cairn of stacked bones rises, a crimson ember kindles at its peak and flares, then green smoke curls off it and the cairn fades."
+ },
+ "bone-offering": {
+  "at": "self",
+  "row": "a small pile of bones burns on a mossy stone in a crimson flame, two smoke curls rise and twist upward, then the flame shrinks to embers."
+ },
+ "bone-rain": {
+  "at": "all",
+  "row": "a low cloud of pale green mist spreads over the enemy line, a dense downpour of white bone shards slants out of it, peaking in a bright clattering storm, then the shards crumble to grey dust."
+ },
+ "bone-sift": {
+  "at": "self",
+  "row": "a wide reed sieve tilts over black water, loose bones and pebbles pour through its mesh, a few bright green-glowing bones stay caught on top and flare, then the sieve sinks and dims."
+ },
+ "bone-toss": {
+  "at": "target",
+  "row": "a single knotted femur bone spins end over end in a high pale green arc, cracks into the target with a burst of bone splinters, then the splinters tumble and fade."
+ },
+ "boon-strike": {
+  "at": "target",
+  "row": "a heavy carved stone club wreathed in orange flame swings down onto the target in a single crushing arc, the impact blooms into a gold-orange starburst, then the flames drain away."
+ },
+ "borrowed-blade": {
+  "at": "self",
+  "row": "a ghostly pale-blue sword outline drifts in from the side, fills with solid gold from hilt to tip in a bright flash, then its edges flake into ash as it hangs ready."
+ },
+ "bottled-soul": {
+  "at": "target",
+  "row": "a cracked glass jar opens over the target, a pale green wisp is sucked out of it into the jar in a spiral, the jar glows bright and splits into three small orbs that fade."
+ },
+ "bottomless-sleeves": {
+  "at": "self",
+  "row": "a swirling violet vortex funnel spirals open, teal daggers rise from its depths one after another without end, the spiral tightens into a ring, then shrinks away."
+ },
+ "brace-for-battle": {
+  "at": "self",
+  "row": "small gold spearheads point inward from all around, they slide in and feed a swelling royal blue orb, the orb flares bright, then a gold band seals around it and it dims."
+ },
+ "break-guard": {
+  "at": "target",
+  "row": "a blue shield shape forms over the target, a gold spiked mace point punches clean through its center with a white flash, then the shield splits in two and the halves fall away."
+ },
+ "build-bulwark-walker": {
+  "at": "self",
+  "row": "two thick steel legs stomp down in turn shaking up dust, a wide plated hull lowers onto them with a cyan shield glow across its front, then it crouches and dims."
+ },
+ "bulwark-frame": {
+  "at": "self",
+  "row": "a tall rectangular steel frame of crossbeams unfolds, a thick cyan energy pane fills it edge to edge, then the pane flickers and the frame folds away."
+ },
+ "burial-shroud": {
+  "at": "self",
+  "row": "a long strip of grey linen winds itself in a spiral, purple stitches glow along its seams one after another, the spiral wraps into a tight cocoon shape, then dims to pale grey."
+ },
+ "burnt-offering": {
+  "at": "self",
+  "row": "a small carved wooden bowl holds a bundle of dry twigs that bursts into a tall orange offering flame, the smoke curls up into two glowing cyan sparks, then the bowl smoulders out."
+ },
+ "burst-of-speed": {
+  "at": "self",
+  "row": "a lean bounding stag silhouette of moss-green light sprints forward, long red speed lines stretch behind it, then it vanishes in a crimson flash."
+ },
+ "calcify": {
+  "at": "self",
+  "row": "a small bone knuckle spur sprouts in pale green light, a hard white crust of bone plates creeps over it and thickens into a jagged armoured club, glows at its ridges, then sets to dull ivory."
+ },
+ "call-the-blade": {
+  "at": "self",
+  "row": "scattered black glass fragments lift from the ground and fly inward, snapping together into a hilt-first sword that flashes violet along its spine, then the reformed blade glows faintly and steadies."
+ },
+ "call-turret": {
+  "at": "self",
+  "row": "a squat steel tripod turret unfolds from a hazard-striped crate, its single barrel swivels and its round cyan sensor lens blinks bright, then the turret settles into a dim teal outline."
+ },
+ "card-fan": {
+  "at": "target",
+  "row": "spade, heart, diamond and club suit shapes spin out of a violet swirl one after another, each adding a ring of teal light, then they slam the target together and scatter."
+ },
+ "card-sharp": {
+  "at": "target",
+  "row": "a tall ivory diamond-suit blade sharpens to a needle point above the target, four small gold pips light around it, it stabs down twice in teal flashes, then splinters."
+ },
+ "carry-the-fault": {
+  "at": "target",
+  "row": "a crawling line of ember-orange crack jumps from the edge of view in an arcing leap and lands on the target, branching violet when it hits, then the crack settles and dims."
+ },
+ "cast-the-shield": {
+  "at": "target",
+  "row": "a round royal blue shield spins edge-first toward the target like a thrown discus, slams in with a ringing white flash, then shatters into tumbling blue plate fragments."
+ },
+ "challenge": {
+  "at": "target",
+  "row": "two thin gold rapier thrust lines lance into the target one after another, each leaving a small blue starburst, then a gold upward arrow-shaped flare rises from the wounds and fades."
+ },
+ "charged-sky": {
+  "at": "all",
+  "row": "a long flat bank of dark storm cloud stretches across the enemy line, flickers cyan from within, rains a row of jagged yellow-white bolts down at once, then the cloud thins to grey haze."
+ },
+ "charging-herd": {
+  "at": "self",
+  "row": "a gold bull skull with sweeping horns forms and lowers its horns, red-gold light builds between them, a burst of hoofprint-shaped sparks shoots forward, then the skull fades to smoke."
+ },
+ "clean-cut": {
+  "at": "target",
+  "row": "a single perfectly straight diagonal hairline of white light splits the target, holds razor-thin for a beat, the two halves of glow slide apart, then seal and fade."
+ },
+ "clockwork-snare": {
+  "at": "self",
+  "row": "a ring of orange brass gears with steel teeth snaps open like jaws, the gears whirl fast throwing cyan sparks, then they clamp shut into a faint ticking teal outline."
+ },
+ "cold-stare": {
+  "at": "self",
+  "row": "a narrow frost-blue horizontal slit of light opens like a visor gap, a flat pane of pale ice spreads out from it, a second pane slides up behind it, then both frost over and fade."
+ },
+ "collapsing-star": {
+  "at": "all",
+  "row": "a long glowing ember vein runs low along the ground beneath the enemy line, swells and splits open into a chain of violet fissures, then caves inward in a ripple of black dust."
+ },
+ "conqueror": {
+  "at": "self",
+  "row": "a ring of small black glass points circles a sword blade upright like a laurel, ember light climbs the blade to a violet blaze at the tip, then the ring dissolves into stars."
+ },
+ "controlled-release": {
+  "at": "target",
+  "row": "a narrow beam of violet light pours from a small floating black glass prism into the target, widening to a bright ember-cored stream, then narrowing back to a thin thread and stopping."
+ },
+ "cool-head": {
+  "at": "self",
+  "row": "a cool teal water droplet falls into a still violet pool, sends out calm concentric rings, a gold glint rises from the centre, then the surface stills."
+ },
+ "cornered-beast": {
+  "at": "self",
+  "row": "a coiled serpent of golden flame tightens around the hero in a low spiral, its head rears back and hisses bright red-gold at full height, then it recoils into a glowing coil."
+ },
+ "cripple": {
+  "at": "target",
+  "row": "a heavy iron shackle cuff with a short chain clamps around the target with a teal clank, a gold weight drops from it and drags downward, then it crumbles to rust."
+ },
+ "crosscut": {
+  "at": "target",
+  "row": "two thin ember-orange slash lines cross the target in a sharp X, the crossing point flares violet-white at its brightest, then the X splits into four drifting black glass slivers."
+ },
+ "crowns-weight": {
+  "at": "all",
+  "row": "a broad low band of heavy violet pressure presses down across the enemy line like a falling slab of dark glass, glowing ember at its rim as it lands, then fades into a sagging haze."
+ },
+ "crushing-blow": {
+  "at": "target",
+  "row": "a huge round bone boulder drops onto the target, it cracks into a crimson web of fissures at impact, then splits into chunks that tumble away."
+ },
+ "cull-the-hand": {
+  "at": "self",
+  "row": "a floating stone slab splits down the middle in a violet flash, one half crumbles away into dust while two small fresh cyan crystals float up from the break, then they fade."
+ },
+ "curtain-call": {
+  "at": "self",
+  "row": "a shower of violet-and-gold roses arcs up and falls toward the hero, two small steel trap jaws spin among the petals glinting teal, then the petals scatter and fade."
+ },
+ "cut-the-deck": {
+  "at": "self",
+  "row": "a glowing stack of thin ivory plates splits cleanly in half, the two halves slide apart and swap places in a quick teal flicker, lock together again with a gold edge, then dim."
+ },
+ "cygnus": {
+  "at": "self",
+  "row": "a broad pair of black glass wings unfolds from a central violet star, their feather facets glow ember at the edges as they fully spread, then fold back into a gleaming star."
+ },
+ "daily-rite": {
+  "at": "self",
+  "row": "a gold sun disc climbs over a white marble ledge like a dawn, two small golden flame petals rise off its rim, the sun hangs at its brightest, then sinks back and dims."
+ },
+ "dance-of-bones": {
+  "at": "self",
+  "row": "a ring of white bones spins upright like a turning wheel, the bones click together into a rattling bone wall arc that glows green at the joints, then the wheel slows and dims."
+ },
+ "darting-strike": {
+  "at": "target",
+  "row": "a teal arrowhead dart zigzags along a sharp lightning path to the target, strikes in a bright flash, rebounds into a rippling violet barrier ring, then fades."
+ },
+ "dawn-ward": {
+  "at": "self",
+  "row": "a pale frost-blue crescent rises behind the hero like a cold sunrise, its rim warms to a thin gold edge at full height, crystal rays fan out, then the crescent melts into mist."
+ },
+ "dead-eye": {
+  "at": "all",
+  "row": "a single rusty monocle lens sweeps low across the enemy line, a thin amber beam scans each spot and leaves a glowing green target ring behind, then the rings fade out."
+ },
+ "deadfall": {
+  "at": "self",
+  "row": "a heavy log studded with bone spikes hangs from taut moss vines, the vines glow crimson as the log sways and drops, then it fades into splinters."
+ },
+ "death-mark": {
+  "at": "target",
+  "row": "a violet skull silhouette inside a thin teal ring forms over the target, its eye sockets ignite gold, a crimson cross slash cuts through it, then it smoulders away into ash."
+ },
+ "deep-breath": {
+  "at": "self",
+  "row": "a slow ring of pale gold air contracts inward around the hero, folds into a dense glowing blue orb held at center, swells bright and full, then rests quietly as a soft glow."
+ },
+ "deep-fault": {
+  "at": "target",
+  "row": "a narrow black glass wedge drives straight down into the target like a chisel, a deep violet glow wells up from far below the split, then the wedge sinks out of sight leaving a glowing slit."
+ },
+ "deepening-fault": {
+  "at": "self",
+  "row": "a dark well shaft opens below, rings of violet light descend into it one after another getting deeper and brighter with ember edges, then the shaft closes to a small glowing hole."
+ },
+ "detonate": {
+  "at": "all",
+  "row": "a low row of steel canisters with blinking orange lights spreads along the enemy line, the lights race faster and flash white, then a long rolling fireball wave bursts and smoke drifts."
+ },
+ "devastate": {
+  "at": "target",
+  "row": "a hulking slab of molten black glass topples onto the target, its cracks pouring liquid ember-orange light as it smashes at full blaze, then the ruin slumps and cools to dark slag."
+ },
+ "devotion": {
+  "at": "self",
+  "row": "a slim marble incense stand sends up one curling ribbon of golden smoke that loops into a small sheltering arc over the hero, glows brightest in dawn light, then thins away."
+ },
+ "devour": {
+  "at": "target",
+  "row": "a whirl of red vapour is torn out of the target into a spiralling ribbon that flows back toward the caster side, then the ribbon thins and fades."
+ },
+ "devour-ally": {
+  "at": "self",
+  "row": "a bone altar slab glows, a small beast silhouette on it melts into crimson light that rises in a tall column, then the slab cracks and dims."
+ },
+ "dirge": {
+  "at": "self",
+  "row": "a slow pale green sine wave of mist ripples across the dark, each crest lifting a small ghostly flame higher than the last, then the wave flattens and the flames sink."
+ },
+ "double-rite": {
+  "at": "self",
+  "row": "a glowing cyan mana orb hovers, splits cleanly into two matching orbs, each swells as bright as the first, they orbit once in a figure eight, then burn out together."
+ },
+ "double-tap": {
+  "at": "self",
+  "row": "a long rusty double-barrelled gun silhouette tumbles in, spins once, two amber flames flick from both barrels in quick succession, then it lands still and smoking."
+ },
+ "drag-under": {
+  "at": "target",
+  "row": "a black whirlpool opens beneath the target, dark water tendrils spiral up and wrap around, pulling down hard in a bright green vortex, then the surface closes with a few bubbles."
+ },
+ "dread-gaze": {
+  "at": "target",
+  "row": "a pair of cold teal slit eyes open wide in a violet void over the target, a shivering ring of dread ripples outward, then the eyes narrow and close into darkness."
+ },
+ "dredge": {
+  "at": "self",
+  "row": "a long reed-and-bone rake drags up through black water, three glowing green relics come up tangled in its tines and flare, then mud drips off and the rake sinks back."
+ },
+ "drone-ambush": {
+  "at": "self",
+  "row": "a flat steel hatch in the ground pops open with a hiss of steam, a burst of tiny cyan-eyed drones springs out in a tight spiral, then the hatch slams shut and fades."
+ },
+ "drunken-master": {
+  "at": "self",
+  "row": "a reeling figure-eight trail of amber light loops and staggers in wobbly curves, green glass sparks flick off each turn at its brightest, then the loops unwind and fade."
+ },
+ "dumpster-dive": {
+  "at": "self",
+  "row": "a dented green rubbish bin lid flips open, a burst of scrap junk, bottle caps and rags tumbles up in an amber fountain, a warm green glow spills out, then the lid drops shut."
+ },
+ "dutch-courage": {
+  "at": "self",
+  "row": "a wooden keg tap drips amber drops that stack upward into a growing glowing barrel-stave wall, the staves flare warm gold, then they settle into a dim iron-banded ring."
+ },
+ "echo-command": {
+  "at": "self",
+  "row": "a thin steel antenna mast sends out three nested cyan wave arcs that echo back smaller and smaller, each tipped orange, then the mast dims and the arcs vanish."
+ },
+ "ember-ward": {
+  "at": "self",
+  "row": "curved blue plate segments close into a ring, orange ember thorns sprout outward along its rim and glow white-hot at their tips, then the thorns burn down to glowing stubs."
+ },
+ "entomb": {
+  "at": "target",
+  "row": "a massive grey stone sarcophagus slab drops from above onto the target, slams down with a ring of pale green dust and cracks, then the slab sinks heavily into black mud."
+ },
+ "exhale": {
+  "at": "self",
+  "row": "a long soft plume of pale gold breath streams outward and widens like a fan of mist, a small blue mana spark rides at its tip and brightens, then the mist thins to nothing."
+ },
+ "factory-floor": {
+  "at": "self",
+  "row": "a tall steel smokestack silhouette rises, it puffs teal smoke rings that turn orange as they climb, then the stack sinks and the rings thin to grey haze."
+ },
+ "falling-sky": {
+  "at": "target",
+  "row": "a cluster of black glass shards streaks down onto the target like meteors with violet tails, the impacts flare ember-bright in a tight crater, then the fragments scatter like gravel."
+ },
+ "fault-lines": {
+  "at": "self",
+  "row": "straight parallel ember-orange lines etch themselves across a black glass floor like a grid of seams, glow violet together at their brightest, then sink below the surface leaving faint grooves."
+ },
+ "fault-memory": {
+  "at": "target",
+  "row": "faint ghost outlines of old cracks reappear on the target one after another, each retraced in brighter ember light, layering into a glowing violet scar pattern, then slowly fading back to outlines."
+ },
+ "fault-piercer": {
+  "at": "target",
+  "row": "a needle-thin black glass rapier point stabs the target three times in a tight line, each puncture leaking violet light that joins into a glowing seam, then the seam cools to a dark crack."
+ },
+ "fault-reader": {
+  "at": "self",
+  "row": "a floating black glass lens tilts and focuses, a fan of violet light passes through it showing a branching web of thin glowing lines, the web flashes ember, then the lens dims."
+ },
+ "fearless": {
+  "at": "target",
+  "row": "a calm straight spear of royal-blue light pierces cleanly into the target, a quiet gold ripple spreads from the point of impact, then the spear dissolves into still blue mist."
+ },
+ "feeding-time": {
+  "at": "self",
+  "row": "a raw meaty haunch with a bone shaft tumbles upward, crimson glow spills from it into small green sparks that scatter outward, then it fades."
+ },
+ "fell-the-prey": {
+  "at": "target",
+  "row": "a pair of crescent bone tusks close like a pincer on the target, a crimson flare bursts at the bite and drains backward, then the tusks fall away."
+ },
+ "fester": {
+  "at": "target",
+  "row": "a bubbling pool of sickly green bog water swells under the target, fat blisters rise and pop with violet puffs of gas, then the pool sinks into a dark crust."
+ },
+ "fever-dream": {
+  "at": "self",
+  "row": "a swirling violet and cyan spiral warps like heat haze, melts and drips down into a single shimmering teardrop that glows bright, then the spiral evaporates."
+ },
+ "final-flourish": {
+  "at": "target",
+  "row": "a long crimson silk sash spins around the target in a dancer's whirl, snaps tight into one bright teal slash with a burst of gold sparks, then flutters away."
+ },
+ "final-shatter": {
+  "at": "target",
+  "row": "a black glass bell jar drops over the target, glows violet from within and swells, then explodes into a huge starburst of sharp fragments with an ember flash that tumble away."
+ },
+ "fleet-fingers": {
+  "at": "self",
+  "row": "a fast-spinning teal pinwheel of thin blades whirs, flinging small sparks outward with each turn, glows gold at full speed, then slows and fades."
+ },
+ "fleet-step": {
+  "at": "self",
+  "row": "a pair of small teal feathered wings flutter open low by the floor, beat quickly throwing gold sparks, lift into a light swirl, then fold away."
+ },
+ "fleshcraft": {
+  "at": "self",
+  "row": "a curved bone needle trailing a glowing green thread darts in a zigzag, stitches a jagged seam of light across the dark, the seam pulses bright, then the thread frays into motes."
+ },
+ "foretold-flame": {
+  "at": "target",
+  "row": "a slender golden comet streaks down onto the target trailing a long tail of royal-blue sparks, bursts into a ring of flame at impact, then two faint flickers fade upward."
+ },
+ "forge-heat": {
+  "at": "self",
+  "row": "a pair of black glass bellows pump twice, each breath blowing a rolling wave of ember-orange heat haze that brightens to white-hot, then the shimmering haze drifts upward and thins."
+ },
+ "free-for-all": {
+  "at": "all",
+  "row": "three wild amber starbursts of flame fly in random zigzags across the enemy line, each popping with scrap sparks and glass chips, then they fizzle out into smoke."
+ },
+ "frenzied-gulp": {
+  "at": "self",
+  "row": "a hide waterskin bulges and bursts with a gush of dark red liquid, three glowing droplets spin upward, then they wink out one by one."
+ },
+ "frost-shatter": {
+  "at": "target",
+  "row": "a cracked sphere of pale blue ice forms around the target, hairline fractures race across it glowing white, it bursts into a spray of sharp crystal shards, then they tinkle away."
+ },
+ "frostbound-hide": {
+  "at": "self",
+  "row": "a shaggy bear pelt shape of pale blue frost settles over the hero, its fur bristles into icicles, two small bear paw prints glow teal beneath it, then the frost glazes over and dims."
+ },
+ "frothing-rage": {
+  "at": "self",
+  "row": "bubbling crimson froth swells inside a spiked bone ring, it boils over into spattering red foam, then the foam sinks back and fades."
+ },
+ "frozen-grasp": {
+  "at": "target",
+  "row": "pale blue frost tendrils creep up from the ground around the target, curl into a tightening icy claw of branching vines, glint white as they lock, then crumble into frosty mist."
+ },
+ "frozen-moment": {
+  "at": "self",
+  "row": "a teal ice crystal snowflake forms in the air, its arms grow outward in branching frost lines, it hangs frozen at full brightness with violet sparkles, then shatters into drifting frost."
+ },
+ "funeral-march": {
+  "at": "target",
+  "row": "a slow row of dark coffin silhouettes marches forward in step, each heavier and brighter green than the last, the lead coffin slams into the target, then all crumble to ash."
+ },
+ "gamma-burst": {
+  "at": "target",
+  "row": "a tight sphere of violet energy forms on the target, a ring of black glass splinters sprays outward from it in all directions with an ember flash, then the burst thins to haze."
+ },
+ "ghost-knives": {
+  "at": "self",
+  "row": "a crowd of pale translucent ghostly knives drift up around the hero like wisps, sharpen into crisp teal outlines, hover in a slow orbit, then dissolve into mist."
+ },
+ "giants-stance": {
+  "at": "self",
+  "row": "two huge marble column bases stamp down side by side, a ring of gold dust shockwave rolls out along the ground, then the columns stand firm and fade to faint outlines."
+ },
+ "glacier-guard": {
+  "at": "self",
+  "row": "a thick slab of pale blue glacier ice heaves up before the hero in layered strata, a second thinner slab forms behind it, both gleam white at the edges, then frost over and dim."
+ },
+ "glass-armory": {
+  "at": "self",
+  "row": "a black glass rack rises holding a spread fan of upright swords and slim wands side by side, their tips light violet one by one to an ember flash, then the rack fades."
+ },
+ "glass-cover": {
+  "at": "self",
+  "row": "a thick round bottle-bottom lens of green glass grows into a curved shield, amber light focuses through its centre into a sharp bright point, then the glass dulls with a hairline crack."
+ },
+ "glass-wall": {
+  "at": "self",
+  "row": "a broad flat black glass rampart slides up from the ground brick by brick, its mortar lines glowing ember and violet once complete, then the wall stands dark and solid."
+ },
+ "gleeful-trapsmith": {
+  "at": "self",
+  "row": "a grinning ivory jester mask with teal eyes rises, small spring-loaded gold gears whirl around it, it tilts back with a burst of confetti sparks, then fades."
+ },
+ "gnarltooth-trap": {
+  "at": "self",
+  "row": "a gnarled wooden jaw-trap with jagged tooth spikes opens on the ground, moss sprouts between its teeth as its rim glows crimson, then it settles dark."
+ },
+ "goad": {
+  "at": "self",
+  "row": "a crooked bone staff tip glows faintly, a pulse of green light runs down it and swells into a throbbing ribcage-shaped ember, beats twice brighter, then holds as a low steady glow."
+ },
+ "grasping-hands": {
+  "at": "all",
+  "row": "a long row of crooked black roots and twisted bone spikes bursts up from dark water under the enemy line, coils tight in green witch-light at its brightest, then snaps and sinks back down."
+ },
+ "graveside-cut": {
+  "at": "target",
+  "row": "a pale grey tombstone silhouette rises behind the target, a curved crimson scythe-like cut swings down past it in a teal flash, then the stone crumbles into dust."
+ },
+ "gravity-well": {
+  "at": "self",
+  "row": "a black void sphere appears, loose glass dust and violet stars spiral inward toward it in a slow whirlpool, the rim glows ember at the peak, then the void shrinks to a pinpoint."
+ },
+ "grim-collection": {
+  "at": "target",
+  "row": "a black iron ring of hanging steel hooks swings over the target, the hooks dive and rake down in teal arcs, gather into a tight bundle of gold light, then fade."
+ },
+ "grim-focus": {
+  "at": "self",
+  "row": "a dark blue iris-like ring narrows toward a tight point, three thin gold light lines shoot into its center, then the ring snaps shut with a grey flash and fades."
+ },
+ "grim-ward": {
+  "at": "self",
+  "row": "a jagged black-and-blue wall of dirty ice spikes forces up around the hero, thick and brutal, shines cold white at its peak, then two dark cracks split it and it hardens dull."
+ },
+ "grimoire-gale": {
+  "at": "self",
+  "row": "a spiralling gust of grey and green mist whirls upward like a small tornado, torn ghostly ribbons whip around inside it at full speed, then the gale unwinds and drifts off."
+ },
+ "growing-crucible": {
+  "at": "self",
+  "row": "a stepped black glass ziggurat builds upward tier by tier, each new tier lighting with an ember-orange seam, the top tier blazes violet at full height, then the steps dim to a warm glow."
+ },
+ "gut-trap": {
+  "at": "all",
+  "row": "a long low trench of sharpened bone stakes bursts up along the enemy line in a crimson spray, then the stakes sink and green moss covers them."
+ },
+ "hair-of-the-dog": {
+  "at": "self",
+  "row": "a cloudy grey-green haze swirls in a circle, a single bright amber shot glass drops into its centre and the haze gets sucked into it, then the glass flares and empties."
+ },
+ "hair-trigger": {
+  "at": "self",
+  "row": "a thin coiled rusty spring twitches tighter and tighter, a quivering amber spark jumps along its coils at its tensest, then it snaps loose with a small flash and wobbles still."
+ },
+ "hammer-fall": {
+  "at": "target",
+  "row": "a giant square-headed blue steel sledge drops straight down from high above onto the target, a flat white shock disc ripples outward at impact, then the head cracks and falls away in chunks."
+ },
+ "hamstring": {
+  "at": "target",
+  "row": "a low thin teal slash cuts across the bottom of the target with a trailing gold spark, a violet ribbon of wound unravels downward, then fades."
+ },
+ "hamstring-slam": {
+  "at": "target",
+  "row": "a heavy bone hammer slams low at the target's base, cracking a crimson ring into the ground, then moss-green hide plates rise briefly behind it and fade."
+ },
+ "hardened-scars": {
+  "at": "self",
+  "row": "crimson drops fall onto a cooling iron plate, each drop sizzles into a raised blue steel stud, the studded plate glows warm gold at its brightest, then dims to grey."
+ },
+ "harmonize": {
+  "at": "self",
+  "row": "three wavy ribbons of orange, pale blue and cyan light weave around each other in a rising braid, meet in a pure white chime of light at the top, then loosen and fade."
+ },
+ "harvest-of-ruin": {
+  "at": "self",
+  "row": "a curved bone sickle of dull red light sweeps in a low arc, three dark crimson gashes open in the air behind it, two pale teal sparks rise from them, then the gashes close."
+ },
+ "heart-of-the-rift": {
+  "at": "self",
+  "row": "a broken stone geode floats with cyan light inside, it beats with expanding violet pulses each brighter than the last, then dims to a slow steady glow."
+ },
+ "held-breath": {
+  "at": "self",
+  "row": "a golden bubble of air forms and swells around a tiny blue spark, the surface trembles at full size without breaking, glows brightest, then shrinks back to a calm sphere."
+ },
+ "helping-hand": {
+  "at": "target",
+  "row": "a thin pale green spirit tether loops out of a small bone ring and lashes the target like a whip, snaps back with a flash, then curls up and returns into the ring."
+ },
+ "hot-blooded": {
+  "at": "target",
+  "row": "a deep crimson drop of burning light grows into a churning red-gold fireball, bursts against the target in a hot splash of flame, then the red droplets fall and dim."
+ },
+ "howl-of-the-fallen": {
+  "at": "all",
+  "row": "a low wave of pale ghostly-blue wolf skull silhouettes streams sideways across the enemy line on a howling ripple of sound rings, flares white at its crest, then thins into drifting ash."
+ },
+ "hunters-call": {
+  "at": "self",
+  "row": "a carved bone whistle lets out thin crimson spiral notes that climb upward, peaking in a red sunburst, then the notes drift apart and fade."
+ },
+ "hunting-grounds": {
+  "at": "self",
+  "row": "a wide circle of tall grass and bone stakes rises around a glowing crimson mark, the stakes lean inward, then the circle sinks into moss."
+ },
+ "hurried-prayer": {
+  "at": "self",
+  "row": "a thin wisp of incense smoke rises quickly in a crooked line, a bright orange spark races up it, at the top it puffs into a small dark hollow void blot, then thins away."
+ },
+ "inevitable": {
+  "at": "self",
+  "row": "a slow tide of violet water rises in a dark basin, a thin purple drip falls from above in a steady rhythm, each drop sending a widening ring, then the surface stills and darkens."
+ },
+ "inner-calm": {
+  "at": "all",
+  "row": "a broad golden wheel of light rolls flat along the enemy line, its spokes flashing royal blue as it turns, sends a low gold shockwave ahead, then slows and fades away."
+ },
+ "inner-sight": {
+  "at": "self",
+  "row": "a glowing diamond of royal-blue light opens above the hero, four thin golden rays fan out ahead like seeking beams, it flares bright, then the diamond closes and dims."
+ },
+ "intimidate": {
+  "at": "target",
+  "row": "a towering dark-blue lion skull silhouette looms over the target, roars out a cone of gold shockwave rings, a pale crack mark flares on the target, then the skull shrinks into smoke."
+ },
+ "ion-lance": {
+  "at": "target",
+  "row": "a long slender steel lance crackling with blue-white ions thrusts into the target, a bright cyan ion bloom swells at its tip, then it disperses into floating sparks."
+ },
+ "jugglers-rhythm": {
+  "at": "self",
+  "row": "three small gold dagger shapes toss up in a looping arc one after another, the third splits into a twin with a blue flash at the top, then all spin down and fade."
+ },
+ "killing-chill": {
+  "at": "self",
+  "row": "pale frost spreads outward across black water in feathery fern patterns tinged green, the ice thickens into a bright sharp star, then the cold mist curls up and thins away."
+ },
+ "kindling-ward": {
+  "at": "self",
+  "row": "a ring of dry grey twigs stacks up around the hero like a woven palisade, catches orange flame along its top, blazes into a warm wall, then sinks into glowing kindling."
+ },
+ "knife-in-the-back": {
+  "at": "target",
+  "row": "a black violet shadow pool opens behind the target, a thin dagger silhouette stabs forward out of it in a crimson-teal starburst, then the pool swallows the blade."
+ },
+ "laser-grid": {
+  "at": "all",
+  "row": "a wide low lattice of thin cyan laser lines criss-crosses the enemy line, it pulses blinding bright twice, then the lines blink out one by one."
+ },
+ "last-ember": {
+  "at": "self",
+  "row": "a single tiny ember spark flickers alone in darkness, flares suddenly into a bright orange teardrop flame ringed with violet, then gutters out into a thin rising curl of grey smoke."
+ },
+ "last-rites": {
+  "at": "target",
+  "row": "a ring of purple smoke circles the target, tightens in loops that grow thicker and darker with each turn, flares deep violet at its tightest, then drifts apart in heavy wisps."
+ },
+ "lay-bare": {
+  "at": "target",
+  "row": "a teal dagger tip peels the glowing blue barrier bubble off the target like an orange rind, the peel spirals away in curling strips, then fades."
+ },
+ "lightning-rod": {
+  "at": "self",
+  "row": "a tall thin carved wooden spire with a forked metal tip rises beside the hero, a single yellow-cyan bolt strikes it from above, it hums glowing bright, then the charge sinks into the ground."
+ },
+ "link-up": {
+  "at": "self",
+  "row": "a round steel clasp throws out bright cyan tethers to points around it, each tether ending in a small glowing ring, then they pull taut, flash once and retract."
+ },
+ "liquid-courage": {
+  "at": "self",
+  "row": "a dented pewter tankard fills with rising amber ale, the foam head swells into a bright puffed-up bubble dome, glows gold at its fullest, then pops into drifting froth."
+ },
+ "liquid-dinner": {
+  "at": "self",
+  "row": "a chipped clay jug tilts and pours a thick warm amber stream into a round bowl of light, the bowl glows gold at its fullest, then the light settles into a soft green haze."
+ },
+ "litter": {
+  "at": "self",
+  "row": "a moss nest of twigs and bone forms, two small pup silhouettes tumble out of it in crimson glow, then the nest fades into green motes."
+ },
+ "long-con": {
+  "at": "target",
+  "row": "a gold pendulum on a long chain swings slowly over the target, glowing brighter teal with each swing, then drops in a sudden heavy strike with a violet flash and the chain snaps."
+ },
+ "long-game": {
+  "at": "self",
+  "row": "an ivory chess king silhouette rises from violet mist, a teal glow climbs slowly from its base to its crown tip, a gold halo ring settles around it, then it fades."
+ },
+ "mantra-engine": {
+  "at": "self",
+  "row": "a slowly turning prayer wheel of white marble and gold spins beside the hero, its band lights up in a steady golden glow, throws a warm halo outward, then winds down."
+ },
+ "mask-of-faces": {
+  "at": "self",
+  "row": "a tall ivory mask shape layers over itself again and again like stacked shells, each layer gilded at the rim, the stack hardens into a teal-lit shield, then fades."
+ },
+ "mean-drunk": {
+  "at": "self",
+  "row": "a cracked green bottle glows deep amber from inside, angry red-orange veins spread across the glass, it bulges and throbs at its hottest, then cools while still steaming."
+ },
+ "measured-recharge": {
+  "at": "self",
+  "row": "a tall black glass vial fills from the bottom with violet light in three even pulses, a thin ember line marks each level, the full vial flashes brightly, then the light settles inside."
+ },
+ "metronome-trap": {
+  "at": "self",
+  "row": "a gold metronome arm ticks left and right on a violet pyramid base, each tick throws out a teal pulse ring, the arm locks upright with a spark, then dims."
+ },
+ "mirror-glass": {
+  "at": "self",
+  "row": "a tall oval black glass mirror rotates into place facing outward, a violet glare sweeps across its polished surface to an ember-white flash, then the reflection clears to a dark sheen."
+ },
+ "mirror-pool": {
+  "at": "self",
+  "row": "a flat oval mirror of polished royal-blue water stands upright before the hero, a gold reflection of light ripples across it, it shines silver-white at its peak, then mists over."
+ },
+ "mirror-veil": {
+  "at": "self",
+  "row": "a hanging chandelier of small silver mirror shards on violet threads lowers in front of the hero, the shards spin and catch a teal flash all at once, then drift apart as glittering motes."
+ },
+ "molotov-cocktail": {
+  "at": "self",
+  "row": "a green bottle stuffed with a ragged cloth wick spins upright, the wick catches with a growing amber flame, flares tall, then shrinks to a small waiting ember."
+ },
+ "mounting-fury": {
+  "at": "target",
+  "row": "a gold sword silhouette swells larger with each pulse as red-gold growth rings stack around it, then it slams into the target and bursts in a crimson and white blast."
+ },
+ "mourning": {
+  "at": "self",
+  "row": "a weeping willow shape of hanging green light strands droops low, the strands thicken and knot into a heavy curtain wall, glow softly at full strength, then sway and fade to grey."
+ },
+ "needle-rain": {
+  "at": "target",
+  "row": "a flat row of fine silver needles hovers above the target, tilts toward it, fires in a single dense volley of teal streaks, then glints out."
+ },
+ "nerve-strike": {
+  "at": "target",
+  "row": "a web of thin electric teal nerve lines lights up over the target, a dagger point lands on the bright centre knot, the lines jolt white, then go dark."
+ },
+ "nerve-surge": {
+  "at": "self",
+  "row": "a thin cyan spark races along a branching crackle path, reaches a violet node that swells and flashes bright, then the path fades out leaving a single lingering dot of light."
+ },
+ "nimble-deal": {
+  "at": "self",
+  "row": "a triangle of three teal sparks flicks up from below and rotates swiftly, one spark is flicked away into violet smoke, the other two settle and fade."
+ },
+ "numbing-rite": {
+  "at": "self",
+  "row": "pale grey incense smoke spirals up from a small gold censer, each curl of smoke hardens into a thin blue glass plate, then the plates frost over and drift away."
+ },
+ "open-palm": {
+  "at": "target",
+  "row": "two round pulses of soft white-gold force push into the target one after another, each blooming outward like an opening lotus, then the petals drift apart and fade."
+ },
+ "orion": {
+  "at": "self",
+  "row": "a ring of small violet stars connects into a widening spiral constellation, each new star kindling an ember point, the spiral flares at full size, then the stars dim but stay lit."
+ },
+ "overcharge": {
+  "at": "self",
+  "row": "a hazard-striped steel fuse box crackles, cyan arcs leap out and swell into a spitting orange ball, then one fuse blows with a puff of smoke and the box dims."
+ },
+ "overcharge-blast": {
+  "at": "all",
+  "row": "a wide low band of crackling cyan current sweeps across the enemy line, it swells into a blinding white-orange wall of arcs, then snaps apart into falling sparks."
+ },
+ "overdrive": {
+  "at": "self",
+  "row": "a round steel pressure gauge appears, its needle swings from teal into the orange redline and shivers there, then the glass cracks and orange light leaks away."
+ },
+ "overwatch": {
+  "at": "self",
+  "row": "a tall steel sentry mast rises with a wide cyan searchlight cone sweeping side to side, the beam locks still and flares orange, then the mast folds back down."
+ },
+ "pack-bond": {
+  "at": "self",
+  "row": "three crimson wolf-head silhouettes press together in a tight triangle, a moss-green hide dome swells over them, then the dome softens and fades."
+ },
+ "pack-leader": {
+  "at": "self",
+  "row": "a large wolf pelt spreads wide like wings, its hide edges glow crimson as it reaches full span, then it folds closed and fades."
+ },
+ "pact-of-embers": {
+  "at": "self",
+  "row": "two small glowing coals drift together and fuse with a crackle, the merged ember bursts into a pair of orange flame wisps that fly apart in opposite directions, then they fade."
+ },
+ "palm-switch": {
+  "at": "self",
+  "row": "three upturned violet cups shuffle in a fast looping pattern, one lifts to reveal a teal glow beneath, it slides away into a gold shimmer, then fades."
+ },
+ "parry": {
+  "at": "self",
+  "row": "a thin round black glass buckler tilts up at an angle, a bright ember glint skids across its face like a deflected blow, the rim rings violet, then it turns translucent and fades."
+ },
+ "parts-bin": {
+  "at": "self",
+  "row": "a hazard-striped steel bin tips over spilling bolts, springs and cogs, they whirl together into one small round drone with a cyan eye, then it bobs once and fades."
+ },
+ "patch-job": {
+  "at": "self",
+  "row": "a crooked steel patch plate slaps onto a glowing cracked outline, four rivets pop in with tiny orange flashes, then teal light seeps around its edges and fades."
+ },
+ "patient-edge-aura": {
+  "at": "self",
+  "row": "a sheathed black glass sword hangs perfectly still while violet starlight slowly gathers in a soft halo around its sheath, the halo brightens gently, then holds as a quiet glow."
+ },
+ "pick-up-the-brass": {
+  "at": "self",
+  "row": "scattered spent brass casings on dark ground glow faintly, they roll and slide inward toward one spot, hop up into a neat glowing pile, then the amber glow fades."
+ },
+ "pile-on": {
+  "at": "target",
+  "row": "small gold mallet shapes drop onto the target one after another and stack into a growing heap, the heap flares white at its peak, then tumbles apart in clattering sparks."
+ },
+ "pillar-of-light": {
+  "at": "self",
+  "row": "a tall hexagonal column of clear black glass rises straight up from the ground, a violet light runs up its core to the top in a bright ember flash, then the column fades."
+ },
+ "plunder": {
+  "at": "target",
+  "row": "a short blue slash strikes a gold disc from the target, a fountain of small gold coins sprays upward and streams away to one side, then the coins wink out one by one."
+ },
+ "poise": {
+  "at": "self",
+  "row": "a slim golden balance scale appears above a marble plinth, its two pans swing and then settle perfectly level, a blue gleam runs along the beam, then it stills and fades."
+ },
+ "poison-pantry": {
+  "at": "self",
+  "row": "three squat glass jars of green-violet poison rise in a row, their cork lids pop, curling sickly green fumes braid together into a teal knot, then evaporate."
+ },
+ "practiced-hands": {
+  "at": "self",
+  "row": "an ornate gold clasp brooch springs open, two teal sparks fly into it, it snaps shut and holds them glowing steadily, then softly fades."
+ },
+ "provoke": {
+  "at": "target",
+  "row": "a gold spear point jabs at the target, a ring of red-gold taunting sparks circles it while a blue chevron mark flares above it, then the ring loosens and dissolves into motes."
+ },
+ "pump-action": {
+  "at": "self",
+  "row": "a chunky rusty pump grip slides back and forward with a loud amber spark, two fat brass shells pop up out of the breech side by side, glint brightly, then drop into place."
+ },
+ "queen-of-hearts": {
+  "at": "self",
+  "row": "a large crimson-and-gold heart-suit shape blooms in front of the hero, a small ivory crown settles on its top, its edge hardens into a glowing teal rim, then it softly fades."
+ },
+ "quenched-edge": {
+  "at": "self",
+  "row": "a glowing orange blade edge plunges into a black water trough, a burst of violet steam billows up and peaks in a bright cloud, then clears to reveal a cool dark edge."
+ },
+ "quick-reflexes": {
+  "at": "self",
+  "row": "a jagged teal lightning zigzag crackles around the hero in a quick jolt, a gold spark flicks open at its tip, then the bolt snaps apart and fades."
+ },
+ "radiance": {
+  "at": "all",
+  "row": "a low rolling tide of violet arcane light floods sideways across the enemy line, star sparks tumbling in its foam, crests in an ember-white surge, then drains away into the ground."
+ },
+ "rally-the-pack": {
+  "at": "self",
+  "row": "a lean hound silhouette bounds up from a pile of leaves in crimson light, green moss rings ripple out around it, then it lands and dims."
+ },
+ "rattle-the-bones": {
+  "at": "target",
+  "row": "a hanging cluster of small bones on reed cords shakes harder and harder, each rattle throwing brighter green sparks, then the whole bundle flings forward into the target and scatters."
+ },
+ "ravage": {
+  "at": "all",
+  "row": "two wide low crimson crescent sweeps cut across the enemy line one after the other, leaving glowing red gashes in the air, then the gashes close in bone-white flecks."
+ },
+ "rebuild": {
+  "at": "self",
+  "row": "scattered broken steel parts drift up off the ground, they spin backwards into a whole small robot silhouette with a cyan glow, then it flickers to dim teal."
+ },
+ "recenter": {
+  "at": "self",
+  "row": "loose black glass shards orbit wildly around a central point, slow down and settle into a neat balanced ring, a violet core glows bright with an ember pulse, then the ring rests."
+ },
+ "reckless-abandon": {
+  "at": "self",
+  "row": "a tumbling heap of leaves and bone splinters bursts upward in a crimson gust, scattering wide at its peak, then drifts down and fades."
+ },
+ "reckless-blow": {
+  "at": "target",
+  "row": "a jagged bone axe swings in a wild double arc at the target, crimson droplets fly back from its haft, then the axe head chips apart and falls."
+ },
+ "reckless-smite": {
+  "at": "target",
+  "row": "a broad gold axe blade cleaves down onto the target trailing a ribbon of crimson from its own edge, a white split-flash bursts at impact, then the axe cracks and fades."
+ },
+ "red-mirage": {
+  "at": "self",
+  "row": "a shimmering crimson heat-haze ripples upward in front of the hero, wavering like a mirage, solidifies into a translucent red glass wall, then evaporates."
+ },
+ "reinforce": {
+  "at": "self",
+  "row": "heavy steel brackets clamp around an empty oval outline, bolts drive in with orange flashes, then a tall cyan flame-shaped glow rises up through the brackets and fades."
+ },
+ "relay-network": {
+  "at": "self",
+  "row": "a scatter of teal pinpoints links into a triangle mesh, a pulse of orange light radiates from one corner across the whole mesh, then it fades to dim dots."
+ },
+ "relentless-push": {
+  "at": "target",
+  "row": "a broad blue battering-ram wedge shoves into the target, a second gold chevron wedge follows right behind it and flashes bright, then both wedges slide back and fade."
+ },
+ "reload": {
+  "at": "self",
+  "row": "a hinged twin-barrel breech snaps open, three brass shells spin in a column and slide into it one by one with amber glints, then the breech clacks shut and cools."
+ },
+ "rending-hands": {
+  "at": "target",
+  "row": "two crossing tiger-claw slashes of crimson-gold flame rip across the target, glowing white at their edges, a few red droplets spray outward, then the slash marks fade to smoke."
+ },
+ "reopen-the-wound": {
+  "at": "target",
+  "row": "an old jagged scar line glows crimson over the target, its stitches pop open one by one with teal sparks, it gushes a bright red flare, then darkens."
+ },
+ "resonant-pulse": {
+  "at": "self",
+  "row": "a steel tuning fork rings, gentle teal ripples flow from its tines in steady waves, then a soft orange glow gathers at its base and fades."
+ },
+ "restless-spirits": {
+  "at": "self",
+  "row": "a ring of small pale green will-o-wisps circles a dark reed bed, they dart faster and faster in tangled loops, flare at their wildest, then slow into a quiet hovering ring."
+ },
+ "rift-storm": {
+  "at": "all",
+  "row": "a low wide band of violet storm cloud rolls across the enemy line, forks of cyan lightning stab down from it all at once in a bright flash, then the cloud tears into drifting wisps."
+ },
+ "rift-whirl": {
+  "at": "all",
+  "row": "a low wide whirlwind of broken floating stone shards spins sideways across the enemy line in cyan streaks, whirls fastest and brightest at its center, then flings the shards out and fades."
+ },
+ "rift-windfall": {
+  "at": "self",
+  "row": "a small violet rift slit opens overhead, a glowing cyan gem tumbles out spinning and lands in a burst of light, then the rift seals shut and the gem gleams and fades."
+ },
+ "rip-and-tear": {
+  "at": "target",
+  "row": "three jagged bone hooks rip through the target in quick succession, crimson tatters fly with each tug, then the hooks drop away."
+ },
+ "rippling-cut": {
+  "at": "all",
+  "row": "a single teal slash rips low across the enemy line, a second wider ripple follows it and then a third, spreading like rings on dark water, then they fade."
+ },
+ "rising-fist": {
+  "at": "target",
+  "row": "a column of gold light surges upward from beneath the target like an uppercut, flares white at its peak as wobbling blue rings stagger outward, then breaks into rising motes."
+ },
+ "ritual-of-ash": {
+  "at": "self",
+  "row": "a small heap of grey ash ignites inside a gold circle on white marble, three blue flame tongues rise and twist together into one bright spire, then the spire collapses into ash flakes."
+ },
+ "run-it-down": {
+  "at": "target",
+  "row": "a wolf silhouette chases a fleeing red spark toward the target and leaps on it, a crimson burst flares at the catch, then fades to green motes."
+ },
+ "run-through": {
+  "at": "target",
+  "row": "a straight line of teal dagger thrusts pierces the target again and again like piston strikes, each leaving a white puncture star, then the stars fade together."
+ },
+ "run-wild": {
+  "at": "target",
+  "row": "a running beast silhouette of crimson light races across the target twice in a figure-eight, a red flash marks each pass, then the trail fades to green motes."
+ },
+ "rusty-nail-board": {
+  "at": "self",
+  "row": "a weathered plank drops flat on the ground, rusty nails push up through it one after another in a bristling row, their points glint amber, then the board lies still and dark."
+ },
+ "salvage-rights": {
+  "at": "self",
+  "row": "a big steel crane magnet swings down and lifts a clump of scrap in cyan arcs, the scrap glows orange at the top of the swing, then drops and fades."
+ },
+ "sanctity": {
+  "at": "self",
+  "row": "a knotted golden cord loosens and unravels in the air, its strands float apart softly, two bright motes drift up from the loose ends, then the strands dissolve into warm light."
+ },
+ "savage-command": {
+  "at": "self",
+  "row": "a ragged hide banner on a bone pole snaps upright, a crimson shock flares from its tip and rolls outward, then the banner flaps loose and fades."
+ },
+ "saved-breath": {
+  "at": "self",
+  "row": "a pale teal breath cloud rises and is drawn into a small gold-stoppered glass vial, the vial glows brighter as it fills, the stopper seals with a spark, then it fades."
+ },
+ "sawn-off": {
+  "at": "all",
+  "row": "a stubby rusty barrel bucks with a huge short amber blast that spreads flat and low across the enemy line in a ragged fan, then the barrel recoils and smoke rolls off."
+ },
+ "scar-over": {
+  "at": "self",
+  "row": "a long jagged crimson scar line glows across the frame, gold thread stitches cross it one by one, then the seam thickens into a raised bright gold ridge and fades."
+ },
+ "scarred-hide": {
+  "at": "self",
+  "row": "a tough tanned hide stretches taut on a gold frame, jagged scars split across it and spit dark grey sapping wisps that drift off to one side, then the hide sags and fades."
+ },
+ "scent-of-weakness": {
+  "at": "self",
+  "row": "a thin wisp of crimson scent smoke curls in from the side, a gold hound skull silhouette turns toward it as its sockets flare blue, then the smoke is drawn in and the skull fades."
+ },
+ "schematics": {
+  "at": "self",
+  "row": "a stack of thin glowing teal plates shuffles in the air, one plate slides up to the top and flashes orange, then the stack squares itself and fades."
+ },
+ "scope": {
+  "at": "self",
+  "row": "a long rusty telescope tube extends section by section, a ring of green glass at its end catches a bright amber flare like a lens glint, then the tube collapses shut and dims."
+ },
+ "scrap-golem": {
+  "at": "self",
+  "row": "a whirlwind of mismatched rusty plates, pipes and gears spirals up into a hulking lumpy giant shape, its cyan core lights at the chest, then loose bolts drop away."
+ },
+ "scrap-heap": {
+  "at": "self",
+  "row": "a jagged pile of rusted steel scrap rattles and shakes, two tiny winged drone shapes tear free from it in orange sparks, then the heap collapses into grey dust."
+ },
+ "scrapyard-king": {
+  "at": "self",
+  "row": "a crown shape welded from jagged scrap steel and bolts rises, orange weld seams light along its points, then cyan sparks fall from it and it dims."
+ },
+ "seize-them": {
+  "at": "target",
+  "row": "four bone hooks on witch-light chains shoot in from four sides and catch the target, the chains pull taut in a bright green cross, then rust over and fall slack."
+ },
+ "self-repair": {
+  "at": "self",
+  "row": "a ring of small steel wrench shapes orbits a teal glow, they tighten inward as the glow warms to orange-white, then the wrenches drift outward and fade."
+ },
+ "settled-mind": {
+  "at": "self",
+  "row": "a stack of smooth white marble stones balances one upon another, a soft royal-blue glow climbs through them to the top stone, which shines gold, then the stack settles still."
+ },
+ "sever-the-thread": {
+  "at": "target",
+  "row": "a taut glowing green thread stretches across the target, a curved bone blade snips it with a bright flash, the two cut ends whip apart in three spinning soul sparks that fade."
+ },
+ "shadow-step": {
+  "at": "self",
+  "row": "three violet afterimage footprints of smoke recede backward from the hero, each glowing brighter teal, the last curls up into a protective swirl, then softly fades."
+ },
+ "shadow-volley": {
+  "at": "all",
+  "row": "three dark violet crescent darts arc high in a staggered row over the enemy line, drop and land in three low teal bursts along the ground, then scatter as wisps of smoke."
+ },
+ "shamans-insight": {
+  "at": "self",
+  "row": "a small carved bone spirit charm hangs and spins, four tiny orange, pale blue, cyan and pearl motes orbit it, it flares open with teal light, then the motes wink out one by one."
+ },
+ "shard-strike": {
+  "at": "target",
+  "row": "one long jagged black glass shard spins end over end into the target, sticks and glows ember-orange along its broken edge, then splinters into a small spray of violet chips."
+ },
+ "shatter": {
+  "at": "target",
+  "row": "a rusty iron pipe swings into a tall green glass pane in front of the target, the pane bursts into a huge spray of sharp glittering shards lit amber, then they rain down and dim."
+ },
+ "shell-game": {
+  "at": "self",
+  "row": "three overturned rusty tin cups slide and swap in fast looping circles, one lifts to reveal a glowing brass shell that flares amber, then the cups settle and the shell dims."
+ },
+ "shellshocked": {
+  "at": "self",
+  "row": "a battered brass shell casing trembles, an amber shockwave rattles outward from it in jittery concentric rings like a nervous tremor, then the rings shake apart into dust."
+ },
+ "shield-of-faith": {
+  "at": "self",
+  "row": "a tall kite-shaped shield of white marble with a gold rim forms before the hero, a single golden flame kindles on its boss, it gleams brightest, then fades to a faint outline."
+ },
+ "shotgun-wedding": {
+  "at": "all",
+  "row": "two side-by-side amber muzzle flashes bloom low over the enemy line, twin fans of pellets sweep across it one after the other, then a ring of tin cans and smoke drifts away."
+ },
+ "side-slip": {
+  "at": "self",
+  "row": "a smooth teal arc of light curves sideways like a slipstream, a glossy violet droplet slides along it and slips out of view, then the arc fades."
+ },
+ "siege-protocol": {
+  "at": "target",
+  "row": "a big steel mortar shell arcs down onto the target, it lands in a tall orange-and-cyan column blast, then smoke rings roll outward and fade."
+ },
+ "sleeve-drop": {
+  "at": "self",
+  "row": "a dark violet coat sleeve cuff tilts downward, two teal daggers slide out point-first, flip once in the air, catch together in a crisp spark, then fade."
+ },
+ "sleight-of-hand": {
+  "at": "self",
+  "row": "a small violet silk handkerchief floats, folds into itself into a tight knot, then flutters open releasing a burst of teal butterflies that scatter and fade."
+ },
+ "slugfest": {
+  "at": "target",
+  "row": "four heavy lead slugs streak in a tight line one after another, each punching into the target with a bigger amber flash and dent ring, then grey smoke curls off."
+ },
+ "smoke-bomb": {
+  "at": "all",
+  "row": "a small round violet smoke pellet bursts low, a wide bank of grey-violet smoke rolls across the whole enemy line with teal glints sparking inside it, then thins away."
+ },
+ "smoke-veil": {
+  "at": "self",
+  "row": "a sheer translucent violet gauze veil drapes down over the hero, ripples and blurs, its edges smear into teal motion-blur streaks, then it lifts away."
+ },
+ "smoldering-blow": {
+  "at": "target",
+  "row": "a soot-black mace head with glowing orange cracks swings into the target, a puff of ash and ember sparks blooms outward at impact, then it smoulders away into drifting grey smoke."
+ },
+ "smoulder": {
+  "at": "self",
+  "row": "a low heap of dark coals glows deep red around the hero, slow orange cracks spread across it, it breathes once into a bright amber flush, then sinks back to a dull smouldering bed."
+ },
+ "snap-back": {
+  "at": "self",
+  "row": "a curved bone boomerang wrapped in orange flame spins away from the hero in a wide arc, flares bright at the far turn, whips back to its start, then cools and dims."
+ },
+ "snare-net": {
+  "at": "self",
+  "row": "a wide violet rope net with teal glowing knots unfolds low and flat in the air, drapes outward like a cast fishing net, every knot flares gold, then it tightens and fades into mist."
+ },
+ "sovereign-strike": {
+  "at": "target",
+  "row": "three heavy downward black glass blade chops fall on the target one after another, each leaving a vertical violet scar that stacks brighter, then all three scars burst into ember sparks."
+ },
+ "spare-barrel": {
+  "at": "self",
+  "row": "a long rusty spare barrel slides out of a scrap sheath, spins once flashing amber along its bore, a brass shell drops in at the muzzle, then it settles and dims."
+ },
+ "spare-blades": {
+  "at": "self",
+  "row": "a curved crimson leather bandolier strap unrolls in an arc, three teal daggers pop into its loops one by one, it buckles with a gold glint, then fades."
+ },
+ "spark-strike": {
+  "at": "target",
+  "row": "a cluster of tiny bright cyan sparks gathers in the air, snaps together into one fat electric ball, hurls into the target with a white crackle, then dissipates into faint arcs."
+ },
+ "spectral-ledger": {
+  "at": "self",
+  "row": "a tall pale green column of stacked translucent slabs rises like a ledger tower, three bright slabs slide off the top in a fan, glow, then dissolve into rising wisps."
+ },
+ "spirit-lance": {
+  "at": "target",
+  "row": "a long slender spear of teal spirit light wrapped in a thin orange flame streak thrusts straight into the target, its tip flares white, then the shaft splinters into four drifting teal sparks."
+ },
+ "spirit-surge": {
+  "at": "self",
+  "row": "a column of teal spirit wisps surges up from the ground like a rising tide, swirls into a tall bright plume with a gold-white crest, then the wisps scatter outward and fade."
+ },
+ "spiteful-jab": {
+  "at": "target",
+  "row": "a short thin gold stiletto jabs into the target with a small white spark, a red sting flare bounces back into a second sharp jab, then both points recede and fade."
+ },
+ "spotlight": {
+  "at": "target",
+  "row": "a hard white-gold circle of light lands on the target from above, narrows tightly like an iris, violet shadows close in around its edge, it glares at full, then snaps off."
+ },
+ "spray-and-pray": {
+  "at": "all",
+  "row": "a wild hose of amber pellets sprays back and forth along the enemy line in loose wavy lines, sparks and scrap bits pop everywhere at its peak, then the stream sputters out."
+ },
+ "spreading-flames": {
+  "at": "target",
+  "row": "a single orange ember drops onto the target and catches, crawling outward as a ragged ring of wildfire grass flames that leap tall and amber at their peak, then gutter into a smoking black ring."
+ },
+ "spring-attack": {
+  "at": "target",
+  "row": "a coiled steel spring compresses low, releases and launches a teal dagger in a high arc onto the target with an orange flash, then the spring rattles and fades."
+ },
+ "stalk": {
+  "at": "target",
+  "row": "a lean violet panther silhouette made of mist prowls in low, crouches, pounces onto the target in a bright teal claw flash, then breaks apart into curling wisps."
+ },
+ "static-veil": {
+  "at": "self",
+  "row": "a shimmering curtain of fine cyan static threads drapes down around the hero, crackles with tiny yellow sparks that dance along its folds, flashes bright, then frays into drifting glints."
+ },
+ "stay-of-execution": {
+  "at": "self",
+  "row": "a falling headsman's axe blade of violet light stops mid-swing, a pale green bone bar locks across it, the blade glows and trembles at its brightest, then fades into a soft shimmer."
+ },
+ "steady-nerves": {
+  "at": "self",
+  "row": "a jittering violet zigzag line of energy smooths out into a calm straight cyan beam, a flat sheet of light rises from the beam like a pane, then softly fades."
+ },
+ "steel-resolve": {
+  "at": "self",
+  "row": "a vertical bar of molten steel cools from orange to polished silver-blue, two gold bands snap around its middle, then it rings with a white shimmer running its length and fades."
+ },
+ "stellar-wind": {
+  "at": "self",
+  "row": "a gusting stream of grey ash and ember flecks blows sideways in a long curling ribbon, three bright violet sparks ride its crest, then the ribbon thins out and scatters."
+ },
+ "step-aside": {
+  "at": "self",
+  "row": "a revolving door of two tall ivory glass panes spins a quick half turn in front of the hero, flashes teal as it swings, stops with a gold click, then fades."
+ },
+ "still-water": {
+  "at": "self",
+  "row": "a single drop of water falls into a dark royal-blue bowl, the surface stays glassy as a rounded dome of clear water lifts over the hero, glints gold at its crown, then smooths away."
+ },
+ "stolen-moment": {
+  "at": "self",
+  "row": "a single glowing teal grain is plucked from a falling stream of sand, it sparks into a bright gold star, pulses once, then is tucked away in a puff of violet smoke."
+ },
+ "stoneskin": {
+  "at": "self",
+  "row": "a mosaic of grey marble scales ripples outward from a center point into a rounded scale-mail dome, gold seams flash between the scales, then they settle and dull to quiet stone."
+ },
+ "storm-chant": {
+  "at": "self",
+  "row": "a carved drum of pale wood thrums, rings of cyan sound ripple out from its skin, a small thunderbird silhouette lifts off the top on yellow sparks, then the ripples still."
+ },
+ "stress-the-glass": {
+  "at": "target",
+  "row": "a pane of black glass bows outward over the target under unseen pressure, violet strain lines ripple across its surface and glow brightest at the bulge, then it holds trembling with fine cracks."
+ },
+ "strip-the-guard": {
+  "at": "target",
+  "row": "a gold-plated breastplate outline forms over the target, teal cracks race across it, its plates peel away one by one and tumble down, then the outline shatters into flakes."
+ },
+ "stumble": {
+  "at": "target",
+  "row": "a heavy iron boot shape lurches sideways in a wobbly arc, trips forward into the target with an amber thud and a puff of green glass dust, then tips over and fades."
+ },
+ "surge-protocol": {
+  "at": "self",
+  "row": "a thick steel cable coils into a spiral, a white-cyan surge races along it from end to end, then the tip flares an orange starburst and the cable goes dark."
+ },
+ "swarm-tactics": {
+  "at": "self",
+  "row": "a teal targeting reticle hangs in the air, small drone dots dart into its rings and each fires a thin orange tracer outward, then the reticle spins and dissolves."
+ },
+ "sway": {
+  "at": "self",
+  "row": "a tall reed-thin pendulum of amber light swings wide left and right, a curved green glass barrier blooms at each end of its swing, then the pendulum slows and fades."
+ },
+ "sweep-the-leg": {
+  "at": "target",
+  "row": "a low wide crescent of teal light sweeps along the ground beneath the target, flips it up in a dust burst, a dark violet ring settles around it, then fades."
+ },
+ "swift-step": {
+  "at": "self",
+  "row": "a trail of quick golden afterimage streaks darts sideways in a zigzag, a red-gold flame coils at the end point, flares into a tight spinning blaze, then fades into motion blur."
+ },
+ "swift-strike": {
+  "at": "target",
+  "row": "a single thin zigzag of bright cyan lightning snaps sideways into the target in a quick flash, a short afterimage streak trails behind it, then it vanishes in a puff of static."
+ },
+ "swift-study": {
+  "at": "self",
+  "row": "three quick cyan wind streaks whip around the hero in tight loops, each trailing small yellow sparks, they braid together into a bright ribbon at the peak, then unravel and fade."
+ },
+ "swig": {
+  "at": "self",
+  "row": "a small square hip flask tips up, a short amber gulp of liquid arcs out of its neck and splashes into a bright burst of fiery bubbles, then they pop and fade."
+ },
+ "take-it-on-the-chin": {
+  "at": "self",
+  "row": "a heavy rusty iron weight swings in and clangs off a thick dented iron plate, the plate rings with amber sparks and grows thicker, then the dent glows and cools."
+ },
+ "targeting-uplink": {
+  "at": "self",
+  "row": "a steel satellite dish tilts up and fires a thin teal beam into the sky, orange signal rings ripple back down along it, then the dish lowers and dims."
+ },
+ "tear-loose": {
+  "at": "target",
+  "row": "a bone spike rips free from the target in a spray of crimson, it spins upward glowing hot red, then crumbles into falling flecks."
+ },
+ "temper-flare": {
+  "at": "target",
+  "row": "three short jabs of red-gold flame punch into the target in a quick triple burst, each spark bigger, the last flaring into a crimson flame crest, then the fire shrinks to embers."
+ },
+ "the-final-hour": {
+  "at": "all",
+  "row": "a long low band of violet shadow sweeps across the enemy line like a closing tide, purple sparks rise from it in a dense row, flash bright, then sink into black mist."
+ },
+ "the-hunger": {
+  "at": "self",
+  "row": "a crimson whirlpool spirals inward toward a small bone fang at its center, the fang glows hotter red as it swallows the swirl, then pulses once and fades."
+ },
+ "the-offering": {
+  "at": "self",
+  "row": "a small white marble altar bowl lifts up a cupped golden flame, five little flame tongues rise from it in a fan, flare bright together, then gather back down into a steady glow."
+ },
+ "thin-the-blood": {
+  "at": "self",
+  "row": "a tall crystal goblet fills with dark crimson liquid that thins to a pale glowing red, teal bubbles rise through it, it brims over the rim, then fades."
+ },
+ "thunder-chant": {
+  "at": "self",
+  "row": "a thunderbird spirit silhouette spreads its wings and its feathers sharpen into crackling yellow bolt edges, it glows brighter and larger with each pulse, then folds into a humming outline."
+ },
+ "thunder-rush": {
+  "at": "self",
+  "row": "a stream of small yellow-cyan thunderbird silhouettes pours up from a crackling storm vortex one after another, wheels into a rising spiral, flashes bright, then disperses into sparks."
+ },
+ "tin-can-alley": {
+  "at": "all",
+  "row": "a row of dented tin cans lines the enemy line, three quick waves of pellets knock them flying in bright amber pings, then the cans clatter down and roll away."
+ },
+ "titan-forge": {
+  "at": "self",
+  "row": "a towering riveted steel mold pours molten orange metal down its sides, it cracks open on a heavy humanoid frame outline glowing cyan, then steam hides it."
+ },
+ "toll-in-advance": {
+  "at": "self",
+  "row": "a small iron hand bell tips forward, three pale green soul motes spill out of its mouth and swell into bright orbs, then a heavy violet chain wraps the bell and dims it."
+ },
+ "tossed-vials": {
+  "at": "all",
+  "row": "three small corked glass vials tumble in high arcs over the enemy line, shatter low in crimson splashes one after another, then the red stains soak away."
+ },
+ "totem-circle": {
+  "at": "self",
+  "row": "three small carved totem heads glowing orange, pale blue and cyan rise in a ring around the hero, a circle of light links their bases, flares bright, then the ring settles into a soft trace."
+ },
+ "trampling-charge": {
+  "at": "all",
+  "row": "a low wave of galloping gold war-horse silhouettes thunders sideways across the enemy line, kicking up white dust bursts at full gallop, then the herd dissolves into trailing blue streaks."
+ },
+ "trap-door": {
+  "at": "self",
+  "row": "a square gold-framed hatch opens in a violet floor, its two panels swing downward, a teal wire loop rises out of the dark, the hatch claps shut, then fades."
+ },
+ "trapline-rider": {
+  "at": "target",
+  "row": "a taut glowing teal line runs to the target, small steel trap jaws slide along it like beads, hit the target in a rapid chain of gold sparks, then the line snaps."
+ },
+ "trick-of-the-light": {
+  "at": "self",
+  "row": "a clear crystal prism turns slowly, splits a white beam into a fan of violet, teal and gold rays, they flicker and dance, then recombine into a single glint."
+ },
+ "tripwire-garrote": {
+  "at": "self",
+  "row": "a taut glowing teal wire stretches low between two gold pegs, it trembles, then snaps upward into a tightening noose loop with a sharp white spark, then frays into fine threads."
+ },
+ "turning-wheel": {
+  "at": "self",
+  "row": "a large carved wooden spirit wheel with spokes of orange, pale blue and cyan rolls up and turns a quarter, its top spoke flares bright, then the wheel slows and settles glowing."
+ },
+ "twin-talons": {
+  "at": "target",
+  "row": "two burning orange hawk talon claws rake across the target in a crossing X, the flame streaks blaze yellow at the crossing point, then two small hawk silhouettes peel away and fade."
+ },
+ "unchained": {
+  "at": "self",
+  "row": "a crimson horned beast silhouette rears up out of a pit of bone stakes, its horns flare blazing red at full height, then it drifts upward like smoke."
+ },
+ "unmoved-mind": {
+  "at": "self",
+  "row": "a heavy white marble boulder sits unmoving as a gold wind ring rushes past around it, the boulder flashes with a blue outline, a single spark flies off, then the wind dies."
+ },
+ "unyielding-line": {
+  "at": "self",
+  "row": "a straight line of upright blue tower-shield pickets plants into the ground edge to edge, a gold glow runs along their tops, then two small gold orbs rise from the line and fade."
+ },
+ "upgrade-chip": {
+  "at": "self",
+  "row": "a tiny glowing cyan cartridge spins into view, it splits into steel plates that stack upward taller and taller glowing orange, then they fold back together and fade."
+ },
+ "veilpiercer": {
+  "at": "target",
+  "row": "a thin sheet of misty veil hangs in the dark, a needle-sharp spectral spear of white-green light punches straight through it into the target, flashes, then the torn veil drifts down."
+ },
+ "vow-kept": {
+  "at": "target",
+  "row": "a row of small royal blue gems lines up above the target and fires narrow gold beams into it one after another, the beams merge in a white flare, then the gems go dark."
+ },
+ "wanderers-draught": {
+  "at": "self",
+  "row": "a small cracked stone flask tilts and pours a stream of glowing cyan liquid into a rising bubble, the bubble swells and brightens violet, then pops into gentle drifting motes."
+ },
+ "war-drums": {
+  "at": "self",
+  "row": "a gold-rimmed royal blue war drum forms, its skin throws out expanding rings of warm light on each beat, the beats grow stronger and brighter, then the drum fades on a last ring."
+ },
+ "warm-anvil": {
+  "at": "self",
+  "row": "a squat black glass anvil block glows gently from within, a soft ember-orange warmth spreads outward in slow rising heat ripples, peaks in a calm violet sheen, then stays warm."
+ },
+ "weeping-cuts": {
+  "at": "self",
+  "row": "a slender crimson teardrop forms, splits into a falling rain of smaller red drops along thin teal cut lines, they pool into a glowing ring, then fade."
+ },
+ "weld-armor": {
+  "at": "self",
+  "row": "a white-orange welding torch flame traces a seam across a curved steel plate, molten sparks spray out at its hottest, then the seam cools to a dull teal line."
+ },
+ "wheel-kick": {
+  "at": "target",
+  "row": "a wide spinning crescent of golden fire sweeps around in a full circle and cracks into the target, the arc blazes white at impact, then the circle unwinds into sparks."
+ },
+ "whet-the-fangs": {
+  "at": "self",
+  "row": "two long bone fangs grind against a grey whetstone shape, crimson sparks fly at each stroke, then the fangs gleam bright white and fade."
+ },
+ "whetted-edge": {
+  "at": "self",
+  "row": "a grey whetstone bar glides along a teal dagger edge in quick strokes, bright orange sparks fly off, the edge glows white-hot and razor sharp, then cools to a gleam."
+ },
+ "whirling-blade": {
+  "at": "all",
+  "row": "a low wide spinning disc of gold sword blades skims sideways across the whole enemy line trailing royal blue arcs, flares white as it spins fastest, then flings off sparks and fades."
+ },
+ "whirling-maul": {
+  "at": "all",
+  "row": "a spinning bone maul whirls low along the enemy line as a blurred crimson disc, red arcs fly off every turn, then the spin slows and the maul drops away."
+ },
+ "wild-card": {
+  "at": "self",
+  "row": "a spinning ivory star flips rapidly, its face blurring between spade, heart, diamond and club silhouettes, stops on a blank teal glow, then pops into gold sparkles."
+ },
+ "wild-vision": {
+  "at": "self",
+  "row": "a swirl of luminous teal feathers and leaves spins into a wild vortex, a bright crystal orb takes shape at its center, flashes with pale prismatic light, then the swirl scatters."
+ },
+ "window-pane": {
+  "at": "self",
+  "row": "a square wooden window frame holds four small green panes, each lights amber in turn and thickens with cracked layered glass, then the frame stands solid and dim."
+ },
+ "wither": {
+  "at": "target",
+  "row": "a dark thorny bramble lashes the target, its leaves blacken and curl from green to grey at its brightest flare, then the whole vine dries, cracks and blows away as dust."
+ },
+ "withering-touch": {
+  "at": "target",
+  "row": "a pale green ghostly mist presses against the target, its glow drains out in a downward stream of grey particles, the target's outline dims and greys, then the mist lifts away."
+ },
+ "worship": {
+  "at": "self",
+  "row": "a tall arched window frame of stained-glass light in gold and royal blue rises around the hero, embers float up through it like a hymn, it glows warm, then fades."
+ },
+ "wrathful-guard": {
+  "at": "self",
+  "row": "a round bronze temple gong of red-gold flame rises before the hero, its surface ripples with fiery rings, it booms bright white at the center, then cools to a deep gold glow."
+ },
+ "wreath-of-flame": {
+  "at": "self",
+  "row": "a circular wreath of golden laurel leaves made of fire weaves itself over the hero, each leaf tip flares crimson at its peak, then the wreath settles into a glowing ring of embers."
+ }
+}

@@ -37,7 +37,8 @@
     "pvp:dev": "pnpm --filter @sr/server dev",
     "cardprompts:extra": "pnpm --filter @sr/tools cardprompts:extra",
     "cardprompts:missing": "pnpm --filter @sr/tools cardprompts:missing",
-    "fxprompts:rare": "pnpm --filter @sr/tools fxprompts:rare"
+    "fxprompts:rare": "pnpm --filter @sr/tools fxprompts:rare",
+    "fxprompts:uncommon": "pnpm --filter @sr/tools fxprompts:uncommon"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

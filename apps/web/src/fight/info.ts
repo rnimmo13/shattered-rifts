@@ -1019,16 +1019,16 @@ export const UI_TIPS = {
     tone: 'good',
     text: 'Enemies must attack this unit before anything else.',
   } as TipContent,
-  // a companion's frame: how many of the 3 companion slots it takes (DECISIONS #383)
+  // a companion's frame: how many of the companion slots it takes (3, or the Swarmwright's 4: DECISIONS #383, #569)
   frame: (slots: number): TipContent => ({
     kicker: 'Frame',
     title: slots >= 3 ? 'Colossal' : slots === 2 ? 'Heavy' : 'Light',
     text:
       slots >= 3
-        ? 'Takes all 3 companion slots: it stands alone.'
+        ? 'Takes 3 companion slots: it stands alone (beside one Light machine for a Swarmwright).'
         : slots === 2
-          ? 'Takes 2 of your 3 companion slots.'
-          : 'Takes 1 of your 3 companion slots.',
+          ? 'Takes 2 companion slots (you have 3; a Swarmwright has 4).'
+          : 'Takes 1 companion slot (you have 3; a Swarmwright has 4).',
   }),
   endTurn: {
     title: 'End turn',

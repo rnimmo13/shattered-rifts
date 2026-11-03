@@ -63,24 +63,36 @@ export function playFx(id: FxId, at: Spot, o: StripOpts = {}): void {
   playStrip(fxUrl(id), at, o);
 }
 
-// --- every Rare's own effect (DECISIONS #567) ---------------------------------------------------------------------------
+// --- every Rare's and Uncommon's own effect (DECISIONS #567, #568) -----------------------------------------------------
 
-/** Where a Rare's effect plays: on its target, on the hero who played it, or over the whole enemy line. */
+/** Where a card's effect plays: on its target, on the hero who played it, or over the whole enemy line. */
 export type CardFxAt = 'target' | 'self' | 'all';
-let cardFx: Record<string, CardFxAt> | null = null;
+/** each rarity's effects are in their own folder, with its own index */
+const CARD_FX_DIRS = ['rare', 'uncommon'] as const;
+const cardFx: Record<string, { at: CardFxAt; dir: string }> = {};
+const cardFxRead = new Set<string>();
 let cardFxLoading: Promise<void> | null = null;
-const cardFxUrl = (card: string): string => `${import.meta.env.BASE_URL}art/fx/rare/${card}.png`;
+const cardFxUrl = (id: string): string => `${import.meta.env.BASE_URL}art/fx/${cardFx[id]?.dir ?? 'rare'}/${id}.png`;
 
 /** Reads which cards have their own effect (safe to call again; a list that does not come lets the next fight try again). */
 export function loadCardFx(): Promise<void> {
   cardFxLoading ??= (async () => {
-    try {
-      const res = await fetch(`${import.meta.env.BASE_URL}art/fx/rare/index.json`, { cache: 'no-cache' });
-      if (!res.ok) throw new Error(String(res.status));
-      cardFx = (await res.json()) as Record<string, CardFxAt>;
-    } catch {
-      cardFxLoading = null;
-    }
+    const left = CARD_FX_DIRS.filter((d) => !cardFxRead.has(d));
+    const done = await Promise.all(
+      left.map(async (dir) => {
+        try {
+          const res = await fetch(`${import.meta.env.BASE_URL}art/fx/${dir}/index.json`, { cache: 'no-cache' });
+          if (!res.ok) throw new Error(String(res.status));
+          const index = (await res.json()) as Record<string, CardFxAt>;
+          for (const [id, at] of Object.entries(index)) cardFx[id] = { at, dir };
+          cardFxRead.add(dir);
+          return true;
+        } catch {
+          return false;
+        }
+      }),
+    );
+    if (done.includes(false)) cardFxLoading = null;
   })();
   return cardFxLoading;
 }
@@ -91,7 +103,7 @@ export async function preloadCardFx(cards: Iterable<string>): Promise<void> {
   await loadCardFx();
   for (const card of cards) {
     const id = baseCard(card);
-    if (!cardFx?.[id] || cardFxAsked.has(id)) continue;
+    if (!cardFx[id] || cardFxAsked.has(id)) continue;
     cardFxAsked.add(id);
     new Image().src = cardFxUrl(id);
   }
@@ -104,7 +116,7 @@ const baseCard = (card: string): string => {
 };
 
 export function cardFxAt(card: string): CardFxAt | null {
-  return cardFx?.[baseCard(card)] ?? null;
+  return cardFx[baseCard(card)]?.at ?? null;
 }
 
 /** A card's own effect, centred on a point of the window. */

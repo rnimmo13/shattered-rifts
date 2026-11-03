@@ -1,0 +1,961 @@
+[
+ {
+  "name": "uncommon-knight-01",
+  "hero": "knight",
+  "ids": [
+   "berserkers-rage",
+   "bitter-breath",
+   "blood-fire",
+   "borrowed-blade"
+  ]
+ },
+ {
+  "name": "uncommon-knight-02",
+  "hero": "knight",
+  "ids": [
+   "brace-for-battle",
+   "break-guard",
+   "cast-the-shield",
+   "challenge"
+  ]
+ },
+ {
+  "name": "uncommon-knight-03",
+  "hero": "knight",
+  "ids": [
+   "charging-herd",
+   "cold-stare",
+   "ember-ward",
+   "giants-stance"
+  ]
+ },
+ {
+  "name": "uncommon-knight-04",
+  "hero": "knight",
+  "ids": [
+   "grim-focus",
+   "hammer-fall",
+   "hardened-scars",
+   "howl-of-the-fallen"
+  ]
+ },
+ {
+  "name": "uncommon-knight-05",
+  "hero": "knight",
+  "ids": [
+   "intimidate",
+   "jugglers-rhythm",
+   "mounting-fury",
+   "numbing-rite"
+  ]
+ },
+ {
+  "name": "uncommon-knight-06",
+  "hero": "knight",
+  "ids": [
+   "pact-of-embers",
+   "pile-on",
+   "plunder",
+   "provoke"
+  ]
+ },
+ {
+  "name": "uncommon-knight-07",
+  "hero": "knight",
+  "ids": [
+   "reckless-smite",
+   "relentless-push",
+   "rising-fist",
+   "ritual-of-ash"
+  ]
+ },
+ {
+  "name": "uncommon-knight-08",
+  "hero": "knight",
+  "ids": [
+   "scar-over",
+   "scarred-hide",
+   "scent-of-weakness",
+   "smoldering-blow"
+  ]
+ },
+ {
+  "name": "uncommon-knight-09",
+  "hero": "knight",
+  "ids": [
+   "spiteful-jab",
+   "steel-resolve",
+   "stoneskin",
+   "trampling-charge"
+  ]
+ },
+ {
+  "name": "uncommon-knight-10",
+  "hero": "knight",
+  "ids": [
+   "unyielding-line",
+   "vow-kept",
+   "war-drums",
+   "whirling-blade"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-01",
+  "hero": "engineer",
+  "ids": [
+   "arc-relay",
+   "assemble",
+   "blueprint",
+   "build-bulwark-walker"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-02",
+  "hero": "engineer",
+  "ids": [
+   "bulwark-frame",
+   "call-turret",
+   "clockwork-snare",
+   "detonate"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-03",
+  "hero": "engineer",
+  "ids": [
+   "drone-ambush",
+   "echo-command",
+   "factory-floor",
+   "ion-lance"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-04",
+  "hero": "engineer",
+  "ids": [
+   "laser-grid",
+   "link-up",
+   "overcharge",
+   "overcharge-blast"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-05",
+  "hero": "engineer",
+  "ids": [
+   "overdrive",
+   "overwatch",
+   "parts-bin",
+   "patch-job"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-06",
+  "hero": "engineer",
+  "ids": [
+   "rebuild",
+   "reinforce",
+   "relay-network",
+   "resonant-pulse"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-07",
+  "hero": "engineer",
+  "ids": [
+   "salvage-rights",
+   "schematics",
+   "scrap-golem",
+   "scrap-heap"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-08",
+  "hero": "engineer",
+  "ids": [
+   "scrapyard-king",
+   "self-repair",
+   "siege-protocol",
+   "surge-protocol"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-09",
+  "hero": "engineer",
+  "ids": [
+   "swarm-tactics",
+   "targeting-uplink",
+   "titan-forge",
+   "upgrade-chip"
+  ]
+ },
+ {
+  "name": "uncommon-engineer-10",
+  "hero": "engineer",
+  "ids": [
+   "weld-armor"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-01",
+  "hero": "hunter",
+  "ids": [
+   "adrenal-surge",
+   "baited-snare",
+   "battle-rhythm",
+   "blood-bond"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-02",
+  "hero": "hunter",
+  "ids": [
+   "bloodied-howl",
+   "blur-of-claws",
+   "bone-collar",
+   "bone-offering"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-03",
+  "hero": "hunter",
+  "ids": [
+   "burst-of-speed",
+   "crushing-blow",
+   "deadfall",
+   "devour"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-04",
+  "hero": "hunter",
+  "ids": [
+   "devour-ally",
+   "feeding-time",
+   "fell-the-prey",
+   "frenzied-gulp"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-05",
+  "hero": "hunter",
+  "ids": [
+   "frothing-rage",
+   "gnarltooth-trap",
+   "gut-trap",
+   "hamstring-slam"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-06",
+  "hero": "hunter",
+  "ids": [
+   "hunters-call",
+   "hunting-grounds",
+   "litter",
+   "pack-bond"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-07",
+  "hero": "hunter",
+  "ids": [
+   "pack-leader",
+   "rally-the-pack",
+   "ravage",
+   "reckless-abandon"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-08",
+  "hero": "hunter",
+  "ids": [
+   "reckless-blow",
+   "rip-and-tear",
+   "run-it-down",
+   "run-wild"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-09",
+  "hero": "hunter",
+  "ids": [
+   "savage-command",
+   "tear-loose",
+   "the-hunger",
+   "unchained"
+  ]
+ },
+ {
+  "name": "uncommon-hunter-10",
+  "hero": "hunter",
+  "ids": [
+   "whet-the-fangs",
+   "whirling-maul"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-01",
+  "hero": "trickster",
+  "ids": [
+   "ace-of-clubs",
+   "card-fan",
+   "card-sharp",
+   "cripple"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-02",
+  "hero": "trickster",
+  "ids": [
+   "curtain-call",
+   "cut-the-deck",
+   "death-mark",
+   "dread-gaze"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-03",
+  "hero": "trickster",
+  "ids": [
+   "shadow-step",
+   "frozen-moment",
+   "gleeful-trapsmith",
+   "grim-collection"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-04",
+  "hero": "trickster",
+  "ids": [
+   "hamstring",
+   "long-con",
+   "mask-of-faces",
+   "metronome-trap"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-05",
+  "hero": "trickster",
+  "ids": [
+   "mirror-veil",
+   "poison-pantry",
+   "queen-of-hearts",
+   "saved-breath"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-06",
+  "hero": "trickster",
+  "ids": [
+   "shadow-volley",
+   "sleight-of-hand",
+   "smoke-bomb",
+   "spotlight"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-07",
+  "hero": "trickster",
+  "ids": [
+   "stalk",
+   "step-aside",
+   "stolen-moment",
+   "strip-the-guard"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-08",
+  "hero": "trickster",
+  "ids": [
+   "long-game",
+   "trap-door",
+   "snare-net",
+   "trapline-rider"
+  ]
+ },
+ {
+  "name": "uncommon-trickster-09",
+  "hero": "trickster",
+  "ids": [
+   "trick-of-the-light",
+   "tripwire-garrote",
+   "wild-card"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-01",
+  "hero": "assassin",
+  "ids": [
+   "all-or-nothing",
+   "blood-mist",
+   "bolt-hole",
+   "bottomless-sleeves"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-02",
+  "hero": "assassin",
+  "ids": [
+   "clean-cut",
+   "cool-head",
+   "darting-strike",
+   "final-flourish"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-03",
+  "hero": "assassin",
+  "ids": [
+   "fleet-fingers",
+   "fleet-step",
+   "ghost-knives",
+   "graveside-cut"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-04",
+  "hero": "assassin",
+  "ids": [
+   "knife-in-the-back",
+   "lay-bare",
+   "needle-rain",
+   "nerve-strike"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-05",
+  "hero": "assassin",
+  "ids": [
+   "nimble-deal",
+   "palm-switch",
+   "practiced-hands",
+   "quick-reflexes"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-06",
+  "hero": "assassin",
+  "ids": [
+   "red-mirage",
+   "reopen-the-wound",
+   "rippling-cut",
+   "run-through"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-07",
+  "hero": "assassin",
+  "ids": [
+   "side-slip",
+   "sleeve-drop",
+   "smoke-veil",
+   "spare-blades"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-08",
+  "hero": "assassin",
+  "ids": [
+   "spring-attack",
+   "sweep-the-leg",
+   "thin-the-blood",
+   "tossed-vials"
+  ]
+ },
+ {
+  "name": "uncommon-assassin-09",
+  "hero": "assassin",
+  "ids": [
+   "weeping-cuts",
+   "whetted-edge"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-01",
+  "hero": "shaman",
+  "ids": [
+   "ash-chant",
+   "bitter-lesson",
+   "boon-strike",
+   "burnt-offering"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-02",
+  "hero": "shaman",
+  "ids": [
+   "charged-sky",
+   "dawn-ward",
+   "double-rite",
+   "frostbound-hide"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-03",
+  "hero": "shaman",
+  "ids": [
+   "frozen-grasp",
+   "glacier-guard",
+   "grim-ward",
+   "harmonize"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-04",
+  "hero": "shaman",
+  "ids": [
+   "harvest-of-ruin",
+   "hurried-prayer",
+   "frost-shatter",
+   "kindling-ward"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-05",
+  "hero": "shaman",
+  "ids": [
+   "lightning-rod",
+   "shamans-insight",
+   "smoulder",
+   "snap-back"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-06",
+  "hero": "shaman",
+  "ids": [
+   "spark-strike",
+   "spirit-lance",
+   "spirit-surge",
+   "static-veil"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-07",
+  "hero": "shaman",
+  "ids": [
+   "storm-chant",
+   "swift-strike",
+   "swift-study",
+   "thunder-chant"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-08",
+  "hero": "shaman",
+  "ids": [
+   "thunder-rush",
+   "totem-circle",
+   "turning-wheel",
+   "twin-talons"
+  ]
+ },
+ {
+  "name": "uncommon-shaman-09",
+  "hero": "shaman",
+  "ids": [
+   "wild-vision",
+   "spreading-flames"
+  ]
+ },
+ {
+  "name": "uncommon-monk-01",
+  "hero": "monk",
+  "ids": [
+   "cornered-beast",
+   "wreath-of-flame",
+   "daily-rite",
+   "exhale"
+  ]
+ },
+ {
+  "name": "uncommon-monk-02",
+  "hero": "monk",
+  "ids": [
+   "foretold-flame",
+   "deep-breath",
+   "held-breath",
+   "hot-blooded"
+  ]
+ },
+ {
+  "name": "uncommon-monk-03",
+  "hero": "monk",
+  "ids": [
+   "worship",
+   "inner-sight",
+   "blood-on-the-sand",
+   "sanctity"
+  ]
+ },
+ {
+  "name": "uncommon-monk-04",
+  "hero": "monk",
+  "ids": [
+   "mantra-engine",
+   "mirror-pool",
+   "devotion",
+   "open-palm"
+  ]
+ },
+ {
+  "name": "uncommon-monk-05",
+  "hero": "monk",
+  "ids": [
+   "poise",
+   "rending-hands",
+   "settled-mind",
+   "shield-of-faith"
+  ]
+ },
+ {
+  "name": "uncommon-monk-06",
+  "hero": "monk",
+  "ids": [
+   "wheel-kick",
+   "still-water",
+   "berserk-tide",
+   "swift-step"
+  ]
+ },
+ {
+  "name": "uncommon-monk-07",
+  "hero": "monk",
+  "ids": [
+   "temper-flare",
+   "the-offering",
+   "fearless",
+   "unmoved-mind"
+  ]
+ },
+ {
+  "name": "uncommon-monk-08",
+  "hero": "monk",
+  "ids": [
+   "inner-calm",
+   "wrathful-guard"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-01",
+  "hero": "spellblade",
+  "ids": [
+   "afterglow",
+   "radiance",
+   "stellar-wind",
+   "banked-embers"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-02",
+  "hero": "spellblade",
+  "ids": [
+   "bladewall",
+   "call-the-blade",
+   "carry-the-fault",
+   "collapsing-star"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-03",
+  "hero": "spellblade",
+  "ids": [
+   "controlled-release",
+   "crosscut",
+   "conqueror",
+   "deep-fault"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-04",
+  "hero": "spellblade",
+  "ids": [
+   "deepening-fault",
+   "falling-sky",
+   "fault-lines",
+   "fault-memory"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-05",
+  "hero": "spellblade",
+  "ids": [
+   "fault-piercer",
+   "fault-reader",
+   "final-shatter",
+   "glass-armory"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-06",
+  "hero": "spellblade",
+  "ids": [
+   "gamma-burst",
+   "parry",
+   "glass-wall",
+   "growing-crucible"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-07",
+  "hero": "spellblade",
+  "ids": [
+   "forge-heat",
+   "gravity-well",
+   "last-ember",
+   "measured-recharge"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-08",
+  "hero": "spellblade",
+  "ids": [
+   "mirror-glass",
+   "devastate",
+   "patient-edge-aura",
+   "pillar-of-light"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-09",
+  "hero": "spellblade",
+  "ids": [
+   "quenched-edge",
+   "recenter",
+   "shard-strike",
+   "cygnus"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-10",
+  "hero": "spellblade",
+  "ids": [
+   "orion",
+   "stress-the-glass",
+   "sovereign-strike",
+   "warm-anvil"
+  ]
+ },
+ {
+  "name": "uncommon-spellblade-11",
+  "hero": "spellblade",
+  "ids": [
+   "crowns-weight"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-01",
+  "hero": "drunkard",
+  "ids": [
+   "bandolier",
+   "bar-stool",
+   "barroom-brawl",
+   "bender"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-02",
+  "hero": "drunkard",
+  "ids": [
+   "black-out",
+   "dead-eye",
+   "double-tap",
+   "drunken-master"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-03",
+  "hero": "drunkard",
+  "ids": [
+   "dumpster-dive",
+   "dutch-courage",
+   "free-for-all",
+   "glass-cover"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-04",
+  "hero": "drunkard",
+  "ids": [
+   "hair-of-the-dog",
+   "hair-trigger",
+   "liquid-courage",
+   "liquid-dinner"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-05",
+  "hero": "drunkard",
+  "ids": [
+   "mean-drunk",
+   "molotov-cocktail",
+   "pick-up-the-brass",
+   "pump-action"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-06",
+  "hero": "drunkard",
+  "ids": [
+   "reload",
+   "rusty-nail-board",
+   "sawn-off",
+   "scope"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-07",
+  "hero": "drunkard",
+  "ids": [
+   "shell-game",
+   "shellshocked",
+   "shotgun-wedding",
+   "slugfest"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-08",
+  "hero": "drunkard",
+  "ids": [
+   "shatter",
+   "spare-barrel",
+   "spray-and-pray",
+   "stumble"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-09",
+  "hero": "drunkard",
+  "ids": [
+   "sway",
+   "swig",
+   "take-it-on-the-chin",
+   "tin-can-alley"
+  ]
+ },
+ {
+  "name": "uncommon-drunkard-10",
+  "hero": "drunkard",
+  "ids": [
+   "window-pane"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-01",
+  "hero": "necromancer",
+  "ids": [
+   "army-of-the-drowned",
+   "at-the-threshold",
+   "bonded-dead",
+   "bone-rain"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-02",
+  "hero": "necromancer",
+  "ids": [
+   "bone-sift",
+   "bone-toss",
+   "bottled-soul",
+   "burial-shroud"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-03",
+  "hero": "necromancer",
+  "ids": [
+   "dance-of-bones",
+   "drag-under",
+   "entomb",
+   "fester"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-04",
+  "hero": "necromancer",
+  "ids": [
+   "fleshcraft",
+   "funeral-march",
+   "goad",
+   "grasping-hands"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-05",
+  "hero": "necromancer",
+  "ids": [
+   "dredge",
+   "grimoire-gale",
+   "helping-hand",
+   "inevitable"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-06",
+  "hero": "necromancer",
+  "ids": [
+   "killing-chill",
+   "dirge",
+   "last-rites",
+   "mourning"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-07",
+  "hero": "necromancer",
+  "ids": [
+   "calcify",
+   "rattle-the-bones",
+   "restless-spirits",
+   "seize-them"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-08",
+  "hero": "necromancer",
+  "ids": [
+   "sever-the-thread",
+   "veilpiercer",
+   "spectral-ledger",
+   "stay-of-execution"
+  ]
+ },
+ {
+  "name": "uncommon-necromancer-09",
+  "hero": "necromancer",
+  "ids": [
+   "the-final-hour",
+   "toll-in-advance",
+   "wither",
+   "withering-touch"
+  ]
+ },
+ {
+  "name": "uncommon-neutral-01",
+  "hero": "neutral",
+  "ids": [
+   "cull-the-hand",
+   "fever-dream",
+   "heart-of-the-rift",
+   "nerve-surge"
+  ]
+ },
+ {
+  "name": "uncommon-neutral-02",
+  "hero": "neutral",
+  "ids": [
+   "rift-storm",
+   "rift-whirl",
+   "rift-windfall",
+   "steady-nerves"
+  ]
+ },
+ {
+  "name": "uncommon-neutral-03",
+  "hero": "neutral",
+  "ids": [
+   "wanderers-draught"
+  ]
+ }
+]
