@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.170.0',
+    date: '2026-11-03',
+    title: 'Knight Uncommon effects, the Swarmwright crest',
+    summary: 'The Knight\'s Uncommons play their own effects, and the Swarmwright has its own crest.',
+    notes: [
+      { kind: 'new', text: 'All 40 of the Knight\'s Uncommon cards play their own painted effect, as the Rares do. The other classes\' Uncommons follow.' },
+      { kind: 'new', text: 'The Swarmwright has its own crest: four machines working as one.' },
+    ],
+  },
+  {
     version: '0.169.0',
     date: '2026-11-03',
     title: 'The Swarmwright',
