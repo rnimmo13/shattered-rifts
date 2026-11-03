@@ -51,6 +51,7 @@ import { loadEffectsMode, loadGraphicsQuality, profileFor } from '../duel/effect
 import { useSettingsChanged, type SettingKind } from '../app/settings';
 import { perfNote } from '../app/perfReport';
 import { SettingsButton } from '../ui/SettingsButton';
+import { LowGraphicsHint } from '../ui/LowGraphicsHint';
 import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
 import { play } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
@@ -2237,6 +2238,8 @@ export function FightView(props: {
 
       {view && ready && (
         <>
+          {/* (once, when the browser draws without the graphics card: DECISIONS #573) */}
+          <LowGraphicsHint />
           <header className="fight__top">
             {mode === 'portrait' ? (
               // (DECISIONS #443) held upright there is no room for a row of buttons: they fold into a menu

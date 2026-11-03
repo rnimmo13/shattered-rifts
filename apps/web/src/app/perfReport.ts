@@ -4,6 +4,7 @@
 
 import { loadEffectsMode, loadGraphicsQuality } from '../duel/effects';
 import { BUILD } from '../build';
+import { drawsInSoftware, rendererName } from '../duel/renderer';
 
 interface Note {
   at: number;
@@ -117,19 +118,6 @@ export function startRecording(): void {
   changed();
 }
 
-function gpuName(): string {
-  try {
-    const c = document.createElement('canvas');
-    const gl = c.getContext('webgl2') ?? c.getContext('webgl');
-    if (!gl) return 'no WebGL';
-    const ext = gl.getExtension('WEBGL_debug_renderer_info');
-    const name = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : 'hidden by the browser';
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
-    return name;
-  } catch {
-    return 'unknown';
-  }
-}
 
 const pct = (sorted: number[], p: number): number => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] ?? 0;
 const ms = (n: number): string => `${n.toFixed(1)} ms`;
@@ -153,7 +141,7 @@ export function stopRecording(): string {
     `Recorded ${((performance.now() - r.start) / 1000).toFixed(0)} s, ${frames.length} frames`,
     '',
     '== Machine ==',
-    `Graphics: ${gpuName()}`,
+    `Graphics: ${rendererName()}${drawsInSoftware() ? ' (drawn without the graphics card)' : ''}`,
     `Browser: ${navigator.userAgent}`,
     `Window ${innerWidth}x${innerHeight}, pixel ratio ${devicePixelRatio}, screen ${screen.width}x${screen.height}`,
     `CPU cores: ${navigator.hardwareConcurrency ?? '?'}, memory: ${nav.deviceMemory ? `${nav.deviceMemory} GB` : '?'}`,

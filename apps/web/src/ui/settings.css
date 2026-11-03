@@ -50,26 +50,33 @@
   letter-spacing: 0.08em;
   color: var(--c-gold-light);
 }
+/* a row: the setting's name on the left, its control on the right, and the explanation on a line of its own under both, so a
+   narrow screen never squeezes the name beside a long explanation */
 .settings__row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
+  gap: 0.3rem 1rem;
 }
 .settings__label {
-  display: grid;
-  gap: 0.15rem;
-  flex: 1 1 14rem;
-  max-width: 36ch;
+  display: contents;
+}
+.settings__label > span {
+  grid-column: 1;
+  grid-row: 1;
 }
 .settings__label small {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  max-width: 60ch;
   color: var(--c-text-dim);
   font-size: 0.82rem;
   line-height: 1.35;
 }
 .settings__control {
-  flex: 0 0 auto;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
 }
 .settings__choice {
   display: inline-flex;
@@ -89,13 +96,52 @@
   font-variant-numeric: tabular-nums;
   color: var(--c-text-dim);
 }
-@media (max-width: 30rem) {
-  .settings__row {
-    flex-direction: column;
-    align-items: stretch;
+/* a phone: a full-screen sheet, its header (and Close) always in view, the groups scrolling under it */
+@media (max-width: 40rem) {
+  .settings {
+    padding: 0;
+    place-items: stretch;
+  }
+  .settings__panel {
+    width: 100%;
+    max-height: none;
+    height: 100dvh;
+    align-content: start;
+    gap: 1.25rem;
+    padding: 0 1rem calc(1.25rem + env(safe-area-inset-bottom));
+    border-radius: 0;
+    border: 0;
+    background: linear-gradient(170deg, rgb(20 32 74), rgb(8 10 20));
+    box-shadow: none;
+    overscroll-behavior: contain;
+  }
+  .settings__head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0 -1rem;
+    padding: calc(0.75rem + env(safe-area-inset-top)) 1rem 0.75rem;
+    background: rgb(16 24 56);
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .settings__title {
+    font-size: 1.3rem;
   }
   .settings__range input {
-    flex: 1;
+    width: 7.5rem;
+  }
+  .settings__report textarea {
+    min-height: 9rem;
+  }
+}
+/* a finger: buttons big enough to hit */
+@media (pointer: coarse) {
+  .settings .btn {
+    min-height: 2.6rem;
+    min-width: 3.2rem;
+  }
+  .settings__choice {
+    gap: 0.4rem;
   }
 }
 
@@ -145,4 +191,36 @@
 .settings__hint {
   color: var(--c-text-dim);
   font-size: 0.8rem;
+}
+/* the one-time note when the browser draws without the graphics card (DECISIONS #573); over the board, under the menu */
+.lowhint {
+  position: fixed;
+  top: 4.2rem;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 950;
+  display: grid;
+  gap: 0.5rem;
+  width: min(30rem, calc(100% - 2rem));
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(12 16 34 / 0.97);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.55);
+}
+.lowhint b {
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  color: var(--c-gold-light);
+}
+.lowhint p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--c-text-dim);
+}
+.lowhint__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }

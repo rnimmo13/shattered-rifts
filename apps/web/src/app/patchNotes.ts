@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.174.0',
+    date: '2026-11-03',
+    title: 'Settings on a phone, a Low suggestion',
+    summary: 'The Settings menu fits a phone, and a computer drawing without its graphics card is offered Low graphics once.',
+    notes: [
+      { kind: 'changed', text: 'The Settings menu fits a phone: a full-screen sheet with Close always in view, each setting on one line with its explanation beneath, and bigger buttons for a finger.' },
+      { kind: 'new', text: 'When your browser draws without your graphics card, the first fight offers to switch Graphics to Low, once.' },
+    ],
+  },
+  {
     version: '0.173.0',
     date: '2026-11-03',
     title: 'Settings, and fewer stutters',

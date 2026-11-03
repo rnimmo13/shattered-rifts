@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **A note when the browser draws without the graphics card:** the first fight on such a computer offers to switch Graphics to Low (once; it never shows again). **The Settings menu fits a phone:** a full-screen sheet with Close always in view, each setting on one line with its explanation beneath, and bigger buttons for a finger.
 - **Fewer stutters:** card art is painted ahead of time instead of the moment a card is first drawn, painted effects are prepared before they first play, and a fight opens faster after the first one. **A performance report** in Settings records a while of play and gives a short report of any stutters to copy and send in.
 - **A Settings menu,** from the title screen, the run's bar and a fight's top bar: Sound and Volume, Graphics quality (High or Low), Effects (Full or Reduced), Fullscreen, Tips, and Show every tip again. It replaces the fight's Tips, Sound and Graphics buttons, and a change applies at once.
 - **Graphics quality: High or Low.** A new button in a fight's top bar. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same; High is the full look and stays the default.
