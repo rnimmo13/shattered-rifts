@@ -6,7 +6,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ### Changed (newest)
 - **Graphics quality: High or Low.** A new button in a fight's top bar. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same; High is the full look and stays the default.
-- **Uncommons get their own effects, starting with the Knight:** all 40 of her Uncommons play their own painted animation; the other classes follow. **The Swarmwright has its own crest** (four machines in a diamond).
+- **Every Uncommon has its own effect:** all 371 Uncommon cards play their own painted animation when played, as the Rares do. **The Swarmwright has its own crest** (four machines in a diamond).
 - **The Overclocker is now the Swarmwright:** the Engineer's third Ascendancy has a 4th companion slot, the only class with one (four Light machines, or a Heavy and two Light, or a Colossal and one Light). Its companions gain 1 Primed at the start of each turn (was 2). A run that took the Overclocker carries on as the Swarmwright.
 - **Every Rare has its own effect:** all 286 Rare cards play their own painted animation when played, on their target, on the hero, or across the whole enemy line, so the Rares no longer look alike.
 - **Campaign leaderboard:** the Tiers cleared column is gone; the Class and the Ascendancy a run took now have a column each, and "Where they are" is now just the Tier.

@@ -29,6 +29,15 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.172.0',
+    date: '2026-11-03',
+    title: 'Every Uncommon has its own effect',
+    summary: 'All 371 Uncommon cards now play their own painted effect, as the Rares do.',
+    notes: [
+      { kind: 'new', text: 'Every Uncommon card, in every class, plays its own painted effect when played: on its target, on your hero, or across the whole enemy line.' },
+    ],
+  },
+  {
     version: '0.171.0',
     date: '2026-11-03',
     title: 'Graphics quality',
