@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Warden rules fold away:** a Warden's rule shows in full as the fight starts, with "Got it"; after that it is just its name on the line under the title, and tapping the name opens it again. On a phone it no longer covers the enemies' next moves.
 - **Blade Sweep:** while it is up, the Obsidian Blade plays with no aiming (it strikes every enemy), and the buff no longer shows a meaningless "1".
 - **Starting decks evened out:** the Shaman starts with a Hawk and a Bear (no Thunderbird); the Knight with 1 Reserve (was 2); the Monk has 78 Max HP (was 82); the Rogue 75 (was 70); the Trickster starts with 3 Strikes and 3 Defends (was 4 and 2). Thunder Memory plants a Thunderbird, plus one for each planted this fight, so it still works without the starting one.
 - **The Spellblade starts stronger:** Gather Power also gains Barrier (2, +1 per 3 Spell Power: 3 when a fight opens), and Kindled starts her with 4 Spell Power (was 3).

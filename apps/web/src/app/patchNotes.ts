@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.166.0',
+    date: '2026-11-03',
+    title: 'Warden rules fold away',
+    summary: 'A Warden\'s rule shows in full as the fight starts, then folds down to its name, clear of the enemies\' next moves.',
+    notes: [
+      { kind: 'changed', text: 'A Warden\'s rule opens as a card with "Got it" when the fight starts. After that it is just its name under the title; tap the name to read it again.' },
+      { kind: 'fixed', text: 'On a phone the Warden\'s rule no longer covers the enemies\' next moves.' },
+    ],
+  },
+  {
     version: '0.165.0',
     date: '2026-11-03',
     title: 'A sweeping Blade',

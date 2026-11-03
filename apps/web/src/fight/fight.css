@@ -2378,15 +2378,72 @@ img.intent__pic {
   background: rgb(8 10 20 / 0.82);
   border: 1px solid var(--c-gold-dark);
 }
-/* a Warden's rule, under the Resolve line: a sentence, so it wraps within a reading width */
-.fight__rule {
-  top: calc(100% + 2.5rem);
+/* what is at stake and a Warden's rule, side by side on one line under the title (DECISIONS #562): the rule is only its name
+   here, a button that opens the whole sentence, so nothing wraps down over the enemies' intents */
+.fight__notes {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  white-space: nowrap;
+}
+.fight__notes .fight__stakes {
+  position: static;
+  translate: none;
+}
+.fight__rulePill {
+  pointer-events: auto;
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-body, inherit);
+}
+.fight__rulePill:hover,
+.fight__rulePill.is-open {
+  border-color: var(--c-gold);
+  color: var(--c-gold-light);
+}
+/* the rule in full, until it is read (drawn at the page's top level, WardenRule.tsx): under the title line on a wide screen */
+.fight__ruleCard {
+  position: fixed;
+  top: 6.4rem;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 60;
   width: max-content;
-  max-width: min(38rem, 92vw);
-  white-space: normal;
-  text-align: center;
+  max-width: min(30rem, 92vw);
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem 0.8rem;
   border-radius: 0.8rem;
-  font-size: 0.85rem;
+  background: rgb(8 10 20 / 0.94);
+  border: 1px solid var(--c-gold);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.6);
+  font-family: var(--font-body, inherit);
+  letter-spacing: normal;
+  text-align: center;
+  white-space: normal;
+  pointer-events: auto;
+}
+.fight__ruleKicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.fight__ruleCard b {
+  color: var(--c-gold-light);
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+.fight__ruleCard p {
+  margin: 0;
+  color: var(--c-ivory);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 .fight__stakes--bad {
   color: #ffd0d6;
@@ -3514,9 +3571,22 @@ button.totem:disabled {
   padding: 0.15rem 0.6rem;
   font-size: 0.72rem;
 }
-.fight--portrait .fight__rule {
-  top: calc(100% + 1.8rem);
-  font-size: 0.68rem;
+/* on a phone the line may not be wider than the screen: the rule's name gives way first */
+.fight--portrait .fight__notes {
+  max-width: 94vw;
+}
+.fight--portrait .fight__rulePill {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* and the rule in full floats in the middle of the field until it is read, never pinned over the intents */
+.fight__ruleCard.is-portrait {
+  top: 42%;
+  translate: -50% -50%;
+}
+.fight__ruleCard.is-portrait p {
+  font-size: 0.85rem;
 }
 .fight--portrait .fight__opts {
   gap: 0.3rem;

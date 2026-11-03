@@ -53,6 +53,7 @@ import { handCardWidth, portraitHandBand } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import { heroFigure, heroProp, hoverOf, unitFigure, unitHeight } from './art';
 import { FightHand, type HandCard } from './FightHand';
+import { WardenRule } from './WardenRule';
 import { playAnywayHelps, scrapChoices } from './scrapChoices';
 import { FightCard } from './FightCard';
 import { GrimoireModal } from './Grimoire';
@@ -2166,14 +2167,17 @@ export function FightView(props: {
             <div className="fight__title">
               <b>{props.title}</b>
               <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
-              {props.rule && (
-                <span className="fight__stakes fight__stakes--info fight__rule" role="note">
-                  {props.rule}
-                </span>
-              )}
-              {props.stakes && (
-                <span className={`fight__stakes fight__stakes--${props.stakes.tone}`} role="note">
-                  {props.stakes.text}
+              {/* (what is at stake and the Warden's rule share one line under the title, clear of the intents: DECISIONS #562) */}
+              {(props.rule || props.stakes) && (
+                <span className="fight__notes">
+                  {props.stakes && (
+                    <span className={`fight__stakes fight__stakes--${props.stakes.tone}`} role="note">
+                      {props.stakes.text}
+                    </span>
+                  )}
+                  {props.rule && (
+                    <WardenRule key={props.rule} rule={props.rule} portrait={mode === 'portrait'} />
+                  )}
                 </span>
               )}
             </div>
