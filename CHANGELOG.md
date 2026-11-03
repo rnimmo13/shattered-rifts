@@ -5,6 +5,7 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 ## [Unreleased]
 
 ### Changed (newest)
+- **Cinderfall** costs 0 Mana: Spell Power is its whole price (it still spends half yours for 4 damage + 4 a point). Upgraded it deals 6 + 4 a point (was 7 + 4).
 - **Clearer hand choices:** when you discard, Defer or Consume from your hand, the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume...) above it, and the prompt counts how many you have chosen. The old pulsing glow, which was slow to draw, is gone.
 - **Smoother hand:** a card lifts the moment the pointer reaches it, and a card you move off sinks back under its neighbours as it shrinks instead of flickering behind the next one.
 - **Wide Arc** now adds 2 Daggers (3 upgraded), was 4 (5): being Fanned for the whole fight is the card, the Daggers just start it off.

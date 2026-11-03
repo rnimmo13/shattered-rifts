@@ -703,7 +703,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Cinderfall | 1+X/2◆ | attack | basic | Spell. Deal 4 (+4 per Spell Power spent) damage. |
+| Cinderfall | 0+X/2◆ | attack | basic | Spell. Deal 4 (+4 per Spell Power spent) damage. |
 | Gather Power | 1 | skill | basic | Gain 2 Spell Power. |
 | Obsidian Ward | 1 | skill | basic | Spell. Gain 7 (+1 per 3 Spell Power) Barrier. Gain 1 Spell Power. |
 | Forged in Fury | 1 | attack | common | Sword. Deal 2 (+2 per 3 Spell Power) damage. Gain 1 Spell Power. |

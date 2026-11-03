@@ -72,10 +72,11 @@ const wardSpent = (amount: number): Op =>
 
 export const SPELLBLADE: CardDef[] = [
   // --- starter ---
-  a('basic', 'meteor-jab', 'Cinderfall', 'attack', 1, 'foe', [burst(4, 4)], {
+  // (0 Mana since DECISIONS #558: Spell Power is its whole price; the upgrade is 6, not 7, to stay a basic's 70-90%)
+  a('basic', 'meteor-jab', 'Cinderfall', 'attack', 0, 'foe', [burst(4, 4)], {
     starHalf: true,
     tags: [SPELL],
-    up: { effects: [burst(7, 4)] },
+    up: { effects: [burst(6, 4)] },
   }),
   a('basic', 'gather-light', 'Gather Power', 'skill', 1, 'none', [gain(2)], {
     tags: [GENERATOR],

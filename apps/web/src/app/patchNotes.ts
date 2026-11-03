@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.163.0',
+    date: '2026-11-03',
+    title: 'Cinderfall for free',
+    summary: 'The Spellblade\'s Cinderfall costs no Mana: Spell Power is its whole price.',
+    notes: [
+      { kind: 'balance', text: 'Cinderfall costs 0 Mana (was 1). It still spends half your Spell Power for 4 damage + 4 a point; upgraded it deals 6 + 4 a point (was 7 + 4).' },
+    ],
+    heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
+  },
+  {
     version: '0.162.0',
     date: '2026-11-03',
     title: 'A smoother hand, clearer choices',

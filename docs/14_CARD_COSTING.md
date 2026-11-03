@@ -40,7 +40,7 @@ A Neutral card is never better than the class card it resembles: equal at most, 
 | Rarity | Budget |
 |---|---|
 | Basic (Strike, Defend) | 60% (Strike 6 of 10, Defend 5 Barrier = 6 of 10). They are meant to be the cards you want to remove. |
-| Basic (class signature) | 70-90% (Sundering Blow 74%, Cinderfall 78%, Raise Thrall ~90%) |
+| Basic (class signature) | 70-90% (Sundering Blow 74%, Cinderfall 83% (0 Mana since #558), Raise Thrall ~90%) |
 | Common | 100% |
 | Uncommon | ~112% |
 | Rare | ~125%, or an effect that is not on this scale at all (an Aura that changes how you play, an engine piece) |
