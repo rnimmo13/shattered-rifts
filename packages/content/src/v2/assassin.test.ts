@@ -73,7 +73,7 @@ describe('Sylas is the Silent shape', () => {
     );
     const count = (r: string) => own.filter((c) => c.rarity === r).length;
     expect([count('basic'), count('common'), count('uncommon'), count('rare')]).toEqual([
-      4, 20, 34, 25,
+      4, 21, 33, 25,
     ]);
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
   });
@@ -182,7 +182,10 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
       const shown = previewCardDamage(db, s, 'T0', foe(s).id).get(0)!;
       const before = foe(s).hp;
       expect(shown.lo, card).toBe(before - foe(play(s, card)).hp);
-      return { shown, text: cardText(db, db.cards[card]!, previewCardDamage(db, s, 'T0', foe(s).id)) };
+      return {
+        shown,
+        text: cardText(db, db.cards[card]!, previewCardDamage(db, s, 'T0', foe(s).id)),
+      };
     };
     const hero = (s: CombatState) => s.sides.a.units.find((u) => u.kind === 'hero')!;
     const plain = at(() => {});
@@ -214,7 +217,9 @@ describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
     ];
     fanned.sides.a.units.find((u) => u.kind === 'hero')!.statuses.fanned = 1;
     const live = previewCardDamage(db, fanned, 'T0', foe(fanned).id);
-    expect(cardText(db, db.cards['recall-the-blades']!, live)).toContain('(2 played, [[live:calc:8]] total each)');
+    expect(cardText(db, db.cards['recall-the-blades']!, live)).toContain(
+      '(2 played, [[live:calc:8]] total each)',
+    );
   });
 
   it('Spare Blades (Up My Sleeve) gets 1 cheaper every time it is played', () => {

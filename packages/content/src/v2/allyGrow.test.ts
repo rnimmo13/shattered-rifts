@@ -81,7 +81,7 @@ describe('healing a companion grows it', () => {
   });
 
   it("a companion's strike spends its Primed (DECISIONS #361)", () => {
-    let s = play(fight(['jumpstart']), 'T0'); // 3 Primed on the Drone Rivet starts with
+    let s = play(fight(['ping']), 'T0'); // Ping gives 3 Primed; Jumpstart now gives Might.
     const drone = allies(s)[0]!;
     expect(drone.statuses.vigor).toBe(3);
     const foe = s.sides.b.units[0]!;

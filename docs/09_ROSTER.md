@@ -1,5 +1,10 @@
 # Shattered Rifts: The Roster (9 Riftwalkers)
 
+> Current balance update: DECISIONS #574 and [the approved specification](BALANCE_PROPOSAL_2026-11-03.md).
+> There are no predefined card groups or build-path reward rules (DECISIONS #453). Older examples below are
+> historical descriptions, not restrictions. Engineer supports small summons, larger machines and its own weapons;
+> Foreman has become Artillerist. Read the generated [card list](10_CARD_LIST.md) for current numbers.
+
 > Decision log: `DECISIONS.md` #95-#97 (ids: #190). Status of the build is at the bottom.
 
 **Internal ids are the class** (DECISIONS #190), so a name or a gender can change without touching code: knight (Valeria), engineer (Rivet), hunter (Kesh), trickster (Vesper; was trapper, #372), assassin (Sylas), shaman (Ilvane; was totemist, #371), monk (Solen, a man; was Sehra and barbarian, #391, #395), spellblade (Obsidia), necromancer (Mire), drunkard (KP). Players only ever see the names in brackets. Older ids (maren, rivet, kesh, vesper, quill, ilvane, sehra, astra, mire, kp) are still read from saves, Vault decks and server rows through `canonicalHero` (`@sr/content/v2`).

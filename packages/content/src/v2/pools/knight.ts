@@ -61,20 +61,31 @@ export const KNIGHT: CardDef[] = [
   ]),
 
   // (a Barrier and Plating card that sets up Exposed too: the Knight's defence and offence in one, Robert 2026-10-30)
-  m('basic', 'brace-and-press', 'Brace and Press', 'skill', 1, 'foe', [
-    barrier(3),
-    status('plating', 2),
-    status('exposed', 1, 'target'),
-  ], {
-    up: { effects: [barrier(5), status('plating', 3), status('exposed', 1, 'target')] },
-  }),
+  m(
+    'basic',
+    'brace-and-press',
+    'Brace and Press',
+    'skill',
+    1,
+    'foe',
+    [barrier(3), status('plating', 2), status('exposed', 1, 'target')],
+    {
+      up: { effects: [barrier(5), status('plating', 3), status('exposed', 1, 'target')] },
+    },
+  ),
   // (a better Defend that pays for keeping Mana back: Robert 2026-10-30, "we have enough damage now but need better defenses for the knight")
-  m('basic', 'set-your-shield', 'Set Your Shield', 'skill', 1, 'none', [
-    barrier(6),
-    when('reserves', { atLeast: 1 }, [barrier(3)]),
-  ], {
-    up: { effects: [barrier(8), when('reserves', { atLeast: 1 }, [barrier(4)])] },
-  }),
+  m(
+    'basic',
+    'set-your-shield',
+    'Set Your Shield',
+    'skill',
+    1,
+    'none',
+    [barrier(6), when('reserves', { atLeast: 1 }, [barrier(3)])],
+    {
+      up: { effects: [barrier(8), when('reserves', { atLeast: 1 }, [barrier(4)])] },
+    },
+  ),
   m('basic', 'heavy-swing', 'Heavy Swing', 'attack', 2, 'foe', [dmg(14)]),
 
   // --- Bulwark ---
@@ -83,7 +94,11 @@ export const KNIGHT: CardDef[] = [
     scaled(dmg(0), per('barrier', 1)),
   ]),
   // (Shrug It Off)
-  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [barrier(6), status('plating', 2), draw(1)]),
+  m('common', 'oath-of-iron', 'Oath of Iron', 'skill', 1, 'none', [
+    barrier(6),
+    status('plating', 2),
+    draw(1),
+  ]),
   // (Armaments: a little Barrier, and one card in your hand is upgraded for the fight)
   m('common', 'field-repairs', 'Field Repairs', 'skill', 1, 'none', [
     barrier(5),
@@ -313,9 +328,18 @@ export const KNIGHT: CardDef[] = [
     playPile('draw', { exhaust: true }),
   ]),
   // (Ashen Strike)
-  m('uncommon', 'smoldering-blow', 'Smoldering Blow', 'attack', 1, 'foe', [
-    scaled(dmg(6), per('exhausted', 1)),
-  ]),
+  m(
+    'uncommon',
+    'smoldering-blow',
+    'Smoldering Blow',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(6), per('exhausted', 2))],
+    {
+      up: { effects: [scaled(dmg(9), per('exhausted', 2))] },
+    },
+  ),
   // (Battle Trance: draw 3, and no more this turn)
   m('uncommon', 'grim-focus', 'Grim Focus', 'skill', 0, 'none', [draw(3), drawLock]),
   // (Feel No Pain)
@@ -426,7 +450,11 @@ export const KNIGHT: CardDef[] = [
     exhaust: true,
   }),
   // (Blood Wall)
-  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [lose(2), barrier(12), status('plating', 3)]),
+  m('common', 'blood-plate', 'Blood Plate', 'skill', 2, 'none', [
+    lose(2),
+    barrier(12),
+    status('plating', 3),
+  ]),
   // (Breakthrough)
   m('common', 'breach', 'Breach', 'attack', 1, 'none', [lose(1), dmg(9, 'allFoes')]),
   // (Hemokinesis)
@@ -476,7 +504,11 @@ export const KNIGHT: CardDef[] = [
 
   // --- glue ---
   // (Iron Wave)
-  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [dmg(5), barrier(3), status('plating', 2)]),
+  m('common', 'dawn-smite', 'Dawn Smite', 'attack', 1, 'foe', [
+    dmg(5),
+    barrier(3),
+    status('plating', 2),
+  ]),
   // (Anger)
   m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
   // (Burning Pact)
@@ -486,60 +518,158 @@ export const KNIGHT: CardDef[] = [
 
   // --- the Mana Reserves trait: Reserves, held Barrier, blood for Reserves ---
   // (a Barrier card for a quiet turn that lets the bank grow past its limit)
-  m('common', 'stand-fast', 'Stand Fast', 'skill', 1, 'none', [barrier(5), status('plating', 2), maxReserves(2, true)], {
-    up: { effects: [barrier(7), status('plating', 2), maxReserves(2, true)] },
-  }),
-  m('common', 'measured-strike', 'Measured Strike', 'attack', 1, 'foe', [dmg(7), when('reserves', { atLeast: 2 }, [dmg(5)])], {
-    up: { effects: [dmg(9), when('reserves', { atLeast: 2 }, [dmg(6)])] },
-  }),
+  m(
+    'common',
+    'stand-fast',
+    'Stand Fast',
+    'skill',
+    1,
+    'none',
+    [barrier(5), status('plating', 2), maxReserves(2, true)],
+    {
+      up: { effects: [barrier(7), status('plating', 2), maxReserves(2, true)] },
+    },
+  ),
+  m(
+    'common',
+    'measured-strike',
+    'Measured Strike',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), when('reserves', { atLeast: 2 }, [dmg(5)])],
+    {
+      up: { effects: [dmg(9), when('reserves', { atLeast: 2 }, [dmg(6)])] },
+    },
+  ),
   m('common', 'blood-oath', 'Blood Oath', 'skill', 0, 'none', [lose(3), reserves(3)], {
     up: { effects: [lose(2), reserves(3)] },
   }),
   m('uncommon', 'vow-kept', 'Vow Kept', 'attack', 1, 'foe', [scaled(dmg(3), per('reserves', 5))], {
     up: { effects: [scaled(dmg(4), per('reserves', 6))] },
   }),
-  m('uncommon', 'unyielding-line', 'Unyielding Line', 'power', 1, 'none', [
-    on('turnEnd', [when('barrier', { atLeast: 10 }, [reserves(2)])]),
-  ], {
-    up: { effects: [on('turnEnd', [when('barrier', { atLeast: 10 }, [reserves(3)])])] },
-  }),
-  m('uncommon', 'cast-the-shield', 'Cast the Shield', 'attack', 1, 'foe', [
-    scaled(dmg(0), per('barrier', 2)),
-    { op: 'strip', to: 'self' },
-  ], {
-    up: { effects: [dmg(6), scaled(dmg(0), per('barrier', 2)), { op: 'strip', to: 'self' }] },
-  }),
-  m('uncommon', 'hardened-scars', 'Hardened Scars', 'power', 1, 'none', [on('loseHp', [barrier(3)])], {
-    up: { effects: [on('loseHp', [barrier(4)])] },
-  }),
-  // (every time you lose HP, from an enemy or from your own cards, a random enemy is Sapped: its attacks deal less)
-  m('uncommon', 'scarred-hide', 'Scarred Hide', 'power', 1, 'none', [
-    on('hurt', [statusTheirs('sapped', 3, 'randomFoe')]),
-  ], {
-    up: { effects: [on('hurt', [statusTheirs('sapped', 4, 'randomFoe')])] },
-  }),
-  m('rare', 'patient-wall', 'Patient Wall', 'power', 2, 'none', [
-    on('turnEnd', [scaled(barrier(0), per('reserves', 4))]),
-  ], {
-    up: { effects: [on('turnEnd', [scaled(barrier(0), per('reserves', 5))])] },
-  }),
-  m('rare', 'oath-unbroken', 'Oath Unbroken', 'power', 2, 'none', [
-    maxReserves(2),
-    on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])]),
-  ], {
-    up: {
-      effects: [
-        maxReserves(3),
-        on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])]),
-      ],
+  m(
+    'uncommon',
+    'unyielding-line',
+    'Unyielding Line',
+    'power',
+    1,
+    'none',
+    [on('turnEnd', [when('barrier', { atLeast: 10 }, [reserves(2)])])],
+    {
+      up: { effects: [on('turnEnd', [when('barrier', { atLeast: 10 }, [reserves(3)])])] },
     },
-  }),
-  m('rare', 'vow-fulfilled', 'Vow Fulfilled', 'attack', 3, 'foe', [scaled(dmg(18), per('reserves', 7))], {
-    up: { effects: [scaled(dmg(22), per('reserves', 8))] },
-  }),
-  m('rare', 'gilded-bulwark', 'Gilded Bulwark', 'power', 2, 'none', [
-    on('play', [when('barrier', { atLeast: 10 }, [dmg(6, 'randomFoe')])], { filter: 'attack' }),
-  ], {
-    up: { effects: [on('play', [when('barrier', { atLeast: 10 }, [dmg(8, 'randomFoe')])], { filter: 'attack' })] },
-  }),
+  ),
+  m(
+    'uncommon',
+    'cast-the-shield',
+    'Cast the Shield',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(0), per('barrier', 2)), { op: 'strip', to: 'self' }],
+    {
+      up: { effects: [dmg(6), scaled(dmg(0), per('barrier', 2)), { op: 'strip', to: 'self' }] },
+    },
+  ),
+  m(
+    'uncommon',
+    'hardened-scars',
+    'Hardened Scars',
+    'power',
+    1,
+    'none',
+    [on('loseHp', [barrier(3)])],
+    {
+      up: { effects: [on('loseHp', [barrier(4)])] },
+    },
+  ),
+  // (every time you lose HP, from an enemy or from your own cards, a random enemy is Sapped: its attacks deal less)
+  m(
+    'uncommon',
+    'scarred-hide',
+    'Scarred Hide',
+    'power',
+    1,
+    'none',
+    [on('hurt', [statusTheirs('sapped', 3, 'randomFoe')])],
+    {
+      up: { effects: [on('hurt', [statusTheirs('sapped', 4, 'randomFoe')])] },
+    },
+  ),
+  m(
+    'rare',
+    'patient-wall',
+    'Patient Wall',
+    'power',
+    2,
+    'none',
+    [on('turnEnd', [scaled(barrier(0), per('reserves', 4))])],
+    {
+      up: { effects: [on('turnEnd', [scaled(barrier(0), per('reserves', 5))])] },
+    },
+  ),
+  m(
+    'rare',
+    'oath-unbroken',
+    'Oath Unbroken',
+    'power',
+    2,
+    'none',
+    [maxReserves(2), on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])])],
+    {
+      up: {
+        effects: [
+          maxReserves(3),
+          on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])]),
+        ],
+      },
+    },
+  ),
+  m(
+    'rare',
+    'vow-fulfilled',
+    'Vow Fulfilled',
+    'attack',
+    3,
+    'foe',
+    [scaled(dmg(18), per('reserves', 7))],
+    {
+      up: { effects: [scaled(dmg(22), per('reserves', 8))] },
+    },
+  ),
+  m(
+    'rare',
+    'gilded-bulwark',
+    'Gilded Bulwark',
+    'power',
+    2,
+    'none',
+    [on('play', [when('barrier', { atLeast: 10 }, [dmg(6, 'randomFoe')])], { filter: 'attack' })],
+    {
+      up: {
+        effects: [
+          on('play', [when('barrier', { atLeast: 10 }, [dmg(8, 'randomFoe')])], {
+            filter: 'attack',
+          }),
+        ],
+      },
+    },
+  ),
+  m(
+    'uncommon',
+    'measured-conviction',
+    'Measured Conviction',
+    'power',
+    2,
+    'none',
+    [on('turnEnd', [when('reserves', { atLeast: 2 }, [status('might', 1), barrier(2)])])],
+    {
+      up: {
+        effects: [
+          on('turnEnd', [when('reserves', { atLeast: 2 }, [status('might', 1), barrier(4)])]),
+        ],
+      },
+    },
+  ),
 ];

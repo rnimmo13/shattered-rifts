@@ -154,6 +154,12 @@
                   "trickster-gender-male":  "figures/skins/trickster-gender-male.png"
               },
     "cards":  {
+                  "weapon-bench":  "cards/upgrade-chip.jpg",
+                  "rotary-cannon":  "cards/pulse-pistol.jpg",
+                  "measured-conviction":  "cards/oath-unbroken.jpg",
+                  "spirit-pact":  "cards/spirit-surge.jpg",
+                  "morning-after":  "cards/bottomless-flask.jpg",
+                  "flame-echo":  "cards/echoing-strike.jpg",
                   "absolute-zero":  "cards/absolute-zero.jpg",
                   "absolution":  "cards/absolution.jpg",
                   "abyssal-glyph":  "cards/abyssal-glyph.jpg",

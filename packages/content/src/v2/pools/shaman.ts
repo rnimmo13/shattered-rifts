@@ -19,6 +19,7 @@
 
 import type { CardDef, Op, TotemDef } from '@sr/combat';
 import {
+  addTo,
   barrier,
   barrierNext,
   card,
@@ -64,7 +65,13 @@ const fork = (n: number, targets: number): Op => ({
 /** plant `n` of a totem at once (the card says "Plant 2 Bears", not the same sentence twice) */
 const plantN = (spirit: string, n: number): Op => ({ op: 'plant', spirit, times: n });
 /** add `n` Wounds to your discard pile in one line */
-const woundN = (n: number): Op => ({ op: 'addCard', card: 'wound', to: 'discard', side: 'self', times: n });
+const woundN = (n: number): Op => ({
+  op: 'addCard',
+  card: 'wound',
+  to: 'discard',
+  side: 'self',
+  times: n,
+});
 /** a totem number: +1 for each Spirit he has */
 const sp = <T extends Op>(o: T): T => scaled(o, per('spirit'));
 
@@ -156,14 +163,32 @@ export const SHAMAN: CardDef[] = [
   }),
 
   // --- Flame: big single-target bursts and Burn ---
-  i('common', 'twin-cinders', 'Twin Cinders', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('burn', 2, 'target')], {
-    ...FLAME,
-    up: { effects: [dmg(6, 'target', 2), status('burn', 2, 'target')] },
-  }),
-  i('common', 'flame-spear', 'Flame Spear', 'attack', 2, 'foe', [dmg(16), status('burn', 3, 'target')], {
-    ...FLAME,
-    up: { effects: [dmg(19), status('burn', 5, 'target')] },
-  }),
+  i(
+    'common',
+    'twin-cinders',
+    'Twin Cinders',
+    'attack',
+    1,
+    'foe',
+    [dmg(4, 'target', 2), status('burn', 2, 'target')],
+    {
+      ...FLAME,
+      up: { effects: [dmg(6, 'target', 2), status('burn', 2, 'target')] },
+    },
+  ),
+  i(
+    'common',
+    'flame-spear',
+    'Flame Spear',
+    'attack',
+    2,
+    'foe',
+    [dmg(16), status('burn', 3, 'target')],
+    {
+      ...FLAME,
+      up: { effects: [dmg(19), status('burn', 5, 'target')] },
+    },
+  ),
   // (just a big Burn, DECISIONS #501)
   i('uncommon', 'spreading-flames', 'Wildfire', 'skill', 1, 'foe', [status('burn', 8, 'target')], {
     ...FLAME,
@@ -211,17 +236,33 @@ export const SHAMAN: CardDef[] = [
     2,
     'foe',
     [scaled(dmg(12), per('burn', 2, 'target')), halveBurn],
-    { ...FLAME, exhaust: true, up: { effects: [scaled(dmg(16), per('burn', 2, 'target')), halveBurn] } },
+    {
+      ...FLAME,
+      exhaust: true,
+      up: { effects: [scaled(dmg(16), per('burn', 2, 'target')), halveBurn] },
+    },
   ),
   i(
     'rare',
     'heart-of-the-pyre',
     'Heart of the Pyre',
     'power',
-    1,
+    2,
     'none',
-    [on('play', [dmg(5, 'randomFoe')], { tag: 'flame' })],
-    { up: { effects: [on('play', [dmg(6, 'randomFoe')], { tag: 'flame' })] } },
+    [
+      on('play', [scaled(dmg(5, 'randomFoe'), { by: 'burn', of: 'each', step: 4 })], {
+        tag: 'flame',
+      }),
+    ],
+    {
+      up: {
+        effects: [
+          on('play', [scaled(dmg(8, 'randomFoe'), { by: 'burn', of: 'each', step: 4 })], {
+            tag: 'flame',
+          }),
+        ],
+      },
+    },
   ),
   i('rare', 'inferno', 'Inferno', 'attack', 3, 'foe', [dmg(30), status('burn', 3, 'target')], {
     ...FLAME,
@@ -260,10 +301,19 @@ export const SHAMAN: CardDef[] = [
     { ...FROST, up: { effects: [barrier(8), status('faltering', 1, 'allFoes')] } },
   ),
   // (a free ward that clutters the discard pile with a Void)
-  i('common', 'hasty-ward', 'Hasty Ward', 'skill', 0, 'none', [barrier(6), wound('self', 'void-drain')], {
-    ...FROST,
-    up: { effects: [barrier(9), wound('self', 'void-drain')] },
-  }),
+  i(
+    'common',
+    'hasty-ward',
+    'Hasty Ward',
+    'skill',
+    0,
+    'none',
+    [barrier(6), wound('self', 'void-drain')],
+    {
+      ...FROST,
+      up: { effects: [barrier(9), wound('self', 'void-drain')] },
+    },
+  ),
   // (a Frost ward that brings a Bear)
   i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(4)], {
     ...FROST,
@@ -396,14 +446,32 @@ export const SHAMAN: CardDef[] = [
     { up: { effects: [barrier(7), on('turnStart', [plant('hawk')], { times: 2 })] } },
   ),
   // (free Mana, paid for with a Void in the discard pile, which costs you Mana when it is drawn)
-  i('common', 'spirit-offering', 'Spirit Offering', 'skill', 0, 'none', [mana(2), wound('self', 'void-drain')], {
-    up: { effects: [mana(3), wound('self', 'void-drain')] },
-  }),
+  i(
+    'common',
+    'spirit-offering',
+    'Spirit Offering',
+    'skill',
+    0,
+    'none',
+    [mana(2), wound('self', 'void-drain')],
+    {
+      up: { effects: [mana(3), wound('self', 'void-drain')] },
+    },
+  ),
   // (a free, one-shot Spirit boost: it wears off at the end of the turn)
-  i('common', 'spirit-rush', 'Spirit Rush', 'skill', 0, 'none', [status('spirit', 2, 'self', true)], {
-    exhaust: true,
-    up: { effects: [status('spirit', 3, 'self', true)] },
-  }),
+  i(
+    'common',
+    'spirit-rush',
+    'Spirit Rush',
+    'skill',
+    0,
+    'none',
+    [status('spirit', 2, 'self', true)],
+    {
+      exhaust: true,
+      up: { effects: [status('spirit', 3, 'self', true)] },
+    },
+  ),
   i('common', 'raise-a-totem', 'Raise a Totem', 'skill', 1, 'none', [plant('*'), barrier(4)], {
     up: { effects: [plant('*'), barrier(7)] },
   }),
@@ -441,11 +509,11 @@ export const SHAMAN: CardDef[] = [
     'spirit-strike',
     'Spirit Strike',
     'attack',
-    2,
+    1,
     'foe',
-    [dmg(11), commandTotem('front')],
+    [dmg(5), commandTotem('front')],
     {
-      up: { effects: [dmg(15), commandTotem('front')] },
+      up: { effects: [dmg(8), commandTotem('front')] },
     },
   ),
   i(
@@ -526,29 +594,83 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- Flame (more, from the Defect: the uncommons and rares, Robert 2026-10-30; original names, not priced) ---
-  i('uncommon', 'ash-chant', 'Ash Chant', 'power', 1, 'none', [on('created', [status('burn', 5, 'allFoes')])], {
-    up: { effects: [on('created', [status('burn', 7, 'allFoes')])] },
-  }),
-  i('rare', 'echoing-strike', 'Echoing Strike', 'attack', 2, 'foe', [dmg(18), { op: 'copySelf', to: 'discard', free: true }], {
-    ...FLAME,
-    up: { effects: [dmg(23), { op: 'copySelf', to: 'discard', free: true }] },
-  }),
-  i('rare', 'return-of-the-free', 'Return of the Free', 'attack', 2, 'foe', [dmg(10), { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 }], {
-    ...FLAME,
-    up: { effects: [dmg(14), { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 }] },
-  }),
-  i('uncommon', 'twin-talons', 'Twin Talons', 'attack', 3, 'foe', [dmg(9, 'target', 2), plantN('hawk', 2)], {
-    ...FLAME,
-    up: { effects: [dmg(12, 'target', 2), plantN('hawk', 2)] },
-  }),
-  i('uncommon', 'boon-strike', 'Boon Strike', 'attack', 2, 'foe', [dmg(14), status('freepower', 1)], {
-    ...FLAME,
-    up: { effects: [dmg(18), status('freepower', 1)] },
-  }),
-  i('rare', 'spent-strike', 'Spent Strike', 'attack', 0, 'foe', [scaled(dmg(0), per('manaSpent', 3))], {
-    ...FLAME,
-    up: { effects: [scaled(dmg(0), per('manaSpent', 4))] },
-  }),
+  i(
+    'uncommon',
+    'ash-chant',
+    'Ash Chant',
+    'power',
+    1,
+    'none',
+    [on('created', [status('burn', 5, 'allFoes')])],
+    {
+      up: { effects: [on('created', [status('burn', 7, 'allFoes')])] },
+    },
+  ),
+  i(
+    'rare',
+    'echoing-strike',
+    'Echoing Strike',
+    'attack',
+    2,
+    'foe',
+    [dmg(18), addTo('flame-echo', 1, 'discard')],
+    {
+      ...FLAME,
+      up: { effects: [dmg(23), addTo('flame-echo+', 1, 'discard')] },
+    },
+  ),
+  i(
+    'rare',
+    'return-of-the-free',
+    'Return of the Free',
+    'attack',
+    2,
+    'foe',
+    [dmg(10), { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 }],
+    {
+      ...FLAME,
+      up: { effects: [dmg(14), { op: 'fetch', amount: 99, to: 'hand', maxCost: 0 }] },
+    },
+  ),
+  i(
+    'uncommon',
+    'twin-talons',
+    'Twin Talons',
+    'attack',
+    3,
+    'foe',
+    [dmg(9, 'target', 2), plantN('hawk', 2)],
+    {
+      ...FLAME,
+      up: { effects: [dmg(12, 'target', 2), plantN('hawk', 2)] },
+    },
+  ),
+  i(
+    'uncommon',
+    'boon-strike',
+    'Boon Strike',
+    'attack',
+    2,
+    'foe',
+    [dmg(14), status('freepower', 1)],
+    {
+      ...FLAME,
+      up: { effects: [dmg(18), status('freepower', 1)] },
+    },
+  ),
+  i(
+    'rare',
+    'spent-strike',
+    'Spent Strike',
+    'attack',
+    0,
+    'foe',
+    [scaled(dmg(0), per('manaSpent', 3))],
+    {
+      ...FLAME,
+      up: { effects: [scaled(dmg(0), per('manaSpent', 4))] },
+    },
+  ),
   i(
     'rare',
     'flak-burst',
@@ -571,20 +693,23 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- Frost (more) ---
-  i('uncommon', 'frostbound-hide', 'Frostbound Hide', 'skill', 2, 'none', [barrier(6), plantN('bear', 2)], {
-    ...FROST,
-    up: { effects: [barrier(9), plantN('bear', 2)] },
-  }),
   i(
     'uncommon',
-    'grim-ward',
-    'Grim Ward',
+    'frostbound-hide',
+    'Frostbound Hide',
     'skill',
-    1,
+    2,
     'none',
-    [barrier(13), woundN(2)],
-    { ...FROST, up: { effects: [barrier(17), woundN(2)] } },
+    [barrier(6), plantN('bear', 2)],
+    {
+      ...FROST,
+      up: { effects: [barrier(9), plantN('bear', 2)] },
+    },
   ),
+  i('uncommon', 'grim-ward', 'Grim Ward', 'skill', 1, 'none', [barrier(13), woundN(2)], {
+    ...FROST,
+    up: { effects: [barrier(17), woundN(2)] },
+  }),
   i('uncommon', 'dawn-ward', 'Dawn Ward', 'skill', 0, 'none', [barrier(10)], {
     ...FROST,
     innate: true,
@@ -601,7 +726,9 @@ export const SHAMAN: CardDef[] = [
     [on('turnEnd', [ifTotem('bear', [status('faltering', 1, 'allFoes'), barrier(4)])])],
     {
       up: {
-        effects: [on('turnEnd', [ifTotem('bear', [status('faltering', 2, 'allFoes'), barrier(6)])])],
+        effects: [
+          on('turnEnd', [ifTotem('bear', [status('faltering', 2, 'allFoes'), barrier(6)])]),
+        ],
       },
     },
   ),
@@ -617,9 +744,18 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- Storm (more) ---
-  i('uncommon', 'storm-chant', 'Storm Chant', 'power', 2, 'none', [on('play', [mana(1), plant('thunderbird')], { filter: 'power' })], {
-    up: { effects: [on('play', [mana(1), plantN('thunderbird', 2)], { filter: 'power' })] },
-  }),
+  i(
+    'uncommon',
+    'storm-chant',
+    'Storm Chant',
+    'power',
+    2,
+    'none',
+    [on('play', [mana(1), plant('thunderbird')], { filter: 'power' })],
+    {
+      up: { effects: [on('play', [mana(1), plantN('thunderbird', 2)], { filter: 'power' })] },
+    },
+  ),
   // (and Blind Drunk: 2 hits at random, harder for every Status card in your deck)
   i(
     'rare',
@@ -629,30 +765,80 @@ export const SHAMAN: CardDef[] = [
     2,
     'none',
     [scaled(dmg(5, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, mult: 2 })],
-    { ...STORM, up: { effects: [scaled(dmg(6, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })] } },
+    {
+      ...STORM,
+      up: {
+        effects: [scaled(dmg(6, 'randomFoe', 2), { by: 'tagDeck', tag: STATUS_TAG, mult: 3 })],
+      },
+    },
   ),
-  i('uncommon', 'swift-strike', 'Swift Strike', 'attack', 0, 'foe', [dmg(5), when('played', { atMost: 2 }, [draw(1)])], {
-    ...STORM,
-    up: { effects: [dmg(6), when('played', { atMost: 3 }, [draw(1)])] },
-  }),
-  i('rare', 'shattering-call', 'Shattering Call', 'attack', 2, 'none', [dmg(7, 'allFoes'), commandTotem('all', 2)], {
-    ...STORM,
-    exhaust: true,
-    up: { cost: 1, effects: [dmg(11, 'allFoes'), commandTotem('all', 2)] },
-  }),
+  i(
+    'uncommon',
+    'swift-strike',
+    'Swift Strike',
+    'attack',
+    0,
+    'foe',
+    [dmg(5), when('played', { atMost: 2 }, [draw(1)])],
+    {
+      ...STORM,
+      up: { effects: [dmg(6), when('played', { atMost: 3 }, [draw(1)])] },
+    },
+  ),
+  i(
+    'rare',
+    'shattering-call',
+    'Shattering Call',
+    'attack',
+    2,
+    'none',
+    [dmg(7, 'allFoes'), commandTotem('all', 2)],
+    {
+      ...STORM,
+      exhaust: true,
+      up: { cost: 1, effects: [dmg(11, 'allFoes'), commandTotem('all', 2)] },
+    },
+  ),
   // (X cost: Tempest channelled X Lightning, upgraded: X counts as one more, like every X card)
-  i('uncommon', 'thunder-rush', 'Thunder Rush', 'skill', 0, 'none', [{ op: 'plant', spirit: 'thunderbird', scale: per('x') }], {
-    ...STORM,
-    x: true,
-  }),
-  i('uncommon', 'spark-strike', 'Spark Strike', 'attack', 0, 'foe', [scaled(dmg(3), { by: 'totemsOf', rune: 'thunderbird', mult: 4 })], {
-    ...STORM,
-    up: { effects: [scaled(dmg(5), { by: 'totemsOf', rune: 'thunderbird', mult: 6 })] },
-  }),
-  i('rare', 'thunder-beam', 'Thunder Beam', 'attack', 2, 'none', [dmg(28, 'allFoes'), status('spirit', -3)], {
-    ...STORM,
-    up: { effects: [dmg(36, 'allFoes'), status('spirit', -3)] },
-  }),
+  i(
+    'uncommon',
+    'thunder-rush',
+    'Thunder Rush',
+    'skill',
+    0,
+    'none',
+    [{ op: 'plant', spirit: 'thunderbird', scale: per('x') }],
+    {
+      ...STORM,
+      x: true,
+    },
+  ),
+  i(
+    'uncommon',
+    'spark-strike',
+    'Spark Strike',
+    'attack',
+    0,
+    'foe',
+    [scaled(dmg(3), { by: 'totemsOf', rune: 'thunderbird', mult: 4 })],
+    {
+      ...STORM,
+      up: { effects: [scaled(dmg(5), { by: 'totemsOf', rune: 'thunderbird', mult: 6 })] },
+    },
+  ),
+  i(
+    'rare',
+    'thunder-beam',
+    'Thunder Beam',
+    'attack',
+    2,
+    'none',
+    [dmg(28, 'allFoes'), status('spirit', -3)],
+    {
+      ...STORM,
+      up: { effects: [dmg(36, 'allFoes'), status('spirit', -3)] },
+    },
+  ),
   i('uncommon', 'swift-study', 'Swift Study', 'skill', 1, 'none', [draw(3)], {
     ...STORM,
     up: { effects: [draw(4)] },
@@ -669,10 +855,19 @@ export const SHAMAN: CardDef[] = [
   ),
 
   // --- glue: more Powers and utilities (from the Defect, mapped onto totems) ---
-  i('uncommon', 'hurried-prayer', 'Hurried Prayer', 'skill', 0, 'none', [draw(2), wound('self', 'void-drain')], {
-    exhaust: true,
-    up: { effects: [draw(3), wound('self', 'void-drain')] },
-  }),
+  i(
+    'uncommon',
+    'hurried-prayer',
+    'Hurried Prayer',
+    'skill',
+    0,
+    'none',
+    [draw(2), wound('self', 'void-drain')],
+    {
+      exhaust: true,
+      up: { effects: [draw(3), wound('self', 'void-drain')] },
+    },
+  ),
   i(
     'uncommon',
     'harmonize',
@@ -681,15 +876,27 @@ export const SHAMAN: CardDef[] = [
     1,
     'none',
     [scaled(status('spirit', 0, 'self', true), per('totemKinds', 2))],
-    { exhaust: true, up: { effects: [scaled(status('spirit', 0, 'self', true), per('totemKinds', 3))] } },
+    {
+      exhaust: true,
+      up: { effects: [scaled(status('spirit', 0, 'self', true), per('totemKinds', 3))] },
+    },
   ),
   i('uncommon', 'double-rite', 'Double Rite', 'skill', 1, 'none', [scaled(mana(0), per('mana'))], {
     exhaust: true,
     up: { cost: 0 },
   }),
-  i('uncommon', 'burnt-offering', 'Burnt Offering', 'skill', 1, 'none', [exhaustN(1), manaNext(2)], {
-    up: { effects: [exhaustN(1), manaNext(3)] },
-  }),
+  i(
+    'uncommon',
+    'burnt-offering',
+    'Burnt Offering',
+    'skill',
+    1,
+    'none',
+    [exhaustN(1), manaNext(2)],
+    {
+      up: { effects: [exhaustN(1), manaNext(3)] },
+    },
+  ),
   i('rare', 'echoing-spirit', 'Echoing Spirit', 'power', 3, 'none', [status('echoing', 1)], {
     ethereal: true,
     up: { ethereal: false },
@@ -709,44 +916,152 @@ export const SHAMAN: CardDef[] = [
     up: { effects: [status('deftness', 4)] },
   }),
   // (X cost: Multi-Cast evoked the rightmost orb X times, upgraded likewise; here the front totem acts X times and is consumed)
-  i('rare', 'chain-of-calls', 'Chain of Calls', 'skill', 0, 'none', [{ op: 'totemCommand', spirit: 'front', scale: per('x') }], {
-    x: true,
-  }),
+  i(
+    'rare',
+    'chain-of-calls',
+    'Chain of Calls',
+    'skill',
+    0,
+    'none',
+    [{ op: 'totemCommand', spirit: 'front', scale: per('x') }],
+    {
+      x: true,
+    },
+  ),
   // (the Defect's other Powers, with the engine to run them, Robert 2026-10-30: copied as they are, to be changed by hand)
-  i('rare', 'salvage-spirit', 'Salvage Spirit', 'power', 1, 'none', [on('created', [plant('*')], { tag: STATUS_TAG })], {
-    up: { cost: 0 },
-  }),
-  i('uncommon', 'snap-back', 'Snap Back', 'power', 2, 'none', [on('play', [returnPlayed], { filter: 'attack', maxCost: 0, once: true })], {
-    up: { cost: 1 },
-  }),
-  i('uncommon', 'bitter-lesson', 'Bitter Lesson', 'power', 1, 'none', [on('draw', [draw(2)], { tag: STATUS_TAG, once: true })], {
-    up: { effects: [on('draw', [draw(3)], { tag: STATUS_TAG, once: true })] },
-  }),
-  i('uncommon', 'turning-wheel', 'Turning Wheel', 'power', 1, 'none', [on('turnStart', [{ op: 'totemPulse' }])], {
-    up: { effects: [on('turnStart', [{ op: 'totemPulse', times: 2 }])] },
-  }),
-  i('rare', 'ward-of-the-spirits', 'Ward of the Spirits', 'power', 2, 'none', [status('buffer', 1)], {
-    up: { effects: [status('buffer', 2)] },
-  }),
-  i('uncommon', 'wild-vision', 'Wild Vision', 'skill', 1, 'none', [{ op: 'discover', kind: 'power', count: 1, turn: true }], {
-    exhaust: true,
-    up: { cost: 0 },
-  }),
-  i('uncommon', 'kindling-ward', 'Kindling Ward', 'skill', 1, 'none', [barrier(6), { op: 'transform', tag: STATUS_TAG, into: 'tinder' }], {
-    up: { effects: [barrier(7), { op: 'transform', tag: STATUS_TAG, into: 'dry-tinder' }] },
-  }),
+  i(
+    'rare',
+    'salvage-spirit',
+    'Salvage Spirit',
+    'power',
+    1,
+    'none',
+    [on('created', [plant('*')], { tag: STATUS_TAG })],
+    {
+      up: { cost: 0 },
+    },
+  ),
+  i(
+    'uncommon',
+    'snap-back',
+    'Snap Back',
+    'power',
+    2,
+    'none',
+    [on('play', [returnPlayed], { filter: 'attack', maxCost: 0, once: true })],
+    {
+      up: { cost: 1 },
+    },
+  ),
+  i(
+    'uncommon',
+    'bitter-lesson',
+    'Bitter Lesson',
+    'power',
+    1,
+    'none',
+    [on('draw', [draw(2)], { tag: STATUS_TAG, once: true })],
+    {
+      up: { effects: [on('draw', [draw(3)], { tag: STATUS_TAG, once: true })] },
+    },
+  ),
+  i(
+    'uncommon',
+    'turning-wheel',
+    'Turning Wheel',
+    'power',
+    1,
+    'none',
+    [on('turnStart', [{ op: 'totemPulse' }])],
+    {
+      up: { effects: [on('turnStart', [{ op: 'totemPulse', times: 2 }])] },
+    },
+  ),
+  i(
+    'rare',
+    'ward-of-the-spirits',
+    'Ward of the Spirits',
+    'power',
+    2,
+    'none',
+    [status('buffer', 1)],
+    {
+      up: { effects: [status('buffer', 2)] },
+    },
+  ),
+  i(
+    'uncommon',
+    'wild-vision',
+    'Wild Vision',
+    'skill',
+    1,
+    'none',
+    [{ op: 'discover', kind: 'power', count: 1, turn: true }],
+    {
+      exhaust: true,
+      up: { cost: 0 },
+    },
+  ),
+  i(
+    'uncommon',
+    'kindling-ward',
+    'Kindling Ward',
+    'skill',
+    1,
+    'none',
+    [barrier(6), { op: 'transform', tag: STATUS_TAG, into: 'tinder' }],
+    {
+      up: { effects: [barrier(7), { op: 'transform', tag: STATUS_TAG, into: 'dry-tinder' }] },
+    },
+  ),
   i('rare', 'fresh-start', 'Fresh Start', 'skill', 0, 'none', [reshuffle, draw(4)], {
     exhaust: true,
     up: { effects: [reshuffle, draw(6)] },
   }),
   // (1 more than it counts since DECISIONS #560: the Shaman's starting Thunderbird made that 1, and it is gone)
-  i('rare', 'thunder-memory', 'Thunder Memory', 'skill', 3, 'none', [{ op: 'plant', spirit: 'thunderbird', times: 1, scale: { by: 'channeledOf', rune: 'thunderbird' } }], {
-    exhaust: true,
-    up: { exhaust: false },
-  }),
+  i(
+    'rare',
+    'thunder-memory',
+    'Thunder Memory',
+    'skill',
+    3,
+    'none',
+    [
+      {
+        op: 'plant',
+        spirit: 'thunderbird',
+        times: 1,
+        scale: { by: 'channeledOf', rune: 'thunderbird' },
+      },
+    ],
+    {
+      exhaust: true,
+      up: { exhaust: false },
+    },
+  ),
   // (the supply: three Wounds into your discard pile, and a hand to play them with; each one is a Status card for the payoffs, and Ash Chant, Salvage Spirit and Bitter Lesson answer every one)
   i('uncommon', 'harvest-of-ruin', 'Harvest of Ruin', 'skill', 1, 'none', [woundN(3), draw(2)], {
     up: { effects: [woundN(3), draw(3)] },
+  }),
+  i(
+    'rare',
+    'spirit-pact',
+    'Spirit Pact',
+    'power',
+    2,
+    'none',
+    [on('orderedCommand', [gainSpirit(1), barrier(3)], { once: true, ownTurn: true })],
+    {
+      up: {
+        effects: [on('orderedCommand', [gainSpirit(1), barrier(5)], { once: true, ownTurn: true })],
+      },
+    },
+  ),
+  i('common', 'flame-echo', 'Flame Echo', 'attack', 0, 'foe', [dmg(18)], {
+    ...FLAME,
+    source: 'token',
+    exhaust: true,
+    up: { effects: [dmg(23)] },
   }),
 ];
 

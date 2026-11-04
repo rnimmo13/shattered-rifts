@@ -370,8 +370,8 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(row(s).filter((k) => k !== null)).toHaveLength(3);
     let t = fight(['spirit-strike', 'spirit-ward', 'spirit-call']);
     t = play(t, 'spirit-strike', foe(t).id);
-    // (11, and the Hawk it commands hits for 7)
-    expect(foe(t).hp).toBe(182);
+    // (5, and the Hawk it commands hits for 7)
+    expect(foe(t).hp).toBe(188);
     t = play(t, 'spirit-ward');
     expect(hero(t).barrier).toBe(2 + 6);
     t = play(t, 'spirit-call');
@@ -403,7 +403,9 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     hc = play(hc, 'hail-chant');
     hc.sides.a.totems = ['bear', null, null];
     const res = applyAction(db, hc, { type: 'endTurn' });
-    expect(res.events.some((e) => e.type === 'status' && e.status === 'faltering' && e.amount > 0)).toBe(true);
+    expect(
+      res.events.some((e) => e.type === 'status' && e.status === 'faltering' && e.amount > 0),
+    ).toBe(true);
     // (Spark Strike: 3, and 4 more for each Thunderbird standing)
     let w = fight(['spark-strike']);
     w = play(w, 'spark-strike', foe(w).id);
@@ -485,7 +487,10 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(w.sides.a.hand.filter((x) => x.card === 'tinder')).toHaveLength(2);
     // (Fresh Start: every card goes back into the draw pile, then 4 are drawn)
     let f = fight(['fresh-start']);
-    f.sides.a.discard = [{ id: 'X1', card: 'strike' }, { id: 'X2', card: 'defend' }];
+    f.sides.a.discard = [
+      { id: 'X1', card: 'strike' },
+      { id: 'X2', card: 'defend' },
+    ];
     f = play(f, 'fresh-start');
     expect(f.sides.a.hand).toHaveLength(4);
     // (Thunder Memory: a Thunderbird, plus one for each planted this fight; the base 1 stands in for the starting Thunderbird, #560)
@@ -502,14 +507,18 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(h).every((n) => n > 7)).toBe(true);
     // (Return of the Free: every 0-cost card in your discard pile comes back)
     let r = fight(['return-of-the-free']);
-    r.sides.a.discard = [{ id: 'Z1', card: 'spark-strike' }, { id: 'Z2', card: 'strike' }];
+    r.sides.a.discard = [
+      { id: 'Z1', card: 'spark-strike' },
+      { id: 'Z2', card: 'strike' },
+    ];
     r = play(r, 'return-of-the-free', foe(r).id);
     expect(r.sides.a.hand.map((x) => x.card)).toContain('spark-strike');
     expect(r.sides.a.hand.map((x) => x.card)).not.toContain('strike');
     // (Echoing Strike: a free copy of itself goes into your discard pile)
     let e = fight(['echoing-strike']);
     e = play(e, 'echoing-strike', foe(e).id);
-    expect(e.sides.a.discard.filter((x) => x.card === 'echoing-strike').length).toBeGreaterThanOrEqual(2);
+    expect(e.sides.a.discard.filter((x) => x.card === 'echoing-strike')).toHaveLength(1);
+    expect(e.sides.a.discard.filter((x) => x.card === 'flame-echo')).toHaveLength(1);
     // (Wild Vision: a random Power joins your hand free this turn)
     let p = fight(['wild-vision']);
     p = play(p, 'wild-vision');
@@ -541,7 +550,9 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     ];
     w = play(w, 'sweep-away');
     expect(w.sides.a.draw.map((x) => x.card)).toEqual(['strike']);
-    expect(w.sides.a.discard.filter((x) => x.card === 'wound' || x.card === 'void-drain')).toHaveLength(2);
+    expect(
+      w.sides.a.discard.filter((x) => x.card === 'wound' || x.card === 'void-drain'),
+    ).toHaveLength(2);
   });
 
   it('Thunder Chant: a commanded Thunderbird deals 5 more; its end-of-turn effect does not change; Spirit Lance draws', () => {
@@ -552,7 +563,10 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     // (Spirit Call acts it twice: 8 + 5 to every enemy, each time)
     expect(lost(s)).toEqual([26, 26]);
     let l = fight(['spirit-lance']);
-    l.sides.a.draw = Array.from({ length: 6 }, (_, n) => ({ id: 'L' + n, card: n < 2 ? 'strike' : 'spark-strike' }));
+    l.sides.a.draw = Array.from({ length: 6 }, (_, n) => ({
+      id: 'L' + n,
+      card: n < 2 ? 'strike' : 'spark-strike',
+    }));
     l.sides.a.hand = [{ id: 'SL', card: 'spirit-lance' }];
     l = play(l, 'spirit-lance', foe(l).id);
     // (4 drawn: the 1-cost Strikes are discarded, the free Spark Strikes stay)
@@ -599,7 +613,12 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       const up = db.cards[`${c.id}+`];
       expect(up, c.id).toBeDefined();
       expect(
-        JSON.stringify(up!.effects) !== JSON.stringify(c.effects) || up!.innate || up!.cost !== c.cost || up!.ethereal !== c.ethereal || up!.xBonus !== c.xBonus || up!.exhaust !== c.exhaust,
+        JSON.stringify(up!.effects) !== JSON.stringify(c.effects) ||
+          up!.innate ||
+          up!.cost !== c.cost ||
+          up!.ethereal !== c.ethereal ||
+          up!.xBonus !== c.xBonus ||
+          up!.exhaust !== c.exhaust,
         c.id,
       ).toBeTruthy();
       expect(cardText(db, c).length, c.id).toBeGreaterThan(3);
@@ -610,7 +629,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     const own = rewardPool('shaman').filter((id) => db.cards[id]?.hero === 'shaman');
     expect(own.length).toBeGreaterThanOrEqual(80);
     expect(own.length).toBeLessThanOrEqual(145);
-    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(19);
+    expect(own.filter((id) => db.cards[id]?.kind === 'power')).toHaveLength(20);
   });
 
   it('no loop: an 8-card deck of free plants, commands, the Elder and the Owl plays a bounded number of cards a turn', () => {

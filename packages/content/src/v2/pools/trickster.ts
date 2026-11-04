@@ -421,8 +421,24 @@ export const TRICKSTER: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 3))])],
-    { up: { effects: [on('turnEnd', [scaled(dmg(0, 'allFoes'), per('suits', 4))])] } },
+    [
+      on('turnEnd', [
+        when('fullTrickTurn', { atLeast: 1 }, [scaled(dmg(12, 'allFoes'), per('fullTricks', 2))]),
+        when('fullTrickTurn', { atMost: 0 }, [scaled(dmg(0, 'allFoes'), per('suits', 3))]),
+      ]),
+    ],
+    {
+      up: {
+        effects: [
+          on('turnEnd', [
+            when('fullTrickTurn', { atLeast: 1 }, [
+              scaled(dmg(16, 'allFoes'), per('fullTricks', 2)),
+            ]),
+            when('fullTrickTurn', { atMost: 0 }, [scaled(dmg(0, 'allFoes'), per('suits', 4))]),
+          ]),
+        ],
+      },
+    },
   ),
 
   // --- glue: Mana and time, for any deck ---
@@ -459,8 +475,17 @@ export const TRICKSTER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [dmg(4, 'allFoes')], { filter: 'snare' })],
-    { suit: 'clubs', up: { effects: [on('play', [dmg(6, 'allFoes')], { filter: 'snare' })] } },
+    [on('play', [scaled(dmg(4, 'allFoes'), { by: 'snaresSprung', step: 4 })], { filter: 'snare' })],
+    {
+      suit: 'clubs',
+      up: {
+        effects: [
+          on('play', [scaled(dmg(6, 'allFoes'), { by: 'snaresSprung', step: 4 })], {
+            filter: 'snare',
+          }),
+        ],
+      },
+    },
   ),
   v(
     'common',

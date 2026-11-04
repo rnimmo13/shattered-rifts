@@ -72,8 +72,10 @@ describe('Ascendancies', () => {
       (u) => u.kind === 'ally',
     );
     expect(foreman.length).toBe(
-      fight('engineer').sides.a.units.filter((u) => u.kind === 'ally').length + 1,
+      fight('engineer').sides.a.units.filter((u) => u.kind === 'ally').length,
     );
+    expect(hero(fight('engineer', 'engineer:foreman')).name).toBe('Artillerist');
+    expect(hero(fight('engineer', 'engineer:foreman')).statuses.might).toBe(1);
     expect(hero(fight('assassin', 'assassin:assassin')).statuses.edge).toBe(2);
   });
 

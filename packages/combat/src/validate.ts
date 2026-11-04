@@ -27,6 +27,12 @@ export function validateDb(db: CombatDb): string[] {
     },
   ): void => {
     for (const o of ops) {
+      if (
+        o.op === 'revive' &&
+        o.hpPct !== undefined &&
+        (!Number.isInteger(o.hpPct) || o.hpPct <= 0 || o.hpPct > 100)
+      )
+        errs.push(`${where}: revive HP percent must be an integer from 1 to 100`);
       if (o.op === 'summon' && !db.units[o.unit])
         errs.push(`${where}: summons unknown unit "${o.unit}"`);
       if (o.op === 'addCard' && !db.cards[o.card])
@@ -195,7 +201,8 @@ export function validateDb(db: CombatDb): string[] {
     const readsX = flat.some((o) => 'scale' in o && o.scale?.by === 'x');
     const readsSpend = JSON.stringify(c.effects).includes('"starSpend"');
     if (c.x && !readsX) errs.push(`${id}: an X card must scale something by x`);
-    if ((c.starX || c.starHalf) && !readsX && !readsSpend) errs.push(`${id}: a spending card must read what it spent`);
+    if ((c.starX || c.starHalf) && !readsX && !readsSpend)
+      errs.push(`${id}: a spending card must read what it spent`);
     if (c.starX && c.starHalf) errs.push(`${id}: X or X/2, not both`);
     if (!c.x && !c.starX && readsX) errs.push(`${id}: scales by x but is not an X card`);
     if (!c.starX && !c.starHalf && readsSpend) errs.push(`${id}: reads a spend but spends nothing`);

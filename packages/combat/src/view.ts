@@ -690,6 +690,20 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   deaths: { per: 'death this fight', equal: 'the deaths this fight' },
   fullTricks: { per: 'Full Trick this fight', equal: 'the Full Tricks this fight' },
+  fullTrickTurn: {
+    per: 'Full Trick completed this turn',
+    equal: 'whether you completed a Full Trick this turn',
+  },
+  summonedFight: {
+    per: 'companion summoned this fight',
+    equal: 'the companions summoned this fight',
+  },
+  snaresSprung: { per: 'Trap sprung this fight', equal: 'the Traps sprung this fight' },
+  fervorGained: { per: 'Fervor gained this fight', equal: 'the Fervor gained this fight' },
+  tagExhaustedBeforePlay: {
+    per: 'previously consumed card of that kind',
+    equal: 'the previously consumed cards of that kind',
+  },
   tagExhausted: { per: 'consumed card of that kind', equal: 'the consumed cards of that kind' },
   tagDeck: { per: 'card of that kind in your deck', equal: 'the cards of that kind in your deck' },
   // (the Defect copy, shaman)
@@ -793,8 +807,11 @@ function amountText(
   // (a tagged count names its cards: "per consumed Gravesoul", "per Command card in your deck")
   const tagged = sc.tag ? (TAG_NAMES[sc.tag] ?? cap(sc.tag)) : null;
   const w =
-    tagged && sc.by === 'tagExhausted'
-      ? { per: `consumed ${tagged}`, equal: `the number of consumed ${plural(tagged)}` }
+    tagged && (sc.by === 'tagExhausted' || sc.by === 'tagExhaustedBeforePlay')
+      ? {
+          per: `${sc.by === 'tagExhaustedBeforePlay' ? 'previously ' : ''}consumed ${tagged}`,
+          equal: `the number of ${sc.by === 'tagExhaustedBeforePlay' ? 'previously ' : ''}consumed ${plural(tagged)}`,
+        }
       : tagged && sc.by === 'tagDeck'
         ? { per: `${tagged} in your deck`, equal: `the number of ${plural(tagged)} in your deck` }
         : sc.by === 'totemsOf' && sc.rune
@@ -949,6 +966,8 @@ const WHEN_TEXT: Record<string, string> = {
   recast: 'Whenever you change an enchantment into another kind',
   // (the Shaman)
   command: 'Whenever one of your totems acts',
+  orderedCommand: 'Whenever you finish an ordered totem command',
+  hangoverPaid: 'Whenever Hangover costs you HP',
   plant: 'Whenever you plant a totem',
   replace: 'Whenever you replace a totem with one of another kind',
   // (the Shaman)
@@ -972,6 +991,10 @@ const SUIT_GLYPH: Partial<Record<Metric, string>> = {
 function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   const lo = o.atLeast;
   const hi = o.atMost;
+  if (o.by === 'fullTrickTurn')
+    return (lo ?? 0) >= 1
+      ? 'you completed a Full Trick this turn'
+      : 'you did not complete a Full Trick this turn';
   // (the Defect copy, shaman)
   if (o.by === 'attacking' && (lo ?? 0) >= 1) return 'the enemy means to attack';
   if (o.by === 'runesOf' && (lo ?? 0) >= 1 && hi === undefined) {
@@ -1439,7 +1462,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const gain = [healed ? `heals ${healed}` : '', o.might > 0 ? `gains ${o.might} Might` : '']
         .filter(Boolean)
         .join(' and ');
-      const none = o.none?.length ? ` With none to eat: ${o.none.map((x) => opText(db, x, who)).join(' ')}` : '';
+      const none = o.none?.length
+        ? ` With none to eat: ${o.none.map((x) => opText(db, x, who)).join(' ')}`
+        : '';
       return `Eats every ${nm}: for each, it ${gain}.${none}`;
     }
     case 'swapBarrier':
@@ -1563,11 +1588,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                                     : (WHEN_TEXT[o.when] ?? o.when);
       // ("the next time you earn an Opening": an answer that happens once, not a number of turns)
       const once1 = o.times === 1 && o.when !== 'turnStart' && o.when !== 'turnEnd';
+      const timing = o.ownTurn ? base.replace(/each turn/g, 'on your turn') : base;
       const when = once1
-        ? base.replace(/^Whenever /, 'The next time ')
+        ? timing.replace(/^Whenever /, 'The next time ')
         : o.times && !nextTurn
           ? `For the next ${o.times} turn${o.times === 1 ? '' : 's'}, ${base.charAt(0).toLowerCase()}${base.slice(1)}`
-          : base;
+          : timing;
       // (an Aura that answers something done to an enemy aims at that enemy; an awakening's Aura strikes each enemy the totem struck)
       const inner =
         o.when === 'evoke'
@@ -1629,7 +1655,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'reclaim':
       return `Return ${o.amount === 1 ? 'a random Consumed card' : `${o.amount} random Consumed cards`} to your hand (never one that returns cards).`;
     case 'revive':
-      return 'Your most recently fallen ally returns with half its HP.';
+      return o.hpPct === undefined
+        ? 'Your most recently fallen ally returns with half its HP.'
+        : `Your most recently fallen ally returns with ${o.hpPct}% of its HP (rounded down, at least 1).`;
     case 'fetch': {
       const what = o.tag
         ? (TAG_NAMES[o.tag] ?? o.tag)

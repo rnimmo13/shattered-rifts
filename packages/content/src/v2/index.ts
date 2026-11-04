@@ -24,7 +24,13 @@ import {
   stars,
   status,
 } from './build';
-import { ASCENDANCIES, ascendanciesOf, ascendancyOf, ascendedHeroes, type Ascendancy } from './ascendancies';
+import {
+  ASCENDANCIES,
+  ascendanciesOf,
+  ascendancyOf,
+  ascendedHeroes,
+  type Ascendancy,
+} from './ascendancies';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
 import { TOTEMS } from './pools/shaman';
@@ -124,11 +130,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     starter: [...rep('strike', 4), ...rep('defend', 3), 'deploy-drone', 'overclock', 'spot-weld'],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
-    mechanics: ['Companions', 'Frames', 'Salvage', 'Primed', 'Might', 'Max HP growth'],
+    mechanics: ['Companions', 'Frames', 'Salvage', 'Weapons', 'Primed', 'Might', 'Max HP growth'],
     howTo: [
       'You start with a Drone. Allies attack for you when you end your turn.',
       'You have 3 companion slots. A Light machine takes 1, a Heavy 2 and a Colossal all 3 (the pips on the card and the machine). Many small drones can be spent freely; one big machine can be built up (heals and upgrades give it max HP) and cashed in; and companions can be charged up (Primed: their next strike hits harder).',
       'With no room, a summon scraps companions to make room, and Salvage passes their Might, Primed and half their HP to the new machine.',
+      'Your own weapons can win fights too: Might and Primed strengthen every hit, Weapon Bench builds Might, and Ion Lance grows each time you fire it. Mix weapons with any machines you want.',
       'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
     ],
   },
@@ -272,9 +279,10 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       // (its 2 Barrier went: a Flow deck changes stance two or three times a turn, DECISIONS #390; Primed on leaving Fury, #412)
       // (leaving Serene's 2 Mana was an engine rule; it is the trait's now, so the trait table counts it: #413)
       // (the Fury exit once a turn too, 3 Primed instead of 2 every time: Fury loops banked Primed without end, #533)
-      text: 'Whenever you enter a stance, gain 1 Fervor. The first time each turn you leave Serene, gain 2 Mana. The first time each turn you leave Fury, gain 3 Primed.',
+      text: 'Whenever you enter a stance, gain 1 Fervor. The first time you enter a stance on your turn, gain 1 Might. The first time each turn you leave Serene, gain 2 Mana. The first time each turn you leave Fury, gain 3 Primed.',
       triggers: [
         on('stance', [status('mantra', 1)]),
+        on('stance', [status('might', 1)], { once: true, ownTurn: true }),
         on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
         on('stanceLeft', [status('vigor', 3)], { stance: 'wrath', once: true }),
       ],
@@ -287,12 +295,18 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       sigil: [stance('calm')],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), 'kindle-fury', 'still-guard', 'mindful-palm'],
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 3),
+      'kindle-fury',
+      'still-guard',
+      'mindful-palm',
+    ],
     blurb:
       'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
     mechanics: ['Stances', 'Fervor', 'Foresee', 'Self-damage'],
     howTo: [
-      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire); the first time each turn you leave Fury, you gain 3 Primed for your next attack.',
+      'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire), and the first on your turn gives 1 Might; the first time each turn you leave Fury, you gain 3 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
       'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
@@ -409,7 +423,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       // (no starting Thrall of its own: Grave Chill's Raise 2 at the start of his first turn is the one he begins with; with both he
       // began with two, DECISIONS #431)
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), 'raise-thrall', 'off-the-leash', 'marked-for-the-grave'],
+    starter: [
+      ...rep('strike', 4),
+      ...rep('defend', 3),
+      'raise-thrall',
+      'off-the-leash',
+      'marked-for-the-grave',
+    ],
     blurb:
       'A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.',
     mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],
@@ -501,7 +521,10 @@ export const ENCOUNTERS: Encounter[] = [
   enc('hive-7', 'Hive-7', 'nexus', 'elite', 'hive-7'),
   enc('ghostwire', 'Ghostwire', 'nexus', 'elite', 'ghostwire'),
   ruled(
-    { ...enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'foundry-hatch', 'kron'), fromTier: 3 },
+    {
+      ...enc('kron', 'KR-0N "Kron", Foundry Overseer', 'nexus', 'warden', 'foundry-hatch', 'kron'),
+      fromTier: 3,
+    },
     'The Foundry Hatch: your aimed attacks must break it to reach Kron, and he reopens it, stronger each time.',
   ),
 
@@ -668,7 +691,13 @@ export const ENCOUNTERS: Encounter[] = [
   enc('hunger-orchard', 'Hunger Orchard', 'wyldmaw', 'elite', 'hunger-orchard'),
   enc('molting-cathedral', 'Molting Cathedral', 'wyldmaw', 'elite', 'molting-cathedral'),
   ruled(
-    enc('the-upside-down-stag', 'The Upside-Down Stag', 'wyldmaw', 'warden', 'the-upside-down-stag'),
+    enc(
+      'the-upside-down-stag',
+      'The Upside-Down Stag',
+      'wyldmaw',
+      'warden',
+      'the-upside-down-stag',
+    ),
     'The Turnover: some of its blows first take your Barrier for its own, so Barrier raised against them only shields the Stag.',
   ),
   // Umbral
@@ -950,7 +979,10 @@ export const maxCopiesOf = (rarity: string | undefined, kind?: string): number =
 export { ASCENDANCIES, BOONS, HEARTS, POTIONS, ascendanciesOf, ascendancyOf, type Ascendancy };
 
 /** What a Riftwalker's trait says, with its Ascendancy's if it has taken one. */
-export function classTrait(hero: string, ascendancy?: string): { name: string; text: string } | null {
+export function classTrait(
+  hero: string,
+  ascendancy?: string,
+): { name: string; text: string } | null {
   const own = ascendancy ? ascendancyOf(hero, ascendancy) : undefined;
   const def = own ? COMBAT_DB.ascended?.[own.id] : COMBAT_DB.heroes[hero];
   if (!def?.trait) return null;
@@ -960,7 +992,9 @@ export function classTrait(hero: string, ascendancy?: string): { name: string; t
 /** The class a Riftwalker plays as: its Ascendancy's name if it has taken one (Knight, Paladin). */
 export function classNameOf(hero: string, ascendancy?: string): string {
   const own = ascendancy ? ascendancyOf(hero, ascendancy) : undefined;
-  return own?.name ?? (Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero);
+  return (
+    own?.name ?? (Object.hasOwn(RIFTWALKERS, hero) ? RIFTWALKERS[hero as HeroId].hero.name : hero)
+  );
 }
 export { SHELVED_LEGENDARIES, lendLegendaries } from './shelved';
 export { SKINS, currentSkinId, skinDef, type SkinDef } from './cosmetics';

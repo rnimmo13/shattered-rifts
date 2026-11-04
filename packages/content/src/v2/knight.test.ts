@@ -472,7 +472,7 @@ describe('one card for each of the Ironclad’s', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );
-    expect(own).toHaveLength(82 + 12 + 3);
+    expect(own).toHaveLength(82 + 12 + 3 + 1); // Measured Conviction
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(

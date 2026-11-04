@@ -624,9 +624,16 @@ export const DRUNKARD: CardDef[] = [
     up: { effects: [barrier(18), hangover(4)] },
   }),
   // (2 hits, harder the drunker, DECISIONS #502, #509)
-  p('uncommon', 'bender', 'Bender', 'attack', 1, 'foe', [
-    scaled(dmg(4, 'target', 2), { by: 'hangover', step: 2 }),
-  ], { up: { effects: [scaled(dmg(6, 'target', 2), { by: 'hangover', step: 2 })] } }),
+  p(
+    'uncommon',
+    'bender',
+    'Bender',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(4, 'target', 2), { by: 'hangover', step: 2 })],
+    { up: { effects: [scaled(dmg(6, 'target', 2), { by: 'hangover', step: 2 })] } },
+  ),
   // (the old cure: one more drink, and the morning never comes)
   p(
     'uncommon',
@@ -732,10 +739,10 @@ export const DRUNKARD: CardDef[] = [
     'drunken-master',
     'Drunken Master',
     'power',
-    1,
+    2,
     'none',
-    [on('play', [barrier(2), dmg(2, 'randomFoe')], { tag: 'stagger' })],
-    { up: { effects: [on('play', [barrier(3), dmg(3, 'randomFoe')], { tag: 'stagger' })] } },
+    [on('play', [status('might', 1), barrier(3)], { tag: 'stagger', once: true, ownTurn: true })],
+    { up: { cost: 1 } },
   ),
   // (three wild swings: the drunker, the harder, DECISIONS #502, #509)
   p(
@@ -746,6 +753,25 @@ export const DRUNKARD: CardDef[] = [
     2,
     'none',
     [scaled(dmg(6, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })],
-    { tags: ['stagger'], up: { effects: [scaled(dmg(8, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })] } },
+    {
+      tags: ['stagger'],
+      up: { effects: [scaled(dmg(8, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })] },
+    },
+  ),
+  p(
+    'uncommon',
+    'morning-after',
+    'Morning After',
+    'power',
+    2,
+    'none',
+    [on('hangoverPaid', [status('might', 1), barrier(3)], { once: true, ownTurn: true })],
+    {
+      up: {
+        effects: [
+          on('hangoverPaid', [status('might', 1), barrier(5)], { once: true, ownTurn: true }),
+        ],
+      },
+    },
   ),
 ];

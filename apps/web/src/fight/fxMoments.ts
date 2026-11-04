@@ -63,7 +63,10 @@ const STATUS_FX: Partial<Record<StatusId, FxId>> = {
 
 /** What a status plays when it lands on a unit: enough Fracture to Shatter is its own moment. */
 export function statusFx(status: StatusId, amount: number, total: number): FxId | null {
-  if (status === 'fracture' && Math.floor(total / SHATTER_AT) > Math.floor((total - amount) / SHATTER_AT))
+  if (
+    status === 'fracture' &&
+    Math.floor(total / SHATTER_AT) > Math.floor((total - amount) / SHATTER_AT)
+  )
     return 'shatter';
   return STATUS_FX[status] ?? null;
 }
@@ -96,7 +99,10 @@ const TICKS: Partial<Record<StatusId, FxId>> = {
 };
 
 /** If the damage at `i` is a stack ticking (Bleed and Burn lose their stack after it, Hangover clears before it), which one. */
-export function tickOf(all: readonly CombatEvent[], i: number): { status: StatusId; fx: FxId } | null {
+export function tickOf(
+  all: readonly CombatEvent[],
+  i: number,
+): { status: StatusId; fx: FxId } | null {
   const e = all[i];
   if (e?.type !== 'damage' || e.source !== null) return null;
   const down = (n: CombatEvent | undefined): { status: StatusId; fx: FxId } | null => {
@@ -109,7 +115,8 @@ export function tickOf(all: readonly CombatEvent[], i: number): { status: Status
   // (what the loss sets off, a hero's Traps and triggers, can come between the damage and its stack going down)
   for (let j = i + 1; j < all.length; j++) {
     const n = all[j];
-    if (!n || n.type === 'damage' || n.type === 'act' || n.type === 'play' || n.type === 'turnEnd') break;
+    if (!n || n.type === 'damage' || n.type === 'act' || n.type === 'play' || n.type === 'turnEnd')
+      break;
     if (n.type === 'status' && n.target === e.target) return down(n);
   }
   return null;
@@ -126,6 +133,7 @@ export function intentPic(icon: string, damage: number | null, hits: number): st
 }
 
 /** The painted crest of an Ascendancy (`knight:blood-knight` is crest-knight-blood-knight). */
-export const crestPic = (ascendancyId: string): string => `crest-${ascendancyId.replace(':', '-')}`;
+export const crestPic = (ascendancyId: string): string =>
+  `crest-${(ascendancyId === 'engineer:artillerist' ? 'engineer:foreman' : ascendancyId).replace(':', '-')}`;
 /** The painted crest of a class itself (`knight` is crest-knight; the class-01 sheet). */
 export const classCrestPic = (hero: string): string => `crest-${hero}`;

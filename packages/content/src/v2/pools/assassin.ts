@@ -61,7 +61,10 @@ export const ASSASSIN: CardDef[] = [
   // (Survivor)
   q('basic', 'duck-and-weave', 'Duck and Weave', 'skill', 1, 'none', [barrier(8), discard(1)]),
   // (two more basics for damage in the starting deck: Robert 2026-10-30)
-  q('basic', 'fang-and-claw', 'Fang and Claw', 'attack', 1, 'foe', [dmg(4, 'target', 2), status('seared', 1, 'target')]),
+  q('basic', 'fang-and-claw', 'Fang and Claw', 'attack', 1, 'foe', [
+    dmg(4, 'target', 2),
+    status('seared', 1, 'target'),
+  ]),
   q('basic', 'pocket-blades', 'Pocket Blades', 'skill', 1, 'none', [addTo('sleeve-knife', 2)], {
     up: { effects: [addTo('sleeve-knife', 3)] },
   }),
@@ -137,10 +140,19 @@ export const ASSASSIN: CardDef[] = [
     up: { effects: [dmg(20), defer()] },
   }),
   // (Ricochet: Sly)
-  q('common', 'glancing-knives', 'Glancing Knives', 'attack', 2, 'none', [dmg(3, 'randomFoe', 4), defer()], {
-    sly: true,
-    up: { effects: [dmg(3, 'randomFoe', 5), defer()] },
-  }),
+  q(
+    'common',
+    'glancing-knives',
+    'Glancing Knives',
+    'attack',
+    2,
+    'none',
+    [dmg(3, 'randomFoe', 4), defer()],
+    {
+      sly: true,
+      up: { effects: [dmg(3, 'randomFoe', 5), defer()] },
+    },
+  ),
   // (Flick-Flack: Sly)
   q('common', 'cartwheel-cut', 'Cartwheel Cut', 'attack', 1, 'none', [dmg(5, 'allFoes'), defer()], {
     sly: true,
@@ -205,7 +217,16 @@ export const ASSASSIN: CardDef[] = [
     { up: { effects: [scaled(dmg(0), per('attacksPlayed', 8))] } },
   ),
   // (Skewer: an X card, so its upgrade is X+1, as every X card's is, not 11 damage)
-  q('uncommon', 'run-through', 'Run Through', 'attack', 0, 'foe', [scaled({ op: 'damage', amount: 8, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))], { x: true }),
+  q(
+    'uncommon',
+    'run-through',
+    'Run Through',
+    'attack',
+    0,
+    'foe',
+    [scaled({ op: 'damage', amount: 8, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits'))],
+    { x: true },
+  ),
   // (Pounce)
   q(
     'uncommon',
@@ -502,7 +523,9 @@ export const ASSASSIN: CardDef[] = [
     up: { effects: [draw(2), discard(2)] },
   }),
   // (Untouchable: Sly)
-  q('common', 'slip-the-blow', 'Slip the Blow', 'skill', 2, 'none', [barrier(6), defer()], { sly: true }),
+  q('common', 'slip-the-blow', 'Slip the Blow', 'skill', 2, 'none', [barrier(6), defer()], {
+    sly: true,
+  }),
   // (Acrobatics)
   q('uncommon', 'nimble-deal', 'Nimble Deal', 'skill', 1, 'none', [draw(3), discard(1)], {
     up: { effects: [draw(4), discard(1)] },
@@ -576,9 +599,11 @@ export const ASSASSIN: CardDef[] = [
     { up: { effects: [scaled(dmg(11), per('discarded', 5))] } },
   ),
   // (Reflex: Sly)
-  q('uncommon', 'quick-reflexes', 'Quick Reflexes', 'skill', 3, 'none', [draw(1), defer()], { sly: true }),
+  q('uncommon', 'quick-reflexes', 'Quick Reflexes', 'skill', 3, 'none', [draw(1), defer()], {
+    sly: true,
+  }),
   // (Sidestep: a card of your hand waits a turn and comes back cheaper)
-  q('uncommon', 'side-slip', 'Side Slip', 'skill', 0, 'none', [defer()]),
+  q('common', 'side-slip', 'Side Slip', 'skill', 0, 'none', [defer()]),
   // (Speedster: the draw that starts your turn does not count; the upgrade is in your opening hand)
   q(
     'uncommon',
@@ -624,8 +649,8 @@ export const ASSASSIN: CardDef[] = [
     up: { cost: 1 },
   }),
   // (Murder)
-  q('rare', 'slow-murder', 'Slow Murder', 'attack', 3, 'foe', [scaled(dmg(1), per('drawn'))], {
-    up: { cost: 2 },
+  q('rare', 'slow-murder', 'Slow Murder', 'attack', 2, 'foe', [scaled(dmg(1), per('drawn'))], {
+    up: { effects: [scaled(dmg(8), per('drawn'))] },
   }),
   // (Nightmare)
   q(

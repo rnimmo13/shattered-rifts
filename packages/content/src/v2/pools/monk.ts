@@ -369,10 +369,16 @@ export const MONK: CardDef[] = [
     [on('stance', [draw(3)], { stance: 'radiant' })],
     { up: { effects: [on('stance', [draw(4)], { stance: 'radiant' })] } },
   ),
-  s('uncommon', 'foretold-flame', 'Foretold Flame', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('mantra', 1)),
-    scry(2),
-  ]),
+  s(
+    'uncommon',
+    'foretold-flame',
+    'Foretold Flame',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(5), { by: 'fervorGained', step: 3 }), scry(2)],
+    { up: { effects: [scaled(dmg(8), { by: 'fervorGained', step: 3 }), scry(2)] } },
+  ),
   s('common', 'faith-kept', 'Faith Kept', 'skill', 1, 'none', [status('mantra', 3)], {
     retain: true,
     onExhaust: [status('mantra', 3)],
@@ -457,7 +463,11 @@ export const MONK: CardDef[] = [
     'none',
     // (once a turn, and more for it: Fury loops built Primed without end, DECISIONS #534)
     [on('stance', [lose(1), status('vigor', 4)], { stance: 'wrath', once: true })],
-    { up: { effects: [on('stance', [lose(1), status('vigor', 5)], { stance: 'wrath', once: true })] } },
+    {
+      up: {
+        effects: [on('stance', [lose(1), status('vigor', 5)], { stance: 'wrath', once: true })],
+      },
+    },
   ),
   s('uncommon', 'open-palm', 'Open Palm', 'attack', 1, 'foe', [
     dmg(5, 'target', 2),

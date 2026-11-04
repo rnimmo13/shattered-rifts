@@ -29,6 +29,21 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.175.0',
+    date: '2026-11-03',
+    title: 'Weapons and growing builds',
+    summary: 'Engineer weapons and summons gain lasting damage, with more ways to grow across the roster.',
+    notes: [
+      { kind: 'new', text: 'Foreman becomes Artillerist: gain 1 Might each turn, and your first Attack gives 3 Barrier. Saved Foreman decks become Artillerists. Weapon Bench builds your own Might, and Rotary Cannon fires four shots.' },
+      { kind: 'balance', text: 'Engineer: Jumpstart gives companions lasting Might instead of Primed; Ion Lance grows with each shot; Swarm Tactics grows with successful summons. Bulwark Frame scales with companion max HP, and Rebuild returns a machine at 75% HP.' },
+      { kind: 'new', text: 'Measured Conviction rewards retained Reserves with Might and Barrier. Spirit Pact rewards your first ordered totem command with Spirit and Barrier. Morning After rewards an actual Hangover payment with Might and Barrier.' },
+      { kind: 'balance', text: 'Monk gains 1 Might on the first stance entered on your turn; Foretold Flame remembers Fervor gained. Drunken Master builds Might once a turn. Gleeful Trapsmith grows with sprung Traps, and Masquerade rewards repeated Full Tricks.' },
+      { kind: 'balance', text: 'Slow Murder costs 2 Mana and Side Slip is common. Spirit Strike costs 1 with a smaller hit; Heart of the Pyre reads enemy Burn. Smoldering Blow scales faster; Restless Spirits grows with consumed Gravesouls, and Requiem draws a card.' },
+      { kind: 'balance', text: 'Echoing Strike creates a free, consumed Flame Echo that cannot make copies. Gallows grows damage across copies instead of doubling through Noose.' },
+    ],
+    heads: 'Card rules changed, so older battle replays may play differently. Echo encounter rules are unchanged.',
+  },
+  {
     version: '0.174.0',
     date: '2026-11-03',
     title: 'Settings on a phone, a Low suggestion',

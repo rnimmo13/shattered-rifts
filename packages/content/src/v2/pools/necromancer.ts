@@ -63,7 +63,10 @@ export const NECROMANCER: CardDef[] = [
   // (Bodyguard)
   g('basic', 'raise-thrall', 'Raise Thrall', 'skill', 1, 'none', [raise(5)]),
   // (a hit that curses: a third class basic, Robert 2026-10-30)
-  g('basic', 'marked-for-the-grave', 'Marked for the Grave', 'attack', 1, 'foe', [dmg(6), status('doom', 4, 'target')]),
+  g('basic', 'marked-for-the-grave', 'Marked for the Grave', 'attack', 1, 'foe', [
+    dmg(6),
+    status('doom', 4, 'target'),
+  ]),
   // (Unleash: each Thrall strikes for 6 plus its own HP)
   g(
     'basic',
@@ -584,8 +587,24 @@ export const NECROMANCER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [lose(6, 'randomFoe')], { tag: 'soul' })],
-    { up: { effects: [on('play', [lose(8, 'randomFoe')], { tag: 'soul' })] } },
+    [
+      on(
+        'play',
+        [scaled(lose(4, 'randomFoe'), { by: 'tagExhaustedBeforePlay', tag: 'soul', step: 3 })],
+        { tag: 'soul' },
+      ),
+    ],
+    {
+      up: {
+        effects: [
+          on(
+            'play',
+            [scaled(lose(6, 'randomFoe'), { by: 'tagExhaustedBeforePlay', tag: 'soul', step: 3 })],
+            { tag: 'soul' },
+          ),
+        ],
+      },
+    },
   ),
   // (Lethality)
   g('uncommon', 'killing-chill', 'Killing Chill', 'power', 1, 'none', [status('lethality', 50)], {
@@ -748,16 +767,33 @@ export const NECROMANCER: CardDef[] = [
     { up: { cost: 1 } },
   ),
   // (Eradicate)
-  g('rare', 'oblivion', 'Unmaking', 'attack', 0, 'foe', [{ op: 'damage', amount: 11, hits: 0, to: 'target', scale: { by: 'x', into: 'hits' } }], { x: true, retain: true }),
+  g(
+    'rare',
+    'oblivion',
+    'Unmaking',
+    'attack',
+    0,
+    'foe',
+    [{ op: 'damage', amount: 11, hits: 0, to: 'target', scale: { by: 'x', into: 'hits' } }],
+    { x: true, retain: true },
+  ),
   // (Glimpse Beyond: "ALL players add 3 Souls"; alone, it is you)
   g('rare', 'gather-souls', 'Gather Souls', 'skill', 1, 'none', [addTo('gravesoul', 3, 'draw')], {
     exhaust: true,
   }),
   // (Hang: every Gallows deals double to an enemy for each Gallows already played on it)
-  g('rare', 'gallows', 'Gallows', 'attack', 1, 'foe', [dmg(10), status('noose', 1, 'target')], {
-    tags: ['noose'],
-    up: { effects: [dmg(13), status('noose', 1, 'target')] },
-  }),
+  g(
+    'rare',
+    'gallows',
+    'Gallows',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(10), per('bonus')), forge('gallows', 6)],
+    {
+      up: { effects: [scaled(dmg(13), per('bonus')), forge('gallows', 8)] },
+    },
+  ),
   // (Seance: a random card of your draw pile, as there is no choosing from it)
   g(
     'rare',
@@ -777,8 +813,10 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(9), { by: 'tagExhausted', tag: 'soul', mult: 2 })],
-    { up: { effects: [scaled(dmg(9), { by: 'tagExhausted', tag: 'soul', mult: 3 })] } },
+    [scaled(dmg(9), { by: 'tagExhausted', tag: 'soul', mult: 2 }), draw(1)],
+    {
+      up: { effects: [scaled(dmg(12), { by: 'tagExhausted', tag: 'soul', mult: 2 }), draw(1)] },
+    },
   ),
   // (Spirit of Ash)
   g(

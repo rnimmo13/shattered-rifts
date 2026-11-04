@@ -1,14 +1,9 @@
-// Rivet (Nexus-9). Builds machines in 3 companion slots: a Light machine takes 1, a Heavy 2, a Colossal all 3 (DECISIONS #383).
-// Three themes:
-//   Swarm     - go wide: cheap Light bodies, payoffs per ally, per summon and per death, sacrifice, Might for everyone (DECISIONS #358)
-//   Assemble  - charge up with Primed (the Engineer's own guns too), then fire: only 4 cards make the companions act now (#361, #383)
-//   Core      - go tall: one Heavy or Colossal machine you grow, protect and cash in (Repair Bot, Reactor, Heavy Plating are Swarm's,
-//               by tools/src/paths.ts)
-// Every number was priced with the card costing guide (docs/14_CARD_COSTING.md, DECISIONS #383); the reasons are in
-// docs/ENGINEER_REVIEW.md.
+// Engineer: small summons, larger machines, personal weapons, and freely mixed support.
+// Card grouping was removed in DECISIONS #453. Commands are shared tools, not a prescribed build.
 
 import type { CardDef, Op } from '@sr/combat';
 import {
+  forge,
   growHp,
   ACT,
   barrier,
@@ -93,8 +88,12 @@ export const ENGINEER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('summon', [dmg(6, 'randomFoe')])],
-    { up: { effects: [on('summon', [dmg(9, 'randomFoe')])] } },
+    [on('summon', [scaled(dmg(6, 'randomFoe'), { by: 'summonedFight', step: 4 })])],
+    {
+      up: {
+        effects: [on('summon', [scaled(dmg(9, 'randomFoe'), { by: 'summonedFight', step: 4 })])],
+      },
+    },
   ),
   r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(12, 'allFoes'), sacrifice]),
   r(
@@ -153,11 +152,20 @@ export const ENGINEER: CardDef[] = [
   // a Light drone that marks the front enemy for everything after it (DECISIONS #383)
   r('common', 'deploy-spotter', 'Deploy Spotter', 'summon', 1, 'none', [summon('spotter-drone')]),
 
-  // --- Assemble ---
+  // --- charge and commands ---
   r('common', 'ping', 'Ping', 'skill', 0, 'none', [primeAll(3)], { exhaust: true }),
-  r('common', 'jumpstart', 'Jumpstart', 'skill', 1, 'none', [prime(3), barrier(4)], {
-    up: { effects: [prime(3), barrier(7)] },
-  }),
+  r(
+    'common',
+    'jumpstart',
+    'Jumpstart',
+    'skill',
+    1,
+    'none',
+    [status('might', 1, 'allAllies'), barrier(4)],
+    {
+      up: { effects: [status('might', 1, 'allAllies'), barrier(7)] },
+    },
+  ),
   r(
     'common',
     'countermeasure-grid',
@@ -257,7 +265,9 @@ export const ENGINEER: CardDef[] = [
   // Full Throttle: the crew acts twice (Robert 2026-10-30: "a card or two with allies act twice"; the other act-now cards act once). 2 Mana
   // rare = ~24. Primed 3 (~4.5) + two rounds of acts (2 x ~8 at 1-2 companions) = ~20.5; a full board of Heavy machines doubles into 40+,
   // and it is spent after one use.
-  r('rare', 'full-throttle', 'Full Throttle', 'skill', 2, 'none', [prime(3), ACT, ACT], { exhaust: true }),
+  r('rare', 'full-throttle', 'Full Throttle', 'skill', 2, 'none', [prime(3), ACT, ACT], {
+    exhaust: true,
+  }),
   // Final Volley: 3 Mana rare = ~35. 6 + 10 per companion (the 3 slots are the cap): 3 companions = 36, 2 = 26, 1 = 16, so it only
   // pays for a crew that is still standing. (Not an "act now" card: those each act once, DECISIONS #361.)
   r(
@@ -282,7 +292,7 @@ export const ENGINEER: CardDef[] = [
     { exhaust: true },
   ),
 
-  // --- Core ---
+  // --- machines and protection ---
   r('common', 'repair-bot', 'Repair Bot', 'summon', 1, 'none', [summon('repair-bot')]),
   r('common', 'build-enforcer', 'Build Enforcer', 'summon', 2, 'none', [summon('enforcer')]),
   r('uncommon', 'reinforce', 'Reinforce', 'skill', 1, 'ally', [
@@ -325,7 +335,18 @@ export const ENGINEER: CardDef[] = [
   r('common', 'retrofit', 'Retrofit', 'skill', 1, 'ally', [status('might', 3, 'target')]),
 
   // (more Core)
-  r('uncommon', 'bulwark-frame', 'Bulwark Frame', 'skill', 1, 'ally', [barrier(12, 'target')]),
+  r(
+    'uncommon',
+    'bulwark-frame',
+    'Bulwark Frame',
+    'skill',
+    1,
+    'ally',
+    [scaled(barrier(8, 'target'), per('maxHp', 0.2, 'target'))],
+    {
+      up: { effects: [scaled(barrier(11, 'target'), per('maxHp', 0.2, 'target'))] },
+    },
+  ),
   r(
     'rare',
     'reactor-meltdown',
@@ -337,7 +358,19 @@ export const ENGINEER: CardDef[] = [
     [scaled(dmg(0, 'allFoes'), per('hp', 1, 'target')), sacrifice],
     { exhaust: true },
   ),
-  r('uncommon', 'rebuild', 'Rebuild', 'skill', 1, 'none', [revive, barrier(3)], { exhaust: true }),
+  r(
+    'uncommon',
+    'rebuild',
+    'Rebuild',
+    'skill',
+    1,
+    'none',
+    [{ op: 'revive', hpPct: 75 }, barrier(3)],
+    {
+      exhaust: true,
+      up: { effects: [{ op: 'revive', hpPct: 75 }, barrier(6)] },
+    },
+  ),
   r(
     'rare',
     'heavy-industry',
@@ -399,7 +432,18 @@ export const ENGINEER: CardDef[] = [
     { up: { effects: [dmg(6, 'allFoes'), status('faltering', 1, 'allFoes')] } },
   ),
   r('common', 'plating', 'Plating', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
-  r('uncommon', 'ion-lance', 'Ion Lance', 'attack', 2, 'foe', [dmg(20)]),
+  r(
+    'uncommon',
+    'ion-lance',
+    'Ion Lance',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(18), per('bonus')), forge('ion-lance', 4)],
+    {
+      up: { effects: [scaled(dmg(22), per('bonus')), forge('ion-lance', 4)] },
+    },
+  ),
   r('rare', 'railgun', 'Railgun', 'attack', 3, 'foe', [dmg(34)]),
   // (the bigger the machines, the bigger the shot: Swarm and Core alike)
   r('rare', 'particle-cannon', 'Particle Cannon', 'attack', 2, 'foe', [
@@ -526,7 +570,7 @@ export const ENGINEER: CardDef[] = [
     },
   ),
 
-  // --- Core: one big construct, built up and cashed in (DECISIONS #358) ---
+  // --- companion growth payoffs ---
   r('common', 'crankshaft', 'Crankshaft', 'attack', 1, 'foe', [
     scaled(dmg(5), per('biggestAlly', 1 / 3)),
   ]),
@@ -543,4 +587,18 @@ export const ENGINEER: CardDef[] = [
   r('rare', 'heavy-hitter', 'Heavy Hitter', 'attack', 2, 'foe', [
     scaled(dmg(0), per('biggestAlly')),
   ]),
+  // Open-ended personal weapons and growth; no predefined card groups.
+  r(
+    'uncommon',
+    'weapon-bench',
+    'Weapon Bench',
+    'power',
+    2,
+    'none',
+    [on('play', [status('might', 1)], { filter: 'attack', once: true, ownTurn: true })],
+    { up: { cost: 1 } },
+  ),
+  r('uncommon', 'rotary-cannon', 'Rotary Cannon', 'attack', 2, 'foe', [dmg(4, 'target', 4)], {
+    up: { effects: [dmg(5, 'target', 4)] },
+  }),
 ];

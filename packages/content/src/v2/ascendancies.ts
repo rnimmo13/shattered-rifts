@@ -90,13 +90,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
 
   a(
     'engineer',
-    'Foreman',
-    'Many machines',
-    // (25% more, not 1 more: a flat point was nothing against Tier XX, DECISIONS #542)
-    "Start each fight with a second Drone. Your companions' attacks deal 25% more damage.",
+    'Artillerist',
+    'Personal weapons',
+    'At the start of your turn, gain 1 Might. The first Attack you play on your turn gives you 3 Barrier.',
     {
-      startUnits: [{ unit: 'drone', hp: 6 }],
-      fightStart: [{ op: 'allyPct', amount: 25 }],
+      turnStart: [status('might', 1)],
+      triggers: [on('play', [barrier(3)], { filter: 'attack', once: true, ownTurn: true })],
     },
   ),
   a(
@@ -339,6 +338,7 @@ export const ascendanciesOf = (hero: string): Ascendancy[] =>
 
 /** Ascendancies that have been replaced: a run, deck or ghost saved with the old one has the new one (DECISIONS #542). */
 const RENAMED: Readonly<Record<string, string>> = {
+  'engineer:foreman': 'engineer:artillerist',
   'shaman:pyromancer': 'shaman:elementalist',
   'engineer:overclocker': 'engineer:swarmwright',
 };
@@ -357,7 +357,7 @@ export function ascendedHero(base: HeroDef, x: Ascendancy): HeroDef {
     ...base,
     name: x.name,
     ...(x.maxAllies ? { maxAllies: x.maxAllies } : {}),
-    ...(x.startUnits ?{ startUnits: [...(base.startUnits ?? []), ...x.startUnits] } : {}),
+    ...(x.startUnits ? { startUnits: [...(base.startUnits ?? []), ...x.startUnits] } : {}),
     trait: {
       ...trait,
       ...x.set,

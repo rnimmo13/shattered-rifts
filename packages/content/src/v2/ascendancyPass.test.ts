@@ -127,7 +127,7 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(shatter('spellblade:shatterer')).toBe(Math.floor((plain * 115) / 100));
   });
 
-  it('Foreman: companions hit 25% harder, and their intent says the number that lands', () => {
+  it('companion percentage damage remains supported; retired Foreman maps to Artillerist', () => {
     // (one companion, the Engineer's own Drone: the Foreman's second Drone would make any bonus look like more damage)
     const strike = (pct: number): { landed: number; shown: number | null } => {
       const s = fight('engineer', undefined, []);
@@ -153,7 +153,8 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(more.landed).toBe(Math.round(plain.landed * 1.25));
     // (what the intent says is what lands, a whole number)
     expect(more.shown).toBe(more.landed);
-    expect(fight('engineer', 'engineer:foreman', []).sides.a.allyPct).toBe(25);
+    expect(fight('engineer', 'engineer:foreman', []).sides.a.allyPct).toBeUndefined();
+    expect(ascendancyOf('engineer', 'engineer:foreman')?.id).toBe('engineer:artillerist');
   });
 
   it('Gunslinger: the Gun grows sharper every turn', () => {
@@ -196,7 +197,11 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
 describe('the Swarmwright (DECISIONS #569)', () => {
   // play Deploy Drones while one fits without releasing a companion; how many companions stand then
   const fill = (asc?: string): number => {
-    let s = fight('engineer', asc, Array.from({ length: 6 }, () => 'deploy-drone'));
+    let s = fight(
+      'engineer',
+      asc,
+      Array.from({ length: 6 }, () => 'deploy-drone'),
+    );
     for (;;) {
       const inst = s.sides.a.hand.find((c) => c.card === 'deploy-drone');
       const act = legalActions(db, s).find(

@@ -359,6 +359,11 @@ export type Metric =
   | 'diamonds'
   | 'clubs'
   | 'fullTricks' // Full Tricks made earlier this fight (DECISIONS #398)
+  | 'fullTrickTurn' // 1 after completing a Full Trick this turn
+  | 'summonedFight' // successful non-starting companion summons by this side
+  | 'snaresSprung' // this side's Traps sprung this fight
+  | 'fervorGained' // positive Fervor gained by this side's hero this fight
+  | 'tagExhaustedBeforePlay' // tagged consumed cards, excluding the card whose play triggered this effect
   | 'spent' // in an 'arcana' trigger: the Arcana just spent
   // (the Defect copy, shaman)
   | 'runeKinds' // how many different totems you have
@@ -473,6 +478,8 @@ export type TriggerWhen =
   | 'barrier' // your hero gained Barrier (from anything)
   | 'heal' // your hero was healed (from anything; a heal at full HP still counts, for its whole amount)
   | 'loseHp' // your hero lost HP to one of your own effects
+  | 'hangoverPaid' // Hangover actually cost your hero HP
+  | 'orderedCommand' // an explicit totem command finished (not a passive or a plant push-out)
   | 'hurt' // your hero lost HP to anything: an enemy's attack, or one of your own effects (Scarred Hide)
   | 'draw' // you drew a card
   | 'created' // a card was created in one of your piles
@@ -626,6 +633,8 @@ export type Op =
       temp?: boolean;
       /** it answers only the first time each turn (Iteration, Feral) */
       once?: boolean;
+      /** only during the owner's turn; stance triggers exclude initial setup */
+      ownTurn?: boolean;
       /** it answers only once a round: from the start of its side's turn to the next, the other side's turn included (DECISIONS #542) */
       round?: boolean;
       /** 'play' / 'draw': only Fleeting cards */
@@ -663,7 +672,7 @@ export type Op =
   /** the targeted ally leaves the fight (put it after any effect that reads the target) */
   | { op: 'sacrifice'; self?: boolean }
   | { op: 'reclaim'; amount: number } // bring random Consumed cards back to your hand (never Auras)
-  | { op: 'revive' } // your most recently fallen ally returns at half its HP
+  | { op: 'revive'; hpPct?: number } // default: half HP; explicit percent rounds down, minimum 1
   // --- tempo and tricks
   | { op: 'manaNext'; amount: number; foe?: boolean } // extra Mana at the start of your next turn (negative: Mana you owe; `foe`: the other side's)
   | { op: 'maxMana'; amount: number } // more (or less) Mana every turn for the rest of the fight, from the next turn on
@@ -1289,6 +1298,7 @@ export interface PowerState {
   /** it ends with this turn (Rage) */
   temp?: boolean;
   once?: boolean;
+  ownTurn?: boolean;
   /** once a round (see the op's `round`) */
   round?: boolean;
   ethereal?: boolean;
@@ -1413,6 +1423,9 @@ export interface SideState {
   fullTrickDue?: boolean;
   /** Full Tricks made this fight (the trait's damage grows with them) */
   fullTricks?: number;
+  summonedFight?: number;
+  snaresSprung?: number;
+  fervorGained?: number;
   discarded: number;
   /** times your hero lost HP this turn / this fight, cards consumed this turn */
   lostHpTurn?: number;

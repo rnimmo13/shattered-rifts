@@ -269,6 +269,7 @@ export const on = (
     stance?: Stance;
     temp?: boolean;
     once?: boolean;
+    ownTurn?: boolean;
     /** once a round: its side's turn and the other side's after it (DECISIONS #542) */
     round?: boolean;
     ethereal?: boolean;
@@ -702,7 +703,12 @@ export function foe(
   maxHp: number,
   moves: Move[],
   pattern: Pattern,
-  extra: { opening?: string; foe?: 'hero' | 'lowest' | 'random'; taunt?: boolean; leader?: boolean } = {},
+  extra: {
+    opening?: string;
+    foe?: 'hero' | 'lowest' | 'random';
+    taunt?: boolean;
+    leader?: boolean;
+  } = {},
 ): UnitDef {
   const { taunt, leader, ...brainExtra } = extra;
   return {

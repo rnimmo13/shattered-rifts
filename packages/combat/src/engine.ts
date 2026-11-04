@@ -269,6 +269,10 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
       if (x.kind === 'ally' && x.hp > 0 && (delta > 0 || stacks(x, 'might') > 0))
         addStatus(r, x, 'might', Math.max(delta, -stacks(x, 'might')));
   // Mantra builds towards Radiant and is spent on entering it
+  if (st === 'mantra' && amount > 0 && u.kind === 'hero') {
+    const sd = r.s.sides[u.side];
+    sd.fervorGained = (sd.fervorGained ?? 0) + amount;
+  }
   if (st === 'mantra' && total >= MANTRA_GOAL) {
     // one Radiant per goal reached; anything left over stays as Mantra
     total -= MANTRA_GOAL;
@@ -954,7 +958,14 @@ function leaveRow(
  * A card commands totems (DECISIONS #430, the totem cycle): the front one (the oldest), the newest, the front-most of a kind, or every
  * totem in order. Each acts `times` times and is consumed. Not a card and not an attack.
  */
-function commandTotems(r: Run, _a: Act, sd: SideState, spirit: string, times: number): void {
+function commandTotems(
+  r: Run,
+  _a: Act,
+  sd: SideState,
+  spirit: string,
+  times: number,
+  ordered = true,
+): void {
   const hero = heroOf(sd);
   if (!hero || !sd.totems) return;
   packTotems(sd);
@@ -967,6 +978,7 @@ function commandTotems(r: Run, _a: Act, sd: SideState, spirit: string, times: nu
       const kind = list()[0];
       if (kind) leaveRow(r, sd, hero, 0, kind, times, false);
     }
+    if (ordered) fireTriggers(r, sd, 'orderedCommand');
     return;
   }
   let at = 0;
@@ -974,7 +986,10 @@ function commandTotems(r: Run, _a: Act, sd: SideState, spirit: string, times: nu
   else if (spirit === 'random') at = nextInt(r.s.rng, held());
   else if (spirit !== 'front' && spirit !== 'choose') at = list().indexOf(spirit);
   const kind = at >= 0 ? list()[at] : null;
-  if (kind) leaveRow(r, sd, hero, at, kind, times, false);
+  if (kind) {
+    leaveRow(r, sd, hero, at, kind, times, false);
+    if (ordered) fireTriggers(r, sd, 'orderedCommand');
+  }
 }
 
 /** (DECISIONS #430) every totem's passive of this timing, front to back: what it does each turn while it stands. */
@@ -1165,6 +1180,7 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
     cd.effects,
   );
   sd.discard.push({ id: sn.id, card: sn.card });
+  sd.snaresSprung = (sd.snaresSprung ?? 0) + 1;
   fireTriggers(r, sd, 'snare');
 }
 
@@ -1420,6 +1436,18 @@ function metricValue(
     }
     case 'tagExhausted':
       return sd.exhausted.filter((c) => !!tag && r.db.cards[c.card]?.tags?.includes(tag)).length;
+    case 'tagExhaustedBeforePlay':
+      return sd.exhausted.filter(
+        (c) => c.id !== a.played?.id && !!tag && r.db.cards[c.card]?.tags?.includes(tag),
+      ).length;
+    case 'summonedFight':
+      return sd.summonedFight ?? 0;
+    case 'snaresSprung':
+      return sd.snaresSprung ?? 0;
+    case 'fervorGained':
+      return sd.fervorGained ?? 0;
+    case 'fullTrickTurn':
+      return sd.fullTrickTurn ? 1 : 0;
     case 'tagDeck': {
       const seen = new Set<string>();
       let n = 0;
@@ -2165,6 +2193,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.stance ? { stance: op.stance } : {}),
         ...(op.temp ? { temp: true } : {}),
         ...(op.once ? { once: true } : {}),
+        ...(op.ownTurn ? { ownTurn: true } : {}),
         ...(op.round ? { round: true } : {}),
         ...(op.ethereal ? { ethereal: true } : {}),
         ...(op.minCost !== undefined ? { minCost: op.minCost } : {}),
@@ -2714,8 +2743,12 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!def) return;
       const u = spawn(r, side, def);
       if (u) {
-        // it comes back hurt: half its HP
-        applyDamage(r, null, u, Math.floor(u.maxHp / 2), 'direct');
+        // Keep the legacy half-HP rounding unless the effect specifies a percentage.
+        const hp =
+          op.hpPct === undefined
+            ? Math.ceil(u.maxHp / 2)
+            : Math.max(1, Math.floor((u.maxHp * op.hpPct) / 100));
+        applyDamage(r, null, u, u.maxHp - hp, 'direct');
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
       } else side.fallen.push(def);
       return;
@@ -3071,7 +3104,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       const n = op.scale
         ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null))
         : Math.max(1, op.times ?? 1);
-      if (n > 0) commandTotems(r, a, side, op.spirit, n);
+      if (n > 0) commandTotems(r, a, side, op.spirit, n, !!a.card);
       return;
     }
     case 'totemRotate': {
@@ -3776,6 +3809,7 @@ function fireTriggers(
   for (const p of [...sd.powers]) {
     if (r.s.winner) break;
     if (p.when !== when) continue;
+    if (p.ownTurn && (r.s.active !== sd.id || (when === 'stance' && r.opening))) continue;
     // (a power that fired once already is gone; another trigger in this loop may have removed it)
     if (!sd.powers.includes(p)) continue;
     if (when === 'play' && played) {
@@ -3891,6 +3925,7 @@ function spawn(r: Run, sd: SideState, defId: string, quiet = false, summoner?: U
   const at = summoner && sd.hero === null ? sd.units.indexOf(summoner) : -1;
   const index = at >= 0 ? at : sd.units.length - (heroOf(sd) ? 1 : 0);
   sd.units.splice(index, 0, u);
+  if (!quiet && u.kind === 'ally') sd.summonedFight = (sd.summonedFight ?? 0) + 1;
   if (sd.hero === null) {
     u.maxHp = u.hp = scaledEnemyHp(u.maxHp, r.s.tier, r.s.enemyHpPct);
     u.dmgPct = r.s.enemyDmgPct;
@@ -4116,7 +4151,10 @@ function startOfTurn(r: Run, side: Side): void {
     const due = Math.min(Math.ceil((owed * u.maxHp) / 100), u.hp - 1);
     if (due <= 0) continue;
     const lost = applyDamage(r, null, u, due, 'direct');
-    if (lost > 0 && u.kind === 'hero') fireTriggers(r, sd, 'loseHp', { lost });
+    if (lost > 0 && u.kind === 'hero') {
+      fireTriggers(r, sd, 'loseHp', { lost });
+      fireTriggers(r, sd, 'hangoverPaid', { lost });
+    }
   }
   reap(r);
 }
@@ -4308,6 +4346,7 @@ function beginHeroTurn(r: Run, side: Side): void {
         ...(t.stance ? { stance: t.stance } : {}),
         // (a trait's trigger narrows like an Aura's: once a turn is the Monk's Serene Mana, DECISIONS #413)
         ...(t.once ? { once: true } : {}),
+        ...(t.ownTurn ? { ownTurn: true } : {}),
         ...(t.round ? { round: true } : {}),
         ...(t.ethereal ? { ethereal: true } : {}),
         ...(t.minCost !== undefined ? { minCost: t.minCost } : {}),
@@ -5654,8 +5693,8 @@ export function previewCardDamage(
               ? [chosen]
               : foes
             : to === 'allFoes' || to === 'randomFoe' || to === 'weakestFoe'
-            ? foes
-            : null;
+              ? foes
+              : null;
     if (!pool) return;
     const hitsAll = to === 'allFoes';
     const lone =

@@ -48,18 +48,19 @@ describe('Stagger', () => {
     expect(s.sides.b.units.filter((u) => u.hp < 200)).toHaveLength(1);
   });
 
-  it('Drunken Master: 2 Barrier for each Stagger card played, nothing for others', () => {
+  it('Drunken Master: the first Stagger gives Might and Barrier, nothing for other cards', () => {
     let s = play(
       fight(['drunken-master', 'haphazard-hook', 'hammer-swing']),
       'drunken-master',
     ).state;
     const hero = () => s.sides.a.units.find((u) => u.kind === 'hero')!;
     s = play(s, 'haphazard-hook').state;
-    expect(hero().barrier).toBe(2);
+    expect(hero().barrier).toBe(3);
+    expect(hero().statuses.might).toBe(1);
     const inst = s.sides.a.hand.find((c) => c.card === 'hammer-swing')!;
     const act = legalActions(db, s).find((a) => a.type === 'play' && a.card === inst.id)!;
     s = applyAction(db, s, act).state;
-    expect(hero().barrier).toBe(2);
+    expect(hero().barrier).toBe(3);
   });
 
   it('Blind Drunk is always 3 hits, each 2 harder per 2 Hangover (DECISIONS #509)', () => {

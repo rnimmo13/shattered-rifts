@@ -181,6 +181,15 @@ Vorthax was rebuilt on 2026-11-02 (DECISIONS #547) as the finale that uses every
 
 ---
 
+## Campaign balance pass (approved and implemented, 2026-11-03)
+
+Robert requested a concrete rebalance proposal and chart, then approved implementation. The specification is
+[`BALANCE_PROPOSAL_2026-11-03.md`](BALANCE_PROPOSAL_2026-11-03.md): accessible scaling, sustained damage and recovery,
+with a deeper Engineer pass covering small summons, larger machines and personal weapons, including replacing Foreman.
+The old card-grouping system stays removed; example combinations are not predefined builds or reward categories.
+Echo encounters are reserved for a later pass. The chart's A grades remain playtest targets, not measured results.
+Implemented as DECISIONS #574, with scenario coverage and standard project checks.
+
 ## Kept for later
 
 - **Daily Rift:** everyone plays the same seed with the same Riftwalker and two or three twists, one attempt a day, on
@@ -193,7 +202,8 @@ Vorthax was rebuilt on 2026-11-02 (DECISIONS #547) as the finale that uses every
   Engineer Wide drones C and Traps D; Drunkard Hangover C and Stagger D; Trickster Full Trick C; Knight Consume C; Necromancer
   Gravesoul churn and Fleeting C; Shaman totem command C. Support shells that aren't meant to win a fight alone (Frost Shaman)
   are exempt. Flagged but left as they are: Echoing Strike (its copies make copies), Heavy Hitter with Golemancer, Gallows.
-  *(Robert, 2026-11-03: "keep a note about my preference for weaker builds to be stronger at some point"; not now.)*
+  *(Robert, 2026-11-03: "keep a note about my preference for weaker builds to be stronger at some point"; initially not now.
+  Later requested the concrete proposal linked above, aiming for three or more A-level combinations per class.)*
 
 ## Decided against (so they aren't proposed again)
 

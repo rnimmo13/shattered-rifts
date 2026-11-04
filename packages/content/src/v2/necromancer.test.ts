@@ -305,9 +305,9 @@ describe('Souls and Fleeting cards', () => {
     const hand0 = s.sides.a.hand.length;
     s = play(s, 'T1');
     expect(s.sides.a.hand.length).toBe(hand0 - 1 + 2);
-    expect(s.sides.b.units[0]!.hp).toBe(300 - 6);
+    expect(s.sides.b.units[0]!.hp).toBe(300 - 4);
     s = play(s, 'T2', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 6 - (9 + 2));
+    expect(foe(s).hp).toBe(300 - 4 - (9 + 2));
   });
 
   it('Wraith Strike makes a card Fleeting: it is consumed at the end of the turn, and counts as Fleeting when played', () => {
@@ -354,12 +354,12 @@ describe('Souls and Fleeting cards', () => {
 });
 
 describe('the other new rules', () => {
-  it('Gallows (Hang) deals double to an enemy for each Gallows already played on it', () => {
+  it('Gallows grows linearly across copies instead of doubling through Noose', () => {
     let s = fight(['gallows', 'gallows', 'gallows']);
     s = play(s, 'T0', foe(s).id);
     s = play(s, 'T1', foe(s).id);
     s = play(s, 'T2', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 10 - 20 - 40);
+    expect(foe(s).hp).toBe(300 - 10 - 16 - 22);
   });
 
   it('Toll in Advance (Borrowed Time): 5 Mana, and every card costs 1 more this turn', () => {
@@ -466,7 +466,8 @@ describe('Grave Chill: 2 Fate on the enemy that kills an ally, none at the start
     const thrall = s.sides.a.units.find((u) => u.kind === 'ally')!;
     thrall.hp = 1;
     const { state, events } = applyAction(db, s, { type: 'endTurn' });
-    const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as { source: string } | undefined;
+    const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as
+      { source: string } | undefined;
     expect(hit, 'an enemy strikes the Thrall').toBeDefined();
     const cursed = state.sides.b.units.filter((u) => (u.statuses.doom ?? 0) > 0);
     expect(cursed.map((u) => u.id)).toEqual([hit!.source]);
