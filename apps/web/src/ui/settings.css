@@ -59,6 +59,19 @@
   margin: 0;
   color: var(--c-text);
 }
+.settings__aboutLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.settings__aboutLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--c-gold-light);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 .settings__build {
   color: var(--c-text-dim);
   font-size: 0.85rem;

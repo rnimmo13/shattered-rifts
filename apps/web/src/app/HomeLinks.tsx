@@ -1,5 +1,5 @@
 // The home page's smaller destinations, as a tidy grid of icon tiles under the big menu buttons: what is yours (decks, runs,
-// trophies), the Arena's boards and ghosts, and reading (cards, how to play, patch notes). Credits lives in the footer.
+// trophies), the Arena's boards and ghosts, and reading (cards, how to play, patch notes). Credits is in Settings > About.
 
 import type { ReactNode } from 'react';
 

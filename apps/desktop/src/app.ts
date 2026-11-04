@@ -85,6 +85,9 @@ export async function createGameWindow(show = true, local = false): Promise<Brow
   }
   const win = new BrowserWindow({
     title: 'Shattered Rifts',
+    icon: app.isPackaged
+      ? join(process.resourcesPath, 'game/branding/logo-512.png')
+      : join(__dirname, '../../web/dist-desktop/branding/logo-512.png'),
     width: saved.width,
     height: saved.height,
     minWidth: 960,

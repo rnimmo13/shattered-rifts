@@ -69,7 +69,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  font-size: clamp(1.7rem, 5.2vw, 3.8rem);
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -387,12 +387,15 @@
   box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
-.home__footer {
-  position: relative;
-  margin: 0;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--c-text-dim);
+.home__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.home__brand img {
+  width: clamp(48px, 6vw, 72px);
+  height: auto;
+  flex-shrink: 0;
 }
 
 @media (max-width: 52rem) {

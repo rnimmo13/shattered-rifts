@@ -117,7 +117,7 @@ export function SettingsPanel() {
       if (e.key === 'Escape') setOpen(false);
       if (e.key !== 'Tab' || !panel.current) return;
       const stops = [
-        ...panel.current.querySelectorAll<HTMLElement>('button, input, textarea, summary'),
+        ...panel.current.querySelectorAll<HTMLElement>('button, input, textarea, summary, a[href]'),
       ].filter((el) => !(el as HTMLButtonElement | HTMLInputElement).disabled);
       const first = stops[0];
       const last = stops[stops.length - 1];
@@ -439,6 +439,14 @@ export function SettingsPanel() {
         <section className="settings__group" aria-labelledby="settings-about">
           <h3 id="settings-about">About and updates</h3>
           <p className="settings__version">Version {BUILD.version}</p>
+          <nav className="settings__aboutLinks" aria-label="About the game">
+            <a href="#/patch-notes" onClick={() => setOpen(false)}>
+              Patch notes
+            </a>
+            <a href="#/credits" onClick={() => setOpen(false)}>
+              Credits
+            </a>
+          </nav>
           {desktopBridge() ? <DesktopUpdates /> : <WebUpdateControls />}
           <details className="settings__build">
             <summary>Build details</summary>

@@ -11,6 +11,12 @@ export function DesktopDownload() {
   return (
     <div className="desktop-download">
       <a className="btn btn--small" href={DESKTOP_DOWNLOAD}>
+        <img
+          src={`${import.meta.env.BASE_URL}branding/logo-192.png`}
+          width="32"
+          height="32"
+          alt=""
+        />
         Download for Windows
       </a>
       <small>64-bit desktop playtest · automatic updates</small>

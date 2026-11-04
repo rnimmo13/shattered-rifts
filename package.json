@@ -7,6 +7,7 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "brand:assets": "pnpm --filter @sr/desktop brand:assets",
     "dev": "pnpm --filter @sr/web dev",
     "desktop:build": "pnpm --filter @sr/web build --mode desktop && pnpm --filter @sr/desktop build",
     "desktop:dev": "pnpm desktop:build && pnpm --filter @sr/desktop start",

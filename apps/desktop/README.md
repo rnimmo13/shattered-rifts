@@ -1,5 +1,11 @@
 # Shattered Rifts desktop prototype
 
+**Brand assets (0.185.0):** `pnpm brand:assets` regenerates tracked PNG/ICO derivatives from
+`assets-src/icons/shattered-rifts-logo.png`. The source artwork remains in the ignored art-source
+directory; generated public/Windows assets are committed so builds do not depend on that directory.
+The app window, executable, shortcuts and installer use this logo. Windows resource editing is enabled
+with signing separately disabled (`win.signExecutable: false`); this remains an unsigned playtest.
+
 Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
 in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 

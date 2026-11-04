@@ -1,12 +1,13 @@
 {
   "name": "@sr/desktop",
-  "version": "0.184.0",
+  "version": "0.185.0",
   "private": true,
   "description": "Shattered Rifts desktop playtest build",
   "author": "Shattered Rifts",
   "type": "commonjs",
   "main": "out/main.js",
   "scripts": {
+    "brand:assets": "node scripts/brand-assets.mjs",
     "build": "tsc -p tsconfig.build.json && node scripts/configure.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "start": "electron .",
@@ -56,9 +57,12 @@
     ],
     "win": {
       "target": "nsis",
-      "signAndEditExecutable": false
+      "icon": "resources/icon.ico",
+      "signExecutable": false
     },
     "nsis": {
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,

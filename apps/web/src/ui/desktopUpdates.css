@@ -7,6 +7,17 @@
 .desktop-download {
   margin: 0.9rem 0 1.1rem;
 }
+.desktop-download a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 100%;
+  text-align: left;
+}
+.desktop-download img {
+  flex-shrink: 0;
+  object-fit: contain;
+}
 .desktop-download small,
 .desktop-updates small {
   color: var(--c-text-dim, #adb4ca);

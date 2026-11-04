@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.185.0',
+    date: '2026-11-04',
+    title: 'A Shattered Rifts identity',
+    summary: 'Our new logo comes to browser tabs, downloads and the desktop app.',
+    notes: [
+      { kind: 'changed', text: 'The SR logo now appears beside the title, on Download for Windows, in browser tabs and mobile home-screen icons, and on the Windows app and installer.' },
+      { kind: 'changed', text: 'Credits is now beside Patch notes in Settings > About and updates, instead of sitting alone at the bottom of the home screen.' },
+    ],
+  },
+  {
     version: '0.184.0',
     date: '2026-11-04',
     title: 'Update between battles',

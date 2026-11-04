@@ -98,7 +98,15 @@ export function TitleScreen() {
 
       <div className="home__body">
         <section className="home__menu" aria-label="Play">
-          <h1 className="home__name">Shattered Rifts</h1>
+          <div className="home__brand">
+            <img
+              src={`${import.meta.env.BASE_URL}branding/logo-192.png`}
+              width="72"
+              height="72"
+              alt=""
+            />
+            <h1 className="home__name">Shattered Rifts</h1>
+          </div>
           <p className="home__tagline">
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
@@ -272,10 +280,6 @@ export function TitleScreen() {
 
         <HeroShowcase picked={picked} onPick={pick} />
       </div>
-
-      <p className="home__footer">
-        <a href="#/credits">Credits</a>
-      </p>
     </main>
   );
 }
