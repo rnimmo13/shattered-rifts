@@ -5,7 +5,7 @@
   justify-items: start;
 }
 .desktop-download {
-  margin: 0.9rem 0 1.1rem;
+  margin: 0;
 }
 .desktop-download a {
   display: inline-flex;
@@ -17,6 +17,22 @@
 .desktop-download img {
   flex-shrink: 0;
   object-fit: contain;
+}
+.desktop-download__short {
+  display: none;
+}
+@media (max-width: 52rem) {
+  .desktop-download__full {
+    display: none;
+  }
+  .desktop-download__short {
+    display: inline;
+  }
+  .desktop-download a {
+    padding-inline: 0.65rem;
+    gap: 0.4rem;
+    letter-spacing: 0.1em;
+  }
 }
 .desktop-download small,
 .desktop-updates small {

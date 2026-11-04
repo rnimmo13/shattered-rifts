@@ -91,9 +91,12 @@ export function TitleScreen() {
 
   return (
     <main className="home" style={{ '--accent': color } as CSSProperties}>
-      <header className="home__bar" aria-label="Account and settings">
+      <header className="home__bar" aria-label="Account, download and settings">
         <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
-        <SettingsButton />
+        <div className="home__actions">
+          <DesktopDownload />
+          <SettingsButton />
+        </div>
       </header>
 
       <div className="home__body">
@@ -110,7 +113,6 @@ export function TitleScreen() {
           <p className="home__tagline">
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
-          <DesktopDownload />
 
           {/* (a few runs are big buttons; more than two become a compact list that scrolls, with how many of the slots are used) */}
           {runs.length + broken.length > 0 && (

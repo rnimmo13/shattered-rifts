@@ -29,6 +29,13 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.186.0',
+    date: '2026-11-04',
+    title: 'Download beside Settings',
+    summary: 'The Windows download now lives in the home header.',
+    notes: [{ kind: 'changed', text: 'Download for Windows sits beside Settings on the home screen. Phones use a compact Download button and Settings gear so the header fits on one row.' }],
+  },
+  {
     version: '0.185.0',
     date: '2026-11-04',
     title: 'A Shattered Rifts identity',

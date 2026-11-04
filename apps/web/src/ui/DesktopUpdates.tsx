@@ -10,16 +10,23 @@ export function DesktopDownload() {
   if (desktopBridge()) return null;
   return (
     <div className="desktop-download">
-      <a className="btn btn--small" href={DESKTOP_DOWNLOAD}>
+      <a
+        className="btn btn--small"
+        href={DESKTOP_DOWNLOAD}
+        aria-label="Download for Windows"
+        title="Download the 64-bit Windows app with automatic updates"
+      >
         <img
           src={`${import.meta.env.BASE_URL}branding/logo-192.png`}
-          width="32"
-          height="32"
+          width="24"
+          height="24"
           alt=""
         />
-        Download for Windows
+        <span className="desktop-download__full">Download for Windows</span>
+        <span className="desktop-download__short" aria-hidden>
+          Download
+        </span>
       </a>
-      <small>64-bit desktop playtest · automatic updates</small>
     </div>
   );
 }

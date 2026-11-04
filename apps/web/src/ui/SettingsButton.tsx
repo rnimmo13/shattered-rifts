@@ -9,9 +9,12 @@ export function SettingsButton(props: { className?: string }) {
       className={`btn btn--small btn--ghost${props.className ? ` ${props.className}` : ''}`}
       onClick={openSettings}
       aria-haspopup="dialog"
+      aria-label="Settings"
+      title="Settings"
     >
       <span>
-        <span aria-hidden>⚙</span> Settings
+        <span aria-hidden>⚙</span>
+        <span className="settings-button__label"> Settings</span>
       </span>
     </button>
   );

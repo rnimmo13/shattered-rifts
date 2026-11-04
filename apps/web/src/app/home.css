@@ -29,13 +29,31 @@
   width: min(100%, 88rem);
   margin: 0 auto;
 }
-.home__bar > .btn,
+.home__actions .btn,
 .home__bar .playerchip button {
   min-height: 44px;
 }
-.home__bar > .btn {
+.home__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   margin-left: auto;
   flex-shrink: 0;
+}
+@media (max-width: 52rem) {
+  .home__bar {
+    gap: 0.6rem;
+  }
+  .home__actions {
+    gap: 0.45rem;
+  }
+  .home__actions > .btn {
+    min-width: 44px;
+    padding-inline: 0.5rem;
+  }
+  .home__actions .settings-button__label {
+    display: none;
+  }
 }
 .home__bar .playerchip {
   min-width: 0;
