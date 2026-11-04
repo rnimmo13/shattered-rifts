@@ -18,6 +18,7 @@ import { PlayGate, PlayStatus } from '../PlayGate';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
+const LoreScreen = lazy(() => import('./LoreScreen'));
 const FightScreen = lazy(() => import('../fight/FightScreen'));
 const TrialsPractice = lazy(() => import('../trials/TrialsPractice'));
 const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
@@ -73,6 +74,12 @@ export function App() {
 }
 
 function Screens({ hash }: { hash: string }) {
+  if (hash === '#/lore')
+    return (
+      <Suspense fallback={<div className="loading">Opening the chronicle…</div>}>
+        <LoreScreen />
+      </Suspense>
+    );
   if (hash === '#/run') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>

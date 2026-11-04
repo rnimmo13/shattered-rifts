@@ -7,6 +7,8 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "lore:smoke": "pnpm --filter @sr/web lore:smoke",
+    "lore:art": "pnpm --filter @sr/tools lore:art",
     "brand:assets": "pnpm --filter @sr/desktop brand:assets",
     "dev": "pnpm --filter @sr/web dev",
     "desktop:build": "pnpm --filter @sr/web build --mode desktop && pnpm --filter @sr/desktop build",
@@ -19,6 +21,7 @@
     "desktop:release:validate": "node apps/desktop/scripts/release.mjs --validate",
     "desktop:update:smoke": "pnpm desktop:build && node apps/desktop/scripts/update-smoke.mjs",
     "play:smoke": "pnpm --filter @sr/tools play:smoke",
+    "auth:browser:smoke": "pnpm --filter @sr/server browser:smoke",
     "build": "pnpm -r --if-present build",
     "test": "vitest run",
     "test:watch": "vitest",

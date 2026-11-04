@@ -71,6 +71,19 @@ const LINKS: { href: string; label: string; icon: keyof typeof ICON }[] = [
 export function HomeLinks(props: { unreadNotes: boolean }) {
   return (
     <nav className="home__links" aria-label="More">
+      <a className="home__story" href="#/lore">
+        <img
+          src={`${import.meta.env.BASE_URL}art/lore/key-art-thumb.webp`}
+          width="80"
+          height="48"
+          alt=""
+        />
+        <span>
+          <b>The story of the Rifts</b>
+          <small>Discover the worlds beyond the Ward</small>
+        </span>
+        <span aria-hidden>→</span>
+      </a>
       {LINKS.map((l) => {
         const fresh = l.icon === 'notes' && props.unreadNotes;
         return (

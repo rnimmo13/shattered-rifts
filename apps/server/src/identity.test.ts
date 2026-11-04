@@ -174,7 +174,7 @@ describe('native browser handoff and canonical accounts', () => {
     const html = await response.text();
     expect(html).toContain('Sign in to the desktop app');
     expect(html).not.toContain('d1.');
-    expect(response.headers.get('referrer-policy')).toBe('no-referrer');
+    expect(response.headers.get('referrer-policy')).toBe('same-origin');
     expect(response.headers.getSetCookie().some((c) => c.startsWith('sr_session='))).toBe(false);
     expect(
       response.headers

@@ -17,6 +17,7 @@ import { normaliseCode, runKey } from '@sr/pvp';
 import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 import { allowedOrigin } from './origins';
+import { desktopPage } from './authPage';
 import { checkPlay, playVaultName, PLAY_HEADER, PLAY_VAULT_HEADER } from './playAccess';
 
 export { Matchmaker } from './matchmaker';
@@ -372,8 +373,15 @@ export default {
 
     // a browser says where the page came from; other clients (a test script) say nothing
     const origin = request.headers.get('Origin');
-    if (origin && !allowedOrigin(origin, url.host))
+    if (origin && !allowedOrigin(origin, url.host)) {
+      if (url.pathname === '/auth/desktop/confirm')
+        return desktopPage(
+          'This approval request came from an unexpected browser page. Start a fresh sign-in from the desktop game.',
+          '',
+          403,
+        );
       return json({ ok: false, error: 'origin not allowed' }, 403);
+    }
 
     const auth = await authRoute(request, env);
     if (auth) return auth;

@@ -6,14 +6,11 @@ Web campaign first (free, donation-funded) → Steam full game ($7.99–$9.99) w
 ---
 
 ## 1. Premise
-The Prime World broke in an event called **the Sundering**. Its pieces became **Realms**, each a
-world with its own laws, now stitched together by unstable **Rifts**. Creatures, machines and
-magic bleed between them.
-
-You are a **Riftwalker**, one of the few who can travel the Rifts and **bind** what you defeat
-into your **Grimoire** (your deck). Each Realm is ruled by a **Warden** who guards a shard of the
-Prime World. Defeat them, take their power, and walk deeper. And every time you seal the Rift, it
-tears open again, worse than before.
+**The full lore is in `15_LORE.md` (DECISIONS #587); it replaces the old "Prime World" premise.** In short: many
+separate worlds (**Realms**) were sealed apart by **the Ward**, each kept by a **Warden**. The Ward shattered, **Rifts**
+tore open between the worlds, and the Heart of the Rift took the Wardens. You are a **Riftwalker**, a champion of your
+own world, fighting the Wardens and other Riftwalkers for the shards of the broken Ward. And every time you seal a Rift,
+it tears open again, worse than before.
 
 ## 2. Player experience pillars (what players should feel)
 These come first. When a design question is unclear, pick the option that best serves them.

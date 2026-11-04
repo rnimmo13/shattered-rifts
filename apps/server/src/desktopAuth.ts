@@ -1,22 +1,8 @@
 import type { Env } from './env';
 import { identityCall } from './identity';
 import { readSession, sha256 } from './auth';
-
-export const desktopPage = (message: string, form = '', status = 200): Response =>
-  new Response(
-    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shattered Rifts sign-in</title><body><h1>Shattered Rifts</h1><p>${message.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)}</p>${form}</body></html>`,
-    {
-      status,
-      headers: {
-        'content-type': 'text/html; charset=utf-8',
-        'cache-control': 'no-store',
-        'content-security-policy':
-          "default-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
-        'referrer-policy': 'no-referrer',
-        'x-content-type-options': 'nosniff',
-      },
-    },
-  );
+import { desktopPage } from './authPage';
+export { desktopPage } from './authPage';
 
 async function smallBody(request: Request): Promise<Record<string, unknown>> {
   const reader = request.body?.getReader();
@@ -124,6 +110,9 @@ export async function desktopAuthRoute(request: Request, env: Env): Promise<Resp
       b['cancel'] === 'yes'
         ? 'Sign-in cancelled. You can return to the game.'
         : 'Confirmed. Return to the desktop game; this browser window can be closed.',
+      '',
+      200,
+      b['cancel'] === 'yes' ? 'Sign-in cancelled' : 'Sign-in approved',
     );
   }
   return desktopPage('Not found.', '', 404);

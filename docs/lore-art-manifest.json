@@ -1,0 +1,485 @@
+{
+  "version": 1,
+  "tool": "built-in image_gen",
+  "model": "Model identifier not exposed by built-in tool",
+  "brief": "docs/lore-prompts.md",
+  "characterModels": "Default class models in assets-src/heroes/<class>.png; no skins",
+  "assets": [
+    {
+      "file": "ch1-worlds.png",
+      "source": "assets-src/lore/ch1-worlds.png",
+      "web": "art/lore/ch1-worlds.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "3d46cd8ae4c285855113466249c602eb1fb2e7a13d21a27e826d9aa1a24e4443",
+      "bytes": 246146,
+      "prompt": "A cosmic view of many separate worlds floating in darkness, each inside its own faint glassy bubble, each a different colour and shape: a golden city of spires, a world of smoke-stacks and gears, a world of giant trees, a world of shadow and lantern light. Calm, wondrous, silent. Accent: each world's own colour on deep indigo.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch1-apart.png",
+      "source": "assets-src/lore/ch1-apart.png",
+      "web": "art/lore/ch1-apart.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "d6099ffdbe9193c81740197583e3652fd70d5778dd11c113b2696de886afcb99",
+      "bytes": 177904,
+      "prompt": "Close on one glassy bubble wall: on one side a golden cathedral city at dawn, on the other side, just beyond the glass, the dim shape of a forest with glowing eyes. Neither side sees the other. Accent: gold on one side, green on the other.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch2-ward.png",
+      "source": "assets-src/lore/ch2-ward.png",
+      "web": "art/lore/ch2-ward.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "2a0f9ed1f9519d8db6f6ba04ed2abf188ea73f3de3a7f8ed6d2df49c73f88b1e",
+      "bytes": 194446,
+      "prompt": "A towering robed guardian figure (a Warden, face hidden in a hood of light) standing on a cliff at the edge of their world, one hand raised and resting on the glassy Ward that curves overhead like a sky. Solemn, protective. Accent: pale gold.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch2-wardens.png",
+      "source": "assets-src/lore/ch2-wardens.png",
+      "web": "art/lore/ch2-wardens.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "f80feb1f2a60538deca5052ac5596aaf3aaabd50a72d119708e22662e64bbf62",
+      "bytes": 220256,
+      "prompt": "Several different Warden guardians, each in their own world, seen as small figures at the foot of the great glassy wall: a radiant angelic figure, a huge iron foundry machine, a vast beast-shape in the roots, a masked woman in shadow. Each keeps watch. Accent: a different light behind each.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch3-crack.png",
+      "source": "assets-src/lore/ch3-crack.png",
+      "web": "art/lore/ch3-crack.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "d5819e9f44b05cf08d4172416b738a1cd7dc1a610d3bbdee64853c4248dbb132",
+      "bytes": 204166,
+      "prompt": "The first crack: a single jagged violet-cyan line splitting across the glassy Ward sky above a golden city, people on the rooftops looking up. Ominous stillness. Accent: violet against gold.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch3-shatter.png",
+      "source": "assets-src/lore/ch3-shatter.png",
+      "web": "art/lore/ch3-shatter.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "fc01d6426d9ca2cdf71a37dbeb55cdd12d9155891bc8feb5bdefb07d300e6ec2",
+      "bytes": 237072,
+      "prompt": "The Ward shattering everywhere at once: the glass sky breaking into a storm of falling iridescent shards, rifts tearing open across the land, light pouring through. Huge scale, chaotic, beautiful. Accent: violet, cyan, iridescent white.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch3-spill.png",
+      "source": "assets-src/lore/ch3-spill.png",
+      "web": "art/lore/ch3-spill.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "1b83511079e92b5205270117df1dd91a9604b1e6cd0a23383d8b8e62cebadfe2",
+      "bytes": 239960,
+      "prompt": "Through a fresh rift in a quiet machine-world street, wild things spill in: a vine-covered beast, a swirl of shadow birds, a floating golden relic. The machines turn to look. Accent: industrial orange, green, violet rift light.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch3-taken.png",
+      "source": "assets-src/lore/ch3-taken.png",
+      "web": "art/lore/ch3-taken.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "c395f213bd83b263556abbdb15285502f54352478f261d3d40e49b12eed337e7",
+      "bytes": 225770,
+      "prompt": "A Warden guardian on their knees as dark tendrils of rift light wrap around them from a crack behind, their light turning from gold to sickly violet. Tragic, not gory. Accent: gold fading into violet.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch4-step.png",
+      "source": "assets-src/lore/ch4-step.png",
+      "web": "art/lore/ch4-step.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "befbab18ed8ba0d362ed95e519d9bf86ad8dec9f6475ce2d3783ea7497a1a015",
+      "bytes": 170440,
+      "prompt": "A lone silhouetted figure stepping into a towering rift of violet and cyan light, their cloak whipping in the wind from it, the broken landscape of their home behind them. Accent: violet rift light, home sunset behind.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch4-champions.png",
+      "source": "assets-src/lore/ch4-champions.png",
+      "web": "art/lore/ch4-champions.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "80367840a32855aa70612ff8c8225ed3485c2ab84eb58f93d6bc10a28d13e038",
+      "bytes": 285176,
+      "prompt": "Three Riftwalkers standing on three separate floating rocks, each lit by the colour of their own world: a gold-armoured knight with a shield, a teal-armoured engineer with an orbiting drone, a tribal huntress with bone weapons. A rift crackles between them. Accent: gold, orange, green.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch4-many.png",
+      "source": "assets-src/lore/ch4-many.png",
+      "web": "art/lore/ch4-many.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "ba823c532eff195b4f39bfc8bd1a501432ae3e9d424d1a46d21ff051df0e06f9",
+      "bytes": 188214,
+      "prompt": "A wide shot of many tiny figures from different worlds walking along a path of floating stone through the Far Rifts, each carrying their own world's light (a lantern, a glowing blade, a spirit flame). Accent: many small warm lights in deep indigo.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch5-shard.png",
+      "source": "assets-src/lore/ch5-shard.png",
+      "web": "art/lore/ch5-shard.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "2af36842fec68718681512a3f884cdb3a498a575f76ff27d3c79833cddcc0c01",
+      "bytes": 110454,
+      "prompt": "A gloved hand closing around a glowing Ward shard, light spilling between the fingers. Behind, out of focus, the defeated silhouette of a huge Warden. Accent: iridescent shard light.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch5-rivals.png",
+      "source": "assets-src/lore/ch5-rivals.png",
+      "web": "art/lore/ch5-rivals.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "99fe2cae321e1a84b69b7d1da6954698c71f8b386461ba42987c116a64d25554",
+      "bytes": 272252,
+      "prompt": "Two Riftwalkers from different worlds facing each other across a single glowing shard on a broken stone pedestal: a masked trickster with cards fanned in one hand, and a spellblade with a sword of starlight. Tense standoff. Accent: deep purple on one side, starlight blue on the other.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch5-echo.png",
+      "source": "assets-src/lore/ch5-echo.png",
+      "web": "art/lore/ch5-echo.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "0be86a1dd95c0c8629f39992eb2fb37f4e319aea28b0eafa70f576aa07271db8",
+      "bytes": 232966,
+      "prompt": "A translucent, ghostly copy of a Riftwalker, made of shifting violet light and floating cards, rising from a rift crack to face a living Riftwalker. Eerie. Accent: pale violet ghost light.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch6-sealed.png",
+      "source": "assets-src/lore/ch6-sealed.png",
+      "web": "art/lore/ch6-sealed.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "4cc1057e8d6040410939f3e97c3a1a7b5084020cbe5a6bb6df5c92b2212da6eb",
+      "bytes": 183742,
+      "prompt": "A Riftwalker pushing a glowing shard into a closing rift, the crack sealing with a flash; but in the distance behind them, three new cracks are already opening. Accent: bright seal flash, violet cracks.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "ch6-heart.png",
+      "source": "assets-src/lore/ch6-heart.png",
+      "web": "art/lore/ch6-heart.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "aa06b3a0b6a53767851adc1f3d0d2b6e3a86937aaa6a0792f0815121a2ca0584",
+      "bytes": 113728,
+      "prompt": "The deepest rift: an endless chasm of violet and cyan, and at its bottom a vast dark shape with a single slow-pulsing violet glow, tendrils of rift light reaching up toward many tiny shards falling in. Never show its full form. Dread. Accent: violet and black.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-aurelion.png",
+      "source": "assets-src/lore/world-aurelion.png",
+      "web": "art/lore/world-aurelion.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "07a44e366c912c4bc7b1c35652d49a8686367293ac914b1561678cbc6e88133a",
+      "bytes": 187330,
+      "prompt": "Aurelion: a city of white marble and gold spires on terraced cliffs, cathedral bells, banners, rays of holy light through clouds. Accent: gold and white.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-nexus.png",
+      "source": "assets-src/lore/world-nexus.png",
+      "web": "art/lore/world-nexus.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "bed6c877765286f4c8b0f8cd23677aeb97e11359a2a16115593cc29775ec94a9",
+      "bytes": 174850,
+      "prompt": "Nexus-9: a sprawling foundry world of towers, pipes, smoke and furnace glow, lightning harnessed between metal totems. Accent: industrial orange and electric blue.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-wyldmaw.png",
+      "source": "assets-src/lore/world-wyldmaw.png",
+      "web": "art/lore/world-wyldmaw.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "417a92efc45c5970c2a8cce9d013bf101826187f578e4d7c935426c9873614d7",
+      "bytes": 160190,
+      "prompt": "Wyldmaw: a primeval forest of colossal trees with roots like teeth, mist, something huge moving in the canopy. Accent: deep green and amber.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-umbral.png",
+      "source": "assets-src/lore/world-umbral.png",
+      "web": "art/lore/world-umbral.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "c56acc2a62f09b3bc9b1c7146273cdae7d91d75628494069266f98c795d0e405",
+      "bytes": 153768,
+      "prompt": "Umbral Veil: a shadowed city of masks and lantern-lit theatres, crooked alleys, a velvet curtain sky. Accent: deep purple and lantern gold.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-hollow-crown.png",
+      "source": "assets-src/lore/world-hollow-crown.png",
+      "web": "art/lore/world-hollow-crown.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "cdad45dfc8403a9baffef532a63816cd7f61b6502c0bf9f4052d6c0bec1a6f08",
+      "bytes": 198004,
+      "prompt": "The Hollow Crown: the ruins of a crystal kingdom built around a fallen, still-glowing star, broken towers and floating shards. Accent: starlight blue and silver.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-gloomfen.png",
+      "source": "assets-src/lore/world-gloomfen.png",
+      "web": "art/lore/world-gloomfen.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "c9a5b6b328f5f393cf87f1ee52e686f9a40aa5f0c68cfcdad7bd5159e59b1a51",
+      "bytes": 115126,
+      "prompt": "Gloomfen: a drowned marsh at night, half-sunk graves and dead trees, ghostly lights over black water. Accent: sickly green and bone white.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-midden.png",
+      "source": "assets-src/lore/world-midden.png",
+      "web": "art/lore/world-midden.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "6fb3ac89c7be1d87df40c9244177cc5551796da1d796a8ab797bdc5c65e87872",
+      "bytes": 191662,
+      "prompt": "The Midden: an endless scrapheap where wreckage from many worlds has washed up: a broken golden spire, a rusted machine, a fallen tree, all heaped together under a dirty sky. Strangely homely, with a small campfire. Accent: rust and bottle green.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-far-rifts.png",
+      "source": "assets-src/lore/world-far-rifts.png",
+      "web": "art/lore/world-far-rifts.webp",
+      "width": 1536,
+      "height": 1024,
+      "sourceSha256": "a5a6abca0bac69fb2c381f7d7f914d5336c315fbc4983ffe2b472b2e66fdb07e",
+      "bytes": 125066,
+      "prompt": "The Far Rifts: the space between worlds, floating islands of broken land from many worlds drifting in a void of violet and cyan cracks. Accent: violet, cyan, black.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "key-art.png",
+      "source": "assets-src/lore/key-art.png",
+      "web": "art/lore/key-art.webp",
+      "width": 1672,
+      "height": 940,
+      "sourceSha256": "2a86ed7663ec351d44d95b7d2cfe99e07a969d7ac8fdab1d303a2c8d6e37b18f",
+      "bytes": 287322,
+      "prompt": "Landscape 1920 x 1080. The title image of the game. A great shattering Ward sky over a broken landscape where pieces of several worlds collide (a golden spire, a foundry tower, a giant tree, a shadow theatre). In the LEFT half, four Riftwalkers stand ready on a ridge, backs half-turned, facing the storm: the Knight, the Engineer, the Trickster and the Spellblade. In the RIGHT half, calmer sky and a huge central rift with the faint violet glow of the Heart deep inside. Keep the upper right third calm enough for a logo. Epic, hopeful and dangerous at once.",
+      "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "key-art-clean.png",
+      "source": "assets-src/lore/key-art-clean.png",
+      "web": "art/lore/key-art-clean.webp",
+      "width": 1672,
+      "height": 940,
+      "sourceSha256": "e04fa1545a3f3b712a92f605c4d561807fdc897813d18902e1081373a60195f1",
+      "bytes": 275060,
+      "prompt": "The same scene, the same framing, WITHOUT the Riftwalkers (only the landscape and sky). Used behind the logo for the Steam library hero and the startup splash.",
+      "reviewStatus": "concept; pending Robert’s review"
+    }
+  ],
+  "generation": [
+    {
+      "file": "ch1-worlds.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now, no ready reply. PRIMARY SCENE: A cosmic view of many separate worlds floating in darkness, each inside its own faint glassy bubble, each a different colour and shape: a golden city of spires, a world of smoke-stacks and gears, a world of giant trees, a world of shadow and lantern light. Calm, wondrous, silent. Accent: each world's own colour on deep indigo.\nReference image is STYLE ONLY. This is a world-history scene, not a cast portrait. Do not include the Knight, Engineer, Trickster, Spellblade, or any recognizable player champion. Include only objects and generic inhabitants explicitly required by the primary scene. One landscape 1536 x 1024 panel, full bleed, no text, captions, logos, grids or borders.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch1-apart.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now, no ready reply. PRIMARY SCENE: Close on one glassy bubble wall: on one side a golden cathedral city at dawn, on the other side, just beyond the glass, the dim shape of a forest with glowing eyes. Neither side sees the other. Accent: gold on one side, green on the other.\nReference image is STYLE ONLY. This is a world-history scene, not a cast portrait. Do not include the Knight, Engineer, Trickster, Spellblade, or any recognizable player champion. Include only objects and generic inhabitants explicitly required by the primary scene. One landscape 1536 x 1024 panel, full bleed, no text, captions, logos, grids or borders.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch2-ward.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now, no ready reply. PRIMARY SCENE: A towering robed guardian figure (a Warden, face hidden in a hood of light) standing on a cliff at the edge of their world, one hand raised and resting on the glassy Ward that curves overhead like a sky. Solemn, protective. Accent: pale gold.\nReference image is STYLE ONLY. This is a world-history scene, not a cast portrait. Do not include the Knight, Engineer, Trickster, Spellblade, or any recognizable player champion. Include only objects and generic inhabitants explicitly required by the primary scene. One landscape 1536 x 1024 panel, full bleed, no text, captions, logos, grids or borders.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch2-wardens.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Several different Warden guardians, each in their own world, seen as small figures at the foot of the great glassy wall: a radiant angelic figure, a huge iron foundry machine, a vast beast-shape in the roots, a masked woman in shadow. Each keeps watch. Accent: a different light behind each.\nReference image is STYLE ONLY, not the subject. This is a historical scene before the champions unite. No Knight, Engineer, Trickster, Spellblade, player champions, recognizable heroes, or cast lineup. Use only generic people/guardians/creatures specified in PRIMARY SCENE; when people are not requested, leave people out. One landscape 1536 x 1024 illustration, full bleed, no text, no lettering, no logo, no borders or panels. Do not add a visible eye or Heart creature unless PRIMARY SCENE asks for it. The separate worlds were sealed, not fragments of one planet.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch3-crack.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: The first crack: a single jagged violet-cyan line splitting across the glassy Ward sky above a golden city, people on the rooftops looking up. Ominous stillness. Accent: violet against gold.\nReference image is STYLE ONLY, not the subject. This is a historical scene before the champions unite. No Knight, Engineer, Trickster, Spellblade, player champions, recognizable heroes, or cast lineup. Use only generic people/guardians/creatures specified in PRIMARY SCENE; when people are not requested, leave people out. One landscape 1536 x 1024 illustration, full bleed, no text, no lettering, no logo, no borders or panels. Do not add a visible eye or Heart creature unless PRIMARY SCENE asks for it. The separate worlds were sealed, not fragments of one planet.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch3-shatter.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: The Ward shattering everywhere at once: the glass sky breaking into a storm of falling iridescent shards, rifts tearing open across the land, light pouring through. Huge scale, chaotic, beautiful. Accent: violet, cyan, iridescent white.\nReference image is STYLE ONLY, not the subject. This is a historical scene before the champions unite. No Knight, Engineer, Trickster, Spellblade, player champions, recognizable heroes, or cast lineup. Use only generic people/guardians/creatures specified in PRIMARY SCENE; when people are not requested, leave people out. One landscape 1536 x 1024 illustration, full bleed, no text, no lettering, no logo, no borders or panels. Do not add a visible eye or Heart creature unless PRIMARY SCENE asks for it. The separate worlds were sealed, not fragments of one planet.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch3-spill.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Through a fresh rift in a quiet machine-world street, wild things spill in: a vine-covered beast, a swirl of shadow birds, a floating golden relic. The machines turn to look. Accent: industrial orange, green, violet rift light.\nReference image is STYLE ONLY, not the subject. This is a historical scene before the champions unite. No Knight, Engineer, Trickster, Spellblade, player champions, recognizable heroes, or cast lineup. Use only generic people/guardians/creatures specified in PRIMARY SCENE; when people are not requested, leave people out. One landscape 1536 x 1024 illustration, full bleed, no text, no lettering, no logo, no borders or panels. Do not add a visible eye or Heart creature unless PRIMARY SCENE asks for it. The separate worlds were sealed, not fragments of one planet.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch3-taken.png",
+      "prompt": "Create the tragic later moment for the SAME WARDEN GUARDIAN in this image. Keep this robed, hooded, faceless light-being's identity and ornate pale-gold/white/blue ceremonial robes. Now show THIS guardian on their knees with dark violet tendrils emerging from a rift behind them and encircling them, their holy light turning from pale gold to sickly violet. DO NOT depict the player Knight: no closed Knight helmet, no plate-armored champion, no shield or sword. A robed Warden is being corrupted, not a Riftwalker. Bold outlines, simple polished cel shading, cinematic landscape 1536x1024, full bleed. No text, no borders, no gore. Never show the Heart's full form.",
+      "references": [
+        "assets-src/lore/ch2-ward.png"
+      ]
+    },
+    {
+      "file": "ch4-step.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: A lone silhouetted figure stepping into a towering rift of violet and cyan light, their cloak whipping in the wind from it, the broken landscape of their home behind them. Accent: violet rift light, home sunset behind.\nThe lone silhouette is the default Knight: fully closed helmet, shield and sword outline, cloak/tabard. No exposed face or blonde hair. No other heroes.\nLandscape 1536 x 1024, one full-bleed illustration, no text, captions, logo or borders. Stay faithful to the requested focal scene rather than repeating earlier images.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch4-champions.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Three Riftwalkers standing on three separate floating rocks, each lit by the colour of their own world: a gold-armoured knight with a shield, a teal-armoured engineer with an orbiting drone, a tribal huntress with bone weapons. A rift crackles between them. Accent: gold, orange, green.\nExactly THREE champions match these DEFAULT in-game models: fully helmeted white/gold Knight and blue tabard, teal/orange Engineer with goggles, respirator and drone, dark-haired tribal Huntress with bone weapons. No alternate skins. Each stands alone on a separate rock; they are rivals, not an army.\nLandscape 1536 x 1024, one full-bleed illustration, no text, captions, logo or borders. Stay faithful to the requested focal scene rather than repeating earlier images.",
+      "references": [
+        "assets-src/heroes/knight.png",
+        "assets-src/heroes/engineer.png",
+        "assets-src/heroes/hunter.png"
+      ]
+    },
+    {
+      "file": "ch4-many.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: A wide shot of many tiny figures from different worlds walking along a path of floating stone through the Far Rifts, each carrying their own world's light (a lantern, a glowing blade, a spirit flame). Accent: many small warm lights in deep indigo.\nAll travelers are tiny distant silhouettes. No large foreground character, portrait or character lineup. Many different worlds' small lights are the focus.\nLandscape 1536 x 1024, one full-bleed illustration, no text, captions, logo or borders. Stay faithful to the requested focal scene rather than repeating earlier images.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch5-shard.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: A gloved hand closing around a glowing Ward shard, light spilling between the fingers. Behind, out of focus, the defeated silhouette of a huge Warden. Accent: iridescent shard light.\nOnly a close-up gloved/gauntleted hand and luminous glass shard in focus. No full hero portrait or other foreground champion. Defeated Warden is only an indistinct background silhouette.\nLandscape 1536 x 1024, one full-bleed illustration, no text, captions, logo or borders. Stay faithful to the requested focal scene rather than repeating earlier images.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch5-rivals.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Two Riftwalkers from different worlds facing each other across a single glowing shard on a broken stone pedestal: a masked trickster with cards fanned in one hand, and a spellblade with a sword of starlight. Tense standoff. Accent: deep purple on one side, starlight blue on the other.\nExactly TWO default characters from the references: masked Trickster with purple TOP HAT and cards, and dark-skinned white-haired Spellblade with purple/gold armor and starlight sword. Match both character models faithfully. No Knight or Engineer. Standoff over ONE iridescent glass shard, not an attack; both have a world to save.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/trickster.png",
+        "assets-src/heroes/spellblade.png"
+      ]
+    },
+    {
+      "file": "ch5-echo.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: A translucent, ghostly copy of a Riftwalker, made of shifting violet light and floating cards, rising from a rift crack to face a living Riftwalker. Eerie. Accent: pale violet ghost light.\nUse the attached in-game default Knight only where a living Riftwalker is requested: completely helmeted white/gold plate, blue tabard and sun shield; no bare face or alternate skin. No unrequested cast members.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch6-sealed.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: A Riftwalker pushing a glowing shard into a closing rift, the crack sealing with a flash; but in the distance behind them, three new cracks are already opening. Accent: bright seal flash, violet cracks.\nUse the attached in-game default Knight only where a living Riftwalker is requested: completely helmeted white/gold plate, blue tabard and sun shield; no bare face or alternate skin. No unrequested cast members.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "ch6-heart.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: The deepest rift: an endless chasm of violet and cyan, and at its bottom a vast dark shape with a single slow-pulsing violet glow, tendrils of rift light reaching up toward many tiny shards falling in. Never show its full form. Dread. Accent: violet and black.\nNo people, no player champions, no faces or monster anatomy. A vast unknowable dark shape is mostly hidden. Only ONE small distant violet pulse suggests its presence. Preserve mystery, do not reveal or explain it.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-aurelion.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Aurelion: a city of white marble and gold spires on terraced cliffs, cathedral bells, banners, rays of holy light through clouds. Accent: gold and white.\nWIDE WORLD VISTA from a high viewpoint, no foreground people or heroes. Match reference rendering only, do NOT copy its character, equipment or sun symbols. Keep bottom 30% darker and calm for later page text. Only faint SMALL violet-cyan Rift cracks in the sky; no giant eye, Heart shape, portal face, cast lineup or huge dominant Rift. The world's own architecture and landscape are the focus.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-nexus.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE illustration now. PRIMARY SCENE: Nexus-9: a sprawling foundry world of towers, pipes, smoke and furnace glow, lightning harnessed between metal totems. Accent: industrial orange and electric blue.\nWIDE WORLD VISTA from a high viewpoint, no foreground people or heroes. Match reference rendering only, do NOT copy its character, equipment or sun symbols. Keep bottom 30% darker and calm for later page text. Only faint SMALL violet-cyan Rift cracks in the sky; no giant eye, Heart shape, portal face, cast lineup or huge dominant Rift. The world's own architecture and landscape are the focus.\nLandscape 1536 x 1024, ONE full-bleed painting, no lettering, numbers, captions, panel grid, border, logo or watermark.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-wyldmaw.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: Wyldmaw: a primeval forest of colossal trees with roots like teeth, mist, something huge moving in the canopy. Accent: deep green and amber.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-umbral.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: Umbral Veil: a shadowed city of masks and lantern-lit theatres, crooked alleys, a velvet curtain sky. Accent: deep purple and lantern gold.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-hollow-crown.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: The Hollow Crown: the ruins of a crystal kingdom built around a fallen, still-glowing star, broken towers and floating shards. Accent: starlight blue and silver.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-gloomfen.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: Gloomfen: a drowned marsh at night, half-sunk graves and dead trees, ghostly lights over black water. Accent: sickly green and bone white.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-midden.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: The Midden: an endless scrapheap where wreckage from many worlds has washed up: a broken golden spire, a rusted machine, a fallen tree, all heaped together under a dirty sky. Strangely homely, with a small campfire. Accent: rust and bottle green.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "world-far-rifts.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nPANEL: The Far Rifts: the space between worlds, floating islands of broken land from many worlds drifting in a void of violet and cyan cracks. Accent: violet, cyan, black.\n\nWORLD VISTA: one uninterrupted landscape, no foreground heroes. Bottom 30 percent calm and darker for an HTML caption overlay. Any rifts in sky must be small faint cracks; no huge eye or Heart. Reference image is STYLE ONLY, do not include its knight, armor, sun emblem or shield. Premium illustrated environment with bold crisp outlines and simple cel shading.",
+      "references": [
+        "assets-src/heroes/knight.png"
+      ]
+    },
+    {
+      "file": "key-art.png",
+      "prompt": "You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. The Ward shattered, rifts tore open between the worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is a vast, hungry presence called the Heart of the Rift.\n\nI will send one panel per message; make ONE image per message.\n\nSTYLE ANCHOR: the attached image. Match its cartoon game-art rendering: bold clean outlines, flat saturated colour, simple cel shading, crisp polished shapes. Think of a premium graphic novel drawn in that style: cinematic framing, strong silhouettes, dramatic lighting. Do NOT copy the attached character unless the panel asks for the Knight.\n\nFORMAT (every image): landscape 1536 x 1024, full bleed edge to edge. ONE single illustration per image: NOT a page of several panels, no panel grid, no gutters, no border, no frame.\n\nCOMPOSITION: one clear focal moment per panel, readable at a glance as a small thumbnail. One strong light source, deep shadows at the edges (soft vignette).\n\nRECURRING MOTIFS (keep them consistent across every panel):\n- THE WARD: when visible, a faint, glassy, slightly iridescent wall or dome, like a soap bubble made of stained glass.\n- THE RIFTS: jagged cracks of violet and cyan light, with crystal-like shards breaking off at their edges.\n- WARD SHARDS: palm-sized, glowing shards of that same glassy iridescent material.\n- THE HEART: never fully shown. A vast dark shape glimpsed in the deepest rift, a single violet glow like an eye or a pulse, tendrils of rift light.\n\nPALETTE: dark-fantasy rift. Deep indigo, slate and warm black, with violet and cyan rift light; each panel adds the accent named in its message.\n\nNEGATIVE (every image): readable text, letters, numbers, speech bubbles, captions, sound effects, comic page layout, panel borders, UI, frame, watermark, logo, photorealism, gritty grainy textures, gore.\n\nGenerate ONE image now (do not reply ready). Landscape 1920 x 1080. The title image of the game. A great shattering Ward sky over a broken landscape where pieces of several worlds collide (a golden spire, a foundry tower, a giant tree, a shadow theatre). In the LEFT half, four Riftwalkers stand ready on a ridge, backs half-turned, facing the storm: the Knight, the Engineer, the Trickster and the Spellblade. In the RIGHT half, calmer sky and a huge central rift with the faint violet glow of the Heart deep inside. Keep the upper right third calm enough for a logo. Epic, hopeful and dangerous at once.\nUse the attached DEFAULT in-game models, not alternate skins: Knight is fully helmeted white/gold plate and blue tabard, no bare face or flowing blonde hair; Engineer has weathered teal/orange gear, goggles, respirator and drone; Trickster wears her purple top hat, gold eye mask and floating cards, NOT a witch hat. Spellblade is the white-haired dark-skinned purple/gold celestial swordswoman. Only depict those characters when the brief calls for them. Landscape 1920 x 1080. No text or logo; preserve space for UI text requested by the brief.",
+      "references": [
+        "knight",
+        "engineer",
+        "trickster",
+        "spellblade"
+      ]
+    },
+    {
+      "file": "key-art-clean.png",
+      "prompt": "Edit this chosen Shattered Rifts key art into its matching CLEAN landscape plate. Preserve exactly its framing, world architecture, giant trees, foundry, shadow theatre, jagged cyan/violet Rift, iridescent Ward shards, composition, palette, lighting and bold cel-shaded style. Remove ALL four foreground champions and the small orbiting drone; replace their space naturally with the same rocky ridge and landscape. No humans, heroes, faces or characters anywhere. Keep upper right third calm and dark for later UI. Same wide 16:9 framing. No painted text, border, logos, UI or watermark.",
+      "references": [
+        "assets-src/lore/key-art.png"
+      ]
+    }
+  ]
+}

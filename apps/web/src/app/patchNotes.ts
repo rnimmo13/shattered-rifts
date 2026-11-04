@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.188.0',
+    date: '2026-11-04',
+    title: 'The worlds beyond the Ward',
+    summary: 'An illustrated story, a new opening splash, and smoother desktop sign-in.',
+    notes: [
+      { kind: 'new', text: 'The story of the Rifts is on the home and Learn pages: six illustrated chapters, eight worlds, and artwork you can open and explore. The Riftwalkers use their default appearances.' },
+      { kind: 'new', text: 'The game opens on a new landscape splash while Riftwalker artwork loads. Slow connections can continue while the remaining art arrives.' },
+      { kind: 'fixed', text: 'Google desktop sign-in now completes after browser approval. Approval, cancellation and error pages have clear instructions and a new Shattered Rifts design.' },
+    ],
+  },
+  {
     version: '0.187.0',
     date: '2026-11-04',
     title: 'Your Google account on desktop',

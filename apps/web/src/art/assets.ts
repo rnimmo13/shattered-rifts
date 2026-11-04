@@ -25,6 +25,26 @@ const skins = new Map<string, string>();
 let loading: Promise<void> | null = null;
 let staged: Stages | null = null;
 
+export interface ArtProgress {
+  completed: number;
+  total: number;
+  stage: 'manifest' | 'heroes' | 'ready';
+}
+let progress: ArtProgress = { completed: 0, total: 0, stage: 'manifest' };
+const progressListeners = new Set<(progress: ArtProgress) => void>();
+function reportProgress(next: ArtProgress): void {
+  progress = next;
+  for (const listener of progressListeners) listener(progress);
+}
+/** Counts settled hero requests, including failed artwork that can use a placeholder. */
+export function observeArtProgress(listener: (progress: ArtProgress) => void): () => void {
+  progressListeners.add(listener);
+  listener(progress);
+  return () => {
+    progressListeners.delete(listener);
+  };
+}
+
 function base(): string {
   return import.meta.env.BASE_URL;
 }
@@ -50,9 +70,13 @@ function load(): Stages {
     let m: Manifest;
     try {
       const res = await fetch(`${base()}art/manifest.json`, { cache: 'no-cache' });
-      if (!res.ok) return { heroes: none, all: none };
+      if (!res.ok) {
+        reportProgress({ completed: 0, total: 0, stage: 'ready' });
+        return { heroes: none, all: none };
+      }
       m = (await res.json()) as Manifest;
     } catch {
+      reportProgress({ completed: 0, total: 0, stage: 'ready' });
       return { heroes: none, all: none }; // no manifest: all placeholders
     }
     for (const [id, path] of Object.entries(m.cards ?? {})) cards.set(id, `${base()}art/${path}`);
@@ -70,10 +94,18 @@ function load(): Stages {
         figures.set(key, c);
       });
     const entries = Object.entries(m.figures ?? {});
+    const heroEntries = entries.filter(([k]) => k.startsWith('hero:'));
+    reportProgress({ completed: 0, total: heroEntries.length, stage: 'heroes' });
     // the heroes come first: the home screen and every character screen show them
     const heroes = Promise.all(
-      entries.filter(([k]) => k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)),
-    ).then(() => undefined);
+      heroEntries.map(([k, p]) =>
+        fetchFigure(k, p).finally(() => {
+          reportProgress({ ...progress, completed: progress.completed + 1 });
+        }),
+      ),
+    ).then(() => {
+      reportProgress({ ...progress, stage: 'ready' });
+    });
     const rest = Promise.all(
       entries.filter(([k]) => !k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)),
     );

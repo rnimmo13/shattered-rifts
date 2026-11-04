@@ -272,6 +272,11 @@ export function LearnScreen() {
         <span>Back</span>
       </a>
       <h1 className="learn__title">How to play</h1>
+      <p>
+        <a className="btn btn--small btn--ghost" href="#/lore">
+          The story · Explore the worlds
+        </a>
+      </p>
       <nav className="learn__tabs" aria-label="How to play">
         {TABS.filter((t) => t.id !== 'odds' || SHOW_ODDS).map((t) => (
           <button

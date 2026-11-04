@@ -1,0 +1,117 @@
+html {
+  background: #080c17;
+}
+body {
+  margin: 0;
+}
+.startup {
+  min-height: 100svh;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  isolation: isolate;
+  position: relative;
+  background: #080c17;
+  color: #ece7da;
+  font-family: Georgia, serif;
+}
+.startup::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: url('./art/lore/key-art-clean.webp') center / cover no-repeat;
+}
+.startup::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at center, #080c1766, #080c17e8),
+    linear-gradient(0deg, #080c17, transparent);
+}
+.startup__content {
+  width: min(100%, 34rem);
+  text-align: center;
+}
+.startup__content > img {
+  width: clamp(72px, 12vw, 120px);
+  height: auto;
+}
+.startup h1 {
+  color: #ebd596;
+  margin: 0.8rem 0;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-wrap: balance;
+}
+.startup__story {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+  color: #c7d1e4;
+  margin: 1.6rem auto 2.4rem;
+  max-width: 38ch;
+}
+.startup__status {
+  min-height: 1.5em;
+  font:
+    0.9rem/1.6 system-ui,
+    sans-serif;
+  color: #c7bb9d;
+  overflow-wrap: anywhere;
+}
+.startup progress {
+  display: block;
+  width: min(100%, 19rem);
+  height: 5px;
+  margin: 1rem auto;
+  border: none;
+  border-radius: 6px;
+  accent-color: #e4c473;
+  background: #29334a;
+}
+.startup progress::-webkit-progress-bar {
+  background: #29334a;
+  border-radius: 6px;
+}
+.startup progress::-webkit-progress-value {
+  background: #e4c473;
+  border-radius: 6px;
+}
+.startup__actions {
+  min-height: 3.5rem;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.startup button {
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #ab8b4c;
+  border-radius: 7px;
+  background: #111b2ee8;
+  color: #ecd89f;
+  font:
+    600 0.85rem system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+.startup button:focus-visible {
+  outline: 2px solid #8ee8f1;
+  outline-offset: 4px;
+}
+.startup [hidden] {
+  display: none;
+}
+@media (max-width: 500px) {
+  .startup {
+    padding: 1.2rem;
+  }
+  .startup::before {
+    background-position: 60% center;
+  }
+}

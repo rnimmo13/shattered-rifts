@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Dev tools: CLI fight, balance sim, site deploy.",
   "scripts": {
+    "lore:art": "tsx src/loreArt.ts",
     "fight": "tsx src/fight.ts",
     "typecheck": "tsc -p tsconfig.json",
     "play:smoke": "tsx src/playAccessProbe.ts",
@@ -38,6 +39,7 @@
     "@sr/pvp": "workspace:*"
   },
   "devDependencies": {
+    "sharp": "0.35.5",
     "tsx": "4.23.15"
   }
 }

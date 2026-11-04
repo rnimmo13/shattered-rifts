@@ -10,7 +10,8 @@ import './app/global.css';
 import './ui/controls.css';
 import './duel/duel.css';
 import { App } from './app/App';
-import { loadSkin, preloadArt } from './art/assets';
+import { loadSkin, preloadArt, observeArtProgress } from './art/assets';
+import { startupSplash, showStartupError } from './startup';
 import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 import { markGraphicsQuality } from './duel/effects';
 import { installPlayAccess } from './playAccess';
@@ -39,13 +40,23 @@ const wornSkins = (): Promise<unknown> =>
     Promise.all(Object.values(cosmetics().worn).flatMap((w) => (w.skin ? [loadSkin(w.skin)] : []))),
     new Promise((resolve) => window.setTimeout(resolve, 3000)),
   ]);
-void preloadArt()
-  .then(wornSkins)
+const splash = startupSplash();
+const stopProgress = observeArtProgress(splash.update);
+void Promise.race([preloadArt().then(wornSkins), splash.skip])
   .then(() => {
+    splash.finish();
+    stopProgress();
     createRoot(root).render(
       <StrictMode>
         <App />
       </StrictMode>,
+    );
+  })
+  .catch((error: unknown) => {
+    splash.finish();
+    stopProgress();
+    showStartupError(
+      error instanceof Error ? error.message : 'The Rift could not open. Please try again.',
     );
   });
 
