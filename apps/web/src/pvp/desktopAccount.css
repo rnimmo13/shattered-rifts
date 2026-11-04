@@ -1,0 +1,31 @@
+.desktop-account {
+  align-items: start;
+}
+.desktop-account p {
+  margin: 0;
+}
+.desktop-login {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(4 5 11 / 0.95);
+}
+.desktop-login > section {
+  width: min(30rem, 100%);
+  padding: 1.5rem;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 1rem;
+  background: #111a32;
+  display: grid;
+  gap: 1rem;
+}
+.desktop-login h2 {
+  margin: 0;
+  color: var(--c-gold-light);
+}
+.desktop-login button {
+  min-height: 44px;
+}

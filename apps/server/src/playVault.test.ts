@@ -53,6 +53,18 @@ function create() {
   return { ask, db };
 }
 describe('actual Vault gameplay fences and save transactions', () => {
+  it('seals only a never-played Steam Vault and rejects all stale requests afterward', async () => {
+    const empty = create(),
+      target = 'a'.repeat(64);
+    expect((await empty.ask('identity/seal', { account: target })).status).toBe(200);
+    expect((await empty.ask('play/claim', { holder: 'old-device' })).status).toBe(409);
+    expect((await empty.ask('cosmetics', {})).status).toBe(409);
+    expect((await empty.ask('identity/seal', { account: target })).status).toBe(200);
+    expect((await empty.ask('identity/seal', { account: 'b'.repeat(64) })).status).toBe(409);
+    const played = create();
+    await played.ask('play/claim', { holder: 'old-device' });
+    expect((await played.ask('identity/seal', { account: target })).status).toBe(409);
+  });
   it('lets two devices browse, but admits only one simultaneous play claim', async () => {
     const { ask } = create();
     expect((await ask('list')).status).toBe(200);

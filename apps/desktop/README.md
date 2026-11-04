@@ -1,5 +1,10 @@
 # Shattered Rifts desktop prototype
 
+**0.187.0:** standalone Google sign-in opens the default browser, remembers the login in encrypted
+native storage, and keeps per-account saves separate. Account and Settings include sign-out; account
+changes wait until outside battle. Steam editions can explicitly link a fresh Steam game account to
+existing Google progression once Steam is configured. See [Google login and linking](GOOGLE_LOGIN.md).
+
 **Brand assets (0.185.0):** `pnpm brand:assets` regenerates tracked PNG/ICO derivatives from
 `assets-src/icons/shattered-rifts-logo.png`. The source artwork remains in the ignored art-source
 directory; generated public/Windows assets are committed so builds do not depend on that directory.

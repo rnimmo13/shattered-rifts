@@ -59,6 +59,9 @@ export class Vault extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS identity_redirect (k INTEGER PRIMARY KEY, account TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS play_lease (k INTEGER PRIMARY KEY, data TEXT NOT NULL)',
     );
     ctx.storage.sql.exec(
@@ -214,6 +217,31 @@ export class Vault extends DurableObject<Env> {
 
   override async fetch(request: Request): Promise<Response> {
     const action = new URL(request.url).pathname.replace(/^\/+/, '');
+    const sealed = this.ctx.storage.sql
+      .exec<{ account: string }>('SELECT account FROM identity_redirect WHERE k = 1')
+      .toArray()[0]?.account;
+    if (action === 'identity/seal') {
+      const b = await request.json<{ account?: unknown }>();
+      if (typeof b.account !== 'string' || !/^[a-f0-9]{64}$/.test(b.account)) return json({}, 400);
+      if (sealed) return json({ ok: sealed === b.account }, sealed === b.account ? 200 : 409);
+      const lease = this.lease();
+      const cosmetics = this.cosmetics();
+      if (
+        lease.generation > 0 ||
+        this.runs().length ||
+        this.list().length ||
+        this.list_('history').items.length ||
+        this.list_('matches').items.length ||
+        cosmetics.owned.length
+      )
+        return json({ error: 'existing-progress' }, 409);
+      this.ctx.storage.sql.exec(
+        'INSERT INTO identity_redirect (k, account) VALUES (1, ?)',
+        b.account,
+      );
+      return json({ ok: true });
+    }
+    if (sealed) return json({ error: 'account-linked-reconnect' }, 409);
     if (action === 'list') return json({ ok: true, decks: this.list() });
     if (action === 'runs')
       return json({

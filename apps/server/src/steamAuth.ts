@@ -1,5 +1,6 @@
 import type { Env } from './env';
 import { makeSession, sha256 } from './auth';
+import { resolveSteamAccount } from './identity';
 
 const headers = {
   'content-type': 'application/json',
@@ -91,7 +92,16 @@ export async function steamLogin(
       { account: await sha256(`steam:${steamId}`), provider: 'steam' },
       now,
     );
-    return json({ token, steamId, expires: now + 30 * 86400000 }, 200);
+    const account = await sha256(`steam:${steamId}`);
+    return json(
+      {
+        token,
+        steamId,
+        linked: (await resolveSteamAccount(env, account)) !== account,
+        expires: now + 30 * 86400000,
+      },
+      200,
+    );
   } catch {
     return json({ error: 'Steam sign-in is temporarily unavailable.' }, 503);
   }

@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.187.0',
+    date: '2026-11-04',
+    title: 'Your Google account on desktop',
+    summary: 'Use the same account on the website and Windows app.',
+    notes: [
+      { kind: 'new', text: 'The desktop Account panel and Settings offer Sign in with Google. Confirm in your browser and return to the app; your desktop login is remembered securely.' },
+      { kind: 'changed', text: 'Sign out saves first and restores your separate guest profile. Other Google accounts and local offline saves stay separate. Account changes wait until you leave battle.' },
+      { kind: 'new', text: 'Steam editions are ready to link a fresh Steam game account to existing Google progress after an explicit browser confirmation. Linking refuses separate Steam progress instead of overwriting it; live Steam features still await our Steam app setup.' },
+    ],
+  },
+  {
     version: '0.186.0',
     date: '2026-11-04',
     title: 'Download beside Settings',

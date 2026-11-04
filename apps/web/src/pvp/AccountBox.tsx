@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { signInUrl, signOut, type Me } from './vaultSync';
 import './accountBox.css';
 import { IS_DESKTOP } from '../platform';
+import { DesktopAccount } from './DesktopAccount';
 
 export function AccountBox(props: {
   me: Me;
@@ -16,8 +17,8 @@ export function AccountBox(props: {
 }) {
   const [busy, setBusy] = useState(false);
   const { me, compact } = props;
-  // Browser Google cookies cannot sign the isolated desktop profile in. Vault codes still work.
-  if (IS_DESKTOP) return null;
+  // Desktop uses its browser handoff and native credential storage instead of browser cookies.
+  if (IS_DESKTOP) return <DesktopAccount />;
   if (me.signedIn)
     return (
       <section className="pvp__account" aria-label="Account">

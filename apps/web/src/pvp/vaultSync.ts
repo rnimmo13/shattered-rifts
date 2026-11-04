@@ -131,8 +131,8 @@ export function whoAmI(): Promise<Me> {
     return desktop
       .status()
       .then((status) => {
-        signedIn = status.online;
-        return { signedIn, available: false };
+        signedIn = status.online || status.provider === 'google';
+        return { signedIn, available: status.available === true };
       })
       .catch(() => ({ signedIn: false, available: false }));
   me ??= (async (): Promise<Me> => {

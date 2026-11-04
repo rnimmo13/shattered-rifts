@@ -3,6 +3,9 @@ export interface DesktopSteamStatus {
   name: string | null;
   online: boolean;
   message: string;
+  provider?: 'google' | 'steam' | null;
+  available?: boolean;
+  linked?: boolean;
 }
 export interface DesktopUpdateStatus {
   phase: 'unsupported' | 'idle' | 'checking' | 'downloading' | 'ready' | 'installing' | 'error';
@@ -16,9 +19,13 @@ interface DesktopBridge {
     data: { entries: Record<string, string> } | null;
     replace: string[];
     steam: DesktopSteamStatus;
+    reset?: boolean;
   }>;
   save(entries: Record<string, string>): Promise<{ savedAt: number; earned: string[] }>;
   status(): Promise<DesktopSteamStatus>;
+  googleLogin(): Promise<void>;
+  googleCancel(): Promise<void>;
+  googleLogout(): Promise<void>;
   updateStatus(): Promise<DesktopUpdateStatus>;
   checkUpdate(): Promise<DesktopUpdateStatus>;
   installUpdate(): Promise<void>;
@@ -29,6 +36,7 @@ interface DesktopBridge {
 declare global {
   interface Window {
     shatteredRiftsDesktop?: DesktopBridge;
+    shatteredRiftsPrepareAccountSwitch?: () => Promise<void>;
   }
 }
 export const desktopBridge = (): DesktopBridge | undefined =>
@@ -62,12 +70,21 @@ export function flushDesktopSave(): Promise<void> {
 export async function startDesktop(): Promise<void> {
   const bridge = desktopBridge();
   if (!bridge) throw new Error('Desktop bridge unavailable. Please reopen the desktop app.');
-  const { data, replace } = await bridge.bootstrap(Object.keys(localStorage));
+  const { data, replace, reset } = await bridge.bootstrap(Object.keys(localStorage));
   // The file restored by Steam is canonical. Preserve machine-specific settings outside it.
-  if (data) {
+  if (data || reset) {
     for (const key of replace) localStorage.removeItem(key);
-    for (const [key, value] of Object.entries(data.entries)) localStorage.setItem(key, value);
+    for (const [key, value] of Object.entries(data?.entries ?? {}))
+      localStorage.setItem(key, value);
   }
+  window.shatteredRiftsPrepareAccountSwitch = async () => {
+    const { battleActive } = await import('./battleActivity');
+    if (battleActive()) throw new Error('Finish or leave the battle before changing accounts.');
+    const { releasePlayAccess } = await import('./playAccess');
+    await releasePlayAccess();
+    await flushDesktopSave();
+    if (battleActive()) throw new Error('A battle has started. Change accounts afterward.');
+  };
   await bridge.ready();
   await flushDesktopSave();
   window.setInterval(() => {

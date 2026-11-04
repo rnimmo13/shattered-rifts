@@ -14,6 +14,7 @@
     "desktop:package": "pnpm desktop:build && pnpm --filter @sr/desktop package",
     "desktop:pack": "pnpm desktop:build && pnpm --filter @sr/desktop pack",
     "desktop:smoke": "pnpm desktop:build && pnpm --filter @sr/desktop smoke",
+    "desktop:account:smoke": "pnpm desktop:build && pnpm --filter @sr/desktop account:smoke",
     "desktop:release": "pnpm desktop:package && node apps/desktop/scripts/release.mjs",
     "desktop:release:validate": "node apps/desktop/scripts/release.mjs --validate",
     "desktop:update:smoke": "pnpm desktop:build && node apps/desktop/scripts/update-smoke.mjs",

@@ -10,6 +10,9 @@ export interface SteamStatus {
   name: string | null;
   online: boolean;
   message: string;
+  provider?: 'google' | 'steam' | null;
+  linked?: boolean;
+  available?: boolean;
 }
 export function appIdOf(raw: unknown): number | null {
   if (raw === undefined || raw === null || raw === '') return null;
@@ -94,6 +97,7 @@ export class SteamService {
         token?: unknown;
         expires?: unknown;
         steamId?: unknown;
+        linked?: unknown;
       };
       if (
         !response.ok ||
@@ -105,6 +109,7 @@ export class SteamService {
       this.token = result.token;
       this.expires = result.expires;
       this.status.online = true;
+      this.status.linked = result.linked === true;
       this.status.message = 'Signed in through Steam.';
     } catch {
       this.token = null;

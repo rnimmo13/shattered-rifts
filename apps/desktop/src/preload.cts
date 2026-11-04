@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld('shatteredRiftsDesktop', {
   save: (entries: Record<string, string>): Promise<unknown> =>
     ipcRenderer.invoke('desktop:save', entries),
   status: (): Promise<unknown> => ipcRenderer.invoke('desktop:status'),
+  googleLogin: (): Promise<unknown> => ipcRenderer.invoke('desktop:google-login'),
+  googleCancel: (): Promise<unknown> => ipcRenderer.invoke('desktop:google-cancel'),
+  googleLogout: (): Promise<unknown> => ipcRenderer.invoke('desktop:google-logout'),
   updateStatus: (): Promise<unknown> => ipcRenderer.invoke('desktop:update-status'),
   checkUpdate: (): Promise<unknown> => ipcRenderer.invoke('desktop:update-check'),
   installUpdate: (): Promise<unknown> => ipcRenderer.invoke('desktop:update-install'),

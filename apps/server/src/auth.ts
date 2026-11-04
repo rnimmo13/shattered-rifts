@@ -8,6 +8,8 @@
 
 import type { Env } from './env';
 import { steamLogin } from './steamAuth';
+import { identityCall, resolveSteamAccount } from './identity';
+import { desktopAuthRoute, desktopPage } from './desktopAuth';
 
 const SESSION_COOKIE = 'sr_session';
 const STATE_COOKIE = 'sr_oauth';
@@ -45,11 +47,17 @@ export interface Session {
   /** the one-way hash that names the account's Vault */
   account: string;
   provider: 'google' | 'steam';
+  linked?: boolean;
 }
 
 /** A session token: `v1.<provider>.<account>.<expires>.<signature>`. */
-export async function makeSession(secret: string, s: Session, now: number): Promise<string> {
-  const body = `v1.${s.provider}.${s.account}.${now + SESSION_DAYS * 86_400_000}`;
+export async function makeSession(
+  secret: string,
+  s: Session,
+  now: number,
+  durationMs = SESSION_DAYS * 86_400_000,
+): Promise<string> {
+  const body = `v1.${s.provider}.${s.account}.${now + durationMs}`;
   return `${body}.${await sign(secret, body)}`;
 }
 
@@ -96,11 +104,18 @@ export async function sessionOf(
   now = Date.now(),
 ): Promise<Session | null> {
   if (!env.SESSION_SECRET) return null;
+  const authorization = request.headers.get('authorization') ?? '';
+  if (/^Bearer d1\.[a-f0-9]{64}\.[a-f0-9]{64}$/.test(authorization)) {
+    const r = await identityCall(env, 'session', { token: authorization.slice(7) });
+    return r.ok ? await r.json<Session>() : null;
+  }
   const bearer = /^Bearer (v1\.steam\.[\da-f]{64}\.\d+\.[\da-f]{64})$/.exec(
     request.headers.get('authorization') ?? '',
   )?.[1];
-  if (bearer) return readSession(env.SESSION_SECRET, bearer, now);
-  return readSession(env.SESSION_SECRET, cookies(request)[SESSION_COOKIE], now);
+  const s = await readSession(env.SESSION_SECRET, bearer ?? cookies(request)[SESSION_COOKIE], now);
+  if (s?.provider !== 'steam') return s;
+  const account = await resolveSteamAccount(env, s.account);
+  return account === s.account ? s : { ...s, account, linked: true };
 }
 
 const text = (body: string, status: number, extra: Record<string, string> = {}): Response =>
@@ -124,10 +139,13 @@ const redirectUri = (request: Request): string =>
 const ready = (env: Env): boolean =>
   Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.SESSION_SECRET);
 
-function googleStart(request: Request, env: Env): Response {
+async function googleStart(request: Request, env: Env): Promise<Response> {
   // where to land afterwards: the home page or the Arena (only these two, so it can't be made to go anywhere else)
   const to = new URL(request.url).searchParams.get('to') === 'home' ? 'home' : 'arena';
   if (!ready(env)) return text('Sign-in is not set up on this server.', 503);
+  const desktop = new URL(request.url).searchParams.get('desktop');
+  if (desktop && !(await identityCall(env, 'inspect', { id: desktop })).ok)
+    return desktopPage('Sign-in expired. Try again from the app.', '', 410);
   const state = hex(crypto.getRandomValues(new Uint8Array(16)));
   const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
   url.searchParams.set('client_id', env.GOOGLE_CLIENT_ID as string);
@@ -137,7 +155,13 @@ function googleStart(request: Request, env: Env): Response {
   url.searchParams.set('state', state);
   url.searchParams.set('prompt', 'select_account');
   return redirect(url.toString(), [
-    setCookie(request, STATE_COOKIE, `${state}.${Date.now()}.${to}`, STATE_MS / 1000, '/auth'),
+    setCookie(
+      request,
+      STATE_COOKIE,
+      `${state}.${Date.now()}.${to}${desktop ? `.${desktop}` : ''}`,
+      STATE_MS / 1000,
+      '/auth',
+    ),
   ]);
 }
 
@@ -169,16 +193,29 @@ export async function googleCallback(
   if (!ready(env)) return text('Sign-in is not set up on this server.', 503);
   const url = new URL(request.url);
   const clear = setCookie(request, STATE_COOKIE, '', 0, '/auth');
-  const [state, at, to] = (cookies(request)[STATE_COOKIE] ?? '').split('.');
+  const [state, at, to, desktop] = (cookies(request)[STATE_COOKIE] ?? '').split('.');
   const back = to === 'home' ? '/#/' : '/#/arena';
   const code = url.searchParams.get('code');
+  if (
+    desktop &&
+    state &&
+    same(state, url.searchParams.get('state') ?? '') &&
+    now - Number(at) >= 0 &&
+    now - Number(at) <= STATE_MS &&
+    (url.searchParams.get('error') || !code)
+  ) {
+    await identityCall(env, 'deny', { id: desktop });
+    const page = desktopPage('Sign-in cancelled. Return to the desktop game.');
+    page.headers.append('set-cookie', clear);
+    return page;
+  }
   // the state ties the answer to the browser that asked, and a refused or stale attempt just goes back to the game
   if (
     url.searchParams.get('error') ||
     !code ||
     !state ||
     !same(state, url.searchParams.get('state') ?? '') ||
-    !(now - Number(at) <= STATE_MS)
+    !(now - Number(at) >= 0 && now - Number(at) <= STATE_MS)
   )
     return redirect(back, [clear]);
 
@@ -203,13 +240,60 @@ export async function googleCallback(
   } catch {
     sub = null;
   }
-  if (!sub) return redirect(back, [clear]);
+  if (!sub) {
+    if (desktop) {
+      await identityCall(env, 'deny', { id: desktop });
+      const page = desktopPage('Google sign-in failed. Try again from the desktop game.');
+      page.headers.append('set-cookie', clear);
+      return page;
+    }
+    return redirect(back, [clear]);
+  }
 
   const token = await makeSession(
     env.SESSION_SECRET as string,
     { account: await sha256(`google:${sub}`), provider: 'google' },
     now,
   );
+  if (desktop) {
+    const account = await sha256(`google:${sub}`);
+    const result = await identityCall(env, 'authorize', { id: desktop, account });
+    if (!result.ok)
+      return desktopPage(
+        'This sign-in attempt expired or was already used. Try again from the app.',
+        '',
+        410,
+      );
+    const { confirmation } = await result.json<{ confirmation: string }>();
+    const inspected = await (
+      await identityCall(env, 'inspect', { id: desktop })
+    ).json<{ link: boolean }>();
+    const form = `<form method="post" action="/auth/desktop/confirm"><input type="hidden" name="id" value="${desktop}"><input type="hidden" name="confirmation" value="${confirmation}"><button>${inspected.link ? 'Link Steam to this Google game account' : 'Sign in to the desktop app'}</button><button name="cancel" value="yes">Cancel</button></form>`;
+    const page = desktopPage(
+      inspected.link
+        ? 'Keep this Google account’s progress and connect the Steam account from your running game. Steam must not have separate progress. This link cannot be undone here. Confirm only if both accounts are yours.'
+        : 'Sign in to the desktop game using this Google game account. Continue only if you started this sign-in from your own Shattered Rifts app.',
+      form,
+    );
+    page.headers.append('set-cookie', clear);
+    const confirmationSession = await makeSession(
+      env.SESSION_SECRET as string,
+      { account, provider: 'google' },
+      now,
+      STATE_MS,
+    );
+    page.headers.append(
+      'set-cookie',
+      setCookie(
+        request,
+        'sr_desktop_confirm',
+        confirmationSession,
+        STATE_MS / 1000,
+        '/auth/desktop',
+      ),
+    );
+    return page;
+  }
   return redirect(back, [
     clear,
     setCookie(request, SESSION_COOKIE, token, SESSION_DAYS * 86_400, '/'),
@@ -219,6 +303,7 @@ export async function googleCallback(
 /** The /auth/* routes; null when the path is not one of them. */
 export async function authRoute(request: Request, env: Env): Promise<Response | null> {
   const path = new URL(request.url).pathname;
+  if (path.startsWith('/auth/desktop/')) return desktopAuthRoute(request, env);
   if (path === '/auth/steam') return steamLogin(request, env);
   if (path === '/auth/google/start' && request.method === 'GET') return googleStart(request, env);
   if (path === '/auth/google/callback' && request.method === 'GET')
@@ -226,7 +311,13 @@ export async function authRoute(request: Request, env: Env): Promise<Response | 
   if (path === '/auth/me' && request.method === 'GET') {
     const s = await sessionOf(request, env);
     return json(
-      { signedIn: s !== null, provider: s?.provider ?? null, available: ready(env) },
+      {
+        signedIn: s !== null,
+        provider: s?.provider ?? null,
+        account: s?.account ?? null,
+        linked: s?.linked ?? false,
+        available: ready(env),
+      },
       200,
       { 'cache-control': 'no-store' },
     );

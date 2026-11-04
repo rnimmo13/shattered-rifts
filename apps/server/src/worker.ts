@@ -22,6 +22,7 @@ import { checkPlay, playVaultName, PLAY_HEADER, PLAY_VAULT_HEADER } from './play
 export { Matchmaker } from './matchmaker';
 export { MatchRoom } from './room';
 export { Vault } from './vault';
+export { Identity } from './identity';
 export { Leaderboard } from './board';
 
 const json = (body: unknown, status = 200): Response =>

@@ -16,6 +16,7 @@ import { onSettingsOpen, settingsChanged } from '../app/settings';
 import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
 import { DesktopUpdates } from './DesktopUpdates';
+import { DesktopAccount } from '../pvp/DesktopAccount';
 import { WebUpdateControls } from './UpdatePrompt';
 import { BUILD } from '../build';
 import { localOnly, releasePlayAccess } from '../playAccess';
@@ -203,6 +204,7 @@ export function SettingsPanel() {
         {desktopBridge() && (
           <section className="settings__group" aria-labelledby="settings-desktop">
             <h3 id="settings-desktop">Desktop</h3>
+            <DesktopAccount />
             <Row
               label="Save mode"
               hint="Local offline saves stay separate from your online account."
@@ -242,7 +244,7 @@ export function SettingsPanel() {
                 <span>{quitting ? 'Saving…' : 'Quit to Desktop'}</span>
               </button>
             </Row>
-            {desktop && (
+            {desktop && localOnly() && (
               <p className="settings__hint">
                 {desktop.name ? `${desktop.name} — ` : ''}
                 {desktop.message}
