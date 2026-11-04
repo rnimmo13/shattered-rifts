@@ -3,9 +3,10 @@ import { createPortal } from 'react-dom';
 import { desktopBridge, type DesktopSteamStatus } from '../desktopBridge';
 import { battleActive, subscribeBattle } from '../battleActivity';
 import { localOnly } from '../playAccess';
+import { SettingsRow } from '../ui/SettingsRow';
 import './desktopAccount.css';
 
-export function DesktopAccount() {
+export function DesktopAccount({ layout = 'account' }: { layout?: 'account' | 'settings' }) {
   const [status, setStatus] = useState<DesktopSteamStatus | null>(null);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState('');
@@ -32,16 +33,13 @@ export function DesktopAccount() {
   if (!status || localOnly()) return null;
   const steam = status.mode === 'steam',
     signedIn = status.provider === 'google';
-  return (
-    <section className="pvp__account desktop-account" aria-label="Desktop account">
-      <p>
-        {steam
-          ? status.linked
-            ? 'Steam is linked to your Google game account.'
-            : `Connected through Steam${status.name ? ` as ${status.name}` : ''}.`
-          : status.message}
-      </p>
-      {steam && <small>{status.message}</small>}
+  const message = steam
+    ? status.linked
+      ? 'Steam is linked to your Google game account.'
+      : `Connected through Steam${status.name ? ` as ${status.name}` : ''}.`
+    : status.message;
+  const controls = (
+    <>
       {(!steam || !status.linked) && (
         <button
           className="btn btn--small"
@@ -64,7 +62,6 @@ export function DesktopAccount() {
           {signedIn ? 'Sign out' : steam ? 'Link existing Google account' : 'Sign in with Google'}
         </button>
       )}
-      {fighting && <small>Finish or leave the battle before changing accounts.</small>}
       {signedIn && !status.online && (
         <button
           className="btn btn--small"
@@ -82,6 +79,37 @@ export function DesktopAccount() {
           Reconnect Google
         </button>
       )}
+    </>
+  );
+  return (
+    <section className={`desktop-account desktop-account--${layout}`} aria-label="Desktop account">
+      {layout === 'settings' ? (
+        <SettingsRow
+          label={steam ? 'Steam account' : 'Google account'}
+          hint={
+            <>
+              {message}
+              {steam && (
+                <>
+                  <br />
+                  {status.message}
+                </>
+              )}
+            </>
+          }
+        >
+          {controls}
+        </SettingsRow>
+      ) : (
+        <>
+          <div className="desktop-account__summary">
+            <p>{message}</p>
+            {steam && <small>{status.message}</small>}
+          </div>
+          <div className="desktop-account__actions">{controls}</div>
+        </>
+      )}
+      {fighting && <small>Finish or leave the battle before changing accounts.</small>}
       {error && <p role="alert">{error}</p>}
       {busy &&
         createPortal(

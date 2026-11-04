@@ -1,8 +1,30 @@
 .desktop-account {
+  display: grid;
+  gap: 0.7rem;
   align-items: start;
+  min-width: 0;
+  color: var(--c-text-dim);
+  overflow-wrap: anywhere;
 }
 .desktop-account p {
   margin: 0;
+}
+.desktop-account__summary {
+  display: grid;
+  gap: 0.35rem;
+}
+.desktop-account__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.desktop-account .btn {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+.desktop-account [role='alert'] {
+  color: #ffc0b0;
 }
 .desktop-login {
   position: fixed;

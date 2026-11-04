@@ -2,7 +2,7 @@
 // mounted once, at the app's root; a change is saved where that preference has always lived, and announced, so a fight in
 // progress applies it at once.
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { getSound, setSound } from '../audio/sfx';
 import {
   loadEffectsMode,
@@ -17,6 +17,7 @@ import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
 import { DesktopUpdates } from './DesktopUpdates';
 import { DesktopAccount } from '../pvp/DesktopAccount';
+import { SettingsRow as Row } from './SettingsRow';
 import { WebUpdateControls } from './UpdatePrompt';
 import { BUILD } from '../build';
 import { localOnly, releasePlayAccess } from '../playAccess';
@@ -28,18 +29,6 @@ import {
   quitDesktop,
   type DesktopSteamStatus,
 } from '../desktopBridge';
-
-function Row(props: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <div className="settings__row">
-      <div className="settings__label">
-        <span>{props.label}</span>
-        {props.hint && <small>{props.hint}</small>}
-      </div>
-      <div className="settings__control">{props.children}</div>
-    </div>
-  );
-}
 
 /** Two or more choices side by side, one of them chosen (pressed buttons: each is reached with Tab and chosen with Enter). */
 function Choice<T extends string>(props: {
@@ -189,22 +178,62 @@ export function SettingsPanel() {
         ref={panel}
       >
         <header className="settings__head">
-          <h2 id="settings-title" className="settings__title">
-            Settings
-          </h2>
-          <button
-            type="button"
-            className="btn btn--small btn--ghost"
-            onClick={() => setOpen(false)}
-          >
-            <span>Close</span>
-          </button>
+          <div className="settings__heading">
+            <h2 id="settings-title" className="settings__title">
+              Settings
+            </h2>
+            <button
+              type="button"
+              className="btn btn--small btn--ghost"
+              onClick={() => setOpen(false)}
+            >
+              <span>Close</span>
+            </button>
+          </div>
+          {desktopBridge() && (
+            <div className="settings__exit">
+              <p>Save your progress and close the game.</p>
+              <button
+                className="btn btn--small btn--ghost settings__quit"
+                type="button"
+                disabled={quitting}
+                onClick={() => {
+                  setQuitting(true);
+                  setQuitError(null);
+                  void quitDesktop().catch(() => {
+                    setQuitting(false);
+                    setQuitError('Could not save. The game is still open; please try again.');
+                  });
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  aria-hidden="true"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M10 4H5v16h5M14 8l4 4-4 4M9 12h10" />
+                </svg>
+                <span>{quitting ? 'Saving…' : 'Quit to Desktop'}</span>
+              </button>
+            </div>
+          )}
+          {desktopBridge() && (quitError || desktopSaveError()) && (
+            <p className="settings__error" role="alert">
+              {quitError || desktopSaveError()}
+            </p>
+          )}
         </header>
 
         {desktopBridge() && (
           <section className="settings__group" aria-labelledby="settings-desktop">
-            <h3 id="settings-desktop">Desktop</h3>
-            <DesktopAccount />
+            <h3 id="settings-desktop">Account and saves</h3>
+            <DesktopAccount layout="settings" />
             <Row
               label="Save mode"
               hint="Local offline saves stay separate from your online account."
@@ -227,31 +256,11 @@ export function SettingsPanel() {
                 {localOnly() ? 'Online account' : 'Local offline play'}
               </button>
             </Row>
-            <Row label="Quit game" hint="Save your current progress and close the game.">
-              <button
-                className="btn btn--small"
-                type="button"
-                disabled={quitting}
-                onClick={() => {
-                  setQuitting(true);
-                  setQuitError(null);
-                  void quitDesktop().catch(() => {
-                    setQuitting(false);
-                    setQuitError('Could not save. The game is still open; please try again.');
-                  });
-                }}
-              >
-                <span>{quitting ? 'Saving…' : 'Quit to Desktop'}</span>
-              </button>
-            </Row>
             {desktop && localOnly() && (
               <p className="settings__hint">
                 {desktop.name ? `${desktop.name} — ` : ''}
                 {desktop.message}
               </p>
-            )}
-            {(quitError || desktopSaveError()) && (
-              <p role="alert">{quitError || desktopSaveError()}</p>
             )}
           </section>
         )}

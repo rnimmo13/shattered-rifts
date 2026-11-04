@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.189.0',
+    date: '2026-11-04',
+    title: 'A clearer Settings menu',
+    summary: 'Quit is easy to reach, and account controls line up with your preferences.',
+    notes: [
+      { kind: 'changed', text: 'Quit to Desktop now has its own row at the top of Settings. It stays visible while scrolling and saves your progress before closing.' },
+      { kind: 'changed', text: 'Google and Steam account status, save mode and update controls use a consistent layout. Small screens stack labels, descriptions and buttons to keep everything readable.' },
+    ],
+  },
+  {
     version: '0.188.0',
     date: '2026-11-04',
     title: 'The worlds beyond the Ward',

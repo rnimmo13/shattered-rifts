@@ -26,14 +26,61 @@
 }
 .settings__head {
   position: sticky;
-  top: 0;
+  top: -1.2rem;
   z-index: 1;
-  padding: 0.75rem 0;
+  margin: -1.2rem -1.4rem 0;
+  padding: 1rem 1.4rem 0.85rem;
   background: rgb(16 24 56);
+  display: grid;
+  gap: 0.75rem;
+  box-shadow: 0 6px 12px rgb(8 10 20 / 0.25);
+}
+.settings__heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+.settings__exit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+.settings__exit p {
+  margin: 0;
+  max-width: 26ch;
+  color: var(--c-text-dim);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.settings .settings__quit {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  color: #efc4b9;
+  border-color: #ae766166;
+  letter-spacing: 0.08em;
+}
+.settings .settings__quit:hover {
+  border-color: #d9967d;
+  background: #55312d66;
+}
+.settings__error {
+  margin: 0;
+  color: #ffc0b0;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.settings .btn {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .settings__title {
   margin: 0;
@@ -44,7 +91,8 @@
 }
 .settings__group {
   display: grid;
-  gap: 0.7rem;
+  gap: 1rem;
+  min-width: 0;
 }
 .settings__group h3 {
   margin: 0;
@@ -97,6 +145,7 @@
 .settings__label > span {
   grid-column: 1;
   grid-row: 1;
+  color: var(--c-ivory);
 }
 .settings__label small {
   grid-column: 1 / -1;
@@ -105,11 +154,44 @@
   color: var(--c-text-dim);
   font-size: 0.82rem;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 .settings__control {
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 19rem;
+}
+.settings .desktop-account--settings {
+  display: grid;
+  gap: 0.5rem;
+}
+.settings .desktop-updates {
+  margin: 0;
+  padding: 0.85rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem 1rem;
+}
+.settings .desktop-updates > p {
+  grid-column: 1;
+}
+.settings .desktop-updates > button {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 16rem;
+}
+.settings .desktop-updates > small,
+.settings .desktop-updates > progress,
+.settings .desktop-updates > [role='alert'] {
+  grid-column: 1 / -1;
 }
 .settings__choice {
   display: inline-flex;
@@ -181,6 +263,56 @@
   }
 }
 
+@media (max-width: 26rem) {
+  .settings__exit {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .settings__exit p {
+    max-width: none;
+  }
+  .settings .settings__quit {
+    width: 100%;
+  }
+  .settings__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.45rem;
+  }
+  .settings__label > span {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .settings__label small {
+    grid-row: 2;
+  }
+  .settings__control {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: stretch;
+    max-width: none;
+    justify-content: flex-start;
+  }
+  .settings__control > .btn {
+    width: 100%;
+  }
+  .settings__range {
+    width: 100%;
+  }
+  .settings__range input {
+    flex: 1;
+    min-width: 0;
+  }
+  .settings .desktop-updates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings .desktop-updates > button {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    max-width: none;
+  }
+}
+
 /* the performance report (DECISIONS #572): the pill while recording, and the report in the menu */
 .perfpill {
   position: fixed;
@@ -228,8 +360,11 @@
   align-items: center;
 } /* (a hint beside a button) */
 .settings__hint {
+  margin: 0;
   color: var(--c-text-dim);
   font-size: 0.8rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 /* the one-time note when the browser draws without the graphics card (DECISIONS #573); over the board, under the menu */
 .lowhint {
