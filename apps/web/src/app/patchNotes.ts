@@ -29,6 +29,13 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.190.0',
+    date: '2026-11-04',
+    title: 'A seamless Settings header',
+    summary: 'The Settings title blends into the menu.',
+    notes: [{ kind: 'changed', text: 'Removed the darker box and shadow behind the Settings header. Preferences scroll in their own area, keeping Close and Quit visible over one continuous panel background.' }],
+  },
+  {
     version: '0.189.0',
     date: '2026-11-04',
     title: 'A clearer Settings menu',

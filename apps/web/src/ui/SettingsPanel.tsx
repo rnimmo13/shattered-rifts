@@ -230,256 +230,258 @@ export function SettingsPanel() {
           )}
         </header>
 
-        {desktopBridge() && (
-          <section className="settings__group" aria-labelledby="settings-desktop">
-            <h3 id="settings-desktop">Account and saves</h3>
-            <DesktopAccount layout="settings" />
-            <Row
-              label="Save mode"
-              hint="Local offline saves stay separate from your online account."
-            >
-              <button
-                className="btn btn--small"
-                disabled={quitting || fighting}
-                onClick={() => {
-                  setQuitting(true);
-                  setQuitError(null);
-                  void flushDesktopSave()
-                    .then(() => releasePlayAccess())
-                    .then(() => desktopBridge()?.switchMode(!localOnly()))
-                    .catch(() => {
-                      setQuitting(false);
-                      setQuitError('Could not save and switch modes. Please try again.');
-                    });
-                }}
+        <div className="settings__body">
+          {desktopBridge() && (
+            <section className="settings__group" aria-labelledby="settings-desktop">
+              <h3 id="settings-desktop">Account and saves</h3>
+              <DesktopAccount layout="settings" />
+              <Row
+                label="Save mode"
+                hint="Local offline saves stay separate from your online account."
               >
-                {localOnly() ? 'Online account' : 'Local offline play'}
-              </button>
+                <button
+                  className="btn btn--small"
+                  disabled={quitting || fighting}
+                  onClick={() => {
+                    setQuitting(true);
+                    setQuitError(null);
+                    void flushDesktopSave()
+                      .then(() => releasePlayAccess())
+                      .then(() => desktopBridge()?.switchMode(!localOnly()))
+                      .catch(() => {
+                        setQuitting(false);
+                        setQuitError('Could not save and switch modes. Please try again.');
+                      });
+                  }}
+                >
+                  {localOnly() ? 'Online account' : 'Local offline play'}
+                </button>
+              </Row>
+              {desktop && localOnly() && (
+                <p className="settings__hint">
+                  {desktop.name ? `${desktop.name} — ` : ''}
+                  {desktop.message}
+                </p>
+              )}
+            </section>
+          )}
+
+          <section className="settings__group" aria-labelledby="settings-audio">
+            <h3 id="settings-audio">Audio</h3>
+            <Row label="Sound">
+              <Choice
+                label="Sound"
+                value={sound.on ? 'on' : 'off'}
+                options={[
+                  { value: 'on', label: 'On' },
+                  { value: 'off', label: 'Off' },
+                ]}
+                onChange={(v) => changeSound({ on: v === 'on' })}
+              />
             </Row>
-            {desktop && localOnly() && (
-              <p className="settings__hint">
-                {desktop.name ? `${desktop.name} — ` : ''}
-                {desktop.message}
-              </p>
+            <Row label="Volume">
+              <span className="settings__range">
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={Math.round(sound.volume * 100)}
+                  disabled={!sound.on}
+                  aria-label="Volume"
+                  onChange={(e) => changeSound({ volume: Number(e.target.value) / 100 })}
+                />
+                <output>{Math.round(sound.volume * 100)}%</output>
+              </span>
+            </Row>
+          </section>
+
+          <section className="settings__group" aria-labelledby="settings-graphics">
+            <h3 id="settings-graphics">Graphics</h3>
+            <Row
+              label="Quality"
+              hint="Low stops the drifting fog, floating motes and other motion at rest, for a computer that is slow to draw. Cards, blows and effects play the same."
+            >
+              <Choice
+                label="Graphics quality"
+                value={graphics}
+                options={[
+                  { value: 'high', label: 'High' },
+                  { value: 'low', label: 'Low' },
+                ]}
+                onChange={(v) => {
+                  saveGraphicsQuality(v);
+                  setGraphics(v);
+                  settingsChanged('graphics');
+                }}
+              />
+            </Row>
+            <Row
+              label="Effects"
+              hint="Reduced halves the shake of a heavy blow, skips the freeze on the biggest ones, shows fewer particles and shows a painted effect as one still picture."
+            >
+              <Choice
+                label="Effects"
+                value={reduced ? 'reduced' : 'full'}
+                options={[
+                  { value: 'full', label: 'Full' },
+                  { value: 'reduced', label: 'Reduced' },
+                ]}
+                onChange={(v) => {
+                  saveEffectsMode(v);
+                  setReduced(v === 'reduced');
+                  settingsChanged('graphics');
+                }}
+              />
+            </Row>
+            {typeof document !== 'undefined' && document.fullscreenEnabled && (
+              <Row label="Fullscreen">
+                <Choice
+                  label="Fullscreen"
+                  value={full ? 'on' : 'off'}
+                  options={[
+                    { value: 'on', label: 'On' },
+                    { value: 'off', label: 'Off' },
+                  ]}
+                  onChange={(v) => {
+                    const go =
+                      v === 'on'
+                        ? document.documentElement.requestFullscreen()
+                        : fullscreenOn()
+                          ? document.exitFullscreen()
+                          : Promise.resolve();
+                    // (the browser may refuse; the choice shows what really happened)
+                    void go.catch(() => undefined).finally(() => setFull(fullscreenOn()));
+                  }}
+                />
+              </Row>
             )}
           </section>
-        )}
 
-        <section className="settings__group" aria-labelledby="settings-audio">
-          <h3 id="settings-audio">Audio</h3>
-          <Row label="Sound">
-            <Choice
-              label="Sound"
-              value={sound.on ? 'on' : 'off'}
-              options={[
-                { value: 'on', label: 'On' },
-                { value: 'off', label: 'Off' },
-              ]}
-              onChange={(v) => changeSound({ on: v === 'on' })}
-            />
-          </Row>
-          <Row label="Volume">
-            <span className="settings__range">
-              <input
-                type="range"
-                min={0}
-                max={100}
-                step={5}
-                value={Math.round(sound.volume * 100)}
-                disabled={!sound.on}
-                aria-label="Volume"
-                onChange={(e) => changeSound({ volume: Number(e.target.value) / 100 })}
-              />
-              <output>{Math.round(sound.volume * 100)}%</output>
-            </span>
-          </Row>
-        </section>
-
-        <section className="settings__group" aria-labelledby="settings-graphics">
-          <h3 id="settings-graphics">Graphics</h3>
-          <Row
-            label="Quality"
-            hint="Low stops the drifting fog, floating motes and other motion at rest, for a computer that is slow to draw. Cards, blows and effects play the same."
-          >
-            <Choice
-              label="Graphics quality"
-              value={graphics}
-              options={[
-                { value: 'high', label: 'High' },
-                { value: 'low', label: 'Low' },
-              ]}
-              onChange={(v) => {
-                saveGraphicsQuality(v);
-                setGraphics(v);
-                settingsChanged('graphics');
-              }}
-            />
-          </Row>
-          <Row
-            label="Effects"
-            hint="Reduced halves the shake of a heavy blow, skips the freeze on the biggest ones, shows fewer particles and shows a painted effect as one still picture."
-          >
-            <Choice
-              label="Effects"
-              value={reduced ? 'reduced' : 'full'}
-              options={[
-                { value: 'full', label: 'Full' },
-                { value: 'reduced', label: 'Reduced' },
-              ]}
-              onChange={(v) => {
-                saveEffectsMode(v);
-                setReduced(v === 'reduced');
-                settingsChanged('graphics');
-              }}
-            />
-          </Row>
-          {typeof document !== 'undefined' && document.fullscreenEnabled && (
-            <Row label="Fullscreen">
+          <section className="settings__group" aria-labelledby="settings-play">
+            <h3 id="settings-play">Gameplay</h3>
+            <Row
+              label="Tips"
+              hint="Short notes in a fight that explain a rule the first time it comes up."
+            >
               <Choice
-                label="Fullscreen"
-                value={full ? 'on' : 'off'}
+                label="Tips"
+                value={tips ? 'on' : 'off'}
                 options={[
                   { value: 'on', label: 'On' },
                   { value: 'off', label: 'Off' },
                 ]}
                 onChange={(v) => {
-                  const go =
-                    v === 'on'
-                      ? document.documentElement.requestFullscreen()
-                      : fullscreenOn()
-                        ? document.exitFullscreen()
-                        : Promise.resolve();
-                  // (the browser may refuse; the choice shows what really happened)
-                  void go.catch(() => undefined).finally(() => setFull(fullscreenOn()));
+                  saveTipsOn(v === 'on');
+                  setTips(v === 'on');
+                  settingsChanged('tips');
                 }}
               />
             </Row>
-          )}
-        </section>
+            <Row label="Tips already read">
+              <button
+                type="button"
+                className="btn btn--small btn--ghost"
+                disabled={tipsReset}
+                onClick={() => {
+                  saveSeen(new Set());
+                  setTipsReset(true);
+                  settingsChanged('tips');
+                }}
+              >
+                <span>{tipsReset ? 'Every tip will show again' : 'Show every tip again'}</span>
+              </button>
+            </Row>
+          </section>
 
-        <section className="settings__group" aria-labelledby="settings-play">
-          <h3 id="settings-play">Gameplay</h3>
-          <Row
-            label="Tips"
-            hint="Short notes in a fight that explain a rule the first time it comes up."
-          >
-            <Choice
-              label="Tips"
-              value={tips ? 'on' : 'off'}
-              options={[
-                { value: 'on', label: 'On' },
-                { value: 'off', label: 'Off' },
-              ]}
-              onChange={(v) => {
-                saveTipsOn(v === 'on');
-                setTips(v === 'on');
-                settingsChanged('tips');
-              }}
-            />
-          </Row>
-          <Row label="Tips already read">
-            <button
-              type="button"
-              className="btn btn--small btn--ghost"
-              disabled={tipsReset}
-              onClick={() => {
-                saveSeen(new Set());
-                setTipsReset(true);
-                settingsChanged('tips');
-              }}
+          {/* (a report of the stalls on this computer, to send in: DECISIONS #572) */}
+          <section className="settings__group" aria-labelledby="settings-perf">
+            <h3 id="settings-perf">Performance report</h3>
+            <Row
+              label="Record a report"
+              hint="If the game stutters, record a report: play a fight or two as usual, press Stop at the bottom left, then copy the report and send it in. It holds only timings and this computer's graphics and browser details."
             >
-              <span>{tipsReset ? 'Every tip will show again' : 'Show every tip again'}</span>
-            </button>
-          </Row>
-        </section>
-
-        {/* (a report of the stalls on this computer, to send in: DECISIONS #572) */}
-        <section className="settings__group" aria-labelledby="settings-perf">
-          <h3 id="settings-perf">Performance report</h3>
-          <Row
-            label="Record a report"
-            hint="If the game stutters, record a report: play a fight or two as usual, press Stop at the bottom left, then copy the report and send it in. It holds only timings and this computer's graphics and browser details."
-          >
-            <button
-              type="button"
-              className="btn btn--small"
-              disabled={isRecording()}
-              onClick={() => {
-                startRecording();
-                setOpen(false);
-              }}
-            >
-              <span>{isRecording() ? 'Recording…' : 'Start recording'}</span>
-            </button>
-          </Row>
-          {report && (
-            <div className="settings__report">
-              <textarea
-                ref={reportBox}
-                readOnly
-                value={report}
-                aria-label="Performance report"
-                onFocus={(e) => e.target.select()}
-              />
-              <div className="settings__reportRow">
-                <button
-                  type="button"
-                  className="btn btn--small"
-                  onClick={() => {
-                    // (the clipboard API is missing on a page not served over https: copy the selected text the old way)
-                    const oldWay = (): void => {
-                      reportBox.current?.select();
-                      setCopied(document.execCommand('copy'));
-                    };
-                    if (navigator.clipboard)
-                      void navigator.clipboard
-                        .writeText(report)
-                        .then(() => setCopied(true), oldWay);
-                    else oldWay();
-                  }}
-                >
-                  <span>{copied ? 'Copied' : 'Copy the report'}</span>
-                </button>
-                <small className="settings__hint">
-                  If copying does not work, select the text above and copy it.
-                </small>
+              <button
+                type="button"
+                className="btn btn--small"
+                disabled={isRecording()}
+                onClick={() => {
+                  startRecording();
+                  setOpen(false);
+                }}
+              >
+                <span>{isRecording() ? 'Recording…' : 'Start recording'}</span>
+              </button>
+            </Row>
+            {report && (
+              <div className="settings__report">
+                <textarea
+                  ref={reportBox}
+                  readOnly
+                  value={report}
+                  aria-label="Performance report"
+                  onFocus={(e) => e.target.select()}
+                />
+                <div className="settings__reportRow">
+                  <button
+                    type="button"
+                    className="btn btn--small"
+                    onClick={() => {
+                      // (the clipboard API is missing on a page not served over https: copy the selected text the old way)
+                      const oldWay = (): void => {
+                        reportBox.current?.select();
+                        setCopied(document.execCommand('copy'));
+                      };
+                      if (navigator.clipboard)
+                        void navigator.clipboard
+                          .writeText(report)
+                          .then(() => setCopied(true), oldWay);
+                      else oldWay();
+                    }}
+                  >
+                    <span>{copied ? 'Copied' : 'Copy the report'}</span>
+                  </button>
+                  <small className="settings__hint">
+                    If copying does not work, select the text above and copy it.
+                  </small>
+                </div>
               </div>
-            </div>
-          )}
-        </section>
-        <section className="settings__group" aria-labelledby="settings-about">
-          <h3 id="settings-about">About and updates</h3>
-          <p className="settings__version">Version {BUILD.version}</p>
-          <nav className="settings__aboutLinks" aria-label="About the game">
-            <a href="#/patch-notes" onClick={() => setOpen(false)}>
-              Patch notes
-            </a>
-            <a href="#/credits" onClick={() => setOpen(false)}>
-              Credits
-            </a>
-          </nav>
-          {desktopBridge() ? <DesktopUpdates /> : <WebUpdateControls />}
-          <details className="settings__build">
-            <summary>Build details</summary>
-            <p>
-              Commit {BUILD.commit}
-              {BUILD.dirty ? ' (local changes)' : ''}
-              <br />
-              Built {BUILD.date || 'locally'}
-            </p>
-            <button
-              className="btn btn--small"
-              onClick={() => {
-                void navigator.clipboard
-                  ?.writeText(BUILD.label)
-                  .then(() => setBuildCopied(true))
-                  .catch(() => setBuildCopied(false));
-              }}
-            >
-              {buildCopied ? 'Copied' : 'Copy build details'}
-            </button>
-          </details>
-        </section>
+            )}
+          </section>
+          <section className="settings__group" aria-labelledby="settings-about">
+            <h3 id="settings-about">About and updates</h3>
+            <p className="settings__version">Version {BUILD.version}</p>
+            <nav className="settings__aboutLinks" aria-label="About the game">
+              <a href="#/patch-notes" onClick={() => setOpen(false)}>
+                Patch notes
+              </a>
+              <a href="#/credits" onClick={() => setOpen(false)}>
+                Credits
+              </a>
+            </nav>
+            {desktopBridge() ? <DesktopUpdates /> : <WebUpdateControls />}
+            <details className="settings__build">
+              <summary>Build details</summary>
+              <p>
+                Commit {BUILD.commit}
+                {BUILD.dirty ? ' (local changes)' : ''}
+                <br />
+                Built {BUILD.date || 'locally'}
+              </p>
+              <button
+                className="btn btn--small"
+                onClick={() => {
+                  void navigator.clipboard
+                    ?.writeText(BUILD.label)
+                    .then(() => setBuildCopied(true))
+                    .catch(() => setBuildCopied(false));
+                }}
+              >
+                {buildCopied ? 'Copied' : 'Copy build details'}
+              </button>
+            </details>
+          </section>
+        </div>
       </div>
     </div>
   );

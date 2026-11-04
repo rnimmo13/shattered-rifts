@@ -11,11 +11,12 @@
   background: rgb(4 5 11 / 0.8);
 }
 .settings__panel {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.1rem;
   width: min(36rem, 100%);
   max-height: calc(100dvh - 2rem);
-  overflow: auto;
+  overflow: hidden;
   padding: 1.2rem 1.4rem 1.4rem;
   border-radius: 16px;
   border: 1px solid transparent;
@@ -25,15 +26,20 @@
   box-shadow: 0 18px 48px rgb(0 0 0 / 0.6);
 }
 .settings__head {
-  position: sticky;
-  top: -1.2rem;
-  z-index: 1;
-  margin: -1.2rem -1.4rem 0;
-  padding: 1rem 1.4rem 0.85rem;
-  background: rgb(16 24 56);
+  flex-shrink: 0;
   display: grid;
   gap: 0.75rem;
-  box-shadow: 0 6px 12px rgb(8 10 20 / 0.25);
+}
+/* The header shares the panel's uninterrupted background; only preferences scroll beneath it. */
+.settings__body {
+  display: grid;
+  align-content: start;
+  gap: 1.1rem;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding-right: 0.5rem;
 }
 .settings__heading {
   display: flex;
@@ -211,7 +217,7 @@
   font-variant-numeric: tabular-nums;
   color: var(--c-text-dim);
 }
-/* a phone: a full-screen sheet, its header (and Close) always in view, the groups scrolling under it */
+/* a phone: a full-screen sheet, with Close and Quit above the scrolling preferences */
 @media (max-width: 40rem) {
   .settings {
     padding: 0;
@@ -231,13 +237,11 @@
     overscroll-behavior: contain;
   }
   .settings__head {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    margin: 0 -1rem;
-    padding: calc(0.75rem + env(safe-area-inset-top)) 1rem 0.75rem;
-    background: rgb(16 24 56);
-    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+    padding-top: calc(0.75rem + env(safe-area-inset-top));
+  }
+  .settings__body {
+    flex: 1;
+    gap: 1.25rem;
   }
   .settings__title {
     font-size: 1.3rem;
