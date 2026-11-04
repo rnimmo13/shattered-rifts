@@ -7,6 +7,7 @@
 //   POST /auth/logout            clear the session
 
 import type { Env } from './env';
+import { steamLogin } from './steamAuth';
 
 const SESSION_COOKIE = 'sr_session';
 const STATE_COOKIE = 'sr_oauth';
@@ -43,7 +44,7 @@ const same = (a: string, b: string): boolean => {
 export interface Session {
   /** the one-way hash that names the account's Vault */
   account: string;
-  provider: 'google';
+  provider: 'google' | 'steam';
 }
 
 /** A session token: `v1.<provider>.<account>.<expires>.<signature>`. */
@@ -59,12 +60,13 @@ export async function readSession(
 ): Promise<Session | null> {
   if (!token) return null;
   const parts = token.split('.');
-  if (parts.length !== 5 || parts[0] !== 'v1' || parts[1] !== 'google') return null;
+  if (parts.length !== 5 || parts[0] !== 'v1' || !['google', 'steam'].includes(parts[1] ?? ''))
+    return null;
   const [, provider, account, expires, sig] = parts as [string, string, string, string, string];
   if (!/^[0-9a-f]{64}$/.test(account) || !/^\d+$/.test(expires)) return null;
   if (Number(expires) < now) return null;
   const good = await sign(secret, `v1.${provider}.${account}.${expires}`);
-  return same(good, sig) ? { account, provider: 'google' } : null;
+  return same(good, sig) ? { account, provider: provider as Session['provider'] } : null;
 }
 
 function cookies(request: Request): Record<string, string> {
@@ -94,6 +96,10 @@ export async function sessionOf(
   now = Date.now(),
 ): Promise<Session | null> {
   if (!env.SESSION_SECRET) return null;
+  const bearer = /^Bearer (v1\.steam\.[\da-f]{64}\.\d+\.[\da-f]{64})$/.exec(
+    request.headers.get('authorization') ?? '',
+  )?.[1];
+  if (bearer) return readSession(env.SESSION_SECRET, bearer, now);
   return readSession(env.SESSION_SECRET, cookies(request)[SESSION_COOKIE], now);
 }
 
@@ -213,6 +219,7 @@ export async function googleCallback(
 /** The /auth/* routes; null when the path is not one of them. */
 export async function authRoute(request: Request, env: Env): Promise<Response | null> {
   const path = new URL(request.url).pathname;
+  if (path === '/auth/steam') return steamLogin(request, env);
   if (path === '/auth/google/start' && request.method === 'GET') return googleStart(request, env);
   if (path === '/auth/google/callback' && request.method === 'GET')
     return googleCallback(request, env);

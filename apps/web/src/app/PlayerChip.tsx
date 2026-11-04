@@ -15,6 +15,13 @@ export function PlayerChip(props: { me: Me; onSignedOut: () => void }) {
   const [name, setName] = useState<string | null>(() => (hasUsername() ? getName() : null));
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const refresh = (): void => {
+      if (hasUsername()) setName(getName());
+    };
+    window.addEventListener('sr-desktop-identity', refresh);
+    return () => window.removeEventListener('sr-desktop-identity', refresh);
+  }, []);
 
   // a device with no username yet takes the one this player claimed elsewhere (signed in: DECISIONS #318)
   useEffect(() => {

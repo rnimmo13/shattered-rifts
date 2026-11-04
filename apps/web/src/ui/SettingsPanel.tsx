@@ -15,6 +15,12 @@ import { loadTipsOn, saveSeen, saveTipsOn } from '../fight/tips';
 import { onSettingsOpen, settingsChanged } from '../app/settings';
 import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
+import {
+  desktopBridge,
+  desktopSaveError,
+  quitDesktop,
+  type DesktopSteamStatus,
+} from '../desktopBridge';
 
 function Row(props: { label: string; hint?: string; children: ReactNode }) {
   return (
@@ -55,6 +61,9 @@ function Choice<T extends string>(props: {
 const fullscreenOn = (): boolean => typeof document !== 'undefined' && !!document.fullscreenElement;
 
 export function SettingsPanel() {
+  const [desktop, setDesktop] = useState<DesktopSteamStatus | null>(null);
+  const [quitting, setQuitting] = useState(false);
+  const [quitError, setQuitError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [sound, setSoundState] = useState(getSound);
   const [graphics, setGraphics] = useState<GraphicsQuality>(loadGraphicsQuality);
@@ -97,9 +106,9 @@ export function SettingsPanel() {
       e.stopPropagation();
       if (e.key === 'Escape') setOpen(false);
       if (e.key !== 'Tab' || !panel.current) return;
-      const stops = [...panel.current.querySelectorAll<HTMLElement>('button, input, textarea')].filter(
-        (el) => !(el as HTMLButtonElement | HTMLInputElement).disabled,
-      );
+      const stops = [
+        ...panel.current.querySelectorAll<HTMLElement>('button, input, textarea'),
+      ].filter((el) => !(el as HTMLButtonElement | HTMLInputElement).disabled);
       const first = stops[0];
       const last = stops[stops.length - 1];
       if (!first || !last) return;
@@ -119,7 +128,22 @@ export function SettingsPanel() {
       window.removeEventListener('keydown', onKey, true);
       document.removeEventListener('fullscreenchange', onFull);
       // (a button in a menu that closed meanwhile is gone: focus stays where the browser puts it)
-      if (opener.current instanceof HTMLElement && opener.current.isConnected) opener.current.focus();
+      if (opener.current instanceof HTMLElement && opener.current.isConnected)
+        opener.current.focus();
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    void desktopBridge()
+      ?.status()
+      .then((status) => {
+        if (live) setDesktop(status);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
     };
   }, [open]);
 
@@ -145,15 +169,57 @@ export function SettingsPanel() {
         pressedBackdrop.current = false;
       }}
     >
-      <div className="settings__panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" ref={panel}>
+      <div
+        className="settings__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+        ref={panel}
+      >
         <header className="settings__head">
           <h2 id="settings-title" className="settings__title">
             Settings
           </h2>
-          <button type="button" className="btn btn--small btn--ghost" onClick={() => setOpen(false)}>
+          <button
+            type="button"
+            className="btn btn--small btn--ghost"
+            onClick={() => setOpen(false)}
+          >
             <span>Close</span>
           </button>
         </header>
+
+        {desktopBridge() && (
+          <section className="settings__group" aria-labelledby="settings-desktop">
+            <h3 id="settings-desktop">Desktop</h3>
+            <Row label="Quit game" hint="Save your current progress and close the game.">
+              <button
+                className="btn btn--small"
+                type="button"
+                disabled={quitting}
+                onClick={() => {
+                  setQuitting(true);
+                  setQuitError(null);
+                  void quitDesktop().catch(() => {
+                    setQuitting(false);
+                    setQuitError('Could not save. The game is still open; please try again.');
+                  });
+                }}
+              >
+                <span>{quitting ? 'Saving…' : 'Quit to Desktop'}</span>
+              </button>
+            </Row>
+            {desktop && (
+              <p className="settings__hint">
+                {desktop.name ? `${desktop.name} — ` : ''}
+                {desktop.message}
+              </p>
+            )}
+            {(quitError || desktopSaveError()) && (
+              <p role="alert">{quitError || desktopSaveError()}</p>
+            )}
+          </section>
+        )}
 
         <section className="settings__group" aria-labelledby="settings-audio">
           <h3 id="settings-audio">Audio</h3>
@@ -249,7 +315,10 @@ export function SettingsPanel() {
 
         <section className="settings__group" aria-labelledby="settings-play">
           <h3 id="settings-play">Gameplay</h3>
-          <Row label="Tips" hint="Short notes in a fight that explain a rule the first time it comes up.">
+          <Row
+            label="Tips"
+            hint="Short notes in a fight that explain a rule the first time it comes up."
+          >
             <Choice
               label="Tips"
               value={tips ? 'on' : 'off'}
@@ -319,13 +388,17 @@ export function SettingsPanel() {
                       setCopied(document.execCommand('copy'));
                     };
                     if (navigator.clipboard)
-                      void navigator.clipboard.writeText(report).then(() => setCopied(true), oldWay);
+                      void navigator.clipboard
+                        .writeText(report)
+                        .then(() => setCopied(true), oldWay);
                     else oldWay();
                   }}
                 >
                   <span>{copied ? 'Copied' : 'Copy the report'}</span>
                 </button>
-                <small className="settings__hint">If copying does not work, select the text above and copy it.</small>
+                <small className="settings__hint">
+                  If copying does not work, select the text above and copy it.
+                </small>
               </div>
             </div>
           )}

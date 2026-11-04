@@ -1,7 +1,7 @@
 // Choosing a username. Names are unique: the server only confirms one that nobody else has, and the campaign and the Arena need
 // one before they start (the campaign board and the Arena board show it).
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { getName, hasUsername } from './config';
 import { takeName } from './takeName';
 import { IS_DESKTOP } from '../platform';
@@ -74,6 +74,13 @@ export function NameClaim(props: {
 /** Shows its children once the player has a username; until then asks for one (the campaign needs it to be on the board). */
 export function NameGate(props: { children: ReactNode }) {
   const [named, setNamed] = useState(hasUsername);
+  useEffect(() => {
+    const refresh = (): void => {
+      if (hasUsername()) setNamed(true);
+    };
+    window.addEventListener('sr-desktop-identity', refresh);
+    return () => window.removeEventListener('sr-desktop-identity', refresh);
+  }, []);
   if (named) return <>{props.children}</>;
   return (
     <main className="setup nameclaim__gate">

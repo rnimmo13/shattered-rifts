@@ -12,6 +12,7 @@ import {
   type VaultDeck,
 } from '@sr/pvp';
 import { serverBase, getName } from './config';
+import { desktopBridge } from '../desktopBridge';
 
 const CODE_KEY = 'sr-vault-code';
 /** the code in use, kept here too so it is the same code everywhere even when storage is blocked */
@@ -125,6 +126,15 @@ export interface Me {
 
 /** Who is using this browser. Asked once; `refreshMe` asks again (after signing out). */
 export function whoAmI(): Promise<Me> {
+  const desktop = desktopBridge();
+  if (desktop)
+    return desktop
+      .status()
+      .then((status) => {
+        signedIn = status.online;
+        return { signedIn, available: false };
+      })
+      .catch(() => ({ signedIn: false, available: false }));
   me ??= (async (): Promise<Me> => {
     try {
       const base = httpBase();

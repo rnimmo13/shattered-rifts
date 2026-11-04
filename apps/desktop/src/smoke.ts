@@ -1,10 +1,12 @@
 // Real Electron smoke test against bundled assets. Never included in the packaged app.
 import { app, session, type BrowserWindow } from 'electron';
 import { strict as assert } from 'node:assert';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { createGameWindow, initializeGame } from './app.js';
+import { initializeServices } from './services.js';
+import { SteamService } from './steam.js';
 
 const profile = process.argv[2];
 const stage = process.argv[3];
@@ -35,6 +37,7 @@ void app
       (_details, callback) => callback({ cancel: true }),
     );
     initializeGame();
+    initializeServices(profile, new SteamService(null));
     const win = await createGameWindow(false);
     win.webContents.on('console-message', (details) => {
       if (details.level === 'error') console.error('Renderer:', details.message);
@@ -82,7 +85,7 @@ void app
       assert.equal(
         await value(
           win,
-          "localStorage.getItem('sr.runs.v3') === localStorage.getItem('sr.desktop-smoke')",
+          `localStorage.getItem('sr.runs.v3') === ${JSON.stringify((JSON.parse(readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8')) as { entries: Record<string, string> }).entries['sr.runs.v3'])}`,
         ),
         true,
       );
@@ -99,7 +102,28 @@ void app
       );
     }
     session.defaultSession.flushStorageData();
-    win.close();
+    // Exercise the actual in-game Quit button, not a test-only closing path.
+    await value(
+      win,
+      "document.querySelector('button[aria-label=\"Settings\"]')?.click() || [...document.querySelectorAll('button')].find(b => b.textContent.includes('Settings'))?.click()",
+    );
+    await waitFor(
+      win,
+      "[...document.querySelectorAll('button')].some(b => b.textContent.includes('Quit to Desktop'))",
+    );
+    await delay(200);
+    writeFileSync(resolve(profile, 'settings.png'), (await win.webContents.capturePage()).toPNG());
+    const closed = new Promise<void>((resolve) => win.once('closed', () => resolve()));
+    await value(
+      win,
+      "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Quit to Desktop')).click()",
+    );
+    await closed;
+    assert.ok(
+      readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8').includes(
+        'sr.runs.v3',
+      ),
+    );
     console.log(`Desktop offline ${stage} smoke passed`);
     app.quit();
   })

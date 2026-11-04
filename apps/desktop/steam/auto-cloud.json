@@ -1,0 +1,9 @@
+{
+  "root": "WinAppDataRoaming",
+  "subdirectory": "ShatteredRifts/saves/{64BitSteamID}",
+  "pattern": "save-v1*.json",
+  "recursive": false,
+  "osRestriction": "Cross-Platform",
+  "byteQuotaPerUser": 67108864,
+  "filesAllowedPerUser": 4
+}

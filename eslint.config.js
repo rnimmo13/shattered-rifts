@@ -90,7 +90,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['tools/**/*.ts', 'apps/desktop/**/*.ts', '*.js', '*.ts'],
+    files: ['tools/**/*.ts', 'apps/desktop/**/*.{ts,cts}', '*.js', '*.ts'],
     languageOptions: { globals: globals.node },
   },
   {

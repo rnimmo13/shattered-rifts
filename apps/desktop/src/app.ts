@@ -3,6 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { assetPath, externalLink, GAME_URL, gameNavigation, windowState } from './policy.js';
+import { protectWindowSaves } from './services.js';
 
 // A stable, secure origin keeps the existing asset URLs and local saves working offline.
 protocol.registerSchemesAsPrivileged([
@@ -92,8 +93,10 @@ export async function createGameWindow(show = true): Promise<BrowserWindow> {
       backgroundThrottling: show,
       offscreen: !show,
       devTools: !app.isPackaged,
+      preload: join(__dirname, 'preload.cjs'),
     },
   });
+  protectWindowSaves(win);
   const openExternal = (url: string): void => {
     if (externalLink(url)) void shell.openExternal(url).catch(() => undefined);
   };

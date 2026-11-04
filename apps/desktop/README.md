@@ -1,6 +1,7 @@
 # Shattered Rifts desktop prototype
 
-Windows x64 Electron wrapper for the existing React/Pixi game. Steamworks is a later milestone.
+Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
+in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 
 From the repository root (Node 22.12+, pnpm installed):
 
@@ -26,20 +27,24 @@ It never loads the live website to run the campaign. No automatic desktop update
 
 The stable `srgame://app` origin preserves root-relative asset paths and local saves. Its handler
 rejects escaping paths. Renderer Node integration is off; sandbox, context isolation and web security
-are on. No preload bridge exposes filesystem or process access. Pixi's CSP-compatible helpers run
+are on. A named preload bridge handles save snapshots, status and Quit without exposing filesystem,
+process, ticket or arbitrary Steam access. Pixi's CSP-compatible helpers run
 only in the desktop entry. HTTPS links open in the default browser; other external protocols are blocked.
 
 ## Saves and controls
 
 Desktop runs, settings and Vault codes persist in Chromium local storage under
 `%APPDATA%/ShatteredRifts`. This path stays the same when the installer or game version changes.
-Do not delete it to update the game. **Game > Open save folder** opens the profile; press Alt to show
+Do not delete it to update the game. **Settings > Quit to Desktop** saves and closes the app.
+The native close button/menu also snapshots progress before exiting. **Game > Open save folder** opens the profile; press Alt to show
 the menu. `window-v1.json` stores window size, maximized and fullscreen state. F11 / Alt+Enter toggle
 fullscreen; the existing in-game fullscreen setting remains available.
 
 Browser and desktop profiles are separate. Existing run export/import transfers a run manually;
-Vault codes can sync supported data when online. File-backed campaign snapshots, automatic backups
-and Steam Cloud are not implemented yet. Online Google cookies are not shared with the desktop.
+Vault codes can sync supported data when online. Canonical snapshots and the previous-revision backup
+are under `%APPDATA%/ShatteredRifts/saves/standalone` or `saves/<Steam ID>`. Configured Steam profiles
+use `profiles/<Steam ID>` for Chromium data. Steam Auto-Cloud setup is documented above; it has not
+been activated or tested against Valve because no app ID exists yet. Online Google cookies are not shared with desktop.
 
 On a fresh profile, select **Play offline without the leaderboard** to start a campaign immediately.
 Arena, ghosts, boards and Vault sync require a connection and the usual online identity. The server
@@ -48,12 +53,14 @@ to work around cross-origin requests.
 
 ## Validation
 
-`desktop:smoke` runs the bundled renderer in two separate hidden Electron processes with all HTTP,
+`desktop:smoke` runs the bundled renderer in three separate hidden Electron processes with all HTTP,
 HTTPS and WebSocket requests blocked. The first starts an offline campaign, checks local assets and
 renderer isolation, renders a sandbox fight, and quits. The second checks that the exact run survived.
-Test profiles and screenshots remain under ignored `.smoke-profile/run-*`, separate from real saves.
+The third process restores only the canonical file into a fresh Chromium profile, checking the Cloud
+restore path locally. Each quits through the real Settings button. Test profiles and screenshots
+remain under ignored `.smoke-profile/run-*` and `.smoke-profile/cloud-*`, separate from real saves.
 The test's hidden window disables background throttling so animation frames can render.
 
 Before public distribution, test the installer on another Windows computer, add branded icons and
-signing, test online play against staging, and add file-backed saves/backup and Steamworks features.
+signing, and complete real Steam account/achievement/two-machine Cloud testing using the setup guide.
 Steam Deck, controllers, macOS and Linux are not validated by this Windows prototype.

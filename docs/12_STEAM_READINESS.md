@@ -1,6 +1,6 @@
 # Steam readiness
 
-A checklist for taking Shattered Rifts from the web build to Steam. **The Windows Electron prototype is implemented (0.178.0, DECISIONS #577)**; Steamworks integration remains planned. This is a list of
+A checklist for taking Shattered Rifts from the web build to Steam. **The Windows wrapper and Steam integration code are implemented (0.179.0, DECISIONS #577-578)**. Robert has no Steam app ID yet; live Steam functionality still requires partner configuration and testing. This is a list of
 decisions. Milestone M8 in `07_TECH_ARCHITECTURE.md` already names the stack (Electron + steamworks.js); this doc fills in the rest.
 Anything that changes the economy, monetisation or core rules needs Robert's sign-off first (see `CLAUDE.md`).
 
@@ -10,9 +10,9 @@ Status key: **[ ]** not started · **[?]** needs a decision · **[x]** done
 
 The Steam build is the web client wrapped in a desktop shell, talking to the same Cloudflare server for the Arena.
 
-- [x] **Shell:** Electron (apps/desktop), with a separate renderer build and NSIS installer. Steamworks integration is pending. Pixi/WebGL
+- [x] **Shell:** Electron (apps/desktop), with a separate renderer build and NSIS installer. Live Steam activation awaits an app ID (#578). Pixi/WebGL
   uses its CSP-compatible shader helpers in the desktop build. Run pnpm desktop:smoke for an isolated offline/restart check.
-- [x] Bundle the compiled game and artwork under a local srgame://app origin. The campaign can start offline without claiming a username. Saves/settings persist in the desktop Chromium profile; file-based Cloud save storage and backups remain pending.
+- [x] Bundle the compiled game and artwork under a local srgame://app origin. The campaign can start offline without claiming a username. Account-bound save files and previous-revision backups are implemented (#578); actual Steam Auto-Cloud setup/testing remains pending.
 - [ ] Steam-aware settings: fullscreen/windowed and window-size persistence implemented (F11 / Alt+Enter); resolution presets, controllers and Steam Deck testing remain.
 - [ ] Remove or hide web-only things in the desktop build: Ko-fi links, supporter codes, the Pages/Cloudflare deploy notes. Decide what
   replaces them (see §5).
@@ -47,7 +47,7 @@ hosts later would mean rewriting the server layer, not the game.
 
 Today a player is a **Vault code** (a guest) or a **Google sign-in**. Steam players will expect their Steam identity.
 
-- [ ] **Steam sign-in:** the client asks Steam for an auth ticket; the server verifies it with Steam's Web API and maps it to an account.
+- [ ] **Steam sign-in:** code implemented (#578): native main process obtains a Web API ticket, server verifies it with Valve and issues a signed Steam session. Pending actual app ID, publisher Web API secret and live Steam test.
   The Steam ID becomes the player id behind saved decks and rankings (hashed, as board ids are now).
 - [?] **Linking:** can a Steam account be linked to an existing Vault code or Google account so a web player keeps their decks? Decide
   before launch; it is hard to add afterwards.
@@ -75,8 +75,8 @@ The plan is a **paid game ($7.99–$9.99)**, with the web campaign free and fund
 
 ## 7. Steamworks features
 
-- [ ] **Achievements** (list, icons, unlock triggers from the event stream: first win, clearing a Tier, a character's first Legendary…).
-- [ ] **Cloud saves** for runs, settings and the local Vault. Keep saves small and versioned; handle conflicts by newest-wins plus
+- [ ] **Achievements:** 18 campaign milestones and retryable native unlocks implemented (#578), with a generated manifest in apps/desktop/out/steam-achievements.json. Partner definitions/icons and live unlock testing remain.
+- [ ] **Cloud saves:** versioned per-account files/backups implemented (#578), with local restore and fresh-profile smoke tests. Configure Steam Auto-Cloud using apps/desktop/steam/auto-cloud.json; real two-machine sync and conflict checks remain. Steam handles conflicts before launch; the earlier plan was newest-wins plus
   a "keep both" prompt.
 - [ ] **Rich presence** (in a fight, in the Arena) and the Steam overlay (check that Electron's GPU mode lets it attach).
 - [ ] **Leaderboards:** ours or Steam's. Ours already exist and work across web and Steam; Steam's would split them.

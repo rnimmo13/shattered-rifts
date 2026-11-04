@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.179.0',
+    date: '2026-11-04',
+    title: 'Desktop saves and Steam preparation',
+    summary: 'Quit from Settings, keep backed-up desktop saves, and prepare for Steam accounts and achievements.',
+    notes: [
+      { kind: 'new', text: 'Desktop Settings now has Quit to Desktop. The game saves your current progress before closing.' },
+      { kind: 'new', text: 'Desktop progress is also kept in versioned save files with a previous-revision backup. These include campaign saves, in-progress fights, history, the local Vault and portable preferences.' },
+      { kind: 'new', text: 'Steam integration is ready to configure: automatic Steam account sign-in, 18 campaign achievements, separate account saves, and Steam Auto-Cloud file support.' },
+      { kind: 'changed', text: 'Steam features require the game to be registered and configured in Steamworks. Until then the desktop app works in standalone mode, and the website continues separately.' },
+    ],
+  },
+  {
     version: '0.178.0',
     date: '2026-11-03',
     title: 'A desktop playtest build',

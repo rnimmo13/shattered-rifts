@@ -8,4 +8,7 @@ export interface Env {
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
   SESSION_SECRET?: string;
+  STEAM_APP_ID?: string;
+  /** Publisher Web API key. Server secret only; never bundled with a desktop build. */
+  STEAM_WEB_API_KEY?: string;
 }
