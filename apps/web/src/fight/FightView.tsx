@@ -8,12 +8,14 @@ import {
   Suspense,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { enterBattle } from '../battleActivity';
 import {
   applyAction,
   forgeWord,
@@ -427,6 +429,7 @@ export function FightView(props: {
   omens?: { name: string; text: string }[];
 }) {
   const { db, setup, onMove, onResumeFailed } = props;
+  useLayoutEffect(enterBattle, []);
   const pvp = props.pvp ?? null;
   const watch = props.watch ?? null;
   const hideHand = watch?.hideHand === true;

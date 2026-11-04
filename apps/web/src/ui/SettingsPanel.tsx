@@ -2,7 +2,7 @@
 // mounted once, at the app's root; a change is saved where that preference has always lived, and announced, so a fight in
 // progress applies it at once.
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { getSound, setSound } from '../audio/sfx';
 import {
   loadEffectsMode,
@@ -16,9 +16,14 @@ import { onSettingsOpen, settingsChanged } from '../app/settings';
 import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
 import { DesktopUpdates } from './DesktopUpdates';
+import { WebUpdateControls } from './UpdatePrompt';
+import { BUILD } from '../build';
+import { localOnly, releasePlayAccess } from '../playAccess';
+import { battleActive, subscribeBattle } from '../battleActivity';
 import {
   desktopBridge,
   desktopSaveError,
+  flushDesktopSave,
   quitDesktop,
   type DesktopSteamStatus,
 } from '../desktopBridge';
@@ -62,6 +67,8 @@ function Choice<T extends string>(props: {
 const fullscreenOn = (): boolean => typeof document !== 'undefined' && !!document.fullscreenElement;
 
 export function SettingsPanel() {
+  const fighting = useSyncExternalStore(subscribeBattle, battleActive);
+  const [buildCopied, setBuildCopied] = useState(false);
   const [desktop, setDesktop] = useState<DesktopSteamStatus | null>(null);
   const [quitting, setQuitting] = useState(false);
   const [quitError, setQuitError] = useState<string | null>(null);
@@ -99,6 +106,8 @@ export function SettingsPanel() {
 
   useEffect(() => {
     if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     panel.current?.querySelector<HTMLElement>('button, input')?.focus();
     // (while it is open, no key reaches the screen behind it: a fight's 1-9 and E would play cards and end the turn. Buttons and
     // the slider still work, as they answer to the key's default action, not to the event reaching anything)
@@ -126,6 +135,7 @@ export function SettingsPanel() {
     window.addEventListener('keydown', onKey, true);
     document.addEventListener('fullscreenchange', onFull);
     return () => {
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKey, true);
       document.removeEventListener('fullscreenchange', onFull);
       // (a button in a menu that closed meanwhile is gone: focus stays where the browser puts it)
@@ -193,6 +203,28 @@ export function SettingsPanel() {
         {desktopBridge() && (
           <section className="settings__group" aria-labelledby="settings-desktop">
             <h3 id="settings-desktop">Desktop</h3>
+            <Row
+              label="Save mode"
+              hint="Local offline saves stay separate from your online account."
+            >
+              <button
+                className="btn btn--small"
+                disabled={quitting || fighting}
+                onClick={() => {
+                  setQuitting(true);
+                  setQuitError(null);
+                  void flushDesktopSave()
+                    .then(() => releasePlayAccess())
+                    .then(() => desktopBridge()?.switchMode(!localOnly()))
+                    .catch(() => {
+                      setQuitting(false);
+                      setQuitError('Could not save and switch modes. Please try again.');
+                    });
+                }}
+              >
+                {localOnly() ? 'Online account' : 'Local offline play'}
+              </button>
+            </Row>
             <Row label="Quit game" hint="Save your current progress and close the game.">
               <button
                 className="btn btn--small"
@@ -219,7 +251,6 @@ export function SettingsPanel() {
             {(quitError || desktopSaveError()) && (
               <p role="alert">{quitError || desktopSaveError()}</p>
             )}
-            <DesktopUpdates />
           </section>
         )}
 
@@ -404,6 +435,31 @@ export function SettingsPanel() {
               </div>
             </div>
           )}
+        </section>
+        <section className="settings__group" aria-labelledby="settings-about">
+          <h3 id="settings-about">About and updates</h3>
+          <p className="settings__version">Version {BUILD.version}</p>
+          {desktopBridge() ? <DesktopUpdates /> : <WebUpdateControls />}
+          <details className="settings__build">
+            <summary>Build details</summary>
+            <p>
+              Commit {BUILD.commit}
+              {BUILD.dirty ? ' (local changes)' : ''}
+              <br />
+              Built {BUILD.date || 'locally'}
+            </p>
+            <button
+              className="btn btn--small"
+              onClick={() => {
+                void navigator.clipboard
+                  ?.writeText(BUILD.label)
+                  .then(() => setBuildCopied(true))
+                  .catch(() => setBuildCopied(false));
+              }}
+            >
+              {buildCopied ? 'Copied' : 'Copy build details'}
+            </button>
+          </details>
         </section>
       </div>
     </div>

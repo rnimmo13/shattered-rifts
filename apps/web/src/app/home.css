@@ -19,25 +19,33 @@
 
 .home__bar {
   position: relative;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   min-height: 2.4rem;
+  width: min(100%, 88rem);
+  margin: 0 auto;
 }
-/* the Settings button and the player chip, together at the bar's right (DECISIONS #571) */
-.home__barEnd {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+.home__bar > .btn,
+.home__bar .playerchip button {
+  min-height: 44px;
 }
-.home__eyebrow {
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--c-text-dim);
+.home__bar > .btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.home__bar .playerchip {
+  min-width: 0;
+  flex: 1;
+}
+.playerchip__me b {
+  max-width: 20ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .home__body {
@@ -482,12 +490,13 @@
   }
 }
 
-/* who you are, top right (PlayerChip.tsx): your username, or a nudge to choose one; it opens a small panel */
+/* Account and profile, at the left of the home header. */
 .playerchip {
   position: relative;
 }
 .playerchip__me,
 .playerchip__ask {
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -513,6 +522,7 @@
   outline: none;
 }
 .playerchip__initial {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   width: 1.7rem;
@@ -530,6 +540,7 @@
   font-size: 0.9rem;
 }
 .playerchip__me b {
+  min-width: 0;
   font-family: var(--font-display);
   letter-spacing: 0.05em;
 }
@@ -539,10 +550,13 @@
 }
 .playerchip__panel {
   position: absolute;
-  right: 0;
+  left: 0;
   top: calc(100% + 0.5rem);
   z-index: 50;
   width: min(22rem, 90vw);
+  box-sizing: border-box;
+  max-height: calc(100dvh - 6rem);
+  overflow: auto;
   display: grid;
   gap: 0.8rem;
   padding: 1rem;
@@ -557,7 +571,7 @@
     position: fixed;
     left: 1rem;
     right: 1rem;
-    top: 5.5rem;
+    top: 4.5rem;
     width: auto;
     max-height: calc(100dvh - 6.5rem);
     overflow-y: auto;

@@ -67,7 +67,7 @@ are under `%APPDATA%/ShatteredRifts/saves/standalone` or `saves/<Steam ID>`. Con
 use `profiles/<Steam ID>` for Chromium data. Steam Auto-Cloud setup is documented above; it has not
 been activated or tested against Valve because no app ID exists yet. Online Google cookies are not shared with desktop.
 
-On a fresh profile, select **Local offline play** to start an isolated campaign without a connection.
+On a fresh profile, select **Settings > Local offline play** to start an isolated campaign without a connection.
 Arena, ghosts, boards and Vault sync require a connection and the usual online identity. The server
 must contain decision #577's exact desktop-origin allowance. No renderer security setting is disabled
 to work around cross-origin requests.

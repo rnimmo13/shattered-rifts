@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { ART_READY_EVENT } from '../art/assets';
-import { BuildBadge } from '../ui/BuildBadge';
+import { UpdatePrompt } from '../ui/UpdatePrompt';
+import { ScreenErrorBoundary } from '../ui/ScreenErrorBoundary';
 import { TooltipLayer } from '../ui/Tooltip';
 import { SettingsPanel } from '../ui/SettingsPanel';
 import { PerfRecorder } from '../ui/PerfRecorder';
@@ -58,9 +59,11 @@ export function App() {
   const atHome = hash === '' || hash === '#' || hash === '#/';
   return (
     <>
-      <Screens key={atHome ? artVersion : 0} hash={hash} />
+      <ScreenErrorBoundary key={hash}>
+        <Screens key={atHome ? artVersion : 0} hash={hash} />
+      </ScreenErrorBoundary>
       <PlayStatus />
-      <BuildBadge />
+      <UpdatePrompt />
       <TooltipLayer />
       {/* (one Settings menu for every screen, opened by a Settings button: DECISIONS #571) */}
       <SettingsPanel />

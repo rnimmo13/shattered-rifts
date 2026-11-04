@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.184.0',
+    date: '2026-11-04',
+    title: 'Update between battles',
+    summary: 'A quieter home screen and a clear invitation to update when your battle is over.',
+    notes: [
+      { kind: 'new', text: 'The website checks for new versions and offers Save and refresh. Desktop offers Save and restart when a patch has downloaded. Prompts wait until you leave the fight screen, and Later lets you keep playing.' },
+      { kind: 'changed', text: 'Account is on the left of the home header and Settings is on the right. Removed the Friends alpha / working title banner and duplicate version labels.' },
+      { kind: 'changed', text: 'Settings > About and updates holds the version, build details and update controls. Desktop save-mode switching is now in Settings. Phone layouts have larger buttons and a profile panel that stays on screen.' },
+    ],
+  },
+  {
     version: '0.183.0',
     date: '2026-11-04',
     title: 'Desktop downloads and automatic updates',

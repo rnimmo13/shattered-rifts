@@ -1,4 +1,4 @@
-// Who you are, at the top right of the home page: your username, or a short nudge to choose one. Opening it lets you change the
+// Account and profile, at the top left of the home page. Opening it lets you change the
 // name and sign in or out (signing in keeps your decks on any device). The name is the one the boards and the Arena show.
 //
 // When the game ships on Steam the name will come from the player's Steam profile (DECISIONS #254): this chip is where it shows,
@@ -57,6 +57,7 @@ export function PlayerChip(props: { me: Me; onSignedOut: () => void }) {
           className="playerchip__me"
           aria-expanded={open}
           aria-haspopup="dialog"
+          aria-label={`Account and profile for ${name}`}
           onClick={() => setOpen(!open)}
         >
           <span className="playerchip__initial" aria-hidden>
@@ -71,11 +72,12 @@ export function PlayerChip(props: { me: Me; onSignedOut: () => void }) {
         <button
           type="button"
           className="playerchip__ask"
+          aria-label="Account and profile"
           aria-expanded={open}
           aria-haspopup="dialog"
           onClick={() => setOpen(!open)}
         >
-          Choose a username
+          Account
         </button>
       )}
       {open && (

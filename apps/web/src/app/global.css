@@ -550,27 +550,6 @@ body:has(.learn) {
   color: var(--c-cyan-glow);
 }
 
-/* the build label */
-.buildbadge {
-  position: fixed;
-  right: 6px;
-  bottom: 2px;
-  z-index: 900;
-  padding: 0 0.4rem;
-  font-size: 13px;
-  line-height: 14px;
-  letter-spacing: 0.04em;
-  color: rgb(214 220 255 / 0.55);
-  background: rgb(4 5 11 / 0.45);
-  border-radius: 4px;
-  user-select: text;
-  pointer-events: auto;
-  cursor: help;
-}
-.buildbadge:hover {
-  color: var(--c-ivory);
-}
-
 /* choosing a character on the title screen */
 .title__card {
   padding: 0;

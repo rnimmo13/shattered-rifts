@@ -84,8 +84,11 @@ export async function quitDesktop(): Promise<void> {
   desktopBridge()?.quit();
 }
 export async function restartDesktopUpdate(): Promise<void> {
+  const { battleActive } = await import('./battleActivity');
+  if (battleActive()) throw new Error('Finish or leave the battle before updating.');
   await flushDesktopSave();
   const { releasePlayAccess } = await import('./playAccess');
   await releasePlayAccess().catch(() => undefined);
+  if (battleActive()) throw new Error('A battle has started. Update after leaving it.');
   await desktopBridge()?.installUpdate();
 }

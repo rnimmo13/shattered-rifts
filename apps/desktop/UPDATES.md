@@ -1,4 +1,4 @@
-# Standalone desktop updates (0.183.0, decision #582)
+# Standalone desktop updates (0.184.0, decisions #582-583)
 
 Friends download the Windows x64 installer from the website home page:
 
@@ -10,14 +10,20 @@ Browser local storage remains a separate profile; this does not introduce automa
 
 ## Player behavior
 
-- Packaged standalone Windows checks after 15 seconds and every six hours while running.
-- Settings > Desktop displays installed version, download progress and Check for updates.
+- Packaged standalone Windows checks after 15 seconds and every five minutes while running.
+- Settings > About and updates displays the single installed version, download progress and Check for updates.
 - New stable versions download automatically. No timer forces a restart or interrupts a fight.
 - Downloaded updates install silently when quitting normally, after the window save guard finishes.
 - Restart to update flushes the renderer save and releases the play claim. Main-process input is
   frozen while a final snapshot is committed. A failed save cancels installation and restores input.
   A successful snapshot permits closing before the updater starts the silent NSIS installer/relaunch.
-- The home screen shows a downloaded update or current download. Offline errors are recoverable
+- A global Save and restart prompt appears once a patch is ready, only outside mounted fight screens
+  (including result/series screens). Later dismisses that version's prompt for this app session;
+  Settings still offers the update. Explicit restart is also guarded during fights.
+- The website polls an uncached version.json every minute and when focused. Save and refresh uses
+  the same battle guard and releases the shared play claim after saving. No automatic reload occurs
+  on deployment or missing stale chunks. Browser and mobile web use the same prompt.
+- Offline errors are recoverable
   and do not block local play; Check for updates retries. No downgrade/prerelease/web installers.
 - Development builds, non-Windows/store installs and Steam-configured editions disable this updater.
   Steam will distribute its own depot updates. Local offline mode may download an app update when

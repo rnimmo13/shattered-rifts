@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { battleActive, subscribeBattle } from '../battleActivity';
 import { desktopBridge, restartDesktopUpdate, type DesktopUpdateStatus } from '../desktopBridge';
 import './desktopUpdates.css';
 
@@ -18,6 +19,7 @@ export function DesktopDownload() {
 }
 
 export function DesktopUpdates({ compact = false }: { compact?: boolean }) {
+  const fighting = useSyncExternalStore(subscribeBattle, battleActive);
   const [status, setStatus] = useState<DesktopUpdateStatus | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -49,10 +51,8 @@ export function DesktopUpdates({ compact = false }: { compact?: boolean }) {
             ? `Downloading desktop update: ${status.percent}%`
             : status.message}
       </p>
-      {!compact && (
-        <small>
-          Installed version {status.currentVersion}. {ready ? status.message : ''}
-        </small>
+      {!compact && ready && (
+        <small>{fighting ? 'Finish or leave the battle before restarting.' : status.message}</small>
       )}
       {status.phase === 'downloading' && (
         <progress max={100} value={status.percent} aria-label="Update download progress" />
@@ -61,7 +61,11 @@ export function DesktopUpdates({ compact = false }: { compact?: boolean }) {
         <button
           className="btn btn--small"
           type="button"
-          disabled={busy || ['checking', 'downloading', 'installing'].includes(status.phase)}
+          disabled={
+            busy ||
+            (ready && fighting) ||
+            ['checking', 'downloading', 'installing'].includes(status.phase)
+          }
           onClick={() => {
             setBusy(true);
             setError('');

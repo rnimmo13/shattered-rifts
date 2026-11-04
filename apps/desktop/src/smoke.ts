@@ -88,6 +88,14 @@ void app
       await waitFor(win, "!!document.querySelector('.home__play')");
       await value(
         win,
+        "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Settings')).click()",
+      );
+      await waitFor(
+        win,
+        "[...document.querySelectorAll('button')].some(b => b.textContent === 'Local offline play')",
+      );
+      await value(
+        win,
         "[...document.querySelectorAll('button')].find(b => b.textContent === 'Local offline play').click()",
       );
       await waitFor(
@@ -116,11 +124,21 @@ void app
       await waitFor(win, "document.body.textContent.includes('Begin the fight')");
       await value(win, "document.querySelector('.setup__go').click()");
       await waitFor(win, "!!document.querySelector('canvas')");
+      updateEvents.emit('update-downloaded', { version: '0.185.0' });
+      await value(win, "window.dispatchEvent(new Event('focus'))");
+      await delay(300);
+      assert.equal(await value(win, "!!document.querySelector('.update-prompt')"), false);
       await delay(1500);
       writeFileSync(resolve(profile, 'fight.png'), (await win.webContents.capturePage()).toPNG());
       // Isolated fixture: render the new Ascendancy progress chip through the real campaign UI.
       await value(win, "location.hash = '#/'");
       await waitFor(win, "!!document.querySelector('.home__play')");
+      await waitFor(win, "!!document.querySelector('.update-prompt')");
+      assert.equal(await value(win, "!!document.querySelector('.buildbadge')"), false);
+      writeFileSync(
+        resolve(profile, 'update-prompt.png'),
+        (await win.webContents.capturePage()).toPNG(),
+      );
       await value(
         win,
         `(() => {
@@ -170,7 +188,7 @@ void app
     }
     session.defaultSession.flushStorageData();
     // Test the real update save/IPC path with a fake installer; later stages use normal Quit.
-    if (stage === 'write') updateEvents.emit('update-downloaded', { version: '0.184.0' });
+    if (stage === 'write') updateEvents.emit('update-downloaded', { version: '0.185.0' });
     await value(
       win,
       "document.querySelector('button[aria-label=\"Settings\"]')?.click() || [...document.querySelectorAll('button')].find(b => b.textContent.includes('Settings'))?.click()",

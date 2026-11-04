@@ -3,7 +3,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { MAX_TIER } from '@sr/campaign';
 import { RIFTWALKERS, classNameOf, type HeroId } from '@sr/content/v2';
-import { BUILD } from '../build';
 import {
   RUN_SLOTS,
   clearSavedRun,
@@ -27,9 +26,8 @@ import { HeroShowcase } from './HeroShowcase';
 import { getHero, rememberHero } from './heroChoice';
 import { hasUnread } from './patchNotes';
 import './home.css';
-import { desktopBridge, flushDesktopSave } from '../desktopBridge';
-import { localOnly, releasePlayAccess, gameplayAction, canPlay } from '../playAccess';
-import { DesktopDownload, DesktopUpdates } from '../ui/DesktopUpdates';
+import { localOnly, gameplayAction, canPlay } from '../playAccess';
+import { DesktopDownload } from '../ui/DesktopUpdates';
 
 export function TitleScreen() {
   const [picked, setPicked] = useState(getHero);
@@ -93,25 +91,10 @@ export function TitleScreen() {
 
   return (
     <main className="home" style={{ '--accent': color } as CSSProperties}>
-      <div className="home__bar">
-        <span className="home__eyebrow">Friends alpha · working title</span>
-        <span className="home__barEnd">
-          <SettingsButton />
-          <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
-          {desktopBridge() && !localOnly() && (
-            <button
-              className="btn btn--small"
-              onClick={() => {
-                void flushDesktopSave()
-                  .then(() => releasePlayAccess())
-                  .then(() => desktopBridge()?.switchMode(true));
-              }}
-            >
-              Local offline play
-            </button>
-          )}
-        </span>
-      </div>
+      <header className="home__bar" aria-label="Account and settings">
+        <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
+        <SettingsButton />
+      </header>
 
       <div className="home__body">
         <section className="home__menu" aria-label="Play">
@@ -120,7 +103,6 @@ export function TitleScreen() {
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
           <DesktopDownload />
-          <DesktopUpdates compact />
 
           {/* (a few runs are big buttons; more than two become a compact list that scrolls, with how many of the slots are used) */}
           {runs.length + broken.length > 0 && (
@@ -292,7 +274,7 @@ export function TitleScreen() {
       </div>
 
       <p className="home__footer">
-        <a href="#/credits">Credits</a> · combat v2 preview · {BUILD.label}
+        <a href="#/credits">Credits</a>
       </p>
     </main>
   );
