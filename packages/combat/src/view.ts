@@ -933,6 +933,7 @@ function sayRepeats(lines: readonly string[]): string[] {
 const WHEN_TEXT: Record<string, string> = {
   turnStart: 'At the start of your turn',
   turnEnd: 'At the end of your turn',
+  turnSettled: 'After your hand clears and companions act at the end of your turn',
   play: 'Whenever you play a card',
   exhaust: 'Whenever a card is consumed',
   discard: 'Whenever you discard a card',

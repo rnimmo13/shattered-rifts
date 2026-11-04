@@ -466,6 +466,7 @@ export interface Scale {
 export type TriggerWhen =
   | 'turnStart'
   | 'turnEnd'
+  | 'turnSettled' // after hand cleanup and companion actions, before turn-end decay
   | 'play'
   | 'exhaust'
   | 'discard'
@@ -534,6 +535,7 @@ export type CombatDiscipline =
   | { kind: 'radiance'; first: number; step: number; cap: number }
   | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
   | { kind: 'brewing'; cap: number; healPct: number; barrier: number }
+  | { kind: 'harvest'; base: number; perConsumed: number }
   | { kind: 'desperation'; threshold: number; bonus: number; emergencyBarrierPct: number };
 
 export interface DisciplineState {

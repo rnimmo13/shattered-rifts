@@ -5,6 +5,8 @@ and Arena, with distinct play patterns, and explicitly deferred card-pool balanc
 version 0.181.0, decision #580, combat rules 75. This is a hand-priced starting pass and scenario-tested
 implementation, not measured A-tier parity. No balance simulations were requested or run.
 
+Soulreaper's subsequently approved 0.182.0 follow-up below supersedes its retained 0.181.0 effect.
+
 ## Exact changes
 
 All growth and one-use protection reset each fight. Existing names/ids and old Engineer/Shaman
@@ -114,3 +116,38 @@ decks missing preferred rares, fast Arena pressure, Seer target changes, Totemis
 opportunity costs, Golemancer after losing a developed machine, Elementalist multi-element turns,
 Archmage multi-hit spenders, and Brewmaster/Deathwish endurance. No claim of measured win-rate
 parity, guaranteed endgame wins, or balanced underlying card pools is made.
+
+## Soulreaper follow-up: Harvest of Souls (0.182.0, decision #581)
+
+Robert approved this exact version after questioning the reliability of the prior A grade:
+
+- Each genuine Consume grants **3 Barrier**, replacing 4.
+- If at least one card was consumed on the owner's turn, **Reap once at its end** for
+  **4 + 2 per card consumed by that side this fight**.
+- Reap resolves after Fleeting hand cleanup and companion actions, before status decay and the
+  opposing phase. It selects the living enemy with lowest **current HP**, with first board order
+  breaking ties. Taunt does not redirect this non-attack effect, and excess damage does not spill.
+- Reap is ordinary non-attack damage: Barrier and the usual damage protections apply. Might,
+  Primed, Fury/Radiant, Exposed and Attack multipliers do not increase it. It does not heal.
+- Genuine consumption events count, including consumed tokens, forced consumption and unplayed
+  Fleeting. Playing a Fleeting card normally, discarding, or moving a played Aura out of the deck
+  does not count. Returning a card from the consumed pile does not erase earlier harvest events.
+- Progress resets every fight; a later turn without consumption receives no Reap even with an
+  existing harvest. Each Arena seat tracks its own harvest. The chip shows count and potential damage.
+- Base Grave Chill remains: consumption still curses a random enemy with **3 Fate**. This was
+  already an offensive benefit; the new Reap adds dependable damage rather than replacing Fate.
+  Fate is an execution threshold and must not be counted as equivalent immediate damage.
+
+At three consumptions per turn, turns 1/4/8 have total harvest 3/12/24 and Reap 10/28/52, with
+9 Barrier earned each turn. Across four qualifying turns, Reap totals 76 damage and Consume
+grants 36 Barrier (previously 48). Across eight such turns it totals 248 damage and 72 Barrier.
+These assume sustained generation and survival; they are examples, not observed consumption rates.
+All damage is subject to targeting, overkill and defense. Growth per Reap is linear in harvest;
+generating and consuming several cards rapidly is a deliberate payoff and a playtest priority.
+
+Rules version 76 fences older clients and replays; older-rule unfinished campaign fights restart
+from their encounter checkpoints under the existing log-version policy. Card pools, the other
+Ascendancies and enemy curves are unchanged. Scenario tests cover Fleeting timing, real Gravesoul
+draw, false Consume events, cumulative growth, inactive turns, tied targeting, overkill, Barrier,
+attack-multiplier exclusion, winning before enemy actions, JSON restore and independent Arena seats.
+A-tier reliability still requires playtesting; no balance simulations were run.

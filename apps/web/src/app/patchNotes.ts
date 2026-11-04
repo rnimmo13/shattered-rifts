@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.182.0',
+    date: '2026-11-04',
+    title: 'Soulreaper: Harvest of Souls',
+    summary: 'Consuming cards now develops a growing end-of-turn offensive payoff.',
+    notes: [
+      { kind: 'balance', text: 'Soulreaper gains 3 Barrier per consumed card. At the end of a turn in which you consumed cards, Reap the lowest-HP enemy for 4 damage plus 2 per card consumed this fight.' },
+      { kind: 'changed', text: 'Reap resolves once after Fleeting cards are consumed and companions act. It is non-attack damage that Barrier can absorb, and its accumulated harvest resets each fight.' },
+      { kind: 'new', text: 'Soulreaper’s combat chip shows the number of harvested cards and the next Reap’s damage.' },
+    ],
+    heads: 'Refresh or update the desktop app. Existing Soulreaper choices receive the new effect. Older replays are incompatible; unfinished older-rule fights restart at their encounter checkpoint. Card pools are unchanged.',
+  },
+  {
     version: '0.181.0',
     date: '2026-11-04',
     title: 'Ascendancies with a purpose',

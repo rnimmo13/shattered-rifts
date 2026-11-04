@@ -19,6 +19,7 @@ export function disciplineTrigger(
   const r = d.rule;
   const own = state.active === side.id;
   const barrier = (amount: number): Op => ({ op: 'barrier', amount, to: 'self' });
+  if (r.kind === 'harvest' && when === 'exhaust') d.progress++;
   if (r.kind === 'retaliation' && when === 'hurt' && (ctx.lost ?? 0) > 0) {
     // Fractional percentage charge is retained, avoiding rewards for splitting a loss into many hits.
     const gain = Math.max(
@@ -29,6 +30,15 @@ export function disciplineTrigger(
     d.progress = Math.min(r.cap, d.progress + gain);
   }
   if (!own) return [];
+  if (
+    r.kind === 'harvest' &&
+    when === 'turnSettled' &&
+    (side.exhaustedTurn ?? 0) > 0 &&
+    d.usedTurn !== state.turn
+  ) {
+    d.usedTurn = state.turn;
+    return [{ op: 'damage', amount: r.base + r.perConsumed * d.progress, to: 'weakestFoe' }];
+  }
   if (r.kind === 'execution' && when === 'play' && ctx.card?.kind === 'skill')
     d.progress = Math.min(r.cap, d.progress + r.perSkill);
   if (
@@ -171,6 +181,8 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
       return `Recovery ${side.nextStars ?? 0} Spell Power`;
     case 'brewing':
       return `Fermentation ${d.progress}/${r.cap}`;
+    case 'harvest':
+      return `Harvest ${d.progress} · Reap ${r.base + r.perConsumed * d.progress}${(side.exhaustedTurn ?? 0) > 0 && d.usedTurn !== state.turn ? ' ready' : ''}`;
     case 'desperation':
       return d.used ? 'Last stand spent' : 'Last stand ready';
   }
@@ -203,6 +215,8 @@ export function disciplineText(side: SideState): string | null {
       return `Spell recovery: ${side.nextStars ?? 0} Spell Power due next turn; ${d.usedTurn === side.turnBegan ? 'used this turn' : 'ready'}.`;
     case 'brewing':
       return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${d.progress * r.healPct}% max HP and gives ${d.progress * r.barrier} Barrier.`;
+    case 'harvest':
+      return `${d.progress} cards consumed this fight. After hand cleanup and companion actions, consuming a card this turn enables one Reap for ${r.base + r.perConsumed * d.progress} non-attack damage against the lowest-HP enemy. Barrier can absorb it.`;
     case 'desperation':
       return `Death-defying save: ${d.used ? 'spent this fight' : 'available once this fight'}.`;
   }

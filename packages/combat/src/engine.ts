@@ -4649,6 +4649,8 @@ function endTurn(r: Run): void {
     }
   }
   if (r.s.winner) return;
+  fireTriggers(r, sd, 'turnSettled');
+  if (r.s.winner) return;
   decay(r, side);
   if (r.s.winner) return;
   r.ev.push({ type: 'turnEnd', side });

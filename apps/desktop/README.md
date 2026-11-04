@@ -3,8 +3,11 @@
 Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
 in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 
+**0.182.0:** Soulreaper gains the approved Harvest of Souls offensive payoff. Consumption develops
+one end-of-turn Reap; the trait chip shows its progress. Card pools remain unchanged.
+
 **0.181.0:** twelve Ascendancies have distinct late-game mechanics and combat progress chips.
-See [the pass](../../docs/ASCENDANCY_PASS_2026-11-04.md). The offline smoke also renders a Marshal
+See [the pass](../../docs/ASCENDANCY_PASS_2026-11-04.md). The offline smoke also renders a Soulreaper
 fixture through the actual campaign UI before restoring its original isolated save.
 
 **0.180.0:** shared Campaign/Arena now require an internet connection and one account-wide play

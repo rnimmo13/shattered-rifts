@@ -98,7 +98,9 @@ void app
         const slots = JSON.parse(localStorage.getItem('sr.runs.v3'));
         const run = JSON.parse(slots[0].text);
         const node = run.map.nodes.find(n => n.enemyId && !n.ghost);
-        run.ascendancy = 'knight:marshal'; run.phase = 'duel'; run.at = node.id;
+        run.character = 'necromancer'; run.ascendancy = 'necromancer:soulreaper';
+        run.deck = ['gravesoul', 'gravesoul', 'strike', 'strike', 'defend', 'defend', 'raise-thrall', 'marked-for-the-grave', 'off-the-leash'];
+        run.phase = 'duel'; run.at = node.id;
         run.context = { nodeId: node.id };
         slots[0].text = JSON.stringify(run);
         localStorage.setItem('sr.runs.v3', JSON.stringify(slots));
@@ -107,7 +109,7 @@ void app
       );
       await waitFor(
         win,
-        "!!document.querySelector('canvas') && [...document.querySelectorAll('.traitchip__progress')].some(n => n.textContent.includes('Assault'))",
+        "!!document.querySelector('canvas') && [...document.querySelectorAll('.traitchip__progress')].some(n => n.textContent.includes('Harvest') && n.textContent.includes('Reap 4'))",
       );
       await delay(1000);
       writeFileSync(

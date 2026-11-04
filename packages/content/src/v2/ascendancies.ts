@@ -346,10 +346,16 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
       turnStart: [scaled(status('doom', 2, 'randomFoe'), per('maxHp', 0.02, 'each'))],
     },
   ),
-  // (4, was 2, DECISIONS #545)
-  a('necromancer', 'Soulreaper', 'Consume', 'Whenever a card is consumed, gain 4 Barrier.', {
-    triggers: [on('exhaust', [barrier(4)])],
-  }),
+  a(
+    'necromancer',
+    'Soulreaper',
+    'Harvest of Souls',
+    'Whenever a card is consumed, gain 3 Barrier. At the end of your turn, after Fleeting cards are consumed and companions act, if you consumed any cards that turn, Reap the lowest-HP enemy for 4 damage plus 2 per card consumed this fight. Reap is non-attack damage and Barrier can absorb it.',
+    {
+      fightStart: [{ op: 'discipline', rule: { kind: 'harvest', base: 4, perConsumed: 2 } }],
+      triggers: [on('exhaust', [barrier(3)])],
+    },
+  ),
 ];
 
 /** The three a Riftwalker can choose from. */
