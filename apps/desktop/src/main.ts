@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { createGameWindow, initializeGame } from './app.js';
 import { initializeServices } from './services.js';
 import { configuredAppId, SteamService } from './steam.js';
+import { autoUpdater } from 'electron-updater';
+import { DesktopUpdates } from './updates.js';
 
 app.setName('Shattered Rifts');
 // Fixed across app versions and installer locations. Browser saves remain separate.
@@ -36,8 +38,31 @@ else {
     .whenReady()
     .then(async () => {
       initializeGame();
-      initializeServices(base, steam);
+      const enabled =
+        app.isPackaged &&
+        process.platform === 'win32' &&
+        !process.windowsStore &&
+        steam.appId === null;
+      if (enabled) {
+        autoUpdater.autoDownload = true;
+        autoUpdater.autoInstallOnAppQuit = true;
+        autoUpdater.allowPrerelease = false;
+        autoUpdater.allowDowngrade = false;
+        autoUpdater.disableWebInstaller = true;
+      }
+      const updates = new DesktopUpdates(
+        app.getVersion(),
+        enabled ? autoUpdater : undefined,
+        steam.appId !== null ? 'Steam manages updates for this edition.' : undefined,
+      );
+      initializeServices(base, steam, updates);
       await createGameWindow();
+      if (enabled) {
+        const initial = setTimeout(() => void updates.check(), 15000);
+        initial.unref();
+        const periodic = setInterval(() => void updates.check(), 6 * 60 * 60 * 1000);
+        periodic.unref();
+      }
     })
     .catch((error: unknown) => {
       dialog.showErrorBox(

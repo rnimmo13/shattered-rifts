@@ -12,13 +12,19 @@ import { gameNavigation, localGame, LOCAL_GAME_URL, GAME_URL } from './policy.js
 import { SaveStore } from './saveStore.js';
 import type { SteamService } from './steam.js';
 import { cloudKey } from './saveData.js';
+import { DesktopUpdates, installSavedUpdate } from './updates.js';
 
 let store: SaveStore;
 let localStore: SaveStore;
 let steam: SteamService;
 const ready = new Set<number>();
+const saveBeforeUpdate = new Map<number, () => Promise<() => void>>();
 
-export function initializeServices(base: string, service: SteamService): void {
+export function initializeServices(
+  base: string,
+  service: SteamService,
+  updates = new DesktopUpdates(app.getVersion()),
+): void {
   steam = service;
   store = new SaveStore(join(base, 'saves', steam.owner), steam.owner);
   localStore = new SaveStore(join(base, 'local-saves', steam.owner), steam.owner);
@@ -68,6 +74,33 @@ export function initializeServices(base: string, service: SteamService): void {
   ipcMain.on('desktop:quit', (event) => {
     authorized(event);
     app.quit();
+  });
+  ipcMain.handle('desktop:update-status', (event) => {
+    authorized(event);
+    return updates.status();
+  });
+  ipcMain.handle('desktop:update-check', (event) => {
+    authorized(event);
+    return updates.check();
+  });
+  ipcMain.handle('desktop:update-install', async (event) => {
+    authorized(event);
+    if (updates.status().phase !== 'ready') throw new Error('No update is ready');
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const persist = saveBeforeUpdate.get(event.sender.id);
+    if (!win || !persist || !ready.has(event.sender.id))
+      throw new Error('The game is not ready to save');
+    // Freeze native input before the final snapshot; the installer can only start after it succeeds.
+    const block = (input: Electron.Event): void => input.preventDefault();
+    win.setIgnoreMouseEvents(true);
+    win.webContents.on('before-input-event', block);
+    try {
+      await installSavedUpdate(updates, persist);
+    } catch (error) {
+      win.setIgnoreMouseEvents(false);
+      win.webContents.removeListener('before-input-event', block);
+      throw error;
+    }
   });
   ipcMain.handle('desktop:switch-mode', async (event, local: unknown) => {
     authorized(event);
@@ -122,6 +155,26 @@ export function initializeServices(base: string, service: SteamService): void {
 export function protectWindowSaves(win: BrowserWindow): void {
   let allowed = false;
   let saving = false;
+  const persist = async (): Promise<() => void> => {
+    const raw: unknown = await Promise.race([
+      win.webContents.executeJavaScript('Object.fromEntries(Object.entries(localStorage))'),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Save timed out')), 5000)),
+    ]);
+    const local = localGame(win.webContents.getURL());
+    const saved = (local ? localStore : store).save(raw);
+    if (!local) steam.unlock(saved.earned);
+    session.defaultSession.flushStorageData();
+    allowed = true;
+    return () => {
+      allowed = false;
+    };
+  };
+  const contentsId = win.webContents.id;
+  saveBeforeUpdate.set(contentsId, persist);
+  win.once('closed', () => {
+    saveBeforeUpdate.delete(contentsId);
+    ready.delete(contentsId);
+  });
   win.on('close', (event) => {
     if (allowed || !ready.has(win.webContents.id)) return;
     event.preventDefault();
@@ -129,15 +182,7 @@ export function protectWindowSaves(win: BrowserWindow): void {
     saving = true;
     void (async () => {
       try {
-        const raw: unknown = await Promise.race([
-          win.webContents.executeJavaScript('Object.fromEntries(Object.entries(localStorage))'),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Save timed out')), 5000)),
-        ]);
-        const local = localGame(win.webContents.getURL());
-        const saved = (local ? localStore : store).save(raw);
-        if (!local) steam.unlock(saved.earned);
-        session.defaultSession.flushStorageData();
-        allowed = true;
+        await persist();
         win.close();
       } catch {
         const answer = await dialog.showMessageBox(win, {

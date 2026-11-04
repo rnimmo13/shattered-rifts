@@ -7,6 +7,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createGameWindow, initializeGame } from './app.js';
 import { initializeServices } from './services.js';
 import { SteamService } from './steam.js';
+import { EventEmitter } from 'node:events';
+import { DesktopUpdates } from './updates.js';
 
 const profile = process.argv[2];
 const stage = process.argv[3];
@@ -37,7 +39,29 @@ void app
       (_details, callback) => callback({ cancel: true }),
     );
     initializeGame();
-    initializeServices(profile, new SteamService(null));
+    const updateEvents = new EventEmitter();
+    let updateRequested = false;
+    let expectedRun: unknown = null;
+    const updates = new DesktopUpdates(
+      app.getVersion(),
+      stage === 'write'
+        ? {
+            on: (event, listener) => updateEvents.on(event, listener),
+            checkForUpdates: () => Promise.resolve(null),
+            quitAndInstall: (silent, runAfter) => {
+              assert.equal(silent, true);
+              assert.equal(runAfter, true);
+              const saved = JSON.parse(
+                readFileSync(resolve(profile, 'local-saves/standalone/save-v1.json'), 'utf8'),
+              ) as { entries: Record<string, string> };
+              assert.equal(saved.entries['sr.runs.v3'], expectedRun);
+              updateRequested = true;
+              app.quit();
+            },
+          }
+        : undefined,
+    );
+    initializeServices(profile, new SteamService(null), updates);
     const win = await createGameWindow(false, stage !== 'write');
     win.webContents.on('console-message', (details) => {
       if (details.level === 'error') console.error('Renderer:', details.message);
@@ -46,6 +70,10 @@ void app
     assert.equal(await value(win, 'typeof window.require'), 'undefined');
     assert.equal(await value(win, 'typeof window.process'), 'undefined');
     assert.equal(await value(win, 'document.title'), 'Shattered Rifts');
+    assert.equal(
+      await value(win, 'window.shatteredRiftsDesktop.updateStatus().then(s => s.phase)'),
+      stage === 'write' ? 'idle' : 'unsupported',
+    );
     assert.equal(await value(win, "fetch('/art/manifest.json').then(r => r.ok)"), true);
     assert.equal(await value(win, "fetch('/missing-desktop-test-file').then(r => r.status)"), 404);
 
@@ -73,6 +101,7 @@ void app
       console.log('Created an offline campaign save');
       const raw = await value(win, "localStorage.getItem('sr.runs.v3')");
       assert.equal(typeof raw, 'string');
+      expectedRun = raw;
       await value(
         win,
         "localStorage.setItem('sr.desktop-smoke', localStorage.getItem('sr.runs.v3'))",
@@ -140,7 +169,8 @@ void app
       );
     }
     session.defaultSession.flushStorageData();
-    // Exercise the actual in-game Quit button, not a test-only closing path.
+    // Test the real update save/IPC path with a fake installer; later stages use normal Quit.
+    if (stage === 'write') updateEvents.emit('update-downloaded', { version: '0.184.0' });
     await value(
       win,
       "document.querySelector('button[aria-label=\"Settings\"]')?.click() || [...document.querySelectorAll('button')].find(b => b.textContent.includes('Settings'))?.click()",
@@ -150,11 +180,15 @@ void app
       "[...document.querySelectorAll('button')].some(b => b.textContent.includes('Quit to Desktop'))",
     );
     await delay(200);
+    if (stage === 'write')
+      await waitFor(win, "document.body.textContent.includes('Restart to update')");
     writeFileSync(resolve(profile, 'settings.png'), (await win.webContents.capturePage()).toPNG());
     const closed = new Promise<void>((resolve) => win.once('closed', () => resolve()));
     await value(
       win,
-      "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Quit to Desktop')).click()",
+      stage === 'write'
+        ? "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Restart to update')).click()"
+        : "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Quit to Desktop')).click()",
     );
     await closed;
     assert.ok(
@@ -163,6 +197,7 @@ void app
       ),
     );
     if (stage === 'write') {
+      assert.equal(updateRequested, true);
       const shared = JSON.parse(
         readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8'),
       ) as { entries: Record<string, string> };

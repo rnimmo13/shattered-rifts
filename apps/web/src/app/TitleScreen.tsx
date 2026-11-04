@@ -29,6 +29,7 @@ import { hasUnread } from './patchNotes';
 import './home.css';
 import { desktopBridge, flushDesktopSave } from '../desktopBridge';
 import { localOnly, releasePlayAccess, gameplayAction, canPlay } from '../playAccess';
+import { DesktopDownload, DesktopUpdates } from '../ui/DesktopUpdates';
 
 export function TitleScreen() {
   const [picked, setPicked] = useState(getHero);
@@ -118,6 +119,8 @@ export function TitleScreen() {
           <p className="home__tagline">
             Walk the broken worlds. Build a deck. Read the rift. Spring the trap.
           </p>
+          <DesktopDownload />
+          <DesktopUpdates compact />
 
           {/* (a few runs are big buttons; more than two become a compact list that scrolls, with how many of the slots are used) */}
           {runs.length + broken.length > 0 && (

@@ -6,6 +6,10 @@ Anything that changes the economy, monetisation or core rules needs Robert's sig
 
 Status key: **[ ]** not started · **[?]** needs a decision · **[x]** done
 
+Standalone update distribution is implemented in 0.183.0 (#582): public GitHub Releases, website
+Windows download and automatic NSIS updates. Steam-configured builds disable that updater and
+remain managed through Steam depots. See [desktop updates](../apps/desktop/UPDATES.md).
+
 ## 1. Shape of the Steam build
 
 The Steam build is the web client wrapped in a desktop shell, talking to the same Cloudflare server for the Arena.

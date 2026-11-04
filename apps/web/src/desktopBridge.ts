@@ -4,6 +4,13 @@ export interface DesktopSteamStatus {
   online: boolean;
   message: string;
 }
+export interface DesktopUpdateStatus {
+  phase: 'unsupported' | 'idle' | 'checking' | 'downloading' | 'ready' | 'installing' | 'error';
+  currentVersion: string;
+  version: string | null;
+  percent: number;
+  message: string;
+}
 interface DesktopBridge {
   bootstrap(keys: string[]): Promise<{
     data: { entries: Record<string, string> } | null;
@@ -12,6 +19,9 @@ interface DesktopBridge {
   }>;
   save(entries: Record<string, string>): Promise<{ savedAt: number; earned: string[] }>;
   status(): Promise<DesktopSteamStatus>;
+  updateStatus(): Promise<DesktopUpdateStatus>;
+  checkUpdate(): Promise<DesktopUpdateStatus>;
+  installUpdate(): Promise<void>;
   ready(): Promise<void>;
   quit(): void;
   switchMode(local: boolean): Promise<void>;
@@ -72,4 +82,10 @@ export async function quitDesktop(): Promise<void> {
   const { releasePlayAccess } = await import('./playAccess');
   await releasePlayAccess().catch(() => undefined);
   desktopBridge()?.quit();
+}
+export async function restartDesktopUpdate(): Promise<void> {
+  await flushDesktopSave();
+  const { releasePlayAccess } = await import('./playAccess');
+  await releasePlayAccess().catch(() => undefined);
+  await desktopBridge()?.installUpdate();
 }

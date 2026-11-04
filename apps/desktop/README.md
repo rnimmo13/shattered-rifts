@@ -3,6 +3,10 @@
 Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
 in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 
+**0.183.0:** the website offers a Windows download. Installed standalone copies now check and download
+updates automatically, then install when quitting or choosing Restart to update in Settings. Existing
+0.182.0-or-earlier copies need the new installer once. See [updates and releases](UPDATES.md).
+
 **0.182.0:** Soulreaper gains the approved Harvest of Souls offensive payoff. Consumption develops
 one end-of-turn Reap; the trait chip shows its progress. Card pools remain unchanged.
 
@@ -25,10 +29,12 @@ pnpm desktop:dev      # build bundled assets, compile shell, launch
 pnpm desktop:package  # build a Windows NSIS installer
 pnpm desktop:pack     # unpacked app folder, useful for later Steam depots
 pnpm desktop:smoke    # isolated real-Electron offline/restart test
+pnpm desktop:update:smoke # real NSIS update with isolated test identities and corrupted-download rejection
+pnpm desktop:release  # package and publish a complete GitHub desktop release after commit/push
 ```
 
 The first Electron launch downloads its pinned runtime. Packaging downloads the Windows build tools.
-Installers are in `apps/desktop/dist/Shattered-Rifts-<version>-Setup.exe`; unpacked files are in
+The current installer is `apps/desktop/dist/Shattered-Rifts-Setup.exe`; unpacked files are in
 `apps/desktop/dist/win-unpacked`. This prototype is unsigned and still uses Electron's default app icon.
 No Steam partner credentials or App ID are needed to test it.
 
@@ -37,7 +43,8 @@ No Steam partner credentials or App ID are needed to test it.
 `pnpm build` still builds the website into `apps/web/dist`; it only compiles the desktop shell.
 The explicit desktop commands build the renderer in Vite desktop mode into `apps/web/dist-desktop`.
 All artwork, fonts, rules and UI are bundled. Desktop packaging copies that directory into `resources/game`.
-It never loads the live website to run the campaign. No automatic desktop updater is installed.
+It never loads the live website to run the campaign. The standalone updater replaces the bundled
+application using verified release artifacts; Steam editions use Steam's update system instead.
 
 The stable `srgame://app` origin preserves root-relative asset paths and local saves. Its handler
 rejects escaping paths. Renderer Node integration is off; sandbox, context isolation and web security

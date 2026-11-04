@@ -1,6 +1,6 @@
 {
   "name": "@sr/desktop",
-  "version": "0.182.0",
+  "version": "0.183.0",
   "private": true,
   "description": "Shattered Rifts desktop playtest build",
   "author": "Shattered Rifts",
@@ -16,10 +16,19 @@
   },
   "devDependencies": {
     "electron": "45.2.2",
-    "electron-builder": "26.18.0"
+    "electron-builder": "26.18.0",
+    "yaml": "2.9.1"
   },
   "build": {
     "appId": "app.shatteredrifts.desktop",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "rnimmo13",
+        "repo": "shattered-rifts",
+        "releaseType": "release"
+      }
+    ],
     "productName": "Shattered Rifts",
     "directories": {
       "output": "dist"
@@ -54,10 +63,11 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false,
-      "artifactName": "Shattered-Rifts-${version}-Setup.${ext}"
+      "artifactName": "Shattered-Rifts-Setup.${ext}"
     }
   },
   "dependencies": {
+    "electron-updater": "6.8.11",
     "steamworks.js": "0.4.0"
   }
 }

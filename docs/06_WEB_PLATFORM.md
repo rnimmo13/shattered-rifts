@@ -114,3 +114,7 @@ PvP needs a small backend. The stack gets chosen at that milestone; the needs ar
 - Credits page (fonts OFL, libraries, AI-art disclosure, supporters).
 - No Yu-Gi-Oh/Konami (or any other franchise) names, card frames, terms of art or logos anywhere.
 - Trademark-search "Shattered Rifts" before spending money on branding; it's a working title.
+
+## Desktop playtest downloads (2026-11-04, 0.183.0)
+
+The website home page offers the public Windows x64 NSIS installer via GitHub Releases, using a stable latest/download/Shattered-Rifts-Setup.exe link. Installers are not stored in Cloudflare static assets. Standalone desktop apps download updates in the background and install on quit or explicit save-and-restart; website deployments and desktop release publication remain separate. See [desktop updates](../apps/desktop/UPDATES.md). Versions <=0.182.0 require the updater-enabled installer once; native signing is still pending. Browser and desktop local profiles stay separate.

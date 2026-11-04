@@ -15,6 +15,7 @@ import { loadTipsOn, saveSeen, saveTipsOn } from '../fight/tips';
 import { onSettingsOpen, settingsChanged } from '../app/settings';
 import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
+import { DesktopUpdates } from './DesktopUpdates';
 import {
   desktopBridge,
   desktopSaveError,
@@ -218,6 +219,7 @@ export function SettingsPanel() {
             {(quitError || desktopSaveError()) && (
               <p role="alert">{quitError || desktopSaveError()}</p>
             )}
+            <DesktopUpdates />
           </section>
         )}
 

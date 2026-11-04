@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.183.0',
+    date: '2026-11-04',
+    title: 'Desktop downloads and automatic updates',
+    summary: 'Download the Windows playtest from the website and let the app keep itself current.',
+    notes: [
+      { kind: 'new', text: 'The website home page has Download for Windows. The installer keeps your existing desktop saves.' },
+      { kind: 'new', text: 'Installed standalone Windows copies check for updates on launch and periodically, then download them in the background. Downloads do not interrupt a fight.' },
+      { kind: 'new', text: 'Settings shows update progress, Check for updates, and Restart to update. Downloaded updates also install when you quit normally.' },
+      { kind: 'changed', text: 'Restart to update saves progress before handing off to the installer. Steam editions use Steam for updates.' },
+    ],
+    heads: 'Versions 0.182.0 and earlier need this installer once to enable future automatic updates. The Windows playtest is still unsigned and may show a Windows warning. Browser and desktop local saves remain separate.',
+  },
+  {
     version: '0.182.0',
     date: '2026-11-04',
     title: 'Soulreaper: Harvest of Souls',

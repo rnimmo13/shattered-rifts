@@ -1,0 +1,28 @@
+.desktop-download,
+.desktop-updates {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: start;
+}
+.desktop-download {
+  margin: 0.9rem 0 1.1rem;
+}
+.desktop-download small,
+.desktop-updates small {
+  color: var(--c-text-dim, #adb4ca);
+  font-size: 0.85rem;
+}
+.desktop-updates {
+  padding: 0.7rem;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 0.6rem;
+  margin: 0.6rem 0;
+}
+.desktop-updates p {
+  margin: 0;
+}
+.desktop-updates progress {
+  width: 100%;
+  max-width: 20rem;
+  accent-color: var(--c-gold-light);
+}
