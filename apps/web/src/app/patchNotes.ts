@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.178.0',
+    date: '2026-11-03',
+    title: 'A desktop playtest build',
+    summary: 'The first Windows desktop wrapper shares the same game as the website.',
+    notes: [
+      { kind: 'new', text: 'A Windows desktop playtest build bundles the game and artwork for offline campaign play. Runs and settings are kept in a separate desktop profile.' },
+      { kind: 'new', text: 'Desktop players can start a campaign without an online username. Use F11 or Alt+Enter for fullscreen, and the Game menu to open the save folder.' },
+      { kind: 'changed', text: 'The website continues to update separately. Desktop online play uses the existing server and Vault codes; Steam login, achievements and Steam Cloud are still to come.' },
+    ],
+  },
+  {
     version: '0.177.0',
     date: '2026-11-03',
     title: 'A smoother campaign climb',

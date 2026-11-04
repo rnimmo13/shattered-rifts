@@ -1,6 +1,6 @@
 # Steam readiness
 
-A checklist for taking Shattered Rifts from the web build to Steam. **Nothing here has been built yet**: it is a plan and a list of
+A checklist for taking Shattered Rifts from the web build to Steam. **The Windows Electron prototype is implemented (0.178.0, DECISIONS #577)**; Steamworks integration remains planned. This is a list of
 decisions. Milestone M8 in `07_TECH_ARCHITECTURE.md` already names the stack (Electron + steamworks.js); this doc fills in the rest.
 Anything that changes the economy, monetisation or core rules needs Robert's sign-off first (see `CLAUDE.md`).
 
@@ -10,10 +10,10 @@ Status key: **[ ]** not started · **[?]** needs a decision · **[x]** done
 
 The Steam build is the web client wrapped in a desktop shell, talking to the same Cloudflare server for the Arena.
 
-- [?] **Shell:** Electron + steamworks.js (the current plan) or Tauri. Electron is heavier but steamworks.js is mature and Pixi/WebGL
-  behaves the same as in Chrome. Decide before M8.
-- [ ] Load the compiled site from local files (no hosted page), so the campaign works offline.
-- [ ] Steam-aware settings: fullscreen and windowed, resolution, controller-free (mouse only is fine for a card game), Steam Deck check.
+- [x] **Shell:** Electron (apps/desktop), with a separate renderer build and NSIS installer. Steamworks integration is pending. Pixi/WebGL
+  uses its CSP-compatible shader helpers in the desktop build. Run pnpm desktop:smoke for an isolated offline/restart check.
+- [x] Bundle the compiled game and artwork under a local srgame://app origin. The campaign can start offline without claiming a username. Saves/settings persist in the desktop Chromium profile; file-based Cloud save storage and backups remain pending.
+- [ ] Steam-aware settings: fullscreen/windowed and window-size persistence implemented (F11 / Alt+Enter); resolution presets, controllers and Steam Deck testing remain.
 - [ ] Remove or hide web-only things in the desktop build: Ko-fi links, supporter codes, the Pages/Cloudflare deploy notes. Decide what
   replaces them (see §5).
 - [ ] Auto-update comes from Steam, not from the web deploy: keep the client and server **protocol versions** compatible (see §3).

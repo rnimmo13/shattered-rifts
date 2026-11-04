@@ -5,5 +5,10 @@ packages:
 
 # Dependencies allowed to run install scripts (pnpm blocks them by default)
 allowBuilds:
+  electron: true
+  electron-winstaller: false # Squirrel is unused; Windows builds use NSIS.
   esbuild: true
   workerd: true
+
+minimumReleaseAgeExclude:
+  - electron@45.2.2

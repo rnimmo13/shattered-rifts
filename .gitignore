@@ -1,5 +1,8 @@
 node_modules/
 dist/
+dist-desktop/
+/apps/desktop/out/
+/apps/desktop/.smoke-profile/
 build/
 .turbo/
 coverage/

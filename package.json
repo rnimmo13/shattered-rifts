@@ -8,6 +8,11 @@
   },
   "scripts": {
     "dev": "pnpm --filter @sr/web dev",
+    "desktop:build": "pnpm --filter @sr/web build --mode desktop && pnpm --filter @sr/desktop build",
+    "desktop:dev": "pnpm desktop:build && pnpm --filter @sr/desktop start",
+    "desktop:package": "pnpm desktop:build && pnpm --filter @sr/desktop package",
+    "desktop:pack": "pnpm desktop:build && pnpm --filter @sr/desktop pack",
+    "desktop:smoke": "pnpm desktop:build && pnpm --filter @sr/desktop smoke",
     "build": "pnpm -r --if-present build",
     "test": "vitest run",
     "test:watch": "vitest",

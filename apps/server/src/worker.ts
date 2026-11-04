@@ -16,30 +16,12 @@ import type { Env } from './env';
 import { normaliseCode, runKey } from '@sr/pvp';
 import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
+import { allowedOrigin } from './origins';
 
 export { Matchmaker } from './matchmaker';
 export { MatchRoom } from './room';
 export { Vault } from './vault';
 export { Leaderboard } from './board';
-
-/** Pages allowed to open a socket from a browser (the game is also served from GitHub Pages). */
-const ORIGINS = [
-  /^https:\/\/(www\.)?shatteredrifts\.app$/,
-  /^https:\/\/rnimmo13\.github\.io$/,
-  /^https:\/\/[a-z0-9-]+\.workers\.dev$/,
-  /^https:\/\/[a-z0-9-]+\.pages\.dev$/,
-  /^http:\/\/localhost(:\d+)?$/,
-  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
-];
-
-/** A page served from the Worker's own address (a custom domain) is always welcome. */
-const sameHost = (origin: string, host: string): boolean => {
-  try {
-    return new URL(origin).host === host;
-  } catch {
-    return false;
-  }
-};
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), {
@@ -356,7 +338,7 @@ export default {
 
     // a browser says where the page came from; other clients (a test script) say nothing
     const origin = request.headers.get('Origin');
-    if (origin && !ORIGINS.some((re) => re.test(origin)) && !sameHost(origin, url.host))
+    if (origin && !allowedOrigin(origin, url.host))
       return json({ ok: false, error: 'origin not allowed' }, 403);
 
     const auth = await authRoute(request, env);

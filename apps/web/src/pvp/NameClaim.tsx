@@ -4,6 +4,7 @@
 import { useState, type ReactNode } from 'react';
 import { getName, hasUsername } from './config';
 import { takeName } from './takeName';
+import { IS_DESKTOP } from '../platform';
 
 /** An input and a button that claim a username. */
 export function NameClaim(props: {
@@ -90,6 +91,11 @@ export function NameGate(props: { children: ReactNode }) {
         onDone={() => setNamed(true)}
         offline={{ label: 'Play without the leaderboard for now', onGo: () => setNamed(true) }}
       />
+      {IS_DESKTOP && (
+        <button className="btn btn--ghost" type="button" onClick={() => setNamed(true)}>
+          <span>Play offline without the leaderboard</span>
+        </button>
+      )}
     </main>
   );
 }

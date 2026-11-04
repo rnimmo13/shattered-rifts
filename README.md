@@ -20,6 +20,9 @@ defeat their Wardens, and bind their power into your Grimoire.
 ## Commands
 ```
 pnpm dev          # web client (Vite)
+pnpm desktop:dev  # build and run the Windows Electron prototype
+pnpm desktop:package # build the Windows installer
+pnpm desktop:smoke # offline startup, fight rendering and save/restart checks
 pnpm test         # all tests (Vitest)
 pnpm lint         # ESLint
 pnpm typecheck    # tsc in every package

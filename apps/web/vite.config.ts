@@ -32,8 +32,28 @@ function buildInfo(): { version: string; commit: string; dirty: boolean; date: s
 }
 
 // GitHub Pages serves the site from /<repo>/, so deploys set SR_BASE (see tools/src/deploy.ts).
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: process.env['SR_BASE'] ?? '/',
-  plugins: [react()],
-  define: { __SR_BUILD__: JSON.stringify(buildInfo()) },
-});
+  plugins: [
+    react(),
+    ...(mode === 'desktop'
+      ? [
+          {
+            name: 'desktop-entry',
+            transformIndexHtml: {
+              order: 'pre' as const,
+              handler: (html: string) =>
+                html
+                  .replace('src="/src/main.tsx"', 'src="/src/desktop.ts"')
+                  .replace(/<title>[^<]*<\/title>/, '<title>Shattered Rifts</title>'),
+            },
+          },
+        ]
+      : []),
+  ],
+  define: {
+    __SR_BUILD__: JSON.stringify(buildInfo()),
+    'import.meta.env.VITE_DESKTOP': JSON.stringify(mode === 'desktop'),
+  },
+  ...(mode === 'desktop' ? { build: { outDir: 'dist-desktop' } } : {}),
+}));

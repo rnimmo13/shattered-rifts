@@ -39,6 +39,9 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/dist-desktop/**',
+      'apps/desktop/out/**',
+      'apps/desktop/.smoke-profile/**',
       '**/coverage/**',
       '**/node_modules/**',
       '**/.wrangler/**',
@@ -87,7 +90,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['tools/**/*.ts', '*.js', '*.ts'],
+    files: ['tools/**/*.ts', 'apps/desktop/**/*.ts', '*.js', '*.ts'],
     languageOptions: { globals: globals.node },
   },
   {
