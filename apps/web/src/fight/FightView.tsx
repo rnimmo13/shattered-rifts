@@ -64,6 +64,7 @@ import { FightHand, type HandCard } from './FightHand';
 import { WardenRule } from './WardenRule';
 import { playAnywayHelps, scrapChoices } from './scrapChoices';
 import { FightCard } from './FightCard';
+import { needsAim } from './targeting';
 import { GrimoireModal } from './Grimoire';
 import { AimArrow } from './AimArrow';
 import { SuitTrack } from './SuitTrack';
@@ -1687,7 +1688,6 @@ export function FightView(props: {
           playable: mine.length > 0,
           targets,
           releases,
-          aim: def.target === 'ally' || def.target === 'friend',
           cost: costOf(db, mineView, inst),
         },
       ];
@@ -1895,7 +1895,7 @@ export function FightView(props: {
         if (!c) return;
         if (!c.playable) return void play('refuse');
         setReleasing(null);
-        if (c.targets.length <= 1 && !c.aim) commit(c, c.targets[0] ?? null);
+        if (!needsAim(c)) commit(c, c.targets[0] ?? null);
         else setSelected(c.inst.id);
       }
     };

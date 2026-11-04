@@ -29,6 +29,16 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.194.0',
+    date: '2026-11-04',
+    title: 'Skip unnecessary companion targeting',
+    summary: 'One valid target means one action to play the card.',
+    notes: [
+      { kind: 'changed', text: 'Cards that target your companions automatically choose the target when only one legal option exists. Clicking, tapping, dragging, and keyboard shortcuts all use the same behavior.' },
+      { kind: 'changed', text: 'Multiple legal targets still require your choice, including cards that can target either your hero or a companion. Cards without a legal target remain unavailable.' },
+    ],
+  },
+  {
     version: '0.193.0',
     date: '2026-11-04',
     title: 'Backup Core is a buff',

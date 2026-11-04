@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { CardDef, CardInst, CombatDb, LiveDamage } from '@sr/combat';
 import { fanLayout, gridSlots, handGrid, HAND_SINK, portraitHandBand } from '../hand/fanLayout';
 import { FightCard } from './FightCard';
+import { needsAim } from './targeting';
 
 export interface HandCard {
   inst: CardInst;
@@ -18,13 +19,9 @@ export interface HandCard {
   targets: string[];
   /** each smallest set of companions that could be released (scrapped) to make room, when the card's summons do not fit */
   releases: string[][];
-  /** aim it by hand even when only one target is legal (a card that does something drastic to one of your allies) */
-  aim?: boolean;
   /** what it costs now (a cost change or Unbound), when different from the printed one */
   cost?: number;
 }
-
-const needsAim = (c: HandCard): boolean => c.aim === true || c.targets.length > 1;
 
 /** The keywords another card gave this copy in the fight (Wraith Strike, Bone Snap, Echo of the Dead), for its text. */
 function instNote(inst: CardInst, def: CardDef): string | null {
