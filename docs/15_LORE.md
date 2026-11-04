@@ -1,6 +1,6 @@
 # Shattered Rifts: Lore
 
-The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587, #596).
+The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587, #597).
 It replaces the old "Prime World broke into pieces" premise of `01_GAME_DESIGN.md §1`.
 
 **Player-facing text uses class names** (the Knight, the Rogue, the Shaman...), never the hidden personas in `Riftwalker.persona`
@@ -11,7 +11,7 @@ It replaces the old "Prime World broke into pieces" premise of `01_GAME_DESIGN.m
 ## 1. The short version (for the store page, the title screen and the lore page intro)
 
 > There were many worlds, and for an age they never touched. Each was sealed inside the Ward, and each had a Warden to keep it.
-> Then the Ward shattered. Rifts tore open between the worlds, and everything that lived in them began to spill across.
+> Then Vorthax shattered a vast section of the Ward. Rifts tore open between the exposed worlds, and everything that lived in them began to spill across.
 > A few can walk the Rifts and live. They are the Riftwalkers, champions of their own worlds, and the shards of the broken Ward
 > are the only thing that can seal a world again. There aren't enough shards for everyone.
 
@@ -27,26 +27,24 @@ guardian bound to keep its part of the Ward whole. Most of them were not cruel. 
 they knew.
 
 ### 2.3 The Shattering
-The fallen star beneath **the Hollow Crown** was dying. Its light, warmth and magic sustained the kingdom; when it failed,
-the people would follow. Their Warden could not restore it with the world's remaining power. Instead, she drew from her
-section of the Ward to rekindle the star. She knew she was weakening the wall she had sworn to keep. She believed she was
-risking only her own world to save it.
+**Vorthax** struck from the space between worlds. The Ward kept it from entering them, so it gathered its power against a
+junction of the barrier and released it in a single cataclysmic blast. The junction burst. A vast section of the Ward shattered,
+tearing open the worlds along it. That attack is **the Shattering**.
 
-But the Ward was one connected barrier, sharing a finite reserve of strength. Its sections drew on one another whenever one
-weakened. The Warden's sustained draw spread the strain across the whole barrier, until no section had enough strength left
-to hold. The star burned again. The Ward shattered across every world.
+The whole Ward did not fall. Distant sections remain intact, with worlds still sealed behind them. The campaign follows the
+worlds exposed by this rupture and the wreckage it left between them. The broken section is enormous, but it is only a portion
+of the barrier. The remaining Ward is something that can still be defended, and something Vorthax can still threaten.
 
 Cracks became **Rifts**, Rifts became doors, and through them came creatures, machines and magic that had no business being
 in each other's worlds. Cards that are **Rift-crossed** are exactly that: power that drifted in from somewhere else.
 
-The Wardens were the first to fall. Something reached through the cracks and took them. They still guard their shards of the
-Ward, but they no longer guard them for their worlds. They guard them for **the Heart**. The guardian who rekindled the star
-is now the **Queen of the Unmade**. She saved her people's light, but could not keep the Rifts from their home.
+The Wardens of the breached worlds tried to hold the broken edges. **Vorthax reached through the Rifts and took them.** They
+still guard their shards of the Ward, but they no longer guard them for their worlds. They guard them for **the Heart**.
 
-**Canon boundary:** the draw from the Ward and the resulting failure are the cause of the Shattering, not a rumour or one
-of several competing explanations. The worlds did not knowingly cooperate or sacrifice one another. The Queen was still
-a guardian when she made her choice; the Heart took her only after the Ward broke. The star was naturally exhausting its
-remaining power. Whether Vorthax anticipated or encouraged her choice is unresolved; do not assert that it did.
+**Canon boundary:** Vorthax deliberately caused the cataclysm to force a way into the sealed worlds. This is established fact,
+not a rumour or a possible explanation. The blast shattered a portion of the Ward, not the entire barrier. The Wardens were
+guardians before the attack and were taken afterward. The Hollow Crown's fallen star and the Queen of the Unmade did not
+cause the Shattering; the earlier dying-star proposal is superseded by Robert's direction in DECISIONS #597.
 
 ### 2.4 The Riftwalkers
 Most who step into a Rift come out wrong, or don't come out. A rare few can walk the Rifts and live. Each comes from a different
@@ -54,7 +52,7 @@ world and walks for it: a knight of a world of light, an engineer of a world of 
 They are the classes the player chooses.
 
 ### 2.5 Shards and rivals
-A Warden's shard can seal a world again, or at least close the Rifts around it. But the shards are finite and every world is
+A Warden's shard can seal a world again, or at least close the Rifts around it. But the shards are finite and every breached world is
 bleeding, so every Riftwalker who saves their home does it by taking a shard someone else needed. That is why Riftwalkers fight
 each other as well as the Wardens, and why no one wins for good.
 
@@ -63,14 +61,14 @@ each other as well as the Wardens, and why no one wins for good.
 - **The Arena** is the Crossing, a place where many Rifts meet. Riftwalkers fight there face to face (PvP).
 
 ### 2.6 The Heart of the Rift
-At the centre of the broken Ward is **Vorthax, the Heart of the Rift**. It made the Wardens what they are now, which is why it
+At the centre of the shattered section is **Vorthax, the Heart of the Rift**. It made the Wardens what they are now, which is why it
 fights with all of their rules. Every time a Riftwalker seals a Rift, it tears open again, worse than before. That is the climb
 through the 20 **Rift Tiers**: deeper, and worse, each time.
 
-**Kept open on purpose (for later):** what Vorthax is, where it came from, and whether it anticipated the
-Queen's choice or merely exploited its aftermath. The cause of the Shattering is established in section 2.3. The hint we plant
-everywhere: *the fighting feeds it.* Every shard torn from a rival, every Rift sealed, makes the Heart stronger. Do not confirm
-that hidden connection in player-facing text yet.
+**Kept open on purpose (for later):** Vorthax's origins, its true nature, and its ultimate purpose beyond breaking into the
+worlds. Its responsibility for the Shattering is established in section 2.3 and should be explicit in player-facing text.
+The hint we plant everywhere: *the fighting feeds it.* Every shard torn from a rival, every Rift sealed, makes the Heart
+stronger. Do not confirm that hidden connection in player-facing text yet.
 
 ## 3. The worlds
 
@@ -93,12 +91,12 @@ Where the Rifts are worst, worlds bleed into each other: that is the last stretc
 2. **Wardens were guardians first.** Their lines can show what they were before the Heart took them.
 3. **Every world has its own laws.** A card's flavour should feel like it comes from one world; a Rift-crossed card should feel
    out of place.
-4. **Don't explain the Heart.** Hint that the fighting feeds it; never confirm.
+4. **Keep the Heart's deeper nature mysterious.** Its attack caused the Shattering; that is known. Its origins and ultimate
+   purpose remain open. Hint that the fighting feeds it; never confirm that hidden connection.
 5. **Original names only** (golden rule 6). No franchise terms.
 6. **Class names in player text**, personas never (until Robert decides to use them).
-7. **The Shattering has a cause.** The Hollow Crown's Warden rekindled its dying star with the Ward's shared strength and
-   caused a failure across all its sections. Keep her desperate protective motive; do not turn this into a deliberate conquest
-   or claim the worlds were once a single world. The finite shards and the cost of saving one home echo that first choice.
+7. **Vorthax caused the Shattering.** Its deliberate cataclysm broke a vast portion of the Ward, leaving other sections intact.
+   Do not replace this with an accident, a Warden's mistake or an unexplained failure. The worlds were always separate.
 
 ## 5. The lore page (`#/lore`)
 

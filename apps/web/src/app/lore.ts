@@ -53,18 +53,18 @@ export const LORE_CHAPTERS: LoreChapter[] = [
   {
     id: 'shattering',
     title: 'The Shattering',
-    subtitle: 'To save one world, she weakened every wall.',
+    subtitle: 'Vorthax broke the barrier. The worlds paid the price.',
     panels: [
       {
         image: 'ch3-crack',
         title: 'The first crack',
-        text: 'The fallen star beneath the Hollow Crown was dying, taking its kingdom with it. Its Warden drew power from her section of the Ward to rekindle it. She knew she would weaken her wall. She did not know the other walls would pay.',
+        text: 'Vorthax struck from the space between worlds. To force a way inside, it gathered its power against a junction of the Ward and released it in one catastrophic blast. The barrier held for an instant. Then a vast section shattered.',
         alt: 'Citizens of Aurelion look up at a violet-cyan crack in their glassy sky.',
       },
       {
         image: 'ch3-shatter',
         title: 'Cracks became doors',
-        text: 'The Ward was one connected barrier. As her section weakened, it drew strength from the rest, spreading the strain until every section failed. The star burned again. Across the worlds, the sky broke into shards. Cracks became Rifts, and Rifts became doors.',
+        text: 'The blast tore open the worlds along the broken section. Across their skies, cracks became Rifts, and Rifts became doors. Farther away, the Ward still stood. Here, its shattered pieces were all that remained between home and the invasion.',
         alt: 'The Ward shatters into a storm of glowing glass as Rifts tear between worlds.',
       },
       {
@@ -76,7 +76,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch3-taken',
         title: 'The first to fall',
-        text: 'The Wardens were the first to fall to the Heart. Something reached through the cracks and took them, including the guardian now called the Queen of the Unmade. They still guarded the broken Ward, but no longer for their worlds.',
+        text: 'The Wardens of the breached worlds tried to hold the broken edges. Vorthax reached through the Rifts and took them. They still guarded their shards, but no longer for their worlds. Now they guarded them for the Heart.',
         alt: 'The robed guardian kneels as violet tendrils corrupt its once-golden light.',
       },
     ],
@@ -114,7 +114,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch5-shard',
         title: 'A piece of the Ward',
-        text: 'A Warden’s shard can seal a world again, or at least close the Rifts around it. But the shards are finite, and every world is bleeding.',
+        text: 'A Warden’s shard can seal a world again, or at least close the Rifts around it. But the shards are finite, and every breached world is bleeding.',
         alt: 'A gauntleted hand holds an iridescent Ward shard before a fallen Warden.',
       },
       {
@@ -145,7 +145,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch6-heart',
         title: 'Vorthax',
-        text: 'At the centre of the broken Ward waits Vorthax, the Heart of the Rift. It made the Wardens what they are now, and fights with all their rules. What it is, and whether it merely found the broken Ward or had waited for it, remain unanswered.',
+        text: 'At the centre of the shattered section waits Vorthax, the Heart of the Rift. It broke the Ward to enter the worlds, then made their Wardens its own. It fights with all their rules. Where it came from, and what it ultimately wants from the worlds it opened, remain unanswered.',
         alt: 'A vast hidden presence pulses faintly beneath an immense violet-cyan chasm.',
       },
     ],

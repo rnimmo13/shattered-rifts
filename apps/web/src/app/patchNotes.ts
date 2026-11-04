@@ -29,15 +29,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
-    version: '0.195.0',
+    version: '0.196.0',
     date: '2026-11-04',
-    title: 'More room for every play style',
-    summary: 'Stronger developing builds, steadier scaling and the story of the Shattering.',
+    title: 'The cause of the Shattering',
+    summary: 'Vorthax broke the Ward. The worlds paid the price.',
     notes: [
       {
         kind: 'new',
-        text: 'The illustrated story now reveals why the Ward broke: a Warden tried to save the Hollow Crown by rekindling its dying star with the barrier\'s power. Visit The Story to see what her choice cost the other worlds.',
+        text: 'The illustrated story reveals the Shattering: Vorthax unleashed a cataclysmic blast against the Ward, breaking a vast section and opening its worlds. Distant sections still stand. The Wardens tried to defend the breaches before the Heart took them.',
       },
+      {
+        kind: 'changed',
+        text: 'Includes the shared balance improvements, reward reroll, cleanse previews and playtest reports from 0.195.0.',
+      },
+    ],
+    heads:
+      'When updating from 0.194.0 or earlier, unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept.',
+  },
+  {
+    version: '0.195.0',
+    date: '2026-11-04',
+    title: 'More room for every play style',
+    summary: 'Stronger developing builds, steadier scaling and playtest reports.',
+    notes: [
       {
         kind: 'balance',
         text: 'Swarmwright develops Fabrication faster. Bonelord raises stronger companions. Blood Knight gets a reliable first-payment bonus. Golemancer saves some earned growth when a large machine dies, keeping its damage-per-HP bonus.',

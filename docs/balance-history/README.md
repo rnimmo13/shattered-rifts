@@ -1,6 +1,6 @@
 # Balance history
 
-Start with [the current chart, 0.195.0](0.195.0.md). Compare [0.194.0](0.194.0.md), the released baseline. Version 0.195.0 is a local implementation awaiting review and release approval.
+Start with [the current balance chart, 0.195.0](0.195.0.md). Compare [0.194.0](0.194.0.md), the prior released baseline. Release 0.196.0 carries exactly the 0.195.0 balance pass (rules 79), with a lore correction only. Robert approved release on 2026-11-04. Snapshots preserve their original assessment-time local/unreleased labels; this release mapping does not change any grades or add measured evidence.
 
 [Baseline assessment revision 2](0.194.0-review-2.md) corrects retrospective progression and fight-development sub-grades that initially reused projected values. The original assessment remains intact. The original overall Arena grades are unchanged; this is an assessment correction, not another game version.
 

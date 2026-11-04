@@ -88,8 +88,8 @@ export default function LoreScreen() {
             Ward, and each had a Warden to keep it.
           </p>
           <p>
-            Then the Ward shattered. A few can walk the Rifts and live. They are the Riftwalkers—and
-            there are not enough shards for everyone.
+            Then Vorthax shattered a vast section of the Ward. A few can walk the Rifts and live.
+            They are the Riftwalkers—and there are not enough shards for everyone.
           </p>
           <button
             className="btn btn--small"
