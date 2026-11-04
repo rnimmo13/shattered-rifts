@@ -154,7 +154,7 @@ describe('distinct late-game Ascendancy disciplines', () => {
     ).toEqual([18, 18]);
     u.def = 'drone';
     expect(viewFor(db, s, 'a').sides.a.units.find((x) => x.id === u.id)!.intentView!.damage).toBe(
-      8,
+      9,
     );
   });
   it('Seer marks a deliberate enemy once per turn and restarts when changing marks', () => {

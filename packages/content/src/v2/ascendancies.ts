@@ -102,10 +102,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Swarmwright',
     'A fourth machine',
-    'You have a 4th companion slot. At the start of your turn, each of your companions gains 1 Primed.',
+    'You have a 4th companion slot. At the start of your turn, each companion gains 1 Primed. Fabrication: your companions deal +1 attack damage per hit for every 4 companions summoned this fight. Starting companions do not count; replacements keep the bonus.',
     {
       maxAllies: 4,
       turnStart: [status('vigor', 1, 'allAllies')],
+      fightStart: [{ op: 'attackAura', amount: 0, scope: 'companions', perSummons: 4 }],
     },
   ),
 

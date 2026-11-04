@@ -36,13 +36,13 @@ const RAW_ALLIES: UnitDef[] = [
   // (the costing pass and frames, DECISIONS #383: Light takes 1 of the 3 companion slots, Heavy 2, Colossal 3; a companion is
   // worth 1.2 x HP + 3 + its hit x its acts, less 2 for each slot past the first; docs/ENGINEER_REVIEW.md)
   // (the rare big machines, Siege Engine, War Engine and Dreadnought, have a little more HP or damage, Robert 2026-10-30: they should feel rewarding to play; the buff to the others was taken back. Colossal machines hit several times, so Might and Primed reward them as they do a swarm)
-  ally('drone', 'Drone', 8, [dmg(3)]),
+  ally('drone', 'Drone', 8, [dmg(4)]),
   ally('patrol-drone', 'Patrol Drone', 4, [dmg(3)]),
   ally('sentry-turret', 'Sentry Turret', 5, [dmg(2), barrier(2, 'hero')], { taunt: true }),
   ally('salvage-bot', 'Salvage Bot', 4, [barrier(4, 'hero')]),
   ally('repair-bot', 'Repair Bot', 4, [heal(2, 'hero')]),
   ally('spotter-drone', 'Spotter Drone', 4, [status('exposed', 1, 'target')]),
-  ally('micro-drone', 'Micro Drone', 3, [dmg(2)]),
+  ally('micro-drone', 'Micro Drone', 3, [dmg(3)]),
   ally('enforcer', 'Enforcer Mk.II', 11, [dmg(6)], { slots: 2 }),
   ally('siege-engine', 'Siege Engine', 12, [dmg(4, 'target', 2)], { slots: 2 }),
   ally('bulwark-walker', 'Bulwark Walker', 12, [barrier(3, 'hero')], { taunt: true, slots: 2 }),

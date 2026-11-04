@@ -4,6 +4,7 @@
 import { nextInt, seedRng, shuffle } from './rng';
 import { SUITS, suitShown } from './suits';
 import { disciplineAttack, disciplineTarget, disciplineTrigger } from './disciplines';
+import { attackAuraBonus } from './attackAuras';
 import {
   DEBUFFS,
   EDGE_TAG,
@@ -1364,7 +1365,11 @@ function metricValue(
       return sd.runes.length;
     case 'powers':
       // (Aura cards, not their triggers: an Aura with two triggers is one Aura; DECISIONS #338)
-      return new Set(sd.powers.filter((p) => p.card !== TRAIT_POWER).map((p) => p.card)).size;
+      return new Set(
+        [...sd.powers, ...(sd.attackAuras ?? [])]
+          .filter((p) => p.card !== TRAIT_POWER)
+          .map((p) => p.card),
+      ).size;
     case 'mana':
       return sd.mana;
     case 'played':
@@ -1865,7 +1870,8 @@ function execOp(r: Run, a: Act, op: Op): void {
                 ember +
                 resonanceOf(a) +
                 (a.spellBonus ?? 0) +
-                marrow) *
+                marrow +
+                attackAuraBonus(side, a.actor, isAttackAct(a))) *
                 lone *
                 leth *
                 noose *
@@ -2639,6 +2645,15 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'allyPct':
       side.allyPct = (side.allyPct ?? 0) + op.amount;
+      break;
+    case 'attackAura':
+      (side.attackAuras ??= []).push({
+        id: newId(r.s, 'p'),
+        card: a.card?.id ?? TRAIT_POWER,
+        amount: op.amount,
+        scope: op.scope,
+        ...(op.perSummons ? { perSummons: op.perSummons } : {}),
+      });
       break;
     case 'shatterUp':
       side.shatterBonus = (side.shatterBonus ?? 0) + op.amount;
@@ -5851,6 +5866,7 @@ export function previewCardDamage(
       add(ruin, 'Measured Ruin');
       add(cycleBonus, 'Spell cycle');
       add(v, 'Primed');
+      add(attackAuraBonus(sd, hero, def.kind === 'attack'), 'Aura');
       add(rip, 'Riposte');
       add(ember, 'Ember');
       if (lone !== 1)
@@ -5884,7 +5900,17 @@ export function previewCardDamage(
       }
       let n = modifiedDamage(
         Math.round(
-          (amt + knifeEdge + honed + edge + keen + ruin + cycleBonus + v + rip + ember) *
+          (amt +
+            knifeEdge +
+            honed +
+            edge +
+            keen +
+            ruin +
+            cycleBonus +
+            v +
+            rip +
+            ember +
+            attackAuraBonus(sd, hero, def.kind === 'attack')) *
             lone *
             leth *
             noose,

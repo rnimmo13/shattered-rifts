@@ -64,9 +64,7 @@ export const NEUTRAL: CardDef[] = [
     'attack',
     0,
     'none',
-    [
-      { op: 'damage', amount: 4, hits: 0, to: 'allFoes', scale: { by: 'x', into: 'hits' } },
-    ],
+    [{ op: 'damage', amount: 4, hits: 0, to: 'allFoes', scale: { by: 'x', into: 'hits' } }],
     { x: true },
   ),
   n('uncommon', 'wanderers-draught', "Wanderer's Draught", 'skill', 1, 'none', [heal(6)], {
@@ -135,9 +133,18 @@ export const NEUTRAL: CardDef[] = [
     exhaust: true,
   }),
   // (a step behind The Long Game: DECISIONS #500)
-  n('uncommon', 'heart-of-the-rift', 'Heart of the Rift', 'power', 2, 'none', [on('turnStart', [draw(1)])], {
-    up: { cost: 1 },
-  }),
+  n(
+    'uncommon',
+    'heart-of-the-rift',
+    'Heart of the Rift',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [draw(1)])],
+    {
+      up: { cost: 1 },
+    },
+  ),
   n(
     'rare',
     'rift-collapse',
@@ -212,8 +219,11 @@ export const SIGNATURES: CardDef[] = [
     'power',
     1,
     'none',
-    [status('might', 1, 'allFriends'), draw(1)],
-    sig('kron'),
+    [{ op: 'attackAura', amount: 1, scope: 'friends' }, draw(1)],
+    {
+      ...sig('kron'),
+      up: { effects: [{ op: 'attackAura', amount: 2, scope: 'friends' }, draw(2)] },
+    },
   ),
   card(
     N,

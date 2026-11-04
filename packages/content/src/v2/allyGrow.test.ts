@@ -88,7 +88,7 @@ describe('healing a companion grows it', () => {
     foe.hp = foe.maxHp = 200;
     foe.barrier = 0;
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.b.units[0]!.hp).toBe(200 - 3 - 3); // its 3, and the 3 Primed
+    expect(s.sides.b.units[0]!.hp).toBe(200 - 4 - 3); // its 4, and the 3 Primed
     expect(s.sides.a.units.find((u) => u.id === drone.id)?.statuses.vigor ?? 0).toBe(0);
   });
 

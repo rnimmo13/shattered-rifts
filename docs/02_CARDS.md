@@ -5,6 +5,8 @@
 > is recorded in [`BALANCE_PROPOSAL_2026-11-03.md`](BALANCE_PROPOSAL_2026-11-03.md) and DECISIONS #574.
 > The 2026-11-04 Ascendancy pass is specified in [`ASCENDANCY_PASS_2026-11-04.md`](ASCENDANCY_PASS_2026-11-04.md), DECISIONS #580. It changes Ascendancies, not card pools.
 > The same document records Soulreaper's approved Harvest of Souls follow-up, DECISIONS #581 (0.182.0).
+> Engineer opening buffs, Swarmwright Fabrication and continuous Reactor/Assembly Arm bonuses are specified in
+> [`ENGINEER_SUPPORT_2026-11-04.md`](ENGINEER_SUPPORT_2026-11-04.md), DECISIONS #591 (0.191.0). Current numbers remain in the generated list.
 
 Rules live in `01_GAME_DESIGN.md`, visuals in `04_VISUALS_AND_ANIMATION.md`, art in `05_ART_PIPELINE.md`.
 This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 6

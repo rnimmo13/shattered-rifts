@@ -2,6 +2,7 @@
 
 import { modifiedDamage, activePattern, formProgress, type LiveDamage } from './engine';
 import { disciplineAttack, disciplineText, disciplineLabel } from './disciplines';
+import { attackAuraBonus, attackAuraProgress } from './attackAuras';
 import {
   other,
   clone,
@@ -109,7 +110,7 @@ export interface SideView {
   formDone?: boolean;
   runes: RuneState[];
   runeSlots: number;
-  powers: { id: string; card: string; when: PowerState['when'] }[];
+  powers: { id: string; card: string; when: PowerState['when'] | 'passive' }[];
 }
 
 /** A choice you owe: the cards to choose among, resolved to their instances. */
@@ -158,7 +159,7 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
     else if (o.op === 'barrier') out.add('defend');
     else if (o.op === 'summon') out.add('summon');
     else if (o.op === 'status') out.add(foeSel(o.to) ? 'debuff' : 'buff');
-    else if (o.op === 'heal') out.add('buff');
+    else if (o.op === 'heal' || o.op === 'attackAura') out.add('buff');
     else if (o.op === 'addCard') out.add('debuff');
     else if (o.op === 'draw' || o.op === 'mana' || o.op === 'stars' || o.op === 'stance')
       out.add('buff');
@@ -195,7 +196,10 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
           (modifiedDamage(
             // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
             Math.round(
-              (first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0))) *
+              (first.amount +
+                (first.scale ? 0 : (u.statuses.vigor ?? 0)) +
+                attackAuraBonus(s.sides[u.side], u, true) +
+                (s.sides[u.side].units.find((x) => x.kind === 'hero')?.statuses.marrow ?? 0)) *
                 (1 + (s.sides[u.side].allyPct ?? 0) / 100),
             ),
             u,
@@ -361,7 +365,9 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       stars: sd.stars,
       ...(sd.discipline
         ? { disciplineText: disciplineText(sd) ?? '', disciplineLabel: disciplineLabel(sd, s) }
-        : {}),
+        : attackAuraProgress(sd)
+          ? { disciplineLabel: attackAuraProgress(sd) ?? '' }
+          : {}),
       reserves: sd.reserves,
       maxReserves: sd.maxReserves + (sd.reservesTurn ?? 0),
       attacksPlayed: sd.attacksPlayed,
@@ -388,9 +394,14 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
         : {}),
       runes: clone(sd.runes),
       runeSlots: sd.runeSlots,
-      powers: sd.powers
-        .filter((p) => p.card !== TRAIT_POWER)
-        .map((p) => ({ id: p.id, card: p.card, when: p.when })),
+      powers: [
+        ...sd.powers
+          .filter((p) => p.card !== TRAIT_POWER)
+          .map((p) => ({ id: p.id, card: p.card, when: p.when })),
+        ...(sd.attackAuras ?? [])
+          .filter((p) => p.card !== TRAIT_POWER)
+          .map((p) => ({ id: p.id, card: p.card, when: 'passive' as const })),
+      ],
     };
   };
   return {
@@ -1460,6 +1471,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Your Shatters deal ${o.amount} more for the rest of the fight.`;
     case 'allyPct':
       return `Your companions' attacks deal ${o.amount}% more for the rest of the fight.`;
+    case 'attackAura': {
+      const subject =
+        o.scope === 'companions'
+          ? "Your companions' attacks"
+          : 'Your attacks and your companions’ attacks';
+      return o.perSummons
+        ? `${subject} deal ${o.amount ? `${o.amount} plus ` : ''}1 more damage per hit for every ${o.perSummons} companions summoned this fight (starting companions do not count).`
+        : `${subject} deal ${o.amount} more damage per hit for the rest of the fight. Companions summoned later also benefit.`;
+    }
     case 'shatterBlast':
       return `Deal the damage of this enemy's next Shatter (this is not a Shatter).`;
     case 'carryFracture':
@@ -2213,7 +2233,10 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   // an Aura with nothing ongoing, giving one lasting status: that line says it lasts (DECISIONS #300)
   const oneShotAura =
     c.kind === 'power' &&
-    !c.effects.some((o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots') &&
+    !c.effects.some(
+      (o) =>
+        o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots' || o.op === 'attackAura',
+    ) &&
     c.effects.filter((o) => isLasting(o)).length === 1;
   const opsFrom = parts.length;
   // several of the same summon in a row read as one line ("Summon 3 Bone Thralls...")
@@ -2280,18 +2303,38 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       const line = l
         ? liveDamageText(opText(db, plain, who), plain.op === 'damage' ? plain : null, l)
         : opText(db, plain, who);
+      const shown =
+        oneShotAura && isLasting(o) && !line.includes('for the rest of the fight')
+          ? line.replace(/.$/, ' for the rest of the fight.')
+          : line;
       parts.push(
-        oneShotAura && isLasting(o) ? line.replace(/.$/, ' for the rest of the fight.') : line,
+        c.kind === 'power' && c.effects.some((x) => x.op === 'attackAura') && o.op !== 'attackAura'
+          ? `On play: ${shown}`
+          : shown,
       );
     }
   }
   // an Aura that does its work once, when played, says how long what it gives lasts (DECISIONS #300)
   const ongoing = c.effects.some(
-    (o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots',
+    (o) => o.op === 'power' || o.op === 'channel' || o.op === 'runeSlots' || o.op === 'attackAura',
   );
   const lasting = c.effects.filter((o) => isLasting(o)).length;
   if (c.kind === 'power' && !ongoing && lasting > 1)
     parts.push('These last the rest of the fight.');
+  if (
+    c.kind === 'power' &&
+    !ongoing &&
+    c.effects.some(
+      (o) =>
+        o.op === 'status' ||
+        o.op === 'loseHp' ||
+        o.op === 'draw' ||
+        o.op === 'stars' ||
+        o.op === 'addCard',
+    ) &&
+    parts[opsFrom]
+  )
+    parts[opsFrom] = `On play: ${parts[opsFrom]}`;
   if (c.kind === 'snare' && c.trigger) {
     const opening =
       c.trigger.on === 'attacked'

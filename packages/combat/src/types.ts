@@ -610,6 +610,8 @@ export type Op =
   | { op: 'shatterUp'; amount: number; pct?: number }
   /** your companions' attacks deal this much more, in percent, for the rest of the fight (DECISIONS #542) */
   | { op: 'allyPct'; amount: number }
+  /** Continuous bonus per attack hit. Applies to present and future units without granting transferable Might. */
+  | { op: 'attackAura'; amount: number; scope: 'friends' | 'companions'; perSummons?: number }
   /** deal your current Shatter damage (it is not a Shatter: no Fracture is removed and nothing that answers a Shatter hears of it) */
   | { op: 'shatterBlast'; to: Sel }
   /** apply to the target half the Fracture on your most-cracked other enemy (it keeps its own) plus `amount`; with one enemy, apply `alone` */
@@ -1448,6 +1450,14 @@ export interface SideState {
   runes: RuneState[];
   runeSlots: number;
   powers: PowerState[];
+  /** Passive Auras, evaluated when an attack happens, rather than copied into each unit's statuses. */
+  attackAuras?: {
+    id: string;
+    card: CardId;
+    amount: number;
+    scope: 'friends' | 'companions';
+    perSummons?: number;
+  }[];
   /** counters for this turn, reset when it starts */
   played: number;
   attacksPlayed: number;

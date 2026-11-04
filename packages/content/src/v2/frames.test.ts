@@ -193,7 +193,7 @@ describe('the new Engineer cards', () => {
     const hero = after.state.sides.a.units.find((u) => u.kind === 'hero')!;
     expect(hero.statuses.vigor).toBe(5); // waits for the next Attack card
     expect(allies(after.state)[0]!.statuses.vigor ?? 0).toBe(0); // the Drone spent it
-    expect(500 - foe.hp - (s.sides.b.units[0]!.barrier - foe.barrier)).toBe(3 + 5);
+    expect(500 - foe.hp - (s.sides.b.units[0]!.barrier - foe.barrier)).toBe(4 + 5);
   });
 
   it('Targeting Uplink: every Attack charges the companions', () => {

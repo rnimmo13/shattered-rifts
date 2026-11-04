@@ -124,10 +124,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       maxHp: 70,
       mana: 3,
       handSize: 5,
-      // (6 HP, not the Drone's 8: DECISIONS #411)
-      startUnits: [{ unit: 'drone', hp: 6 }],
+      startUnits: [{ unit: 'drone', hp: 8 }],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), 'deploy-drone', 'overclock', 'spot-weld'],
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      'deploy-drone',
+      'overclock',
+      'spot-weld',
+      'pulse-pistol',
+    ],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
     mechanics: ['Companions', 'Frames', 'Salvage', 'Weapons', 'Primed', 'Might', 'Max HP growth'],

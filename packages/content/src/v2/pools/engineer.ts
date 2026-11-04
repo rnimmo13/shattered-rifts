@@ -305,7 +305,18 @@ export const ENGINEER: CardDef[] = [
   ]),
   r('rare', 'siege-engine', 'Siege Engine', 'summon', 2, 'none', [summon('siege-engine')]),
   r('rare', 'war-engine', 'War Engine', 'summon', 3, 'none', [summon('war-engine')]),
-  r('rare', 'reactor', 'Reactor', 'power', 2, 'none', [status('might', 3, 'allFriends')]),
+  r(
+    'rare',
+    'reactor',
+    'Reactor',
+    'power',
+    2,
+    'none',
+    [{ op: 'attackAura', amount: 3, scope: 'friends' }],
+    {
+      up: { effects: [{ op: 'attackAura', amount: 4, scope: 'friends' }] },
+    },
+  ),
   r(
     'rare',
     'overclock-core',

@@ -286,8 +286,9 @@ built from pieces the baselines already price: a companion is **sticky Barrier**
 | Sacrifice an ally | minus what it had left: **1.2 x its HP + 3** | Devour Ally, Fen Offering. |
 | "Whenever an ally dies" | per death, x **~2 deaths a fight** in a deck that summons | |
 | Might, for a class whose companions share it | **6** a stack (5, plus half of it on the pack's hits) | the Hunter's Pack Instinct. |
-| Might to all friends (the companions take it themselves) | **5 + 2 per companion** (~8) | the Engineer's Tune-Up, Overdrive, Reactor. |
+| Might to all friends (the companions take it themselves) | **5 + 2 per companion** (~8) | the Engineer's Tune-Up, Overdrive and Grand Assembly. Reactor now uses the continuous attack bonus below. |
 | Might on one companion | **2.5** a stack; a companion that strikes twice gets twice that | Retrofit, Reinforce. Price it on the machine it is meant for (§8, the multiplier test). |
+| Continuous attack damage (`attackAura`) | **1 point per added damage per qualifying hit**, over the Aura's four-turn window | Applies to present and future units. Reactor +3 on four friendly hits per turn is 48 over four turns, close to a 2-cost rare Aura's 47.5. Does not add Might, feed Might-counting effects, or transfer through Salvage. Copies add, and multi-hit/command/Golemancer ceilings must be checked. |
 | Primed on your companions | **1 a stack per companion** (~1.5); per hit on a machine that strikes twice | Jumpstart, Overdrive. |
 | "You and your companions gain N Primed" | **2.5** a stack | the hero's Primed goes into the next Attack card, on every hit (Ping, Full Salvo). |
 | Barrier on one companion | **1.0** a point | it is struck only while that companion stands in front (Hardened Chassis, Bulwark Frame). |

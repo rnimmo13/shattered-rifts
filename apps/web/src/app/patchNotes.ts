@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.191.0',
+    date: '2026-11-04',
+    title: 'A stronger Engineer crew',
+    summary: 'More opening power, lasting swarm growth and Auras that support replacement machines.',
+    notes: [
+      { kind: 'balance', text: 'The Engineer starts with an 8-HP Drone that attacks for 4. New starting decks replace one Strike with Pulse Pistol. Micro Drones attack for 3 instead of 2.' },
+      { kind: 'balance', text: 'Swarmwright keeps the fourth slot and 1 Primed each turn, and gains Fabrication: companions deal +1 attack damage per hit for every four companions summoned that fight. Starting companions do not count; replacements keep the bonus.' },
+      { kind: 'changed', text: 'Reactor gives a fixed +3 attack damage per hit (+4 upgraded) to you and your current or future companions for the fight. Kron’s Assembly Arm uses the same continuous effect. These bonuses do not grant Might or grow every turn.' },
+      { kind: 'fixed', text: 'One-time Aura effects say On play. Companion damage previews include continuous bonuses and Ossify’s Marrow bonus.' },
+    ],
+    heads: 'Existing decks are retained. An older unfinished fight restarts from its saved encounter checkpoint under the new rules.',
+  },
+  {
     version: '0.190.0',
     date: '2026-11-04',
     title: 'A seamless Settings header',

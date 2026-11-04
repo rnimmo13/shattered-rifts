@@ -581,7 +581,7 @@ describe('the rest of the Silent’s tricks', () => {
   });
 
   it('the Virulent status reads as Hemorrhage, and the card of that name as Red Tide (DECISIONS #472)', () => {
-    expect(cardText(db, db.cards['thin-the-blood']!)).toBe('Gain 1 Hemorrhage.');
+    expect(cardText(db, db.cards['thin-the-blood']!)).toBe('On play: Gain 1 Hemorrhage.');
     expect(db.cards.hemorrhage!.name).toBe('Red Tide');
     expect(Object.values(db.cards).filter((c) => c.name === 'Hemorrhage')).toEqual([]);
   });

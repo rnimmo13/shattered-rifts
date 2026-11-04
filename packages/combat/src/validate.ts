@@ -27,6 +27,13 @@ export function validateDb(db: CombatDb): string[] {
     },
   ): void => {
     for (const o of ops) {
+      if (
+        o.op === 'attackAura' &&
+        (!Number.isFinite(o.amount) ||
+          o.amount < 0 ||
+          (o.perSummons !== undefined && (!Number.isInteger(o.perSummons) || o.perSummons < 1)))
+      )
+        errs.push(`${where}: invalid attack Aura bonus or summon step`);
       if (o.op === 'discipline') {
         for (const [key, value] of Object.entries(o.rule))
           if (

@@ -133,6 +133,7 @@ describe('every card plays', () => {
         1,
       );
       const stateChange =
+        (after.sides.a.attackAuras?.length ?? 0) !== (s0.sides.a.attackAuras?.length ?? 0) ||
         after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
         after.sides.a.nextDraw !== s0.sides.a.nextDraw ||
@@ -384,7 +385,7 @@ describe('pool shape (docs/09_ROSTER.md §1)', () => {
 describe('Aura wording (DECISIONS #299, #300)', () => {
   const text = (id: string): string => cardText(db, db.cards[id]!);
   it('an Aura that gives a lasting status once says it lasts the rest of the fight', () => {
-    expect(text('unchained')).toBe('Gain 4 Might for the rest of the fight.');
+    expect(text('unchained')).toBe('On play: Gain 4 Might for the rest of the fight.');
     expect(text('warlords-oath')).toMatch(/^At the start of your turn: Gain 2 Might\.$/);
   });
   it('an Aura with an ongoing trigger does not, and Rift Resonance answers a reshuffle', () => {

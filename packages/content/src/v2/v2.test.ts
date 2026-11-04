@@ -132,10 +132,10 @@ describe('Riftwalker identities (docs/08 §5)', () => {
     expect(summonCards('umbral')).toHaveLength(0);
   });
   it('Rivet starts with a Drone and has many summon cards', () => {
-    expect(RIFTWALKERS.engineer.hero.startUnits).toEqual([{ unit: 'drone', hp: 6 }]);
+    expect(RIFTWALKERS.engineer.hero.startUnits).toEqual([{ unit: 'drone', hp: 8 }]);
     expect(summonCards('nexus').length).toBeGreaterThanOrEqual(6);
   });
-  it('the starting Drone has 6 HP and the starting Thrall 2 (DECISIONS #411); a card-built Drone keeps 8', () => {
+  it('the starting Drone has 8 HP and the starting Thrall 2; a card-built Drone keeps 8', () => {
     const start = (hero: 'engineer' | 'necromancer') =>
       createCombat(db, {
         seed: 'start-units',
@@ -143,7 +143,7 @@ describe('Riftwalker identities (docs/08 §5)', () => {
         b: { enemies: ['squire'] },
       }).state.sides.a.units.find((u) => u.kind === 'ally')!;
     // (Tinkerer's +1 max HP has already come on turn 1)
-    expect([start('engineer').hp, start('engineer').maxHp]).toEqual([7, 7]);
+    expect([start('engineer').hp, start('engineer').maxHp]).toEqual([9, 9]);
     expect(start('necromancer').def).toBe('bone-thrall');
     expect(start('necromancer').maxHp).toBe(2);
     expect(db.units.drone!.maxHp).toBe(8);
