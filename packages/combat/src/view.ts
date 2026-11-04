@@ -513,6 +513,7 @@ const STATUS_NAME: Record<string, string> = {
   umbra: 'Owl Charge',
   stunned: 'Shocked',
   buffer: 'Buffer',
+  backup: 'Backup Core',
   // (the Defect copy, shaman)
   echoing: 'Echo',
   boosted: 'Resound',
@@ -1614,7 +1615,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
                                 : nextTurn
                                   ? 'Next turn'
                                   : o.once
-                                    ? // ("Whenever one of your allies dies" answered once a turn: Backup Core)
+                                    ? // A recurring trigger limited to its first answer each turn.
                                       (WHEN_TEXT[o.when] ?? o.when).replace(
                                         /^Whenever /,
                                         'The first time each turn ',

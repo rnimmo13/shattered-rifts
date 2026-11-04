@@ -52,7 +52,6 @@ const COST_CUT_AURAS = [
   // (it answers every Sword and Spell, so more per play would be too much: DECISIONS #564)
   'fault-lines',
   'rolling-thunder',
-  'backup-core',
   'command-chip',
   'mass-production',
   'overclock-core',

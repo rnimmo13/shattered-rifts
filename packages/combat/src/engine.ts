@@ -4029,6 +4029,19 @@ function reap(r: Run): void {
     const fell = dead.filter((u) => u.kind === 'ally');
     for (const u of fell) (sd.fallen ??= []).push(u.def);
     for (const u of fell) {
+      // A charged revival buff answers one death, spending before revival can trigger another death.
+      // It uses the same generic revive effect as cards; charges never refresh with the turn.
+      const hero = heroOf(sd);
+      const fallen = sd.fallen?.at(-1);
+      if (
+        hero &&
+        fallen &&
+        stacks(hero, 'backup') > 0 &&
+        slotsUsed(r.db, sd) + slotsOf(r.db, fallen) <= allyCap(r.db, sd)
+      ) {
+        addStatus(r, hero, 'backup', -1);
+        runOps(r, mkAct(hero), [{ op: 'revive' }]);
+      }
       // (the one that killed it, if it is still standing)
       const killer = u.killedBy ? findUnit(r.s, u.killedBy) : null;
       fireTriggers(r, sd, 'allyDies', { attacker: killer && killer.hp > 0 ? killer : null });

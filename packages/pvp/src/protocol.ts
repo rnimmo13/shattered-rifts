@@ -90,7 +90,8 @@ export interface Entry {
 // (70: Cinderfall costs 0 Mana, #558)
 // (71: starting decks evened out, Gather Power, Kindled 4, Thunder Memory, #559, #560)
 // (72: Blade Sweep needs no target, #561)
-export const RULES_VERSION = 77;
+// (78: Backup Core is a Consume skill granting finite revival buff charges, #593)
+export const RULES_VERSION = 78;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

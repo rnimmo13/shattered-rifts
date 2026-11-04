@@ -206,6 +206,7 @@ const BOTTLE = (liquid: string, lo: string): IconArt =>
 // ---- buffs and debuffs ----
 
 export const STATUS_ICONS: Record<StatusId, IconArt> = {
+  backup: mix(place(heart(C.sky, C.skyLo, C.skyHi), 0.7, 7, 7), art([p(C.gold, 'M39 11A19 19 0 1 0 43 32L38 30A14 14 0 1 1 35 15L29 18H45V3Z')], [])),
   // (a shield in two halves: nothing left to stop the blow)
   exposed: art(
     [p(C.steel, 'M21 3L6 9V24C6 32 11 38 19 43L24 28L17 20Z'), p(C.steelLo, 'M27 3L42 9V24C42 34 34 41 26 46L30 28L24 20Z')],
@@ -752,13 +753,18 @@ export const boonIcon = (id: string): IconArt | undefined =>
 
 // ---- the painted pictures ----
 
-/** The ids with a painted picture in public/art/icons. (Retired statuses have none: they no longer come up.) */
+/** Reuse an existing painting when it already depicts the buff exactly. */
+const PAINTED_PATHS: Readonly<Record<string, string>> = {
+  backup: 'art/cards/backup-core.jpg',
+};
+
+/** The ids with a painted picture. Retired statuses have none. */
 export const PAINTED: ReadonlySet<string> = new Set(
   [
     'seared burn virulent doom fracture stunned exposed faltering brittle debilitated sapped hangover',
     'noose strangled quarry bladebane might vigor keen lethality cruelty tracking clutch ritual',
     'thorns shielded bracing ghostly slippery steadfast armored fortified plating sturdy unmovable guarded blur',
-    'meld reflect buffer taunt calm wrath radiant mantra poised empowered twinned mirrored',
+    'meld reflect buffer backup taunt calm wrath radiant mantra poised empowered twinned mirrored',
     'freeattack freeskill freepower freespell freeethereal freeplay unbound echoing boosted orbit holdfast planner',
     'edge honed fanned deftness bladesweep bladeecho ruinous marrow reaping spellcut umbra twinspell spirit',
     // (the Wardens' rules, DECISIONS #546: painted on icons-07, with Slippery)
@@ -771,9 +777,10 @@ export const PAINTED: ReadonlySet<string> = new Set(
 export type PileKind = 'draw' | 'discard' | 'exhaust';
 export const pilePicture = (kind: PileKind, tier: number): string => `pile-${kind}-${tier}`;
 
-/** Every painted file, without its folder or extension. */
+/** Painted icon PNG stems; aliases reuse existing card art instead. */
 export const paintedFiles = (): string[] => [
-  ...PAINTED,
+  ...[...PAINTED].filter(id => !Object.hasOwn(PAINTED_PATHS, id)),
   ...(['draw', 'discard', 'exhaust'] as const).flatMap((k) => [1, 2, 3, 4].map((t) => pilePicture(k, t))),
 ];
-export const iconUrl = (id: string): string => `${import.meta.env.BASE_URL}art/icons/${id}.png`;
+export const iconUrl = (id: string): string =>
+  `${import.meta.env.BASE_URL}${Object.hasOwn(PAINTED_PATHS, id) ? PAINTED_PATHS[id] : `art/icons/${id}.png`}`;

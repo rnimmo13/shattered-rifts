@@ -177,6 +177,8 @@ Percentage debuffs (Exposed, Faltering, Debilitated) are worth more as numbers g
 
 ## 7. Auras (played once, last the fight)
 
+Single-use delayed buffs are priced for their one use, not four turns of repeated triggers. Backup Core (#593) is a Consume Skill costing 2 Mana (1 upgraded), granting one visible revival charge. It restores half a companion's base max HP plus the fresh body's future actions; invested max HP and Might are lost. Repeated plays can add finite charges through normal Skill/Consume/reclaim interactions, and normal Skill deck limits apply. It receives no recurring Aura budget multiplier.
+
 Add up what the Aura does over **4 of your turns** (it is usually played turn 1-3 and the fight lasts 5-6). Then:
 
 - an uncommon Aura's 4-turn total should be about **1.5x** the budget of its cost,

@@ -54,6 +54,12 @@ export const STATUS_INFO: Record<
     text: 'Deals damage back to whatever attacks it.',
   },
   shielded: { name: 'Shielded', glyph: '◈', tone: 'good', text: 'Ignores the next hit.' },
+  backup: {
+    name: 'Backup Core',
+    glyph: '↻',
+    tone: 'good',
+    text: 'When one of your companions dies, spend 1 charge to summon a fresh copy with half its base max HP (rounded up). Its accumulated Might and max HP growth are lost. Charges stay until used and do not refresh each turn. Scrapping does not trigger this buff.',
+  },
   resonance: {
     name: 'Focus (old totems)',
     glyph: '❖',

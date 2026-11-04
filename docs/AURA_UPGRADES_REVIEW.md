@@ -107,7 +107,7 @@ Aura's 4-turn total) and trim any that go past +50%.
 
 | Aura | Now | Upgrade now | Proposed upgrade | Rule |
 |---|---|---|---|---|
-| Backup Core (2, R) | First ally death each turn: it returns at half HP | cost 1 | keep cost 1 | Cost (on/off) |
+| Backup Core (2, R) | Now a Consume Skill granting one revival buff charge (#593), outside the Aura review | cost 1 | keep cost 1 | Cost (one-use buff) |
 | Command Chip (3, R) | Summon: all allies act | cost 2 | keep cost 2 | Cost (on/off) |
 | The Foundry Awakens (3, R) | 3 Primed to companions, a Siege Engine each turn | cost 2 | **5** Primed | Raise |
 | Legion (2, R) | Summon: 1 Might to all friends | cost 1 | **Opening hand** | Opening hand (2 Might would double it) |

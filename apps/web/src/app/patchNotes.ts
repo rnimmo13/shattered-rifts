@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.193.0',
+    date: '2026-11-04',
+    title: 'Backup Core is a buff',
+    summary: 'A Consume skill with visible, one-use revival charges.',
+    notes: [
+      { kind: 'changed', text: 'Backup Core is now a Skill: gain 1 Backup Core, then Consume. It still costs 2 Mana, or 1 upgraded. Its charge appears as a buff on your hero instead of an Aura.' },
+      { kind: 'changed', text: 'Each charge revives one fallen companion as a fresh copy at half its base max HP. Charges stay until used and never refresh each turn. Multiple plays add charges; scrapping does not spend them.' },
+    ],
+    heads: 'Existing copies update automatically. Older unfinished fights restart from their saved encounter checkpoint.',
+  },
+  {
     version: '0.192.0',
     date: '2026-11-04',
     title: 'Campaign ghosts paused',

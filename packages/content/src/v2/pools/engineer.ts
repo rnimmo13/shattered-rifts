@@ -19,7 +19,6 @@ import {
   scaled,
   status,
   summon,
-  revive,
   discoverOp,
   seekTop,
 } from '../build';
@@ -417,10 +416,11 @@ export const ENGINEER: CardDef[] = [
     [summon('enforcer'), status('might', 1, 'allFriends')],
     { exhaust: true },
   ),
-  // (one death only, then it is spent: bringing back every death made the machine an endless wall, Robert 2026-10-28 and 2026-10-30)
-  r('rare', 'backup-core', 'Backup Core', 'power', 2, 'none', [
-    on('allyDies', [revive], { times: 1 }),
-  ]),
+  // One finite revival charge on the hero, not a recurring Aura (#593).
+  r('rare', 'backup-core', 'Backup Core', 'skill', 2, 'none', [status('backup', 1)], {
+    exhaust: true,
+    up: { cost: 1 },
+  }),
   // Heavy and Colossal machines, and the gun that welds them bigger (DECISIONS #383)
   r('uncommon', 'build-bulwark-walker', 'Build Bulwark Walker', 'summon', 2, 'none', [
     summon('bulwark-walker'),

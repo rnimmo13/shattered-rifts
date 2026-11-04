@@ -20,6 +20,7 @@ export type StatusId =
   | 'stunned' // counts as Exposed, Faltering and Brittle (never on top of them) for its own count of turns (DECISIONS #310)
   | 'thorns' // reflects stacks damage to attackers (permanent)
   | 'shielded' // ignores the next instance of damage per stack
+  | 'backup' // each charge revives one fallen companion at half its base max HP, then is spent
   | 'resonance' // runes: +1 to the damage/Barrier of every rune effect per stack (permanent)
   | 'calm' // stance: leaving it grants Mana
   | 'wrath' // stance: you deal double attack damage and take 50% more
@@ -116,6 +117,7 @@ export const STATUS_IDS: readonly StatusId[] = [
   'stunned',
   'thorns',
   'shielded',
+  'backup',
   'resonance',
   'calm',
   'wrath',

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { BOONS, HEARTS } from '@sr/content/v2';
 import { STATUS_INFO, fateBarPct } from '../fight/info';
 import { pileTier } from '../fight/PileArt';
-import { PAINTED, STATUS_ICONS, boonIcon, paintedFiles } from './gameIcons';
+import { PAINTED, STATUS_ICONS, boonIcon, paintedFiles, iconUrl } from './gameIcons';
 
 // (these no longer come up in play or on the Learn page: they keep their drawings, docs/icon-prompts.md)
 const RETIRED = [
@@ -19,6 +19,11 @@ const RETIRED = [
 ];
 
 describe('the pictures', () => {
+  it('reuses Backup Core artwork for its buff without requesting a missing icon PNG', () => {
+    expect(iconUrl('backup')).toMatch(/art\/cards\/backup-core\.jpg$/);
+    expect(existsSync(fileURLToPath(new URL('../../public/art/cards/backup-core.jpg', import.meta.url)))).toBe(true);
+    expect(paintedFiles()).not.toContain('backup');
+  });
   it('every status has a drawing to fall back on', () => {
     for (const id of Object.keys(STATUS_INFO)) {
       expect(STATUS_ICONS[id as keyof typeof STATUS_ICONS], id).toBeDefined();

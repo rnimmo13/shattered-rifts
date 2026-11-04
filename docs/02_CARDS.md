@@ -7,6 +7,7 @@
 > The same document records Soulreaper's approved Harvest of Souls follow-up, DECISIONS #581 (0.182.0).
 > Engineer opening buffs, Swarmwright Fabrication and continuous Reactor/Assembly Arm bonuses are specified in
 > [`ENGINEER_SUPPORT_2026-11-04.md`](ENGINEER_SUPPORT_2026-11-04.md), DECISIONS #591 (0.191.0). Current numbers remain in the generated list.
+> Backup Core is now a rare Consume Skill: 2 Mana (1 upgraded), gain 1 visible Backup Core revival charge. One companion death spends a charge to revive a fresh copy at half base max HP; no turn refresh. DECISIONS #593 (0.193.0).
 
 Rules live in `01_GAME_DESIGN.md`, visuals in `04_VISUALS_AND_ANIMATION.md`, art in `05_ART_PIPELINE.md`.
 This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 6
