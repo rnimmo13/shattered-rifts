@@ -46,11 +46,16 @@ export const ENGINEER: CardDef[] = [
     scaled(dmg(2), per('allies', 4)),
   ]),
   r('uncommon', 'call-turret', 'Call Turret', 'summon', 1, 'none', [summon('sentry-turret')]),
-  r('common', 'recycle', 'Strip for Parts', 'skill', 0, 'ally', [
-    scaled(barrier(0), per('hp', 1, 'target')),
-    draw(1),
-    sacrifice,
-  ]),
+  r(
+    'common',
+    'recycle',
+    'Strip for Parts',
+    'skill',
+    0,
+    'ally',
+    [scaled(barrier(0), per('hp', 1, 'target')), draw(1), sacrifice],
+    { exhaust: true },
+  ),
   r('uncommon', 'overcharge-blast', 'Overcharge Blast', 'attack', 2, 'none', [
     scaled(dmg(9, 'allFoes'), per('allies', 3)),
   ]),
@@ -94,7 +99,9 @@ export const ENGINEER: CardDef[] = [
       },
     },
   ),
-  r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(12, 'allFoes'), sacrifice]),
+  r('uncommon', 'detonate', 'Detonate', 'skill', 0, 'ally', [dmg(12, 'allFoes'), sacrifice], {
+    exhaust: true,
+  }),
   r(
     'rare',
     'hive-mind',

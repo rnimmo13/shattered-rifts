@@ -55,6 +55,8 @@ export {
   buyRemoval,
   buyUpgrade,
   chooseCard,
+  canRerollReward,
+  rerollReward,
   chooseSpoil,
   spoilAmounts,
   ELITE_SPOIL_MAX_HP,

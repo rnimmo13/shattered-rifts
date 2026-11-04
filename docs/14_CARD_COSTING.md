@@ -1,5 +1,7 @@
 # Card costing: what every number on a card is worth
 
+Current local shared pass: [0.195.0 ledger](SHARED_BALANCE_2026-11-04.md), including proportional Soul Tithe, six resource-card comparisons, diminishing triggers, recovery and uncertainty. [Versioned strength charts](balance-history/README.md) preserve estimates separately from future measured data.
+
 How to price a card, worked out from the five baseline classes (Knight, Assassin, Spellblade, Necromancer, Shaman: the
 Ironclad, Silent, Regent, Necrobinder and Defect shapes, DECISIONS #364-371). Their numbers are the reference because they come from a
 game that has been balanced for years; this file turns them into exchange rates we can use on the other five classes and on new

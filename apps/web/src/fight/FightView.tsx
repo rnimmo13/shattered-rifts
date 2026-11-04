@@ -141,8 +141,10 @@ import {
   type Spot,
 } from './fxPlayer';
 import { PAINTED, iconUrl } from '../art/gameIcons';
+import { cleansePreview } from './cleansePreview';
 
 export interface FightResult {
+  turns?: number;
   winner: Winner;
   /** your hero's HP when it ended (for HP that carries between fights) */
   hp: number;
@@ -1272,6 +1274,7 @@ export function FightView(props: {
             () =>
               setResult({
                 winner: shown(after.winner as Winner, mySide),
+                turns: after.turn,
                 hp: hero?.hp ?? 0,
                 potions: [...after.sides[mySide].potions],
                 maxHpGained: after.sides[mySide].maxHpGained ?? 0,
@@ -2155,6 +2158,9 @@ export function FightView(props: {
     : [];
   const keywords = hoverCard
     ? [
+        ...(live && cleansePreview(hoverCard.def, live, mySide)
+          ? [{ name: 'Cleanse now', text: cleansePreview(hoverCard.def, live, mySide)! }]
+          : []),
         ...damageSteps,
         ...[sanctifiedNote(db, hoverCard.def)].filter((x) => x !== null),
         ...keywordsOf(

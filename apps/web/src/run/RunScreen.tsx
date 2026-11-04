@@ -27,6 +27,8 @@ import {
   upgradedCards,
   chooseAscendancy,
   chooseCard,
+  canRerollReward,
+  rerollReward,
   chooseSpoil,
   spoilAmounts,
   type Spoil,
@@ -60,6 +62,7 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
+import { recordCampaignFight, recordBalanceAscendancy } from '../app/balanceJournal';
 import { venueFor } from '../duel/scene/venue';
 import { SceneBackdrop } from './SceneBackdrop';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
@@ -333,8 +336,10 @@ export default function RunScreen() {
       potions?: string[],
       maxHpGained?: number,
       extraRewards?: number,
+      turns?: number,
     ) => {
       if (runRef.current) {
+        recordCampaignFight(runRef.current, won, turns);
         clearFightLog(duelKey(runRef.current));
         clearGhostLog(duelKey(runRef.current));
       }
@@ -553,6 +558,7 @@ export default function RunScreen() {
               r.potions,
               r.winner === 'a' ? r.maxHpGained : undefined,
               r.winner === 'a' ? r.extraRewards : undefined,
+              r.turns,
             );
           }}
         />
@@ -1020,6 +1026,7 @@ function Body(props: {
       return (
         <CardOffer
           title={run.context?.extraReward ? 'Choose another card' : 'Choose a card'}
+          onReroll={canRerollReward(run) ? () => act(rerollReward) : undefined}
           hint={
             run.context?.extraReward
               ? 'An extra card reward, earned by a killing blow. Add one to your deck, or skip.'
@@ -1064,7 +1071,11 @@ function Body(props: {
                   key={id}
                   className="bigchoice"
                   onClick={() => {
-                    act((r) => chooseAscendancy(r, id));
+                    act((r) => {
+                      const next = chooseAscendancy(r, id);
+                      recordBalanceAscendancy(r, id);
+                      return next;
+                    });
                     props.onAscended(id);
                   }}
                 >
@@ -1085,6 +1096,7 @@ function Body(props: {
         <>
           <CardOffer
             title="The Warden's Gift"
+            onReroll={canRerollReward(run) ? () => act(rerollReward) : undefined}
             hint={
               run.context?.hearts?.length
                 ? "The Warden falls. Take one of your class's rare cards, or one of the Warden's Hearts below, or neither."

@@ -29,13 +29,57 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.195.0',
+    date: '2026-11-04',
+    title: 'More room for every play style',
+    summary: 'Stronger developing builds, steadier scaling and the story of the Shattering.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The illustrated story now reveals why the Ward broke: a Warden tried to save the Hollow Crown by rekindling its dying star with the barrier\'s power. Visit The Story to see what her choice cost the other worlds.',
+      },
+      {
+        kind: 'balance',
+        text: 'Swarmwright develops Fabrication faster. Bonelord raises stronger companions. Blood Knight gets a reliable first-payment bonus. Golemancer saves some earned growth when a large machine dies, keeping its damage-per-HP bonus.',
+      },
+      {
+        kind: 'balance',
+        text: 'Deathwish damage now ramps below 70% HP. Its one rescue also covers hostile Skills, Auras, Bleed and Burn; follow-up hits can still kill.',
+      },
+      {
+        kind: 'balance',
+        text: 'Strip for Parts and Detonate now Consume. Predator and Fault Lines give smaller bonuses after six activations each turn. Soulreaper gains Harvest and Barrier from the first six consumptions each round. Storm Sovereign costs 2 Mana and grants Barrier on its first three activations each turn.',
+      },
+      {
+        kind: 'balance',
+        text: 'Soul Tithe recurring Fate is 2% of your max HP, rounded up, at least 3.',
+      },
+      {
+        kind: 'new',
+        text: 'Reroll a combat card reward once per Rift Tier. Inspect cleansing cards to see their exact current debuff reductions. Export playtest results from Settings to share with the developer.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Applying Exposed to opposing heroes or companions now triggers the correct player’s effects, including reactive effects.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept.',
+  },
+  {
     version: '0.194.0',
     date: '2026-11-04',
     title: 'Skip unnecessary companion targeting',
     summary: 'One valid target means one action to play the card.',
     notes: [
-      { kind: 'changed', text: 'Cards that target your companions automatically choose the target when only one legal option exists. Clicking, tapping, dragging, and keyboard shortcuts all use the same behavior.' },
-      { kind: 'changed', text: 'Multiple legal targets still require your choice, including cards that can target either your hero or a companion. Cards without a legal target remain unavailable.' },
+      {
+        kind: 'changed',
+        text: 'Cards that target your companions automatically choose the target when only one legal option exists. Clicking, tapping, dragging, and keyboard shortcuts all use the same behavior.',
+      },
+      {
+        kind: 'changed',
+        text: 'Multiple legal targets still require your choice, including cards that can target either your hero or a companion. Cards without a legal target remain unavailable.',
+      },
     ],
   },
   {
@@ -44,10 +88,17 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Backup Core is a buff',
     summary: 'A Consume skill with visible, one-use revival charges.',
     notes: [
-      { kind: 'changed', text: 'Backup Core is now a Skill: gain 1 Backup Core, then Consume. It still costs 2 Mana, or 1 upgraded. Its charge appears as a buff on your hero instead of an Aura.' },
-      { kind: 'changed', text: 'Each charge revives one fallen companion as a fresh copy at half its base max HP. Charges stay until used and never refresh each turn. Multiple plays add charges; scrapping does not spend them.' },
+      {
+        kind: 'changed',
+        text: 'Backup Core is now a Skill: gain 1 Backup Core, then Consume. It still costs 2 Mana, or 1 upgraded. Its charge appears as a buff on your hero instead of an Aura.',
+      },
+      {
+        kind: 'changed',
+        text: 'Each charge revives one fallen companion as a fresh copy at half its base max HP. Charges stay until used and never refresh each turn. Multiple plays add charges; scrapping does not spend them.',
+      },
     ],
-    heads: 'Existing copies update automatically. Older unfinished fights restart from their saved encounter checkpoint.',
+    heads:
+      'Existing copies update automatically. Older unfinished fights restart from their saved encounter checkpoint.',
   },
   {
     version: '0.192.0',
@@ -55,30 +106,56 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Campaign ghosts paused',
     summary: 'Campaign battles use regular enemies and Wardens.',
     notes: [
-      { kind: 'changed', text: 'Echo encounters are removed from campaign maps for now. Ghosts no longer replace Wardens. Arena ghost matches remain available.' },
-      { kind: 'fixed', text: 'Existing campaign Echoes become normal fights, and saved ghost Wardens become their usual bosses. Progress and already-earned rewards are kept.' },
+      {
+        kind: 'changed',
+        text: 'Echo encounters are removed from campaign maps for now. Ghosts no longer replace Wardens. Arena ghost matches remain available.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Existing campaign Echoes become normal fights, and saved ghost Wardens become their usual bosses. Progress and already-earned rewards are kept.',
+      },
     ],
-    heads: 'An unfinished campaign ghost fight restarts as a normal enemy encounter from its checkpoint, without spending Resolve.',
+    heads:
+      'An unfinished campaign ghost fight restarts as a normal enemy encounter from its checkpoint, without spending Resolve.',
   },
   {
     version: '0.191.0',
     date: '2026-11-04',
     title: 'A stronger Engineer crew',
-    summary: 'More opening power, lasting swarm growth and Auras that support replacement machines.',
+    summary:
+      'More opening power, lasting swarm growth and Auras that support replacement machines.',
     notes: [
-      { kind: 'balance', text: 'The Engineer starts with an 8-HP Drone that attacks for 4. New starting decks replace one Strike with Pulse Pistol. Micro Drones attack for 3 instead of 2.' },
-      { kind: 'balance', text: 'Swarmwright keeps the fourth slot and 1 Primed each turn, and gains Fabrication: companions deal +1 attack damage per hit for every four companions summoned that fight. Starting companions do not count; replacements keep the bonus.' },
-      { kind: 'changed', text: 'Reactor gives a fixed +3 attack damage per hit (+4 upgraded) to you and your current or future companions for the fight. Kron’s Assembly Arm uses the same continuous effect. These bonuses do not grant Might or grow every turn.' },
-      { kind: 'fixed', text: 'One-time Aura effects say On play. Companion damage previews include continuous bonuses and Ossify’s Marrow bonus.' },
+      {
+        kind: 'balance',
+        text: 'The Engineer starts with an 8-HP Drone that attacks for 4. New starting decks replace one Strike with Pulse Pistol. Micro Drones attack for 3 instead of 2.',
+      },
+      {
+        kind: 'balance',
+        text: 'Swarmwright keeps the fourth slot and 1 Primed each turn, and gains Fabrication: companions deal +1 attack damage per hit for every four companions summoned that fight. Starting companions do not count; replacements keep the bonus.',
+      },
+      {
+        kind: 'changed',
+        text: 'Reactor gives a fixed +3 attack damage per hit (+4 upgraded) to you and your current or future companions for the fight. Kron’s Assembly Arm uses the same continuous effect. These bonuses do not grant Might or grow every turn.',
+      },
+      {
+        kind: 'fixed',
+        text: 'One-time Aura effects say On play. Companion damage previews include continuous bonuses and Ossify’s Marrow bonus.',
+      },
     ],
-    heads: 'Existing decks are retained. An older unfinished fight restarts from its saved encounter checkpoint under the new rules.',
+    heads:
+      'Existing decks are retained. An older unfinished fight restarts from its saved encounter checkpoint under the new rules.',
   },
   {
     version: '0.190.0',
     date: '2026-11-04',
     title: 'A seamless Settings header',
     summary: 'The Settings title blends into the menu.',
-    notes: [{ kind: 'changed', text: 'Removed the darker box and shadow behind the Settings header. Preferences scroll in their own area, keeping Close and Quit visible over one continuous panel background.' }],
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Removed the darker box and shadow behind the Settings header. Preferences scroll in their own area, keeping Close and Quit visible over one continuous panel background.',
+      },
+    ],
   },
   {
     version: '0.189.0',
@@ -86,8 +163,14 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'A clearer Settings menu',
     summary: 'Quit is easy to reach, and account controls line up with your preferences.',
     notes: [
-      { kind: 'changed', text: 'Quit to Desktop now has its own row at the top of Settings. It stays visible while scrolling and saves your progress before closing.' },
-      { kind: 'changed', text: 'Google and Steam account status, save mode and update controls use a consistent layout. Small screens stack labels, descriptions and buttons to keep everything readable.' },
+      {
+        kind: 'changed',
+        text: 'Quit to Desktop now has its own row at the top of Settings. It stays visible while scrolling and saves your progress before closing.',
+      },
+      {
+        kind: 'changed',
+        text: 'Google and Steam account status, save mode and update controls use a consistent layout. Small screens stack labels, descriptions and buttons to keep everything readable.',
+      },
     ],
   },
   {
@@ -96,9 +179,18 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'The worlds beyond the Ward',
     summary: 'An illustrated story, a new opening splash, and smoother desktop sign-in.',
     notes: [
-      { kind: 'new', text: 'The story of the Rifts is on the home and Learn pages: six illustrated chapters, eight worlds, and artwork you can open and explore. The Riftwalkers use their default appearances.' },
-      { kind: 'new', text: 'The game opens on a new landscape splash while Riftwalker artwork loads. Slow connections can continue while the remaining art arrives.' },
-      { kind: 'fixed', text: 'Google desktop sign-in now completes after browser approval. Approval, cancellation and error pages have clear instructions and a new Shattered Rifts design.' },
+      {
+        kind: 'new',
+        text: 'The story of the Rifts is on the home and Learn pages: six illustrated chapters, eight worlds, and artwork you can open and explore. The Riftwalkers use their default appearances.',
+      },
+      {
+        kind: 'new',
+        text: 'The game opens on a new landscape splash while Riftwalker artwork loads. Slow connections can continue while the remaining art arrives.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Google desktop sign-in now completes after browser approval. Approval, cancellation and error pages have clear instructions and a new Shattered Rifts design.',
+      },
     ],
   },
   {
@@ -107,9 +199,18 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Your Google account on desktop',
     summary: 'Use the same account on the website and Windows app.',
     notes: [
-      { kind: 'new', text: 'The desktop Account panel and Settings offer Sign in with Google. Confirm in your browser and return to the app; your desktop login is remembered securely.' },
-      { kind: 'changed', text: 'Sign out saves first and restores your separate guest profile. Other Google accounts and local offline saves stay separate. Account changes wait until you leave battle.' },
-      { kind: 'new', text: 'Steam editions are ready to link a fresh Steam game account to existing Google progress after an explicit browser confirmation. Linking refuses separate Steam progress instead of overwriting it; live Steam features still await our Steam app setup.' },
+      {
+        kind: 'new',
+        text: 'The desktop Account panel and Settings offer Sign in with Google. Confirm in your browser and return to the app; your desktop login is remembered securely.',
+      },
+      {
+        kind: 'changed',
+        text: 'Sign out saves first and restores your separate guest profile. Other Google accounts and local offline saves stay separate. Account changes wait until you leave battle.',
+      },
+      {
+        kind: 'new',
+        text: 'Steam editions are ready to link a fresh Steam game account to existing Google progress after an explicit browser confirmation. Linking refuses separate Steam progress instead of overwriting it; live Steam features still await our Steam app setup.',
+      },
     ],
   },
   {
@@ -117,7 +218,12 @@ export const PATCH_NOTES: PatchNote[] = [
     date: '2026-11-04',
     title: 'Download beside Settings',
     summary: 'The Windows download now lives in the home header.',
-    notes: [{ kind: 'changed', text: 'Download for Windows sits beside Settings on the home screen. Phones use a compact Download button and Settings gear so the header fits on one row.' }],
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Download for Windows sits beside Settings on the home screen. Phones use a compact Download button and Settings gear so the header fits on one row.',
+      },
+    ],
   },
   {
     version: '0.185.0',
@@ -125,8 +231,14 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'A Shattered Rifts identity',
     summary: 'Our new logo comes to browser tabs, downloads and the desktop app.',
     notes: [
-      { kind: 'changed', text: 'The SR logo now appears beside the title, on Download for Windows, in browser tabs and mobile home-screen icons, and on the Windows app and installer.' },
-      { kind: 'changed', text: 'Credits is now beside Patch notes in Settings > About and updates, instead of sitting alone at the bottom of the home screen.' },
+      {
+        kind: 'changed',
+        text: 'The SR logo now appears beside the title, on Download for Windows, in browser tabs and mobile home-screen icons, and on the Windows app and installer.',
+      },
+      {
+        kind: 'changed',
+        text: 'Credits is now beside Patch notes in Settings > About and updates, instead of sitting alone at the bottom of the home screen.',
+      },
     ],
   },
   {
@@ -135,9 +247,18 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Update between battles',
     summary: 'A quieter home screen and a clear invitation to update when your battle is over.',
     notes: [
-      { kind: 'new', text: 'The website checks for new versions and offers Save and refresh. Desktop offers Save and restart when a patch has downloaded. Prompts wait until you leave the fight screen, and Later lets you keep playing.' },
-      { kind: 'changed', text: 'Account is on the left of the home header and Settings is on the right. Removed the Friends alpha / working title banner and duplicate version labels.' },
-      { kind: 'changed', text: 'Settings > About and updates holds the version, build details and update controls. Desktop save-mode switching is now in Settings. Phone layouts have larger buttons and a profile panel that stays on screen.' },
+      {
+        kind: 'new',
+        text: 'The website checks for new versions and offers Save and refresh. Desktop offers Save and restart when a patch has downloaded. Prompts wait until you leave the fight screen, and Later lets you keep playing.',
+      },
+      {
+        kind: 'changed',
+        text: 'Account is on the left of the home header and Settings is on the right. Removed the Friends alpha / working title banner and duplicate version labels.',
+      },
+      {
+        kind: 'changed',
+        text: 'Settings > About and updates holds the version, build details and update controls. Desktop save-mode switching is now in Settings. Phone layouts have larger buttons and a profile panel that stays on screen.',
+      },
     ],
   },
   {
@@ -146,12 +267,25 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Desktop downloads and automatic updates',
     summary: 'Download the Windows playtest from the website and let the app keep itself current.',
     notes: [
-      { kind: 'new', text: 'The website home page has Download for Windows. The installer keeps your existing desktop saves.' },
-      { kind: 'new', text: 'Installed standalone Windows copies check for updates on launch and periodically, then download them in the background. Downloads do not interrupt a fight.' },
-      { kind: 'new', text: 'Settings shows update progress, Check for updates, and Restart to update. Downloaded updates also install when you quit normally.' },
-      { kind: 'changed', text: 'Restart to update saves progress before handing off to the installer. Steam editions use Steam for updates.' },
+      {
+        kind: 'new',
+        text: 'The website home page has Download for Windows. The installer keeps your existing desktop saves.',
+      },
+      {
+        kind: 'new',
+        text: 'Installed standalone Windows copies check for updates on launch and periodically, then download them in the background. Downloads do not interrupt a fight.',
+      },
+      {
+        kind: 'new',
+        text: 'Settings shows update progress, Check for updates, and Restart to update. Downloaded updates also install when you quit normally.',
+      },
+      {
+        kind: 'changed',
+        text: 'Restart to update saves progress before handing off to the installer. Steam editions use Steam for updates.',
+      },
     ],
-    heads: 'Versions 0.182.0 and earlier need this installer once to enable future automatic updates. The Windows playtest is still unsigned and may show a Windows warning. Browser and desktop local saves remain separate.',
+    heads:
+      'Versions 0.182.0 and earlier need this installer once to enable future automatic updates. The Windows playtest is still unsigned and may show a Windows warning. Browser and desktop local saves remain separate.',
   },
   {
     version: '0.182.0',
@@ -159,11 +293,21 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Soulreaper: Harvest of Souls',
     summary: 'Consuming cards now develops a growing end-of-turn offensive payoff.',
     notes: [
-      { kind: 'balance', text: 'Soulreaper gains 3 Barrier per consumed card. At the end of a turn in which you consumed cards, Reap the lowest-HP enemy for 4 damage plus 2 per card consumed this fight.' },
-      { kind: 'changed', text: 'Reap resolves once after Fleeting cards are consumed and companions act. It is non-attack damage that Barrier can absorb, and its accumulated harvest resets each fight.' },
-      { kind: 'new', text: 'Soulreaper’s combat chip shows the number of harvested cards and the next Reap’s damage.' },
+      {
+        kind: 'balance',
+        text: 'Soulreaper gains 3 Barrier per consumed card. At the end of a turn in which you consumed cards, Reap the lowest-HP enemy for 4 damage plus 2 per card consumed this fight.',
+      },
+      {
+        kind: 'changed',
+        text: 'Reap resolves once after Fleeting cards are consumed and companions act. It is non-attack damage that Barrier can absorb, and its accumulated harvest resets each fight.',
+      },
+      {
+        kind: 'new',
+        text: 'Soulreaper’s combat chip shows the number of harvested cards and the next Reap’s damage.',
+      },
     ],
-    heads: 'Refresh or update the desktop app. Existing Soulreaper choices receive the new effect. Older replays are incompatible; unfinished older-rule fights restart at their encounter checkpoint. Card pools are unchanged.',
+    heads:
+      'Refresh or update the desktop app. Existing Soulreaper choices receive the new effect. Older replays are incompatible; unfinished older-rule fights restart at their encounter checkpoint. Card pools are unchanged.',
   },
   {
     version: '0.181.0',
@@ -171,13 +315,29 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Ascendancies with a purpose',
     summary: 'Twelve Ascendancies gain distinct ways to develop into the late game.',
     notes: [
-      { kind: 'balance', text: 'Marshal rewards spending banked Reserves; Blood Knight stores retaliation from wounds; Golemancer turns large-machine durability into attack power.' },
-      { kind: 'balance', text: 'Seer marks and pursues a chosen enemy. Assassin prepares an execution through Skills, while Bladedancer keeps the knife-volume identity.' },
-      { kind: 'balance', text: 'Totemist cultivates a standing row. Elementalist develops each element and rewards switching between them. Archmage recovers power from a paid Spell Attack.' },
-      { kind: 'balance', text: 'Zealot develops controlled Fury, Sunwalker preserves progress between Radiant windows, Brewmaster builds Fermentation, and Deathwish gains low-health pressure with one emergency survival opportunity.' },
-      { kind: 'new', text: 'Combat trait chips show the progress of these Ascendancy mechanics. The changes apply in Campaign, Arena, and Echo fights.' },
+      {
+        kind: 'balance',
+        text: 'Marshal rewards spending banked Reserves; Blood Knight stores retaliation from wounds; Golemancer turns large-machine durability into attack power.',
+      },
+      {
+        kind: 'balance',
+        text: 'Seer marks and pursues a chosen enemy. Assassin prepares an execution through Skills, while Bladedancer keeps the knife-volume identity.',
+      },
+      {
+        kind: 'balance',
+        text: 'Totemist cultivates a standing row. Elementalist develops each element and rewards switching between them. Archmage recovers power from a paid Spell Attack.',
+      },
+      {
+        kind: 'balance',
+        text: 'Zealot develops controlled Fury, Sunwalker preserves progress between Radiant windows, Brewmaster builds Fermentation, and Deathwish gains low-health pressure with one emergency survival opportunity.',
+      },
+      {
+        kind: 'new',
+        text: 'Combat trait chips show the progress of these Ascendancy mechanics. The changes apply in Campaign, Arena, and Echo fights.',
+      },
     ],
-    heads: 'Refresh or update the desktop app. Existing Ascendancy choices keep their names and receive the new effects. Older replays are incompatible; an unfinished fight from older rules restarts from its encounter checkpoint. Card pools are unchanged. Late-game strength still needs playtesting.',
+    heads:
+      'Refresh or update the desktop app. Existing Ascendancy choices keep their names and receive the new effects. Older replays are incompatible; an unfinished fight from older rules restarts from its encounter checkpoint. Card pools are unchanged. Late-game strength still needs playtesting.',
   },
   {
     version: '0.180.0',
@@ -185,23 +345,49 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'One account, one active device',
     summary: 'Other devices can browse while one device plays your shared account.',
     notes: [
-      { kind: 'changed', text: 'Your shared Campaign and Arena are played on one device at a time. Another device can sign in and browse, but must wait until you stop playing on the first device.' },
-      { kind: 'new', text: 'Use Save and stop playing on the home screen to switch devices. Interrupted shared-account play pauses until you reconnect.' },
-      { kind: 'new', text: 'The desktop app has a separate Local offline play mode. Its campaigns stay on that device and do not enter Arena, leaderboards or shared-account syncing.' },
-      { kind: 'fixed', text: 'Switching devices loads the latest confirmed progress and saved fight actions. Divergent older local campaign copies are preserved for recovery instead of replacing newer shared progress.' },
+      {
+        kind: 'changed',
+        text: 'Your shared Campaign and Arena are played on one device at a time. Another device can sign in and browse, but must wait until you stop playing on the first device.',
+      },
+      {
+        kind: 'new',
+        text: 'Use Save and stop playing on the home screen to switch devices. Interrupted shared-account play pauses until you reconnect.',
+      },
+      {
+        kind: 'new',
+        text: 'The desktop app has a separate Local offline play mode. Its campaigns stay on that device and do not enter Arena, leaderboards or shared-account syncing.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Switching devices loads the latest confirmed progress and saved fight actions. Divergent older local campaign copies are preserved for recovery instead of replacing newer shared progress.',
+      },
     ],
-    heads: 'Refresh the website or install the new desktop build. Shared-account gameplay now requires an internet connection; older clients cannot submit shared gameplay progress.',
+    heads:
+      'Refresh the website or install the new desktop build. Shared-account gameplay now requires an internet connection; older clients cannot submit shared gameplay progress.',
   },
   {
     version: '0.179.0',
     date: '2026-11-04',
     title: 'Desktop saves and Steam preparation',
-    summary: 'Quit from Settings, keep backed-up desktop saves, and prepare for Steam accounts and achievements.',
+    summary:
+      'Quit from Settings, keep backed-up desktop saves, and prepare for Steam accounts and achievements.',
     notes: [
-      { kind: 'new', text: 'Desktop Settings now has Quit to Desktop. The game saves your current progress before closing.' },
-      { kind: 'new', text: 'Desktop progress is also kept in versioned save files with a previous-revision backup. These include campaign saves, in-progress fights, history, the local Vault and portable preferences.' },
-      { kind: 'new', text: 'Steam integration is ready to configure: automatic Steam account sign-in, 18 campaign achievements, separate account saves, and Steam Auto-Cloud file support.' },
-      { kind: 'changed', text: 'Steam features require the game to be registered and configured in Steamworks. Until then the desktop app works in standalone mode, and the website continues separately.' },
+      {
+        kind: 'new',
+        text: 'Desktop Settings now has Quit to Desktop. The game saves your current progress before closing.',
+      },
+      {
+        kind: 'new',
+        text: 'Desktop progress is also kept in versioned save files with a previous-revision backup. These include campaign saves, in-progress fights, history, the local Vault and portable preferences.',
+      },
+      {
+        kind: 'new',
+        text: 'Steam integration is ready to configure: automatic Steam account sign-in, 18 campaign achievements, separate account saves, and Steam Auto-Cloud file support.',
+      },
+      {
+        kind: 'changed',
+        text: 'Steam features require the game to be registered and configured in Steamworks. Until then the desktop app works in standalone mode, and the website continues separately.',
+      },
     ],
   },
   {
@@ -210,9 +396,18 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'A desktop playtest build',
     summary: 'The first Windows desktop wrapper shares the same game as the website.',
     notes: [
-      { kind: 'new', text: 'A Windows desktop playtest build bundles the game and artwork for offline campaign play. Runs and settings are kept in a separate desktop profile.' },
-      { kind: 'new', text: 'Desktop players can start a campaign without an online username. Use F11 or Alt+Enter for fullscreen, and the Game menu to open the save folder.' },
-      { kind: 'changed', text: 'The website continues to update separately. Desktop online play uses the existing server and Vault codes; Steam login, achievements and Steam Cloud are still to come.' },
+      {
+        kind: 'new',
+        text: 'A Windows desktop playtest build bundles the game and artwork for offline campaign play. Runs and settings are kept in a separate desktop profile.',
+      },
+      {
+        kind: 'new',
+        text: 'Desktop players can start a campaign without an online username. Use F11 or Alt+Enter for fullscreen, and the Game menu to open the save folder.',
+      },
+      {
+        kind: 'changed',
+        text: 'The website continues to update separately. Desktop online play uses the existing server and Vault codes; Steam login, achievements and Steam Cloud are still to come.',
+      },
     ],
   },
   {
@@ -221,57 +416,116 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'A smoother campaign climb',
     summary: 'Steady enemy growth through Tier XX, with bounded opening and phase bonuses.',
     notes: [
-      { kind: 'balance', text: 'Scripted enemies gain 40 percentage points of HP and 5 points of damage per tier, starting at 90% of base. Tier XX reaches 850% HP and 185% damage, with no final-tier acceleration.' },
-      { kind: 'balance', text: 'Elites and Wardens use the same tier multiplier as other enemies. Extra hardening bonuses, Warden damage multipliers, added Swarming enemies and opening Exposed are removed.' },
-      { kind: 'balance', text: 'Phase Might is bounded, Blood Rites gives 1 starting Might instead of growing Ritual, and Hunted gives 1 Primed. Opening Faltering and Brittle last one turn; Rift Static adds one card and Rift Scars adds one Wound per tier, up to six.' },
-      { kind: 'changed', text: 'Late-tier health pools, encounter lineups, Warden mechanics and longer maps still demand a developed deck. Dedicated ghost scaling and Arena rules are unchanged.' },
+      {
+        kind: 'balance',
+        text: 'Scripted enemies gain 40 percentage points of HP and 5 points of damage per tier, starting at 90% of base. Tier XX reaches 850% HP and 185% damage, with no final-tier acceleration.',
+      },
+      {
+        kind: 'balance',
+        text: 'Elites and Wardens use the same tier multiplier as other enemies. Extra hardening bonuses, Warden damage multipliers, added Swarming enemies and opening Exposed are removed.',
+      },
+      {
+        kind: 'balance',
+        text: 'Phase Might is bounded, Blood Rites gives 1 starting Might instead of growing Ritual, and Hunted gives 1 Primed. Opening Faltering and Brittle last one turn; Rift Static adds one card and Rift Scars adds one Wound per tier, up to six.',
+      },
+      {
+        kind: 'changed',
+        text: 'Late-tier health pools, encounter lineups, Warden mechanics and longer maps still demand a developed deck. Dedicated ghost scaling and Arena rules are unchanged.',
+      },
     ],
   },
   {
     version: '0.176.0',
     date: '2026-11-03',
     title: 'A steadier climb against ghosts',
-    summary: 'Echoes and ghost Wardens grow at a steady rate, with no sudden HP jumps or extra opening penalty.',
+    summary:
+      'Echoes and ghost Wardens grow at a steady rate, with no sudden HP jumps or extra opening penalty.',
     notes: [
-      { kind: 'balance', text: 'Campaign ghosts use a straight-line curve: Warden HP starts at 2.2 times class base HP and adds 0.2 times each tier. Saved Max HP adds a bounded bonus instead of multiplying with the tier. Echoes retain 60% of ghost-Warden HP.' },
-      { kind: 'balance', text: 'Ghost damage starts at 100% at Tier IV and adds 3 percentage points per tier, reaching 148% at Tier XX. There is no Tier XIII Arena-HP jump, final-tier acceleration, or extra Warden damage multiplier.' },
-      { kind: 'balance', text: 'Ghosts add no opening Faltering; normal campaign Omens still apply. Campaign ghosts have more variety among nearby-tier decks. Arena fights and their ghost selection are unchanged.' },
+      {
+        kind: 'balance',
+        text: 'Campaign ghosts use a straight-line curve: Warden HP starts at 2.2 times class base HP and adds 0.2 times each tier. Saved Max HP adds a bounded bonus instead of multiplying with the tier. Echoes retain 60% of ghost-Warden HP.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ghost damage starts at 100% at Tier IV and adds 3 percentage points per tier, reaching 148% at Tier XX. There is no Tier XIII Arena-HP jump, final-tier acceleration, or extra Warden damage multiplier.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ghosts add no opening Faltering; normal campaign Omens still apply. Campaign ghosts have more variety among nearby-tier decks. Arena fights and their ghost selection are unchanged.',
+      },
     ],
   },
   {
     version: '0.175.0',
     date: '2026-11-03',
     title: 'Weapons and growing builds',
-    summary: 'Engineer weapons and summons gain lasting damage, with more ways to grow across the roster.',
+    summary:
+      'Engineer weapons and summons gain lasting damage, with more ways to grow across the roster.',
     notes: [
-      { kind: 'new', text: 'Foreman becomes Artillerist: gain 1 Might each turn, and your first Attack gives 3 Barrier. Saved Foreman decks become Artillerists. Weapon Bench builds your own Might, and Rotary Cannon fires four shots.' },
-      { kind: 'balance', text: 'Engineer: Jumpstart gives companions lasting Might instead of Primed; Ion Lance grows with each shot; Swarm Tactics grows with successful summons. Bulwark Frame scales with companion max HP, and Rebuild returns a machine at 75% HP.' },
-      { kind: 'new', text: 'Measured Conviction rewards retained Reserves with Might and Barrier. Spirit Pact rewards your first ordered totem command with Spirit and Barrier. Morning After rewards an actual Hangover payment with Might and Barrier.' },
-      { kind: 'balance', text: 'Monk gains 1 Might on the first stance entered on your turn; Foretold Flame remembers Fervor gained. Drunken Master builds Might once a turn. Gleeful Trapsmith grows with sprung Traps, and Masquerade rewards repeated Full Tricks.' },
-      { kind: 'balance', text: 'Slow Murder costs 2 Mana and Side Slip is common. Spirit Strike costs 1 with a smaller hit; Heart of the Pyre reads enemy Burn. Smoldering Blow scales faster; Restless Spirits grows with consumed Gravesouls, and Requiem draws a card.' },
-      { kind: 'balance', text: 'Echoing Strike creates a free, consumed Flame Echo that cannot make copies. Gallows grows damage across copies instead of doubling through Noose.' },
+      {
+        kind: 'new',
+        text: 'Foreman becomes Artillerist: gain 1 Might each turn, and your first Attack gives 3 Barrier. Saved Foreman decks become Artillerists. Weapon Bench builds your own Might, and Rotary Cannon fires four shots.',
+      },
+      {
+        kind: 'balance',
+        text: 'Engineer: Jumpstart gives companions lasting Might instead of Primed; Ion Lance grows with each shot; Swarm Tactics grows with successful summons. Bulwark Frame scales with companion max HP, and Rebuild returns a machine at 75% HP.',
+      },
+      {
+        kind: 'new',
+        text: 'Measured Conviction rewards retained Reserves with Might and Barrier. Spirit Pact rewards your first ordered totem command with Spirit and Barrier. Morning After rewards an actual Hangover payment with Might and Barrier.',
+      },
+      {
+        kind: 'balance',
+        text: 'Monk gains 1 Might on the first stance entered on your turn; Foretold Flame remembers Fervor gained. Drunken Master builds Might once a turn. Gleeful Trapsmith grows with sprung Traps, and Masquerade rewards repeated Full Tricks.',
+      },
+      {
+        kind: 'balance',
+        text: 'Slow Murder costs 2 Mana and Side Slip is common. Spirit Strike costs 1 with a smaller hit; Heart of the Pyre reads enemy Burn. Smoldering Blow scales faster; Restless Spirits grows with consumed Gravesouls, and Requiem draws a card.',
+      },
+      {
+        kind: 'balance',
+        text: 'Echoing Strike creates a free, consumed Flame Echo that cannot make copies. Gallows grows damage across copies instead of doubling through Noose.',
+      },
     ],
-    heads: 'Card rules changed, so older battle replays may play differently. Echo encounter rules are unchanged.',
+    heads:
+      'Card rules changed, so older battle replays may play differently. Echo encounter rules are unchanged.',
   },
   {
     version: '0.174.0',
     date: '2026-11-03',
     title: 'Settings on a phone, a Low suggestion',
-    summary: 'The Settings menu fits a phone, and a computer drawing without its graphics card is offered Low graphics once.',
+    summary:
+      'The Settings menu fits a phone, and a computer drawing without its graphics card is offered Low graphics once.',
     notes: [
-      { kind: 'changed', text: 'The Settings menu fits a phone: a full-screen sheet with Close always in view, each setting on one line with its explanation beneath, and bigger buttons for a finger.' },
-      { kind: 'new', text: 'When your browser draws without your graphics card, the first fight offers to switch Graphics to Low, once.' },
+      {
+        kind: 'changed',
+        text: 'The Settings menu fits a phone: a full-screen sheet with Close always in view, each setting on one line with its explanation beneath, and bigger buttons for a finger.',
+      },
+      {
+        kind: 'new',
+        text: 'When your browser draws without your graphics card, the first fight offers to switch Graphics to Low, once.',
+      },
     ],
   },
   {
     version: '0.173.0',
     date: '2026-11-03',
     title: 'Settings, and fewer stutters',
-    summary: 'A Settings menu on every screen, fewer stutters, and a performance report to send in if the game still stutters.',
+    summary:
+      'A Settings menu on every screen, fewer stutters, and a performance report to send in if the game still stutters.',
     notes: [
-      { kind: 'new', text: 'A Settings menu, from the title screen, the run\'s bar and a fight\'s top bar: Sound and Volume, Graphics quality, Effects, Fullscreen, Tips, and Show every tip again. It replaces the fight\'s Tips, Sound and Graphics buttons.' },
-      { kind: 'new', text: 'Settings, Performance report: record a while of play and copy a short report of any stutters to send in.' },
-      { kind: 'changed', text: 'Fewer stutters: card art is painted ahead of time, painted effects are prepared before they first play, effects move more lightly and at most 12 play at once, and a fight opens faster after the first one.' },
+      {
+        kind: 'new',
+        text: "A Settings menu, from the title screen, the run's bar and a fight's top bar: Sound and Volume, Graphics quality, Effects, Fullscreen, Tips, and Show every tip again. It replaces the fight's Tips, Sound and Graphics buttons.",
+      },
+      {
+        kind: 'new',
+        text: 'Settings, Performance report: record a while of play and copy a short report of any stutters to send in.',
+      },
+      {
+        kind: 'changed',
+        text: 'Fewer stutters: card art is painted ahead of time, painted effects are prepared before they first play, effects move more lightly and at most 12 play at once, and a fight opens faster after the first one.',
+      },
     ],
   },
   {
@@ -280,25 +534,36 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Every Uncommon has its own effect',
     summary: 'All 371 Uncommon cards now play their own painted effect, as the Rares do.',
     notes: [
-      { kind: 'new', text: 'Every Uncommon card, in every class, plays its own painted effect when played: on its target, on your hero, or across the whole enemy line.' },
+      {
+        kind: 'new',
+        text: 'Every Uncommon card, in every class, plays its own painted effect when played: on its target, on your hero, or across the whole enemy line.',
+      },
     ],
   },
   {
     version: '0.171.0',
     date: '2026-11-03',
     title: 'Graphics quality',
-    summary: 'A Graphics quality setting: Low keeps the game smooth on a computer that is slow to draw.',
+    summary:
+      'A Graphics quality setting: Low keeps the game smooth on a computer that is slow to draw.',
     notes: [
-      { kind: 'new', text: 'Graphics: High or Low, in a fight\'s top bar beside Tips and Sound. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same. High is the full look and stays the default.' },
+      {
+        kind: 'new',
+        text: "Graphics: High or Low, in a fight's top bar beside Tips and Sound. Low stops the drifting fog, floating motes, breathing fighters and other motion at rest, so the game runs smoothly on a computer that draws without a graphics card. Cards, blows and effects play the same. High is the full look and stays the default.",
+      },
     ],
   },
   {
     version: '0.170.0',
     date: '2026-11-03',
     title: 'Knight Uncommon effects, the Swarmwright crest',
-    summary: 'The Knight\'s Uncommons play their own effects, and the Swarmwright has its own crest.',
+    summary:
+      "The Knight's Uncommons play their own effects, and the Swarmwright has its own crest.",
     notes: [
-      { kind: 'new', text: 'All 40 of the Knight\'s Uncommon cards play their own painted effect, as the Rares do. The other classes\' Uncommons follow.' },
+      {
+        kind: 'new',
+        text: "All 40 of the Knight's Uncommon cards play their own painted effect, as the Rares do. The other classes' Uncommons follow.",
+      },
       { kind: 'new', text: 'The Swarmwright has its own crest: four machines working as one.' },
     ],
   },
@@ -308,9 +573,18 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'The Swarmwright',
     summary: 'The Overclocker is now the Swarmwright: the only class with a 4th companion slot.',
     notes: [
-      { kind: 'changed', text: 'The Engineer\'s Overclocker is now the Swarmwright, with a 4th companion slot (four Light machines, a Heavy and two Light, or a Colossal and one Light). No other class has one.' },
-      { kind: 'balance', text: 'Swarmwright companions gain 1 Primed at the start of your turn (the Overclocker gave 2), as there can be one more of them.' },
-      { kind: 'changed', text: 'A run, banked deck or ghost that took the Overclocker carries on as the Swarmwright.' },
+      {
+        kind: 'changed',
+        text: "The Engineer's Overclocker is now the Swarmwright, with a 4th companion slot (four Light machines, a Heavy and two Light, or a Colossal and one Light). No other class has one.",
+      },
+      {
+        kind: 'balance',
+        text: 'Swarmwright companions gain 1 Primed at the start of your turn (the Overclocker gave 2), as there can be one more of them.',
+      },
+      {
+        kind: 'changed',
+        text: 'A run, banked deck or ghost that took the Overclocker carries on as the Swarmwright.',
+      },
     ],
     heads: 'Rules changed: Arena matches need both players on this version.',
   },
@@ -318,24 +592,50 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.168.0',
     date: '2026-11-03',
     title: 'Every Rare has its own effect',
-    summary: 'All 286 Rare cards now play their own painted effect, so no two Rares look alike when played.',
+    summary:
+      'All 286 Rare cards now play their own painted effect, so no two Rares look alike when played.',
     notes: [
-      { kind: 'new', text: 'Every Rare plays its own painted effect: on its target as the blow lands, on your hero for a Skill or an Aura, or across the whole enemy line for a card that hits them all.' },
-      { kind: 'changed', text: 'A fight only fetches the effects of the Rares in your deck, so it opens as fast as before.' },
+      {
+        kind: 'new',
+        text: 'Every Rare plays its own painted effect: on its target as the blow lands, on your hero for a Skill or an Aura, or across the whole enemy line for a card that hits them all.',
+      },
+      {
+        kind: 'changed',
+        text: 'A fight only fetches the effects of the Rares in your deck, so it opens as fast as before.',
+      },
     ],
   },
   {
     version: '0.167.0',
     date: '2026-11-03',
     title: 'Fracture, Fault Lines and new attacks',
-    summary: 'The Spellblade\'s Fracture builds faster and gets a new Aura, Spells are cast instead of swung, and cards that hit every enemy look like it.',
+    summary:
+      "The Spellblade's Fracture builds faster and gets a new Aura, Spells are cast instead of swung, and cards that hit every enemy look like it.",
     notes: [
-      { kind: 'new', text: 'Fault Lines (Spellblade, uncommon Aura, 2 Mana, 1 upgraded): whenever you play a Sword or a Spell, apply 2 Fracture to its target, or the enemy with the most Fracture.' },
-      { kind: 'balance', text: 'More Fracture: Faultline Hex 7 (9), Pressure Point 6 (8), Spreading Fault 5 to every enemy (7), Hairline Crack 5 (7), Fault Memory 5 and grows by 3, Hungering Void 3 a turn (4).' },
-      { kind: 'balance', text: 'Final Shatter applies 8 Fracture (was 10, which always set off a Shatter). Its Barrier, now 12 (16), comes only when it does: play it on an enemy with 2 or more Fracture.' },
-      { kind: 'changed', text: 'The Spellblade\'s Spells are cast from her hand as ember instead of swung with the blade, and land as spells.' },
-      { kind: 'changed', text: 'Cards that hit every enemy play across them all: a blade cuts through each in one sweep, a spell rains fire on each, a gun or a thrown knife goes to each.' },
-      { kind: 'changed', text: 'Campaign leaderboard: Tiers cleared is gone; Class and Ascendancy have a column each, and the Tier is just its number.' },
+      {
+        kind: 'new',
+        text: 'Fault Lines (Spellblade, uncommon Aura, 2 Mana, 1 upgraded): whenever you play a Sword or a Spell, apply 2 Fracture to its target, or the enemy with the most Fracture.',
+      },
+      {
+        kind: 'balance',
+        text: 'More Fracture: Faultline Hex 7 (9), Pressure Point 6 (8), Spreading Fault 5 to every enemy (7), Hairline Crack 5 (7), Fault Memory 5 and grows by 3, Hungering Void 3 a turn (4).',
+      },
+      {
+        kind: 'balance',
+        text: 'Final Shatter applies 8 Fracture (was 10, which always set off a Shatter). Its Barrier, now 12 (16), comes only when it does: play it on an enemy with 2 or more Fracture.',
+      },
+      {
+        kind: 'changed',
+        text: "The Spellblade's Spells are cast from her hand as ember instead of swung with the blade, and land as spells.",
+      },
+      {
+        kind: 'changed',
+        text: 'Cards that hit every enemy play across them all: a blade cuts through each in one sweep, a spell rains fire on each, a gun or a thrown knife goes to each.',
+      },
+      {
+        kind: 'changed',
+        text: 'Campaign leaderboard: Tiers cleared is gone; Class and Ascendancy have a column each, and the Tier is just its number.',
+      },
     ],
     heads: 'Card numbers changed: Arena matches need both players on this version.',
   },
@@ -343,10 +643,17 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.166.0',
     date: '2026-11-03',
     title: 'Warden rules fold away',
-    summary: 'A Warden\'s rule shows in full as the fight starts, then folds down to its name, clear of the enemies\' next moves.',
+    summary:
+      "A Warden's rule shows in full as the fight starts, then folds down to its name, clear of the enemies' next moves.",
     notes: [
-      { kind: 'changed', text: 'A Warden\'s rule opens as a card with "Got it" when the fight starts. After that it is just its name under the title; tap the name to read it again.' },
-      { kind: 'fixed', text: 'On a phone the Warden\'s rule no longer covers the enemies\' next moves.' },
+      {
+        kind: 'changed',
+        text: 'A Warden\'s rule opens as a card with "Got it" when the fight starts. After that it is just its name under the title; tap the name to read it again.',
+      },
+      {
+        kind: 'fixed',
+        text: "On a phone the Warden's rule no longer covers the enemies' next moves.",
+      },
     ],
   },
   {
@@ -355,8 +662,14 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'A sweeping Blade',
     summary: 'Under Blade Sweep the Obsidian Blade needs no aiming.',
     notes: [
-      { kind: 'changed', text: 'While Blade Sweep is up, the Obsidian Blade plays straight away with no aiming, as it strikes every enemy.' },
-      { kind: 'fixed', text: 'The Blade Sweep buff no longer shows a "1": more of it changes nothing.' },
+      {
+        kind: 'changed',
+        text: 'While Blade Sweep is up, the Obsidian Blade plays straight away with no aiming, as it strikes every enemy.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The Blade Sweep buff no longer shows a "1": more of it changes nothing.',
+      },
     ],
     heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
   },
@@ -364,23 +677,34 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.164.0',
     date: '2026-11-03',
     title: 'Starting decks evened out',
-    summary: 'Every class starts closer to the others: the strongest starts are trimmed, and the Spellblade, Rogue and Trickster start sturdier.',
+    summary:
+      'Every class starts closer to the others: the strongest starts are trimmed, and the Spellblade, Rogue and Trickster start sturdier.',
     notes: [
-      { kind: 'balance', text: 'Spellblade: Gather Power also gains 2 (+1 per 3 Spell Power) Barrier, and Kindled starts her with 4 Spell Power (was 3).' },
-      { kind: 'balance', text: 'Shaman: starts with a Hawk and a Bear totem; the Thunderbird is no longer in the starting row. Thunder Memory plants a Thunderbird, plus one for each planted this fight.' },
+      {
+        kind: 'balance',
+        text: 'Spellblade: Gather Power also gains 2 (+1 per 3 Spell Power) Barrier, and Kindled starts her with 4 Spell Power (was 3).',
+      },
+      {
+        kind: 'balance',
+        text: 'Shaman: starts with a Hawk and a Bear totem; the Thunderbird is no longer in the starting row. Thunder Memory plants a Thunderbird, plus one for each planted this fight.',
+      },
       { kind: 'balance', text: 'Knight: starts each fight with 1 Reserve (was 2).' },
       { kind: 'balance', text: 'Monk: 78 Max HP (was 82). Rogue: 75 Max HP (was 70).' },
       { kind: 'balance', text: 'Trickster: starts with 3 Strikes and 3 Defends (was 4 and 2).' },
     ],
-    heads: 'Reload the page if the game asks you to; old Arena replays will not play. A run already under way keeps its Max HP.',
+    heads:
+      'Reload the page if the game asks you to; old Arena replays will not play. A run already under way keeps its Max HP.',
   },
   {
     version: '0.163.0',
     date: '2026-11-03',
     title: 'Cinderfall for free',
-    summary: 'The Spellblade\'s Cinderfall costs no Mana: Spell Power is its whole price.',
+    summary: "The Spellblade's Cinderfall costs no Mana: Spell Power is its whole price.",
     notes: [
-      { kind: 'balance', text: 'Cinderfall costs 0 Mana (was 1). It still spends half your Spell Power for 4 damage + 4 a point; upgraded it deals 6 + 4 a point (was 7 + 4).' },
+      {
+        kind: 'balance',
+        text: 'Cinderfall costs 0 Mana (was 1). It still spends half your Spell Power for 4 damage + 4 a point; upgraded it deals 6 + 4 a point (was 7 + 4).',
+      },
     ],
     heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
   },
@@ -388,10 +712,17 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.162.0',
     date: '2026-11-03',
     title: 'A smoother hand, clearer choices',
-    summary: 'Cards lift the moment you point at them, choosing cards to discard, Defer or Consume is plain to see, and Wide Arc makes fewer Daggers.',
+    summary:
+      'Cards lift the moment you point at them, choosing cards to discard, Defer or Consume is plain to see, and Wide Arc makes fewer Daggers.',
     notes: [
-      { kind: 'changed', text: 'A card lifts the moment the pointer reaches it, and the one you move off sinks back under its neighbours instead of flickering behind the next card.' },
-      { kind: 'changed', text: 'Discarding, Deferring or Consuming from your hand: the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume) above it, and the prompt counts how many you have chosen.' },
+      {
+        kind: 'changed',
+        text: 'A card lifts the moment the pointer reaches it, and the one you move off sinks back under its neighbours instead of flickering behind the next card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Discarding, Deferring or Consuming from your hand: the cards you can choose are ringed in gold, a marked card stands up with "✓ Discard" (or Defer, Consume) above it, and the prompt counts how many you have chosen.',
+      },
       { kind: 'balance', text: 'Wide Arc adds 2 Daggers (3 upgraded), was 4 (5).' },
     ],
     heads: 'Reload the page if the game asks you to; old Arena replays will not play.',
@@ -400,56 +731,121 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.161.0',
     date: '2026-11-03',
     title: 'Shorter tiers',
-    summary: 'Each Rift Tier is one floor longer than the last, not two, so a full run is a third shorter, and Elites give more Max HP to make up for it.',
+    summary:
+      'Each Rift Tier is one floor longer than the last, not two, so a full run is a third shorter, and Elites give more Max HP to make up for it.',
     notes: [
-      { kind: 'changed', text: 'Tier I is 11 floors with its Warden, Tier X 20 and Tier XX 30 (was 12, 30 and 50).' },
-      { kind: 'balance', text: 'An Elite\'s Max HP spoil is now +3 (was +2), so the HP pool you can build over a run stays about the same with fewer Elites.' },
+      {
+        kind: 'changed',
+        text: 'Tier I is 11 floors with its Warden, Tier X 20 and Tier XX 30 (was 12, 30 and 50).',
+      },
+      {
+        kind: 'balance',
+        text: "An Elite's Max HP spoil is now +3 (was +2), so the HP pool you can build over a run stays about the same with fewer Elites.",
+      },
     ],
-    heads: 'A run already under way keeps its current map; the next tier you reach uses the new length. Reload the page if the game asks you to.',
+    heads:
+      'A run already under way keeps its current map; the next tier you reach uses the new length. Reload the page if the game asks you to.',
   },
   {
     version: '0.160.0',
     date: '2026-11-02',
     title: 'A beatable climb, Elite spoils',
-    summary: 'The deep tiers are hard because enemies take longer to kill, not because they kill you in one blow, and Elites let you choose shards, Max HP or a heal.',
+    summary:
+      'The deep tiers are hard because enemies take longer to kill, not because they kill you in one blow, and Elites let you choose shards, Max HP or a heal.',
     notes: [
-      { kind: 'balance', text: 'Enemy damage rises more slowly: Tier X deals 171% of the written numbers (was 198%) and Tier XX 294% (was 438%). Enemy HP rises evenly to Tier XVII and steeply over the last three: Tier X has 450% (was 360%), Tier XX still 1000%.' },
-      { kind: 'balance', text: 'Enemy Barrier and healing grow at half the rate of their HP: about 5.5 times the written number at Tier XX (was 10).' },
-      { kind: 'changed', text: 'Hunted: only the strongest enemy\'s first attack hits harder. Exposed Soul lasts one turn at every tier.' },
-      { kind: 'new', text: 'Elite spoils: after an Elite or an Echo, choose its shards, +2 Max HP, or a heal of 15% of your Max HP, then your card. Build a deep HP pool for the long tiers.' },
-      { kind: 'new', text: 'Kron\'s Foundry Hatch, the Hollow Acolytes and Vorthax\'s Rift Ward have their own figures; Slippery, Veiled, Gravity and Unmaking their own icons; the Spin To Win machines their scenes; and every card its own picture.' },
+      {
+        kind: 'balance',
+        text: 'Enemy damage rises more slowly: Tier X deals 171% of the written numbers (was 198%) and Tier XX 294% (was 438%). Enemy HP rises evenly to Tier XVII and steeply over the last three: Tier X has 450% (was 360%), Tier XX still 1000%.',
+      },
+      {
+        kind: 'balance',
+        text: 'Enemy Barrier and healing grow at half the rate of their HP: about 5.5 times the written number at Tier XX (was 10).',
+      },
+      {
+        kind: 'changed',
+        text: "Hunted: only the strongest enemy's first attack hits harder. Exposed Soul lasts one turn at every tier.",
+      },
+      {
+        kind: 'new',
+        text: 'Elite spoils: after an Elite or an Echo, choose its shards, +2 Max HP, or a heal of 15% of your Max HP, then your card. Build a deep HP pool for the long tiers.',
+      },
+      {
+        kind: 'new',
+        text: "Kron's Foundry Hatch, the Hollow Acolytes and Vorthax's Rift Ward have their own figures; Slippery, Veiled, Gravity and Unmaking their own icons; the Spin To Win machines their scenes; and every card its own picture.",
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.159.0',
     date: '2026-11-02',
     title: 'Painted events, Warden arenas, the Crossing',
-    summary: 'Every event has its own painted scene, every Warden fights in an arena of its own, each realm has a second place to fight, and ghosts and Arena matches meet in the Crossing.',
+    summary:
+      'Every event has its own painted scene, every Warden fights in an arena of its own, each realm has a second place to fight, and ghosts and Arena matches meet in the Crossing.',
     notes: [
-      { kind: 'new', text: 'Every event has its own painted scene, and so do the Rift Caches, the merchant and the shrine. On a wide screen the event stands in the dark side of its picture; on a phone the picture shows across the top.' },
-      { kind: 'new', text: 'Every Warden fights in an arena of its own: Kron by his foundry Hatch, Nyxara in her veiled throne room, the Applause Below in an opera house, the Event Horizon Regent at the edge of a black hole, and Vorthax at the Heart of the Rift, among others.' },
-      { kind: 'new', text: 'Each realm has a second place to fight (castle ramparts, a skydock, a jungle canopy, a moonlit garden, a stilt village, a desert bazaar, a tavern cellar), and the Far Rifts have their own observatory. The Hollow Crown and the Midden have their painted arenas at last.' },
-      { kind: 'new', text: 'Ghost Wardens, Echoes and every Arena match are fought in the Crossing, a colosseum stitched together from every world.' },
-      { kind: 'changed', text: 'Campaign ghosts no longer have Enduring: you start against an Echo Faltering for 2 turns, and against a ghost Warden for 3. Ghost Wardens get the Arena\'s HP from Tier XIII, not Tier X.' },
-      { kind: 'changed', text: 'A Fanned Dagger never needs aiming: Inked Daggers and Recall the Blades play straight away while you are Fanned, and an Inked Dagger\'s Faltering lands on every enemy, like its damage.' },
+      {
+        kind: 'new',
+        text: 'Every event has its own painted scene, and so do the Rift Caches, the merchant and the shrine. On a wide screen the event stands in the dark side of its picture; on a phone the picture shows across the top.',
+      },
+      {
+        kind: 'new',
+        text: 'Every Warden fights in an arena of its own: Kron by his foundry Hatch, Nyxara in her veiled throne room, the Applause Below in an opera house, the Event Horizon Regent at the edge of a black hole, and Vorthax at the Heart of the Rift, among others.',
+      },
+      {
+        kind: 'new',
+        text: 'Each realm has a second place to fight (castle ramparts, a skydock, a jungle canopy, a moonlit garden, a stilt village, a desert bazaar, a tavern cellar), and the Far Rifts have their own observatory. The Hollow Crown and the Midden have their painted arenas at last.',
+      },
+      {
+        kind: 'new',
+        text: 'Ghost Wardens, Echoes and every Arena match are fought in the Crossing, a colosseum stitched together from every world.',
+      },
+      {
+        kind: 'changed',
+        text: "Campaign ghosts no longer have Enduring: you start against an Echo Faltering for 2 turns, and against a ghost Warden for 3. Ghost Wardens get the Arena's HP from Tier XIII, not Tier X.",
+      },
+      {
+        kind: 'changed',
+        text: "A Fanned Dagger never needs aiming: Inked Daggers and Recall the Blades play straight away while you are Fanned, and an Inked Dagger's Faltering lands on every enemy, like its damage.",
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.158.0',
     date: '2026-11-02',
     title: 'Rift Caches, Echoes, every Warden a rule',
-    summary: 'Two new stops on the map, a rule of its own for every Warden, Vorthax rebuilt as the last test of a run, and enemy Barrier and healing that keep up with the Rift Tier.',
+    summary:
+      'Two new stops on the map, a rule of its own for every Warden, Vorthax rebuilt as the last test of a run, and enemy Barrier and healing that keep up with the Rift Tier.',
     notes: [
-      { kind: 'new', text: 'Rift Cache, one on every map: no fight. An open one lets you take a Boon, a rare card or a pile of shards. A trapped one holds the Boon and a rare card together, if you spring the trap (HP), reach past it (a Wound) or disarm it (shards). You can always walk away.' },
-      { kind: 'new', text: 'Echo, one on every map from Tier IV: another player\'s deck from the Arena, played by the computer. Beat it to take one of its best cards, with an Elite\'s chance of a Boon; losing costs 2 Resolve, like an Elite.' },
-      { kind: 'changed', text: 'Ghosts in the campaign can\'t be beaten in one turn: a ghost Warden loses at most a quarter of its Max HP a turn, and an Echo at most a third (Enduring). Arena ghosts are unchanged.' },
-      { kind: 'new', text: 'Every Warden has a rule of its own now: Gorrmaw eats its Maw Spawn to heal and grow, the Upside-Down Stag takes your Barrier before it strikes, the Queen of the Unmade Consumes the costliest card of your next hand, the Event Horizon Regent pulls the cards you keep in hand back onto your draw pile, and Nyxara is Veiled until you hit her.' },
-      { kind: 'changed', text: 'Vorthax, the Heart of the Rift, is rebuilt as the last test of a run: four quarters, each with the rules of the Wardens it made, and in the last one the Rift closes on you with Fate every turn. Gorrmaw is gentler: Maw Spawn have 18 HP (was 24).' },
-      { kind: 'balance', text: 'Enemies\' Barrier and healing grow with the Rift Tier, as their HP does: a move that gives 12 Barrier at Tier I gives about 43 at Tier X and 120 at Tier XX. Tier I is unchanged.' },
+      {
+        kind: 'new',
+        text: 'Rift Cache, one on every map: no fight. An open one lets you take a Boon, a rare card or a pile of shards. A trapped one holds the Boon and a rare card together, if you spring the trap (HP), reach past it (a Wound) or disarm it (shards). You can always walk away.',
+      },
+      {
+        kind: 'new',
+        text: "Echo, one on every map from Tier IV: another player's deck from the Arena, played by the computer. Beat it to take one of its best cards, with an Elite's chance of a Boon; losing costs 2 Resolve, like an Elite.",
+      },
+      {
+        kind: 'changed',
+        text: "Ghosts in the campaign can't be beaten in one turn: a ghost Warden loses at most a quarter of its Max HP a turn, and an Echo at most a third (Enduring). Arena ghosts are unchanged.",
+      },
+      {
+        kind: 'new',
+        text: 'Every Warden has a rule of its own now: Gorrmaw eats its Maw Spawn to heal and grow, the Upside-Down Stag takes your Barrier before it strikes, the Queen of the Unmade Consumes the costliest card of your next hand, the Event Horizon Regent pulls the cards you keep in hand back onto your draw pile, and Nyxara is Veiled until you hit her.',
+      },
+      {
+        kind: 'changed',
+        text: 'Vorthax, the Heart of the Rift, is rebuilt as the last test of a run: four quarters, each with the rules of the Wardens it made, and in the last one the Rift closes on you with Fate every turn. Gorrmaw is gentler: Maw Spawn have 18 HP (was 24).',
+      },
+      {
+        kind: 'balance',
+        text: "Enemies' Barrier and healing grow with the Rift Tier, as their HP does: a move that gives 12 Barrier at Tier I gives about 43 at Tier X and 120 at Tier XX. Tier I is unchanged.",
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.157.0',
@@ -457,25 +853,54 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Painted class crests',
     summary: 'Every class now has a painted crest, in the same style as the Ascendancy crests.',
     notes: [
-      { kind: 'changed', text: 'Painted class crests on the title screen, the Sanctum, the pickers, the fight plates and the leaderboards. The badge on cards keeps its symbol.' },
-      { kind: 'new', text: 'The Elementalist has its own crest: a stone ring set with flame, frost and storm gems.' },
+      {
+        kind: 'changed',
+        text: 'Painted class crests on the title screen, the Sanctum, the pickers, the fight plates and the leaderboards. The badge on cards keeps its symbol.',
+      },
+      {
+        kind: 'new',
+        text: 'The Elementalist has its own crest: a stone ring set with flame, frost and storm gems.',
+      },
     ],
   },
   {
     version: '0.156.0',
     date: '2026-11-02',
     title: 'Ascendancies rebalanced, the Elementalist',
-    summary: 'Every Ascendancy is now a good pick in the right deck: none runs away with a long run, and the weakest have been lifted. The Elementalist takes the Pyromancer\'s place.',
+    summary:
+      "Every Ascendancy is now a good pick in the right deck: none runs away with a long run, and the weakest have been lifted. The Elementalist takes the Pyromancer's place.",
     notes: [
-      { kind: 'balance', text: 'Ascendancies: the strongest early ones come down (Paladin keeps 60% of your Barrier rather than being Fortified, Marshal Max Reserves 4, Trapmaster 2 Barrier, Totemist 1 Spirit and 8 Barrier, Blademaster +1 a Sword hit and a card for the first Sword each turn) and the ones that grew without end are capped (Blood Knight at most 3 Might a fight and once a round, Beastmaster shares three quarters of your Might, Assassin +10% on the first Attack, Sunwalker the first stance each turn, Archmage +20% on the first Attack, Deathwish 1.25% a point of HP missing up to +100%).' },
-      { kind: 'balance', text: 'The weaker ones go up: Foreman companions deal 25% more, Golemancer +3 max HP, Reaver also gives 2 Primed, Predator 2 Primed a draw, Spiritwalker 4 Barrier, Shatterer Shatters 15% more, Zealot 6 Barrier the first Fury each turn, Gunslinger +2 Precision every turn, Brewmaster also 1 Might for the turn, Fateweaver 2 Fate plus 2% of the enemy\'s max HP, Soulreaper 4 Barrier.' },
-      { kind: 'new', text: 'The Elementalist replaces the Pyromancer: the first Flame card each turn adds 3 Burn, the first Frost card 3 Barrier, the first Storm card 2 damage to all enemies. A run that took the Pyromancer has the Elementalist.' },
-      { kind: 'balance', text: 'Etching Edge deals 1 more per 2 Spell Power (was 2 per 4) and applies 1 more Fracture per 4 Spell Power (was per 8).' },
-      { kind: 'changed', text: 'Phones: the run header at the top of the map is much smaller, with HP, shards, potions and Boons in one row you slide sideways; the Merchant shows two cards to a row; the map\'s drawing pens are gone on touch screens; the Grimoire is a list of every card two across with the realms as chips.' },
-      { kind: 'changed', text: 'The Sanctum shows each Ascendancy as a tile: crest, what it leans into, and what it gives.' },
-      { kind: 'fixed', text: 'No picture can show as broken: every one is checked to exist, and the few without a fallback have one.' },
+      {
+        kind: 'balance',
+        text: 'Ascendancies: the strongest early ones come down (Paladin keeps 60% of your Barrier rather than being Fortified, Marshal Max Reserves 4, Trapmaster 2 Barrier, Totemist 1 Spirit and 8 Barrier, Blademaster +1 a Sword hit and a card for the first Sword each turn) and the ones that grew without end are capped (Blood Knight at most 3 Might a fight and once a round, Beastmaster shares three quarters of your Might, Assassin +10% on the first Attack, Sunwalker the first stance each turn, Archmage +20% on the first Attack, Deathwish 1.25% a point of HP missing up to +100%).',
+      },
+      {
+        kind: 'balance',
+        text: "The weaker ones go up: Foreman companions deal 25% more, Golemancer +3 max HP, Reaver also gives 2 Primed, Predator 2 Primed a draw, Spiritwalker 4 Barrier, Shatterer Shatters 15% more, Zealot 6 Barrier the first Fury each turn, Gunslinger +2 Precision every turn, Brewmaster also 1 Might for the turn, Fateweaver 2 Fate plus 2% of the enemy's max HP, Soulreaper 4 Barrier.",
+      },
+      {
+        kind: 'new',
+        text: 'The Elementalist replaces the Pyromancer: the first Flame card each turn adds 3 Burn, the first Frost card 3 Barrier, the first Storm card 2 damage to all enemies. A run that took the Pyromancer has the Elementalist.',
+      },
+      {
+        kind: 'balance',
+        text: 'Etching Edge deals 1 more per 2 Spell Power (was 2 per 4) and applies 1 more Fracture per 4 Spell Power (was per 8).',
+      },
+      {
+        kind: 'changed',
+        text: "Phones: the run header at the top of the map is much smaller, with HP, shards, potions and Boons in one row you slide sideways; the Merchant shows two cards to a row; the map's drawing pens are gone on touch screens; the Grimoire is a list of every card two across with the realms as chips.",
+      },
+      {
+        kind: 'changed',
+        text: 'The Sanctum shows each Ascendancy as a tile: crest, what it leans into, and what it gives.',
+      },
+      {
+        kind: 'fixed',
+        text: 'No picture can show as broken: every one is checked to exist, and the few without a fallback have one.',
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.155.0',
@@ -483,83 +908,208 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Phones: hold to read',
     summary: 'On a phone you can now read every tooltip, and the fight screen fits better.',
     notes: [
-      { kind: 'new', text: 'Hold a finger on anything that has a tooltip (statuses, potions, Mana, the piles, Boons, an enemy\'s intent) to read it. Holding does nothing else, and the next touch closes it.' },
-      { kind: 'fixed', text: 'The Consumed pile no longer covers Mana on a phone held upright, or End turn on a phone on its side.' },
-      { kind: 'fixed', text: 'Potions fit their slots on the belt, instead of spilling over your statuses.' },
-      { kind: 'changed', text: 'Card text is bigger on small cards, and cards are a little bigger on a phone held sideways.' },
+      {
+        kind: 'new',
+        text: "Hold a finger on anything that has a tooltip (statuses, potions, Mana, the piles, Boons, an enemy's intent) to read it. Holding does nothing else, and the next touch closes it.",
+      },
+      {
+        kind: 'fixed',
+        text: 'The Consumed pile no longer covers Mana on a phone held upright, or End turn on a phone on its side.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Potions fit their slots on the belt, instead of spilling over your statuses.',
+      },
+      {
+        kind: 'changed',
+        text: 'Card text is bigger on small cards, and cards are a little bigger on a phone held sideways.',
+      },
     ],
   },
   {
     version: '0.154.0',
     date: '2026-11-02',
     title: 'Primed wears off, Wild cards, longer tiers',
-    summary: 'The Monk can no longer bank Primed for one enormous hit, Traps snap shut, Ascendancies are shown everywhere, and the climb is longer and tougher.',
+    summary:
+      'The Monk can no longer bank Primed for one enormous hit, Traps snap shut, Ascendancies are shown everywhere, and the climb is longer and tougher.',
     notes: [
-      { kind: 'balance', text: 'Primed wears off: yours and your companions\' lose half at the end of your turn, so it can no longer be saved up over many turns.' },
-      { kind: 'balance', text: 'Monk: Inner Fire gives 3 Primed the first time each turn you leave Fury (was 2 every time). Iron Body answers the first time each turn you enter Fury, for 1 HP and 4 Primed (5 upgraded). Thousand Palms deals 5 damage 4 times (was 3 seven times).' },
-      { kind: 'balance', text: 'Wild Card and The Joker show the first suit you are missing (in the order ♠ ♥ ♦ ♣), not all four, and their text says they are Wild. Cards that make your attacks hit harder or twice are ♠, and cards that crack an enemy are ♣.' },
-      { kind: 'changed', text: 'A Trap springing snaps steel jaws shut on whoever set it off, instead of darkening the screen. The Suits panel shows what your next Full Trick deals.' },
-      { kind: 'balance', text: 'Every Rift Tier is one floor longer: Tier 1 is 12 floors with its Warden, Tier 20 an even 50. Enemy HP climbs faster, to ten times its base at Tier 20. Tier 1 maps have more Elites, most often 3.' },
-      { kind: 'changed', text: 'The Gambler\'s Shrine gives one thing a visit: a blessing, or the reel\'s prize in its place. Ghost Wardens start from the Max HP their run had gained.' },
-      { kind: 'new', text: 'Ascendancies are shown on the home screen, in the Sandbox, in the Sanctum and on How to play. The leaderboards open on the Campaign board and show the Ascendancy each run took.' },
-      { kind: 'changed', text: 'On a phone the run header stays at the top while the map scrolls.' },
+      {
+        kind: 'balance',
+        text: "Primed wears off: yours and your companions' lose half at the end of your turn, so it can no longer be saved up over many turns.",
+      },
+      {
+        kind: 'balance',
+        text: 'Monk: Inner Fire gives 3 Primed the first time each turn you leave Fury (was 2 every time). Iron Body answers the first time each turn you enter Fury, for 1 HP and 4 Primed (5 upgraded). Thousand Palms deals 5 damage 4 times (was 3 seven times).',
+      },
+      {
+        kind: 'balance',
+        text: 'Wild Card and The Joker show the first suit you are missing (in the order ♠ ♥ ♦ ♣), not all four, and their text says they are Wild. Cards that make your attacks hit harder or twice are ♠, and cards that crack an enemy are ♣.',
+      },
+      {
+        kind: 'changed',
+        text: 'A Trap springing snaps steel jaws shut on whoever set it off, instead of darkening the screen. The Suits panel shows what your next Full Trick deals.',
+      },
+      {
+        kind: 'balance',
+        text: 'Every Rift Tier is one floor longer: Tier 1 is 12 floors with its Warden, Tier 20 an even 50. Enemy HP climbs faster, to ten times its base at Tier 20. Tier 1 maps have more Elites, most often 3.',
+      },
+      {
+        kind: 'changed',
+        text: "The Gambler's Shrine gives one thing a visit: a blessing, or the reel's prize in its place. Ghost Wardens start from the Max HP their run had gained.",
+      },
+      {
+        kind: 'new',
+        text: 'Ascendancies are shown on the home screen, in the Sandbox, in the Sanctum and on How to play. The leaderboards open on the Campaign board and show the Ascendancy each run took.',
+      },
+      {
+        kind: 'changed',
+        text: 'On a phone the run header stays at the top while the map scrolls.',
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.153.0',
     date: '2026-11-01',
     title: 'No more acts: 20 Rift Tiers',
-    summary: 'A run is now one climb. Each tier is a single map that ends in a Warden, and the next one is harder straight away.',
+    summary:
+      'A run is now one climb. Each tier is a single map that ends in a Warden, and the next one is harder straight away.',
     notes: [
-      { kind: 'changed', text: 'Acts are gone. Tier 1 is 10 floors and a Warden, and each tier after it is 2 floors longer, up to 48 and a Warden at Tier 20.' },
-      { kind: 'changed', text: 'Every Warden leads to the next tier. Each still heals you a little and gives back 1 Resolve, but going on no longer heals you fully. Each new tier opens at a Waymark, which always offers a rest.' },
-      { kind: 'changed', text: 'You still choose your Ascendancy for beating Tier 3. Kron now waits for Tier 3, and Vorthax for Tier 20. Tougher enemy groups join from Tier 3, and the far realms from Tier 6.' },
-      { kind: 'changed', text: 'A run in progress finishes the map it is on, and that clears its tier.' },
+      {
+        kind: 'changed',
+        text: 'Acts are gone. Tier 1 is 10 floors and a Warden, and each tier after it is 2 floors longer, up to 48 and a Warden at Tier 20.',
+      },
+      {
+        kind: 'changed',
+        text: 'Every Warden leads to the next tier. Each still heals you a little and gives back 1 Resolve, but going on no longer heals you fully. Each new tier opens at a Waymark, which always offers a rest.',
+      },
+      {
+        kind: 'changed',
+        text: 'You still choose your Ascendancy for beating Tier 3. Kron now waits for Tier 3, and Vorthax for Tier 20. Tougher enemy groups join from Tier 3, and the far realms from Tier 6.',
+      },
+      {
+        kind: 'changed',
+        text: 'A run in progress finishes the map it is on, and that clears its tier.',
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.152.0',
     date: '2026-11-01',
     title: 'Wardens with rules, and a deeper Rift',
-    summary: 'Six Wardens fight by a rule of their own, the Rift gets much harder as the tiers climb, and Spin To Win works better.',
+    summary:
+      'Six Wardens fight by a rule of their own, the Rift gets much harder as the tiers climb, and Spin To Win works better.',
     notes: [
-      { kind: 'new', text: 'Six Wardens have a rule of their own, shown as the fight starts. Kron hides behind a Foundry Hatch he keeps reopening. The Hollow Benediction\'s Acolytes feed it Might. The Mourning Tide has Low Tide, and Beckoning cards that hurt if you hold them. The Applause Below is Slippery. Seraphine kneels at half HP. Mother of Static takes Mana and cards from your next turn.' },
-      { kind: 'new', text: 'Spin To Win has two new prizes: +1 Resolve, and a copy of a card of your choice.' },
-      { kind: 'changed', text: 'More Elites the deeper you go: from Tier 2 plain fights can be Elites, rising to every fight at Tier 19. At Tier 20 every fight is a Warden.' },
-      { kind: 'changed', text: 'A run already past Tier III without an Ascendancy is offered one at its next Warden.' },
-      { kind: 'balance', text: 'Elites stop healing after Tier 10, and their shards, potion chance and Boon chance fade with the tier. Their card rewards stay as good.' },
-      { kind: 'balance', text: 'Three new Omens at Tiers 5, 10 and 15: every phase an enemy rises into is tougher, and Elites have more HP and deal more damage.' },
-      { kind: 'balance', text: 'Ghost Wardens have the Arena\'s HP from Tier 10, and grow from there.' },
-      { kind: 'balance', text: 'Spellblade: each Shatter hits 10 harder than the last, not 5 (20, 30, 40... 110 at 100 Fracture). Rupture Script+ applies 11. Breaking Point applies 4, or 6 upgraded.' },
+      {
+        kind: 'new',
+        text: "Six Wardens have a rule of their own, shown as the fight starts. Kron hides behind a Foundry Hatch he keeps reopening. The Hollow Benediction's Acolytes feed it Might. The Mourning Tide has Low Tide, and Beckoning cards that hurt if you hold them. The Applause Below is Slippery. Seraphine kneels at half HP. Mother of Static takes Mana and cards from your next turn.",
+      },
+      {
+        kind: 'new',
+        text: 'Spin To Win has two new prizes: +1 Resolve, and a copy of a card of your choice.',
+      },
+      {
+        kind: 'changed',
+        text: 'More Elites the deeper you go: from Tier 2 plain fights can be Elites, rising to every fight at Tier 19. At Tier 20 every fight is a Warden.',
+      },
+      {
+        kind: 'changed',
+        text: 'A run already past Tier III without an Ascendancy is offered one at its next Warden.',
+      },
+      {
+        kind: 'balance',
+        text: 'Elites stop healing after Tier 10, and their shards, potion chance and Boon chance fade with the tier. Their card rewards stay as good.',
+      },
+      {
+        kind: 'balance',
+        text: 'Three new Omens at Tiers 5, 10 and 15: every phase an enemy rises into is tougher, and Elites have more HP and deal more damage.',
+      },
+      {
+        kind: 'balance',
+        text: "Ghost Wardens have the Arena's HP from Tier 10, and grow from there.",
+      },
+      {
+        kind: 'balance',
+        text: 'Spellblade: each Shatter hits 10 harder than the last, not 5 (20, 30, 40... 110 at 100 Fracture). Rupture Script+ applies 11. Breaking Point applies 4, or 6 upgraded.',
+      },
       { kind: 'balance', text: 'Immovable Oath+ now Holds, in place of 3 more Barrier.' },
-      { kind: 'fixed', text: 'Spin To Win: the window for removing cards stays open while you choose, and removing them takes the prize, so you can no longer spin after choosing.' },
+      {
+        kind: 'fixed',
+        text: 'Spin To Win: the window for removing cards stays open while you choose, and removing them takes the prize, so you can no longer spin after choosing.',
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.151.0',
     date: '2026-11-01',
     title: 'Ascendancies and a fight that moves',
-    summary: 'Become a new class after Tier III, walk longer acts, and watch every card, status and blow land with new painted effects.',
+    summary:
+      'Become a new class after Tier III, walk longer acts, and watch every card, status and blow land with new painted effects.',
     notes: [
-      { kind: 'new', text: 'Ascendancies: beat the last Warden of Tier III and choose one of three new classes in place of that Warden\'s Gift. A Knight can become a Paladin, a Marshal or a Blood Knight. Your name changes, you gain a new trait, and it stays with that deck in the Arena. Each has its own crest.' },
-      { kind: 'new', text: 'Painted effects for debuffs, buffs, curses, Barrier gained, hit and broken, Bleed and Burn ticking, blows by their weight, summons, deaths and an enemy rising into its next phase.' },
-      { kind: 'new', text: 'Cards now move: drawn cards deal out of the pile, discarded ones trail dust into theirs, a Consumed card burns up where it stands, a shuffle arcs across the screen, and a card you take as a reward flies into your deck.' },
-      { kind: 'new', text: 'Potions, enemy intents and the stops on the map have painted art. A thrown potion flies from the belt and breaks on its target.' },
-      { kind: 'changed', text: 'The HP bar shows a pale trail of what you just lost, new status icons pop in, an enemy\'s intent swings in at the start of your turn and shakes as it acts, and a Trap flips up as the screen dims. All of it follows the speed and reduced-motion settings.' },
-      { kind: 'changed', text: 'Every act is now 15 floors, the boss being the 15th. A run in progress keeps its current map, and its next act is the new length.' },
-      { kind: 'changed', text: 'The Assassin is now the Rogue, and Assassin is one of the things a Rogue can become.' },
-      { kind: 'changed', text: 'Held upright on a phone, the hand is a grid of bigger cards that are all wholly readable.' },
-      { kind: 'changed', text: 'Thresholds and Waymarks never offer what they can\'t do, and from Tier IV they offer much better.' },
-      { kind: 'balance', text: 'Plating: at the end of your turn you gain that much Barrier, then Plating goes down by 1.' },
-      { kind: 'balance', text: 'Omens come sooner and hit harder from Tier II, with two new ones, Times Are Tough and Rift Scars. Past Tier X, enemy HP and damage climb twice as fast.' },
-      { kind: 'balance', text: 'Warden\'s Hearts no longer give Mana, and are repriced. Ghost Wardens in the campaign have twice the HP.' },
-      { kind: 'balance', text: 'Mana Reserves: the Knight starts each fight with 2 Reserves, and gains 1 Barrier per Reserve at the end of each turn.' },
-      { kind: 'balance', text: 'Necromancer: an enemy that kills one of your allies is cursed with the Fate, and an ally you sacrifice curses a random enemy.' },
+      {
+        kind: 'new',
+        text: "Ascendancies: beat the last Warden of Tier III and choose one of three new classes in place of that Warden's Gift. A Knight can become a Paladin, a Marshal or a Blood Knight. Your name changes, you gain a new trait, and it stays with that deck in the Arena. Each has its own crest.",
+      },
+      {
+        kind: 'new',
+        text: 'Painted effects for debuffs, buffs, curses, Barrier gained, hit and broken, Bleed and Burn ticking, blows by their weight, summons, deaths and an enemy rising into its next phase.',
+      },
+      {
+        kind: 'new',
+        text: 'Cards now move: drawn cards deal out of the pile, discarded ones trail dust into theirs, a Consumed card burns up where it stands, a shuffle arcs across the screen, and a card you take as a reward flies into your deck.',
+      },
+      {
+        kind: 'new',
+        text: 'Potions, enemy intents and the stops on the map have painted art. A thrown potion flies from the belt and breaks on its target.',
+      },
+      {
+        kind: 'changed',
+        text: "The HP bar shows a pale trail of what you just lost, new status icons pop in, an enemy's intent swings in at the start of your turn and shakes as it acts, and a Trap flips up as the screen dims. All of it follows the speed and reduced-motion settings.",
+      },
+      {
+        kind: 'changed',
+        text: 'Every act is now 15 floors, the boss being the 15th. A run in progress keeps its current map, and its next act is the new length.',
+      },
+      {
+        kind: 'changed',
+        text: 'The Assassin is now the Rogue, and Assassin is one of the things a Rogue can become.',
+      },
+      {
+        kind: 'changed',
+        text: 'Held upright on a phone, the hand is a grid of bigger cards that are all wholly readable.',
+      },
+      {
+        kind: 'changed',
+        text: "Thresholds and Waymarks never offer what they can't do, and from Tier IV they offer much better.",
+      },
+      {
+        kind: 'balance',
+        text: 'Plating: at the end of your turn you gain that much Barrier, then Plating goes down by 1.',
+      },
+      {
+        kind: 'balance',
+        text: 'Omens come sooner and hit harder from Tier II, with two new ones, Times Are Tough and Rift Scars. Past Tier X, enemy HP and damage climb twice as fast.',
+      },
+      {
+        kind: 'balance',
+        text: "Warden's Hearts no longer give Mana, and are repriced. Ghost Wardens in the campaign have twice the HP.",
+      },
+      {
+        kind: 'balance',
+        text: 'Mana Reserves: the Knight starts each fight with 2 Reserves, and gains 1 Barrier per Reserve at the end of each turn.',
+      },
+      {
+        kind: 'balance',
+        text: 'Necromancer: an enemy that kills one of your allies is cursed with the Fate, and an ally you sacrifice curses a random enemy.',
+      },
     ],
-    heads: 'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
+    heads:
+      'Rules changed: older Arena games and replays no longer play, and a browser still on the old version will be asked to reload.',
   },
   {
     version: '0.150.0',
@@ -567,47 +1117,119 @@ export const PATCH_NOTES: PatchNote[] = [
     title: 'Painted icons and card piles',
     summary: 'Buffs, debuffs, Boons and the card piles now have painted art.',
     notes: [
-      { kind: 'new', text: 'Every buff, debuff, Boon and Warden\'s Heart has a new painted icon, and the draw, discard and Consumed piles are painted stacks of cards that grow as they fill.' },
-      { kind: 'changed', text: 'Numbers on status icons and piles sit at the bottom right corner with a dark outline, so both the art and the number are easy to see.' },
+      {
+        kind: 'new',
+        text: "Every buff, debuff, Boon and Warden's Heart has a new painted icon, and the draw, discard and Consumed piles are painted stacks of cards that grow as they fill.",
+      },
+      {
+        kind: 'changed',
+        text: 'Numbers on status icons and piles sit at the bottom right corner with a dark outline, so both the art and the number are easy to see.',
+      },
     ],
   },
   {
     version: '0.149.0',
     date: '2026-11-01',
     title: 'Big hits, drawn icons, map pens',
-    summary: 'Scaling cards hit harder instead of more often, burst is reined in, and buffs, Boons and piles get real pictures.',
+    summary:
+      'Scaling cards hit harder instead of more often, burst is reined in, and buffs, Boons and piles get real pictures.',
     notes: [
-      { kind: 'new', text: 'Draw on the map: a pen with six colours, an eraser and a Clear button, to plan your path. Tap a stop with the pen in hand and you still go there.' },
-      { kind: 'new', text: 'Fate now builds up in purple from the left of the HP bar. When it reaches the end of the red it glows: that unit dies at the end of its turn.' },
-      { kind: 'new', text: 'Every buff, debuff, Boon and Warden\'s Heart has its own small icon, an Aura in play shows its card\'s picture, and the draw, discard and Consumed piles are stacks of cards that grow as they fill.' },
-      { kind: 'changed', text: 'Only X cards add hits as they scale. Other cards keep a fixed number of hits and deal more damage on each one, so Might and Primed can\'t multiply out of control. Reverb, Echo and Echoing Blade work as they did.' },
-      { kind: 'changed', text: 'If your target dies during a card\'s aimed attack, the hits left are lost, and so is the card\'s second strike. They no longer jump to another enemy. Enemies and your companions\' own end-of-turn strikes still carry on to the next target.' },
-      { kind: 'changed', text: 'Burn now has to get through Barrier, and it ticks before last turn\'s Barrier falls away.' },
-      { kind: 'changed', text: 'Hangover costs 1% of your Max HP per stack, rounded up: about the same in a run, and a real price in the Arena.' },
-      { kind: 'balance', text: 'Spellblade: each Shatter hits 5 harder than the last, not 10 (20, 25... 65 at 100 Fracture). Rupture Script applies 10. Lava Bomb deals 7 per Spell Power. Thousand Shards deals 6 per Spell Power. Her bigger Swords strike a fixed 2 to 4 times, and Whispering Edge gives 2 Keen.' },
-      { kind: 'balance', text: 'Shaman: Wildfire is a skill that applies 8 Burn. Flashpoint costs 2, deals 12, +2 per Burn, and halves the Burn on its target.' },
-      { kind: 'balance', text: 'Drunkard: Blind Drunk is 3 hits of 6, +2 each per 2 Hangover. Bender is 2 hits of 4, +1 each per 2 Hangover.' },
-      { kind: 'balance', text: 'Rending Fury is one hit of 8, +3 per time you lost HP, at most 45 more. Rattle the Bones gains 3 per earlier command. Apex Frenzy is 2 hits of 4, +2 each per card played, and its upgrade adds damage instead of lowering its cost.' },
-      { kind: 'fixed', text: 'A card that counts something, with nothing to count, lands no hit: no Thorns come back, Primed stays, and its number on the card says so.' },
+      {
+        kind: 'new',
+        text: 'Draw on the map: a pen with six colours, an eraser and a Clear button, to plan your path. Tap a stop with the pen in hand and you still go there.',
+      },
+      {
+        kind: 'new',
+        text: 'Fate now builds up in purple from the left of the HP bar. When it reaches the end of the red it glows: that unit dies at the end of its turn.',
+      },
+      {
+        kind: 'new',
+        text: "Every buff, debuff, Boon and Warden's Heart has its own small icon, an Aura in play shows its card's picture, and the draw, discard and Consumed piles are stacks of cards that grow as they fill.",
+      },
+      {
+        kind: 'changed',
+        text: "Only X cards add hits as they scale. Other cards keep a fixed number of hits and deal more damage on each one, so Might and Primed can't multiply out of control. Reverb, Echo and Echoing Blade work as they did.",
+      },
+      {
+        kind: 'changed',
+        text: "If your target dies during a card's aimed attack, the hits left are lost, and so is the card's second strike. They no longer jump to another enemy. Enemies and your companions' own end-of-turn strikes still carry on to the next target.",
+      },
+      {
+        kind: 'changed',
+        text: "Burn now has to get through Barrier, and it ticks before last turn's Barrier falls away.",
+      },
+      {
+        kind: 'changed',
+        text: 'Hangover costs 1% of your Max HP per stack, rounded up: about the same in a run, and a real price in the Arena.',
+      },
+      {
+        kind: 'balance',
+        text: 'Spellblade: each Shatter hits 5 harder than the last, not 10 (20, 25... 65 at 100 Fracture). Rupture Script applies 10. Lava Bomb deals 7 per Spell Power. Thousand Shards deals 6 per Spell Power. Her bigger Swords strike a fixed 2 to 4 times, and Whispering Edge gives 2 Keen.',
+      },
+      {
+        kind: 'balance',
+        text: 'Shaman: Wildfire is a skill that applies 8 Burn. Flashpoint costs 2, deals 12, +2 per Burn, and halves the Burn on its target.',
+      },
+      {
+        kind: 'balance',
+        text: 'Drunkard: Blind Drunk is 3 hits of 6, +2 each per 2 Hangover. Bender is 2 hits of 4, +1 each per 2 Hangover.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rending Fury is one hit of 8, +3 per time you lost HP, at most 45 more. Rattle the Bones gains 3 per earlier command. Apex Frenzy is 2 hits of 4, +2 each per card played, and its upgrade adds damage instead of lowering its cost.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A card that counts something, with nothing to count, lands no hit: no Thorns come back, Primed stays, and its number on the card says so.',
+      },
     ],
-    heads: 'The rules changed, so old Arena replays no longer play, and a page left open will ask you to reload.',
+    heads:
+      'The rules changed, so old Arena replays no longer play, and a page left open will ask you to reload.',
   },
   {
     version: '0.148.0',
     date: '2026-10-31',
     title: 'Neutral and Ancestral cards',
-    summary: 'Neutral cards now sit at or a little behind the class cards they resemble, and several Ancestral cards were retuned.',
+    summary:
+      'Neutral cards now sit at or a little behind the class cards they resemble, and several Ancestral cards were retuned.',
     notes: [
-      { kind: 'balance', text: 'Plan Ahead is now common: next turn, 1 extra Mana and 1 extra card (upgraded, 2 cards).' },
-      { kind: 'balance', text: 'Heart of the Rift no longer gives Mana. It is an uncommon that costs 2 (upgraded, 1) and draws 1 card each turn.' },
+      {
+        kind: 'balance',
+        text: 'Plan Ahead is now common: next turn, 1 extra Mana and 1 extra card (upgraded, 2 cards).',
+      },
+      {
+        kind: 'balance',
+        text: 'Heart of the Rift no longer gives Mana. It is an uncommon that costs 2 (upgraded, 1) and draws 1 card each turn.',
+      },
       { kind: 'balance', text: 'Attunement costs 3 (upgraded, 2).' },
-      { kind: 'balance', text: 'Nerve Surge is now uncommon: draw 1 card and gain 1 Mana (upgraded, draw 2).' },
-      { kind: 'balance', text: 'Rift Surge is now common. Upgrading Fever Dream adds Hold instead of 3 less.' },
-      { kind: 'balance', text: 'Rift Collapse deals 30 to ALL enemies. Upgrading it raises that to 36 instead of lowering the cost.' },
-      { kind: 'balance', text: 'Ancestral Blade deals 30 (upgraded, 34), and Elder\u2019s Bulwark gives 28 Barrier (upgraded, 32).' },
-      { kind: 'balance', text: 'Echo of Ages gives 2 Might and 2 Thorns (upgraded, 3 Might and 2 Thorns). Lineage costs 1.' },
-      { kind: 'balance', text: 'Upgrading The Long Memory draws 1 card when you play it instead of lowering the cost.' },
-      { kind: 'changed', text: 'Stolen Time is retired. Copies you already have become Rift Surge.' },
+      {
+        kind: 'balance',
+        text: 'Nerve Surge is now uncommon: draw 1 card and gain 1 Mana (upgraded, draw 2).',
+      },
+      {
+        kind: 'balance',
+        text: 'Rift Surge is now common. Upgrading Fever Dream adds Hold instead of 3 less.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rift Collapse deals 30 to ALL enemies. Upgrading it raises that to 36 instead of lowering the cost.',
+      },
+      {
+        kind: 'balance',
+        text: 'Ancestral Blade deals 30 (upgraded, 34), and Elder\u2019s Bulwark gives 28 Barrier (upgraded, 32).',
+      },
+      {
+        kind: 'balance',
+        text: 'Echo of Ages gives 2 Might and 2 Thorns (upgraded, 3 Might and 2 Thorns). Lineage costs 1.',
+      },
+      {
+        kind: 'balance',
+        text: 'Upgrading The Long Memory draws 1 card when you play it instead of lowering the cost.',
+      },
+      {
+        kind: 'changed',
+        text: 'Stolen Time is retired. Copies you already have become Rift Surge.',
+      },
     ],
     heads: 'Old Arena games and replays no longer play.',
   },
@@ -615,48 +1237,118 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.147.0',
     date: '2026-10-31',
     title: 'Boons, Auras and Fracture',
-    summary: 'Boons no longer have rarities, a deck holds 2 copies of an Aura, and the Spellblade applies less Fracture.',
-    heads: 'Old Arena games and replays no longer play. Saved runs holding a removed Boon get a replacement.',
+    summary:
+      'Boons no longer have rarities, a deck holds 2 copies of an Aura, and the Spellblade applies less Fracture.',
+    heads:
+      'Old Arena games and replays no longer play. Saved runs holding a removed Boon get a replacement.',
     notes: [
-      { kind: 'changed', text: 'Boons have no rarity. Every Boon costs 70 at a merchant, and the one-Legendary limit and its swap are gone.' },
-      { kind: 'balance', text: 'Rift Core, Scholar\'s Tome, Battle Standard and Phoenix Ember are gone. A run holding one gets a Rift Satchel (for the first two), an Idol of Might or a Healing Vial.' },
-      { kind: 'balance', text: 'Vigor Wick heals 1 a turn, Hunter\'s Lens gives 1 turn of Exposed, Shard Purse pays 6, and The Gilded Crown is 6 Max HP and heal 3 after fights. Thorned Heart gives 4 Thorns.' },
-      { kind: 'changed', text: 'The Rift Is Hungry now gives 2 Boons and The Cursed Crown gives 3.' },
-      { kind: 'balance', text: 'A deck holds at most 2 copies of an Aura. A run\'s deck already over that keeps its copies but can\'t add more, and an Arena deck leaves the extras out.' },
-      { kind: 'changed', text: 'A card on hold that your deck can no longer take refunds its deposit at the next merchant.' },
-      { kind: 'balance', text: 'The Spellblade\'s cards apply about a quarter less Fracture: Rupture Script applies 15 and Faultline Hex 5. Shatter damage is unchanged.' },
+      {
+        kind: 'changed',
+        text: 'Boons have no rarity. Every Boon costs 70 at a merchant, and the one-Legendary limit and its swap are gone.',
+      },
+      {
+        kind: 'balance',
+        text: "Rift Core, Scholar's Tome, Battle Standard and Phoenix Ember are gone. A run holding one gets a Rift Satchel (for the first two), an Idol of Might or a Healing Vial.",
+      },
+      {
+        kind: 'balance',
+        text: "Vigor Wick heals 1 a turn, Hunter's Lens gives 1 turn of Exposed, Shard Purse pays 6, and The Gilded Crown is 6 Max HP and heal 3 after fights. Thorned Heart gives 4 Thorns.",
+      },
+      {
+        kind: 'changed',
+        text: 'The Rift Is Hungry now gives 2 Boons and The Cursed Crown gives 3.',
+      },
+      {
+        kind: 'balance',
+        text: "A deck holds at most 2 copies of an Aura. A run's deck already over that keeps its copies but can't add more, and an Arena deck leaves the extras out.",
+      },
+      {
+        kind: 'changed',
+        text: 'A card on hold that your deck can no longer take refunds its deposit at the next merchant.',
+      },
+      {
+        kind: 'balance',
+        text: "The Spellblade's cards apply about a quarter less Fracture: Rupture Script applies 15 and Faultline Hex 5. Shatter damage is unchanged.",
+      },
     ],
   },
   {
     version: '0.146.0',
     date: '2026-10-31',
     title: 'Merchant prices',
-    summary: 'Removing and upgrading cards now get dearer only within one merchant visit, and each starts a little higher.',
+    summary:
+      'Removing and upgrading cards now get dearer only within one merchant visit, and each starts a little higher.',
     notes: [
-      { kind: 'balance', text: 'Removing a card costs 50 at every merchant, then 100, 200, 400 at that same merchant. The next merchant starts over at 50, so it no longer carries across the run.' },
-      { kind: 'balance', text: 'Upgrading a card costs 75 at every merchant, then 125, 175 at that same merchant. The next merchant starts over at 75.' },
+      {
+        kind: 'balance',
+        text: 'Removing a card costs 50 at every merchant, then 100, 200, 400 at that same merchant. The next merchant starts over at 50, so it no longer carries across the run.',
+      },
+      {
+        kind: 'balance',
+        text: 'Upgrading a card costs 75 at every merchant, then 125, 175 at that same merchant. The next merchant starts over at 75.',
+      },
     ],
   },
   {
     version: '0.145.0',
     date: '2026-10-31',
     title: 'Spell Power everywhere',
-    summary: 'The Spellblade\u2019s Shatters, Barrier and Obsidian Blade all grow with Spell Power, merchants remove as many cards as you can pay for, and a run is now Tiers, Acts and Floors.',
+    summary:
+      'The Spellblade\u2019s Shatters, Barrier and Obsidian Blade all grow with Spell Power, merchants remove as many cards as you can pay for, and a run is now Tiers, Acts and Floors.',
     notes: [
-      { kind: 'balance', text: 'Shatters hit much harder: 20 at 10 Fracture and 10 more each time, 110 at 100, plus 1 for each Spell Power you hold.' },
-      { kind: 'balance', text: 'All the Spellblade\u2019s fixed Barrier grows with Spell Power: 1 more per 3 you hold (per 2 on Unbreakable Crown, which loses its bonus at 10). Last Ember, Sigil of Glass and Afterglow count what you have spent this turn.' },
-      { kind: 'balance', text: 'The Obsidian Blade is now one hit of 5, plus 2 per Spell Power, instead of gaining hits. Upgraded, it starts at 8.' },
+      {
+        kind: 'balance',
+        text: 'Shatters hit much harder: 20 at 10 Fracture and 10 more each time, 110 at 100, plus 1 for each Spell Power you hold.',
+      },
+      {
+        kind: 'balance',
+        text: 'All the Spellblade\u2019s fixed Barrier grows with Spell Power: 1 more per 3 you hold (per 2 on Unbreakable Crown, which loses its bonus at 10). Last Ember, Sigil of Glass and Afterglow count what you have spent this turn.',
+      },
+      {
+        kind: 'balance',
+        text: 'The Obsidian Blade is now one hit of 5, plus 2 per Spell Power, instead of gaining hits. Upgraded, it starts at 8.',
+      },
       { kind: 'balance', text: 'Each Echoing Blade gives the Obsidian Blade 1 more hit.' },
-      { kind: 'changed', text: 'Merchants remove as many cards as you can pay for on one visit. Each costs double the last: 40, 80, 160...' },
-      { kind: 'changed', text: 'A run is now Tiers, Acts and Floors. The home page\u2019s New Run button says Play.' },
-      { kind: 'changed', text: 'A card in your hand shows the Barrier it would really give, and Recall the Blades shows how many Daggers it plays and what they deal.' },
-      { kind: 'changed', text: 'A growing Sword keeps its rule beside its total: "Deal 5 damage 4 times, 1 more time per 2 Spell Power (10 hits, 50 total)."' },
-      { kind: 'changed', text: 'Statuses that are simply on or off have no number: "Gain Fanned", not "Gain 1 Fanned".' },
-      { kind: 'changed', text: 'A Fanned Dagger plays without aiming. An Inked Dagger still asks, for its Faltering.' },
-      { kind: 'changed', text: 'On a phone, Begin the run stays in view while you look over your Riftwalker.' },
-      { kind: 'fixed', text: 'The total on a Sword or Obsidian Blade was wrong against a Shielded enemy, and now says "each" when it strikes every enemy.' },
-      { kind: 'fixed', text: 'A card that counts your suits now counts its own suit in the number shown in your hand.' },
-      { kind: 'fixed', text: 'Should stop the Riftwalker on the home page starting off to one side on some phones.' },
+      {
+        kind: 'changed',
+        text: 'Merchants remove as many cards as you can pay for on one visit. Each costs double the last: 40, 80, 160...',
+      },
+      {
+        kind: 'changed',
+        text: 'A run is now Tiers, Acts and Floors. The home page\u2019s New Run button says Play.',
+      },
+      {
+        kind: 'changed',
+        text: 'A card in your hand shows the Barrier it would really give, and Recall the Blades shows how many Daggers it plays and what they deal.',
+      },
+      {
+        kind: 'changed',
+        text: 'A growing Sword keeps its rule beside its total: "Deal 5 damage 4 times, 1 more time per 2 Spell Power (10 hits, 50 total)."',
+      },
+      {
+        kind: 'changed',
+        text: 'Statuses that are simply on or off have no number: "Gain Fanned", not "Gain 1 Fanned".',
+      },
+      {
+        kind: 'changed',
+        text: 'A Fanned Dagger plays without aiming. An Inked Dagger still asks, for its Faltering.',
+      },
+      {
+        kind: 'changed',
+        text: 'On a phone, Begin the run stays in view while you look over your Riftwalker.',
+      },
+      {
+        kind: 'fixed',
+        text: 'The total on a Sword or Obsidian Blade was wrong against a Shielded enemy, and now says "each" when it strikes every enemy.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A card that counts your suits now counts its own suit in the number shown in your hand.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Should stop the Riftwalker on the home page starting off to one side on some phones.',
+      },
     ],
     heads: 'Old Arena games and replays no longer play.',
   },
@@ -664,13 +1356,26 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.144.0',
     date: '2026-10-31',
     title: 'Clearer card text',
-    summary: 'Every card now makes it clear where a condition or trigger stops, and Spell Power costs are easier to read.',
+    summary:
+      'Every card now makes it clear where a condition or trigger stops, and Spell Power costs are easier to read.',
     notes: [
-      { kind: 'changed', text: 'Everything one trigger or condition does is now one sentence: "Draw 1 card and gain 2 Barrier."' },
-      { kind: 'changed', text: 'What always happens comes first, then keywords like Consume, then each condition, so nothing after a condition can be mistaken for part of it.' },
+      {
+        kind: 'changed',
+        text: 'Everything one trigger or condition does is now one sentence: "Draw 1 card and gain 2 Barrier."',
+      },
+      {
+        kind: 'changed',
+        text: 'What always happens comes first, then keywords like Consume, then each condition, so nothing after a condition can be mistaken for part of it.',
+      },
       { kind: 'changed', text: 'A summon says what the companion does inside its own brackets.' },
-      { kind: 'changed', text: 'Spell Power costs on cards are bigger and bolder on a brighter circle, X/2 included.' },
-      { kind: 'balance', text: 'Shard Strike checks for 9 Spell Power after its gain, so holding 8 now earns the Barrier.' },
+      {
+        kind: 'changed',
+        text: 'Spell Power costs on cards are bigger and bolder on a brighter circle, X/2 included.',
+      },
+      {
+        kind: 'balance',
+        text: 'Shard Strike checks for 9 Spell Power after its gain, so holding 8 now earns the Barrier.',
+      },
     ],
     heads: 'Old Arena games and replays no longer play.',
   },
@@ -678,95 +1383,226 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.143.0',
     date: '2026-10-31',
     title: 'Fracture keeps climbing',
-    summary: 'A second pass on the Spellblade: costs on the card instead of a slider, Fracture that only adds up, and more Barrier and Spell Power early.',
+    summary:
+      'A second pass on the Spellblade: costs on the card instead of a slider, Fracture that only adds up, and more Barrier and Spell Power early.',
     notes: [
-      { kind: 'changed', text: 'No more slider. X on a card spends all your Spell Power and X/2 spends half, rounded down. Basics and commons spend at most half. Mirror Glass costs 2.' },
-      { kind: 'changed', text: 'Fracture never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100, with no limit past that. Cleanses no longer remove it.' },
-      { kind: 'changed', text: 'Carry the Fault applies 4 plus half the Fracture on your most-cracked other enemy (8 against one enemy). Rupture Script applies 20.' },
-      { kind: 'changed', text: 'Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. It borrows another card\'s picture for now.' },
-      { kind: 'balance', text: 'Lava Bomb deals 10 per Spell Power spent, her biggest payoff. Pale Ward gains 8 Barrier.' },
-      { kind: 'balance', text: 'Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power, with some of their other numbers lowered.' },
-      { kind: 'changed', text: 'Sword and Spell are now a badge in a card\'s top right with a tooltip. The Spell Power orb and counter show only the number.' },
-      { kind: 'fixed', text: 'A Sword in your hand shows its real hits and total, with Might and Primed counted.' },
+      {
+        kind: 'changed',
+        text: 'No more slider. X on a card spends all your Spell Power and X/2 spends half, rounded down. Basics and commons spend at most half. Mirror Glass costs 2.',
+      },
+      {
+        kind: 'changed',
+        text: 'Fracture never drops. Every 10 it Shatters, harder each time: 18 at 10, 21 at 20, 45 at 100, with no limit past that. Cleanses no longer remove it.',
+      },
+      {
+        kind: 'changed',
+        text: 'Carry the Fault applies 4 plus half the Fracture on your most-cracked other enemy (8 against one enemy). Rupture Script applies 20.',
+      },
+      {
+        kind: 'changed',
+        text: "Hairline Hex is now Obsidian Ward (7 Barrier, gain 1 Spell Power), so Fracture is something you find in rewards. It borrows another card's picture for now.",
+      },
+      {
+        kind: 'balance',
+        text: 'Lava Bomb deals 10 per Spell Power spent, her biggest payoff. Pale Ward gains 8 Barrier.',
+      },
+      {
+        kind: 'balance',
+        text: 'Emberstrike, Shard Strike, Crosscut, Tempered Bolt, Glass Veil, Ash Wind, Recenter and Fated Hand now gain Spell Power, with some of their other numbers lowered.',
+      },
+      {
+        kind: 'changed',
+        text: "Sword and Spell are now a badge in a card's top right with a tooltip. The Spell Power orb and counter show only the number.",
+      },
+      {
+        kind: 'fixed',
+        text: 'A Sword in your hand shows its real hits and total, with Might and Primed counted.',
+      },
     ],
-    heads: 'Old Arena games and replays no longer play. A Hairline Hex in a saved deck becomes Obsidian Ward.',
+    heads:
+      'Old Arena games and replays no longer play. A Hairline Hex in a saved deck becomes Obsidian Ward.',
   },
   {
     version: '0.142.0',
     date: '2026-10-31',
     title: 'The Spellblade reforged',
-    summary: 'Arcana and Sharpen become one reserve, Spell Power, with three ways to win: Swords, Spells and Fracture.',
+    summary:
+      'Arcana and Sharpen become one reserve, Spell Power, with three ways to win: Swords, Spells and Fracture.',
     notes: [
-      { kind: 'new', text: 'Spell Power replaces Arcana and Sharpen. You start each fight with 3 and gain 1 a turn. It lasts the whole fight, with no cap.' },
-      { kind: 'new', text: 'Swords read Spell Power and spend none. The Obsidian Blade strikes once more for every 2 you hold, and Might and Primed add to every hit.' },
-      { kind: 'new', text: 'Spells spend it, as much as you choose: a slider opens when you play one. The more Mana a spell costs, the more each point deals.' },
-      { kind: 'new', text: 'Fracture is a new way to win: cracks on an enemy that never fade. At 10 it Shatters for 18 and the rest stays. Barrier stops a Shatter, and some cards make every Shatter hit harder.' },
-      { kind: 'new', text: 'Some cards grow: that copy gives more each time you play it, for the rest of the fight.' },
-      { kind: 'changed', text: 'Her pool is 88 reward cards: 50 reworked, 38 new with their own art, 30 removed. Retainers and the cards that made other cards are gone. Her starting deck swaps one Strike for Hairline Hex.' },
+      {
+        kind: 'new',
+        text: 'Spell Power replaces Arcana and Sharpen. You start each fight with 3 and gain 1 a turn. It lasts the whole fight, with no cap.',
+      },
+      {
+        kind: 'new',
+        text: 'Swords read Spell Power and spend none. The Obsidian Blade strikes once more for every 2 you hold, and Might and Primed add to every hit.',
+      },
+      {
+        kind: 'new',
+        text: 'Spells spend it, as much as you choose: a slider opens when you play one. The more Mana a spell costs, the more each point deals.',
+      },
+      {
+        kind: 'new',
+        text: 'Fracture is a new way to win: cracks on an enemy that never fade. At 10 it Shatters for 18 and the rest stays. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      },
+      {
+        kind: 'new',
+        text: 'Some cards grow: that copy gives more each time you play it, for the rest of the fight.',
+      },
+      {
+        kind: 'changed',
+        text: 'Her pool is 88 reward cards: 50 reworked, 38 new with their own art, 30 removed. Retainers and the cards that made other cards are gone. Her starting deck swaps one Strike for Hairline Hex.',
+      },
     ],
-    heads: 'A Spellblade run saved before this moves to the new cards and tells you so, and a fight in progress starts again. Old Arena games and replays no longer play.',
+    heads:
+      'A Spellblade run saved before this moves to the new cards and tells you so, and a fight in progress starts again. Old Arena games and replays no longer play.',
   },
   {
     version: '0.141.0',
     date: '2026-10-30',
     title: 'Choose from your hand',
-    summary: 'Discards and Defers are chosen right on your hand, phones get tap to play and a new upright layout, and the battle log tells you far more.',
+    summary:
+      'Discards and Defers are chosen right on your hand, phones get tap to play and a new upright layout, and the battle log tells you far more.',
     notes: [
-      { kind: 'changed', text: 'Choosing a card from your hand (discard, Defer, Consume and the like) no longer opens a window or asks to Confirm. The cards you can choose glow, and clicking one chooses it. There is no undo.' },
-      { kind: 'changed', text: 'When you discard, cards with Premeditate pulse violet with a ribbon, because they come back next turn at 0 Mana.' },
-      { kind: 'changed', text: 'Phones: a tap plays a card or starts aiming it, and a long press lifts it to read.' },
-      { kind: 'changed', text: 'Phones held upright: you stand at the bottom left and the enemies at the top right, with smaller figures, and your Boons and Auras show at the top left.' },
-      { kind: 'changed', text: 'The battle log now names discards, Defer, Premeditate, Consume and cards added, and tells cards drawn and Mana gained from effects, Foresee, stopped attacks and Reserves.' },
-      { kind: 'changed', text: 'Every card an event option will surely take or give is in its box: the master and the student\u2019s rares, Wounds and Static, and an event saved before the last patch.' },
-      { kind: 'changed', text: 'A card\u2019s damage number and its breakdown now count Honed, and name Edge and Honed as their own steps. Fanned Daggers show the range across every enemy, and with several enemies the breakdown shows the highest number. The damage dealt has not changed, only what the card says. Lethality and Noose now count too.' },
-      { kind: 'balance', text: 'Knight: Set Your Shield (6 Barrier, 3 more if you have Reserves) replaces Press the Attack in the starting deck.' },
-      { kind: 'balance', text: 'Trickster: the starting deck has one Veil Strike; the second is now a Strike.' },
-      { kind: 'balance', text: 'Assassin: Garrote is out of the card pool. A Garrote in a saved run or Arena deck becomes Graveside Cut.' },
-      { kind: 'changed', text: 'Names: Virulent is now Hemorrhage, and the rare card that was called Hemorrhage is now Red Tide. Both work as before.' },
-      { kind: 'changed', text: 'Lay Bare and Cast the Shield say "Remove all Barrier" and no longer mention Steadfast. They work as before.' },
+      {
+        kind: 'changed',
+        text: 'Choosing a card from your hand (discard, Defer, Consume and the like) no longer opens a window or asks to Confirm. The cards you can choose glow, and clicking one chooses it. There is no undo.',
+      },
+      {
+        kind: 'changed',
+        text: 'When you discard, cards with Premeditate pulse violet with a ribbon, because they come back next turn at 0 Mana.',
+      },
+      {
+        kind: 'changed',
+        text: 'Phones: a tap plays a card or starts aiming it, and a long press lifts it to read.',
+      },
+      {
+        kind: 'changed',
+        text: 'Phones held upright: you stand at the bottom left and the enemies at the top right, with smaller figures, and your Boons and Auras show at the top left.',
+      },
+      {
+        kind: 'changed',
+        text: 'The battle log now names discards, Defer, Premeditate, Consume and cards added, and tells cards drawn and Mana gained from effects, Foresee, stopped attacks and Reserves.',
+      },
+      {
+        kind: 'changed',
+        text: 'Every card an event option will surely take or give is in its box: the master and the student\u2019s rares, Wounds and Static, and an event saved before the last patch.',
+      },
+      {
+        kind: 'changed',
+        text: 'A card\u2019s damage number and its breakdown now count Honed, and name Edge and Honed as their own steps. Fanned Daggers show the range across every enemy, and with several enemies the breakdown shows the highest number. The damage dealt has not changed, only what the card says. Lethality and Noose now count too.',
+      },
+      {
+        kind: 'balance',
+        text: 'Knight: Set Your Shield (6 Barrier, 3 more if you have Reserves) replaces Press the Attack in the starting deck.',
+      },
+      {
+        kind: 'balance',
+        text: 'Trickster: the starting deck has one Veil Strike; the second is now a Strike.',
+      },
+      {
+        kind: 'balance',
+        text: 'Assassin: Garrote is out of the card pool. A Garrote in a saved run or Arena deck becomes Graveside Cut.',
+      },
+      {
+        kind: 'changed',
+        text: 'Names: Virulent is now Hemorrhage, and the rare card that was called Hemorrhage is now Red Tide. Both work as before.',
+      },
+      {
+        kind: 'changed',
+        text: 'Lay Bare and Cast the Shield say "Remove all Barrier" and no longer mention Steadfast. They work as before.',
+      },
     ],
-    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+    heads:
+      'The rules version went up: old Arena games and replays from before this patch will not play.',
   },
   {
     version: '0.140.0',
     date: '2026-10-30',
     title: 'Big machines hit more often',
-    summary: 'The Engineer\u2019s 3-slot machines hit several times, scrapping a machine has its own buttons, and event cards sit in their option boxes.',
+    summary:
+      'The Engineer\u2019s 3-slot machines hit several times, scrapping a machine has its own buttons, and event cards sit in their option boxes.',
     notes: [
-      { kind: 'balance', text: 'War Engine hits 4 three times, Dreadnought hits everyone for 4 twice, and Scrap Golem hits 3 twice, so Might and Primed reward them as they do a swarm.' },
-      { kind: 'balance', text: 'Enforcer, Bulwark Walker and Scrap Golem go back to their HP from before 0.139.0, and Enforcer and Bulwark Walker to their damage and Barrier.' },
-      { kind: 'balance', text: 'Removing a card at a merchant now doubles in price each time: 40, 80, 160 and so on through the run.' },
-      { kind: 'changed', text: 'When a summon has no room, there is a button to scrap each machine. Play anyway is gone when it would only waste the card.' },
-      { kind: 'changed', text: 'Rift Cache, the Ancestors\u2019 Offering, the traveller and the bonfire show their card inside the option box. The elite event button says Spin To Win.' },
+      {
+        kind: 'balance',
+        text: 'War Engine hits 4 three times, Dreadnought hits everyone for 4 twice, and Scrap Golem hits 3 twice, so Might and Primed reward them as they do a swarm.',
+      },
+      {
+        kind: 'balance',
+        text: 'Enforcer, Bulwark Walker and Scrap Golem go back to their HP from before 0.139.0, and Enforcer and Bulwark Walker to their damage and Barrier.',
+      },
+      {
+        kind: 'balance',
+        text: 'Removing a card at a merchant now doubles in price each time: 40, 80, 160 and so on through the run.',
+      },
+      {
+        kind: 'changed',
+        text: 'When a summon has no room, there is a button to scrap each machine. Play anyway is gone when it would only waste the card.',
+      },
+      {
+        kind: 'changed',
+        text: 'Rift Cache, the Ancestors\u2019 Offering, the traveller and the bonfire show their card inside the option box. The elite event button says Spin To Win.',
+      },
     ],
-    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+    heads:
+      'The rules version went up: old Arena games and replays from before this patch will not play.',
   },
   {
     version: '0.139.0',
     date: '2026-10-30',
     title: 'Bigger machines and Legendary swaps',
-    summary: 'The Engineer gets a higher damage ceiling, Foresee is one click, and a Legendary Boon can be given up or swapped.',
+    summary:
+      'The Engineer gets a higher damage ceiling, Foresee is one click, and a Legendary Boon can be given up or swapped.',
     notes: [
-      { kind: 'new', text: 'Engineer: Full Throttle (your companions act twice), Critical Mass (damage grows with Might) and Final Volley (damage grows with your companions). Each is spent after one use.' },
-      { kind: 'balance', text: 'Heavy and Colossal machines have a little more HP and damage: Enforcer, Siege Engine, Bulwark Walker, War Engine, Scrap Golem and Dreadnought.' },
-      { kind: 'balance', text: 'Defer: the card comes back costing 1 less for that turn only. Not played, it is full price again.' },
-      { kind: 'new', text: 'A Legendary Boon has a small X on the map to give it up. A Legendary offered while you hold one lets you swap or keep yours.' },
+      {
+        kind: 'new',
+        text: 'Engineer: Full Throttle (your companions act twice), Critical Mass (damage grows with Might) and Final Volley (damage grows with your companions). Each is spent after one use.',
+      },
+      {
+        kind: 'balance',
+        text: 'Heavy and Colossal machines have a little more HP and damage: Enforcer, Siege Engine, Bulwark Walker, War Engine, Scrap Golem and Dreadnought.',
+      },
+      {
+        kind: 'balance',
+        text: 'Defer: the card comes back costing 1 less for that turn only. Not played, it is full price again.',
+      },
+      {
+        kind: 'new',
+        text: 'A Legendary Boon has a small X on the map to give it up. A Legendary offered while you hold one lets you swap or keep yours.',
+      },
       { kind: 'changed', text: 'Foresee picks the card you click, with no Confirm button.' },
-      { kind: 'fixed', text: 'A campaign run the board did not recognise as yours is now re-linked to your username, or you are asked for one again.' },
+      {
+        kind: 'fixed',
+        text: 'A campaign run the board did not recognise as yours is now re-linked to your username, or you are asked for one again.',
+      },
     ],
-    heads: 'The rules version went up: old Arena games and replays from before this patch will not play.',
+    heads:
+      'The rules version went up: old Arena games and replays from before this patch will not play.',
   },
   {
     version: '0.138.0',
     date: '2026-10-30',
     title: 'Ten-card starts and tighter rules',
-    summary: 'Every class starts with ten cards, the Arena wants fifteen, and a few cards were fixed or nerfed.',
+    summary:
+      'Every class starts with ten cards, the Arena wants fifteen, and a few cards were fixed or nerfed.',
     notes: [
-      { kind: 'changed', text: 'Every class starts with ten cards and three or four class basics: new basics for the Knight, Assassin, Monk, Engineer, Trickster and Necromancer, fewer duplicates for the Shaman, Drunkard and Spellblade.' },
-      { kind: 'changed', text: 'Arena decks need at least 15 cards, and the campaign Arena badge says so. Campaign ghosts are never your own.' },
+      {
+        kind: 'changed',
+        text: 'Every class starts with ten cards and three or four class basics: new basics for the Knight, Assassin, Monk, Engineer, Trickster and Necromancer, fewer duplicates for the Shaman, Drunkard and Spellblade.',
+      },
+      {
+        kind: 'changed',
+        text: 'Arena decks need at least 15 cards, and the campaign Arena badge says so. Campaign ghosts are never your own.',
+      },
       { kind: 'changed', text: 'The Shaman can hold up to 8 totems; they shrink to fit.' },
-      { kind: 'balance', text: 'Aegis of Ages gives 1 Shielded, not 3, and Ward Stone is gone (old saves get an Iron Sigil). Backup Core revives one ally, once.' },
-      { kind: 'fixed', text: 'A card that hits every enemy and then costs you HP now takes the HP even when the hit ends the fight.' },
+      {
+        kind: 'balance',
+        text: 'Aegis of Ages gives 1 Shielded, not 3, and Ward Stone is gone (old saves get an Iron Sigil). Backup Core revives one ally, once.',
+      },
+      {
+        kind: 'fixed',
+        text: 'A card that hits every enemy and then costs you HP now takes the HP even when the hit ends the fight.',
+      },
       { kind: 'fixed', text: 'Heavy Hitter says it counts your biggest living companion.' },
     ],
   },
@@ -789,13 +1625,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'More mechanics are highlighted in card text, so you can hover them: Plating, Sapped, Hangover, Fate, Virulent, Premeditate, Steadfast, Brittle and the rest.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.136.0',
     date: '2026-10-30',
     title: 'Mana Reserves for the Knight',
-    summary: 'The Knight keeps unspent Mana as Reserves and gets twelve new cards, and a large batch of card art lands.',
+    summary:
+      'The Knight keeps unspent Mana as Reserves and gets twelve new cards, and a large batch of card art lands.',
     notes: [
       {
         kind: 'new',
@@ -814,13 +1652,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'New card art: 55 Shaman illustrations, carved Thunderbird and Moon Owl totems with their spirit forms, and 126 cards redrawn to match the current heroes. Cards that still have no art of their own use borrowed art for now.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.135.0',
     date: '2026-10-30',
     title: 'The Assassin defers',
-    summary: 'A new Assassin keyword, Defer: set a card aside and it comes back next turn costing 1 less.',
+    summary:
+      'A new Assassin keyword, Defer: set a card aside and it comes back next turn costing 1 less.',
     notes: [
       {
         kind: 'new',
@@ -831,7 +1671,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Stalker’s Lunge, Side Slip and Palm Switch now Defer a card (Stalker’s Lunge: 15 damage, 20 upgraded). Quick Reflexes draws 1 and Defers 1. Cartwheel Cut deals 5 to all (7 upgraded) and Defers a card. Slip the Blow and Glancing Knives also Defer a card. Into the Shadows Defers up to 3 cards, discards the rest of your hand, gives Poised, and costs 2 (it defers up to 4 upgraded).',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.134.0',
@@ -844,13 +1685,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Retired commons: Firebrand and Talon Strike. Retired uncommons: Immolate, Storm Front, Totem Drum, Raise the Pole and Cold Breath. Retired rares: Winter’s Embrace, Maelstrom, Eye of the Tempest, Grow the Pole, Spiritstorm, Elder Recall, Totem Mantle, Sorrow’s Hammer, Glacial Lance, Three Winds, Dream Weaving and Awakened Spirit. Old copies turn into a nearby card (for example Immolate into Flame Spear, Storm Front into Gale Call, Totem Drum into Storm Sovereign).',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.133.0',
     date: '2026-10-30',
     title: 'Shaman pool trimmed',
-    summary: 'Seventeen Shaman uncommons and rares are retired, three pairs are merged, and a few card texts are fixed.',
+    summary:
+      'Seventeen Shaman uncommons and rares are retired, three pairs are merged, and a few card texts are fixed.',
     notes: [
       {
         kind: 'changed',
@@ -865,7 +1708,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Wild Vision says the card it adds costs 0 this turn. Blighted Chorus says it counts Status cards. Phoenix Feather explains Reverb.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.132.0',
@@ -890,13 +1734,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Retired: Rapid Sift, Thunder Roost, Totem Strike, Rally the Spirits, Pyroclasm, Thunder Fork, Skullsplitter, Hardened Resolve, Ruin Fist, Tempest Call, Ice Wall and Ice Mirror. Old copies turn into a nearby card.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.131.0',
     date: '2026-10-30',
     title: 'Shaman pool, big pass',
-    summary: 'The Shaman’s pool is rebuilt around totems and Status cards, with the Moon Owl as a growing charge.',
+    summary:
+      'The Shaman’s pool is rebuilt around totems and Status cards, with the Moon Owl as a growing charge.',
     notes: [
       {
         kind: 'new',
@@ -919,13 +1765,15 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Enemies stand a little further from the screen edge, the Boon, Omen and Aura columns scroll inside their own window instead of covering the fight, and a ghost opponent shows its owner’s name in the fight.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.130.0',
     date: '2026-10-30',
     title: 'Shaman totem pass',
-    summary: 'The Hawk and Moon Owl change, Spirit Call commands twice, and a cleaner Shaman card pool.',
+    summary:
+      'The Hawk and Moon Owl change, Spirit Call commands twice, and a cleaner Shaman card pool.',
     notes: [
       {
         kind: 'changed',
@@ -948,7 +1796,8 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'Retired: the feather plants, Call Again, Spark Fork, Turn the Wheel, Rime Shield, Bear’s Guard, Thunderbird’s Cry, Last Called, Ancestral Exchange, Great Spirit’s Call and Chain Lightning. Old copies turn into a nearby card.',
       },
     ],
-    heads: 'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
+    heads:
+      'The rules changed: reload to play the new cards, and old Arena games and replays no longer play.',
   },
   {
     version: '0.129.0',

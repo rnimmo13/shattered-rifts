@@ -511,7 +511,7 @@ describe('Fracture and Shatter', () => {
     expect(next.sides.a.shatterBonus).toBe(bonus);
   });
 
-  it('Fault Lines: every Sword and Spell applies 2 Fracture to its target, nothing else does (DECISIONS #564)', () => {
+  it('Fault Lines: early Sword and Spell plays apply 2 Fracture, nothing else does', () => {
     const s = play(fight(['fault-lines', BLADE, 'faultline-hex', 'strike']), 'fault-lines');
     const swung = play(s, BLADE);
     expect(foe(swung).statuses.fracture).toBe(2);
@@ -520,7 +520,7 @@ describe('Fracture and Shatter', () => {
     expect(foe(hexed).statuses.fracture).toBe(2 + 7 + 2);
     expect(foe(play(hexed, 'strike')).statuses.fracture).toBe(11);
     expect(cardText(db, db.cards['fault-lines']!)).toContain(
-      'Whenever you play a Sword or a Spell: Apply 2 Fracture to its target (or the enemy with the most Fracture).',
+      'Whenever you play a Sword or a Spell (first 6 activations each turn): Apply 2 Fracture to its target (or the enemy with the most Fracture).',
     );
   });
 

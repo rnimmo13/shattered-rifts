@@ -539,10 +539,17 @@ export const SHAMAN: CardDef[] = [
     'storm-sovereign',
     'Storm Sovereign',
     'power',
-    1,
+    2,
     'none',
-    [on('command', [dmg(3, 'allFoes'), barrier(3)])],
-    { up: { effects: [on('command', [dmg(4, 'allFoes'), barrier(4)])] } },
+    [on('command', [dmg(3, 'allFoes')]), on('command', [barrier(3)], { perTurnLimit: 3 })],
+    {
+      up: {
+        effects: [
+          on('command', [dmg(4, 'allFoes')]),
+          on('command', [barrier(4)], { perTurnLimit: 3 }),
+        ],
+      },
+    },
   ),
   // (the cycle on its own: each turn the front totem acts and goes)
 

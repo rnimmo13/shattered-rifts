@@ -1113,6 +1113,34 @@ export function chooseSpoil(run: RunState, spoil: Spoil): RunState {
 }
 
 /** Pick a card from the reward or the Warden's Gift, or skip it (null): every card reward can be skipped. */
+/** Events, Ascendancies and unfinished Elite spoils retain their own choices. */
+export function canRerollReward(run: RunState): boolean {
+  const c = run.context;
+  const node = run.map.nodes.find((n) => n.id === c?.nodeId);
+  return (
+    (run.phase === 'reward' || run.phase === 'gift') &&
+    !!c?.offers?.length &&
+    !c.spoils &&
+    run.rewardRerollTier !== run.tier &&
+    !!node &&
+    ['duel', 'elite', 'warden'].includes(node.kind)
+  );
+}
+
+export function rerollReward(run: RunState): RunState {
+  need(canRerollReward(run), 'No card reward reroll available');
+  const r = clone(run);
+  const c = r.context!;
+  const node = nodeOf(r, c.nodeId);
+  const count = c.offers!.length;
+  c.offers =
+    r.phase === 'gift'
+      ? giftOffers(r.rng, r.character, r.deck, count)
+      : offerCards(r.rng, r.character, r.deck, node.kind === 'duel' ? 'duel' : 'elite', count);
+  r.rewardRerollTier = r.tier;
+  return r;
+}
+
 export function chooseCard(run: RunState, cardId: string | null): RunState {
   need(run.phase === 'reward' || run.phase === 'gift', 'There is no card reward to choose from');
   const ctx = run.context;

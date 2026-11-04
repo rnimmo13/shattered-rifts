@@ -235,7 +235,7 @@ const stacks = (u: Unit, st: StatusId): number => u.statuses[st] ?? 0;
 // --- statuses ---------------------------------------------------------------------------------------------------
 
 /** Returns whether the stacks were applied (a Steadfast unit ignores a debuff). */
-function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
+function addStatus(r: Run, u: Unit, st: StatusId, amount: number, sourceSide?: Side): boolean {
   if (amount === 0) return false;
   // Steadfast: the next debuff put on this unit is ignored
   if (amount > 0 && DEBUFFS.includes(st) && stacks(u, 'steadfast') > 0) {
@@ -262,8 +262,10 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
   if (st === 'mastery') total = Math.min(total, MASTERY_MAX);
   // Hangover stops at HANGOVER_MAX, so the cards that grow with it stay in reach (DECISIONS #354)
   if (st === 'hangover') total = Math.min(total, HANGOVER_MAX);
-  if (total <= 0) delete u.statuses[st];
-  else u.statuses[st] = total;
+  if (total <= 0) {
+    delete u.statuses[st];
+    if (u.statusSources) delete u.statusSources[st];
+  } else u.statuses[st] = total;
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
   // a hero whose trait shares Might: their companions gain (or lose) their share of it, rounded down (DECISIONS #285, #298)
   // (the change in the share, so a hero going 1 -> 2 at half passes on 1; a loss never takes more than a companion has)
@@ -286,14 +288,14 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number): boolean {
     r.ev.push({ type: 'status', target: u.id, status: 'mantra', amount: -MANTRA_GOAL, total });
     enterStance(r, u, 'radiant');
   }
-  // an Aura that answers Exposed being put on an enemy (Vicious)
-  if (st === 'exposed' && amount > 0 && u.kind !== 'hero')
-    fireTriggers(r, r.s.sides[other(u.side)], 'exposeFoe');
-  // (the Necrobinder copy) Auras that answer Fate, or any debuff, being put on an enemy (Shroud, Sleight of Flesh)
-  // (an enemy unit, or in PvP the other player's hero while you act)
-  const foeUnit = u.kind === 'enemy' || (u.kind === 'hero' && u.side !== r.s.active);
-  if (amount > 0 && foeUnit && DEBUFFS.includes(st)) {
-    const foe = r.s.sides[other(u.side)];
+  // Trigger ownership follows the applier, including opponent heroes/companions and reactive turns.
+  const appliedBy = sourceSide ?? (u.side !== r.s.active ? r.s.active : undefined);
+  if (amount > 0 && DEBUFFS.includes(st) && appliedBy) {
+    (u.statusSources ??= {})[st] = appliedBy;
+  }
+  if (amount > 0 && appliedBy && appliedBy !== u.side && DEBUFFS.includes(st)) {
+    const foe = r.s.sides[appliedBy];
+    if (st === 'exposed') fireTriggers(r, foe, 'exposeFoe', { target: u });
     if (st === 'doom') {
       foe.doomedTurn = (foe.doomedTurn ?? 0) + 1;
       fireTriggers(r, foe, 'doomFoe', { target: u });
@@ -496,7 +498,7 @@ function applyDamage(
   overflow = false,
   // (a Shatter was earned with Fracture and never comes again, so Slippery lets it through)
   throughSlippery = false,
-  canRescue = false,
+  causeSide?: Side,
 ): number {
   if (t.hp <= 0) return 0;
   // (Nyxara's rule, DECISIONS #546) a hit tears her Veil away, and her intent shows
@@ -534,10 +536,7 @@ function applyDamage(
   let saved = false;
   if (
     t.kind === 'hero' &&
-    canRescue &&
-    kind === 'attack' &&
-    source &&
-    source.side !== t.side &&
+    ((source && source.side !== t.side) || (causeSide !== undefined && causeSide !== t.side)) &&
     lost >= t.hp &&
     survival?.rule.kind === 'desperation' &&
     !survival.used
@@ -644,7 +643,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
         r.db.units[a.actor.def]?.slots ?? 1,
       );
       if (d?.rule.kind === 'pursuit' && d.usedTurn !== markTurn && d.target === t.id)
-        addStatus(r, t, 'exposed', d.rule.exposed);
+        addStatus(r, t, 'exposed', d.rule.exposed, a.actor.side);
       // The mark may have just applied Exposed; use the same state for the first hit too.
       amount = modifiedDamage(base, a.actor, t, attacked);
     }
@@ -659,7 +658,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   const room = t.hp + t.barrier;
   const barrierBefore = t.barrier;
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0 || stacks(t, 'slippery') > 0;
-  const lostHere = applyDamage(r, a.actor, t, amount, 'attack', false, false, attacked);
+  const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
   // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
   if (
@@ -690,7 +689,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       const nextRoom = next.hp + next.barrier;
       const nextCapped =
         stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0 || stacks(next, 'slippery') > 0;
-      lost += applyDamage(r, a.actor, next, carried, 'attack', true, false, true);
+      lost += applyDamage(r, a.actor, next, carried, 'attack', true);
       // (a companion the overflow kills, exactly or through Ghostly too, remembers its killer: Den Mother)
       if (next.kind === 'ally' && next.hp <= 0) next.killedBy = a.actor.id;
       if (next.kind !== 'ally' || next.hp > 0 || nextCapped || carried <= nextRoom) break;
@@ -1171,6 +1170,7 @@ function healUnit(r: Run, t: Unit, n: number): void {
   if (t.kind === 'ally') {
     t.maxHp += n;
     t.hp += n;
+    t.investedHp = (t.investedHp ?? 0) + n;
     r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
     return;
   }
@@ -1688,13 +1688,15 @@ function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   const v = metricValue(r, a, sc.by, sc.of, t, sc.tag, sc.rune);
   // (a step counts whole steps only: "5 more for every 10 Fate")
   const counted = sc.step ? Math.floor(v / sc.step) : v;
-  return Math.floor((sc.mult ?? 1) * counted + 1e-9);
+  const raw = (sc.mult ?? 1) * counted;
+  return sc.round === 'ceil' ? Math.ceil(raw - 1e-9) : Math.floor(raw + 1e-9);
 }
 
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
   if (!sc || sc.into === 'hits') return base;
   const v = scaleValue(r, a, sc, t);
-  return base + (sc.max !== undefined ? Math.min(sc.max, v) : v);
+  const bounded = Math.max(sc.min ?? -Infinity, sc.max !== undefined ? Math.min(sc.max, v) : v);
+  return base + bounded;
 }
 
 /**
@@ -1886,7 +1888,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           if (op.hitFracture && t.side !== a.actor.side && a.struck.get(t.id))
             cracked = fractureUnit(r, a, side, t, op.hitFracture) || cracked;
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
-            addStatus(r, t, 'doom', lostHere);
+            addStatus(r, t, 'doom', lostHere, a.actor.side);
           // Sic 'Em: a companion that hits its quarry raises another like it
           const quarry = stacks(t, 'quarry');
           if (a.actor.kind === 'ally' && quarry > 0 && t.side !== a.actor.side && !r.s.winner)
@@ -1967,6 +1969,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n <= 0) continue;
         t.maxHp += n;
         t.hp += n;
+        if (t.kind === 'ally') t.investedHp = (t.investedHp ?? 0) + n;
         r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
       }
       return;
@@ -2016,6 +2019,7 @@ function execOp(r: Run, a: Act, op: Op): void {
           t,
           op.status,
           op.status === 'seared' || op.status === 'burn' ? scaledByDifficulty(a.actor, t, n) : n,
+          a.actor.side,
         );
         if (op.temp && n > 0 && applied)
           (op.temp === 'theirs' ? r.s.sides[other(side.id)] : side).temps.push({
@@ -2038,7 +2042,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         const n = stacks(t, op.status);
         let next = Math.floor(n * op.mult);
         if (op.max !== undefined) next = Math.min(next, n + op.max);
-        if (n > 0 && next !== n) addStatus(r, t, op.status, next - n);
+        if (n > 0 && next !== n) addStatus(r, t, op.status, next - n, a.actor.side);
       }
       return;
     case 'draw': {
@@ -2137,6 +2141,18 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
       }
       if (u) {
+        const d = side.discipline;
+        if (
+          d?.rule.kind === 'frame' &&
+          slotsOf(r.db, u.def) >= d.rule.minSlots &&
+          (d.recovery ?? 0) > 0
+        ) {
+          const hp = d.recovery!;
+          d.recovery = 0;
+          u.maxHp += hp;
+          u.hp += hp;
+          r.ev.push({ type: 'heal', target: u.id, amount: hp, hp: u.hp, maxHp: u.maxHp });
+        }
         fireSnare(r, other(side.id), { on: 'foeSummons', summoned: u });
         if (a.actor.kind === 'hero') fireTriggers(r, side, 'summon');
       }
@@ -2254,6 +2270,9 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.temp ? { temp: true } : {}),
         ...(op.once ? { once: true } : {}),
         ...(op.ownTurn ? { ownTurn: true } : {}),
+        ...(op.perTurnLimit ? { perTurnLimit: op.perTurnLimit } : {}),
+        ...(op.perRoundLimit ? { perRoundLimit: op.perRoundLimit } : {}),
+        ...(op.afterLimit ? { afterLimit: op.afterLimit } : {}),
         ...(op.round ? { round: true } : {}),
         ...(op.ethereal ? { ethereal: true } : {}),
         ...(op.minCost !== undefined ? { minCost: op.minCost } : {}),
@@ -2967,7 +2986,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         // (Fracture only ever adds up, DECISIONS #483)
         if (st === 'fracture') continue;
         const n = stacks(from, st);
-        if (n > 0) for (const u of rest) addStatus(r, u, st, n);
+        if (n > 0) for (const u of rest) addStatus(r, u, st, n, a.actor.side);
       }
       return;
     }
@@ -3396,7 +3415,7 @@ function shatterDamage(sd: SideState, k: number): number {
 function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boolean {
   if (n <= 0 || t.hp <= 0) return false;
   const before = stacks(t, 'fracture');
-  if (!addStatus(r, t, 'fracture', n)) return false;
+  if (!addStatus(r, t, 'fracture', n, a.actor.side)) return false;
   const hero = heroOf(owner) ?? null;
   const reached = Math.floor((before + n) / SHATTER_AT);
   for (let k = Math.floor(before / SHATTER_AT) + 1; k <= reached && t.hp > 0 && !r.s.winner; k++) {
@@ -3646,7 +3665,7 @@ function fitsFree(r: Run, op: Extract<Op, { op: 'playPile' }>, c: CardInst): boo
 function searedTick(r: Run, u: Unit): void {
   const n = stacks(u, 'seared');
   if (n <= 0 || u.hp <= 0) return;
-  applyDamage(r, null, u, n, 'direct');
+  applyDamage(r, null, u, n, 'direct', false, false, u.statusSources?.seared);
   addStatus(r, u, 'seared', -1);
 }
 
@@ -3654,7 +3673,7 @@ function searedTick(r: Run, u: Unit): void {
 function burnTick(r: Run, u: Unit): void {
   const n = stacks(u, 'burn');
   if (n <= 0 || u.hp <= 0) return;
-  applyDamage(r, null, u, n, 'burn');
+  applyDamage(r, null, u, n, 'burn', false, false, u.statusSources?.burn);
   addStatus(r, u, 'burn', -1);
 }
 
@@ -3937,6 +3956,20 @@ function fireTriggers(
     // a limited Aura that brings an ally back is not spent when there is nobody to bring back
     if (p.left !== undefined && p.ops.some((o) => o.op === 'revive') && !sd.fallen?.length)
       continue;
+    let ops = p.ops;
+    const limit = p.perTurnLimit ?? p.perRoundLimit;
+    if (limit !== undefined) {
+      const at = p.perRoundLimit !== undefined ? (sd.turnBegan ?? r.s.turn) : r.s.turn;
+      if (p.usesAt !== at) {
+        p.usesAt = at;
+        p.uses = 0;
+      }
+      if ((p.uses ?? 0) >= limit) {
+        if (!p.afterLimit?.length) continue;
+        ops = p.afterLimit;
+      }
+      p.uses = (p.uses ?? 0) + 1;
+    }
     // (it answers now: a once-a-turn Aura is spent for the turn, a limited one has one answer fewer)
     if (p.once || p.round) p.firedTurn = r.s.turn;
     if (p.left !== undefined && --p.left <= 0) sd.powers = sd.powers.filter((x) => x !== p);
@@ -3951,7 +3984,7 @@ function fireTriggers(
         spent: ctx.spent ?? 0,
         lost: ctx.lost ?? 0,
       }),
-      p.ops,
+      ops,
     );
   }
   r.depth--;
@@ -4027,6 +4060,19 @@ function reap(r: Run): void {
       r.s.sides[s2].deaths = (r.s.sides[s2].deaths ?? 0) + dead.length;
     // an ally that falls is remembered (Revive) and its owner's Auras hear about it
     const fell = dead.filter((u) => u.kind === 'ally');
+    const frame = sd.discipline;
+    if (frame?.rule.kind === 'frame' && frame.rule.recoverPct && frame.rule.recoverCap) {
+      for (const u of fell)
+        if (slotsOf(r.db, u.def) >= frame.rule.minSlots) {
+          frame.recovery = Math.max(
+            frame.recovery ?? 0,
+            Math.min(
+              frame.rule.recoverCap,
+              Math.floor(((u.investedHp ?? 0) * frame.rule.recoverPct) / 100),
+            ),
+          );
+        }
+    }
     for (const u of fell) (sd.fallen ??= []).push(u.def);
     for (const u of fell) {
       // A charged revival buff answers one death, spending before revival can trigger another death.
@@ -4435,6 +4481,9 @@ function beginHeroTurn(r: Run, side: Side): void {
         // (a trait's trigger narrows like an Aura's: once a turn is the Monk's Serene Mana, DECISIONS #413)
         ...(t.once ? { once: true } : {}),
         ...(t.ownTurn ? { ownTurn: true } : {}),
+        ...(t.perTurnLimit ? { perTurnLimit: t.perTurnLimit } : {}),
+        ...(t.perRoundLimit ? { perRoundLimit: t.perRoundLimit } : {}),
+        ...(t.afterLimit ? { afterLimit: t.afterLimit } : {}),
         ...(t.round ? { round: true } : {}),
         ...(t.ethereal ? { ethereal: true } : {}),
         ...(t.minCost !== undefined ? { minCost: t.minCost } : {}),

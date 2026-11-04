@@ -1,0 +1,39 @@
+# Balance history
+
+Start with [the current chart, 0.195.0](0.195.0.md). Compare [0.194.0](0.194.0.md), the released baseline. Version 0.195.0 is a local implementation awaiting review and release approval.
+
+[Baseline assessment revision 2](0.194.0-review-2.md) corrects retrospective progression and fight-development sub-grades that initially reused projected values. The original assessment remains intact. The original overall Arena grades are unchanged; this is an assessment correction, not another game version.
+
+Each version has an authored JSON assessment, a generated Markdown chart and a CSV. Preserve earlier assessments once reviewed/committed. Add a new snapshot for every future balance pass, including unchanged rows, previous grades, exact source/rules/version, reasons, uncertainties and evidence. Corrections belong in the next assessment; do not silently revise history. Rebuild display files with `pnpm balance:history`; this command does not rate decks or simulate games.
+
+The thirty example styles are reference decks in the design sense: they do not restore predefined builds or card-pool grouping. Players can combine engines and invent others. Each Ascendancy is assessed with the base class and its available cards. Marginal passive power, resource efficiency and deck strength are different questions.
+
+Grades are **estimates**, with low or low–moderate confidence. **A+/A/A−** are sub-bands of competitive strength, **B** identifies a material consistency problem and **S** a suspected outlier. A-band parity and campaign beatability are targets until tested. No real-match dataset informed these first two assessments. Baseline Arena grades preserve the earlier conversation; campaign and sub-band baseline grades are retrospective estimates authored now. The documented free-loop and trigger-scope corrections qualify the original grades.
+
+Ascendancies unlock after clearing Tier III. Grade I–III at class level. Separate campaign progression (IV–X, XI–XVI, XVII–XX) from fight development (opening turns 1–3, extended turns 6–10). Arena uses different HP and encounter conditions; the shared rules must still work in both modes. Arena opening/extended estimates do not imply every hand or opponent is equally favorable.
+
+## Real playtest reports
+
+Settings → Playtest and performance reports → **Export playtest results** downloads JSON. Collection begins with this version; there is no retroactive invention of results. The device keeps its latest 1,500 observations. Desktop saves preserve the journal with the account/offline save. Browser reports stay local and are not cloud-synced. Nobody receives a report automatically. Reports contain class/Ascendancy, coarse deck quality, fight result and timing counters, campaign tier/difficulty or Arena matchup/seat, build/rules version, Ascendancy selection and run endings. They contain no names, account IDs, seeds, full decks or action logs. Arena IDs are public replay identifiers; campaign observation IDs are salted local fingerprints. These are client-observed playtests, not anti-cheat or verified server analytics.
+
+Aggregate friends' manually shared files with:
+
+```text
+pnpm balance:report C:/path/alice.json C:/path/bob.json --out D:/Code/ShatteredRifts/.wrangler/playtest-report
+```
+
+The command writes `REPORT.md`, `samples.csv` and deduplicated `samples.json`. Relative input/output paths resolve from `tools` through the pnpm workspace script; absolute paths avoid ambiguity. It never runs bots. Keep raw player exports in ignored `.wrangler` unless intentionally publishing a reviewed aggregate.
+
+Do not combine versions, human opponents and ghosts, unascended decks, seat order, campaign difficulty or tier bands. Arena exports can contain two seat observations of the same game: count unique game IDs separately, and never treat the two seats as independent matches. The decisive-fight win rate excludes draws and prints its denominator. Banked and abandoned runs are censored, not losses. Quality columns and raw CSV allow comparisons at similar size/upgrades/rares; they do not control for player skill, exact deck composition, Boons, matchmaker selection or survivor bias. Run endings include their actual reason. Selection counts describe players who reached Ascendancy, not all starters or offer-adjusted pick rates. Missing observations do not become 0% win rates.
+
+`turnIndex` is the engine turn index; Arena `endedTurns` counts accepted End turn actions, including replayed history after reconnect. Neither is an interchangeable count of full rounds. Forfeits may lack a turn index. Report versions stamp the client observing the result; compare against server rules/version when investigating mixed-client playtests.
+
+## Acceptance and next iteration
+
+- Test each style at comparable deck size/upgrades in campaign IV–X, XI–XVI and XVII–XX, recording both wins and failures. Do not credit an Ascendancy for I–III results.
+- In human Arena, test both seats against pressure, control/cleanse, companion removal and long growth decks. Keep ghost results separate. Watch Golemancer/Deathwish reliability and the upper-band Consume/Fracture/draw engines first.
+- Review repeatable zero-cost draw/Mana, delayed payment, multi-hit amplification, and removal/rebuild costs before broadly raising damage. Use the costing ledger and real results.
+- A useful initial warning after at least 30 relevant games per style is a decisive win rate outside 45–55%, a large seat gap, or frequent unwinnable setup losses at comparable quality. These are review signals, not statistical proof of fairness; report sample counts and matchup coverage.
+- Keep campaign enemy damage curve unchanged for this pass. Tier XVII–XX should be difficult; measure whether every style has a practical damage-and-survival plan, not an identical clear time.
+
+See [the implementation ledger](../SHARED_BALANCE_2026-11-04.md) for exact changes, resource-card costing and counterplay limits.

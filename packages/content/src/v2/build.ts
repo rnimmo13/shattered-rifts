@@ -272,6 +272,9 @@ export const on = (
     ownTurn?: boolean;
     /** once a round: its side's turn and the other side's after it (DECISIONS #542) */
     round?: boolean;
+    perTurnLimit?: number;
+    perRoundLimit?: number;
+    afterLimit?: Op[];
     ethereal?: boolean;
     minCost?: number;
     pin?: boolean;

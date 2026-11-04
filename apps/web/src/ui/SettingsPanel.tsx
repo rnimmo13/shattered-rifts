@@ -20,6 +20,7 @@ import { DesktopAccount } from '../pvp/DesktopAccount';
 import { SettingsRow as Row } from './SettingsRow';
 import { WebUpdateControls } from './UpdatePrompt';
 import { BUILD } from '../build';
+import { downloadBalanceReport } from '../app/balanceJournal';
 import { localOnly, releasePlayAccess } from '../playAccess';
 import { battleActive, subscribeBattle } from '../battleActivity';
 import {
@@ -396,7 +397,15 @@ export function SettingsPanel() {
 
           {/* (a report of the stalls on this computer, to send in: DECISIONS #572) */}
           <section className="settings__group" aria-labelledby="settings-perf">
-            <h3 id="settings-perf">Performance report</h3>
+            <h3 id="settings-perf">Playtest and performance reports</h3>
+            <Row
+              label="Balance playtest results"
+              hint="Export recent fight results, class choices, deck quality and versions to share with the developer. Kept on this device; no names, account details or automatic uploads."
+            >
+              <button type="button" className="btn btn--small" onClick={downloadBalanceReport}>
+                <span>Export playtest results</span>
+              </button>
+            </Row>
             <Row
               label="Record a report"
               hint="If the game stutters, record a report: play a fight or two as usual, press Stop at the bottom left, then copy the report and send it in. It holds only timings and this computer's graphics and browser details."

@@ -27,6 +27,21 @@ export function validateDb(db: CombatDb): string[] {
     },
   ): void => {
     for (const o of ops) {
+      if ('scale' in o && o.scale) {
+        if (o.scale.min !== undefined && (!Number.isFinite(o.scale.min) || o.scale.min < 0))
+          errs.push(`${where}: scale minimum must be nonnegative and finite`);
+        if (o.scale.min !== undefined && o.scale.max !== undefined && o.scale.min > o.scale.max)
+          errs.push(`${where}: scale minimum exceeds maximum`);
+      }
+      if (o.op === 'power') {
+        for (const limit of [o.perTurnLimit, o.perRoundLimit])
+          if (limit !== undefined && (!Number.isInteger(limit) || limit < 1))
+            errs.push(`${where}: trigger limits must be positive integers`);
+        if (o.perTurnLimit !== undefined && o.perRoundLimit !== undefined)
+          errs.push(`${where}: choose a turn or round limit, not both`);
+        if (o.afterLimit && o.perTurnLimit === undefined && o.perRoundLimit === undefined)
+          errs.push(`${where}: afterLimit requires a trigger limit`);
+      }
       if (
         o.op === 'attackAura' &&
         (!Number.isFinite(o.amount) ||
@@ -129,7 +144,7 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: raises unknown unit "${o.unit}"`);
       if (o.op === 'power') {
         if (!opts.card) errs.push(`${where}: "power" only works in a card`);
-        checkOps(`${where}.power`, o.ops, {
+        checkOps(`${where}.power`, [...o.ops, ...(o.afterLimit ?? [])], {
           // (an Aura that answers your Attack hitting an enemy aims at that enemy: Envenom; so do Fate and debuff answers, a pinned
           // Aura, and an awakening's Aura, at each enemy the totem struck)
           aimed:

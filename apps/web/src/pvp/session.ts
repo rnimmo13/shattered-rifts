@@ -17,6 +17,7 @@ import {
 } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 import { recordMatch } from './matchHistory';
+import { balanceFighter, recordBalance } from '../app/balanceJournal';
 import { soonSyncRuns } from '../run/runCloud';
 import { playSocketUrl } from '../playAccess';
 
@@ -158,6 +159,7 @@ export class PvpSession {
   private room: string | null = null;
   /** the highest move number given to the screen (a rejoin replays from 1; those already seen are skipped) */
   private lastSeq = 0;
+  private balanceEndedTurns = 0;
   private retries = 0;
   private closing = false;
   private retryTimer: number | undefined;
@@ -440,6 +442,7 @@ export class PvpSession {
         }
         // a new game (the first, or the next of the best of three): moves are counted from 1 again
         this.lastSeq = 0;
+        this.balanceEndedTurns = 0;
         const feed = new MoveFeed();
         this.set({
           phase: 'match',
@@ -474,6 +477,7 @@ export class PvpSession {
         const match = this.snap.match;
         if (!match || m.seq <= this.lastSeq) return;
         this.lastSeq = m.seq;
+        if (m.action.type === 'endTurn') this.balanceEndedTurns++;
         match.feed.push({
           kind: 'move',
           move: { seq: m.seq, seat: m.seat, action: m.action, hash: m.hash, deadline: m.deadline },
@@ -491,6 +495,28 @@ export class PvpSession {
       case 'replay': {
         const match = this.snap.match;
         if (!match?.end) return;
+        if ('hero' in match.setup.b) {
+          const own = match.setup[match.seat];
+          const foe = match.setup[match.seat === 'a' ? 'b' : 'a'];
+          if ('hero' in own && 'hero' in foe)
+            recordBalance({
+              id: `arena:${m.id}:${match.seat}`,
+              kind: 'fight',
+              mode: 'arena',
+              source: match.ghost === null ? 'human' : 'ghost',
+              seat: match.seat,
+              player: balanceFighter(own.hero, own.ascendancy, own.deck),
+              opponent: balanceFighter(foe.hero, foe.ascendancy, foe.deck),
+              outcome:
+                match.end.winner === 'draw'
+                  ? 'draw'
+                  : match.end.winner === match.seat
+                    ? 'win'
+                    : 'loss',
+              reason: match.end.reason,
+              endedTurns: this.balanceEndedTurns,
+            });
+        }
         // the game just ended was kept: it goes into this device's match history (once: a rejoin hears it again)
         recordMatch({
           id: m.id,

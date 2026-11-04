@@ -38,6 +38,8 @@ const KEYS = new Set([
   'sr-vault-v1',
   'sr-vault-code',
   'sr.matchHistory',
+  'sr.balanceSamples.v1',
+  'sr.balanceSalt.v1',
   'sr.pendingDrops',
   'sr-cosmetics',
   'sr.hero',

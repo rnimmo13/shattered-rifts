@@ -462,6 +462,9 @@ export interface Scale {
   rune?: string;
   /** (DECISIONS #434) the scaled part is at most this much ("+1 per HP you lost, at most 6") */
   max?: number;
+  /** Lower bound and rounding of the scaled contribution. Defaults to floor with no minimum. */
+  min?: number;
+  round?: 'ceil';
 }
 
 /** When a Power's trigger fires. */
@@ -527,8 +530,21 @@ export type TriggerWhen =
 /** Data-driven combat disciplines. No class or card ids are interpreted by the engine. */
 export type CombatDiscipline =
   | { kind: 'reserves'; perSpent: number; cap: number }
-  | { kind: 'retaliation'; perLostPct: number; roundCap: number; cap: number }
-  | { kind: 'frame'; minSlots: number; perHp: number; cap: number }
+  | {
+      kind: 'retaliation';
+      perLostPct: number;
+      roundCap: number;
+      cap: number;
+      paymentBonus?: number;
+    }
+  | {
+      kind: 'frame';
+      minSlots: number;
+      perHp: number;
+      cap: number;
+      recoverPct?: number;
+      recoverCap?: number;
+    }
   | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
   | { kind: 'execution'; perSkill: number; cap: number; woundedPct: number; bonus: number }
   | { kind: 'cultivation'; minimum: number; spirit: number }
@@ -537,8 +553,14 @@ export type CombatDiscipline =
   | { kind: 'radiance'; first: number; step: number; cap: number }
   | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
   | { kind: 'brewing'; cap: number; healPct: number; barrier: number }
-  | { kind: 'harvest'; base: number; perConsumed: number }
-  | { kind: 'desperation'; threshold: number; bonus: number; emergencyBarrierPct: number };
+  | { kind: 'harvest'; base: number; perConsumed: number; roundLimit?: number }
+  | {
+      kind: 'desperation';
+      threshold: number;
+      bonus: number;
+      emergencyBarrierPct: number;
+      rampFrom?: number;
+    };
 
 export interface DisciplineState {
   rule: CombatDiscipline;
@@ -552,6 +574,9 @@ export interface DisciplineState {
   counts?: Partial<Record<Element, number>>;
   elementTurns?: Partial<Record<Element, number>>;
   lastElement?: Element;
+  /** Frame recovery saved for the next newly built qualifying companion (never a revival). */
+  recovery?: number;
+  paymentTurn?: number;
 }
 
 export type Op =
@@ -671,6 +696,11 @@ export type Op =
       once?: boolean;
       /** only during the owner's turn; stance triggers exclude initial setup */
       ownTurn?: boolean;
+      /** Number of qualifying activations before switching to afterLimit (or stopping). */
+      perTurnLimit?: number;
+      /** Same limit measured from the start of the owner's turn to its next turn. */
+      perRoundLimit?: number;
+      afterLimit?: Op[];
       /** it answers only once a round: from the start of its side's turn to the next, the other side's turn included (DECISIONS #542) */
       round?: boolean;
       /** 'play' / 'draw': only Fleeting cards */
@@ -1243,6 +1273,10 @@ export interface Unit {
   maxHp: number;
   barrier: number;
   statuses: Partial<Record<StatusId, number>>;
+  /** Origin of a debuff, including damage-over-time on the other side's turn. */
+  statusSources?: Partial<Record<StatusId, Side>>;
+  /** Max HP earned after creation; inherited Salvage/recovery never enters this counter. */
+  investedHp?: number;
   taunt: boolean;
   intent: ChosenMove | null;
   /** moves this unit has used (drives patterns) */
@@ -1335,6 +1369,11 @@ export interface PowerState {
   temp?: boolean;
   once?: boolean;
   ownTurn?: boolean;
+  perTurnLimit?: number;
+  perRoundLimit?: number;
+  afterLimit?: Op[];
+  usesAt?: number;
+  uses?: number;
   /** once a round (see the op's `round`) */
   round?: boolean;
   ethereal?: boolean;

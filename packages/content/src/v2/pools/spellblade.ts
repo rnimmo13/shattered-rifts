@@ -794,7 +794,15 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     2,
     'none',
-    [on('play', [fracture(2, 'targetOrMostFracture')], { tag: SWORD, orTag: SPELL })],
+    [
+      on('play', [fracture(2, 'targetOrMostFracture')], {
+        tag: SWORD,
+        orTag: SPELL,
+        ownTurn: true,
+        perTurnLimit: 6,
+        afterLimit: [fracture(1, 'targetOrMostFracture')],
+      }),
+    ],
     { up: { cost: 1 } },
   ),
   a(

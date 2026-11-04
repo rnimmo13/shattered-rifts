@@ -147,6 +147,7 @@ export function CardOffer(props: {
   /** a Potion this fight dropped */
   potion?: string | undefined;
   onPick: (id: string) => void;
+  onReroll?: (() => void) | undefined;
   onSkip?: (() => void) | undefined;
   /** the player's Riftwalker, to tag cards from another one */
   character?: string | undefined;
@@ -220,6 +221,11 @@ export function CardOffer(props: {
             />
           ))}
         </div>
+      )}
+      {!sp && props.onReroll && (
+        <button className="btn" onClick={props.onReroll}>
+          <span>Reroll cards · once per Rift Tier</span>
+        </button>
       )}
       {!sp && props.onSkip && (
         <button className="btn" onClick={props.onSkip}>

@@ -5,6 +5,7 @@
 import type { RunState } from '@sr/campaign';
 import type { FightReplay } from '../fight/recap';
 import { BUILD } from '../build';
+import { recordBalanceRun } from '../app/balanceJournal';
 import { canonicalCard } from '@sr/content/v2';
 
 const KEY = 'sr.runHistory';
@@ -95,6 +96,7 @@ export function recordOf(
 
 /** Keep a run that has ended (the newest few keep their last fight; the oldest go when the list is full). */
 export function addToHistory(rec: RunRecord): void {
+  recordBalanceRun(rec);
   write([rec, ...read().filter((r) => r.id !== rec.id)]);
 }
 

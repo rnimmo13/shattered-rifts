@@ -363,6 +363,8 @@ export interface RunState {
   ledger?: number;
   /** card removals bought from merchants this run, a count only: the price goes by the shop (DECISIONS #493); missing = none */
   removals?: number;
+  /** Tier whose combat-card reward reroll was used. Missing = unused. */
+  rewardRerollTier?: number;
   /** the Warden's Heart this run holds, if any (DECISIONS #246) */
   heart?: string;
   /** the Ascendancy this run has taken (DECISIONS #519) */

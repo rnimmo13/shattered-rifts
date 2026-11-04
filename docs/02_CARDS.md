@@ -1,5 +1,7 @@
 # Shattered Rifts: Cards
 
+> Current local shared balance changes (0.195.0/rules79) and resource-card audit: [SHARED_BALANCE_2026-11-04.md](SHARED_BALANCE_2026-11-04.md). Estimated strength history for every Ascendancy/build: [balance-history](balance-history/README.md). The generated card list below remains the current card-text reference.
+
 > This is the legacy duel card document. Current Combat v2 numbers are generated in
 > [`10_CARD_LIST.md`](10_CARD_LIST.md). The approved 2026-11-03 rebalance, including upgrades,
 > is recorded in [`BALANCE_PROPOSAL_2026-11-03.md`](BALANCE_PROPOSAL_2026-11-03.md) and DECISIONS #574.

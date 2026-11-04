@@ -19,13 +19,29 @@ export function disciplineTrigger(
   const r = d.rule;
   const own = state.active === side.id;
   const barrier = (amount: number): Op => ({ op: 'barrier', amount, to: 'self' });
-  if (r.kind === 'harvest' && when === 'exhaust') d.progress++;
+  if (r.kind === 'harvest' && when === 'exhaust' && d.roundGain < (r.roundLimit ?? Infinity)) {
+    d.progress++;
+    d.roundGain++;
+  }
   if (r.kind === 'retaliation' && when === 'hurt' && (ctx.lost ?? 0) > 0) {
     // Fractional percentage charge is retained, avoiding rewards for splitting a loss into many hits.
     const gain = Math.max(
       0,
       Math.min(r.roundCap - d.roundGain, ((ctx.lost ?? 0) * 100 * r.perLostPct) / hero.maxHp),
     );
+    d.roundGain += gain;
+    d.progress = Math.min(r.cap, d.progress + gain);
+  }
+  if (
+    r.kind === 'retaliation' &&
+    own &&
+    when === 'loseHp' &&
+    (ctx.lost ?? 0) > 0 &&
+    r.paymentBonus &&
+    d.paymentTurn !== state.turn
+  ) {
+    d.paymentTurn = state.turn;
+    const gain = Math.min(r.paymentBonus, Math.max(0, r.roundCap - d.roundGain));
     d.roundGain += gain;
     d.progress = Math.min(r.cap, d.progress + gain);
   }
@@ -138,7 +154,15 @@ export function disciplineAttack(
     d.target = target.id;
   }
   if (r.kind === 'fury' && (actor.statuses.wrath ?? 0) > 0) return d.progress;
-  if (r.kind === 'desperation' && actor.hp * 100 <= actor.maxHp * r.threshold) return r.bonus;
+  if (r.kind === 'desperation') {
+    const hpPct = (actor.hp * 100) / actor.maxHp;
+    if (hpPct <= r.threshold + 1e-9) return r.bonus;
+    if (r.rampFrom && r.rampFrom > r.threshold)
+      return Math.max(
+        0,
+        Math.floor((r.bonus * (r.rampFrom - hpPct)) / (r.rampFrom - r.threshold) + 1e-9),
+      );
+  }
   return 0;
 }
 
@@ -160,7 +184,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
     case 'retaliation':
       return `Retaliation ${Math.floor(d.progress)}%`;
     case 'frame':
-      return 'Reinforced machines';
+      return `Reinforced machines${d.recovery ? ` · ${d.recovery} HP saved` : ''}`;
     case 'pursuit':
       return `${
         Object.values(state.sides)
@@ -198,7 +222,7 @@ export function disciplineText(side: SideState): string | null {
     case 'retaliation':
       return `Retaliation: next Attack +${Math.floor(d.progress)}%. Round charge ${Math.floor(d.roundGain)}/${r.roundCap}%.`;
     case 'frame':
-      return `Large-machine attacks: +${r.perHp}% per max HP, up to +${r.cap}%.`;
+      return `Large-machine attacks: +${r.perHp}% per max HP, up to +${r.cap}%. Rebuild reserve: ${d.recovery ?? 0} max HP. Death saves half earned growth, up to ${r.recoverCap ?? 0}; new builds use it, revivals do not.`;
     case 'pursuit':
       return `Attacks against your marked enemy deal ${d.progress}% more damage.`;
     case 'execution':
@@ -216,7 +240,7 @@ export function disciplineText(side: SideState): string | null {
     case 'brewing':
       return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${d.progress * r.healPct}% max HP and gives ${d.progress * r.barrier} Barrier.`;
     case 'harvest':
-      return `${d.progress} cards consumed this fight. After hand cleanup and companion actions, consuming a card this turn enables one Reap for ${r.base + r.perConsumed * d.progress} non-attack damage against the lowest-HP enemy. Barrier can absorb it.`;
+      return `Harvest ${d.progress}; ${d.roundGain}/${r.roundLimit ?? '∞'} eligible consumptions this round. After hand cleanup and companion actions, consuming a card this turn enables one Reap for ${r.base + r.perConsumed * d.progress} non-attack damage against the lowest-HP enemy. Barrier can absorb it.`;
     case 'desperation':
       return `Death-defying save: ${d.used ? 'spent this fight' : 'available once this fight'}.`;
   }

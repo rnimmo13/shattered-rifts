@@ -1,0 +1,1034 @@
+{
+  "schema": 1,
+  "date": "2026-11-04",
+  "measuredMatches": 0,
+  "target": "Three or more distinct competitive A-band play styles per class in both modes; campaign XVII–XX extremely difficult but beatable. This is an acceptance target, not established parity.",
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "A",
+      "rationale": "Reserves and straightforward defense/attacks provide a reliable opening."
+    },
+    {
+      "hero": "engineer",
+      "grade": "A−",
+      "rationale": "Improved Drone and Pulse Pistol help; large-machine setup is still resource hungry."
+    },
+    {
+      "hero": "hunter",
+      "grade": "A",
+      "rationale": "Pack damage and blood resources are productive early."
+    },
+    {
+      "hero": "trickster",
+      "grade": "A+",
+      "rationale": "Efficient suit/cycling pool gives broad early flexibility; pool parity unresolved."
+    },
+    {
+      "hero": "assassin",
+      "grade": "A",
+      "rationale": "Recurring Dagger and efficient Skills provide consistent damage."
+    },
+    {
+      "hero": "shaman",
+      "grade": "A",
+      "rationale": "Two starting totems offer immediate value before row investment."
+    },
+    {
+      "hero": "monk",
+      "grade": "A",
+      "rationale": "Stance sequencing is strong but mistakes can expose the hero."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "A",
+      "rationale": "Starting Spell Power supplies an early spend/rebuild rhythm."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "A−",
+      "rationale": "Small Thralls and slower Fate/Consume development need protection."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "A−",
+      "rationale": "Gun and drink setup can compete, but HP/Hangover management is less forgiving."
+    }
+  ],
+  "basis": "Theorycraft assessment of plausible developed decks at comparable upgrade quality. No balance simulations or real-match dataset used. Grades include the class pool and base trait; the marginal Ascendancy is discussed separately. A deterministic fixture establishes behavior, never a win-rate or a tier grade.",
+  "version": "0.195.0",
+  "rules": 79,
+  "status": "Local implementation, unreleased",
+  "source": "Working tree based on 92466e2; decision 595",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Strong while Barrier survives",
+      "rareReliance": "Moderate for finishers",
+      "scaling": "60% retained Barrier compounds only when generation exceeds incoming pressure",
+      "rationale": "Retention gives useful defense immediately and supports scaled Barrier attacks later. Strong late potential depends on converting defense into damage.",
+      "watch": "Piercing damage, direct HP loss and slow kills against scaling foes.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; resources refill",
+      "rareReliance": "Low–moderate",
+      "scaling": "Up to +40% attack damage from actual Reserves spent that turn",
+      "rationale": "The extra Reserve and percentage payoff grow with upgraded attacks, rather than adding a fixed early-only bonus.",
+      "watch": "Time spent banking; the opening hand may not access Reserves efficiently.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "A−",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; spent HP still matters",
+      "rareReliance": "Low–moderate",
+      "scaling": "First real payment +10 percentage points, within 30/round and 60 stored",
+      "rationale": "A meaningful payment now charges even at large Arena HP. The real-HP-loss rate remains and the bank boosts all hits of the next Attack.",
+      "watch": "Multi-hit burst stacking; campaign attrition and healing access.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "A−",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; replacements retain Fabrication",
+      "rareReliance": "Moderate",
+      "scaling": "+1 damage per hit per 3 successful new summons, four slots, 1 Primed per companion",
+      "rationale": "Earlier Fabrication improves ordinary swarm growth. Consume recycling prevents the former repeatable free loop from defining its ceiling.",
+      "watch": "Area damage, summoning Mana costs, command density; unrestricted copy/reclaim engines still need observation.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "A−",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "B+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A−",
+        "opening": "B+",
+        "extended": "A"
+      },
+      "setup": "High",
+      "recovery": "Improved; 50% earned growth bank, cap 30",
+      "rareReliance": "Moderate",
+      "scaling": "+3 companion max HP/turn; +1% large-machine attack per max HP, capped +100%",
+      "rationale": "Recovery reduces the loss of a grown machine without removing the existing HP-to-damage conversion. It still needs time and a replacement card.",
+      "watch": "Focused companion removal and setup time remain its largest uncertainties; recovery does not refund summon Mana.",
+      "confidence": "low",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; hero retains Might",
+      "rareReliance": "Moderate",
+      "scaling": "+1 Might each own turn, first Attack 3 Barrier",
+      "rationale": "Weapon damage grows without depending on a fragile summon board. Continuous friendly attack bonuses can support a hybrid list.",
+      "watch": "Rotary Cannon and Primed stacking; generic draw and Mana access.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; companions inherit current share",
+      "rareReliance": "Moderate",
+      "scaling": "75% Might sharing makes each companion hit scale",
+      "rationale": "Might investment is multiplied across a pack; this remains a distinct board-focused option beside burst Hunter decks.",
+      "watch": "Board wipes, ally slots and protecting newly built companions.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Moderate; hero HP is the resource",
+      "rareReliance": "Low–moderate",
+      "scaling": "First own HP payment each turn draws 1 and grants 2 Primed",
+      "rationale": "Cheap blood cards convert risk into tempo. Its unchanged pool may still make it an upper-band option.",
+      "watch": "Flat HP payments at Arena HP; pool efficiency remains unresolved.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good while draw remains available",
+      "rareReliance": "Moderate",
+      "scaling": "First 6 additional draws give 2 Primed; later draws give 1",
+      "rationale": "Normal draw turns keep their payoff while extreme draw chains grow at half the former marginal rate. Large burst remains intentional.",
+      "watch": "One Attack cashes all Primed; free draw chains remain a card-pool risk.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if traps can be reset",
+      "rareReliance": "Low–moderate",
+      "scaling": "Each sprung Trap draws 1 and gives 2 Barrier",
+      "rationale": "Reactive cycling supports defense and deck access; opponents must actually trigger the trap conditions.",
+      "watch": "Skill-heavy opponents and avoided traps reduce both defense and draw.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good; little board investment",
+      "rareReliance": "Low–moderate",
+      "scaling": "Full Trick also grants 1 Mana, on top of class suit rewards",
+      "rationale": "Suit completion rewards sequencing and keeps developed decks moving. No new card-pool restrictions are introduced.",
+      "watch": "Class pool may offer too much cheap draw/Mana; Ascendancy parity cannot settle that concern alone.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; target switch restarts growth",
+      "rareReliance": "Low–moderate",
+      "scaling": "Marked target +10% per qualifying turn to +50%, with first aimed Attack Exposed",
+      "rationale": "Percentage pressure has a late payoff and starts with a real debuff. Long single-target fights favor it.",
+      "watch": "Frequent target changes and untargeted damage lower the payoff.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; Daggers regenerate each turn",
+      "rareReliance": "Moderate for multipliers",
+      "scaling": "One extra Dagger every turn scales with Edge/Might and on-play effects",
+      "rationale": "Recurring attacks make per-hit growth valuable and provide consistent engine fuel.",
+      "watch": "Efficient neutral Mana/draw and rare multipliers may keep the best decks above the intended band.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; stacks can be cleansed",
+      "rareReliance": "Low–moderate",
+      "scaling": "Enemy Bleed/Burn ticks one extra time each turn, decaying for each tick",
+      "rationale": "Persistent damage ignores ordinary Attack scaling and rewards maintained stacks rather than one burst turn.",
+      "watch": "Cleanse timing, Fate races, and how often humans take existing counterplay.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; preparation rebuilt from Skills",
+      "rareReliance": "Low–moderate",
+      "scaling": "+15% per finished Skill up to +60%, plus additive +20% below half target HP",
+      "rationale": "A flexible burst path with a clear setup/payoff sequence and wounded-target finisher.",
+      "watch": "Does the next Attack reliably deserve the stored boost, including multi-hit effects?",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; row and Spirit need rebuilding",
+      "rareReliance": "Moderate",
+      "scaling": "+1 Spirit per qualifying no-command turn with 2+ totems; starts 1 Spirit/8 Barrier",
+      "rationale": "Standing rows can develop without consuming their investments. This does not gain Storm Sovereign activations from passive effects.",
+      "watch": "Long passive rows can overtake flat defenses; compare real command versus cultivation decisions.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if planting remains available",
+      "rareReliance": "Moderate",
+      "scaling": "First command/push-out each turn draws 1 and gives 4 Barrier",
+      "rationale": "A valuable consistent cycling reward remains. The shared Storm Sovereign cost and Barrier limit reduce the strongest command engine's sustain.",
+      "watch": "Earlier S rating overstated Sovereign's passive scope; unchanged trigger itself is only once per turn.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; earned element counts persist",
+      "rareReliance": "Moderate",
+      "scaling": "First of each element/turn grows by 1 per prior trigger, switching adds 2",
+      "rationale": "Three separately growing elemental rewards support a flexible sequence deck without a mandatory standing row.",
+      "watch": "Hand diversity and how often all three elements can be triggered safely.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; no persistent board required",
+      "rareReliance": "Low–moderate",
+      "scaling": "First Serene exit each turn gives 1 extra Mana",
+      "rationale": "A reliable resource bonus supports the base stance engine and lets larger upgraded cards fit into a turn.",
+      "watch": "Cheap stance cycling and card-pool efficiency; extra Mana is only useful with cards to spend it on.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if a safe exit is available",
+      "rareReliance": "Moderate",
+      "scaling": "First own-turn Fury entry +8% to +40%; first exit 4+2 per earned step Barrier",
+      "rationale": "Deliberate Fury exposure develops damage and a growing exit defense. Its risk is different from Serene or Radiant resource play.",
+      "watch": "Being trapped in Fury; incoming damage pressure and exit-card consistency.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "High",
+      "recovery": "Moderate; must reach another Radiant window",
+      "rareReliance": "Moderate",
+      "scaling": "First stance entry extra Fervor; Radiant exit returns 2, then 3, then 4",
+      "rationale": "Investment reduces the cost of later Radiant cycles, supporting strong developed fights.",
+      "watch": "Too few early stance tools or repeated Radiant turns overwhelming other damage paths.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; payoff requires little banking",
+      "rareReliance": "Low–moderate",
+      "scaling": "+1 per Sword hit and first Sword each turn draws 1",
+      "rationale": "Consistent throughput and card access; multi-hit cards keep a fixed Keen point useful later.",
+      "watch": "A fixed bonus can lag percentage builds unless the Sword deck has enough hits.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good after refund arrives",
+      "rareReliance": "Moderate",
+      "scaling": "First spending Spell Attack +1 per spent Power per hit; half refunded next turn",
+      "rationale": "A resource investment produces a scalable burst and partial recovery instead of fixed damage alone.",
+      "watch": "Extreme multi-hit expenditure and whether refund timing creates too much free late power.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "High",
+      "recovery": "Good; Fracture persists on target",
+      "rareReliance": "Moderate",
+      "scaling": "+15% Shatter damage; Fault Lines gives 2 Fracture for first 6 qualifying plays, then 1",
+      "rationale": "The growing payoff remains, while large free-play turns create Fracture more slowly. Cleansing cannot remove Fracture.",
+      "watch": "Permanent Fracture plus many cheap plays may still be an outlier; opponent pressure is the real counterplay.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "A−",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Improved recurring Raise; vulnerable board",
+      "rareReliance": "Moderate",
+      "scaling": "Extra Raise 2 each turn, +2 companion damage, on top of class Raise",
+      "rationale": "Stronger recurring bodies and per-hit damage help commands compete without needing the Consume engine.",
+      "watch": "Arena companion HP remains small beside hero HP; focus fire and late multi-enemy damage.",
+      "confidence": "low",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; Fate reduction delays execution",
+      "rareReliance": "Low–moderate",
+      "scaling": "2 Fate +2% target max HP at own turn start",
+      "rationale": "Percentage Fate remains relevant at large enemy HP and Arena HP. It is a delayed execution threshold, not immediate damage.",
+      "watch": "Random targets, cleanse and immunity timing; percentage contribution should not be counted twice as ordinary damage.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "High",
+      "recovery": "Good if Consume generation continues",
+      "rareReliance": "Moderate",
+      "scaling": "First 6 Consume/owner-round +1 Harvest/3 Barrier; one Reap 4+2 Harvest on qualifying own turns",
+      "rationale": "A normal three-Consume turn still gives 9 Barrier and reaches Reap 52 on turn eight. Extreme single-round feeding no longer grants unlimited growth.",
+      "watch": "Six consumes each round still reaches Reap 100 by turn eight; generation quality and Grave Chill may keep this path above A.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium–high",
+      "recovery": "Good once paid growth is established",
+      "rareReliance": "Moderate",
+      "scaling": "First actual own-turn Hangover payment adds a step to 5; each heals 1% max HP and gives 2 Barrier",
+      "rationale": "Sustain grows with hero HP and does not depend on making ever-larger Hangover piles. The payment is a real setup cost.",
+      "watch": "Percentage healing at Arena HP, actual payment avoidance and setup survival.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; weapon copies grow each turn",
+      "rareReliance": "Moderate",
+      "scaling": "Gun starts +3 Precision and gains +2 each own turn",
+      "rationale": "Weapon investment keeps scaling through extended fights without requiring low HP or Hangover payments.",
+      "watch": "Draw access to the gun and whether Precision scaling beats other weapon engines at comparable deck quality.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "A−",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A−",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "High",
+      "recovery": "Limited; one rescue buys a brief window",
+      "rareReliance": "Moderate",
+      "scaling": "Extra Attack bonus ramps below 70% to +25% at 40%; one hostile lethal rescue",
+      "rationale": "The ramp supplies payoff before the dangerous lowest band, and broader rescue closes the Skill/DoT hole. Multi-hit follow-ups remain dangerous.",
+      "watch": "Its A− estimate has low confidence: healing conflicts with the HP band and campaign attrition is real.",
+      "confidence": "low",
+      "evidence": [
+        "Authored rule/card review and hand costing",
+        "docs/14_CARD_COSTING.md",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/sharedBalance.test.ts (implementation only)"
+      ]
+    }
+  ],
+  "corrections": [
+    "All 30 estimates fall in the A band overall; Golemancer and Deathwish remain low-confidence A−, not proven repaired matchups.",
+    "Opening grades can remain B+ for a slow build while its complete-deck estimate is A−; no claim that every opening hand is equally strong.",
+    "No measured playtests used. Do not manufacture win rates or turn fixture success into A-tier evidence.",
+    "Storm Sovereign still does not trigger from passive effects; damage is uncapped, only Barrier is limited per copy.",
+    "Card-pool parity remains unresolved. Efficient draw/Mana, rare access, seat order, player skill, deck size and campaign investment affect results.",
+    "Reroll uses original odds and can show repeated cards. It improves choice access, not guaranteed synergy or rarity.",
+    "Build examples are descriptive, not predefined reward groups or an exhaustive list of viable decks."
+  ]
+}

@@ -1,5 +1,9 @@
 # Balance Notes
 
+## Current shared balance assessments (0.195.0, local)
+
+The maintained version history now lives in [balance-history](balance-history/README.md): [current 30-Ascendancy chart](balance-history/0.195.0.md), [released baseline](balance-history/0.194.0.md), [exact changes and hand ledger](SHARED_BALANCE_2026-11-04.md). These are estimated grades, not measured win rates. Older simulations below describe older rules and do not establish current balance. No new balance simulations were run. Real playtest exports can be aggregated with `pnpm balance:report`.
+
 ## Campaign: steady tier growth (0.177.0, 2026-11-03, DECISIONS #576)
 
 Normal scripted enemies use HP = 90 + 40 x (tier - 1) percent of printed HP,

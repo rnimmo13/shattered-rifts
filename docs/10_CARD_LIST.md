@@ -128,7 +128,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Spot Weld | 1 | attack | basic | Deal 5 damage. Gain 2 Barrier to all friends. |
 | Spare Parts | 0 | summon | common | Summon Micro Drone (3 HP; at the end of your turn it will deal 3 damage). Consume. |
 | Formation Strike | 1 | attack | common | Deal 2 (+4 per ally) damage. |
-| Strip for Parts | 0 | skill | common | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. |
+| Strip for Parts | 0 | skill | common | Gain Barrier equal to the target's HP. Draw 1 card. Sacrifice the chosen ally. Consume. |
 | Breach Charge | 1 | attack | common | Deal 3 damage. Summon Micro Drone (3 HP; at the end of your turn it will deal 3 damage). |
 | Deploy Spotter | 1 | summon | common | Summon Spotter Drone (4 HP; at the end of your turn it will apply 1 Exposed). |
 | Ping | 0 | skill | common | Apply 3 Primed to all friends. Consume. |
@@ -155,7 +155,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Parts Bin | 1 | skill | uncommon | Summon Micro Drone (3 HP; at the end of your turn it will deal 3 damage). Draw 1 card. |
 | Scrap Heap | 1 | skill | uncommon | Summon 2 Micro Drones (3 HP each; at the end of your turn each will deal 3 damage). Consume. |
 | Swarm Tactics | 1 | aura | uncommon | Whenever you summon an ally: Deal 6 (+1 per 4 companion summoned this fight) damage to a random enemy. |
-| Detonate | 0 | skill | uncommon | Deal 12 damage to ALL enemies. Sacrifice the chosen ally. |
+| Detonate | 0 | skill | uncommon | Deal 12 damage to ALL enemies. Sacrifice the chosen ally. Consume. |
 | Drone Ambush | 1 | trap | uncommon | At the start of the enemy turn: Deal 4 damage to ALL enemies and summon Micro Drone (3 HP; at the end of your turn it will deal 3 damage). |
 | Assemble | 1 | skill | uncommon | All your allies act now. Draw 1 card. |
 | Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. Each of your companions gains 2 Primed. |
@@ -586,7 +586,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Carve the Spirit Pole | 1 | skill | rare | Gain a totem position. Plant a random totem. Draw 1 card. |
 | Call the Elder Tree | 3 | skill | rare | Plant an Elder Tree. |
 | Call the Moon Owl | 2 | skill | rare | Plant a Moon Owl. |
-| Storm Sovereign | 1 | aura | rare | Whenever one of your totems acts: Deal 3 damage to ALL enemies and gain 3 Barrier. |
+| Storm Sovereign | 2 | aura | rare | Whenever you command a totem or push one out: Deal 3 damage to ALL enemies. Whenever you command a totem or push one out (first 3 activations each turn): Gain 3 Barrier. |
 | Spirit Walk | 1 | skill | rare | Gain 1 Spirit. Draw 2 cards. Consume. |
 | Echoing Strike | 2 | attack | rare | Flame. Deal 18 damage. Add a Flame Echo to your discard pile. |
 | Return of the Free | 2 | attack | rare | Flame. Deal 10 damage. Return every card that costs 0 from your discard pile to your hand. |
@@ -774,7 +774,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
 | Pillar of Glass | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Fault Reader | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
-| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell: Apply 2 Fracture to its target (or the enemy with the most Fracture). |
+| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell (first 6 activations each turn): Apply 2 Fracture to its target (or the enemy with the most Fracture). Whenever it activates again that turn: Apply 1 Fracture to its target (or the enemy with the most Fracture). |
 | Glass Armory | 1 | aura | uncommon | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
 | Warm Anvil | 2 | aura | uncommon | At the start of your turn: Gain 2 Spell Power. |
 | Sigil of Kindling | 1 | aura | uncommon | The first time each turn a card of yours grows: Gain 2 Spell Power and gain 2 (+1 per 3 Spell Power) Barrier. |
@@ -1000,7 +1000,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Final Reckoning | 2 | attack | rare | Deal damage equal to the target's Fate. Consume. |
 | Spreading Rot | 0 | attack | rare | Deal 7 damage. Put the target's debuffs on every other enemy too. |
 | Common Grave | 0 | skill | rare | Gain 2 Sapped. Apply 2 Sapped. Consume. |
-| Soul Tithe | 0 | aura | rare | Gain 3 Mana. Draw 2 cards. At the start of your turn: Curse yourself with 3 Fate. |
+| Soul Tithe | 0 | aura | rare | Gain 3 Mana. Draw 2 cards. At the start of your turn: Curse yourself with Fate equal to 2% of your max HP, rounded up (at least 3). |
 | Wailing Cry | 9 | attack | rare | Costs 2 less for each Fleeting card played this fight. Deal 33 damage to ALL enemies. |
 | Whispers Beyond | 1 | aura | rare | At the start of your turn: Add a random card from your pool to your hand, Fleeting. |
 | Phylactery | 3 | aura | rare | Fleeting. At the start of your turn: Gain 1 Mana and draw 1 card. |

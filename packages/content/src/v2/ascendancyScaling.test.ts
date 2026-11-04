@@ -123,7 +123,7 @@ describe('distinct late-game Ascendancy disciplines', () => {
   it('Blood Knight charges from actual lost HP with round and bank caps, then spends once for a multi-hit Attack', () => {
     let s = fight('knight', 'blood-knight');
     s = play(s, 'probe-blood').state;
-    expect(s.sides.a.discipline?.progress).toBe(20);
+    expect(s.sides.a.discipline?.progress).toBe(30);
     s = play(s, 'probe-blood').state;
     expect(s.sides.a.discipline?.progress).toBe(30);
     expect(damage(play(s, 'probe-double'))).toEqual([13, 13]);
@@ -341,7 +341,7 @@ describe('distinct late-game Ascendancy disciplines', () => {
     expect(dead.winner).toBe('b');
     expect(dead.sides.a.discipline?.used ?? false).toBe(false);
   });
-  it('Deathwish does not rescue lethal Skill damage or damage over time', () => {
+  it('Deathwish rescues hostile Skill damage but not unattributed damage over time', () => {
     const setup = {
       seed: 'last-stand-skill',
       a: { hero: 'knight', deck: ['probe-skill-damage'] },
@@ -352,8 +352,9 @@ describe('distinct late-game Ascendancy disciplines', () => {
     enemy.hp = 1;
     enemy.barrier = 0;
     const r = play(s, 'probe-skill-damage', enemy.id);
-    expect(r.state.winner).toBe('a');
-    expect(r.state.sides.b.discipline?.used ?? false).toBe(false);
+    expect(r.state.winner).toBeNull();
+    expect(hero(r.state, 'b').hp).toBe(1);
+    expect(r.state.sides.b.discipline?.used).toBe(true);
     const bleeding = fight('drunkard', 'deathwish');
     hero(bleeding).hp = 1;
     hero(bleeding).statuses.seared = 1;

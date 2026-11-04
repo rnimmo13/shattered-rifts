@@ -1,0 +1,1005 @@
+{
+  "schema": 1,
+  "date": "2026-11-04",
+  "measuredMatches": 0,
+  "target": "Three or more distinct competitive A-band play styles per class in both modes; campaign XVII–XX extremely difficult but beatable. This is an acceptance target, not established parity.",
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "A",
+      "rationale": "Reserves and straightforward defense/attacks provide a reliable opening."
+    },
+    {
+      "hero": "engineer",
+      "grade": "A−",
+      "rationale": "Improved Drone and Pulse Pistol help; large-machine setup is still resource hungry."
+    },
+    {
+      "hero": "hunter",
+      "grade": "A",
+      "rationale": "Pack damage and blood resources are productive early."
+    },
+    {
+      "hero": "trickster",
+      "grade": "A+",
+      "rationale": "Efficient suit/cycling pool gives broad early flexibility; pool parity unresolved."
+    },
+    {
+      "hero": "assassin",
+      "grade": "A",
+      "rationale": "Recurring Dagger and efficient Skills provide consistent damage."
+    },
+    {
+      "hero": "shaman",
+      "grade": "A",
+      "rationale": "Two starting totems offer immediate value before row investment."
+    },
+    {
+      "hero": "monk",
+      "grade": "A",
+      "rationale": "Stance sequencing is strong but mistakes can expose the hero."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "A",
+      "rationale": "Starting Spell Power supplies an early spend/rebuild rhythm."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "A−",
+      "rationale": "Small Thralls and slower Fate/Consume development need protection."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "A−",
+      "rationale": "Gun and drink setup can compete, but HP/Hangover management is less forgiving."
+    }
+  ],
+  "basis": "Theorycraft assessment of plausible developed decks at comparable upgrade quality. No balance simulations or real-match dataset used. Grades include the class pool and base trait; the marginal Ascendancy is discussed separately. A deterministic fixture establishes behavior, never a win-rate or a tier grade.",
+  "version": "0.194.0",
+  "rules": 78,
+  "status": "Released baseline, retrospective assessment revision 2; original assessment preserved",
+  "source": "92466e2",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Strong while Barrier survives",
+      "rareReliance": "Moderate for finishers",
+      "scaling": "60% retained Barrier compounds only when generation exceeds incoming pressure",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Piercing damage, direct HP loss and slow kills against scaling foes.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; resources refill",
+      "rareReliance": "Low–moderate",
+      "scaling": "Up to +40% attack damage from actual Reserves spent that turn",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Time spent banking; the opening hand may not access Reserves efficiently.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A−",
+        "deep": "A−",
+        "endgame": "A−",
+        "openingFight": "B+",
+        "extendedFight": "A−"
+      },
+      "arena": {
+        "overall": "A−",
+        "opening": "B+",
+        "extended": "A−"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; spent HP still matters",
+      "rareReliance": "Low–moderate",
+      "scaling": "Retaliation from percentage HP lost, no flat payment bonus",
+      "rationale": "Original reported Arena estimate: A−. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Multi-hit burst stacking; campaign attrition and healing access.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A−",
+        "deep": "A−",
+        "endgame": "A−",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A−",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; replacements retain Fabrication",
+      "rareReliance": "Moderate",
+      "scaling": "Fabrication per 4 summons; repeatable Recycle/Detonate could fuel free loops",
+      "rationale": "Original reported Arena estimate: A−. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Area damage, summoning Mana costs, command density; unrestricted copy/reclaim engines still need observation.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": null,
+      "campaign": {
+        "developing": "B+",
+        "deep": "A−",
+        "endgame": "B+",
+        "openingFight": "B+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "B+",
+        "extended": "A"
+      },
+      "setup": "High",
+      "recovery": "Poor; grown machine loses all investment",
+      "rareReliance": "Moderate",
+      "scaling": "+3 max HP/turn, +1% attack/max HP to +100%, no recovery reserve",
+      "rationale": "Original reported Arena estimate: B+. Retrospective baseline: Large-unit damage scaling existed, but death lost its HP investment entirely.",
+      "watch": "Focused companion removal and setup time remain its largest uncertainties; recovery does not refund summon Mana.",
+      "confidence": "low",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; hero retains Might",
+      "rareReliance": "Moderate",
+      "scaling": "+1 Might each own turn, first Attack 3 Barrier",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Rotary Cannon and Primed stacking; generic draw and Mana access.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; companions inherit current share",
+      "rareReliance": "Moderate",
+      "scaling": "75% Might sharing makes each companion hit scale",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Board wipes, ally slots and protecting newly built companions.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Moderate; hero HP is the resource",
+      "rareReliance": "Low–moderate",
+      "scaling": "First own HP payment each turn draws 1 and grants 2 Primed",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Flat HP payments at Arena HP; pool efficiency remains unresolved.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A+",
+        "deep": "S",
+        "endgame": "A+",
+        "openingFight": "A+",
+        "extendedFight": "S"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A+",
+        "extended": "S"
+      },
+      "setup": "Medium",
+      "recovery": "Good while draw remains available",
+      "rareReliance": "Moderate",
+      "scaling": "2 Primed per extra draw, uncapped",
+      "rationale": "Original reported Arena estimate: S. Retrospective baseline: All additional draws granted 2 Primed without diminishing returns.",
+      "watch": "One Attack cashes all Primed; free draw chains remain a card-pool risk.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if traps can be reset",
+      "rareReliance": "Low–moderate",
+      "scaling": "Each sprung Trap draws 1 and gives 2 Barrier",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Skill-heavy opponents and avoided traps reduce both defense and draw.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good; little board investment",
+      "rareReliance": "Low–moderate",
+      "scaling": "Full Trick also grants 1 Mana, on top of class suit rewards",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Class pool may offer too much cheap draw/Mana; Ascendancy parity cannot settle that concern alone.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; target switch restarts growth",
+      "rareReliance": "Low–moderate",
+      "scaling": "Marked target +10% per qualifying turn to +50%, with first aimed Attack Exposed",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Frequent target changes and untargeted damage lower the payoff.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; Daggers regenerate each turn",
+      "rareReliance": "Moderate for multipliers",
+      "scaling": "One extra Dagger every turn scales with Edge/Might and on-play effects",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Efficient neutral Mana/draw and rare multipliers may keep the best decks above the intended band.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; stacks can be cleansed",
+      "rareReliance": "Low–moderate",
+      "scaling": "Enemy Bleed/Burn ticks one extra time each turn, decaying for each tick",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Cleanse timing, Fate races, and how often humans take existing counterplay.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; preparation rebuilt from Skills",
+      "rareReliance": "Low–moderate",
+      "scaling": "+15% per finished Skill up to +60%, plus additive +20% below half target HP",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Does the next Attack reliably deserve the stored boost, including multi-hit effects?",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; row and Spirit need rebuilding",
+      "rareReliance": "Moderate",
+      "scaling": "+1 Spirit per qualifying no-command turn with 2+ totems; starts 1 Spirit/8 Barrier",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Long passive rows can overtake flat defenses; compare real command versus cultivation decisions.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if planting remains available",
+      "rareReliance": "Moderate",
+      "scaling": "First command/push-out each turn draws 1 and gives 4 Barrier",
+      "rationale": "Original reported Arena estimate: S. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Earlier S rating overstated Sovereign's passive scope; unchanged trigger itself is only once per turn.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; earned element counts persist",
+      "rareReliance": "Moderate",
+      "scaling": "First of each element/turn grows by 1 per prior trigger, switching adds 2",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Hand diversity and how often all three elements can be triggered safely.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; no persistent board required",
+      "rareReliance": "Low–moderate",
+      "scaling": "First Serene exit each turn gives 1 extra Mana",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Cheap stance cycling and card-pool efficiency; extra Mana is only useful with cards to spend it on.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if a safe exit is available",
+      "rareReliance": "Moderate",
+      "scaling": "First own-turn Fury entry +8% to +40%; first exit 4+2 per earned step Barrier",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Being trapped in Fury; incoming damage pressure and exit-card consistency.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "High",
+      "recovery": "Moderate; must reach another Radiant window",
+      "rareReliance": "Moderate",
+      "scaling": "First stance entry extra Fervor; Radiant exit returns 2, then 3, then 4",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Too few early stance tools or repeated Radiant turns overwhelming other damage paths.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; payoff requires little banking",
+      "rareReliance": "Low–moderate",
+      "scaling": "+1 per Sword hit and first Sword each turn draws 1",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "A fixed bonus can lag percentage builds unless the Sword deck has enough hits.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good after refund arrives",
+      "rareReliance": "Moderate",
+      "scaling": "First spending Spell Attack +1 per spent Power per hit; half refunded next turn",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Extreme multi-hit expenditure and whether refund timing creates too much free late power.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "S",
+        "endgame": "A+",
+        "openingFight": "A−",
+        "extendedFight": "S"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A−",
+        "extended": "S"
+      },
+      "setup": "High",
+      "recovery": "Good; Fracture persists on target",
+      "rareReliance": "Moderate",
+      "scaling": "+15% Shatter; Fault Lines 2 Fracture per qualifying play, uncapped",
+      "rationale": "Original reported Arena estimate: S. Retrospective baseline: Fault Lines supplied 2 Fracture on every qualifying play.",
+      "watch": "Permanent Fracture plus many cheap plays may still be an outlier; opponent pressure is the real counterplay.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A−",
+        "deep": "A−",
+        "endgame": "B+",
+        "openingFight": "A−",
+        "extendedFight": "A−"
+      },
+      "arena": {
+        "overall": "A−",
+        "opening": "A−",
+        "extended": "A−"
+      },
+      "setup": "Medium",
+      "recovery": "Improved recurring Raise; vulnerable board",
+      "rareReliance": "Moderate",
+      "scaling": "Extra Raise 1 and Marrow 1",
+      "rationale": "Original reported Arena estimate: A−. Retrospective baseline: Only extra Raise 1 and Marrow 1, with fragile companions late.",
+      "watch": "Arena companion HP remains small beside hero HP; focus fire and late multi-enemy damage.",
+      "confidence": "low",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; Fate reduction delays execution",
+      "rareReliance": "Low–moderate",
+      "scaling": "2 Fate +2% target max HP at own turn start",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Random targets, cleanse and immunity timing; percentage contribution should not be counted twice as ordinary damage.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "S",
+        "endgame": "A+",
+        "openingFight": "A−",
+        "extendedFight": "S"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A−",
+        "extended": "S"
+      },
+      "setup": "High",
+      "recovery": "Good if Consume generation continues",
+      "rareReliance": "Moderate",
+      "scaling": "Uncapped Harvest/Barrier per consumption",
+      "rationale": "Original reported Arena estimate: S. Retrospective baseline: Every genuine Consume granted Harvest/Barrier without an owner-round limit.",
+      "watch": "Six consumes each round still reaches Reap 100 by turn eight; generation quality and Grave Chill may keep this path above A.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+"
+      },
+      "setup": "Medium–high",
+      "recovery": "Good once paid growth is established",
+      "rareReliance": "Moderate",
+      "scaling": "First actual own-turn Hangover payment adds a step to 5; each heals 1% max HP and gives 2 Barrier",
+      "rationale": "Original reported Arena estimate: A+. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Percentage healing at Arena HP, actual payment avoidance and setup survival.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": null,
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; weapon copies grow each turn",
+      "rareReliance": "Moderate",
+      "scaling": "Gun starts +3 Precision and gains +2 each own turn",
+      "rationale": "Original reported Arena estimate: A. Retrospective baseline: See the version 0.194.0 source and existing Ascendancy pass; current-pass changes are listed separately.",
+      "watch": "Draw access to the gun and whether Precision scaling beats other weapon engines at comparable deck quality.",
+      "confidence": "low–moderate",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": null,
+      "campaign": {
+        "developing": "B+",
+        "deep": "A−",
+        "endgame": "B+",
+        "openingFight": "B",
+        "extendedFight": "A−"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "B",
+        "extended": "A−"
+      },
+      "setup": "High",
+      "recovery": "Limited; Skills and DoT bypass rescue",
+      "rareReliance": "Moderate",
+      "scaling": "+25% only at or below 40% HP, Attack-only lethal rescue",
+      "rationale": "Original reported Arena estimate: B+. Retrospective baseline: Extra damage began only at 40% HP; rescue only covered hostile Attacks.",
+      "watch": "Its A− estimate has low confidence: healing conflicts with the HP band and campaign attrition is real.",
+      "confidence": "low",
+      "evidence": [
+        "Source commit 92466e2 / rules 78",
+        "Original conversational Arena grades (not measured)",
+        "Retrospective current-source audit for campaign/sub-band estimates"
+      ]
+    }
+  ],
+  "corrections": [
+    "Original Swarmwright A− estimate overlooked the optimized free recycle loop. Corrected ceiling is an exploit/outlier, not a valid balanced A− deck.",
+    "Storm Sovereign commands/push-outs trigger it; standing passives never did. Earlier broad descriptions inflated the assumed sustain.",
+    "Scent of Weakness failed against opponent heroes. Its PvE value did not transfer equally to Arena.",
+    "Campaign/sub-band baseline estimates were first authored on this date, not measured or contemporaneous playtest results.",
+    "Unchanged card-pool efficiency may dominate differences between Ascendancies. No measured win rates are available.",
+    "Revision 2 corrects progression/opening/extended sub-grades for changed mechanics: the first retrospective baseline copied several projected sub-grades from the new pass. Original overall Arena grades remain intact. Golemancer/Bonelord/Deathwish reliability and unlimited Predator/Fracture/Harvest ceilings are now distinguished more accurately."
+  ],
+  "assessmentRevision": 2,
+  "supersedesAssessment": "0.194.0.json"
+}

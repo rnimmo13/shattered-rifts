@@ -873,7 +873,7 @@ function amountText(
         : 'your '
     : '';
   // (DECISIONS #434) a capped count says its cap
-  const capped = sc.max !== undefined ? ` (at most ${sc.max})` : '';
+  const capped = `${sc.round === 'ceil' ? ', rounded up' : ''}${sc.min !== undefined ? ` (at least ${sc.min})` : ''}${sc.max !== undefined ? ` (at most ${sc.max})` : ''}`;
   if (n === 0) {
     const mult =
       m === 1
@@ -989,7 +989,7 @@ const WHEN_TEXT: Record<string, string> = {
   dischargeMixed: 'Whenever you Discharge two different enchantments at once',
   recast: 'Whenever you change an enchantment into another kind',
   // (the Shaman)
-  command: 'Whenever one of your totems acts',
+  command: 'Whenever you command a totem or push one out',
   orderedCommand: 'Whenever you finish an ordered totem command',
   hangoverPaid: 'Whenever Hangover costs you HP',
   plant: 'Whenever you plant a totem',
@@ -1642,13 +1642,22 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
               o.when === 'extract'
             ? { ...who, target: ' to that enemy' }
             : who;
-      const said = joinClause(o.ops.map((x) => opText(db, x, inner)));
+      const limit = o.perTurnLimit ?? o.perRoundLimit;
+      const limitText =
+        limit === undefined
+          ? ''
+          : ` (first ${limit} activations ${o.perRoundLimit !== undefined ? 'each round, until your next turn' : 'each turn'})`;
+      const later = o.afterLimit?.length
+        ? ` Whenever it activates again that turn: ${joinClause(o.afterLimit.map((x) => opText(db, x, inner)))}`
+        : '';
+      const said = joinClause(o.ops.map((x) => opText(db, x, inner))) + later;
       // (a Sapped put on an enemy while an enemy is hitting you ends with that enemy turn; one from your own cards, with the coming one)
       const body =
         o.when === 'hurt'
           ? said.split('until the end of their next turn').join("until the end of the enemy's turn")
           : said;
-      const opening = o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when;
+      const opening =
+        (o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when) + limitText;
       // ("At the end of your turn, if you spent none: ...", not two colons in a row)
       return body.startsWith('If ') ? `${opening}, if ${body.slice(3)}` : `${opening}: ${body}`;
     }

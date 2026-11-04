@@ -500,8 +500,36 @@ export const NECROMANCER: CardDef[] = [
     'power',
     0,
     'none',
-    [mana(3), draw(2), on('turnStart', [status('doom', 3, 'self')])],
-    { up: { effects: [mana(4), draw(2), on('turnStart', [status('doom', 3, 'self')])] } },
+    [
+      mana(3),
+      draw(2),
+      on('turnStart', [
+        scaled(status('doom', 0, 'self'), {
+          by: 'maxHp',
+          of: 'self',
+          mult: 0.02,
+          min: 3,
+          round: 'ceil',
+        }),
+      ]),
+    ],
+    {
+      up: {
+        effects: [
+          mana(4),
+          draw(2),
+          on('turnStart', [
+            scaled(status('doom', 0, 'self'), {
+              by: 'maxHp',
+              of: 'self',
+              mult: 0.02,
+              min: 3,
+              round: 'ceil',
+            }),
+          ]),
+        ],
+      },
+    },
   ),
 
   // --- Souls and Fleeting cards ---

@@ -144,7 +144,7 @@ describe('Engineer support and continuous attack Auras', () => {
     s = play(s, 'deploy-drone');
     s = JSON.parse(JSON.stringify(s)) as CombatState;
     expect(s.sides.a.summonedFight).toBe(9);
-    expect(attackAuraBonus(s.sides.a, allies(s).at(-1)!, true)).toBe(2);
+    expect(attackAuraBonus(s.sides.a, allies(s).at(-1)!, true)).toBe(3);
     expect(fight('engineer:swarmwright').sides.a.attackAuras?.[0]?.amount).toBe(0);
     expect(attackAuraBonus(fight('engineer:swarmwright').sides.a, allies(s)[0]!, true)).toBe(0);
   });

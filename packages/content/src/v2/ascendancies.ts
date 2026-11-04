@@ -67,10 +67,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'knight',
     'Blood Knight',
     'Retaliation',
-    'Actual HP lost charges Retaliation: +2% damage on your next Attack per 1% of max HP lost. Charge up to 30% each round and store up to 60%. The Attack spends the charge.',
+    'Actual HP lost charges Retaliation: +2% damage on your next Attack per 1% of max HP lost. Your first actual HP payment from your own card effects on your turn charges 10% more. Charge up to 30% each round and store up to 60%. The Attack spends the charge.',
     {
       fightStart: [
-        { op: 'discipline', rule: { kind: 'retaliation', perLostPct: 2, roundCap: 30, cap: 60 } },
+        {
+          op: 'discipline',
+          rule: { kind: 'retaliation', perLostPct: 2, roundCap: 30, cap: 60, paymentBonus: 10 },
+        },
       ],
     },
   ),
@@ -90,10 +93,15 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Golemancer',
     'One big machine',
     // (3, was 2, DECISIONS #545)
-    'At the start of your turn, your companions gain 3 more max HP. Heavy and Colossal companions deal 1% more attack damage per max HP, up to 100% more.',
+    'At the start of your turn, your companions gain 3 more max HP. Heavy and Colossal companions deal 1% more attack damage per max HP, up to 100% more. When one dies, save half its earned max HP growth, up to 30, for your next new Heavy or Colossal build this fight. Inherited growth does not count. Scrapping and revivals do not use this reserve.',
     {
       turnStart: [growHp(3, 'allAllies')],
-      fightStart: [{ op: 'discipline', rule: { kind: 'frame', minSlots: 2, perHp: 1, cap: 100 } }],
+      fightStart: [
+        {
+          op: 'discipline',
+          rule: { kind: 'frame', minSlots: 2, perHp: 1, cap: 100, recoverPct: 50, recoverCap: 30 },
+        },
+      ],
     },
   ),
   // (the Overclocker until DECISIONS #569: the only class with a 4th companion slot; 1 Primed each, was 2, as there can be one more
@@ -102,11 +110,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Swarmwright',
     'A fourth machine',
-    'You have a 4th companion slot. At the start of your turn, each companion gains 1 Primed. Fabrication: your companions deal +1 attack damage per hit for every 4 companions summoned this fight. Starting companions do not count; replacements keep the bonus.',
+    'You have a 4th companion slot. At the start of your turn, each companion gains 1 Primed. Fabrication: your companions deal +1 attack damage per hit for every 3 companions summoned this fight. Starting companions do not count; replacements keep the bonus.',
     {
       maxAllies: 4,
       turnStart: [status('vigor', 1, 'allAllies')],
-      fightStart: [{ op: 'attackAura', amount: 0, scope: 'companions', perSummons: 4 }],
+      fightStart: [{ op: 'attackAura', amount: 0, scope: 'companions', perSummons: 3 }],
     },
   ),
 
@@ -135,9 +143,15 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Predator',
     'Big turns',
     // (2, was 1: Primed loses half each turn now, DECISIONS #533, #545)
-    'Whenever you draw a card during your turn, gain 2 Primed.',
+    'The first 6 additional cards you draw on your turn each give 2 Primed; later draws give 1 Primed each. Your opening hand does not count.',
     {
-      triggers: [on('drawMidTurn', [status('vigor', 2)])],
+      triggers: [
+        on('drawMidTurn', [status('vigor', 2)], {
+          ownTurn: true,
+          perTurnLimit: 6,
+          afterLimit: [status('vigor', 1)],
+        }),
+      ],
     },
   ),
 
@@ -316,12 +330,18 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Deathwish',
     'Low HP',
-    'At 40% HP or less, your Attacks deal 25% more damage, on top of ordinary Clutch Genes. Once each fight, a lethal enemy attack leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Later hits can still kill you.',
+    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP, on top of Clutch Genes. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
     {
       fightStart: [
         {
           op: 'discipline',
-          rule: { kind: 'desperation', threshold: 40, bonus: 25, emergencyBarrierPct: 10 },
+          rule: {
+            kind: 'desperation',
+            threshold: 40,
+            bonus: 25,
+            emergencyBarrierPct: 10,
+            rampFrom: 70,
+          },
         },
       ],
     },
@@ -331,10 +351,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Bonelord',
     'Thralls',
-    'At the start of your turn, Raise 1 more. Your companions deal 1 more damage.',
+    'At the start of your turn, Raise 2 more. Your companions deal 2 more damage.',
     {
-      turnStart: [raise(1)],
-      fightStart: [status('marrow', 1)],
+      turnStart: [raise(2)],
+      fightStart: [status('marrow', 2)],
     },
   ),
   a(
@@ -351,10 +371,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Soulreaper',
     'Harvest of Souls',
-    'Whenever a card is consumed, gain 3 Barrier. At the end of your turn, after Fleeting cards are consumed and companions act, if you consumed any cards that turn, Reap the lowest-HP enemy for 4 damage plus 2 per card consumed this fight. Reap is non-attack damage and Barrier can absorb it.',
+    'The first 6 cards consumed each round grant 3 Barrier and add 1 Harvest each. A round runs from the start of your turn to your next turn. At the end of your turn, after Fleeting cleanup and companion actions, if you consumed a card that turn, Reap the lowest-HP enemy for 4 damage plus 2 per Harvest this fight. Barrier absorbs Reap. Other Consume effects still work beyond the limit.',
     {
-      fightStart: [{ op: 'discipline', rule: { kind: 'harvest', base: 4, perConsumed: 2 } }],
-      triggers: [on('exhaust', [barrier(3)])],
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'harvest', base: 4, perConsumed: 2, roundLimit: 6 } },
+      ],
+      triggers: [on('exhaust', [barrier(3)], { perRoundLimit: 6 })],
     },
   ),
 ];

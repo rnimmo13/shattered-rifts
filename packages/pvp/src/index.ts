@@ -1,6 +1,7 @@
 // @sr/pvp: the rules of a PvP match, deck checks and the matchmaking queue. Pure, like the engine.
 
 export * from './protocol';
+export * from './balanceReport';
 export * from './trophies';
 export * from './ranks';
 export * from './seasons';

@@ -468,6 +468,7 @@ export function parseRun(text: string): RunState | null {
   // (merchant removals bought: a count, or nothing)
   const removals = (r as { removals?: unknown }).removals;
   if (removals !== undefined && !isInt(removals, 0, 10000)) return null;
+  if (r.rewardRerollTier !== undefined && !isInt(r.rewardRerollTier, 1, r.tier ?? 1)) return null;
   if (
     loose.eventFlips !== undefined &&
     !(

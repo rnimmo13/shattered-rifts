@@ -1,6 +1,6 @@
 # Shattered Rifts: Lore
 
-The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587).
+The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587, #596).
 It replaces the old "Prime World broke into pieces" premise of `01_GAME_DESIGN.md §1`.
 
 **Player-facing text uses class names** (the Knight, the Rogue, the Shaman...), never the hidden personas in `Riftwalker.persona`
@@ -27,12 +27,26 @@ guardian bound to keep its part of the Ward whole. Most of them were not cruel. 
 they knew.
 
 ### 2.3 The Shattering
-Then the Ward broke, everywhere at once. Nobody agrees why. Cracks became **Rifts**, Rifts became doors, and through them came
-creatures, machines and magic that had no business being in each other's worlds. Cards that are **Rift-crossed** are exactly
-that: power that drifted in from somewhere else.
+The fallen star beneath **the Hollow Crown** was dying. Its light, warmth and magic sustained the kingdom; when it failed,
+the people would follow. Their Warden could not restore it with the world's remaining power. Instead, she drew from her
+section of the Ward to rekindle the star. She knew she was weakening the wall she had sworn to keep. She believed she was
+risking only her own world to save it.
+
+But the Ward was one connected barrier, sharing a finite reserve of strength. Its sections drew on one another whenever one
+weakened. The Warden's sustained draw spread the strain across the whole barrier, until no section had enough strength left
+to hold. The star burned again. The Ward shattered across every world.
+
+Cracks became **Rifts**, Rifts became doors, and through them came creatures, machines and magic that had no business being
+in each other's worlds. Cards that are **Rift-crossed** are exactly that: power that drifted in from somewhere else.
 
 The Wardens were the first to fall. Something reached through the cracks and took them. They still guard their shards of the
-Ward, but they no longer guard them for their worlds. They guard them for **the Heart**.
+Ward, but they no longer guard them for their worlds. They guard them for **the Heart**. The guardian who rekindled the star
+is now the **Queen of the Unmade**. She saved her people's light, but could not keep the Rifts from their home.
+
+**Canon boundary:** the draw from the Ward and the resulting failure are the cause of the Shattering, not a rumour or one
+of several competing explanations. The worlds did not knowingly cooperate or sacrifice one another. The Queen was still
+a guardian when she made her choice; the Heart took her only after the Ward broke. The star was naturally exhausting its
+remaining power. Whether Vorthax anticipated or encouraged her choice is unresolved; do not assert that it did.
 
 ### 2.4 The Riftwalkers
 Most who step into a Rift come out wrong, or don't come out. A rare few can walk the Rifts and live. Each comes from a different
@@ -53,8 +67,10 @@ At the centre of the broken Ward is **Vorthax, the Heart of the Rift**. It made 
 fights with all of their rules. Every time a Riftwalker seals a Rift, it tears open again, worse than before. That is the climb
 through the 20 **Rift Tiers**: deeper, and worse, each time.
 
-**Kept open on purpose (for later):** what Vorthax is, and what broke the Ward. The hint we plant everywhere: *the fighting
-feeds it.* Every shard torn from a rival, every Rift sealed, makes the Heart stronger. Don't answer this in the game yet.
+**Kept open on purpose (for later):** what Vorthax is, where it came from, and whether it anticipated the
+Queen's choice or merely exploited its aftermath. The cause of the Shattering is established in section 2.3. The hint we plant
+everywhere: *the fighting feeds it.* Every shard torn from a rival, every Rift sealed, makes the Heart stronger. Do not confirm
+that hidden connection in player-facing text yet.
 
 ## 3. The worlds
 
@@ -80,6 +96,9 @@ Where the Rifts are worst, worlds bleed into each other: that is the last stretc
 4. **Don't explain the Heart.** Hint that the fighting feeds it; never confirm.
 5. **Original names only** (golden rule 6). No franchise terms.
 6. **Class names in player text**, personas never (until Robert decides to use them).
+7. **The Shattering has a cause.** The Hollow Crown's Warden rekindled its dying star with the Ward's shared strength and
+   caused a failure across all its sections. Keep her desperate protective motive; do not turn this into a deliberate conquest
+   or claim the worlds were once a single world. The finite shards and the cost of saving one home echo that first choice.
 
 ## 5. The lore page (`#/lore`)
 

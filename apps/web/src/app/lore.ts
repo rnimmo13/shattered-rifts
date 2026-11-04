@@ -53,18 +53,18 @@ export const LORE_CHAPTERS: LoreChapter[] = [
   {
     id: 'shattering',
     title: 'The Shattering',
-    subtitle: 'No one agrees why the Ward broke.',
+    subtitle: 'To save one world, she weakened every wall.',
     panels: [
       {
         image: 'ch3-crack',
         title: 'The first crack',
-        text: 'Then the Ward broke, everywhere at once. No world had a warning it understood. A line of impossible light opened across familiar skies.',
+        text: 'The fallen star beneath the Hollow Crown was dying, taking its kingdom with it. Its Warden drew power from her section of the Ward to rekindle it. She knew she would weaken her wall. She did not know the other walls would pay.',
         alt: 'Citizens of Aurelion look up at a violet-cyan crack in their glassy sky.',
       },
       {
         image: 'ch3-shatter',
         title: 'Cracks became doors',
-        text: 'The sky fell in iridescent pieces. Cracks became Rifts, and Rifts became doors between places that had never been meant to meet.',
+        text: 'The Ward was one connected barrier. As her section weakened, it drew strength from the rest, spreading the strain until every section failed. The star burned again. Across the worlds, the sky broke into shards. Cracks became Rifts, and Rifts became doors.',
         alt: 'The Ward shatters into a storm of glowing glass as Rifts tear between worlds.',
       },
       {
@@ -76,7 +76,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch3-taken',
         title: 'The first to fall',
-        text: 'The Wardens were the first to fall. Something reached through the cracks and took them. They still guarded the broken Ward, but no longer for their worlds.',
+        text: 'The Wardens were the first to fall to the Heart. Something reached through the cracks and took them, including the guardian now called the Queen of the Unmade. They still guarded the broken Ward, but no longer for their worlds.',
         alt: 'The robed guardian kneels as violet tendrils corrupt its once-golden light.',
       },
     ],
@@ -145,7 +145,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch6-heart',
         title: 'Vorthax',
-        text: 'At the centre of the broken Ward waits Vorthax, the Heart of the Rift. It made the Wardens what they are now, and fights with all their rules. What it is, and what first broke the Ward, remain unanswered.',
+        text: 'At the centre of the broken Ward waits Vorthax, the Heart of the Rift. It made the Wardens what they are now, and fights with all their rules. What it is, and whether it merely found the broken Ward or had waited for it, remain unanswered.',
         alt: 'A vast hidden presence pulses faintly beneath an immense violet-cyan chasm.',
       },
     ],
