@@ -21,6 +21,7 @@ const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE } from './mapgen';
 import { FIGHT_SHARDS, MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
+import { CAMPAIGN_GHOSTS_ENABLED, withoutCampaignGhosts } from './features';
 
 export const RUN_SAVE_VERSION = 2;
 
@@ -370,7 +371,7 @@ const RETIRED_CARD_STRING = new RegExp(
     // ("flare" is also the name of a card mark in an event: a retired Flare card is found by canonicalCard instead)
     .filter((id) => id !== 'flare')
     .map((id) => id.replace(/[-]/g, '\\-'))
-    .join('|')})\\+?"`,
+    .join('|')})\\+?"(?!\\s*:)`,
   'g',
 );
 
@@ -527,7 +528,23 @@ export function parseRun(text: string): RunState | null {
     new Set(r.boons).size !== r.boons.length
   )
     return null;
-  const run = r as RunState;
+  // Retired campaign ghosts keep their underlying enemy, checkpoint and earned rewards.
+  // A live ghost's action log cannot be replayed against that enemy; the client clears it.
+  const activeNode = isObj(r.context)
+    ? r.map.nodes.find((n) => n.id === r.context?.nodeId)
+    : undefined;
+  const restartGhost =
+    !CAMPAIGN_GHOSTS_ENABLED &&
+    r.phase === 'duel' &&
+    (activeNode?.kind === 'echo' ||
+      activeNode?.ghost ||
+      (isObj(r.context) && r.context.ghost !== undefined));
+  const run = withoutCampaignGhosts(r as RunState);
+  if (restartGhost) {
+    const notice =
+      'Campaign ghost fights are paused. This encounter is now a normal enemy fight and starts again from its checkpoint, with no Resolve spent.';
+    run.reworkNotice = [run.reworkNotice, notice].filter(Boolean).join(' ');
+  }
   if (!validContext(run)) return null;
   // (an event laid out by an older build gets its card in the option box: DECISIONS #477)
   const savedEvent = (run.context as { event?: EventCtx } | null | undefined)?.event;

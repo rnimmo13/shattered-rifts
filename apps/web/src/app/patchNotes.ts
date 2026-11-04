@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.192.0',
+    date: '2026-11-04',
+    title: 'Campaign ghosts paused',
+    summary: 'Campaign battles use regular enemies and Wardens.',
+    notes: [
+      { kind: 'changed', text: 'Echo encounters are removed from campaign maps for now. Ghosts no longer replace Wardens. Arena ghost matches remain available.' },
+      { kind: 'fixed', text: 'Existing campaign Echoes become normal fights, and saved ghost Wardens become their usual bosses. Progress and already-earned rewards are kept.' },
+    ],
+    heads: 'An unfinished campaign ghost fight restarts as a normal enemy encounter from its checkpoint, without spending Resolve.',
+  },
+  {
     version: '0.191.0',
     date: '2026-11-04',
     title: 'A stronger Engineer crew',

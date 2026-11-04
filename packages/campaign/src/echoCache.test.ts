@@ -1,6 +1,11 @@
 // The Echo and the Rift Cache (DECISIONS #549).
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Retain coverage of the paused feature; production availability is tested separately.
+vi.mock('./features', () => ({
+  CAMPAIGN_GHOSTS_ENABLED: true,
+  withoutCampaignGhosts: (run: RunState) => run,
+}));
 import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import { omenEffects } from './omens';

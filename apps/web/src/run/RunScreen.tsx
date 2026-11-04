@@ -127,8 +127,8 @@ export default function RunScreen() {
     const found = loadActiveRun();
     const saved = found?.run ?? null;
     const slot = found?.id ?? null;
-    // a run saved before its Riftwalker was rebuilt (DECISIONS #415): parseRun mapped its cards and wrote the notice; the fight it was
-    // in starts again (its move log was made under the old rules), and the run is saved without the notice
+    // Load migrations (class reworks or retired ghost encounters) restart obsolete fight logs
+    // at the saved checkpoint, then save without the one-time notice.
     if (saved?.reworkNotice) {
       const notice = saved.reworkNotice;
       delete saved.reworkNotice;

@@ -56,6 +56,7 @@ import {
 } from './gambler';
 import { makePrelude } from './preludes';
 import { buildCache } from './cache';
+import { CAMPAIGN_GHOSTS_ENABLED, withoutCampaignGhosts } from './features';
 import { omenEffects, omenMods } from './omens';
 import type { EnemyMod, StatusId } from '@sr/combat';
 import {
@@ -384,6 +385,7 @@ function clearNode(run: RunState, id: string): void {
 
 /** Step onto a node from the map. */
 export function enterNode(run: RunState, nodeId: string): RunState {
+  run = withoutCampaignGhosts(run);
   need(run.phase === 'map', 'You can only choose a node from the map');
   need(
     availableNodes(run).some((n) => n.id === nodeId),
@@ -608,6 +610,7 @@ export const ghostBossDmg = (tier: number, stage = 1): number =>
 
 /** Is this a ghost Warden whose deck has not been fetched yet? (The screen asks the server for one, then calls `attachGhost`.) */
 export function ghostWanted(run: RunState): boolean {
+  if (!CAMPAIGN_GHOSTS_ENABLED) return false;
   if (run.phase !== 'duel' || !run.context) return false;
   const node = nodeOf(run, run.context.nodeId);
   return node.ghost === true && !run.context.ghost && !run.context.ghostAsked;
@@ -666,12 +669,14 @@ export function checkGhostBoss(raw: unknown): GhostBoss | null {
  * so the map only says "Ghost Warden" when there is one to fight.
  */
 export function ghostToSettle(run: RunState): MapNode | null {
+  if (!CAMPAIGN_GHOSTS_ENABLED) return null;
   if (run.phase === 'duel' || run.phase === 'collapsed' || run.phase === 'banked') return null;
   return run.map.nodes.find((n) => n.ghost === true && !n.ghostDeck) ?? null;
 }
 
 /** The server's answer for this stage's ghost Warden: a valid ghost is kept for the fight; none (or nothing usable), and it is the usual Warden. */
 export function settleGhost(run: RunState, ghost: unknown): RunState {
+  if (!CAMPAIGN_GHOSTS_ENABLED) return withoutCampaignGhosts(run);
   const at = ghostToSettle(run);
   need(at, 'No ghost Warden is waiting to be settled');
   const r = clone(run);
@@ -708,6 +713,7 @@ export function ghostsToSkip(run: RunState): string[] {
 
 /** The ghost for this Warden has arrived (or none could be had: null, and the usual Warden is fought). */
 export function attachGhost(run: RunState, ghost: unknown): RunState {
+  if (!CAMPAIGN_GHOSTS_ENABLED) return withoutCampaignGhosts(run);
   need(ghostWanted(run), 'This fight is not waiting for a ghost');
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
@@ -779,7 +785,7 @@ export function duelPlan(run: RunState): FightPlan | null {
   const node = nodeOf(run, run.context.nodeId);
   if (!node.enemyId) return null;
   const e = encounter(node.enemyId);
-  const ghost = node.ghost ? run.context.ghost : undefined;
+  const ghost = CAMPAIGN_GHOSTS_ENABLED && node.ghost ? run.context.ghost : undefined;
   // the tier's Omens: phases and guards for the enemies, a shaken start for you, Static in your draw pile
   const omen = omenEffects(run.tier);
   const boss = node.kind === 'elite' || node.kind === 'warden';
@@ -864,7 +870,7 @@ export function finishDuel(
   extraRewards = 0,
 ): RunState {
   need(run.phase === 'duel' && run.context, 'No fight is in progress');
-  const r = clone(run);
+  const r = clone(withoutCampaignGhosts(run));
   const ctx = r.context as NonNullable<RunState['context']>;
   const node = nodeOf(r, ctx.nodeId);
   if (!won) {

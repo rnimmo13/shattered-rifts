@@ -45,7 +45,7 @@ bleeding, so every Riftwalker who saves their home does it by taking a shard som
 each other as well as the Wardens, and why no one wins for good.
 
 - **Echoes** are what the Rift keeps of a Riftwalker who walked before you: their deck, their habits, played back by the Rift
-  as a ghost (campaign Echo fights and ghost Wardens).
+  as a ghost. These memories can be fought at the Crossing (Arena); campaign Echo fights and ghost Wardens are paused for now (DECISIONS #592).
 - **The Arena** is the Crossing, a place where many Rifts meet. Riftwalkers fight there face to face (PvP).
 
 ### 2.6 The Heart of the Rift

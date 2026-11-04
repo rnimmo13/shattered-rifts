@@ -8,7 +8,7 @@ import type { GamblerShrine } from './gambler';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
 
-/** `echo`: a fight against another player's ghost deck for one of its cards; `cache`: a Rift Cache, sometimes trapped (DECISIONS #549) */
+/** `echo`: legacy/paused campaign ghost fight (#592); `cache`: a Rift Cache, sometimes trapped (#549). */
 export type NodeKind =
   'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden' | 'echo' | 'cache';
 
@@ -355,7 +355,7 @@ export interface RunState {
   weaponCards?: true;
   /** the rework of its character this run is played under (CLASS_REWORKS; missing: from before any rework) */
   reworked?: number;
-  /** set when a run saved before its character's rework was migrated on load: what to tell the player (shown once, then dropped) */
+  /** Load migration notice; also restarts obsolete fight logs at the checkpoint (shown once, then dropped). */
   reworkNotice?: string;
   /** the ghost Wardens this run has met (their server ids), so it never meets one twice */
   ghostsMet?: string[];

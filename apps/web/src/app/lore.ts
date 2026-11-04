@@ -126,7 +126,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch5-echo',
         title: 'What the Rift remembers',
-        text: 'The Rift keeps echoes of those who walked before: their decks, their habits, their battles. Sometimes a traveler finds a ghost waiting on the road ahead.',
+        text: 'The Rift keeps echoes of those who walked before: their decks, their habits, their battles. At the Crossing, these memories can take shape as ghostly opponents.',
         alt: 'A living Knight confronts its translucent violet Echo among floating cards.',
       },
     ],

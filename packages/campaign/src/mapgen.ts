@@ -4,6 +4,7 @@
 import { nextInt, type RngState } from '@sr/combat';
 import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
 import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
+import { CAMPAIGN_GHOSTS_ENABLED } from './features';
 
 /** The chance (percent) that a merchant on the map is a Rift-crossed stranger selling another Riftwalker's cards. */
 export const CROSSED_MERCHANT_CHANCE = 7.5;
@@ -102,7 +103,8 @@ function rollKind(
   const eventAt = shrineAt + o.shrine;
   if (floor >= 3 && elitesPlaced < maxElites && r < (elitesPlaced < 1 ? o.eliteFirst : o.eliteMore))
     return 'elite';
-  if (merchantsPlaced < MAX_MERCHANTS_A_STRETCH && r >= merchantAt && r < shrineAt) return 'merchant';
+  if (merchantsPlaced < MAX_MERCHANTS_A_STRETCH && r >= merchantAt && r < shrineAt)
+    return 'merchant';
   if (floor >= 3 && r >= shrineAt && r < eventAt) return 'shrine';
   if (r >= eventAt && r < eventAt + o.event) return 'event';
   return 'duel';
@@ -213,7 +215,8 @@ export function generateStageMap(
   let merchants = 0;
   for (let floor = 1; floor <= FLOORS; floor++) {
     // (a last stretch too short to be one joins the one before)
-    if (floor > 1 && (floor - 1) % MERCHANT_STRETCH === 0 && FLOORS - floor >= MIN_STRETCH) merchants = 0;
+    if (floor > 1 && (floor - 1) % MERCHANT_STRETCH === 0 && FLOORS - floor >= MIN_STRETCH)
+      merchants = 0;
     const count = floor === FLOORS ? 2 : floor === 1 ? 2 + nextInt(rng, 2) : 2 + nextInt(rng, 3); // 2-4 nodes (2-3 on the first floor)
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
@@ -252,7 +255,13 @@ export function generateStageMap(
   };
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
   // (never Vorthax: the climb ends with him, DECISIONS #531)
-  if (tier > GHOST_FROM_TIER && realm !== 'rift' && nextInt(rng, 100) < GHOST_WARDEN_CHANCE) warden.ghost = true;
+  if (
+    CAMPAIGN_GHOSTS_ENABLED &&
+    tier > GHOST_FROM_TIER &&
+    realm !== 'rift' &&
+    nextInt(rng, 100) < GHOST_WARDEN_CHANCE
+  )
+    warden.ghost = true;
 
   // edges: every node leads forward to 1-2 nodes by position; every node on the next floor is reachable
   for (let f = 0; f < FLOORS; f++) {
@@ -301,7 +310,7 @@ export function generateStageMap(
     n.next.some((id) => byFloor[n.floor]?.find((m) => m.id === id)?.kind === kind) ||
     (byFloor[n.floor - 2] ?? []).some((m) => m.kind === kind && m.next.includes(n.id));
   const stretches: MapNode[][][] = [];
-  for (let at = 1; at < FLOORS - 1; ) {
+  for (let at = 1; at < FLOORS - 1;) {
     let end = Math.min(FLOORS - 1, at === 1 ? MERCHANT_STRETCH : at + MERCHANT_STRETCH);
     if (FLOORS - 1 - end < MIN_STRETCH) end = FLOORS - 1;
     stretches.push(byFloor.slice(at, end));
@@ -353,7 +362,7 @@ export function generateStageMap(
     else spot.ghost = true;
   };
   placeOn('cache');
-  if (tier >= ECHO_FROM_TIER) placeOn('echo');
+  if (CAMPAIGN_GHOSTS_ENABLED && tier >= ECHO_FROM_TIER) placeOn('echo');
 
   // deeper tiers turn plain fights into Elites, past the limits above: by ALL_ELITE_TIER there are no plain fights left (DECISIONS #524)
   if (elites.length > 0) {

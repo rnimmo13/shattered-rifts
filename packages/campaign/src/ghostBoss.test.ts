@@ -1,4 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Retain coverage of the paused feature; production availability is tested separately.
+vi.mock('./features', () => ({
+  CAMPAIGN_GHOSTS_ENABLED: true,
+  withoutCampaignGhosts: (run: RunState) => run,
+}));
 import { seedRng } from '@sr/combat';
 import { omenEffects } from './omens';
 import { BOONS, HEARTS, RIFTWALKERS } from '@sr/content/v2';

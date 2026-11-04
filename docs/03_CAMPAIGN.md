@@ -71,7 +71,6 @@ Shrine (every node on that floor); each stage still has a Merchant somewhere bef
 | **Shrine** | ✦ | Restore 1 Resolve **or** Temper a card **or** remove a card | Always on floor 5 |
 | **Merchant** | ⚖ | Spend Shards: cards, Boons, removal, Tempering | ~10%, max 1 per stage |
 | **Rift Cache** | chest | No fight. Open (60%): take a Boon, a rare card or 75 shards. Trapped (40%): the Boon and a rare card together, for 15% of Max HP, a Wound or 60 shards (DECISIONS #549) | One a map, floors 3 to two before the last, on a plain fight |
-| **Echo** | ghost | A ghost deck from the Arena (60% of a ghost Warden's HP; you start the fight Faltering 2, a ghost Warden 3, DECISIONS #553). Pays as an Elite does (shards, potion and Boon chances) and one of its best cards; losing costs 2 Resolve (DECISIONS #549, #550) | One a map from Tier IV, like the Cache; a plain fight if no ghost is found |
 | **Anomaly** | ✷ | A duel under a random Rift rule, double rewards | Tier II+, ~5% |
 | **Warden** | 👑 | The realm boss | After floor 5 |
 
@@ -255,11 +254,11 @@ Choose 1 of 3 after Elites (less often in deeper tiers, DECISIONS #526), from so
 - **The Weeping Statue:** *Pray* (Temper a random card) · *Take its tears* (+60 Shards, but your next duel loss costs
   1 extra Resolve) · *Leave*.
 - **Rift Merchant's Wager:** bet 50 Shards on an even chance, shown on the slider reel like every chance (DECISIONS #407).
-- **Lost Riftwalker:** duel a ghost using a copy of *your own deck*. Win: Boon.
+- **Lost Riftwalker** *(shelved concept)*: duel a ghost using a copy of *your own deck*. Win: Boon. Campaign ghosts are paused (#592).
 - **Forbidden Grimoire:** add a random Epic to your deck, but a Rift Curse is added too (counts toward deck size).
 - **The Cartographer's Cache:** choose 1 of 3 Rift-Touched cards. Add the normal version now, and the alt-art
   finish unlocks permanently if you clear this loop.
-- **The Rift Echo** *(online)*: duel another player's ghost deck. Win: pick 1 of 3 cards from *their* deck.
+- **The Rift Echo** *(paused, #592)*: duel another player's ghost deck. Win: pick 1 of 3 cards from *their* deck.
 
 ---
 

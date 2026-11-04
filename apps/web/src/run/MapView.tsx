@@ -2,6 +2,7 @@
 // (a phone held upright) the floors run top to bottom instead (DECISIONS #443).
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
+import { CAMPAIGN_GHOSTS_ENABLED } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
 import { useEffect, useRef, type SVGProps } from 'react';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -33,7 +34,8 @@ const KIND_PIC: Record<NodeKind, string> = {
 };
 
 /** What a stop shows as: an Echo whose ghost has not come (yet, or at all) is the plain fight it stands on. */
-const shownKind = (n: MapNode): NodeKind => (n.kind === 'echo' && !n.ghostDeck ? 'duel' : n.kind);
+const hasGhost = (n: MapNode): boolean => CAMPAIGN_GHOSTS_ENABLED && !!n.ghost && !!n.ghostDeck;
+const shownKind = (n: MapNode): NodeKind => (n.kind === 'echo' && !hasGhost(n) ? 'duel' : n.kind);
 
 /** The painted marker of a stop (the drawing is what shows if the picture fails to load). */
 function NodeIcon({ kind, pic }: { kind: NodeKind; pic?: string }) {
@@ -147,8 +149,8 @@ function GhostGlyph() {
 
 function labelOf(n: MapNode): string {
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
-  if (n.kind === 'warden' && n.ghost && n.ghostDeck) return 'Ghost Warden';
-  if (n.kind === 'echo' && !n.ghostDeck) return KIND_LABEL.duel;
+  if (n.kind === 'warden' && hasGhost(n)) return 'Ghost Warden';
+  if (n.kind === 'echo' && !hasGhost(n)) return KIND_LABEL.duel;
   // (a fight or an Elite only says what kind of fight it is: who is waiting is found out on arrival. A Warden is named, as the
   // realm's boss is known in advance)
   if (n.kind === 'warden' && n.enemyId) {
@@ -268,14 +270,16 @@ export function MapLegend() {
   ];
   return (
     <ul className="maplegend" aria-label="Map legend">
-      {items.map(([k, label]) => (
-        <li key={k} className={`maplegend__item mapnode--${k}`}>
-          <span className="maplegend__icon">
-            <NodeIcon kind={k} />
-          </span>
-          {label}
-        </li>
-      ))}
+      {items
+        .filter(([k]) => k !== 'echo' || CAMPAIGN_GHOSTS_ENABLED)
+        .map(([k, label]) => (
+          <li key={k} className={`maplegend__item mapnode--${k}`}>
+            <span className="maplegend__icon">
+              <NodeIcon kind={k} />
+            </span>
+            {label}
+          </li>
+        ))}
     </ul>
   );
 }
@@ -294,7 +298,7 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
       style={{ left: p.x, top: p.y }}
       disabled={!open}
       onClick={() => props.onEnter(n.id)}
-      aria-label={`${KIND_LABEL[shownKind(n)]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${n.ghost && n.ghostDeck ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
+      aria-label={`${KIND_LABEL[shownKind(n)]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${hasGhost(n) ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
     >
       <NodeIcon
         kind={shownKind(n)}
@@ -302,7 +306,7 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
           ? { pic: 'map-done' }
           : n.crossed
             ? { pic: 'map-crossed' }
-            : n.kind === 'warden' && n.ghost && n.ghostDeck
+            : n.kind === 'warden' && hasGhost(n)
               ? { pic: 'map-ghost' }
               : {})}
       />
@@ -319,7 +323,7 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
           <HeroIcon hero={n.crossed} size={26} />
         </span>
       )}
-      {n.kind === 'warden' && n.ghost && n.ghostDeck && (
+      {n.kind === 'warden' && hasGhost(n) && (
         <span
           className="mapnode__ghost"
           title="Ghost Warden: another player's deck from the Arena, played by the computer (if none can be found, the usual Warden stands here)"
