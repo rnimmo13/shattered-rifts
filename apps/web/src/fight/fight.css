@@ -2524,6 +2524,7 @@ img.intent__pic {
 /* a Riftwalker's innate trait, always on show in its side column (hover for what it does) */
 .traitchip {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
   padding: 0.2rem 0.7rem;
@@ -2539,6 +2540,14 @@ img.intent__pic {
 .traitchip:focus-visible {
   outline: 2px solid var(--c-gold-light);
   outline-offset: 2px;
+}
+.traitchip__progress {
+  display: block;
+  width: 100%;
+  font-size: 0.72rem;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 /* the Sharpen number sits on a dark badge: on the gold chip it was dark brown on near-black, so it could not be read */

@@ -15,6 +15,7 @@ import {
   type Side,
 } from '@sr/combat';
 import { MoveFeed, type PvpLink } from '../pvp/link';
+import { RULES_VERSION } from '@sr/pvp';
 
 interface Played {
   seat: Side;
@@ -27,8 +28,10 @@ function load(key: string, seed: string): Played[] {
   try {
     const raw = localStorage.getItem(PREFIX + key);
     if (!raw) return [];
-    const v = JSON.parse(raw) as { seed?: unknown; moves?: unknown };
-    return v.seed === seed && Array.isArray(v.moves) ? (v.moves as Played[]) : [];
+    const v = JSON.parse(raw) as { seed?: unknown; moves?: unknown; rules?: unknown };
+    return v.rules === RULES_VERSION && v.seed === seed && Array.isArray(v.moves)
+      ? (v.moves as Played[])
+      : [];
   } catch {
     return [];
   }
@@ -36,7 +39,7 @@ function load(key: string, seed: string): Played[] {
 
 function save(key: string, seed: string, moves: Played[]): void {
   try {
-    localStorage.setItem(PREFIX + key, JSON.stringify({ seed, moves }));
+    localStorage.setItem(PREFIX + key, JSON.stringify({ rules: RULES_VERSION, seed, moves }));
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('sr-campaign-save'));
   } catch {
     /* the fight is simply not resumable */

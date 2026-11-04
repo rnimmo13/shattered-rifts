@@ -38,7 +38,6 @@ function fight(
   }
   return s;
 }
-const hero = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
 const foe = (s: CombatState): Unit => s.sides.b.units[0]!;
 const play = (s: CombatState, card: string): CombatState => {
   const inst = s.sides.a.hand.find((c) => c.card === card);
@@ -54,40 +53,6 @@ const play = (s: CombatState, card: string): CombatState => {
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
 
 describe('the Ascendancy pass (DECISIONS #542)', () => {
-  it('Blood Knight: 1 Might once a round, not again for a blow on the enemy turn', () => {
-    let s = play(
-      fight('knight', 'knight:blood-knight', ['draw-blood', 'draw-blood']),
-      'draw-blood',
-    );
-    expect(hero(s).statuses.might ?? 0).toBe(1);
-    s = play(s, 'draw-blood');
-    expect(hero(s).statuses.might ?? 0).toBe(1);
-    // (the squire strikes on its turn: the same round)
-    hero(s).barrier = 0;
-    s = endTurn(s);
-    expect(hero(s).statuses.might ?? 0).toBe(1);
-    // (a new round)
-    s.sides.a.hand = [{ id: 'X', card: 'draw-blood' }];
-    s = play(s, 'draw-blood');
-    expect(hero(s).statuses.might ?? 0).toBe(2);
-  });
-
-  it('Deathwish: 1.25% a point of HP missing, at most +100% (DECISIONS #544)', () => {
-    let s = fight('drunkard', 'drunkard:deathwish', []);
-    hero(s).hp = Math.ceil(hero(s).maxHp * 0.6);
-    hero(s).barrier = 0;
-    s = endTurn(s);
-    const missing = Math.floor(((hero(s).maxHp - hero(s).hp) * 100) / hero(s).maxHp);
-    expect(hero(s).statuses.clutch ?? 0).toBe(Math.min(100, Math.floor(missing * 1.25)));
-    s = fight('drunkard', 'drunkard:deathwish', []);
-    // (77% missing and more: 1.5% a point would be over 115%, so the cap holds it at 100)
-    hero(s).hp = 20;
-    hero(s).barrier = 0;
-    s = endTurn(s);
-    expect(hero(s).hp).toBeGreaterThan(0);
-    expect(hero(s).statuses.clutch).toBe(100);
-  });
-
   it('Fateweaver: 2 Fate plus 2% of the enemy max HP (DECISIONS #544)', () => {
     // (the class's own Fate, from its Thralls, comes on top: compared with the same fight without it)
     const doom = (asc?: string): number =>
@@ -103,16 +68,6 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(foe(s).statuses.burn).toBe(8 + 3);
     s = play(s, 'spreading-flames');
     expect(foe(s).statuses.burn).toBe(8 + 3 + 8);
-  });
-
-  it('Zealot: 6 Barrier the first time each turn he enters Fury', () => {
-    let s = fight('monk', 'monk:zealot', ['rising-ire', 'centre-yourself', 'unburdened-guard']);
-    hero(s).barrier = 0;
-    s = play(s, 'rising-ire');
-    expect(hero(s).barrier).toBe(6);
-    s = play(play(s, 'centre-yourself'), 'unburdened-guard');
-    // (Shifting Guard's own 2 Barrier only: into Fury again gave none)
-    expect(hero(s).barrier).toBe(6 + 2);
   });
 
   it('Shatterer: every Shatter 15% more', () => {
@@ -166,27 +121,6 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     const first = at(s);
     s = endTurn(s);
     expect(at(s)).toBe(first + 2);
-  });
-
-  it('Blood Knight stops at 3 Might a fight (DECISIONS #544)', () => {
-    let s = fight('knight', 'knight:blood-knight', []);
-    for (let round = 0; round < 5; round++) {
-      s.sides.a.hand = [{ id: `B${round}`, card: 'draw-blood' }];
-      s.sides.a.mana = 9;
-      s = play(s, 'draw-blood');
-      s = endTurn(s);
-      hero(s).hp = hero(s).maxHp;
-    }
-    expect(hero(s).statuses.might).toBe(3);
-  });
-
-  it('Sunwalker: 1 more Fervor the first time each turn, not every stance (DECISIONS #544)', () => {
-    const fervor = (asc?: string): number => {
-      let s = fight('monk', asc, ['rising-ire', 'centre-yourself', 'unburdened-guard']);
-      s = play(play(play(s, 'rising-ire'), 'centre-yourself'), 'unburdened-guard');
-      return (hero(s).statuses.mantra ?? 0) + (hero(s).statuses.radiant ? 10 : 0);
-    };
-    expect(fervor('monk:sunwalker') - fervor()).toBe(1);
   });
 
   it('a Pyromancer from an old save is the Elementalist', () => {

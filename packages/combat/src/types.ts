@@ -521,7 +521,37 @@ export type TriggerWhen =
   | 'shatter' // you Shattered an enemy (the target is that enemy)
   | 'grown'; // a card of yours grew itself ("Grows N")
 
+/** Data-driven combat disciplines. No class or card ids are interpreted by the engine. */
+export type CombatDiscipline =
+  | { kind: 'reserves'; perSpent: number; cap: number }
+  | { kind: 'retaliation'; perLostPct: number; roundCap: number; cap: number }
+  | { kind: 'frame'; minSlots: number; perHp: number; cap: number }
+  | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
+  | { kind: 'execution'; perSkill: number; cap: number; woundedPct: number; bonus: number }
+  | { kind: 'cultivation'; minimum: number; spirit: number }
+  | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number }
+  | { kind: 'fury'; perEntry: number; cap: number; barrier: number; perExit: number }
+  | { kind: 'radiance'; first: number; step: number; cap: number }
+  | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
+  | { kind: 'brewing'; cap: number; healPct: number; barrier: number }
+  | { kind: 'desperation'; threshold: number; bonus: number; emergencyBarrierPct: number };
+
+export interface DisciplineState {
+  rule: CombatDiscipline;
+  /** Current charge, investment, or progress, as described by rule.kind. */
+  progress: number;
+  roundGain: number;
+  usedTurn?: number;
+  exitTurn?: number;
+  target?: UnitId;
+  used?: boolean;
+  counts?: Partial<Record<Element, number>>;
+  elementTurns?: Partial<Record<Element, number>>;
+  lastElement?: Element;
+}
+
 export type Op =
+  | { op: 'discipline'; rule: CombatDiscipline }
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
   /** `lifesteal`: the attacker heals this percent of the HP the attack took off (Barrier it hit does not count; DECISIONS #285) */
   | {
@@ -1320,6 +1350,8 @@ export interface PowerState {
 
 /** A choice the acting player owes before anything else happens. */
 export interface Pending {
+  disciplineBonus?: number;
+  spellBonus?: number;
   /** (the Spellblade's: 'enchant' which enchantment a new one replaces, 'discharge' which to spend, 'recast' what the newest becomes;
    * their pool is enchantment positions 'e0'/'e1', or kinds for 'recast') */
   kind:
@@ -1380,6 +1412,8 @@ export interface SnareState {
 }
 
 export interface SideState {
+  /** An Ascendancy's data-driven combat discipline; resets with every fight. */
+  discipline?: DisciplineState;
   /** the Ascendancy this side's hero has taken (DECISIONS #519) */
   ascendancy?: string;
   id: Side;

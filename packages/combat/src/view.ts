@@ -1,6 +1,7 @@
 // What a client may see (hidden information removed) plus generated card / intent text. Presentation helpers only.
 
 import { modifiedDamage, activePattern, formProgress, type LiveDamage } from './engine';
+import { disciplineAttack, disciplineText, disciplineLabel } from './disciplines';
 import {
   other,
   clone,
@@ -54,6 +55,8 @@ export interface UnitView extends Unit {
 }
 
 export interface SideView {
+  disciplineText?: string;
+  disciplineLabel?: string;
   id: Side;
   units: UnitView[];
   /** the viewer's own hand; null for the other side */
@@ -188,14 +191,19 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
     icons: opIcons(act),
     // (its Primed goes into that strike, as an enemy's does: DECISIONS #361)
     damage: first
-      ? modifiedDamage(
-          // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
-          Math.round(
-            (first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0))) *
-              (1 + (s.sides[u.side].allyPct ?? 0) / 100),
-          ),
-          u,
-          first.to === 'target' ? front : null,
+      ? Math.floor(
+          (modifiedDamage(
+            // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
+            Math.round(
+              (first.amount + (first.scale ? 0 : (u.statuses.vigor ?? 0))) *
+                (1 + (s.sides[u.side].allyPct ?? 0) / 100),
+            ),
+            u,
+            first.to === 'target' ? front : null,
+          ) *
+            (100 +
+              disciplineAttack(s, s.sides[u.side], u, null, front, db.units[u.def]?.slots ?? 1))) /
+            100,
         )
       : null,
     hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
@@ -351,6 +359,9 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potions: own ? [...sd.potions] : null,
       potionCount: sd.potions.length,
       stars: sd.stars,
+      ...(sd.discipline
+        ? { disciplineText: disciplineText(sd) ?? '', disciplineLabel: disciplineLabel(sd, s) }
+        : {}),
       reserves: sd.reserves,
       maxReserves: sd.maxReserves + (sd.reservesTurn ?? 0),
       attacksPlayed: sd.attacksPlayed,
@@ -1150,6 +1161,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     return a.equal ? `equal to ${a.num}` : a.num;
   };
   switch (o.op) {
+    case 'discipline':
+      return 'Establish your Ascendancy combat discipline.';
     case 'damage': {
       const a = amountText(o.amount, o.scale);
       // (a spread: "to 2 different random enemies")

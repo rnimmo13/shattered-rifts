@@ -3,6 +3,7 @@
 
 import { nextInt, seedRng, shuffle } from './rng';
 import { SUITS, suitShown } from './suits';
+import { disciplineAttack, disciplineTarget, disciplineTrigger } from './disciplines';
 import {
   DEBUFFS,
   EDGE_TAG,
@@ -101,6 +102,9 @@ interface Run {
 
 /** Who is acting and what they are acting on. */
 interface Act {
+  /** Latched once for the whole Attack, including hits after a choice. */
+  disciplineBonus?: number;
+  spellBonus?: number;
   actor: Unit;
   target: Unit | null;
   attacker: Unit | null;
@@ -491,6 +495,7 @@ function applyDamage(
   overflow = false,
   // (a Shatter was earned with Fracture and never comes again, so Slippery lets it through)
   throughSlippery = false,
+  canRescue = false,
 ): number {
   if (t.hp <= 0) return 0;
   // (Nyxara's rule, DECISIONS #546) a hit tears her Veil away, and her intent shows
@@ -524,6 +529,22 @@ function applyDamage(
     addStatus(r, t, 'buffer', -1);
     lost = 0;
   }
+  const survival = r.s.sides[t.side].discipline;
+  let saved = false;
+  if (
+    t.kind === 'hero' &&
+    canRescue &&
+    kind === 'attack' &&
+    source &&
+    source.side !== t.side &&
+    lost >= t.hp &&
+    survival?.rule.kind === 'desperation' &&
+    !survival.used
+  ) {
+    survival.used = true;
+    lost = t.hp - 1;
+    saved = true;
+  }
   // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
   const rise = t.rise?.[0];
   let rises = false;
@@ -549,6 +570,11 @@ function applyDamage(
     hp: t.hp,
     ...(overflow ? { overflow: true as const } : {}),
   });
+  if (saved && survival?.rule.kind === 'desperation') {
+    const n = Math.ceil((t.maxHp * survival.rule.emergencyBarrierPct) / 100);
+    t.barrier += n;
+    r.ev.push({ type: 'barrier', target: t.id, amount: n, total: t.barrier });
+  }
   if (lost > 0 && t.kind === 'hero') {
     const hsd = r.s.sides[t.side];
     hsd.lostHpTurn = (hsd.lostHpTurn ?? 0) + 1;
@@ -603,6 +629,28 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
     }
   }
   let amount = modifiedDamage(base, a.actor, t, attacked);
+  if (attacked && t.side !== a.actor.side) {
+    const sd = r.s.sides[a.actor.side];
+    if (a.disciplineBonus === undefined) {
+      const d = sd.discipline;
+      const markTurn = d?.usedTurn;
+      a.disciplineBonus = disciplineAttack(
+        r.s,
+        sd,
+        a.actor,
+        a.card,
+        a.target,
+        r.db.units[a.actor.def]?.slots ?? 1,
+      );
+      if (d?.rule.kind === 'pursuit' && d.usedTurn !== markTurn && d.target === t.id)
+        addStatus(r, t, 'exposed', d.rule.exposed);
+      // The mark may have just applied Exposed; use the same state for the first hit too.
+      amount = modifiedDamage(base, a.actor, t, attacked);
+    }
+    const extra =
+      a.actor.kind === 'hero' && a.card?.kind === 'attack' ? disciplineTarget(sd, t) : 0;
+    amount = Math.floor((amount * (100 + a.disciplineBonus + extra)) / 100);
+  }
   // (a hit Shielded cancels does not land; one Barrier soaks does)
   if (!(attacked && amount > 0 && stacks(t, 'shielded') > 0)) a.struck.set(t.id, true);
   // Bladebane: the blade strikes it twice as hard
@@ -610,7 +658,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
   const room = t.hp + t.barrier;
   const barrierBefore = t.barrier;
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0 || stacks(t, 'slippery') > 0;
-  const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
+  const lostHere = applyDamage(r, a.actor, t, amount, 'attack', false, false, attacked);
   let lost = lostHere;
   // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
   if (
@@ -641,7 +689,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       const nextRoom = next.hp + next.barrier;
       const nextCapped =
         stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0 || stacks(next, 'slippery') > 0;
-      lost += applyDamage(r, a.actor, next, carried, 'attack', true);
+      lost += applyDamage(r, a.actor, next, carried, 'attack', true, false, true);
       // (a companion the overflow kills, exactly or through Ghostly too, remembers its killer: Den Mother)
       if (next.kind === 'ally' && next.hp <= 0) next.killedBy = a.actor.id;
       if (next.kind !== 'ally' || next.hp > 0 || nextCapped || carried <= nextRoom) break;
@@ -1693,6 +1741,8 @@ function runOpList(r: Run, a: Act, ops: readonly Op[]): void {
       if (a.glass) r.s.pending.glass = a.glass;
       if (a.discharged) r.s.pending.discharged = a.discharged;
       if (a.charges.length) r.s.pending.charges = [...a.charges];
+      if (a.disciplineBonus !== undefined) r.s.pending.disciplineBonus = a.disciplineBonus;
+      if (a.spellBonus !== undefined) r.s.pending.spellBonus = a.spellBonus;
       return;
     }
   }
@@ -1701,6 +1751,9 @@ function runOpList(r: Run, a: Act, ops: readonly Op[]): void {
 function execOp(r: Run, a: Act, op: Op): void {
   const side = r.s.sides[a.actor.side];
   switch (op.op) {
+    case 'discipline':
+      side.discipline ??= { rule: op.rule, progress: 0, roundGain: 0 };
+      return;
     case 'damage': {
       // Blade Sweep: a blade card that strikes one enemy strikes every enemy
       if (
@@ -1811,6 +1864,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 (ripostes.has(t.id) ? riposte : 0) +
                 ember +
                 resonanceOf(a) +
+                (a.spellBonus ?? 0) +
                 marrow) *
                 lone *
                 leth *
@@ -3517,6 +3571,7 @@ function payCost(r: Run, sd: SideState, cost: number): void {
   const fromMana = Math.min(sd.mana, cost);
   sd.mana -= fromMana;
   if (cost > fromMana) {
+    if (sd.discipline?.rule.kind === 'reserves') sd.discipline.progress += cost - fromMana;
     sd.reserves -= cost - fromMana;
     r.ev.push({ type: 'reserves', side: sd.id, reserves: sd.reserves, max: reservesCap(sd) });
   }
@@ -3806,6 +3861,7 @@ function fireTriggers(
   const hero = heroOf(sd);
   if (!hero || hero.hp <= 0 || r.depth >= MAX_DEPTH) return;
   r.depth++;
+  runOps(r, mkAct(hero), disciplineTrigger(r.s, sd, when, ctx));
   for (const p of [...sd.powers]) {
     if (r.s.winner) break;
     if (p.when !== when) continue;
@@ -4187,6 +4243,10 @@ function beginHeroTurn(r: Run, side: Side): void {
   r.s.active = side;
   r.s.turn++;
   sd.turnBegan = r.s.turn;
+  if (sd.discipline) {
+    sd.discipline.roundGain = 0;
+    if (sd.discipline.rule.kind === 'reserves') sd.discipline.progress = 0;
+  }
   r.ev.push({ type: 'turnStart', side, turn: r.s.turn });
   // (the suits clear first, so a card played as the turn begins keeps its suit)
   if (traitOf(r, side)?.suits) {
@@ -4641,8 +4701,12 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
   const ascended = h.ascendancy ? r.db.ascended?.[h.ascendancy] : undefined;
   const isOwn = ascended?.id === base.id;
   const hd = isOwn && ascended ? ascended : base;
+  const discipline = hd.trait?.fightStart?.find((o) => o.op === 'discipline');
   const sd: SideState = {
     ...blankSide(id),
+    ...(discipline?.op === 'discipline'
+      ? { discipline: { rule: discipline.rule, progress: 0, roundGain: 0 } }
+      : {}),
     ...(isOwn ? { ascendancy: h.ascendancy as string } : {}),
     draw: h.deck.map((card) => {
       cardDef(r.db, card);
@@ -5153,6 +5217,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     x = sd.mana + sd.reserves + (cd.xBonus ?? 0);
     sd.mana = 0;
     if (sd.reserves > 0) {
+      if (sd.discipline?.rule.kind === 'reserves') sd.discipline.progress += sd.reserves;
       sd.reserves = 0;
       r.ev.push({ type: 'reserves', side: sd.id, reserves: 0, max: reservesCap(sd) });
     }
@@ -5215,6 +5280,19 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     null;
   // (the Shaman) the totems' boost for the first spell of its element this turn
   let boost = sd.totems ? spellBoost(r, sd, cd) : 0;
+  let spellBonus = 0;
+  const cycle = sd.discipline;
+  if (
+    cycle?.rule.kind === 'spellCycle' &&
+    starsSpent > 0 &&
+    cd.kind === 'attack' &&
+    cd.tags?.includes(SPELL_TAG) &&
+    cycle.usedTurn !== r.s.turn
+  ) {
+    cycle.usedTurn = r.s.turn;
+    spellBonus = starsSpent * cycle.rule.perSpent;
+    sd.nextStars = (sd.nextStars ?? 0) + Math.floor(starsSpent / cycle.rule.refundDivisor);
+  }
   // (Measured Ruin, DECISIONS #480: the first Spell Attack of the turn that spends Spell Power)
   if (
     starsSpent > 0 &&
@@ -5226,7 +5304,11 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     boost += stacks(hero, 'ruinous') * starsSpent;
     sd.ruinUsed = true;
   }
-  runOps(r, mkAct(hero, { target, card: cd, inst, x, pick: true, plus: boost }), cd.effects);
+  runOps(
+    r,
+    mkAct(hero, { target, card: cd, inst, x, pick: true, plus: boost, spellBonus }),
+    cd.effects,
+  );
   if (r.s.pending) {
     if (boost) r.s.pending.plus = boost;
     r.s.pending.finish = inst;
@@ -5347,6 +5429,8 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
       discharged: p.discharged ?? 0,
       charges: p.charges ?? [],
       plus: p.plus ?? 0,
+      ...(p.disciplineBonus !== undefined ? { disciplineBonus: p.disciplineBonus } : {}),
+      ...(p.spellBonus !== undefined ? { spellBonus: p.spellBonus } : {}),
     });
     // (the Spellblade's choices: which enchantment the new one replaces, which to discharge, what the newest becomes)
     const list = sd.enchants ?? [];
@@ -5510,6 +5594,16 @@ export function previewCardDamage(
         hand: sd.hand.filter((c) => c.id !== instId),
         mana: sd.mana - fromMana,
         reserves: sd.reserves - (paid - fromMana),
+        ...(sd.discipline
+          ? {
+              discipline: {
+                ...clone(sd.discipline),
+                progress:
+                  sd.discipline.progress +
+                  (sd.discipline.rule.kind === 'reserves' ? paid - fromMana : 0),
+              },
+            }
+          : {}),
         stars: Math.max(
           0,
           sd.stars -
@@ -5551,6 +5645,15 @@ export function previewCardDamage(
   const ruin =
     def.kind === 'attack' && def.tags?.includes(SPELL_TAG) && spendNow > 0 && !sd.ruinUsed
       ? stacks(hero, 'ruinous') * spendNow
+      : 0;
+  const cycle = sd.discipline;
+  const cycleBonus =
+    def.kind === 'attack' &&
+    def.tags?.includes(SPELL_TAG) &&
+    spendNow > 0 &&
+    cycle?.rule.kind === 'spellCycle' &&
+    cycle.usedTurn !== s.turn
+      ? spendNow * cycle.rule.perSpent
       : 0;
   const keen = def.tags?.includes(SWORD_TAG) ? stacks(hero, 'keen') : 0;
   const knife = def.tags?.includes(EDGE_TAG) === true;
@@ -5744,6 +5847,7 @@ export function previewCardDamage(
       add(edge, 'bonus');
       add(keen, 'Whispering Edge');
       add(ruin, 'Measured Ruin');
+      add(cycleBonus, 'Spell cycle');
       add(v, 'Primed');
       add(rip, 'Riposte');
       add(ember, 'Ember');
@@ -5754,15 +5858,44 @@ export function previewCardDamage(
       if (leth !== 1) how.push(`first Attack +${lethality}% = ${Math.round(run * lone * leth)}`);
       const noose = t && def.tags?.includes('noose') ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
       if (noose !== 1) how.push(`Noose ×${noose} = ${Math.round(run * lone * leth * noose)}`);
-      const n = modifiedDamage(
+      let victim = t;
+      let styleBonus = 0;
+      if (def.kind === 'attack' && after.sides[sd.id].discipline) {
+        const previewSide = {
+          ...after.sides[sd.id],
+          discipline: clone(after.sides[sd.id].discipline!),
+        };
+        const markTurn = previewSide.discipline.usedTurn;
+        styleBonus = disciplineAttack(after, previewSide, hero, def, chosen ?? t, 1);
+        const rule = previewSide.discipline.rule;
+        if (
+          t &&
+          rule.kind === 'pursuit' &&
+          previewSide.discipline.usedTurn !== markTurn &&
+          previewSide.discipline.target === t.id
+        )
+          victim = {
+            ...t,
+            statuses: { ...t.statuses, exposed: (t.statuses.exposed ?? 0) + rule.exposed },
+          };
+        if (victim) styleBonus += disciplineTarget(previewSide, victim);
+      }
+      let n = modifiedDamage(
         Math.round(
-          (amt + knifeEdge + honed + edge + keen + ruin + v + rip + ember) * lone * leth * noose,
+          (amt + knifeEdge + honed + edge + keen + ruin + cycleBonus + v + rip + ember) *
+            lone *
+            leth *
+            noose,
         ),
         hero,
-        t,
+        victim,
         def.kind === 'attack',
         how,
       );
+      if (styleBonus) {
+        n = Math.floor((n * (100 + styleBonus)) / 100);
+        how.push(`Ascendancy +${styleBonus}% = ${n}`);
+      }
       // Ghostly lets 1 through, Shielded none
       // (a pull before the attack hits first, so its own damage takes the Shield off: Knife Work's)
       const dealt =

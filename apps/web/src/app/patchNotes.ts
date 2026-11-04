@@ -29,6 +29,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.181.0',
+    date: '2026-11-04',
+    title: 'Ascendancies with a purpose',
+    summary: 'Twelve Ascendancies gain distinct ways to develop into the late game.',
+    notes: [
+      { kind: 'balance', text: 'Marshal rewards spending banked Reserves; Blood Knight stores retaliation from wounds; Golemancer turns large-machine durability into attack power.' },
+      { kind: 'balance', text: 'Seer marks and pursues a chosen enemy. Assassin prepares an execution through Skills, while Bladedancer keeps the knife-volume identity.' },
+      { kind: 'balance', text: 'Totemist cultivates a standing row. Elementalist develops each element and rewards switching between them. Archmage recovers power from a paid Spell Attack.' },
+      { kind: 'balance', text: 'Zealot develops controlled Fury, Sunwalker preserves progress between Radiant windows, Brewmaster builds Fermentation, and Deathwish gains low-health pressure with one emergency survival opportunity.' },
+      { kind: 'new', text: 'Combat trait chips show the progress of these Ascendancy mechanics. The changes apply in Campaign, Arena, and Echo fights.' },
+    ],
+    heads: 'Refresh or update the desktop app. Existing Ascendancy choices keep their names and receive the new effects. Older replays are incompatible; an unfinished fight from older rules restarts from its encounter checkpoint. Card pools are unchanged. Late-game strength still needs playtesting.',
+  },
+  {
     version: '0.180.0',
     date: '2026-11-04',
     title: 'One account, one active device',

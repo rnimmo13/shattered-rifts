@@ -3,6 +3,10 @@
 Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
 in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 
+**0.181.0:** twelve Ascendancies have distinct late-game mechanics and combat progress chips.
+See [the pass](../../docs/ASCENDANCY_PASS_2026-11-04.md). The offline smoke also renders a Marshal
+fixture through the actual campaign UI before restoring its original isolated save.
+
 **0.180.0:** shared Campaign/Arena now require an internet connection and one account-wide play
 claim. Other devices may browse. Use Save and stop playing before switching devices. The desktop
 Local offline play button opens an isolated `srgame://local` origin, with files in

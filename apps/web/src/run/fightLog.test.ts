@@ -9,6 +9,7 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, encounter } from '@sr/content/v2';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
+import { RULES_VERSION } from '@sr/pvp';
 
 const store = new Map<string, string>();
 beforeEach(() => {
@@ -21,6 +22,17 @@ beforeEach(() => {
 });
 
 describe('the fight log', () => {
+  it('does not replay old-rule or unversioned actions under changed combat rules', () => {
+    for (const rules of [undefined, RULES_VERSION - 1]) {
+      store.set(
+        'sr.fightlog:k',
+        JSON.stringify({ rules, seed: 's', moves: [{ type: 'endTurn' }] }),
+      );
+      expect(loadFightLog('k', 's')).toEqual([]);
+    }
+    appendFightMove('k', 's', { type: 'endTurn' });
+    expect(loadFightLog('k', 's')).toEqual([{ type: 'endTurn' }]);
+  });
   it('keeps moves for a seed, and ignores another seed', () => {
     const a: Action = { type: 'endTurn' };
     expect(loadFightLog('k', 's1')).toEqual([]);
@@ -69,7 +81,8 @@ describe('the fight log', () => {
     // (through the log, as a reload would)
     for (const m of moves) appendFightMove('fight', setup.seed, m);
     let again = createCombat(COMBAT_DB, setup).state;
-    for (const m of loadFightLog('fight', setup.seed)) again = applyAction(COMBAT_DB, again, m).state;
+    for (const m of loadFightLog('fight', setup.seed))
+      again = applyAction(COMBAT_DB, again, m).state;
     expect(hashState(again)).toBe(hashState(live));
   });
 });

@@ -76,7 +76,7 @@ describe('Ascendancies', () => {
     );
     expect(hero(fight('engineer', 'engineer:foreman')).name).toBe('Artillerist');
     expect(hero(fight('engineer', 'engineer:foreman')).statuses.might).toBe(1);
-    expect(hero(fight('assassin', 'assassin:assassin')).statuses.edge).toBe(2);
+    expect(fight('assassin', 'assassin:assassin').sides.a.discipline?.rule.kind).toBe('execution');
   });
 
   it('an Ascendancy that is not the hero’s own does nothing', () => {

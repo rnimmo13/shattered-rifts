@@ -1,22 +1,9 @@
 // Ascendancies (DECISIONS #519): the reward for beating Tier III's last Warden, in place of its usual Gift. A Riftwalker takes one of
 // three and becomes that class for the rest of the run: the name changes (Knight to Paladin), and a new trait sits beside the old one,
-// leaning the deck one way. The banked deck keeps it, so it goes to the Arena and to ghosts. Numbers are a first pass.
+// leaning the deck one way. The banked deck keeps it in Arena and ghosts. The identity pass is documented in DECISIONS #580.
 
 import type { CombatDb, HeroDef, HeroTrait, Op } from '@sr/combat';
-import {
-  barrier,
-  dmg,
-  draw,
-  growHp,
-  heal,
-  mana,
-  on,
-  per,
-  raise,
-  scaled,
-  status,
-  stars,
-} from './build';
+import { barrier, draw, growHp, mana, on, per, raise, scaled, status, stars } from './build';
 
 export interface Ascendancy {
   /** `<hero>:<name>`, so a class named after another's id can never be taken for it */
@@ -70,21 +57,21 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Marshal',
     'Reserves',
     // (Max Reserves 4, was 5, DECISIONS #545)
-    'Max Reserves 4. At the start of your turn, gain Primed equal to your Reserves.',
+    'Max Reserves 4. Your Attacks deal 10% more damage per Reserve spent this turn, up to 40% more.',
     {
       set: { maxReserves: 4 },
-      turnStart: [scaled(status('vigor', 0), per('reserves'))],
+      fightStart: [{ op: 'discipline', rule: { kind: 'reserves', perSpent: 10, cap: 40 } }],
     },
   ),
   a(
     'knight',
     'Blood Knight',
-    'Paying blood',
-    // (once a round, not once a turn: the enemy's turn is a turn too, so it gave 2 Might a round, DECISIONS #542; and 3 a fight at most,
-    // as Might kept on rising in a long fight, #544)
-    "The first time you lose HP each round (your turn and the enemy's), gain 1 Might, up to 3 Might a fight.",
+    'Retaliation',
+    'Actual HP lost charges Retaliation: +2% damage on your next Attack per 1% of max HP lost. Charge up to 30% each round and store up to 60%. The Attack spends the charge.',
     {
-      triggers: [on('hurt', [status('might', 1)], { round: true, times: 3 })],
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'retaliation', perLostPct: 2, roundCap: 30, cap: 60 } },
+      ],
     },
   ),
 
@@ -103,9 +90,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Golemancer',
     'One big machine',
     // (3, was 2, DECISIONS #545)
-    'At the start of your turn, your companions gain 3 more max HP.',
+    'At the start of your turn, your companions gain 3 more max HP. Heavy and Colossal companions deal 1% more attack damage per max HP, up to 100% more.',
     {
       turnStart: [growHp(3, 'allAllies')],
+      fightStart: [{ op: 'discipline', rule: { kind: 'frame', minSlots: 2, perHp: 1, cap: 100 } }],
     },
   ),
   // (the Overclocker until DECISIONS #569: the only class with a 4th companion slot; 1 Primed each, was 2, as there can be one more
@@ -165,19 +153,31 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
   a('trickster', 'Cardsharp', 'Suits', 'A Full Trick also gives you 1 Mana.', {
     triggers: [on('allSuits', [mana(1)])],
   }),
-  a('trickster', 'Seer', 'Exposed', 'At the start of your turn, a random enemy gains 1 Exposed.', {
-    turnStart: [status('exposed', 1, 'randomFoe')],
-  }),
+  a(
+    'trickster',
+    'Seer',
+    'Marked prey',
+    'Your first damaging aimed Attack each turn marks its enemy and applies 1 Exposed. Keeping the same mark builds +10% attack damage against it each qualifying turn, up to +50%; choosing a new mark restarts at +10%.',
+    {
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'pursuit', perTurn: 10, cap: 50, exposed: 1 } },
+      ],
+    },
+  ),
 
   // (the class is the Rogue; the Assassin is what one can become, DECISIONS #519)
   a(
     'assassin',
     'Assassin',
-    'Daggers',
-    // (10%, was 25%: a percentage that grew with the deck, DECISIONS #544)
-    'Your Daggers deal 2 more damage, and your first Attack each turn deals 10% more.',
+    'Preparation and execution',
+    'Each Skill you finish on your turn prepares +15% damage for your next Attack, up to +60%. Your Attacks also deal 20% more damage against enemies at half HP or less. These bonuses add together.',
     {
-      fightStart: [status('edge', 2), status('lethality', 10)],
+      fightStart: [
+        {
+          op: 'discipline',
+          rule: { kind: 'execution', perSkill: 15, cap: 60, woundedPct: 50, bonus: 20 },
+        },
+      ],
     },
   ),
   a(
@@ -200,9 +200,19 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
   ),
 
   // (1 Spirit and 8 Barrier, was 2 Spirit: a second Spirit from the first turn was the strongest start in the game, DECISIONS #545)
-  a('shaman', 'Totemist', 'Totems', 'Start each fight with 1 Spirit and 8 Barrier.', {
-    fightStart: [status('spirit', 1), barrier(8)],
-  }),
+  a(
+    'shaman',
+    'Totemist',
+    'Cultivating totems',
+    'Start each fight with 1 Spirit and 8 Barrier. End your turn with at least two totems standing, without commanding or pushing any out that turn, to gain 1 Spirit.',
+    {
+      fightStart: [
+        status('spirit', 1),
+        barrier(8),
+        { op: 'discipline', rule: { kind: 'cultivation', minimum: 2, spirit: 1 } },
+      ],
+    },
+  ),
   a(
     'shaman',
     'Spiritwalker',
@@ -218,13 +228,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'shaman',
     'Elementalist',
     'Elements',
-    'The first time each turn you cast a Flame card, a random enemy gains 3 Burn; a Frost card, gain 3 Barrier; a Storm card, deal 2 damage to ALL enemies.',
+    'The first Flame, Frost and Storm card you finish on your turn gives 3 Burn to a random enemy, 3 Barrier, or 2 damage to ALL enemies respectively. Each element’s bonus grows by 1 each time it triggers this fight. Switching from the last triggered element adds 2 to that bonus.',
     {
-      triggers: [
-        on('play', [status('burn', 3, 'randomFoe')], { tag: 'flame', once: true }),
-        // (3 and 2, were 4 and 3: casting two elements a turn made it the strongest start, DECISIONS #545)
-        on('play', [barrier(3)], { tag: 'frost', once: true }),
-        on('play', [dmg(2, 'allFoes')], { tag: 'storm', once: true }),
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'elements', flame: 3, frost: 3, storm: 2, sequence: 2 } },
       ],
     },
   ),
@@ -233,17 +240,26 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     triggers: [on('stanceLeft', [mana(1)], { stance: 'calm', once: true })],
   }),
   // (the first time each turn: Fury loops made 14-22 Barrier a turn, DECISIONS #542)
-  a('monk', 'Zealot', 'Fury', 'The first time each turn you enter Fury, gain 6 Barrier.', {
-    triggers: [on('stance', [barrier(6)], { stance: 'wrath', once: true })],
-  }),
+  a(
+    'monk',
+    'Zealot',
+    'Controlled Fury',
+    'Your first Fury entry on your turn builds +8% attack damage while in Fury, up to +40% this fight. Your first Fury exit on your turn gives 4 Barrier plus 2 per earned step of that growth.',
+    {
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'fury', perEntry: 8, cap: 40, barrier: 4, perExit: 2 } },
+      ],
+    },
+  ),
   // (the first stance each turn, not every one: a Flow deck reached Radiant every turn, DECISIONS #544)
   a(
     'monk',
     'Sunwalker',
     'Radiant',
-    'The first time each turn you enter a stance, gain 1 more Fervor.',
+    'The first time each turn you enter a stance, gain 1 more Fervor. Your first Radiant exit on your turn returns 2 Fervor; each later qualifying exit this fight returns 1 more, up to 4.',
     {
       triggers: [on('stance', [status('mantra', 1)], { once: true })],
+      fightStart: [{ op: 'discipline', rule: { kind: 'radiance', first: 2, step: 1, cap: 4 } }],
     },
   ),
 
@@ -262,10 +278,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'spellblade',
     'Archmage',
     'Spells',
-    // (20% more on the first Attack, not 1 more per point spent: what a late deck spends kept on growing, DECISIONS #544)
-    'Start each fight with 3 more Spell Power. Your first Attack each turn deals 20% more.',
+    'Start each fight with 3 more Spell Power. Your first Spell Attack each turn that spends Spell Power deals 1 extra damage per point spent on every hit. Half that expenditure, rounded down, returns next turn.',
     {
-      fightStart: [stars(3), status('lethality', 20)],
+      fightStart: [
+        stars(3),
+        { op: 'discipline', rule: { kind: 'spellCycle', perSpent: 1, refundDivisor: 2 } },
+      ],
     },
   ),
   // (15% more, not 5 more: a percentage grows as the Shatters do, DECISIONS #542)
@@ -273,14 +291,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     fightStart: [{ op: 'shatterUp', amount: 0, pct: 15 }],
   }),
 
-  // (and 1 Might for the turn, DECISIONS #545)
   a(
     'drunkard',
     'Brewmaster',
     'Hangover',
-    'At the start of your turn, heal 2 HP and gain 1 Might for the turn.',
+    'Your first actual Hangover payment on your turn builds 1 Fermentation, up to 5. At the end of your turn, each Fermentation heals 1% of your max HP and gives 2 Barrier. Fermentation lasts for the fight.',
     {
-      turnStart: [heal(2, 'self'), status('might', 1, 'self', true)],
+      fightStart: [{ op: 'discipline', rule: { kind: 'brewing', cap: 5, healPct: 1, barrier: 2 } }],
     },
   ),
   // (and 2 sharper every turn: 3 once was less than a common card, DECISIONS #542)
@@ -298,11 +315,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Deathwish',
     'Low HP',
-    // (1.25%, and at most +100%: uncapped at 2%, Hangover took him to 10% HP for +180%, DECISIONS #542, #544; never less than
-    // the class's own 1%)
-    'Clutch Genes gives 1.25% more attack damage for every 1% of your HP you are missing, up to 100% more.',
+    'At 40% HP or less, your Attacks deal 25% more damage, on top of ordinary Clutch Genes. Once each fight, a lethal enemy attack leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Later hits can still kill you.',
     {
-      set: { clutch: { perMissingPct: 1.25, max: 100 } },
+      fightStart: [
+        {
+          op: 'discipline',
+          rule: { kind: 'desperation', threshold: 40, bonus: 25, emergencyBarrierPct: 10 },
+        },
+      ],
     },
   ),
 

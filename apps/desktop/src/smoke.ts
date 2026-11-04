@@ -89,6 +89,34 @@ void app
       await waitFor(win, "!!document.querySelector('canvas')");
       await delay(1500);
       writeFileSync(resolve(profile, 'fight.png'), (await win.webContents.capturePage()).toPNG());
+      // Isolated fixture: render the new Ascendancy progress chip through the real campaign UI.
+      await value(win, "location.hash = '#/'");
+      await waitFor(win, "!!document.querySelector('.home__play')");
+      await value(
+        win,
+        `(() => {
+        const slots = JSON.parse(localStorage.getItem('sr.runs.v3'));
+        const run = JSON.parse(slots[0].text);
+        const node = run.map.nodes.find(n => n.enemyId && !n.ghost);
+        run.ascendancy = 'knight:marshal'; run.phase = 'duel'; run.at = node.id;
+        run.context = { nodeId: node.id };
+        slots[0].text = JSON.stringify(run);
+        localStorage.setItem('sr.runs.v3', JSON.stringify(slots));
+        location.hash = '#/run';
+      })()`,
+      );
+      await waitFor(
+        win,
+        "!!document.querySelector('canvas') && [...document.querySelectorAll('.traitchip__progress')].some(n => n.textContent.includes('Assault'))",
+      );
+      await delay(1000);
+      writeFileSync(
+        resolve(profile, 'ascendancy.png'),
+        (await win.webContents.capturePage()).toPNG(),
+      );
+      await value(win, "location.hash = '#/'");
+      await waitFor(win, "!!document.querySelector('.home__play')");
+      await value(win, `localStorage.setItem('sr.runs.v3', ${JSON.stringify(raw)})`);
     } else {
       assert.equal(
         await value(

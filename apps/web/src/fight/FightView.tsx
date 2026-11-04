@@ -863,7 +863,9 @@ export function FightView(props: {
                       return;
                     }
                     if (fxAt === 'all') {
-                      const spots = foeIds.map(spotOf).filter((s): s is NonNullable<typeof s> => !!s);
+                      const spots = foeIds
+                        .map(spotOf)
+                        .filter((s): s is NonNullable<typeof s> => !!s);
                       if (!spots.length) return;
                       const xs = spots.map((s) => s.x);
                       const big = Math.max(...spots.map((s) => s.size));
@@ -881,7 +883,8 @@ export function FightView(props: {
                     let aim = e.target;
                     for (let j = i + 1; !aim && j < all.length; j++) {
                       const n = all[j];
-                      if (!n || n.type === 'play' || n.type === 'act' || n.type === 'turnEnd') break;
+                      if (!n || n.type === 'play' || n.type === 'act' || n.type === 'turnEnd')
+                        break;
                       if (n.type === 'damage' && n.source === hero) aim = n.target;
                     }
                     const at = spotOf(aim ?? foeIds[0] ?? hero);
@@ -1300,7 +1303,9 @@ export function FightView(props: {
         ),
       )
       .then((s) => {
-        perfNote(`the battlefield is built (${Math.round(performance.now() - opened)} ms after opening)`);
+        perfNote(
+          `the battlefield is built (${Math.round(performance.now() - opened)} ms after opening)`,
+        );
         if (cancelled) {
           s.destroy();
           return;
@@ -1483,7 +1488,9 @@ export function FightView(props: {
       try {
         // (the time each step takes goes in a performance report, if one is recording: DECISIONS #572)
         const played =
-          a.type === 'play' ? g.state.sides[seat].hand.find((c) => c.id === a.card)?.card : undefined;
+          a.type === 'play'
+            ? g.state.sides[seat].hand.find((c) => c.id === a.card)?.card
+            : undefined;
         const t0 = performance.now();
         const r = applyAction(db, g.state, a);
         const t1 = performance.now();
@@ -2278,7 +2285,10 @@ export function FightView(props: {
               {(props.rule || props.stakes) && (
                 <span className="fight__notes">
                   {props.stakes && (
-                    <span className={`fight__stakes fight__stakes--${props.stakes.tone}`} role="note">
+                    <span
+                      className={`fight__stakes fight__stakes--${props.stakes.tone}`}
+                      role="note"
+                    >
                       {props.stakes.text}
                     </span>
                   )}
@@ -2792,7 +2802,7 @@ export function FightView(props: {
                 view?.sides[mySide].suitsTurn ||
                 (me?.powers.length ?? 0) > 0) && (
                 <div className="fight__side">
-                  <TraitChip setup={setup[mySide]} />
+                  <TraitChip setup={setup[mySide]} side={view.sides[mySide]} />
                   {(mine.boons?.length ?? 0) > 0 && (
                     <BoonPanel panel="boons-mine" title="Your Boons" boons={mine.boons ?? []} />
                   )}
@@ -2812,7 +2822,7 @@ export function FightView(props: {
                 (them?.powers.length ?? 0) > 0) && (
                 <div className="fight__side fight__side--foe">
                   {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
-                  {pvp && <TraitChip setup={setup[foeSide]} />}
+                  {pvp && <TraitChip setup={setup[foeSide]} side={view.sides[foeSide]} />}
                   {omens.length > 0 && (
                     <div className="fight__omens" aria-label="Omens">
                       {omens.map((o) => (
@@ -3211,16 +3221,27 @@ function traitOf(s: CombatSetup['a'] | CombatSetup['b']): { name: string; text: 
 }
 
 /** A Riftwalker's innate trait as a chip in the side column: its name, and what it does on hover. */
-function TraitChip(props: { setup: CombatSetup['a'] | CombatSetup['b'] }) {
+function TraitChip(props: {
+  setup: CombatSetup['a'] | CombatSetup['b'];
+  side: CombatView['sides']['a'];
+}) {
   const trait = traitOf(props.setup);
   if (!trait) return null;
   return (
     <span
       className="traitchip"
       tabIndex={0}
-      {...tipAttrs({ kicker: 'Innate', title: trait.name, tone: 'good', text: trait.text })}
+      {...tipAttrs({
+        kicker: 'Innate',
+        title: trait.name,
+        tone: 'good',
+        text: `${trait.text}${props.side.disciplineText ? `\n\n${props.side.disciplineText}` : ''}`,
+      })}
     >
       <span aria-hidden>✧</span> {trait.name}
+      {props.side.disciplineLabel && (
+        <small className="traitchip__progress">{props.side.disciplineLabel}</small>
+      )}
     </span>
   );
 }

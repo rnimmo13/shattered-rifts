@@ -27,6 +27,14 @@ export function validateDb(db: CombatDb): string[] {
     },
   ): void => {
     for (const o of ops) {
+      if (o.op === 'discipline') {
+        for (const [key, value] of Object.entries(o.rule))
+          if (
+            key !== 'kind' &&
+            (typeof value !== 'number' || !Number.isFinite(value) || value <= 0)
+          )
+            errs.push(`${where}: discipline ${key} must be positive and finite`);
+      }
       if (
         o.op === 'revive' &&
         o.hpPct !== undefined &&

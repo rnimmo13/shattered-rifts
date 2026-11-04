@@ -3,6 +3,7 @@
 > This is the legacy duel card document. Current Combat v2 numbers are generated in
 > [`10_CARD_LIST.md`](10_CARD_LIST.md). The approved 2026-11-03 rebalance, including upgrades,
 > is recorded in [`BALANCE_PROPOSAL_2026-11-03.md`](BALANCE_PROPOSAL_2026-11-03.md) and DECISIONS #574.
+> The 2026-11-04 Ascendancy pass is specified in [`ASCENDANCY_PASS_2026-11-04.md`](ASCENDANCY_PASS_2026-11-04.md), DECISIONS #580. It changes Ascendancies, not card pools.
 
 Rules live in `01_GAME_DESIGN.md`, visuals in `04_VISUALS_AND_ANIMATION.md`, art in `05_ART_PIPELINE.md`.
 This doc covers the realms, card anatomy and data, the balance budget, the **Core Set (74 cards + 6

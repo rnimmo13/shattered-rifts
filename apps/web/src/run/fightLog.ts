@@ -3,6 +3,7 @@
 // There is nothing to gain from reloading (the fight is the same), so it costs nothing.
 
 import type { Action } from '@sr/combat';
+import { RULES_VERSION } from '@sr/pvp';
 
 const PREFIX = 'sr.fightlog:';
 
@@ -16,7 +17,9 @@ function read(key: string): Log | null {
     const raw = localStorage.getItem(PREFIX + key);
     if (!raw) return null;
     const v = JSON.parse(raw) as Partial<Log>;
-    return typeof v.seed === 'string' && Array.isArray(v.moves)
+    return (v as { rules?: unknown }).rules === RULES_VERSION &&
+      typeof v.seed === 'string' &&
+      Array.isArray(v.moves)
       ? { seed: v.seed, moves: v.moves }
       : null;
   } catch {
@@ -35,7 +38,10 @@ export function appendFightMove(key: string, seed: string, move: Action): void {
   try {
     const log = read(key);
     const moves = log && log.seed === seed ? log.moves : [];
-    localStorage.setItem(PREFIX + key, JSON.stringify({ seed, moves: [...moves, move] }));
+    localStorage.setItem(
+      PREFIX + key,
+      JSON.stringify({ rules: RULES_VERSION, seed, moves: [...moves, move] }),
+    );
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('sr-campaign-save'));
   } catch {
     /* storage can be full or blocked: the fight is simply not resumable */
