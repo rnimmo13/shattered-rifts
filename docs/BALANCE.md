@@ -1,5 +1,30 @@
 # Balance Notes
 
+## Arena pacing target (2026-11-04, DECISIONS #599)
+
+Robert wants PvP fights in the **10+ turn range**. Following the preceding discussion's per-player ranges, the working
+interpretation is ten or more turns per player in a typical competitive game, not ten alternating actions and not the total
+across a best-of-three series. A proposed initial tuning band is **10-14 turns per player**; that narrower band is a design
+recommendation, not a separately approved requirement or measured result. Human and ghost Arena games share the target.
+
+- Aim for meaningful setup, pressure, disruption and recovery before a finish. Do not enforce a minimum duration with
+  invulnerability or other artificial protection. Forfeits, disconnects and large deck/skill mismatches are separate cases.
+- Audit early lethal chains and continued growth past turn ten together. Longer fights must not automatically hand the win
+  to uncapped scaling or percentage sustain, or erase aggressive play styles' ability to threaten a finish.
+- Retain the current 6x class HP and +60 second-seat HP as the measurement baseline until a concrete change is justified.
+  Do not infer an HP multiplier from desired duration: damage, healing, Barrier, Fate and setup are not linear with turn count.
+- Assess minion durability and recovery separately, with ordinary hero targeting and Taunt intact. A blanket minion HP
+  multiplier would also affect HP-based damage and defensive value.
+- Compare real game lengths by matchup, deck quality, seat and human/ghost source; separate forfeits and timeout outcomes.
+  Arena exports record completed End turn actions across both seats (`endedTurns`), not turns per player. Use replays to
+  identify the finishing turn; do not label that raw counter as rounds or treat an unfinished lethal turn as completed.
+- The saved assessment's extended-fight grades cover turns 6-10. They do not establish parity beyond turn ten. Future balance
+  assessments must explicitly review turns 10-15 and append any revised grades, retaining the original snapshots.
+
+This records a pacing direction only. No HP, cards, timers, rules version or historical ratings changed; no new playtest
+results or balance simulations were produced. The existing 15-minute per-game limit also needs checking against actual
+decision time when evaluating the longer target.
+
 ## Current shared balance assessments (0.195.0, local)
 
 The maintained version history now lives in [balance-history](balance-history/README.md): [current 30-Ascendancy chart](balance-history/0.195.0.md), [released baseline](balance-history/0.194.0.md), [exact changes and hand ledger](SHARED_BALANCE_2026-11-04.md). These are estimated grades, not measured win rates. Older simulations below describe older rules and do not establish current balance. No new balance simulations were run. Real playtest exports can be aggregated with `pnpm balance:report`.

@@ -15,6 +15,7 @@ Read `CLAUDE.md` before working on the game.
 - Every future balance change must append an assessment under `docs/balance-history/`, following its README. Preserve previous snapshots and explain changed grades or corrected assumptions in the new version.
 - Track all Ascendancies and representative freely mixed builds in both modes, campaign progression bands, fight opening/extended strength, setup, recovery, rare reliance and confidence.
 - Distinguish estimated ratings, acceptance targets and measured playtests. Never present deterministic fixture checks as measured A-tier parity. Do not run balance simulations unless Robert requests them.
+- Arena pacing target: Robert wants fights in the 10+ turn range. Working interpretation is turns per player, following the discussion; see `docs/BALANCE.md` and decision #599. Future assessments must examine growth beyond turn ten, not assume the existing turns 6-10 grades establish long-fight parity. No HP change is authorized by that target alone.
 
 ## Transparent balance patch notes (Robert, 2026-11-04)
 
