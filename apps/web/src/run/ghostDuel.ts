@@ -37,6 +37,7 @@ function load(key: string, seed: string): Played[] {
 function save(key: string, seed: string, moves: Played[]): void {
   try {
     localStorage.setItem(PREFIX + key, JSON.stringify({ seed, moves }));
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('sr-campaign-save'));
   } catch {
     /* the fight is simply not resumable */
   }

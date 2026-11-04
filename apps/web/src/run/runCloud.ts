@@ -19,7 +19,15 @@ import {
 } from './history';
 import { serverBase } from '../pvp/config';
 import { vaultKey, whoAmI } from '../pvp/vaultSync';
-import { applyRunCopies, runCopies } from './saves';
+import { adoptSharedRuns, adoptSharedReplays, runCopies, sharedReplays } from './saves';
+import {
+  canPlay,
+  localOnly,
+  pausePlay,
+  playRevision,
+  playState,
+  setPlayRevision,
+} from '../playAccess';
 
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
 
@@ -27,7 +35,7 @@ const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
 async function ask(
   action: 'runs' | 'runsave',
   body: Record<string, unknown>,
-): Promise<RunCopy[] | null> {
+): Promise<{ runs: RunCopy[]; revision: number; replays: unknown } | null> {
   try {
     const key = vaultKey();
     const res = await fetch(`${httpBase()}/pvp/vault/${action}`, {
@@ -36,8 +44,15 @@ async function ask(
       body: JSON.stringify(key === null ? body : { code: key, ...body }),
       signal: AbortSignal.timeout(8000),
     });
-    const data = (await res.json()) as { ok?: unknown; runs?: unknown };
-    return data.ok === true ? cleanRunCopies(data.runs) : null;
+    const data = (await res.json()) as {
+      ok?: unknown;
+      runs?: unknown;
+      revision?: unknown;
+      replays?: unknown;
+    };
+    return data.ok === true && typeof data.revision === 'number'
+      ? { runs: cleanRunCopies(data.runs), revision: data.revision, replays: data.replays }
+      : null;
   } catch {
     return null;
   }
@@ -55,7 +70,11 @@ async function syncList(
     const res = await fetch(`${httpBase()}/pvp/vault/listsync`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(key === null ? body : { code: key, ...body }),
+      body: JSON.stringify({
+        ...(key === null ? {} : { code: key }),
+        ...body,
+        readOnly: !canPlay(),
+      }),
       signal: AbortSignal.timeout(10_000),
     });
     const data = (await res.json()) as { ok?: unknown; items?: unknown; removed?: unknown };
@@ -73,6 +92,7 @@ async function syncList(
 
 /** The run history and the Arena match history, brought together with the player's other devices (DECISIONS #318). */
 export async function syncLists(): Promise<boolean> {
+  if (localOnly()) return false;
   await whoAmI();
   let changed = false;
   const runsBefore = JSON.stringify(runHistory().map((r) => [r.id, r.at]));
@@ -114,20 +134,38 @@ let running: Promise<boolean> | null = null;
 
 /** Bring this browser's runs and the server's together. Resolves true when the runs here changed (so a list should be redrawn). */
 export function syncRuns(): Promise<boolean> {
+  if (localOnly()) return Promise.resolve(false);
   running ??= (async () => {
     try {
       // (signed in or not decides whose Vault: the account's, or this browser's code)
       await whoAmI();
+      const epoch = playState().epoch;
       const theirs = await ask('runs', {});
       if (!theirs) return false;
+      if (playState().epoch !== epoch) return false;
+      if (!canPlay()) {
+        if (theirs.revision === 0 && theirs.runs.length === 0) return false;
+        const changed = adoptSharedRuns(theirs.runs);
+        adoptSharedReplays(theirs.replays);
+        return changed;
+      }
+      if (theirs.revision !== playRevision()) {
+        pausePlay('Another confirmed save exists. Reconnect to load it before playing.');
+        return false;
+      }
       const mine = runCopies();
       // what the server lacks, or holds an older copy of, goes up
       const newer = mine.filter((c) => {
-        const t = theirs.find((x) => x.id === c.id);
-        return !t || c.updated > t.updated;
+        const t = theirs.runs.find((x) => x.id === c.id);
+        return !t || c.text !== t.text || !!c.gone !== !!t.gone;
       });
-      const after = newer.length > 0 ? ((await ask('runsave', { runs: newer })) ?? theirs) : theirs;
-      return applyRunCopies(after);
+      const replays = sharedReplays();
+      if (!newer.length && JSON.stringify(replays) === JSON.stringify(theirs.replays ?? {}))
+        return false;
+      const after = await ask('runsave', { runs: newer, revision: playRevision(), replays });
+      if (!after) return false;
+      setPlayRevision(after.revision);
+      return adoptSharedRuns(after.runs, mine);
     } finally {
       running = null;
     }

@@ -270,6 +270,62 @@ export function applyRunCopies(theirs: readonly RunCopy[]): boolean {
   return changed;
 }
 
+/** Server-confirmed shared progress replaces divergent local copies; preserve those copies for recovery. */
+export function adoptSharedRuns(theirs: readonly RunCopy[], sent?: readonly RunCopy[]): boolean {
+  const before = readSlots();
+  const current = runCopies();
+  const changedWhileSending = new Set(
+    sent
+      ? current
+          .filter((c) => {
+            const old = sent.find((x) => x.id === c.id);
+            return !old || old.text !== c.text || !!old.gone !== !!c.gone;
+          })
+          .map((c) => c.id)
+      : [],
+  );
+  const replaced = current.filter(
+    (c) =>
+      !changedWhileSending.has(c.id) &&
+      !c.gone &&
+      !theirs.some((r) => r.id === c.id && r.text === c.text && !r.gone),
+  );
+  if (replaced.length) {
+    try {
+      const older: unknown = JSON.parse(localStorage.getItem('sr.runConflictCopies') ?? '[]');
+      const previous: unknown[] = Array.isArray(older) ? older : [];
+      localStorage.setItem(
+        'sr.runConflictCopies',
+        JSON.stringify([...previous, ...replaced].slice(-30)),
+      );
+    } catch {
+      /* canonical progress is still authoritative */
+    }
+  }
+  const all = [
+    ...theirs.filter((c) => !changedWhileSending.has(c.id)),
+    ...current.filter((c) => changedWhileSending.has(c.id)),
+  ];
+  const slots = all
+    .filter((c): c is RunCopy & { text: string } => !c.gone && typeof c.text === 'string')
+    .slice(0, RUN_SLOTS)
+    .map((c) => ({ id: c.id, text: c.text, updated: c.updated }));
+  writeSlots(slots);
+  writeGone(all.filter((c) => c.gone).map((c) => ({ id: c.id, updated: c.updated })));
+  return JSON.stringify(before) !== JSON.stringify(slots);
+}
+const replayKey = (key: string): boolean =>
+  ['sr.fightlog:', 'sr.ghostlog:', 'sr.duel.started:'].some((p) => key.startsWith(p));
+export function sharedReplays(): Record<string, string> {
+  return Object.fromEntries(Object.entries(localStorage).filter(([key]) => replayKey(key)));
+}
+export function adoptSharedReplays(raw: unknown): void {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return;
+  for (const key of Object.keys(localStorage)) if (replayKey(key)) localStorage.removeItem(key);
+  for (const [key, value] of Object.entries(raw))
+    if (replayKey(key) && typeof value === 'string') localStorage.setItem(key, value);
+}
+
 // A duel that was begun and then left (the page closed) counts as lost. The marker is kept per run, so leaving one run's duel
 // does not forget another's.
 const STARTED = 'sr.duel.started';

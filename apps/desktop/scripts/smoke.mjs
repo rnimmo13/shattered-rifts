@@ -6,14 +6,14 @@ import electron from 'electron';
 // Kept under this workspace and ignored; no access to a player's actual desktop saves.
 mkdirSync('.smoke-profile', { recursive: true });
 const profile = mkdtempSync(resolve('.smoke-profile', 'run-'));
-const restored = mkdtempSync(resolve('.smoke-profile', 'cloud-'));
+const restored = mkdtempSync(resolve('.smoke-profile', 'local-recovery-'));
 for (const stage of ['write', 'read', 'cloud-read']) {
   const current = stage === 'cloud-read' ? restored : profile;
   if (stage === 'cloud-read') {
-    mkdirSync(resolve(current, 'saves/standalone'), { recursive: true });
+    mkdirSync(resolve(current, 'local-saves/standalone'), { recursive: true });
     copyFileSync(
-      resolve(profile, 'saves/standalone/save-v1.json'),
-      resolve(current, 'saves/standalone/save-v1.json'),
+      resolve(profile, 'local-saves/standalone/save-v1.json'),
+      resolve(current, 'local-saves/standalone/save-v1.json'),
     );
   }
   const env = { ...process.env };

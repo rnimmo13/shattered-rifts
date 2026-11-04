@@ -13,6 +13,9 @@ import { App } from './app/App';
 import { loadSkin, preloadArt } from './art/assets';
 import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 import { markGraphicsQuality } from './duel/effects';
+import { installPlayAccess } from './playAccess';
+
+installPlayAccess();
 
 applyCssTokens();
 // (Low graphics stops the looping decorations on every screen, not only in a fight: DECISIONS #570)

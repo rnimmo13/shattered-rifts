@@ -16,7 +16,9 @@ function read(key: string): Log | null {
     const raw = localStorage.getItem(PREFIX + key);
     if (!raw) return null;
     const v = JSON.parse(raw) as Partial<Log>;
-    return typeof v.seed === 'string' && Array.isArray(v.moves) ? { seed: v.seed, moves: v.moves } : null;
+    return typeof v.seed === 'string' && Array.isArray(v.moves)
+      ? { seed: v.seed, moves: v.moves }
+      : null;
   } catch {
     return null;
   }
@@ -34,6 +36,7 @@ export function appendFightMove(key: string, seed: string, move: Action): void {
     const log = read(key);
     const moves = log && log.seed === seed ? log.moves : [];
     localStorage.setItem(PREFIX + key, JSON.stringify({ seed, moves: [...moves, move] }));
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('sr-campaign-save'));
   } catch {
     /* storage can be full or blocked: the fight is simply not resumable */
   }

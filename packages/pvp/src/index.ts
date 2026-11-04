@@ -92,3 +92,12 @@ export {
 export { deckToPlay, picksDone } from './picks';
 export * from './runsync';
 export * from './listsync';
+export {
+  PLAY_LEASE_MS,
+  emptyPlayLease,
+  ownsPlay,
+  claimPlay,
+  renewPlay,
+  releasePlay,
+  type PlayLease,
+} from './playLease';

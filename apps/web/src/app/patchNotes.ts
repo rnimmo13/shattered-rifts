@@ -29,6 +29,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.180.0',
+    date: '2026-11-04',
+    title: 'One account, one active device',
+    summary: 'Other devices can browse while one device plays your shared account.',
+    notes: [
+      { kind: 'changed', text: 'Your shared Campaign and Arena are played on one device at a time. Another device can sign in and browse, but must wait until you stop playing on the first device.' },
+      { kind: 'new', text: 'Use Save and stop playing on the home screen to switch devices. Interrupted shared-account play pauses until you reconnect.' },
+      { kind: 'new', text: 'The desktop app has a separate Local offline play mode. Its campaigns stay on that device and do not enter Arena, leaderboards or shared-account syncing.' },
+      { kind: 'fixed', text: 'Switching devices loads the latest confirmed progress and saved fight actions. Divergent older local campaign copies are preserved for recovery instead of replacing newer shared progress.' },
+    ],
+    heads: 'Refresh the website or install the new desktop build. Shared-account gameplay now requires an internet connection; older clients cannot submit shared gameplay progress.',
+  },
+  {
     version: '0.179.0',
     date: '2026-11-04',
     title: 'Desktop saves and Steam preparation',

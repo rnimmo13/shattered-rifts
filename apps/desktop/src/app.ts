@@ -2,7 +2,14 @@ import { app, BrowserWindow, dialog, Menu, net, protocol, session, shell } from 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { assetPath, externalLink, GAME_URL, gameNavigation, windowState } from './policy.js';
+import {
+  assetPath,
+  externalLink,
+  GAME_URL,
+  LOCAL_GAME_URL,
+  gameNavigation,
+  windowState,
+} from './policy.js';
 import { protectWindowSaves } from './services.js';
 
 // A stable, secure origin keeps the existing asset URLs and local saves working offline.
@@ -68,7 +75,7 @@ export function initializeGame(): void {
   });
 }
 
-export async function createGameWindow(show = true): Promise<BrowserWindow> {
+export async function createGameWindow(show = true, local = false): Promise<BrowserWindow> {
   const stateFile = join(app.getPath('userData'), 'window-v1.json');
   let saved = windowState(null);
   try {
@@ -179,7 +186,7 @@ export async function createGameWindow(show = true): Promise<BrowserWindow> {
       },
     ]),
   );
-  await win.loadURL(GAME_URL);
+  await win.loadURL(local ? LOCAL_GAME_URL : GAME_URL);
   if (saved.maximized) win.maximize();
   if (saved.fullscreen) win.setFullScreen(true);
   if (show) win.show();

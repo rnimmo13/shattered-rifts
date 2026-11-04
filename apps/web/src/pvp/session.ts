@@ -18,6 +18,7 @@ import {
 import { MoveFeed, type PvpLink } from './link';
 import { recordMatch } from './matchHistory';
 import { soonSyncRuns } from '../run/runCloud';
+import { playSocketUrl } from '../playAccess';
 
 const progressOf = (e: Entry): { tier: number; stage?: number } =>
   e.stage === undefined ? { tier: e.tier } : { tier: e.tier, stage: e.stage };
@@ -189,7 +190,7 @@ export class PvpSession {
     this.closing = false;
     let ws: WebSocket;
     try {
-      ws = new WebSocket(`${this.base}${path}`);
+      ws = new WebSocket(playSocketUrl(path, this.base));
     } catch {
       this.set({ phase: 'error', message: `Could not reach the server (${this.base}).` });
       return;

@@ -3,6 +3,11 @@
 The integration code is implemented, but **Robert does not have a Steam app ID yet**. Standalone
 builds remain playable. Do not treat local tests as proof of live Steam login, unlocks or Cloud sync.
 
+Since 0.180.0, shared gameplay requires an online account claim across Campaign/Arena. Other
+devices may browse. Local offline campaigns use a separate origin and `local-saves/<owner>` path,
+excluded from these Cloud rules and Steam achievement publication. Cross-provider Steam/mobile
+account linking must be implemented/configured before promising one identity across those logins.
+
 ## When the app exists
 
 1. Set `SR_STEAM_APP_ID` to the game's real numeric app ID before `pnpm desktop:package`.

@@ -9,6 +9,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { FightRecap } from '../fight/FightRecap';
 import type { FightReplay } from '../fight/recap';
 import { forgetRun, runHistory, type RunRecord } from './history';
+import { gameplayAction } from '../playAccess';
 import { MatchHistory } from '../pvp/MatchList';
 import { BUILD } from '../build';
 import './history.css';
@@ -116,8 +117,10 @@ export default function HistoryScreen() {
                 onRecap={setRecap}
                 onWatch={setWatching}
                 onForget={() => {
-                  forgetRun(r.id);
-                  setRuns(runHistory());
+                  void gameplayAction(() => {
+                    forgetRun(r.id);
+                    setRuns(runHistory());
+                  });
                 }}
               />
             ))}
@@ -129,9 +132,11 @@ export default function HistoryScreen() {
                 <button
                   className="btn btn--small"
                   onClick={() => {
-                    forgetRun(null);
-                    setRuns([]);
-                    setConfirmClear(false);
+                    void gameplayAction(() => {
+                      forgetRun(null);
+                      setRuns([]);
+                      setConfirmClear(false);
+                    });
                   }}
                 >
                   <span>Forget them</span>
@@ -179,9 +184,7 @@ function RunRow(props: {
         </span>
         <span className="history__runWhere">
           <b className={`history__end history__end--${run.end}`}>{END_LABEL[run.end]}</b>
-          <small>
-            Tier {run.tier}
-          </small>
+          <small>Tier {run.tier}</small>
         </span>
         <span className="history__runStats">
           {run.duelsWon} won · {run.duelsLost} lost · {run.deck.length} cards

@@ -3,22 +3,25 @@ import {
   dialog,
   ipcMain,
   session,
-  type BrowserWindow,
+  BrowserWindow,
+  webContents,
   type IpcMainInvokeEvent,
 } from 'electron';
 import { join } from 'node:path';
-import { gameNavigation } from './policy.js';
+import { gameNavigation, localGame, LOCAL_GAME_URL, GAME_URL } from './policy.js';
 import { SaveStore } from './saveStore.js';
 import type { SteamService } from './steam.js';
 import { cloudKey } from './saveData.js';
 
 let store: SaveStore;
+let localStore: SaveStore;
 let steam: SteamService;
 const ready = new Set<number>();
 
 export function initializeServices(base: string, service: SteamService): void {
   steam = service;
   store = new SaveStore(join(base, 'saves', steam.owner), steam.owner);
+  localStore = new SaveStore(join(base, 'local-saves', steam.owner), steam.owner);
   const authorized = (event: Pick<IpcMainInvokeEvent, 'sender' | 'senderFrame'>): void => {
     if (
       !event.senderFrame ||
@@ -32,15 +35,17 @@ export function initializeServices(base: string, service: SteamService): void {
     authorized(event);
     if (!Array.isArray(keys) || keys.length > 4000 || !keys.every((key) => typeof key === 'string'))
       throw new Error('Invalid storage keys');
-    const data = store.load();
-    steam.unlock(data?.earned ?? []);
+    const local = localGame(event.senderFrame!.url);
+    const data = (local ? localStore : store).load();
+    if (!local) steam.unlock(data?.earned ?? []);
     return { data, replace: keys.filter(cloudKey), steam: steam.status };
   });
   ipcMain.handle('desktop:save', (event, entries: unknown) => {
     authorized(event);
     if (!ready.has(event.sender.id)) throw new Error('Save restoration has not finished');
-    const saved = store.save(entries);
-    steam.unlock(saved.earned);
+    const local = localGame(event.senderFrame!.url);
+    const saved = (local ? localStore : store).save(entries);
+    if (!local) steam.unlock(saved.earned);
     return { savedAt: saved.savedAt, earned: saved.earned };
   });
   ipcMain.handle('desktop:ready', (event) => {
@@ -49,6 +54,14 @@ export function initializeServices(base: string, service: SteamService): void {
   });
   ipcMain.handle('desktop:status', async (event) => {
     authorized(event);
+    if (localGame(event.senderFrame!.url))
+      return {
+        mode: 'standalone',
+        appId: null,
+        name: null,
+        online: false,
+        message: 'Local offline play. Progress stays on this device.',
+      };
     await initialLogin;
     return { ...steam.status, online: !!steam.authorization() };
   });
@@ -56,9 +69,28 @@ export function initializeServices(base: string, service: SteamService): void {
     authorized(event);
     app.quit();
   });
+  ipcMain.handle('desktop:switch-mode', async (event, local: unknown) => {
+    authorized(event);
+    if (typeof local !== 'boolean') throw new Error('Invalid mode');
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (!win) return;
+    ready.delete(event.sender.id);
+    await win.loadURL(local ? LOCAL_GAME_URL : GAME_URL);
+  });
   // Auth stays in the main process and is attached only to this game's trusted backend.
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     const url = new URL(details.url);
+    const contents =
+      details.webContentsId === undefined ? null : webContents.fromId(details.webContentsId);
+    if (
+      contents &&
+      localGame(contents.getURL()) &&
+      url.host === 'shatteredrifts.app' &&
+      (url.pathname.startsWith('/pvp/') || url.pathname.startsWith('/auth/'))
+    ) {
+      callback({ cancel: true });
+      return;
+    }
     const token = steam.authorization();
     if (
       token &&
@@ -101,8 +133,9 @@ export function protectWindowSaves(win: BrowserWindow): void {
           win.webContents.executeJavaScript('Object.fromEntries(Object.entries(localStorage))'),
           new Promise((_, reject) => setTimeout(() => reject(new Error('Save timed out')), 5000)),
         ]);
-        const saved = store.save(raw);
-        steam.unlock(saved.earned);
+        const local = localGame(win.webContents.getURL());
+        const saved = (local ? localStore : store).save(raw);
+        if (!local) steam.unlock(saved.earned);
         session.defaultSession.flushStorageData();
         allowed = true;
         win.close();

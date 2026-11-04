@@ -13,6 +13,7 @@ import { NameGate } from '../pvp/NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
+import { PlayGate, PlayStatus } from '../PlayGate';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
@@ -58,6 +59,7 @@ export function App() {
   return (
     <>
       <Screens key={atHome ? artVersion : 0} hash={hash} />
+      <PlayStatus />
       <BuildBadge />
       <TooltipLayer />
       {/* (one Settings menu for every screen, opened by a Settings button: DECISIONS #571) */}
@@ -72,9 +74,11 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <RunErrorBoundary>
-          <NameGate>
-            <RunScreen />
-          </NameGate>
+          <PlayGate>
+            <NameGate>
+              <RunScreen />
+            </NameGate>
+          </PlayGate>
         </RunErrorBoundary>
       </Suspense>
     );
@@ -89,7 +93,9 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/arena' || hash === '#/pvp') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <PvpScreen />
+        <PlayGate arena>
+          <PvpScreen />
+        </PlayGate>
       </Suspense>
     );
   }
@@ -124,7 +130,9 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/trials') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <TrialsPractice />
+        <PlayGate>
+          <TrialsPractice />
+        </PlayGate>
       </Suspense>
     );
   }
@@ -162,7 +170,9 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/fight') {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
-        <FightScreen />
+        <PlayGate>
+          <FightScreen />
+        </PlayGate>
       </Suspense>
     );
   }

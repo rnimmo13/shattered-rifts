@@ -5,9 +5,7 @@ export interface DesktopSteamStatus {
   message: string;
 }
 interface DesktopBridge {
-  bootstrap(
-    keys: string[],
-  ): Promise<{
+  bootstrap(keys: string[]): Promise<{
     data: { entries: Record<string, string> } | null;
     replace: string[];
     steam: DesktopSteamStatus;
@@ -16,6 +14,7 @@ interface DesktopBridge {
   status(): Promise<DesktopSteamStatus>;
   ready(): Promise<void>;
   quit(): void;
+  switchMode(local: boolean): Promise<void>;
 }
 declare global {
   interface Window {
@@ -70,5 +69,7 @@ export async function startDesktop(): Promise<void> {
 }
 export async function quitDesktop(): Promise<void> {
   await flushDesktopSave();
+  const { releasePlayAccess } = await import('./playAccess');
+  await releasePlayAccess().catch(() => undefined);
   desktopBridge()?.quit();
 }

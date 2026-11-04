@@ -127,7 +127,7 @@ export default function WatchScreen(props: { room: string }) {
     };
     const open = (): void => {
       try {
-        ws = new WebSocket(`${serverBase()}/pvp/room/${room}`);
+        ws = new WebSocket(`${serverBase()}/pvp/room/${room}?watch=1`);
       } catch {
         setView({ phase: 'error', message: 'The server could not be reached.' });
         return;

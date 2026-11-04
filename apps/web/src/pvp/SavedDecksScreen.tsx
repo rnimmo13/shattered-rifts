@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { DeckReport } from './DeckReport';
 import { VAULT_SLOTS, dropFrom, loadVault, saveVault, type VaultDeck } from './vault';
+import { gameplayAction } from '../playAccess';
 import { remoteVault, syncVault, vaultKey, whoAmI } from './vaultSync';
 import '../play/play.css';
 import './decks.css';
@@ -77,11 +78,13 @@ export default function SavedDecksScreen() {
               key={d.id}
               deck={d}
               onRemove={() => {
-                touched.current = true;
-                const next = dropFrom(decks, d.id);
-                setDecks(next);
-                saveVault(next);
-                void whoAmI().then(() => remoteVault.drop(vaultKey(), d.id));
+                void gameplayAction(() => {
+                  touched.current = true;
+                  const next = dropFrom(decks, d.id);
+                  setDecks(next);
+                  saveVault(next);
+                  void whoAmI().then(() => remoteVault.drop(vaultKey(), d.id));
+                });
               }}
             />
           ))}

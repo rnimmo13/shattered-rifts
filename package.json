@@ -13,6 +13,7 @@
     "desktop:package": "pnpm desktop:build && pnpm --filter @sr/desktop package",
     "desktop:pack": "pnpm desktop:build && pnpm --filter @sr/desktop pack",
     "desktop:smoke": "pnpm desktop:build && pnpm --filter @sr/desktop smoke",
+    "play:smoke": "pnpm --filter @sr/tools play:smoke",
     "build": "pnpm -r --if-present build",
     "test": "vitest run",
     "test:watch": "vitest",

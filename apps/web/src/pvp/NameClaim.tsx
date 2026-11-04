@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { getName, hasUsername } from './config';
 import { takeName } from './takeName';
 import { IS_DESKTOP } from '../platform';
+import { localOnly } from '../playAccess';
 
 /** An input and a button that claim a username. */
 export function NameClaim(props: {
@@ -81,7 +82,7 @@ export function NameGate(props: { children: ReactNode }) {
     window.addEventListener('sr-desktop-identity', refresh);
     return () => window.removeEventListener('sr-desktop-identity', refresh);
   }, []);
-  if (named) return <>{props.children}</>;
+  if (named || localOnly()) return <>{props.children}</>;
   return (
     <main className="setup nameclaim__gate">
       <a className="btn btn--small setup__back" href="#/">

@@ -38,7 +38,7 @@ void app
     );
     initializeGame();
     initializeServices(profile, new SteamService(null));
-    const win = await createGameWindow(false);
+    const win = await createGameWindow(false, stage !== 'write');
     win.webContents.on('console-message', (details) => {
       if (details.level === 'error') console.error('Renderer:', details.message);
     });
@@ -53,12 +53,20 @@ void app
       await value(win, "document.querySelector('.home__play').click()");
       await waitFor(
         win,
-        "[...document.querySelectorAll('button')].some(b => b.textContent.includes('Play offline without'))",
+        "!!document.querySelector('.play-gate') && document.body.textContent.includes('Connect to the internet')",
       );
+      assert.equal(await value(win, "!!document.querySelector('.setup__go')"), false);
+      await value(win, "document.querySelector('.play-gate a').click()");
+      await waitFor(win, "!!document.querySelector('.home__play')");
       await value(
         win,
-        "[...document.querySelectorAll('button')].find(b => b.textContent.includes('Play offline without')).click()",
+        "[...document.querySelectorAll('button')].find(b => b.textContent === 'Local offline play').click()",
       );
+      await waitFor(
+        win,
+        "location.hostname === 'local' && !!document.querySelector('.home__play')",
+      );
+      await value(win, "document.querySelector('.home__play').click()");
       await waitFor(win, "!!document.querySelector('.setup__go')");
       await value(win, "document.querySelector('.setup__go').click()");
       await waitFor(win, "JSON.parse(localStorage.getItem('sr.runs.v3') || '[]').length === 1");
@@ -85,7 +93,7 @@ void app
       assert.equal(
         await value(
           win,
-          `localStorage.getItem('sr.runs.v3') === ${JSON.stringify((JSON.parse(readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8')) as { entries: Record<string, string> }).entries['sr.runs.v3'])}`,
+          `localStorage.getItem('sr.runs.v3') === ${JSON.stringify((JSON.parse(readFileSync(resolve(profile, 'local-saves/standalone/save-v1.json'), 'utf8')) as { entries: Record<string, string> }).entries['sr.runs.v3'])}`,
         ),
         true,
       );
@@ -120,10 +128,16 @@ void app
     );
     await closed;
     assert.ok(
-      readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8').includes(
+      readFileSync(resolve(profile, 'local-saves/standalone/save-v1.json'), 'utf8').includes(
         'sr.runs.v3',
       ),
     );
+    if (stage === 'write') {
+      const shared = JSON.parse(
+        readFileSync(resolve(profile, 'saves/standalone/save-v1.json'), 'utf8'),
+      ) as { entries: Record<string, string> };
+      assert.equal(shared.entries['sr.runs.v3'], undefined);
+    }
     console.log(`Desktop offline ${stage} smoke passed`);
     app.quit();
   })

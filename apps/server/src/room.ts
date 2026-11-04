@@ -37,6 +37,7 @@ import {
 } from '@sr/pvp';
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
+import { checkPlay, socketPlay, type PlaySocket } from './playAccess';
 
 /** A match counts on the leaderboard only if at least this many moves were made (and, if it ended any way but a win, this many). */
 const MIN_RECORDED_MOVES = 6;
@@ -109,6 +110,8 @@ interface Saved {
 }
 
 interface Attach {
+  play?: PlaySocket;
+  pending?: true;
   playerId: string;
   seat: Seat | null;
   /** someone watching the match, not playing in it */
@@ -174,6 +177,14 @@ export class MatchRoom extends DurableObject<Env> {
     const pair = new WebSocketPair();
     const [client, server] = [pair[0], pair[1]];
     this.ctx.acceptWebSocket(server);
+    const play = socketPlay(request);
+    if (play)
+      server.serializeAttachment({
+        playerId: '',
+        seat: null,
+        pending: true,
+        play,
+      } satisfies Attach);
     return new Response(null, { status: 101, webSocket: client });
   }
 
@@ -303,7 +314,9 @@ export class MatchRoom extends DurableObject<Env> {
   private sockets(seat?: Seat): { ws: WebSocket; at: Attach }[] {
     return this.ctx.getWebSockets().flatMap((ws) => {
       const at = ws.deserializeAttachment() as Attach | null;
-      return at && !at.watch && (seat === undefined || at.seat === seat) ? [{ ws, at }] : [];
+      return at && !at.pending && !at.watch && (seat === undefined || at.seat === seat)
+        ? [{ ws, at }]
+        : [];
     });
   }
 
@@ -490,7 +503,11 @@ export class MatchRoom extends DurableObject<Env> {
     d.missed = { a: 0, b: 0 };
     for (const s of this.sockets()) {
       const seatOf: Seat = d.ids.a === s.at.playerId ? 'a' : 'b';
-      s.ws.serializeAttachment({ playerId: s.at.playerId, seat: seatOf } satisfies Attach);
+      s.ws.serializeAttachment({
+        playerId: s.at.playerId,
+        seat: seatOf,
+        ...(s.at.play ? { play: s.at.play } : {}),
+      } satisfies Attach);
     }
     // a seat nobody is connected to is away from the start
     for (const seatOf of ['a', 'b'] as const)
@@ -531,8 +548,23 @@ export class MatchRoom extends DurableObject<Env> {
     const at = ws.deserializeAttachment() as Attach | null;
     const d = this.data;
 
+    if (
+      msg.type !== 'watch' &&
+      !at?.watch &&
+      (!at?.play || !(await checkPlay(this.env, at.play.vault, at.play.token)))
+    ) {
+      send(ws, {
+        type: 'error',
+        code: 'outdated',
+        message:
+          'Gameplay is active elsewhere or your connection expired. Return home and reconnect.',
+      });
+      ws.close(1008, 'play-required');
+      return;
+    }
+
     if (msg.type === 'watch') {
-      if (at) return; // (already in the room on this socket)
+      if (at && !at.pending) return; // (already in the room on this socket)
       if (msg.rules !== RULES_VERSION) {
         send(ws, {
           type: 'error',
@@ -557,7 +589,9 @@ export class MatchRoom extends DurableObject<Env> {
     }
 
     if (msg.type === 'join') {
-      if (at) return; // already seated on this socket
+      // Reconnect and seat identity come from the verified account claim, never a client-chosen id.
+      msg.playerId = at?.play?.vault ?? '';
+      if (at && !at.pending) return; // already seated on this socket
       if (msg.rules !== RULES_VERSION) {
         send(ws, {
           type: 'error',
@@ -582,12 +616,26 @@ export class MatchRoom extends DurableObject<Env> {
       // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
       // nothing about the room changes while waiting for it; a browser cannot claim any)
       const badge = first.who ? await this.badgeOf(first.who) : {};
+      if (!at?.play || !(await checkPlay(this.env, at.play.vault, at.play.token))) {
+        send(ws, {
+          type: 'error',
+          code: 'outdated',
+          message: 'Your play connection expired. Return home and reconnect.',
+        });
+        ws.close(1008, 'play-required');
+        return;
+      }
       // (this socket may have been seated by a second join sent while the board was asked)
-      if (ws.deserializeAttachment()) return;
+      const seated = ws.deserializeAttachment() as Attach | null;
+      if (seated && !seated.pending) return;
       // a player already in the room is coming back
       const seat = (['a', 'b'] as const).find((s) => d.ids[s] === msg.playerId) ?? null;
       if (seat) {
-        ws.serializeAttachment({ playerId: msg.playerId, seat } satisfies Attach);
+        ws.serializeAttachment({
+          playerId: msg.playerId,
+          seat,
+          ...(at?.play ? { play: at.play } : {}),
+        } satisfies Attach);
         delete d.away[seat];
         await this.save();
         this.welcome(ws, seat);
@@ -619,7 +667,11 @@ export class MatchRoom extends DurableObject<Env> {
       d.who ??= {};
       if (who) d.who[free] = who;
       else delete d.who[free];
-      ws.serializeAttachment({ playerId: msg.playerId, seat: free } satisfies Attach);
+      ws.serializeAttachment({
+        playerId: msg.playerId,
+        seat: free,
+        ...(at?.play ? { play: at.play } : {}),
+      } satisfies Attach);
       if (!(d.ids.a && d.ids.b)) {
         await this.save();
         send(ws, { type: 'waiting', room: this.code });

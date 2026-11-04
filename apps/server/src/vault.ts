@@ -5,6 +5,15 @@
 
 import { DurableObject } from 'cloudflare:workers';
 import {
+  claimPlay,
+  emptyPlayLease,
+  ownsPlay,
+  releasePlay,
+  renewPlay,
+  type PlayLease,
+} from '@sr/pvp';
+import { PLAY_HEADER } from './playAccess';
+import {
   bankInto,
   cleanDeck,
   cleanListItems,
@@ -49,6 +58,12 @@ const parseJson = (text: string): unknown => {
 export class Vault extends DurableObject<Env> {
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS play_lease (k INTEGER PRIMARY KEY, data TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS play_replays (k INTEGER PRIMARY KEY, data TEXT NOT NULL)',
+    );
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS decks (
          id TEXT PRIMARY KEY,
@@ -135,7 +150,9 @@ export class Vault extends DurableObject<Env> {
   /** Take what a device sends: the newest copy of each run is kept, within the limit. */
   private saveRuns(arrived: RunCopy[]): void {
     const before = this.runs();
-    const keep = keepRunCopies(before, arrived);
+    const now = Math.max(Date.now(), ...before.map((c) => c.updated + 1));
+    const accepted = arrived.map((c) => ({ ...c, updated: now }));
+    const keep = keepRunCopies(before, accepted);
     const ids = new Set(keep.map((c) => c.id));
     for (const old of before)
       if (!ids.has(old.id)) this.ctx.storage.sql.exec('DELETE FROM runs WHERE id = ?', old.id);
@@ -198,7 +215,13 @@ export class Vault extends DurableObject<Env> {
   override async fetch(request: Request): Promise<Response> {
     const action = new URL(request.url).pathname.replace(/^\/+/, '');
     if (action === 'list') return json({ ok: true, decks: this.list() });
-    if (action === 'runs') return json({ ok: true, runs: this.runs() });
+    if (action === 'runs')
+      return json({
+        ok: true,
+        runs: this.runs(),
+        revision: this.lease().revision,
+        replays: this.replays(),
+      });
 
     let body: Record<string, unknown>;
     try {
@@ -208,6 +231,50 @@ export class Vault extends DurableObject<Env> {
     } catch {
       return json({ ok: false, error: 'bad-body' }, 400);
     }
+
+    const lease = this.lease();
+    const proof = request.headers.get(PLAY_HEADER);
+    const now = Date.now();
+    if (action.startsWith('play/')) {
+      const op = action.slice(5);
+      if (op === 'claim') {
+        const holder = body['holder'];
+        if (typeof holder !== 'string' || !/^[A-Za-z0-9-]{1,80}$/.test(holder))
+          return json({ ok: false, error: 'bad-holder' }, 400);
+        const next = claimPlay(lease, holder, proof, now, crypto.randomUUID());
+        if (!next)
+          return json({ ok: false, error: 'play-in-use', expires: lease.expires, now }, 409);
+        this.setLease(next);
+        return json({
+          ok: true,
+          ...next,
+          now,
+          runs: this.runs(),
+          replays: this.replays(),
+          decks: this.list(),
+          history: this.list_('history'),
+          matches: this.list_('matches'),
+        });
+      }
+      if (op === 'release') {
+        this.setLease(releasePlay(lease, proof));
+        return json({ ok: true });
+      }
+      if (!ownsPlay(lease, proof, now)) return json({ ok: false, error: 'play-required' }, 409);
+      if (op === 'renew') {
+        const next = renewPlay(lease, proof, now)!;
+        this.setLease(next);
+        return json({ ok: true, expires: next.expires, now, revision: next.revision });
+      }
+      if (op === 'check') return json({ ok: true, expires: lease.expires, now });
+      return json({ ok: false, error: 'not-found' }, 404);
+    }
+    if (
+      ['bank', 'drop', 'runsave', 'listsync'].includes(action) &&
+      !(action === 'listsync' && body['readOnly'] === true) &&
+      !ownsPlay(lease, proof, now)
+    )
+      return json({ ok: false, error: 'play-required' }, 409);
 
     if (action === 'bank') {
       const deck = cleanDeck(body['deck']);
@@ -229,6 +296,7 @@ export class Vault extends DurableObject<Env> {
       const name = body['list'];
       if (!isListName(name)) return json({ ok: false, error: 'bad-list' }, 400);
       const have = this.list_(name);
+      if (body['readOnly'] === true) return json({ ok: true, ...have });
       const removed = cleanRemoved([...have.removed, ...cleanRemoved(body['removed'])]);
       const items = mergeList(name, have.items, cleanListItems(name, body['items']), removed);
       this.ctx.storage.sql.exec(
@@ -252,8 +320,39 @@ export class Vault extends DurableObject<Env> {
     }
 
     if (action === 'runsave') {
-      this.saveRuns(cleanRunCopies(body['runs']));
-      return json({ ok: true, runs: this.runs() });
+      if (body['revision'] !== lease.revision)
+        return json(
+          { ok: false, error: 'save-conflict', revision: lease.revision, runs: this.runs() },
+          409,
+        );
+      const replays = body['replays'];
+      if (
+        !replays ||
+        typeof replays !== 'object' ||
+        Array.isArray(replays) ||
+        Object.keys(replays).length > 1000
+      )
+        return json({ ok: false, error: 'bad-replays' }, 400);
+      const clean: Record<string, string> = {};
+      for (const [key, value] of Object.entries(replays)) {
+        if (
+          !['sr.fightlog:', 'sr.ghostlog:', 'sr.duel.started:'].some((p) => key.startsWith(p)) ||
+          typeof value !== 'string'
+        )
+          return json({ ok: false, error: 'bad-replays' }, 400);
+        clean[key] = value;
+      }
+      if (JSON.stringify(clean).length > 1000000)
+        return json({ ok: false, error: 'bad-replays' }, 413);
+      this.ctx.storage.transactionSync(() => {
+        this.saveRuns(cleanRunCopies(body['runs']));
+        this.ctx.storage.sql.exec(
+          'INSERT OR REPLACE INTO play_replays (k, data) VALUES (1, ?)',
+          JSON.stringify(clean),
+        );
+        this.setLease({ ...lease, revision: lease.revision + 1 });
+      });
+      return json({ ok: true, runs: this.runs(), revision: lease.revision + 1, replays: clean });
     }
 
     if (action === 'drop') {
@@ -263,5 +362,24 @@ export class Vault extends DurableObject<Env> {
     }
 
     return json({ ok: false, error: 'not-found' }, 404);
+  }
+
+  private lease(): PlayLease {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>('SELECT data FROM play_lease WHERE k = 1')
+      .toArray()[0];
+    return row ? (JSON.parse(row.data) as PlayLease) : emptyPlayLease();
+  }
+  private replays(): Record<string, string> {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>('SELECT data FROM play_replays WHERE k = 1')
+      .toArray()[0];
+    return row ? (JSON.parse(row.data) as Record<string, string>) : {};
+  }
+  private setLease(lease: PlayLease): void {
+    this.ctx.storage.sql.exec(
+      'INSERT OR REPLACE INTO play_lease (k, data) VALUES (1, ?)',
+      JSON.stringify(lease),
+    );
   }
 }

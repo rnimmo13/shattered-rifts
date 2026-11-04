@@ -4,6 +4,7 @@
 // queue match, then a rejoin (one player drops and comes back mid-match).
 
 import { chooseAction } from '@sr/combat';
+import { smokeTransport } from './playLeaseClient';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
   ARENA_HP_MULT,
@@ -18,12 +19,20 @@ import {
 } from '@sr/pvp';
 
 const BASE = (process.argv[2] ?? 'ws://127.0.0.1:8787').replace(/\/$/, '');
+const transport = smokeTransport(BASE);
 // (Tier IV by default: only a deck that has cleared Tier 3 is kept as a ghost, DECISIONS #235)
 const entryOf = (hero: HeroId, name: string, tier = 4): Entry => ({
   name,
   hero,
   // (the Arena takes decks of 15 cards or more: the starter and five neutral cards, DECISIONS #460)
-  deck: [...RIFTWALKERS[hero].starter, 'alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave'],
+  deck: [
+    ...RIFTWALKERS[hero].starter,
+    'alarm-bell',
+    'catch-breath',
+    'glimpse-ahead',
+    'haft-strike',
+    'heave',
+  ],
   boons: [],
   tier,
 });
@@ -60,9 +69,10 @@ interface Bot {
   games: number;
 }
 
-function connect(path: string, name: string, id: string, wantsFirst = true): Promise<Bot> {
+async function connect(path: string, name: string, id: string, wantsFirst = true): Promise<Bot> {
+  const address = await transport.socket(path, id);
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(`${BASE}${path}`);
+    const ws = new WebSocket(address);
     const bot: Bot = {
       name,
       id,
@@ -722,4 +732,5 @@ await board(tag);
 await ghost(tag);
 await watchAndReplay(tag);
 console.log('all good');
+await transport.dispose();
 process.exit(0);

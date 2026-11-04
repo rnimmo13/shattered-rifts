@@ -27,6 +27,8 @@ import { HeroShowcase } from './HeroShowcase';
 import { getHero, rememberHero } from './heroChoice';
 import { hasUnread } from './patchNotes';
 import './home.css';
+import { desktopBridge, flushDesktopSave } from '../desktopBridge';
+import { localOnly, releasePlayAccess, gameplayAction, canPlay } from '../playAccess';
 
 export function TitleScreen() {
   const [picked, setPicked] = useState(getHero);
@@ -95,6 +97,18 @@ export function TitleScreen() {
         <span className="home__barEnd">
           <SettingsButton />
           <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
+          {desktopBridge() && !localOnly() && (
+            <button
+              className="btn btn--small"
+              onClick={() => {
+                void flushDesktopSave()
+                  .then(() => releasePlayAccess())
+                  .then(() => desktopBridge()?.switchMode(true));
+              }}
+            >
+              Local offline play
+            </button>
+          )}
         </span>
       </div>
 
@@ -142,6 +156,7 @@ export function TitleScreen() {
                         type="button"
                         className="btn btn--small"
                         onClick={() => {
+                          if (!localOnly() && !canPlay()) return;
                           clearSavedRun(b.id);
                           refreshRuns();
                           setDropping(null);
@@ -153,7 +168,12 @@ export function TitleScreen() {
                       <button
                         type="button"
                         className="btn btn--small btn--ghost"
-                        onClick={() => setDropping(b.id)}
+                        onClick={() => {
+                          void gameplayAction(() => {
+                            refreshRuns();
+                            setDropping(b.id);
+                          });
+                        }}
                       >
                         <span>Remove</span>
                       </button>
@@ -197,6 +217,7 @@ export function TitleScreen() {
                           if (r.run.phase === 'duel') void loseSavedDecks(r.run);
                           if (r.run.phase !== 'collapsed' && r.run.phase !== 'banked')
                             endOnBoard(r.run, r.run.phase === 'duel' ? 'fell' : 'abandoned');
+                          if (!localOnly() && !canPlay()) return;
                           clearSavedRun(r.id);
                           refreshRuns();
                           setDropping(null);
@@ -218,7 +239,12 @@ export function TitleScreen() {
                       type="button"
                       className="btn btn--small btn--ghost"
                       aria-label={`Abandon the ${classNameOf(r.run.character, r.run.ascendancy)} run at Rift Tier ${r.run.tier}`}
-                      onClick={() => setDropping(r.id)}
+                      onClick={() => {
+                        void gameplayAction(() => {
+                          refreshRuns();
+                          setDropping(r.id);
+                        });
+                      }}
                     >
                       <span>Abandon</span>
                     </button>

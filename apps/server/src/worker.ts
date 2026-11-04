@@ -17,6 +17,7 @@ import { normaliseCode, runKey } from '@sr/pvp';
 import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 import { allowedOrigin } from './origins';
+import { checkPlay, playVaultName, PLAY_HEADER, PLAY_VAULT_HEADER } from './playAccess';
 
 export { Matchmaker } from './matchmaker';
 export { MatchRoom } from './room';
@@ -70,11 +71,17 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
     if (!code) return json({ ok: false, error: 'bad-code' }, 400);
     name = await vaultName(code);
   }
+  const leaseName = await playVaultName(request, env, body['code']);
+  const writes =
+    ['bank', 'drop', 'runsave', 'listsync'].includes(action) &&
+    !(action === 'listsync' && body['readOnly'] === true);
+  if (writes && leaseName !== name) return json({ ok: false, error: 'play-required' }, 409);
   const stub = env.VAULT.get(env.VAULT.idFromName(name));
   try {
     const res = await stub.fetch(
       new Request(`https://vault.invalid/${action}`, {
         method: 'POST',
+        headers: { [PLAY_HEADER]: request.headers.get(PLAY_HEADER) ?? '' },
         body: JSON.stringify({ ...body, code: undefined }),
       }),
     );
@@ -153,7 +160,7 @@ async function allBoardIds(
 const CORS_POST = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST',
-  'access-control-allow-headers': 'content-type, authorization',
+  'access-control-allow-headers': 'content-type, authorization, x-sr-play-token',
   'access-control-max-age': '86400',
 };
 
@@ -218,6 +225,11 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
       return json({ ok: false, error: 'bad-body' }, 400);
     }
     const id = await boardId(request, env, body);
+    if (what === 'run' || what === 'ghostboss') {
+      const leaseName = await playVaultName(request, env, body['code']);
+      if (!leaseName || !(await checkPlay(env, leaseName, request.headers.get(PLAY_HEADER) ?? '')))
+        return json({ ok: false, error: 'play-required' }, 409);
+    }
     if (what === 'view') {
       // anyone may look at a board; someone who is known also sees where they stand (a visitor with no id just sees the board)
       const res = await stub.fetch(
@@ -331,6 +343,27 @@ async function queueCount(env: Env, url: URL): Promise<Response> {
   }
 }
 
+async function playSocketRequest(
+  request: Request,
+  env: Env,
+  watch: boolean,
+): Promise<Request | Response> {
+  const url = new URL(request.url);
+  const headers = new Headers(request.headers);
+  headers.delete(PLAY_VAULT_HEADER);
+  headers.delete(PLAY_HEADER);
+  if (!watch) {
+    const name = await playVaultName(request, env, url.searchParams.get('code'));
+    const token = url.searchParams.get('play') ?? '';
+    if (!name || !(await checkPlay(env, name, token)))
+      return json({ ok: false, error: 'play-required' }, 409);
+    headers.set(PLAY_VAULT_HEADER, name);
+    headers.set(PLAY_HEADER, token);
+  }
+  url.search = '';
+  return new Request(url.toString(), { method: request.method, headers });
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -343,6 +376,39 @@ export default {
 
     const auth = await authRoute(request, env);
     if (auth) return auth;
+    const playAction = /^\/pvp\/play\/(claim|renew|release)$/.exec(url.pathname)?.[1];
+    if (playAction) {
+      if (request.method === 'OPTIONS')
+        return new Response(null, {
+          status: 204,
+          headers: {
+            'access-control-allow-origin': '*',
+            'access-control-allow-methods': 'POST',
+            'access-control-allow-headers': 'content-type, authorization, x-sr-play-token',
+          },
+        });
+      if (request.method !== 'POST') return json({ ok: false }, 405);
+      const text = await request.text();
+      if (text.length > 2000) return json({ ok: false }, 413);
+      try {
+        const body: unknown = JSON.parse(text);
+        if (!body || typeof body !== 'object' || Array.isArray(body))
+          return json({ ok: false }, 400);
+        const values = body as Record<string, unknown>;
+        const name = await playVaultName(request, env, values['code']);
+        if (!name) return json({ ok: false, error: 'signin' }, 401);
+        const res = await env.VAULT.get(env.VAULT.idFromName(name)).fetch(
+          new Request(`https://vault.invalid/play/${playAction}`, {
+            method: 'POST',
+            headers: { [PLAY_HEADER]: request.headers.get(PLAY_HEADER) ?? '' },
+            body: JSON.stringify(values),
+          }),
+        );
+        return json(await res.json(), res.status);
+      } catch {
+        return json({ ok: false, error: 'unavailable' }, 503);
+      }
+    }
     const vaultAction = /^\/pvp\/vault\/(\w+)$/.exec(url.pathname)?.[1];
     if (vaultAction !== undefined) {
       if (request.method === 'OPTIONS')
@@ -351,7 +417,7 @@ export default {
           headers: {
             'access-control-allow-origin': '*',
             'access-control-allow-methods': 'POST',
-            'access-control-allow-headers': 'content-type, authorization',
+            'access-control-allow-headers': 'content-type, authorization, x-sr-play-token',
             'access-control-max-age': '86400',
           },
         });
@@ -365,8 +431,10 @@ export default {
       return queueCount(env, url);
     }
     if (url.pathname === '/pvp/queue') {
+      const forwarded = await playSocketRequest(request, env, false);
+      if (forwarded instanceof Response) return forwarded;
       const stub = env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main'));
-      return stub.fetch(request);
+      return stub.fetch(forwarded);
     }
     // GET /pvp/replay/ID: a finished Arena game, to watch again (DECISIONS #239)
     const replayId = /^\/pvp\/replay\/([A-Za-z0-9]{10})$/.exec(url.pathname)?.[1];
@@ -389,9 +457,15 @@ export default {
     }
     const room = /^\/pvp\/room\/([A-Za-z0-9]+)$/.exec(url.pathname)?.[1]?.toUpperCase();
     if (room && ROOM_CODE.test(room)) {
+      const forwarded = await playSocketRequest(
+        request,
+        env,
+        url.searchParams.get('watch') === '1',
+      );
+      if (forwarded instanceof Response) return forwarded;
       const stub = env.MATCH.get(env.MATCH.idFromName(room));
       // the room learns its own code from the path
-      return stub.fetch(new Request(`https://room.invalid/pvp/room/${room}`, request));
+      return stub.fetch(new Request(`https://room.invalid/pvp/room/${room}`, forwarded));
     }
     return json({ ok: false, error: 'not found' }, 404);
   },

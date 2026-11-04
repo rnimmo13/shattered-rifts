@@ -3,6 +3,13 @@
 Windows x64 Electron wrapper for the existing React/Pixi game. Steam integration code is implemented
 in 0.179.0; live Steam features await an actual app ID and partner setup. See [Steam setup](steam/README.md).
 
+**0.180.0:** shared Campaign/Arena now require an internet connection and one account-wide play
+claim. Other devices may browse. Use Save and stop playing before switching devices. The desktop
+Local offline play button opens an isolated `srgame://local` origin, with files in
+`%APPDATA%/ShatteredRifts/local-saves/<owner>`; those runs never enter shared sync, Arena or Steam
+Cloud. Returning to Online account restores the original shared profile. See
+[play ownership](../../docs/PLAY_SESSION_OWNERSHIP.md) for the protocol and identity-linking limits.
+
 From the repository root (Node 22.12+, pnpm installed):
 
 ```text
@@ -46,7 +53,7 @@ are under `%APPDATA%/ShatteredRifts/saves/standalone` or `saves/<Steam ID>`. Con
 use `profiles/<Steam ID>` for Chromium data. Steam Auto-Cloud setup is documented above; it has not
 been activated or tested against Valve because no app ID exists yet. Online Google cookies are not shared with desktop.
 
-On a fresh profile, select **Play offline without the leaderboard** to start a campaign immediately.
+On a fresh profile, select **Local offline play** to start an isolated campaign without a connection.
 Arena, ghosts, boards and Vault sync require a connection and the usual online identity. The server
 must contain decision #577's exact desktop-origin allowance. No renderer security setting is disabled
 to work around cross-origin requests.
@@ -56,9 +63,10 @@ to work around cross-origin requests.
 `desktop:smoke` runs the bundled renderer in three separate hidden Electron processes with all HTTP,
 HTTPS and WebSocket requests blocked. The first starts an offline campaign, checks local assets and
 renderer isolation, renders a sandbox fight, and quits. The second checks that the exact run survived.
-The third process restores only the canonical file into a fresh Chromium profile, checking the Cloud
-restore path locally. Each quits through the real Settings button. Test profiles and screenshots
-remain under ignored `.smoke-profile/run-*` and `.smoke-profile/cloud-*`, separate from real saves.
+The first also verifies that shared gameplay refuses entry without a connection and that local
+progress does not enter the shared save. The third restores the isolated local backup into a fresh
+profile. Each quits through Settings. Test profiles and screenshots remain under ignored
+`.smoke-profile/run-*` and `.smoke-profile/local-recovery-*`, separate from real saves.
 The test's hidden window disables background throttling so animation frames can render.
 
 Before public distribution, test the installer on another Windows computer, add branded icons and

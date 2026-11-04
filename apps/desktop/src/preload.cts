@@ -8,4 +8,6 @@ contextBridge.exposeInMainWorld('shatteredRiftsDesktop', {
   status: (): Promise<unknown> => ipcRenderer.invoke('desktop:status'),
   ready: (): Promise<unknown> => ipcRenderer.invoke('desktop:ready'),
   quit: (): void => ipcRenderer.send('desktop:quit'),
+  switchMode: (local: boolean): Promise<unknown> =>
+    ipcRenderer.invoke('desktop:switch-mode', local),
 });

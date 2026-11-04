@@ -2,12 +2,26 @@ import { relative, resolve, sep } from 'node:path';
 
 export const GAME_ORIGIN = 'srgame://app';
 export const GAME_URL = `${GAME_ORIGIN}/index.html`;
+export const LOCAL_GAME_URL = 'srgame://local/index.html';
+export const localGame = (raw: string): boolean => {
+  try {
+    const url = new URL(raw);
+    return url.protocol === 'srgame:' && url.host === 'local';
+  } catch {
+    return false;
+  }
+};
 
 /** Only the packaged game's files can be served by this protocol. No filesystem URLs. */
 export function assetPath(root: string, raw: string): string | null {
   try {
     const url = new URL(raw);
-    if (url.protocol !== 'srgame:' || url.host !== 'app' || url.username || url.password)
+    if (
+      url.protocol !== 'srgame:' ||
+      !['app', 'local'].includes(url.host) ||
+      url.username ||
+      url.password
+    )
       return null;
     const pathname = decodeURIComponent(url.pathname);
     if (pathname.includes('\\') || pathname.includes('\0') || pathname.includes(':')) return null;
@@ -26,7 +40,7 @@ export function gameNavigation(raw: string): boolean {
     const url = new URL(raw);
     return (
       url.protocol === 'srgame:' &&
-      url.host === 'app' &&
+      ['app', 'local'].includes(url.host) &&
       !url.username &&
       !url.password &&
       ['/', '/index.html'].includes(url.pathname)

@@ -14,8 +14,11 @@ import {
 } from '@sr/pvp';
 import type { Env } from './env';
 import { parse, roomCode as makeCode, send } from './wire';
+import { checkPlay, socketPlay, type PlaySocket } from './playAccess';
 
 interface Place {
+  play?: PlaySocket;
+  pending?: true;
   playerId: string;
   /** their Arena rating this season (DECISIONS #307: players are matched by rank) */
   rating: number;
@@ -39,17 +42,37 @@ export class Matchmaker extends DurableObject<Env> {
     const pair = new WebSocketPair();
     const [client, server] = [pair[0], pair[1]];
     this.ctx.acceptWebSocket(server);
+    const play = socketPlay(request);
+    if (play)
+      server.serializeAttachment({
+        playerId: '',
+        rating: RATING_START,
+        since: 0,
+        pending: true,
+        play,
+      } satisfies Place);
     return new Response(null, { status: 101, webSocket: client });
   }
 
   private waiting(): { ws: WebSocket; place: Place }[] {
     return this.ctx.getWebSockets().flatMap((ws) => {
       const place = ws.deserializeAttachment() as Place | null;
-      return place ? [{ ws, place }] : [];
+      return place && !place.pending ? [{ ws, place }] : [];
     });
   }
 
   override async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
+    const access = (ws.deserializeAttachment() as Place | null)?.play;
+    if (!access || !(await checkPlay(this.env, access.vault, access.token))) {
+      send(ws, {
+        type: 'error',
+        code: 'outdated',
+        message:
+          'Gameplay is active elsewhere or your connection expired. Return home and reconnect.',
+      });
+      ws.close(1008, 'play-required');
+      return;
+    }
     const msg = parse(message);
     if (!msg || (msg.type !== 'queue' && msg.type !== 'ghost')) {
       send(ws, { type: 'error', code: 'bad-message', message: 'Send {type:"queue"} first.' });
@@ -64,6 +87,7 @@ export class Matchmaker extends DurableObject<Env> {
       ws.close(1008, 'outdated');
       return;
     }
+    msg.playerId = access.vault;
     if (msg.type === 'ghost') {
       await this.faceGhost(ws, msg.decks);
       return;
@@ -76,6 +100,10 @@ export class Matchmaker extends DurableObject<Env> {
       return;
     }
     const rating = await this.ratingOf(checked.decks[0]?.who);
+    if (!(await checkPlay(this.env, access.vault, access.token))) {
+      ws.close(1008, 'play-required');
+      return;
+    }
     // (while the board was asked the socket may have asked for a ghost instead, or closed: then it takes no place)
     if (ws.readyState !== 1) return; // (1: open)
     // one place per player: a second tab replaces the first (its place is cleared at once, before its socket finishes closing)
@@ -84,7 +112,7 @@ export class Matchmaker extends DurableObject<Env> {
         w.ws.serializeAttachment(null);
         w.ws.close(1000, 'replaced');
       }
-    const place: Place = { playerId: msg.playerId, rating, since: Date.now() };
+    const place: Place = { playerId: msg.playerId, rating, since: Date.now(), play: access };
     ws.serializeAttachment(place);
     send(ws, { type: 'queued', waiting: this.waiting().length });
     await this.pairAll();
@@ -185,7 +213,11 @@ export class Matchmaker extends DurableObject<Env> {
     // a waiting player who has gone quiet (no ping for a minute) is dropped, so nobody is paired with a ghost
     for (const w of this.waiting()) {
       const last = this.ctx.getWebSocketAutoResponseTimestamp(w.ws);
-      if (last && now - last.getTime() > 60_000) {
+      if (
+        (last && now - last.getTime() > 60_000) ||
+        !w.place.play ||
+        !(await checkPlay(this.env, w.place.play.vault, w.place.play.token))
+      ) {
         w.ws.serializeAttachment(null);
         w.ws.close(1001, 'quiet');
       }

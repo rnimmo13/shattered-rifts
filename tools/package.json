@@ -7,6 +7,7 @@
   "scripts": {
     "fight": "tsx src/fight.ts",
     "typecheck": "tsc -p tsconfig.json",
+    "play:smoke": "tsx src/playAccessProbe.ts",
     "sim": "tsx src/sim.ts",
     "deploy:web": "tsx src/deploy.ts",
     "artlist": "tsx src/artlist.ts",
