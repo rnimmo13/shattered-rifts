@@ -117,7 +117,7 @@ export function SettingsPanel() {
       if (e.key === 'Escape') setOpen(false);
       if (e.key !== 'Tab' || !panel.current) return;
       const stops = [
-        ...panel.current.querySelectorAll<HTMLElement>('button, input, textarea'),
+        ...panel.current.querySelectorAll<HTMLElement>('button, input, textarea, summary'),
       ].filter((el) => !(el as HTMLButtonElement | HTMLInputElement).disabled);
       const first = stops[0];
       const last = stops[stops.length - 1];
