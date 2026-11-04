@@ -1,5 +1,7 @@
 # Shattered Rifts: Campaign, Runs & Seasons
 
+> **Current enemy scaling (0.177.0, DECISIONS #576):** scripted enemies start at 90% HP/damage and add 40 HP / 5 damage percentage points per tier through XX (850% HP / 185% damage), with no late acceleration or extra Elite/Warden multipliers. Phase and opening bonuses are bounded; the endgame tests developed decks through health, encounters and Warden mechanics. See `BALANCE.md` for the current curve and hand damage budgets; the historical mutator table below predates Combat v2.
+
 > **Acts are gone (DECISIONS #531):** a run is 20 Rift Tiers, each one map: Tier I is 10 floors and a Warden, each tier 1 floor more, so Tier XX is 30 in all (#556; 2 more a tier and 50 at Tier XX until then, #536). Anything below that speaks of stages or acts is older. **Players once saw Tiers > Acts > Floors (DECISIONS #490).** Where this doc and the code say "stage", read "act": the code, saves and the server keep the name `stage`.
 
 The campaign is a **run**, in the style of Slay the Spire. Pick a character, start with a small Grimoire, and grow

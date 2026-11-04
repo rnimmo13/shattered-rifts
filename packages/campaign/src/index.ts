@@ -120,13 +120,10 @@ export {
   enemyScale,
   HP_START,
   HP_PER_TIER,
-  HP_STEEP,
   HP_PER_STAGE,
   DMG_START,
   DMG_PER_TIER,
-  DMG_STEEP,
   DMG_PER_STAGE,
-  STEEP_FROM,
 } from './tierTable';
 export { upgradedCards } from './upgrades';
 export {

@@ -1,10 +1,12 @@
-// Phases, Elites and ghost Wardens harden with the Rift Tier (DECISIONS #527).
+// Campaign growth and bounded phase pressure (DECISIONS #576).
 
 import { describe, expect, it } from 'vitest';
 import { availableNodes, duelPlan, enterNode, ghostBossHp, newRun } from './run';
 import { omenEffects } from './omens';
 import { enemyScale } from './tierTable';
 import type { NodeKind, RunState } from './types';
+import { applyAction, createCombat, heroOf } from '@sr/combat';
+import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 
 const planAt = (tier: number, kind: NodeKind) => {
   const run: RunState = { ...newRun('knight', 'harden'), tier, phase: 'map', context: null };
@@ -14,67 +16,85 @@ const planAt = (tier: number, kind: NodeKind) => {
   return duelPlan(enterNode(run, node.id))!;
 };
 
-describe('the Rift hardens at Tiers 5, 10 and 15', () => {
-  it('each threshold makes every phase tougher than the one before, and nothing moves between them', () => {
-    const rise = (t: number) => omenEffects(t).leaderRise[0]!;
-    expect(omenEffects(4).riseBarrierPct).toBe(0);
-    for (const [before, at] of [
-      [4, 5],
-      [9, 10],
-      [14, 15],
-    ] as const) {
-      expect(rise(at).barrierPct).toBeGreaterThan(rise(before).barrierPct);
-      expect(rise(at).might).toBeGreaterThan(rise(before).might);
+describe('linear campaign growth', () => {
+  it('uses the same tier budget for ordinary fights, Elites and Wardens', () => {
+    for (let tier = 1; tier <= 20; tier++) {
+      for (const kind of ['duel', 'elite', 'warden'] as const) {
+        const plan = planAt(tier, kind);
+        expect(plan.hpPct).toBe(enemyScale(tier, 1).hp);
+        expect(plan.dmgPct).toBe(enemyScale(tier, 1).dmg);
+      }
     }
-    expect([5, 10, 15].map((t) => omenEffects(t).riseBarrierPct)).toEqual([5, 10, 15]);
-    expect([5, 10, 15].map((t) => omenEffects(t).riseMight)).toEqual([1, 2, 3]);
-    expect(omenEffects(9).riseBarrierPct).toBe(5);
-    expect(omenEffects(16).riseBarrierPct).toBe(15);
   });
 
-  it('it reaches every kind of phase', () => {
-    const e = omenEffects(20);
-    for (const r of [...e.bossRise, ...e.leaderRise, ...e.allRise])
-      expect(r.might).toBeGreaterThanOrEqual(3);
-    // (Second Wind at Tier 15 alone is 33% and 4 Might)
-    expect(omenEffects(15).bossRise[0]).toMatchObject({ barrierPct: 33 + 15, might: 4 + 3 });
+  it('bounds opening penalties and damage growth from Omens through Tier XX', () => {
+    for (let tier = 1; tier <= 20; tier++) {
+      const e = omenEffects(tier);
+      expect(e.heroStatuses.exposed ?? 0).toBe(0);
+      expect(e.heroStatuses.faltering ?? 0).toBeLessThanOrEqual(1);
+      expect(e.heroStatuses.brittle ?? 0).toBeLessThanOrEqual(1);
+      expect(e.bossStatuses.ritual ?? 0).toBe(0);
+      expect(e.bossStatuses.might ?? 0).toBeLessThanOrEqual(1);
+      expect(e.leadStatuses.vigor ?? 0).toBeLessThanOrEqual(1);
+      expect(e.fightCards.length).toBeLessThanOrEqual(1);
+      expect(e.actWounds).toBeLessThanOrEqual(1);
+      expect(e.bossRise.reduce((sum, r) => sum + r.might, 0)).toBeLessThanOrEqual(3);
+      expect(e.allRise.every((r) => r.might === 0)).toBe(true);
+    }
+    expect(omenEffects(20).bossRise).toEqual([
+      { atPct: 50, barrierPct: 24, might: 2 },
+      { atPct: 25, barrierPct: 13.5, might: 1 },
+    ]);
   });
 
-  it('Elites gain HP and damage at each threshold; plain fights and Wardens do not', () => {
-    expect([1, 5, 10, 15].map((t) => omenEffects(t).eliteHpPct)).toEqual([0, 10, 20, 30]);
-    expect([1, 5, 10, 15].map((t) => omenEffects(t).eliteDmgPct)).toEqual([0, 5, 10, 15]);
-    const scale = enemyScale(15, 1);
-    const elite = planAt(15, 'elite');
-    expect(elite.hpPct).toBe(Math.round(scale.hp * 1.3));
-    expect(elite.dmgPct).toBe(Math.round(scale.dmg * 1.15));
-    expect(planAt(15, 'duel').hpPct).toBe(scale.hp);
-    expect(planAt(15, 'duel').dmgPct).toBe(scale.dmg);
-    expect(planAt(15, 'warden').hpPct).toBe(scale.hp);
+  it('phase protection grows smoothly without threshold hardening bonuses', () => {
+    for (let tier = 3; tier <= 20; tier++) {
+      expect(
+        omenEffects(tier).bossRise[0]!.barrierPct - omenEffects(tier - 1).bossRise[0]!.barrierPct,
+      ).toBe(0.5);
+      expect(omenEffects(tier).bossRise[0]!.might).toBe(2);
+    }
   });
 
-  it("a Warden on an Elite stop has no Elite's bump, and the act's own Warden hits at least as hard", () => {
-    const run: RunState = {
-      ...newRun('knight', 'inversion'),
-      tier: 20,
-      phase: 'map',
-      context: null,
-    };
-    const node = availableNodes(run)[0]!;
-    node.kind = 'elite';
-    node.enemyId = 'seraphine';
-    const mid = duelPlan(enterNode(run, node.id))!;
-    const boss = planAt(20, 'warden');
-    expect(mid.hpPct).toBeLessThanOrEqual(boss.hpPct);
-    expect(mid.dmgPct).toBeLessThanOrEqual(boss.dmgPct);
-  });
+  it.each([1, 5, 10, 15, 17, 18, 19, 20])(
+    'applies the Tier %i damage budget to an actual multi-hit attack',
+    (tier) => {
+      const plan = planAt(tier, 'duel');
+      const { state } = createCombat(COMBAT_DB, {
+        seed: 'campaign-damage-budget',
+        a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+        b: { enemies: ['patrol-unit'], hpPct: plan.hpPct, dmgPct: plan.dmgPct },
+      });
+      const hero = heroOf(state.sides.a)!;
+      hero.hp = hero.maxHp = 10000;
+      // Isolate incoming damage from the Knight's Barrier for unspent Mana/Reserves.
+      state.sides.a.mana = 0;
+      state.sides.a.reserves = 0;
+      const foe = state.sides.b.units[0]!;
+      foe.intent = { move: 'burst', target: hero.id };
+      const result = applyAction(COMBAT_DB, state, { type: 'endTurn' });
+      expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(
+        3 * Math.floor((5 * plan.dmgPct) / 100),
+      );
+    },
+  );
 
-  it('Tier 1 fights are untouched', () => {
-    const scale = enemyScale(1, 1);
-    expect(planAt(1, 'elite').hpPct).toBe(scale.hp);
-    expect(planAt(1, 'elite').dmgPct).toBe(scale.dmg);
+  it('keeps a large Tier XX Warden hit within its base damage budget', () => {
+    const plan = planAt(20, 'warden');
+    const { state } = createCombat(COMBAT_DB, {
+      seed: 'warden-hit-budget',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['seraphine'], hpPct: plan.hpPct, dmgPct: plan.dmgPct },
+    });
+    const hero = heroOf(state.sides.a)!;
+    hero.hp = hero.maxHp = 10000;
+    state.sides.a.mana = 0;
+    state.sides.a.reserves = 0;
+    state.sides.b.units[0]!.intent = { move: 'bell2', target: hero.id };
+    const result = applyAction(COMBAT_DB, state, { type: 'endTurn' });
+    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(62);
   });
 });
-
 describe('campaign ghost scaling', () => {
   it('has no Tier 13 Arena-HP jump and stays increasing through legacy stages', () => {
     expect(ghostBossHp('knight', 13, 1) - ghostBossHp('knight', 12, 1)).toBe(16);

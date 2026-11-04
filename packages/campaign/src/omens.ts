@@ -35,16 +35,6 @@ export interface OmenEffects {
   fightCards: string[];
   /** Wounds added to your deck with each new tier */
   actWounds: number;
-  /** elite fights bring one more of their weakest enemy */
-  swarm: boolean;
-  /** percent more damage from Wardens */
-  wardenDmgPct: number;
-  /** added to every phase above: more of the unit's HP as Barrier, and more Might */
-  riseBarrierPct: number;
-  riseMight: number;
-  /** percent more HP and damage on elite fights */
-  eliteHpPct: number;
-  eliteDmgPct: number;
 }
 
 export interface Omen {
@@ -69,8 +59,8 @@ type Steps = { base: number; plusOneEvery: number };
 export const OMEN_TUNING = {
   secondWind: {
     tier: 2,
-    barrierPct: { base: 20, perTier: 1, max: 40 },
-    might: { base: 2, plusOneEvery: 6 },
+    barrierPct: { base: 15, perTier: 0.5, max: 24 },
+    might: { base: 2, plusOneEvery: 99 },
   },
   timesAreTough: {
     tier: 3,
@@ -79,25 +69,17 @@ export const OMEN_TUNING = {
     fewerChoices: 1,
     pricePct: { base: 25, perTier: 5, max: 110 },
   },
-  ralliedFoes: { tier: 4, barrierPct: { base: 10, perTier: 0.5, max: 20 } },
-  riftScars: { tier: 5, wounds: { base: 1, plusOneEvery: 7 } },
-  dread: { tier: 6, faltering: { base: 1, plusOneEvery: 6 } },
-  riftStatic: { tier: 7, staticCards: { base: 1, plusOneEvery: 7 } },
-  ironclad: { tier: 8, armored: { base: 1, plusOneEvery: 6 } },
-  brittleWards: { tier: 8, brittle: { base: 2, plusOneEvery: 4 } },
-  bloodRites: { tier: 9, ritual: 1 },
-  swarming: { tier: 10 },
-  // (one turn at every tier: it grew to three, and with a crowd's first blows it killed a full-HP hero before they could act; #555)
-  exposedSoul: { tier: 10, exposed: { base: 1, plusOneEvery: 99 } },
+  ralliedFoes: { tier: 4, barrierPct: { base: 5, perTier: 0.5, max: 13 } },
+  riftScars: { tier: 5, wounds: { base: 1, plusOneEvery: 99 } },
+  dread: { tier: 6, faltering: { base: 1, plusOneEvery: 99 } },
+  riftStatic: { tier: 7, staticCards: { base: 1, plusOneEvery: 99 } },
+  ironclad: { tier: 8, armored: { base: 1, plusOneEvery: 99 } },
+  brittleWards: { tier: 8, brittle: { base: 1, plusOneEvery: 99 } },
+  bloodRites: { tier: 9, might: 1 },
   vigilant: { tier: 12, steadfast: 1 },
-  thirdPhase: { tier: 13, atPct: 25, barrierPct: { base: 20, perTier: 2, max: 28 }, might: 2 },
-  hunted: { tier: 15, firstHit: { base: 4, perTier: 2, max: 6 } },
-  wardensFury: { tier: 17, dmgPct: { base: 10, perTier: 2, max: 14 } },
-  riftAwakens: { tier: 20, atPct: 50, barrierPct: 10, might: 1 },
-  // (each adds to the ones before it: at Tier XV a phase has 15% more Barrier and 3 more Might, an Elite 30% more HP and 15% more damage; DECISIONS #527)
-  riftHardens: { tier: 5, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
-  riftHardensMore: { tier: 10, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
-  riftHardensMost: { tier: 15, riseBarrierPct: 5, riseMight: 1, eliteHpPct: 10, eliteDmgPct: 5 },
+  thirdPhase: { tier: 13, atPct: 25, barrierPct: { base: 10, perTier: 0.5, max: 14 }, might: 1 },
+  hunted: { tier: 15, firstHit: { base: 1, perTier: 0, max: 1 } },
+  riftAwakens: { tier: 20, atPct: 50, barrierPct: 10, might: 0 },
 } satisfies Record<string, { tier: number; [k: string]: number | Grows | Steps }>;
 // ------------------------------------------------------------------------------------------------------------------------------
 
@@ -125,35 +107,7 @@ const thirdPhase = (t: number): Rise => ({
   might: T.thirdPhase.might,
 });
 
-/** One of the Omens that harden phases and Elites: `name` and the numbers of its step, which adds to the steps before it. */
-const hardening = (
-  id: string,
-  name: string,
-  v: {
-    tier: number;
-    riseBarrierPct: number;
-    riseMight: number;
-    eliteHpPct: number;
-    eliteDmgPct: number;
-  },
-): Omen => ({
-  tier: v.tier,
-  id,
-  name,
-  text: () =>
-    `Every phase an enemy rises into carries ${v.riseBarrierPct}% more of its HP as Barrier and ${v.riseMight} more Might. Elites (not a Warden met at an Elite's stop) have ${v.eliteHpPct}% more HP and deal ${v.eliteDmgPct}% more damage.`,
-  apply: (e) => {
-    e.riseBarrierPct += v.riseBarrierPct;
-    e.riseMight += v.riseMight;
-    e.eliteHpPct += v.eliteHpPct;
-    e.eliteDmgPct += v.eliteDmgPct;
-  },
-});
-
 const LISTED: Omen[] = [
-  hardening('rift-hardens', 'The Rift Hardens', T.riftHardens),
-  hardening('rift-hardens-more', 'The Rift Hardens Further', T.riftHardensMore),
-  hardening('rift-hardens-most', 'The Rift Hardens Again', T.riftHardensMost),
   {
     tier: T.secondWind.tier,
     id: 'second-wind',
@@ -237,9 +191,8 @@ const LISTED: Omen[] = [
     tier: T.bloodRites.tier,
     id: 'rites',
     name: 'Blood Rites',
-    text: () =>
-      `Elites and Wardens start with ${T.bloodRites.ritual} Ritual: they gain ${T.bloodRites.ritual} Might at the end of each of their turns.`,
-    apply: (e) => add(e.bossStatuses, 'ritual', T.bloodRites.ritual),
+    text: () => `Elites and Wardens start with ${T.bloodRites.might} Might.`,
+    apply: (e) => add(e.bossStatuses, 'might', T.bloodRites.might),
   },
   {
     tier: T.brittleWards.tier,
@@ -249,23 +202,6 @@ const LISTED: Omen[] = [
       `You start every fight Brittle for ${turns(at(t, T.brittleWards.tier, T.brittleWards.brittle))} (the Barrier you gain is 25% smaller).`,
     apply: (e, t) =>
       add(e.heroStatuses, 'brittle', at(t, T.brittleWards.tier, T.brittleWards.brittle)),
-  },
-  {
-    tier: T.swarming.tier,
-    id: 'swarming',
-    name: 'Swarming',
-    text: () =>
-      'Elite fights bring one more of their weakest enemy (when there is room). A Warden comes alone.',
-    apply: (e) => void (e.swarm = true),
-  },
-  {
-    tier: T.exposedSoul.tier,
-    id: 'exposed-soul',
-    name: 'Exposed Soul',
-    text: (t) =>
-      `You start every fight Exposed for ${turns(at(t, T.exposedSoul.tier, T.exposedSoul.exposed))} (50% more attack damage taken).`,
-    apply: (e, t) =>
-      add(e.heroStatuses, 'exposed', at(t, T.exposedSoul.tier, T.exposedSoul.exposed)),
   },
   {
     tier: T.thirdPhase.tier,
@@ -284,13 +220,6 @@ const LISTED: Omen[] = [
     text: () =>
       `Every enemy starts with ${T.vigilant.steadfast} Steadfast: the first ${T.vigilant.steadfast === 1 ? 'debuff' : `${T.vigilant.steadfast} debuffs`} you put on it ${T.vigilant.steadfast === 1 ? 'is' : 'are'} ignored.`,
     apply: (e) => add(e.enemyStatuses, 'steadfast', T.vigilant.steadfast),
-  },
-  {
-    tier: T.wardensFury.tier,
-    id: 'wardens-fury',
-    name: 'Warden’s Fury',
-    text: (t) => `Wardens deal ${at(t, T.wardensFury.tier, T.wardensFury.dmgPct)}% more damage.`,
-    apply: (e, t) => void (e.wardenDmgPct += at(t, T.wardensFury.tier, T.wardensFury.dmgPct)),
   },
   {
     tier: T.hunted.tier,
@@ -341,22 +270,8 @@ export function omenEffects(tier: number): OmenEffects {
     fewerChoices: 0,
     fightCards: [],
     actWounds: 0,
-    swarm: false,
-    wardenDmgPct: 0,
-    riseBarrierPct: 0,
-    riseMight: 0,
-    eliteHpPct: 0,
-    eliteDmgPct: 0,
   };
   for (const o of omensAt(tier)) o.apply(e, tier);
-  const harder = (r: Rise): Rise => ({
-    ...r,
-    barrierPct: r.barrierPct + e.riseBarrierPct,
-    might: r.might + e.riseMight,
-  });
-  e.bossRise = e.bossRise.map(harder);
-  e.leaderRise = e.leaderRise.map(harder);
-  e.allRise = e.allRise.map(harder);
   return e;
 }
 

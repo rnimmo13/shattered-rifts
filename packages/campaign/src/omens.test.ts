@@ -37,7 +37,9 @@ describe('Rift Omens', () => {
 
   it('Times Are Tough: from Tier III Shrines heal less, fights pay less, rewards offer one card fewer, and merchants charge more', () => {
     const before = omenEffects(2);
-    expect([before.restPct, before.shardsPct, before.fewerChoices, before.pricePct]).toEqual([0, 0, 0, 0]);
+    expect([before.restPct, before.shardsPct, before.fewerChoices, before.pricePct]).toEqual([
+      0, 0, 0, 0,
+    ]);
     const t3 = omenEffects(3);
     expect([t3.restPct, t3.shardsPct, t3.fewerChoices, t3.pricePct]).toEqual([25, 20, 1, 25]);
     expect(omenEffects(4).pricePct).toBe(30);
@@ -45,8 +47,8 @@ describe('Rift Omens', () => {
     expect(omenEffects(20).fewerChoices).toBe(1);
   });
 
-  it('Second Wind is 20% Barrier and 2 Might at Tier II', () => {
-    expect(omenEffects(2).bossRise).toEqual([{ atPct: 50, barrierPct: 20, might: 2 }]);
+  it('Second Wind is 15% Barrier and 2 Might at Tier II', () => {
+    expect(omenEffects(2).bossRise).toEqual([{ atPct: 50, barrierPct: 15, might: 2 }]);
   });
 
   it('no enemy starts with Thorns from an Omen any more', () => {
@@ -56,7 +58,7 @@ describe('Rift Omens', () => {
   it('Rift Scars: from Tier V each new tier leaves a Wound in the deck', () => {
     expect(omenEffects(4).actWounds).toBe(0);
     expect(omenEffects(5).actWounds).toBe(1);
-    expect(omenEffects(12).actWounds).toBe(2);
+    expect(omenEffects(12).actWounds).toBe(1);
     const run = { ...newRun('knight', 'scars'), tier: 4, phase: 'loopCleared' as const };
     const after = continueLoop(run);
     expect(after.deck.filter((c) => c === 'wound')).toHaveLength(1);
@@ -178,7 +180,7 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
     return finishDuel(here, true, 40);
   };
 
-  it('Tier III\'s Warden offers three, in place of the Gift', () => {
+  it("Tier III's Warden offers three, in place of the Gift", () => {
     const r = beat(3, 3);
     expect(r.phase).toBe('ascend');
     expect(r.context?.ascendancies).toHaveLength(3);
@@ -200,7 +202,9 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
     expect(beat(2, 1).phase).toBe('gift');
     expect(beat(4, 1, 'knight:paladin').phase).toBe('gift');
     expect(chooseAscendancy(beat(4, 1), 'knight:paladin').phase).toBe('loopCleared');
-    expect(() => chooseAscendancy({ ...beat(4, 1), ascendancy: 'knight:marshal' }, 'knight:paladin')).toThrow();
+    expect(() =>
+      chooseAscendancy({ ...beat(4, 1), ascendancy: 'knight:marshal' }, 'knight:paladin'),
+    ).toThrow();
   });
 
   it('taking one changes the class for the rest of the run and clears the tier', () => {
@@ -213,7 +217,14 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
   it('an extra card reward the fight earned comes after the choice', () => {
     const r = newRun('knight', 'ascend-extra');
     const warden = r.map.nodes.find((n) => n.kind === 'warden')!;
-    const won = finishDuel({ ...r, tier: 3, stage: 3, phase: 'duel', at: warden.id, context: { nodeId: warden.id } }, true, 40, [], 0, 1);
+    const won = finishDuel(
+      { ...r, tier: 3, stage: 3, phase: 'duel', at: warden.id, context: { nodeId: warden.id } },
+      true,
+      40,
+      [],
+      0,
+      1,
+    );
     expect(won.phase).toBe('ascend');
     const after = chooseAscendancy(won, 'knight:paladin');
     expect(after.phase).toBe('reward');

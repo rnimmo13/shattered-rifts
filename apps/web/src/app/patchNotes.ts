@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.177.0',
+    date: '2026-11-03',
+    title: 'A smoother campaign climb',
+    summary: 'Steady enemy growth through Tier XX, with bounded opening and phase bonuses.',
+    notes: [
+      { kind: 'balance', text: 'Scripted enemies gain 40 percentage points of HP and 5 points of damage per tier, starting at 90% of base. Tier XX reaches 850% HP and 185% damage, with no final-tier acceleration.' },
+      { kind: 'balance', text: 'Elites and Wardens use the same tier multiplier as other enemies. Extra hardening bonuses, Warden damage multipliers, added Swarming enemies and opening Exposed are removed.' },
+      { kind: 'balance', text: 'Phase Might is bounded, Blood Rites gives 1 starting Might instead of growing Ritual, and Hunted gives 1 Primed. Opening Faltering and Brittle last one turn; Rift Static adds one card and Rift Scars adds one Wound per tier, up to six.' },
+      { kind: 'changed', text: 'Late-tier health pools, encounter lineups, Warden mechanics and longer maps still demand a developed deck. Dedicated ghost scaling and Arena rules are unchanged.' },
+    ],
+  },
+  {
     version: '0.176.0',
     date: '2026-11-03',
     title: 'A steadier climb against ghosts',

@@ -65,18 +65,15 @@ describe('the tier table', () => {
   });
 });
 
-describe('a straight climb, then the last three tiers (DECISIONS #555)', () => {
-  it('HP and damage climb evenly to Tier XVII, then more steeply, to ten times the written HP and under three times the damage', () => {
+describe('a linear climb through every tier (DECISIONS #576)', () => {
+  it('adds the same HP and damage through Tier XX without a late slope change', () => {
     const step = (t: number, k: 'hp' | 'dmg') => enemyScale(t + 1, 1)[k] - enemyScale(t, 1)[k];
-    for (let t = 1; t < 17; t++) {
+    for (let t = 1; t < 20; t++) {
       expect(step(t, 'hp')).toBe(40);
-      expect(step(t, 'dmg')).toBe(9);
+      expect(step(t, 'dmg')).toBe(5);
     }
-    for (let t = 17; t < 20; t++) {
-      expect(step(t, 'hp')).toBe(90);
-      expect(step(t, 'dmg')).toBe(20);
-    }
-    expect(enemyScale(10, 1)).toEqual({ hp: 450, dmg: 171 });
-    expect(enemyScale(20, 1)).toEqual({ hp: 1000, dmg: 294 });
+    expect(enemyScale(10, 1)).toEqual({ hp: 450, dmg: 135 });
+    expect(enemyScale(17, 1)).toEqual({ hp: 730, dmg: 170 });
+    expect(enemyScale(20, 1)).toEqual({ hp: 850, dmg: 185 });
   });
 });

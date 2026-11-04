@@ -2,8 +2,7 @@
 //
 // (Since DECISIONS #531 a run has no acts: fights use a row's first column, and the other two only keep old rows readable.)
 // Each row is one Rift Tier (row 1 = Tier I) and gives enemy HP and attack damage for each of the run's three stages, as a percent
-// of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I itself runs above the base (players
-// found the base too easy, DECISIONS #228; #234, #257, #261).
+// of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I starts at 90% of base.
 //
 // HP and damage are three numbers each, not typed row by row (DECISIONS #262): Tier I stage 1 starts at HP_START, every Tier up adds a flat
 // HP_PER_TIER, and every stage inside a tier adds HP_PER_STAGE. Keep HP_PER_TIER above twice HP_PER_STAGE, so stage 1 of a tier is
@@ -12,8 +11,8 @@
 // Why it looks like this (docs/BALANCE.md; DECISIONS #223, #228-#230): the whole table is one rising ladder. Tier 1 stage 1, 2 and 3,
 // then Tier 2 stage 1 and so on: every step is harder than the one before it, and stage 1 of a tier is always harder than stage 3 of
 // the tier below (Robert: it must never take a step back; the table test checks it). HP and damage climb the same amount every tier
-// up to STEEP_FROM, a straight line, and more steeply over the last three tiers (DECISIONS #555): enemies grow tankier much faster than
-// they grow harder-hitting, so Tier XX enemies have ten times their written HP (#536) but under three times their damage.
+// through Tier XX, with no late switch in slope (DECISIONS #576). Endgame pressure comes from
+// developed encounters, high HP and phases, while damage remains within a predictable budget.
 
 export interface TierRow {
   /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
@@ -26,45 +25,32 @@ export interface TierRow {
 export const HP_START = 90;
 /** added to enemy HP for every Rift Tier up (percentage points; 20 until DECISIONS #536, 30 until #555) */
 export const HP_PER_TIER = 40;
-/** added to enemy HP for every Rift Tier past STEEP_FROM (percentage points): 90 + 16 x 40 + 3 x 90 = 1000 at Tier XX (#536, #555) */
-export const HP_STEEP = 90;
 /** added to enemy HP for each stage inside a tier (percentage points) */
 export const HP_PER_STAGE = 5;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
 export const DMG_START = 90;
 /** added to enemy damage for every Rift Tier up (percentage points; 12 until DECISIONS #555) */
-export const DMG_PER_TIER = 9;
-/** added to enemy damage for every Rift Tier past STEEP_FROM (percentage points): 90 + 16 x 9 + 3 x 20 = 294 at Tier XX (#555; was 438) */
-export const DMG_STEEP = 20;
+export const DMG_PER_TIER = 5;
 /** added to enemy damage for each stage inside a tier (percentage points) */
-export const DMG_PER_STAGE = 3;
+export const DMG_PER_STAGE = 1;
 
 /** how many Rift Tiers there are */
 const TIERS = 20;
 
-/** Past this Rift Tier the climb is steeper: Tiers XVIII to XX are the last, brutal stretch (DECISIONS #555; Tier X until then, #520). */
-export const STEEP_FROM = 17;
-
-// (a tier past STEEP_FROM adds `steep` in place of `perTier`)
 const at = (
   start: number,
   perTier: number,
-  steep: number,
   perStage: number,
   tier: number,
   stage: number,
-): number =>
-  start +
-  (Math.min(tier, STEEP_FROM) - 1) * perTier +
-  Math.max(0, tier - STEEP_FROM) * steep +
-  (stage - 1) * perStage;
-const stages = (start: number, perTier: number, steep: number, perStage: number, tier: number) =>
-  [1, 2, 3].map((st) => at(start, perTier, steep, perStage, tier, st)) as [number, number, number];
+): number => start + (tier - 1) * perTier + (stage - 1) * perStage;
+const stages = (start: number, perTier: number, perStage: number, tier: number) =>
+  [1, 2, 3].map((st) => at(start, perTier, perStage, tier, st)) as [number, number, number];
 
 export const TIER_TABLE: readonly TierRow[] = Array.from({ length: TIERS }, (_, i) => ({
-  hp: stages(HP_START, HP_PER_TIER, HP_STEEP, HP_PER_STAGE, i + 1),
-  dmg: stages(DMG_START, DMG_PER_TIER, DMG_STEEP, DMG_PER_STAGE, i + 1),
+  hp: stages(HP_START, HP_PER_TIER, HP_PER_STAGE, i + 1),
+  dmg: stages(DMG_START, DMG_PER_TIER, DMG_PER_STAGE, i + 1),
 }));
 
 const rowOf = (tier: number): TierRow => {

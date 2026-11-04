@@ -785,23 +785,8 @@ export function duelPlan(run: RunState): FightPlan | null {
   const boss = node.kind === 'elite' || node.kind === 'warden';
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
-  // (never a second Warden, at the tier where the Elites are Wardens)
-  if (
-    omen.swarm &&
-    node.kind === 'elite' &&
-    e.kind !== 'warden' &&
-    units.length > 0 &&
-    units.length < 4
-  ) {
-    const weakest = units.reduce((m, id) => (hpOf(id) < hpOf(m) ? id : m));
-    units.push(weakest);
-  }
-  const wardenUp = node.kind === 'warden' ? 1 + omen.wardenDmgPct / 100 : 1;
-  // (a Warden on an Elite stop has no Elite's bump, so the act's own Warden stays its hardest fight; DECISIONS #527)
-  const realElite = node.kind === 'elite' && e.kind !== 'warden';
-  const eliteHpUp = realElite ? 1 + omen.eliteHpPct / 100 : 1;
-  const eliteDmgUp = realElite ? 1 + omen.eliteDmgPct / 100 : 1;
-  // (an Echo is a share of a ghost Warden; wardenUp is already 1 off a Warden's stop)
+  // Encounter data already distinguishes Elites and Wardens. No hidden category multipliers
+  // or Omen-added extra attacker; the common tier curve is linear for every scripted fight.
   const echoHp = node.kind === 'echo' ? ECHO_HP_PCT / 100 : 1;
   return {
     ...(ghost
@@ -809,7 +794,7 @@ export function duelPlan(run: RunState): FightPlan | null {
           ghost: {
             ...ghost,
             hp: Math.round(ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp) * echoHp),
-            // Ghost decks use their linear curve; Warden's Fury is for scripted Wardens.
+            // Ghost decks keep their independent linear curve.
             dmgPct: ghostBossDmg(run.tier),
           },
         }
@@ -839,15 +824,10 @@ export function duelPlan(run: RunState): FightPlan | null {
     potions: [...run.potions],
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
-      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) *
-        enemyScale(run.tier, 1).hp *
-        eliteHpUp,
+      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) * enemyScale(run.tier, 1).hp,
     ),
     dmgPct: Math.round(
-      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
-        enemyScale(run.tier, 1).dmg *
-        wardenUp *
-        eliteDmgUp,
+      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) * enemyScale(run.tier, 1).dmg,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,

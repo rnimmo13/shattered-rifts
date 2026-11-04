@@ -1,5 +1,50 @@
 # Balance Notes
 
+## Campaign: steady tier growth (0.177.0, 2026-11-03, DECISIONS #576)
+
+Normal scripted enemies use HP = 90 + 40 x (tier - 1) percent of printed HP,
+and damage = 90 + 5 x (tier - 1) percent of printed damage. These are additive
+percentage points, with no late change in slope. Current runs use stage 1; old stage
+columns add 5 HP points and 1 damage point each, always below the next tier.
+
+| Tier | Enemy HP | Enemy damage |
+|---|---:|---:|
+| I | 90% | 90% |
+| V | 250% | 110% |
+| X | 450% | 135% |
+| XV | 650% | 160% |
+| XVII | 730% | 170% |
+| XVIII | 770% | 175% |
+| XIX | 810% | 180% |
+| XX | 850% | 185% |
+
+The former late slope reached 1000% HP / 294% damage before additional multipliers.
+At XX a printed 20-damage hit now deals 37 instead of 58 before statuses; a printed
+34-damage hit deals 62 instead of 99. Patrol Unit's printed 5 x 3 becomes 9 x 3 = 27.
+Damage rounds down per hit, so small printed attacks can stay flat between tiers.
+Might, Primed and enemy-designed statuses can still alter these numbers.
+
+Removed category-specific Elite bonuses, hardening at V/X/XV, Warden's Fury,
+Swarming's extra enemy and Exposed Soul's opening vulnerability. Second Wind now
+adds 15% Barrier at II, growing 0.5 point per tier to 24%, with fixed 2 Might.
+The ordinary leader phase grows from 5% at IV to 13%; Third Phase starts at XIII
+with 10% Barrier, grows 0.5 point per tier and adds 1 Might (13.5% Barrier at XX).
+The XX add phase grants 10% Barrier and no Might. Boss Omen phase Might totals at
+most 3, with no hardening stacked on top. Blood Rites grants fixed 1 starting Might
+rather than recurring Ritual. Hunted grants fixed 1 Primed to the strongest foe.
+Opening Faltering/Brittle last one turn, Static adds one card and Scars adds one
+Wound per tier (six-card cap). Ironclad stays at 1 Armored. Enemy-authored buffs,
+attacks, summons and Vorthax's own four-quarter mechanics remain intact.
+
+The aim is a demanding but answerable XVII-XX: large HP pools and phase Barriers
+reward damage growth; longer maps and developed encounters test consistency.
+Economy/reward/rest modifiers are unchanged. Dedicated Echo/ghost curves and Arena
+are unchanged, though campaign ghosts share the reduced ordinary Omens.
+These are hand budgets and deterministic checks, not campaign playtests or bot
+simulations. Beatable endgame and A-tier deck targets still require player testing,
+especially multi-enemy damage, enemy-authored Might/Ritual and Vorthax's final quarter.
+
+
 ## Campaign ghosts: linear growth (0.176.0, 2026-11-03, DECISIONS #575)
 
 This section is hand analysis and deterministic scenario checks, not simulation results. Campaign
