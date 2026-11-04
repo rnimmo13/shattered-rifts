@@ -1,6 +1,6 @@
 # Shattered Rifts: Lore
 
-The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587, #597).
+The story behind the game, written as the baseline every card, Warden line, event and page should agree with (DECISIONS #587, #597, #598).
 It replaces the old "Prime World broke into pieces" premise of `01_GAME_DESIGN.md §1`.
 
 **Player-facing text uses class names** (the Knight, the Rogue, the Shaman...), never the hidden personas in `Riftwalker.persona`
@@ -27,9 +27,18 @@ guardian bound to keep its part of the Ward whole. Most of them were not cruel. 
 they knew.
 
 ### 2.3 The Shattering
-**Vorthax** struck from the space between worlds. The Ward kept it from entering them, so it gathered its power against a
-junction of the barrier and released it in a single cataclysmic blast. The junction burst. A vast section of the Ward shattered,
-tearing open the worlds along it. That attack is **the Shattering**.
+**Vorthax** was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed
+rival powers and claimed their knowledge. Eventually, nothing could openly oppose him. His people survived by obeying.
+
+His experiments revealed other realms beyond his world's boundary: unfamiliar magic, untaken kingdoms, rulers who had
+never heard his name. He wanted their power and could not tolerate being kept outside. The Ward became his obsession.
+
+He spent years forcing a breach through his own realm's boundary, consuming its resources and sacrificing entire cities
+to the attempt. Once outside, he discovered where the Ward joined around neighboring worlds. He gathered his power against
+one junction and released it in a single cataclysmic blast. A vast section shattered, tearing open the worlds along it.
+That attack is **the Shattering**: the assault on the neighboring worlds, following his earlier escape from his own.
+
+> Vorthax broke the sky because it was the last thing in his world that would not obey him.
 
 The whole Ward did not fall. Distant sections remain intact, with worlds still sealed behind them. The campaign follows the
 worlds exposed by this rupture and the wreckage it left between them. The broken section is enormous, but it is only a portion
@@ -38,18 +47,27 @@ of the barrier. The remaining Ward is something that can still be defended, and 
 Cracks became **Rifts**, Rifts became doors, and through them came creatures, machines and magic that had no business being
 in each other's worlds. Cards that are **Rift-crossed** are exactly that: power that drifted in from somewhere else.
 
-The Wardens of the breached worlds tried to hold the broken edges. **Vorthax reached through the Rifts and took them.** They
-still guard their shards of the Ward, but they no longer guard them for their worlds. They guard them for **the Heart**.
+The Wardens of the breached worlds tried to hold the broken edges. **Vorthax reached through the Rifts and took them.** In
+conquering them, he discovered that their bonds to their worlds gave him access to those worlds' laws. That is why he keeps
+the Wardens as servants: each brings power he could never have learned in his own realm. They still guard their shards of
+the Ward, but they no longer guard them for their worlds. They guard them for **the Heart**.
 
-**Canon boundary:** Vorthax deliberately caused the cataclysm to force a way into the sealed worlds. This is established fact,
+**Canon boundary:** Vorthax deliberately caused the cataclysm to conquer the sealed worlds and seize their powers. This is established fact,
 not a rumour or a possible explanation. The blast shattered a portion of the Ward, not the entire barrier. The Wardens were
 guardians before the attack and were taken afterward. The Hollow Crown's fallen star and the Queen of the Unmade did not
 cause the Shattering; the earlier dying-star proposal is superseded by Robert's direction in DECISIONS #597.
+His motive is conquest and control. He willingly sacrificed his own people to expand his reach. His home realm's name,
+his exact nature and the fate of its Warden remain unspecified; do not assign him to an existing class homeland without
+Robert's approval. The dying-realm survival motive discussed before #598 is not canon.
 
 ### 2.4 The Riftwalkers
 Most who step into a Rift come out wrong, or don't come out. A rare few can walk the Rifts and live. Each comes from a different
 world and walks for it: a knight of a world of light, an engineer of a world of machines, a hunter from a world that eats.
 They are the classes the player chooses.
+
+Vorthax was unmatched within his own realm, but the other worlds contain powers he has not mastered. Riftwalkers carry those
+powers across the boundaries and combine them in ways he did not anticipate. That gives them a chance to challenge him;
+his supremacy at home does not make him invincible everywhere.
 
 ### 2.5 Shards and rivals
 A Warden's shard can seal a world again, or at least close the Rifts around it. But the shards are finite and every breached world is
@@ -61,14 +79,17 @@ each other as well as the Wardens, and why no one wins for good.
 - **The Arena** is the Crossing, a place where many Rifts meet. Riftwalkers fight there face to face (PvP).
 
 ### 2.6 The Heart of the Rift
-At the centre of the shattered section is **Vorthax, the Heart of the Rift**. It made the Wardens what they are now, which is why it
-fights with all of their rules. Every time a Riftwalker seals a Rift, it tears open again, worse than before. That is the climb
-through the 20 **Rift Tiers**: deeper, and worse, each time.
+At the centre of the shattered section is **Vorthax, the Heart of the Rift**. He fights with the rules of the Wardens he has
+taken. His goal is to break into more realms, seize their powers and make every world answer to him. The shattered region
+is his first foothold. Closing a Rift cuts off his reach, so he tears new ones open. Every time a Riftwalker seals a Rift,
+another opens, worse than before. That is the climb through the 20 **Rift Tiers**: deeper, and worse, each time.
 
-**Kept open on purpose (for later):** Vorthax's origins, its true nature, and its ultimate purpose beyond breaking into the
-worlds. Its responsibility for the Shattering is established in section 2.3 and should be explicit in player-facing text.
-The hint we plant everywhere: *the fighting feeds it.* Every shard torn from a rival, every Rift sealed, makes the Heart
-stronger. Do not confirm that hidden connection in player-facing text yet.
+**Established for players:** Vorthax conquered his home realm, broke out, caused the Shattering and takes Wardens to claim
+the laws of their worlds. His ambition is domination across realms. These are no longer unanswered questions.
+
+**Kept open on purpose (for later):** his realm's identity, the source of his original power, his true nature and the full
+mechanism behind his stolen powers. The hint we plant everywhere: *the fighting feeds him.* Every shard torn from a rival,
+every Rift sealed, makes the Heart stronger. Do not confirm that hidden connection in player-facing text yet.
 
 ## 3. The worlds
 
@@ -83,7 +104,8 @@ stronger. Do not confirm that hidden connection in player-facing text yet.
 | **The Midden** (`midden`) | Where the debris of every broken world washes up: the scrapheap of the multiverse. Nothing here is worth guarding, so it has no Warden. | Drunkard | none (DECISIONS: Midden has no Elites or Warden) |
 | **The Far Rifts** (`beyond`) | The space between worlds, where the Ward broke worst. No one is from here. | none | Event Horizon Regent |
 
-Where the Rifts are worst, worlds bleed into each other: that is the last stretch of a run (the Rift), and the home of Vorthax.
+Where the Rifts are worst, worlds bleed into each other: that is the last stretch of a run (the Rift), and Vorthax's current
+stronghold. His original home realm has not been named or assigned to the map.
 
 ## 4. Writing rules for anything with lore in it
 1. **Riftwalkers are champions, not heroes.** Each is right about their own world and in someone else's way. No pure villains
@@ -91,12 +113,15 @@ Where the Rifts are worst, worlds bleed into each other: that is the last stretc
 2. **Wardens were guardians first.** Their lines can show what they were before the Heart took them.
 3. **Every world has its own laws.** A card's flavour should feel like it comes from one world; a Rift-crossed card should feel
    out of place.
-4. **Keep the Heart's deeper nature mysterious.** Its attack caused the Shattering; that is known. Its origins and ultimate
-   purpose remain open. Hint that the fighting feeds it; never confirm that hidden connection.
+4. **Make Vorthax's motive clear.** He conquered his own realm and broke out to seize other worlds and their powers. He takes
+   Wardens to claim their worlds' laws. Keep his exact nature and the source of his original power mysterious; hint that the
+   fighting feeds him without confirming that hidden connection.
 5. **Original names only** (golden rule 6). No franchise terms.
 6. **Class names in player text**, personas never (until Robert decides to use them).
-7. **Vorthax caused the Shattering.** Its deliberate cataclysm broke a vast portion of the Ward, leaving other sections intact.
+7. **Vorthax caused the Shattering.** His deliberate cataclysm broke a vast portion of the Ward, leaving other sections intact.
    Do not replace this with an accident, a Warden's mistake or an unexplained failure. The worlds were always separate.
+8. **Vorthax's supremacy has a scope.** He was unmatched in his own realm; unfamiliar powers and combinations from other
+   worlds can challenge him. His destruction is a choice made for power and control, not a necessary act to save his people.
 
 ## 5. The lore page (`#/lore`)
 

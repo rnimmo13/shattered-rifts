@@ -183,7 +183,12 @@
   font-size: clamp(1.35rem, 2vw, 2rem);
   line-height: 1.3;
 }
-.lore__caption p {
+.lore__chapterIntro {
+  max-width: 65ch;
+  margin: 0 auto 3.5rem;
+}
+.lore__caption p,
+.lore__chapterIntro p {
   font-size: 1.06rem;
   line-height: 1.85;
   max-width: 65ch;

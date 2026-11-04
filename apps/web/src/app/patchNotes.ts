@@ -29,6 +29,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.197.0',
+    date: '2026-11-04',
+    title: 'The conqueror beyond the Ward',
+    summary: 'Why Vorthax broke out, and why he takes the Wardens.',
+    notes: [
+      {
+        kind: 'new',
+        text: 'The Story now follows Vorthax from the conquest of his home realm to the Shattering. Learn why he sacrificed his own cities to breach the Ward, how the captured Wardens give him new powers, and why Riftwalkers can challenge him.',
+      },
+    ],
+  },
+  {
     version: '0.196.0',
     date: '2026-11-04',
     title: 'The cause of the Shattering',

@@ -140,6 +140,13 @@ export default function LoreScreen() {
               <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
               <p>{chapter.subtitle}</p>
             </header>
+            {chapter.introduction && (
+              <div className="lore__chapterIntro">
+                {chapter.introduction.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            )}
             {chapter.panels.map((panel, j) => (
               <article
                 className={`lore__panel${j % 2 ? ' lore__panel--reverse' : ''}`}
