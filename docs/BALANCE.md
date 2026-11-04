@@ -1,5 +1,48 @@
 # Balance Notes
 
+## Campaign ghosts: linear growth (0.176.0, 2026-11-03, DECISIONS #575)
+
+This section is hand analysis and deterministic scenario checks, not simulation results. Campaign
+Echoes and ghost Wardens have an independent curve from Tier IV through XX:
+
+- Warden HP = round(class base HP x (2.2 + 0.2 x tiers after IV) + saved HP bonus).
+- Saved HP bonus = earned Max HP above class base, capped at 50% of class base. It is added once,
+  never multiplied by tier. This bounds the contribution of unusually high-HP saved runs.
+- Damage = 100% + 3 percentage points per tier after IV. No Tier XIII Arena-HP switch, final-tier
+  acceleration or Warden's Fury multiplier applies to a ghost deck.
+- Echo HP remains 60% of Warden HP, rounded; both use the same damage curve. Legacy stages split
+  one tier's increment into thirds. Current runs always use stage 1.
+- Ghost-specific opening Faltering is removed. The ordinary tier's Omens still apply to the player.
+- Campaign opponents are sampled uniformly among eligible nearby-tier decks. They remain at or
+  below the player's tier, at most three tiers below, within one tier of the nearest candidate.
+  The server reads recent ghosts rather than preselecting the highest-win records. Own, stale,
+  already-met and ineligible decks stay excluded. Arena selection and HP are unchanged.
+
+Example: Knight with 80 class base HP and 120 saved Max HP (40 bonus):
+
+| Tier | Ghost Warden HP | Echo HP | Ghost damage |
+|---|---:|---:|---:|
+| IV | 216 | 130 | 100% |
+| V | 232 | 139 | 103% |
+| X | 312 | 187 | 118% |
+| XV | 392 | 235 | 133% |
+| XX | 472 | 283 | 148% |
+
+For that same saved Knight, the prior Tier V numbers were about 371 Warden HP / 223 Echo HP,
+108% damage, and three/two extra opening Faltering turns. Tier XX was 1,600 Warden HP / 960 Echo
+HP, about 251% damage before the Warden's late damage bonus. The revised HP increment is 16 a
+tier for the Knight and roughly 14–18 for the other classes; damage adds exactly 3 points.
+The curve deliberately reduces the health wall and preserves a larger boss-sized Warden body.
+
+Tests cover every class and tier, extreme saved Max HP, rounding, legacy stages, removal of opening
+penalties, late Warden multipliers, reload/retry identity, nearby-tier selection and the unchanged
+Arena behavior. These verify the progression rules, not a guaranteed win rate. Deck synergies,
+normal Omens and matchups still affect difficulty; campaign playtesting should check early setup
+windows and late defensive engines before further tuning. Rewards, Resolve costs and node odds
+are unchanged. No balance simulations were run.
+
+## Historical simulation notes
+
 Data from `pnpm sim` (bot-vs-bot). **Read the caveats first.** The bots are decent, not human: the
 heuristic AI plays solidly but doesn't bluff, plan combos, or play around traps well. Treat these numbers as
 *directional signals to investigate*, not verdicts. Rerun after every card or rule change and update this file

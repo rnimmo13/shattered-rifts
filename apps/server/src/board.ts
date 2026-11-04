@@ -673,7 +673,7 @@ export class Leaderboard extends DurableObject<Env> {
   }
 
   /**
-   * A ghost to stand in for a campaign Warden: one of the better decks (the upper half by wins), never the asker's own, whatever its
+   * A ghost to stand in for a campaign Warden or Echo: a recent nearby-tier deck, never the asker's own, whatever its
    * Riftwalker. Its cards and Boons go to the player for that one fight (they are played against them), nothing about its owner but a name.
    */
   private ghostBoss(b: Record<string, unknown>, now: number): Response {
@@ -688,7 +688,7 @@ export class Leaderboard extends DurableObject<Env> {
       .exec<GhostSql>(
         `SELECT id, owner, owner_name, hero, '' AS deck, '' AS boons, ascendancy, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at
            FROM current_ghosts WHERE last_at >= ?
-          ORDER BY (wins + ghost_wins) DESC, last_at DESC LIMIT 400`,
+          ORDER BY last_at DESC, id ASC LIMIT 400`,
         now - 31 * DAY,
       )
       .toArray();

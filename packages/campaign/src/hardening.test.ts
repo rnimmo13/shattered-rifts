@@ -1,7 +1,7 @@
 // Phases, Elites and ghost Wardens harden with the Rift Tier (DECISIONS #527).
 
 import { describe, expect, it } from 'vitest';
-import { GHOST_ARENA_TIER, availableNodes, duelPlan, enterNode, ghostBossHp, newRun } from './run';
+import { availableNodes, duelPlan, enterNode, ghostBossHp, newRun } from './run';
 import { omenEffects } from './omens';
 import { enemyScale } from './tierTable';
 import type { NodeKind, RunState } from './types';
@@ -18,7 +18,11 @@ describe('the Rift hardens at Tiers 5, 10 and 15', () => {
   it('each threshold makes every phase tougher than the one before, and nothing moves between them', () => {
     const rise = (t: number) => omenEffects(t).leaderRise[0]!;
     expect(omenEffects(4).riseBarrierPct).toBe(0);
-    for (const [before, at] of [[4, 5], [9, 10], [14, 15]] as const) {
+    for (const [before, at] of [
+      [4, 5],
+      [9, 10],
+      [14, 15],
+    ] as const) {
       expect(rise(at).barrierPct).toBeGreaterThan(rise(before).barrierPct);
       expect(rise(at).might).toBeGreaterThan(rise(before).might);
     }
@@ -30,7 +34,8 @@ describe('the Rift hardens at Tiers 5, 10 and 15', () => {
 
   it('it reaches every kind of phase', () => {
     const e = omenEffects(20);
-    for (const r of [...e.bossRise, ...e.leaderRise, ...e.allRise]) expect(r.might).toBeGreaterThanOrEqual(3);
+    for (const r of [...e.bossRise, ...e.leaderRise, ...e.allRise])
+      expect(r.might).toBeGreaterThanOrEqual(3);
     // (Second Wind at Tier 15 alone is 33% and 4 Might)
     expect(omenEffects(15).bossRise[0]).toMatchObject({ barrierPct: 33 + 15, might: 4 + 3 });
   });
@@ -48,7 +53,12 @@ describe('the Rift hardens at Tiers 5, 10 and 15', () => {
   });
 
   it("a Warden on an Elite stop has no Elite's bump, and the act's own Warden hits at least as hard", () => {
-    const run: RunState = { ...newRun('knight', 'inversion'), tier: 20, phase: 'map', context: null };
+    const run: RunState = {
+      ...newRun('knight', 'inversion'),
+      tier: 20,
+      phase: 'map',
+      context: null,
+    };
     const node = availableNodes(run)[0]!;
     node.kind = 'elite';
     node.enemyId = 'seraphine';
@@ -65,12 +75,11 @@ describe('the Rift hardens at Tiers 5, 10 and 15', () => {
   });
 });
 
-describe('a ghost Warden from Tier 13', () => {
-  it('jumps to the Arena HP at Tier 13 (DECISIONS #551), never falls after that, and is unchanged below it', () => {
-    expect(GHOST_ARENA_TIER).toBe(13);
-    expect(ghostBossHp('knight', 13, 1)).toBe(Math.round((80 * 6 * enemyScale(13, 1).hp) / enemyScale(10, 1).hp));
+describe('campaign ghost scaling', () => {
+  it('has no Tier 13 Arena-HP jump and stays increasing through legacy stages', () => {
+    expect(ghostBossHp('knight', 13, 1) - ghostBossHp('knight', 12, 1)).toBe(16);
     expect(ghostBossHp('knight', 13, 1)).toBeGreaterThan(ghostBossHp('knight', 12, 3));
-    expect(ghostBossHp('knight', 12, 1)).toBe(Math.round((80 * 2.6 * enemyScale(12, 1).hp) / enemyScale(4, 1).hp));
+    expect(ghostBossHp('knight', 12, 1)).toBe(304);
     let last = 0;
     for (let tier = 4; tier <= 20; tier++) {
       for (let stage = 1; stage <= 3; stage++) {

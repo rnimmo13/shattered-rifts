@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { seedRng } from '@sr/combat';
+import { omenEffects } from './omens';
 import { BOONS, HEARTS, RIFTWALKERS } from '@sr/content/v2';
 import {
   GHOST_FROM_TIER,
@@ -49,22 +50,22 @@ const entry = {
   stage: 2,
 };
 
-describe('a ghost Warden has twice the HP (DECISIONS #514)', () => {
-  it('is 2.6 times its Riftwalker at the first tier ghosts come', () => {
+describe('a campaign ghost has a linear, bounded HP curve (DECISIONS #575)', () => {
+  it('starts at 2.2 times its class base HP', () => {
     expect(ghostBossHp('knight', GHOST_FROM_TIER + 1, 1)).toBe(
-      Math.round(RIFTWALKERS.knight.hero.maxHp * 2.6),
+      Math.round(RIFTWALKERS.knight.hero.maxHp * 2.2),
     );
   });
 
-  it("starts from the Max HP its run had gained, not the class's own (DECISIONS #538)", () => {
+  it('credits earned Max HP once, capped at half the class base HP', () => {
     const base = RIFTWALKERS.trickster.hero.maxHp;
     expect(ghostBossHp('trickster', 5, 1, base + 30)).toBeGreaterThan(
       ghostBossHp('trickster', 5, 1),
     );
-    // (twice the Max HP is twice the HP, give or take the rounding)
-    expect(
-      Math.abs(ghostBossHp('trickster', 12, 1, base * 2) - 2 * ghostBossHp('trickster', 12, 1)),
-    ).toBeLessThanOrEqual(1);
+    expect(ghostBossHp('trickster', 12, 1, base * 2) - ghostBossHp('trickster', 12, 1)).toBe(
+      base / 2,
+    );
+    expect(ghostBossHp('trickster', 12, 1, 10000)).toBe(ghostBossHp('trickster', 12, 1, base * 2));
     // what a server sends is checked: a whole number in reason, or the class's own
     expect(checkGhostBoss({ ...entry, maxHp: base + 30 })?.maxHp).toBe(base + 30);
     expect(checkGhostBoss({ ...entry, maxHp: 99999 })?.maxHp).toBeUndefined();
@@ -171,7 +172,15 @@ describe('Wardens that are ghosts', () => {
     expect(ghostBossHp('trickster', 12)).toBeGreaterThan(ghostBossHp('trickster', 4));
   });
 
-  it('grows with the tier table like every Warden: HP and damage, stage by stage (DECISIONS #237)', () => {
+  it('keeps its own linear damage at late tiers and adds no Faltering beyond normal Omens', () => {
+    for (const tier of [4, 5, 12, 13, 17, 18, 20]) {
+      const plan = duelPlan(attachGhost(atWarden(tier, true), { ...entry, tier }))!;
+      expect(plan.ghost?.dmgPct).toBe(ghostBossDmg(tier));
+      expect(plan.heroStatuses.faltering ?? 0).toBe(omenEffects(tier).heroStatuses.faltering ?? 0);
+    }
+  });
+
+  it('grows steadily even through legacy stages, without a late-tier damage spike', () => {
     expect(ghostBossDmg(4, 1)).toBe(100);
     let last = { hp: 0, dmg: 0 };
     for (let t = 4; t <= 20; t++)
@@ -181,7 +190,8 @@ describe('Wardens that are ghosts', () => {
         expect(now.dmg).toBeGreaterThanOrEqual(last.dmg);
         last = now;
       }
-    expect(ghostBossDmg(20, 3)).toBeGreaterThan(180);
+    expect(ghostBossDmg(20, 1)).toBe(148);
+    expect(ghostBossDmg(20, 3)).toBe(150);
   });
 });
 

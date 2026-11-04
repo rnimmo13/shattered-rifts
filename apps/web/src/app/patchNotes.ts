@@ -29,6 +29,17 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.176.0',
+    date: '2026-11-03',
+    title: 'A steadier climb against ghosts',
+    summary: 'Echoes and ghost Wardens grow at a steady rate, with no sudden HP jumps or extra opening penalty.',
+    notes: [
+      { kind: 'balance', text: 'Campaign ghosts use a straight-line curve: Warden HP starts at 2.2 times class base HP and adds 0.2 times each tier. Saved Max HP adds a bounded bonus instead of multiplying with the tier. Echoes retain 60% of ghost-Warden HP.' },
+      { kind: 'balance', text: 'Ghost damage starts at 100% at Tier IV and adds 3 percentage points per tier, reaching 148% at Tier XX. There is no Tier XIII Arena-HP jump, final-tier acceleration, or extra Warden damage multiplier.' },
+      { kind: 'balance', text: 'Ghosts add no opening Faltering; normal campaign Omens still apply. Campaign ghosts have more variety among nearby-tier decks. Arena fights and their ghost selection are unchanged.' },
+    ],
+  },
+  {
     version: '0.175.0',
     date: '2026-11-03',
     title: 'Weapons and growing builds',

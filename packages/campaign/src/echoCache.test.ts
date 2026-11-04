@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { seedRng } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
+import { omenEffects } from './omens';
 import {
   CACHE_STASH,
   ECHO_FALTERING,
@@ -119,7 +120,7 @@ describe('the Echo', () => {
     expect(ghostToSettle(run)).toBeNull();
   });
 
-  it('is a share of a ghost Warden, leaves you Faltering, and costs 2 Resolve', () => {
+  it('is a share of a ghost Warden, adds no opening Faltering, and costs 2 Resolve', () => {
     const { run, echo } = withEcho();
     const r = enterNode(before(run, echo.id), echo.id);
     expect(r.phase).toBe('duel');
@@ -127,7 +128,18 @@ describe('the Echo', () => {
     const plan = duelPlan(r)!;
     expect(plan.ghost?.hp).toBe(Math.round((ghostBossHp('knight', 5, 1) * ECHO_HP_PCT) / 100));
     expect(plan.heroStatuses.faltering).toBe(ECHO_FALTERING);
+    expect(ECHO_FALTERING).toBe(0);
     expect(finishDuel(r, false).resolve).toBe(r.resolve - 2);
+  });
+
+  it('retains the ordinary tier Omens without adding a ghost opening penalty', () => {
+    for (const tier of [5, 6, 12, 18, 20]) {
+      const { run, echo } = withEcho();
+      const r = enterNode(before({ ...run, tier }, echo.id), echo.id);
+      const plan = duelPlan(r)!;
+      expect(plan.ghost).toBeDefined();
+      expect(plan.heroStatuses.faltering ?? 0).toBe(omenEffects(tier).heroStatuses.faltering ?? 0);
+    }
   });
 
   it('lays out its best cards when it falls, never a basic one', () => {
@@ -148,7 +160,11 @@ describe('an Echo pays like an Elite', () => {
     let boons = 0;
     for (let i = 0; i < 20; i++) {
       const { run, echo } = withEcho(ghost(`b${i}`));
-      const r = finishDuel(enterNode(before({ ...run, seed: `boon-${i}` }, echo.id), echo.id), true, 10);
+      const r = finishDuel(
+        enterNode(before({ ...run, seed: `boon-${i}` }, echo.id), echo.id),
+        true,
+        10,
+      );
       if (r.context?.boonGained) boons++;
     }
     expect(boons).toBeGreaterThan(0);
@@ -156,7 +172,7 @@ describe('an Echo pays like an Elite', () => {
 });
 
 describe('a ghost Warden', () => {
-  it('leaves you Faltering too', () => {
+  it('adds no ghost-specific Faltering', () => {
     for (let i = 0; i < 400; i++) {
       const map = mapAt(5, `gw-${i}`);
       const w = map.nodes.find((n) => n.kind === 'warden')!;
@@ -167,6 +183,7 @@ describe('a ghost Warden', () => {
       run = { ...run, phase: 'duel', context: { nodeId: w.id } };
       run = enterNode(before(run, w.id), w.id);
       expect(duelPlan(run)!.heroStatuses.faltering).toBe(GHOST_FALTERING);
+      expect(GHOST_FALTERING).toBe(0);
       return;
     }
     throw new Error('no ghost Warden');

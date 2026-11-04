@@ -366,8 +366,8 @@ describe('ghost Wardens (DECISIONS #231)', () => {
     const decks = [g('t3', 3), g('t6', 6), g('t7', 7, 5), g('t8', 8, 9), g('t15', 15, 50)];
     // a Tier 6 player: never the Tier 7, 8 or 15 decks above; the nearest is their own tier
     expect(pickAll(decks, 6)).toEqual(['t6']);
-    // a Tier 7 player: Tiers 6 and 7 are near, the better half by wins (the Tier 7 deck has more)
-    expect(pickAll(decks, 7)).toEqual(['t7']);
+    // a Tier 7 player: both nearby tiers are eligible, regardless of win totals.
+    expect(pickAll(decks, 7)).toEqual(['t6', 't7']);
     // a Tier 5 player: only Tier 3 is in range (Tier 6 is above)
     expect(pickAll(decks, 5)).toEqual(['t3']);
     expect(pickAll(decks, 15)).toEqual(['t15']);
@@ -379,6 +379,11 @@ describe('ghost Wardens (DECISIONS #231)', () => {
     const decks = [g('a', 4, 1, 'ann'), g('b', 4, 1, 'bob'), g('mine', 4, 9, 'me')];
     expect(pickAll(decks, 4, ['a'], 'me')).toEqual(['b']);
     expect(pickAll(decks, 4, ['a', 'b'], 'me')).toEqual(['-']);
+  });
+
+  it('campaign ghosts include every nearby eligible deck rather than only the highest-win half', () => {
+    const decks = [g('new', 5, 0), g('ordinary', 5, 5), g('veteran', 5, 500), g('above', 6, 999)];
+    expect(pickAll(decks, 5)).toEqual(['new', 'ordinary', 'veteran']);
   });
 });
 

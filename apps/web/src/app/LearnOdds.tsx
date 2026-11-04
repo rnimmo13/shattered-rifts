@@ -8,10 +8,8 @@ import {
   CACHE_STASH,
   CACHE_TRAP_CHANCE,
   CACHE_TRAP_HP_PCT,
-  ECHO_FALTERING,
   ECHO_FROM_TIER,
   ECHO_HP_PCT,
-  GHOST_FALTERING,
   LOOP_BOON_CHANCE,
   CROSSED_MERCHANT_CHANCE,
   CROSSED_OFFER_CHANCE,
@@ -34,8 +32,9 @@ import {
   NODE_ODDS,
   EVENT_FIGHT_ODDS,
   ALL_ELITE_TIER,
-  GHOST_ARENA_TIER,
-  GHOST_ARENA_HP_MULT,
+  GHOST_HP_PER_TIER,
+  GHOST_DAMAGE_PER_TIER,
+  GHOST_MAX_HP_BONUS_PCT,
   ALL_WARDEN_TIER,
   eliteFightChance,
   POTION_DROP_CHANCE,
@@ -82,8 +81,8 @@ export function LearnOdds() {
         Each card offered is rolled separately, from the Riftwalker&apos;s own cards. If a rarity
         has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
         About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
-        card). A reward offers three cards (an Omen takes one away from Tier III), each
-        rolled like this.
+        card). A reward offers three cards (an Omen takes one away from Tier III), each rolled like
+        this.
       </p>
       <table className="learn__table">
         <thead>
@@ -111,11 +110,13 @@ export function LearnOdds() {
         <li>A Warden&apos;s Gift offers rare cards of your class.</li>
         <li>
           Merchant cards cost {PRICE['common']} (common), {PRICE['uncommon']} (uncommon),{' '}
-          {PRICE['rare']} (rare) shards. Taking a card out of your deck costs {REMOVE_PRICE}, and each one at the same shop costs double the last; the next shop starts over.
+          {PRICE['rare']} (rare) shards. Taking a card out of your deck costs {REMOVE_PRICE}, and
+          each one at the same shop costs double the last; the next shop starts over.
         </li>
         <li>
           Potions cost {POTION_PRICE['common']} / {POTION_PRICE['uncommon']} /{' '}
-          {POTION_PRICE['rare']} shards, and a Boon {BOON_PRICE}. From Tier III, the Omen Times Are Tough raises them all.
+          {POTION_PRICE['rare']} shards, and a Boon {BOON_PRICE}. From Tier III, the Omen Times Are
+          Tough raises them all.
         </li>
         <li>
           {CROSSED_MERCHANT_CHANCE}% of merchants are visitors from another world who sell only one
@@ -125,40 +126,43 @@ export function LearnOdds() {
 
       <h3>The map</h3>
       <p>
-        Each stop on a map (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}%
-        (the first one on a map, then {NODE_ODDS.eliteMore}%; from the third floor, and at most
-        about three for every seven floors), a Merchant {NODE_ODDS.merchant}% (one or two in every seven floors), a Shrine{' '}
-        {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is always a Shrine), an
-        Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a fight. An Event stop
-        is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an ambush by a plain
-        enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor), played and rewarded
-        like any other fight.
+        Each stop on a map (after the first floor) is rolled: an Elite {NODE_ODDS.eliteFirst}% (the
+        first one on a map, then {NODE_ODDS.eliteMore}%; from the third floor, and at most about
+        three for every seven floors), a Merchant {NODE_ODDS.merchant}% (one or two in every seven
+        floors), a Shrine {NODE_ODDS.shrine}% (from the third floor; the stop before a Warden is
+        always a Shrine), an Event {NODE_ODDS.event}% (never three in a row). Whatever is left is a
+        fight. An Event stop is not always an event: {EVENT_FIGHT_ODDS.duel}% of the time it is an
+        ambush by a plain enemy and {EVENT_FIGHT_ODDS.elite}% an Elite (from the third floor),
+        played and rewarded like any other fight.
       </p>
       <p>
         Every map has one Rift Cache on a middle floor: {CACHE_TRAP_CHANCE}% are trapped (spring it
         for {CACHE_TRAP_HP_PCT}% of your Max HP, reach past it for a Wound, or disarm it for{' '}
         {CACHE_DISARM} shards); an open one gives a Boon, a rare card or {CACHE_STASH} shards. From
         Tier {ECHO_FROM_TIER} every map also has one Echo: a ghost with {ECHO_HP_PCT}% of a ghost
-        Warden&apos;s HP. You start a fight with it Faltering for {ECHO_FALTERING} turns (a ghost
-        Warden, {GHOST_FALTERING}), and it pays as an Elite does (shards, potion and Boon chances), with one
-        of its own cards for the card reward.
+        Warden&apos;s HP. Neither ghost adds opening Faltering; the tier&apos;s normal Omens still
+        apply. An Echo pays as an Elite does (shards, potion and Boon chances), with one of its own
+        cards for the card reward.
       </p>
 
       <p>
         Deeper in, plain fights turn into Elites, past those limits: {eliteFightChance(2)}% of them
         at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10,{' '}
         {eliteFightChance(15)}% at Tier 15, and every one from Tier {ALL_ELITE_TIER}. At Tier{' '}
-        {ALL_WARDEN_TIER} every one of them is a Warden&apos;s fight, with a Warden&apos;s numbers, paid as an Elite and costing 2 Resolve if lost.
-        Ambushes and fights an event starts follow the same odds.
+        {ALL_WARDEN_TIER} every one of them is a Warden&apos;s fight, with a Warden&apos;s numbers,
+        paid as an Elite and costing 2 Resolve if lost. Ambushes and fights an event starts follow
+        the same odds.
       </p>
 
       <p>
         From Rift Tier {GHOST_FROM_TIER + 1} on, each Warden has a {GHOST_WARDEN_CHANCE}% chance of
-        being a <b>ghost</b> instead: a deck from the Arena (one of the better ones, from any
-        Riftwalker), played by the computer, with about {GHOST_BOSS_HP_BASE}x its Riftwalker&apos;s
-        usual HP at first; its HP and damage then grow with the tier like every
-        Warden&apos;s. From Tier {GHOST_ARENA_TIER} it takes the HP of an Arena fight
-        ({GHOST_ARENA_HP_MULT}x, grown with the tier), about 15% more, and grows from there. If no ghost can be had, you fight the usual Warden. It pays the same Gift.
+        being a <b>ghost</b> instead: a nearby-tier Arena deck from any Riftwalker, played by the
+        computer. Its HP starts at {GHOST_BOSS_HP_BASE}x its class&apos;s base HP, adding another{' '}
+        {GHOST_HP_PER_TIER}x each tier. Earned Max HP adds a bonus of at most{' '}
+        {GHOST_MAX_HP_BONUS_PCT}% of class base HP, without multiplying that bonus. Damage starts at
+        100% and adds {GHOST_DAMAGE_PER_TIER} percentage points per tier. There is no Arena-HP jump
+        or extra late-tier multiplier. If no ghost can be had, you fight the usual Warden. It pays
+        the same Gift.
       </p>
 
       <h3>What a fight pays</h3>
@@ -171,8 +175,8 @@ export function LearnOdds() {
           An Elite pays less the deeper you go, all but its card reward: at Tier 10,{' '}
           {eliteRewards(10).shards} shards, a {eliteRewards(10).potionPct}% potion chance and a{' '}
           {eliteRewards(10).boonPct}% Boon chance; from Tier {ALL_ELITE_TIER},{' '}
-          {eliteRewards(ALL_ELITE_TIER).shards} shards, {eliteRewards(ALL_ELITE_TIER).potionPct}% and{' '}
-          {eliteRewards(ALL_ELITE_TIER).boonPct}%.
+          {eliteRewards(ALL_ELITE_TIER).shards} shards, {eliteRewards(ALL_ELITE_TIER).potionPct}%
+          and {eliteRewards(ALL_ELITE_TIER).boonPct}%.
         </li>
         <li>
           An Elite&rsquo;s shards are one of its spoils: after the fight you choose its shards, +
@@ -191,10 +195,10 @@ export function LearnOdds() {
           {pct(POTION_WEIGHTS.rare, total(POTION_WEIGHTS))} rare.
         </li>
         <li>
-          At Tier 1 every Elite gives a Boon, any Boon you lack as likely as another (the merchant sells one the
-          same way). Wardens give their Gift, and leave a Boon as well{' '}
-          {LOOP_BOON_CHANCE}% of the time. An
-          Elite also heals {ELITE_HEAL_PCT}% of your HP, up to Tier {ELITE_HEAL_LAST_TIER}.
+          At Tier 1 every Elite gives a Boon, any Boon you lack as likely as another (the merchant
+          sells one the same way). Wardens give their Gift, and leave a Boon as well{' '}
+          {LOOP_BOON_CHANCE}% of the time. An Elite also heals {ELITE_HEAL_PCT}% of your HP, up to
+          Tier {ELITE_HEAL_LAST_TIER}.
         </li>
       </ul>
 
@@ -222,8 +226,8 @@ export function LearnOdds() {
       <p>
         A reel of {REEL_PRIZES} prizes, all in plain sight. The first spin is free, and each spin
         after it costs {ROLL_COST} shards: the reel scrolls past a pointer and slows to a stop on
-        one prize. You may take it, which ends the spinning, or pay {ROLL_COST} more shards to let it
-        go and spin again, or walk away (the shards you spent are gone).
+        one prize. You may take it, which ends the spinning, or pay {ROLL_COST} more shards to let
+        it go and spin again, or walk away (the shards you spent are gone).
       </p>
       <p>
         <b>Fair by design.</b> What the reel stops on is drawn by the rules before the reel moves,

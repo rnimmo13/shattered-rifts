@@ -577,37 +577,34 @@ export interface FightPlan {
   heroStatuses: Partial<Record<StatusId, number>>;
 }
 
-/**
- * A ghost Warden grows with the Rift Tier the way every Warden does (DECISIONS #237): its HP is its Riftwalker's own times
- * GHOST_BOSS_HP_BASE at the first tier ghosts come (stage 1), and its HP and damage then rise as the tier table does from there.
- * (Not the table's whole percent: a ghost is a full Riftwalker's deck, which already hits like a player, and a deck from deeper in the
- * Rift is already a stronger deck. Doubled from 1.3 on Robert's word, DECISIONS #514: only a campaign ghost has this, not the Arena's.)
- */
-export const GHOST_BOSS_HP_BASE = 2.6;
-/**
- * From this Rift Tier a ghost Warden has the Arena's HP, as many times its Riftwalker's own as ARENA_HP_MULT at Tier GHOST_ARENA_AT's
- * table, and rises from there (DECISIONS #527): about 15% over the curve below it. Tier X at first, Tier XIII since #551.
- */
-export const GHOST_ARENA_TIER = 13;
-/** The tier whose table the Arena's HP is matched to (where the bump first came, #527). */
-const GHOST_ARENA_AT = 10;
-export const GHOST_ARENA_HP_MULT = 6;
+// Campaign ghosts use their own straight-line curve. Their decks already develop with tier;
+// multiplying saved Max HP by the normal enemy curve compounded that growth (#575).
+export const GHOST_BOSS_HP_BASE = 2.2;
+/** Additional multiples of the class's base HP per Rift Tier. */
+export const GHOST_HP_PER_TIER = 0.2;
+/** Percentage points of card damage per Rift Tier, starting at 100%. */
+export const GHOST_DAMAGE_PER_TIER = 3;
+/** Saved Max HP contributes an additive bonus, capped at this share of class base HP. */
+export const GHOST_MAX_HP_BONUS_PCT = 50;
 /** The Max HP a Warden leaves you: 3 to Tier IV, one more every five tiers (4 from Tier V, 5 from Tier X, 7 at Tier XX). */
 export const wardenMaxHp = (tier: number): number => 3 + Math.floor(Math.max(1, tier) / 5);
 
-/** Where a ghost starts: the tier table at the first tier ghosts come, stage 1. */
-const ghostFrom = (): { hp: number; dmg: number } => enemyScale(GHOST_FROM_TIER + 1, 1);
-/** (`maxHp`: the Max HP the ghost's run had, gains and all, DECISIONS #538; without it, the class's own) */
+/** Legacy stages divide a tier's increment into thirds; current runs always use stage 1. */
+const ghostProgress = (tier: number, stage: number): number =>
+  Math.max(0, Math.min(20, Math.round(tier)) - (GHOST_FROM_TIER + 1)) +
+  (Math.max(1, Math.min(3, Math.round(stage))) - 1) / 3;
+/** Saved HP is credited once, never multiplied by tier or used to inflate other scaling. */
 export const ghostBossHp = (hero: string, tier: number, stage = 1, maxHp?: number): number => {
-  const own = maxHp ?? RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
-  const scale = enemyScale(tier, stage).hp;
-  if (tier >= GHOST_ARENA_TIER)
-    return Math.round((own * GHOST_ARENA_HP_MULT * scale) / enemyScale(GHOST_ARENA_AT, 1).hp);
-  return Math.round((own * GHOST_BOSS_HP_BASE * Math.max(ghostFrom().hp, scale)) / ghostFrom().hp);
+  const base = RIFTWALKERS[hero as keyof typeof RIFTWALKERS]?.hero.maxHp ?? 80;
+  const saved = maxHp !== undefined && Number.isFinite(maxHp) ? maxHp : base;
+  const bonus = Math.min(Math.max(0, saved - base), (base * GHOST_MAX_HP_BONUS_PCT) / 100);
+  return Math.round(
+    base * (GHOST_BOSS_HP_BASE + GHOST_HP_PER_TIER * ghostProgress(tier, stage)) + bonus,
+  );
 };
-/** A ghost Warden's damage, percent of its cards' numbers: 100 where ghosts start, rising as the tier table's damage does. */
+/** Same fixed increase through Tier XX: no late-tier ramp or Warden's Fury multiplier. */
 export const ghostBossDmg = (tier: number, stage = 1): number =>
-  Math.max(100, Math.round((100 * enemyScale(tier, stage).dmg) / ghostFrom().dmg));
+  Math.round(100 + GHOST_DAMAGE_PER_TIER * ghostProgress(tier, stage));
 
 /** Is this a ghost Warden whose deck has not been fetched yet? (The screen asks the server for one, then calls `attachGhost`.) */
 export function ghostWanted(run: RunState): boolean {
@@ -740,12 +737,9 @@ function meetGhost(r: RunState, g: GhostBoss): void {
 
 /** An Echo is a ghost met on the way, not a Warden: this share (percent) of a ghost Warden's HP, and its damage without Warden's Fury. */
 export const ECHO_HP_PCT = 60;
-/**
- * You start a fight with a campaign ghost Faltering for this many turns (25% less attack damage), on top of any the Omens give, so a
- * burst deck does not simply one-shot it (Robert, 2026-11-02; DECISIONS #553, in place of #549's Enduring).
- */
-export const GHOST_FALTERING = 3;
-export const ECHO_FALTERING = 2;
+/** Campaign ghosts add no opening penalty; ordinary tier Omens still apply. */
+export const GHOST_FALTERING = 0;
+export const ECHO_FALTERING = 0;
 /** The cards an Echo lays out when it falls: its deck's best, by rarity. */
 export const ECHO_OFFERS = 3;
 const RARITY_RANK: Record<string, number> = {
@@ -815,8 +809,8 @@ export function duelPlan(run: RunState): FightPlan | null {
           ghost: {
             ...ghost,
             hp: Math.round(ghostBossHp(ghost.hero, run.tier, 1, ghost.maxHp) * echoHp),
-            // (Warden's Fury reaches a ghost Warden too; phases and guards are for enemy units, not a hero deck)
-            dmgPct: Math.round(ghostBossDmg(run.tier) * wardenUp),
+            // Ghost decks use their linear curve; Warden's Fury is for scripted Wardens.
+            dmgPct: ghostBossDmg(run.tier),
           },
         }
       : {}),
@@ -825,7 +819,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     mods: omenMods(omen, units, boss, hpOf, e.kind === 'finale'),
     heroStatuses: {
       ...omen.heroStatuses,
-      // (a campaign ghost leaves you Faltering, on top of Dread's: DECISIONS #553)
+      // Campaign ghosts add no extra Faltering; retain the ordinary tier's Omens (#575).
       ...(ghost
         ? {
             faltering:
