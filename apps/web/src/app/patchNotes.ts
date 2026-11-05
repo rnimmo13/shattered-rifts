@@ -50,6 +50,10 @@ export const PATCH_NOTES: PatchNote[] = [
     summary: 'Keep, share and save Arena games, with more evidence for balance review.',
     notes: [
       {
+        kind: 'changed',
+        text: 'The current game version is shown in the bottom-right corner on game screens, including battles, on web and desktop.',
+      },
+      {
         kind: 'new',
         title: 'Share performance reports with a link',
         text: 'After stopping a performance recording, choose Share report in Settings. The report is stored online and you get a short link to send through Discord or chat. Anyone with the link can read it without a login. Reports are kept for up to 90 days, subject to storage availability. Uploading is manual; raw-text copying remains optional. Replay share links also work when copied from the desktop app.',

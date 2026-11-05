@@ -15,6 +15,7 @@ import { syncSavedRuns } from '../run/syncRuns';
 import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 import { PlayGate, PlayStatus } from '../PlayGate';
+import { BUILD } from '../build';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
@@ -69,6 +70,9 @@ export function App() {
       {/* (one Settings menu for every screen, opened by a Settings button: DECISIONS #571) */}
       <SettingsPanel />
       <PerfRecorder />
+      <small className="game-version" aria-label={`Game version ${BUILD.version}`}>
+        v{BUILD.version}
+      </small>
     </>
   );
 }

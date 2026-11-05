@@ -1,6 +1,21 @@
 /* Global styles. Colours, glows, shadows and timing come from the design tokens (design/tokens.ts),
    which write --c-*, --glow-*, --shadow-*, --t-* and --ease-* onto :root at startup. */
 
+.game-version {
+  position: fixed;
+  right: calc(0.5rem + env(safe-area-inset-right, 0px));
+  bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 910;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  background: rgb(4 5 11 / 0.75);
+  color: #b8bdce;
+  font: 0.6875rem/1.2 var(--font-body, sans-serif);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  user-select: none;
+}
+
 :root {
   /* a card's rarity, everywhere it is shown (the card frame, deck lists, counts): one set of colours */
   --rar-basic: #8a90a2;

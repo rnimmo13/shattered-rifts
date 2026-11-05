@@ -6,6 +6,8 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [0.201.0] — 2026-11-05 / rules 83
 
+- Restore the current version at the bottom right across game screens, including combat, on web/desktop. The small fixed label respects device safe areas and does not intercept clicks/taps. Included in the approved in-progress release at Robert's request; rebuild both artifacts from the updated clean commit.
+
 - Performance/debug recordings: explicit Share report uploads to SQLite and returns an unguessable short web link; no more requirement to paste long text into Discord or attach files. Readable server-rendered report page and JSON endpoint work without login/JavaScript, with escaped text, no-store headers/CSP, streamed size bounds, origin checks and per-address rate limits. Retention90 days/2,000 reports. UI exposes the link even if clipboard access fails and preserves the recording after upload errors. No automatic upload. Desktop replay links now use the public web origin instead of srgame://. Optional raw report text/file backups remain.
 
 - Arena: authoritative, bounded move evidence records events/resources after accepted actions and detailed opening/turn-boundary/lethal hands/board/status/Aura snapshots. Reconnect reconstructs the same evidence. Private balance exports include observations and explicit truncation/count metadata. No simulations or card/rule changes.
