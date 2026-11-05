@@ -84,6 +84,8 @@ import {
 } from './types';
 
 interface Run {
+  /** Presentation-only, bounded projection on a private state copy. Never used by real actions. */
+  projection?: DamageProjection;
   db: CombatDb;
   s: CombatState;
   ev: CombatEvent[];
@@ -99,6 +101,75 @@ interface Run {
   endAfter?: boolean;
   /** Salvage (DECISIONS #383): what the companions scrapped to make room for this card left behind, for the first companion it summons */
   salvage?: { inst: string; might: number; vigor: number; hp: number };
+}
+interface ProjectedHit {
+  limited?: boolean;
+  amount: number;
+  how: string[];
+  target: string;
+}
+interface DamageProjection {
+  remaining: number;
+  inst: string | null;
+  root?: Act;
+  path: number[];
+  hits: Map<number, ProjectedHit[]>;
+  completed: Set<number>;
+  blocked?: number | undefined;
+}
+class ProjectionUnknown extends Error {}
+const PROJECTABLE = new Set<Op['op']>([
+  'damage',
+  'loseHp',
+  'barrier',
+  'heal',
+  'growHp',
+  'cleanse',
+  'status',
+  'scaleStatus',
+  'mana',
+  'stars',
+  'fracture',
+  'shatterUp',
+  'allyPct',
+  'attackAura',
+  'summon',
+  'actAllies',
+  'command',
+  'when',
+  'oncePerTurn',
+  'maxHp',
+  'spend',
+  'shedTemp',
+  'stance',
+  'forge',
+  'growSelf',
+  'prevent',
+  'power',
+  'discipline',
+  'plant',
+  'totemCommand',
+  'totemPulse',
+  'totemBoost',
+  'totemRotate',
+  'totemSlot',
+  'uproot',
+]);
+function projectable(r: Run, op: Op): boolean {
+  if (!PROJECTABLE.has(op.op)) return false;
+  if ('to' in op && op.to === 'attackerOrRandom') return false;
+  if (
+    'to' in op &&
+    op.to === 'randomFoe' &&
+    r.s.sides[other(r.s.active)].units.filter((u) => u.hp > 0).length > 1
+  )
+    return false;
+  if (
+    (op.op === 'plant' && op.spirit === '*') ||
+    (op.op === 'totemCommand' && op.spirit === 'random')
+  )
+    return false;
+  return op.op !== 'summon' || r.db.units[op.unit]?.brain.kind === 'ally';
 }
 
 /** Who is acting and what they are acting on. */
@@ -614,7 +685,14 @@ function isAttackAct(a: Act): boolean {
 
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 /** One hit of an attack. Returns the HP it took off (for Lifesteal). */
-function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): number {
+function attackHit(
+  r: Run,
+  a: Act,
+  t: Unit,
+  base: number,
+  single = false,
+  steps?: string[],
+): number {
   if (t.hp <= 0) return 0;
   const attacked = isAttackAct(a);
   // (the Assassin's knives: the card aimed a hit at this unit; whether one landed is set below)
@@ -628,7 +706,7 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       return 0;
     }
   }
-  let amount = modifiedDamage(base, a.actor, t, attacked);
+  let amount = modifiedDamage(base, a.actor, t, attacked, steps);
   if (attacked && t.side !== a.actor.side) {
     const sd = r.s.sides[a.actor.side];
     if (a.disciplineBonus === undefined) {
@@ -645,16 +723,62 @@ function attackHit(r: Run, a: Act, t: Unit, base: number, single = false): numbe
       if (d?.rule.kind === 'pursuit' && d.usedTurn !== markTurn && d.target === t.id)
         addStatus(r, t, 'exposed', d.rule.exposed, a.actor.side);
       // The mark may have just applied Exposed; use the same state for the first hit too.
-      amount = modifiedDamage(base, a.actor, t, attacked);
+      if (steps)
+        steps.splice(
+          steps.findIndex((x) => x === 'Modifiers'),
+          steps.length,
+          'Modifiers',
+        );
+      amount = modifiedDamage(base, a.actor, t, attacked, steps);
     }
     const extra =
       a.actor.kind === 'hero' && a.card?.kind === 'attack' ? disciplineTarget(sd, t) : 0;
     amount = Math.floor((amount * (100 + a.disciplineBonus + extra)) / 100);
+    if (steps && a.disciplineBonus + extra)
+      steps.push(`Ascendancy +${a.disciplineBonus + extra}% = ${amount}`);
   }
   // (a hit Shielded cancels does not land; one Barrier soaks does)
   if (!(attacked && amount > 0 && stacks(t, 'shielded') > 0)) a.struck.set(t.id, true);
   // Bladebane: the blade strikes it twice as hard
-  if (a.card?.tags?.includes(BLADE_TAG) && stacks(t, 'bladebane') > 0) amount *= 2;
+  if (a.card?.tags?.includes(BLADE_TAG) && stacks(t, 'bladebane') > 0) {
+    amount *= 2;
+    steps?.push(`Bladebane ×2 = ${amount}`);
+  }
+  const projection = r.projection;
+  if (projection && --projection.remaining < 0) {
+    projection.blocked = projection.path[0];
+    throw new ProjectionUnknown();
+  }
+  const index = projection?.path[0];
+  const rootOp = projection?.root?.card?.effects[index ?? -1];
+  if (
+    projection &&
+    index !== undefined &&
+    t.side !== a.actor.side &&
+    (a === projection.root ||
+      ((rootOp?.op === 'command' || rootOp?.op === 'actAllies') &&
+        a.actor.kind === 'ally' &&
+        a.actor.side === r.s.active) ||
+      ((rootOp?.op === 'totemCommand' ||
+        rootOp?.op === 'totemPulse' ||
+        rootOp?.op === 'plant' ||
+        rootOp?.op === 'uproot') &&
+        a.actor.kind === 'hero' &&
+        a.actor.side === r.s.active))
+  ) {
+    let shown = amount;
+    const how = steps?.filter((x) => x !== 'Modifiers') ?? [String(base), String(amount)];
+    if (stacks(t, 'shielded') > 0 && amount > 0) {
+      shown = 0;
+      how.push('Shielded = 0');
+    } else if ((stacks(t, 'slippery') > 0 || stacks(t, 'ghostly') > 0) && amount > 1) {
+      shown = 1;
+      how.push(`${stacks(t, 'slippery') > 0 ? 'Slippery' : 'Ghostly'} = 1`);
+    }
+    const list = projection.hits.get(index) ?? [];
+    list.push({ amount: shown, how, target: t.id, limited: shown !== amount });
+    projection.hits.set(index, list);
+  }
   const room = t.hp + t.barrier;
   const barrierBefore = t.barrier;
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0 || stacks(t, 'slippery') > 0;
@@ -1723,6 +1847,8 @@ const deftOf = (a: Act): number =>
     : 0;
 
 function runOps(r: Run, a: Act, ops: readonly Op[]): void {
+  if (r.projection?.inst && a.inst?.id === r.projection.inst && ops === a.card?.effects)
+    r.projection.root = a;
   const held = !!a.card && a.actor.kind === 'hero' && !r.hold;
   if (held) r.hold = 1;
   try {
@@ -1739,7 +1865,28 @@ function runOpList(r: Run, a: Act, ops: readonly Op[]): void {
   for (let i = 0; i < ops.length; i++) {
     if (r.s.winner) return;
     if (a.actor.hp <= 0 && a.actor.kind !== 'hero') return;
-    execOp(r, a, ops[i] as Op);
+    const projection = r.projection;
+    const track = projection?.root === a;
+    const top = track && projection.path.length === 0;
+    if (track) projection.path.push(i);
+    try {
+      if (projection && !projectable(r, ops[i]!)) {
+        projection.blocked = projection.path[0];
+        throw new ProjectionUnknown();
+      }
+      if (projection && --projection.remaining < 0) {
+        projection.blocked = projection.path[0];
+        throw new ProjectionUnknown();
+      }
+      execOp(r, a, ops[i] as Op);
+      if (projection && r.s.pending) {
+        projection.blocked = projection.path[0];
+        throw new ProjectionUnknown();
+      }
+      if (top) projection.completed.add(i);
+    } finally {
+      if (track) projection.path.pop();
+    }
     reap(r);
     if (r.s.pending) {
       // a choice was asked for: the rest of this card waits for the answer (with what it has discharged and not yet used)
@@ -1857,12 +2004,49 @@ function execOp(r: Run, a: Act, op: Op): void {
           const alive = t.hp > 0;
           // (Hang: cards tagged "noose" deal double to it per stack, capped so the number stays sane)
           const noose = noosed ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
+          const scaledAmount = amountOf(r, a, op.amount, op.scale, t);
+          let steps: string[] | undefined;
+          if (r.projection) {
+            steps = [String(op.amount)];
+            let subtotal = op.amount;
+            for (const [value, label] of [
+              [scaledAmount - op.amount, 'scaling'],
+              [edge, 'Edge'],
+              [honed, 'Honed'],
+              [vigor, 'Primed'],
+              [keen, 'Whispering Edge'],
+              [deft, 'bonus'],
+              [ripostes.has(t.id) ? riposte : 0, 'Riposte'],
+              [ember, 'Ember'],
+              [resonanceOf(a), 'Resonance'],
+              [a.spellBonus ?? 0, 'Spell cycle'],
+              [marrow, 'Calcify'],
+              [attackAuraBonus(side, a.actor, isAttackAct(a)), 'Aura'],
+            ] as [number, string][]) {
+              if (value) {
+                subtotal += value;
+                steps.push(`${value > 0 ? '+' : '−'}${Math.abs(value)} ${label} = ${subtotal}`);
+              }
+            }
+            for (const [factor, label] of [
+              [lone, 'Point Blank'],
+              [leth, 'first Attack'],
+              [noose, 'Noose'],
+              [allyPct, 'Companion bonus'],
+            ] as [number, string][]) {
+              if (factor !== 1) {
+                subtotal *= factor;
+                steps.push(`${label} ×${factor} = ${Math.round(subtotal)}`);
+              }
+            }
+            steps.push('Modifiers');
+          }
           const lostHere = attackHit(
             r,
             a,
             t,
             Math.round(
-              (amountOf(r, a, op.amount, op.scale, t) +
+              (scaledAmount +
                 edge +
                 honed +
                 vigor +
@@ -1880,6 +2064,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 allyPct,
             ),
             to === 'target' || to === 'front',
+            steps,
           );
           ember = 0;
           took += lostHere;
@@ -5623,6 +5808,11 @@ export function applyAction(db: CombatDb, state: CombatState, action: Action): S
 
 /** What one damage effect of a card would deal right now: the lowest and highest over the units it could hit, and its printed amount. A scaled Barrier on yourself comes the same way (`barrier`). */
 export interface LiveDamage {
+  variableHits?: boolean;
+  /** A resolved wrapper (conditional/companion command), displayed as its combined damage. */
+  conditional?: boolean;
+  /** Later damage depends on hidden/random information or an unresolved choice. */
+  uncertain?: boolean;
   lo: number;
   hi: number;
   /** the number printed on the card for this effect */
@@ -5650,6 +5840,189 @@ export interface LiveDamage {
   barrier?: boolean;
 }
 
+const containsDamage = (op: Op): boolean =>
+  op.op === 'damage' ||
+  op.op === 'command' ||
+  op.op === 'actAllies' ||
+  op.op === 'totemCommand' ||
+  op.op === 'totemPulse' ||
+  op.op === 'plant' ||
+  op.op === 'uproot' ||
+  ('ops' in op && op.op !== 'power' && op.ops.some(containsDamage));
+
+/** Execute only public, deterministic effects on a private copy; stop before draws/random choices. */
+function resolvedDamage(
+  db: CombatDb,
+  s: CombatState,
+  instId: string,
+  targetId: string | null,
+): Map<number, LiveDamage> {
+  const side = s.sides[s.active],
+    inst = side.hand.find((c) => c.id === instId),
+    card = inst && db.cards[inst.card];
+  const result = new Map<number, LiveDamage>();
+  if (!card || !inst || card.kind === 'snare' || !canPlay({ db, s }, side.id, inst)) return result;
+  const candidates = targetId
+    ? [targetId]
+    : card.target === 'foe'
+      ? legalFoes({ db, s, ev: [], depth: 0 }, side.id, card).map((u) => u.id)
+      : card.target === 'none'
+        ? [null]
+        : [];
+  const variants: Map<number, LiveDamage>[] = [];
+  for (const target of candidates) {
+    const copy = clone(s);
+    // Face-down traps must not be used to disclose an opponent's hidden response.
+    copy.sides[other(side.id)].snares = [];
+    const projection: DamageProjection = {
+      remaining: 512,
+      inst: instId,
+      path: [],
+      hits: new Map(),
+      completed: new Set(),
+    };
+    const r: Run = { db, s: copy, ev: [], depth: 0, projection };
+    let stoppedBeforePlay = false;
+    try {
+      playCard(r, { type: 'play', card: instId, ...(target ? { target } : {}) });
+    } catch (error) {
+      if (!(error instanceof ProjectionUnknown) && !(error instanceof RulesError)) throw error;
+      stoppedBeforePlay = error instanceof ProjectionUnknown && !projection.root;
+    }
+    const preview = new Map<number, LiveDamage>();
+    for (const i of projection.completed) {
+      if (i === projection.blocked) continue;
+      const op = card.effects[i]!;
+      if (!containsDamage(op)) continue;
+      const hits = projection.hits.get(i) ?? [];
+      const each =
+        op.op === 'damage' &&
+        (op.to === 'allFoes' ||
+          (op.to === 'target' &&
+            ((card.tags?.includes(EDGE_TAG) && stacks(heroOf(side)!, 'fanned') > 0) ||
+              (card.tags?.includes(BLADE_TAG) && stacks(heroOf(side)!, 'bladesweep') > 0))));
+      const groups = each
+        ? [...new Set(hits.map((h) => h.target))].map((t) => hits.filter((h) => h.target === t))
+        : [hits];
+      const totals = groups.length ? groups.map((g) => g.reduce((n, h) => n + h.amount, 0)) : [0];
+      const total = { lo: Math.min(...totals), hi: Math.max(...totals) };
+      const normal = hits.filter((h) => !h.limited);
+      const values = (normal.length ? normal : hits).map((h) => h.amount);
+      const best = [...hits].sort((a, b) => b.amount - a.amount)[0];
+      const count = groups.length ? Math.max(...groups.map((g) => g.length)) : 0;
+      const how = [...(best?.how ?? ['0'])];
+      if (normal.length && hits.length > normal.length)
+        how.push(
+          `${hits.length - normal.length} hit${hits.length - normal.length === 1 ? '' : 's'} limited by target protection`,
+        );
+      const example = each ? (groups.find((g) => g[0]?.target === best?.target) ?? []) : hits;
+      if (count > 1)
+        how.push(
+          `${example.map((h) => h.amount).join(' + ')} = ${example.reduce((n, h) => n + h.amount, 0)} total${each ? ' against this enemy' : ''}`,
+        );
+      preview.set(i, {
+        lo: values.length ? Math.min(...values) : 0,
+        hi: values.length ? Math.max(...values) : 0,
+        printed: op.op === 'damage' ? op.amount : 0,
+        calc:
+          op.op !== 'damage' || (!!op.scale && op.scale.by !== 'bonus' && op.scale.into !== 'hits'),
+        ...(count !== 1 || op.op !== 'damage' || (op.hits ?? 1) > 1 || op.scale?.into === 'hits'
+          ? { hits: count }
+          : {}),
+        total,
+        how,
+        ...(each ? { each: true } : {}),
+        ...(op.op !== 'damage' || !!op.onKill?.some(containsDamage) ? { conditional: true } : {}),
+      });
+    }
+    if (
+      stoppedBeforePlay ||
+      (projection.blocked !== undefined &&
+        card.effects.slice(projection.blocked).some(containsDamage))
+    )
+      preview.set(-1, { lo: 0, hi: 0, printed: 0, calc: true, uncertain: true });
+    variants.push(preview);
+  }
+  if (!variants.length) return result;
+  for (const [i, value] of variants[0]!) {
+    const all = variants.map((v) => v.get(i));
+    if (all.some((v) => !v)) continue;
+    const known = all as LiveDamage[];
+    const high = [...known].sort((a, b) => b.hi - a.hi)[0]!;
+    result.set(i, {
+      ...value,
+      lo: Math.min(...known.map((v) => v.lo)),
+      hi: Math.max(...known.map((v) => v.hi)),
+      ...(high.how ? { how: high.how } : {}),
+      ...(known.some((v) => (v.hits ?? 1) !== (value.hits ?? 1))
+        ? { hits: Math.max(...known.map((v) => v.hits ?? 1)), variableHits: true }
+        : {}),
+      total: {
+        lo: Math.min(...known.map((v) => v.total?.lo ?? v.lo)),
+        hi: Math.max(...known.map((v) => v.total?.hi ?? v.hi)),
+      },
+    });
+  }
+  if (variants.some((v) => v.get(-1)?.uncertain))
+    result.set(-1, { lo: 0, hi: 0, printed: 0, calc: true, uncertain: true });
+  return result;
+}
+
+/** A companion's strike, if it acted now. No original state, RNG or hidden trap is touched. */
+export function previewAllyDamage(db: CombatDb, s: CombatState, id: string): LiveDamage | null {
+  const copy = clone(s),
+    unit = findUnit(copy, id);
+  if (!unit || unit.kind !== 'ally' || unit.hp <= 0) return null;
+  const def = db.units[unit.def];
+  if (def?.brain.kind !== 'ally' || !def.brain.act.some(containsDamage)) return null;
+  copy.sides[other(unit.side)].snares = [];
+  const front = copy.sides[other(unit.side)].units.find((u) => u.hp > 0) ?? null;
+  const act = mkAct(unit, { target: front });
+  const projection: DamageProjection = {
+    remaining: 512,
+    inst: null,
+    root: act,
+    path: [],
+    hits: new Map(),
+    completed: new Set(),
+  };
+  try {
+    runOps({ db, s: copy, ev: [], depth: 0, projection }, act, def.brain.act);
+  } catch (error) {
+    if (!(error instanceof ProjectionUnknown)) throw error;
+  }
+  const hits = [...projection.hits]
+    .filter(([i]) => projection.completed.has(i) && i !== projection.blocked)
+    .flatMap(([, v]) => v);
+  if (!hits.length) return null;
+  const first = def.brain.act.find((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
+  const each = first?.to === 'allFoes';
+  const groups = each
+    ? [...new Set(hits.map((h) => h.target))].map((t) => hits.filter((h) => h.target === t))
+    : [hits];
+  const totals = groups.map((g) => g.reduce((n, h) => n + h.amount, 0));
+  const best = [...hits].sort((a, b) => b.amount - a.amount)[0]!;
+  const count = Math.max(...groups.map((g) => g.length));
+  const example = each ? (groups.find((g) => g[0]?.target === best.target) ?? []) : hits;
+  return {
+    lo: Math.min(...hits.map((h) => h.amount)),
+    hi: Math.max(...hits.map((h) => h.amount)),
+    printed: first?.amount ?? hits[0]!.amount,
+    calc: false,
+    hits: count,
+    total: { lo: Math.min(...totals), hi: Math.max(...totals) },
+    how: [
+      ...best.how,
+      ...(count > 1
+        ? [
+            `${example.map((h) => h.amount).join(' + ')} = ${example.reduce((n, h) => n + h.amount, 0)} total${each ? ' against this enemy' : ''}`,
+          ]
+        : []),
+    ],
+    ...(each ? { each: true } : {}),
+  };
+}
+
 // (a breakdown is sent whenever there is something to break down: with a range of numbers, it is the highest's)
 /**
  * The damage a card in the active side's hand would deal right now, for showing on the card (as Slay the Spire does): Might, stances,
@@ -5668,7 +6041,14 @@ export function previewCardDamage(
   const inst = sd.hand.find((c) => c.id === instId);
   const def = inst ? db.cards[inst.card] : undefined;
   let hero = heroOf(sd);
-  if (!inst || !def || !hero) return out;
+  if (!inst || !def || !hero || def.kind === 'snare') return out;
+  const checkRun: Run = { db, s, ev: [], depth: 0 };
+  const safeStart = (op: Op): boolean =>
+    projectable(checkRun, op) && (!('ops' in op) || op.op === 'power' || op.ops.every(safeStart));
+  if (sd.powers.some((p) => p.when === 'playStart' && !p.ops.every(safeStart))) {
+    out.set(-1, { lo: 0, hi: 0, printed: 0, calc: true, uncertain: true });
+    return out;
+  }
   // as the effects will see it: the card has left the hand and its cost is paid (a card that counts your hand or your Mana)
   const pool = sd.mana + sd.reserves;
   const paid = def.x ? pool : Math.min(pool, costOf(db, sd, inst));
@@ -5704,14 +6084,17 @@ export function previewCardDamage(
   // private graph when previewing it, including counters and any reactive effects.
   const beforePlay =
     sd.discipline?.rule.kind === 'desperation' || sd.powers.some((p) => p.when === 'playStart');
-  if (beforePlay) after = clone(after);
+  if (beforePlay) {
+    after = clone(after);
+    after.sides[other(sd.id)].snares = [];
+  }
   const r: Run = { db, s: after, ev: [], depth: 0 };
   if (beforePlay) {
     fireTriggers(r, after.sides[sd.id], 'playStart', { card: def, inst, cost: paid });
     hero = heroOf(after.sides[sd.id])!;
   }
   // (its own suit is shown before its effects, as playing it does: a card that counts your suits counts itself)
-  if (def.kind !== 'snare' && traitOf(r, sd.id)?.suits) {
+  if (traitOf(r, sd.id)?.suits) {
     const shown = sd.suitsTurn ?? [];
     const add = suitShown(def, shown);
     after.sides[sd.id].suitsTurn = SUITS.filter((x) => shown.includes(x) || x === add);
@@ -5911,8 +6294,7 @@ export function previewCardDamage(
     // (hits that grow, or Blade Echo's: how many, and what they come to against each enemy it could hit)
     const echoes = def.tags?.includes(BLADE_TAG) ? stacks(hero, 'bladeecho') : 0;
     // (a fixed few hits whose damage scales show their total too: the number on each hit is not what the card does, DECISIONS #509)
-    const growing =
-      op.scale?.into === 'hits' || echoes > 0 || (op.scale !== undefined && (op.hits ?? 1) > 1);
+    const growing = op.scale?.into === 'hits' || echoes > 0 || (op.hits ?? 1) > 1;
     const grown = op.scale?.into === 'hits' ? scaleValue(r, a, op.scale, chosen) : 0;
     const hitCount = (op.hits ?? 1) + grown + echoes;
     const sums: number[] = [];
@@ -6064,5 +6446,25 @@ export function previewCardDamage(
     });
     riposted = false;
   });
+  for (const [index, value] of resolvedDamage(db, s, instId, targetId)) {
+    const previous = out.get(index);
+    const same = previous?.lo === value.lo && previous.hi === value.hi;
+    out.set(index, {
+      ...previous,
+      ...value,
+      ...(same && previous.how
+        ? {
+            how: [
+              ...previous.how,
+              ...((value.hits ?? 1) > 1 && value.total
+                ? [
+                    `${value.hits} hits = ${value.total.lo === value.total.hi ? value.total.lo : `${value.total.lo}-${value.total.hi}`} total`,
+                  ]
+                : []),
+            ],
+          }
+        : {}),
+    });
+  }
   return out;
 }

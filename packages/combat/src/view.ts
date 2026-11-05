@@ -1,6 +1,12 @@
 // What a client may see (hidden information removed) plus generated card / intent text. Presentation helpers only.
 
-import { modifiedDamage, activePattern, formProgress, type LiveDamage } from './engine';
+import {
+  modifiedDamage,
+  activePattern,
+  formProgress,
+  previewAllyDamage,
+  type LiveDamage,
+} from './engine';
 import { disciplineAttack, disciplineText, disciplineLabel } from './disciplines';
 import { attackAuraBonus, attackAuraProgress } from './attackAuras';
 import {
@@ -36,6 +42,8 @@ import {
 export type IntentIcon = 'attack' | 'defend' | 'buff' | 'debuff' | 'summon' | 'special';
 
 export interface IntentView {
+  /** Public current-board calculation for a summoned companion acting now. */
+  damagePreview?: LiveDamage;
   move: string;
   name: string;
   /** what the move does, in words (shown on hover) */
@@ -185,32 +193,43 @@ function describeAllyAct(db: CombatDb, s: CombatState, u: Unit, act: Op[]): Inte
   const dmg = act.filter((o): o is Extract<Op, { op: 'damage' }> => o.op === 'damage');
   const first = dmg[0];
   const area = areaOf(act);
+  const preview = previewAllyDamage(db, s, u.id);
   return {
     move: 'act',
     name: 'End of turn',
     text: `At the end of its side's turn: ${act.map((o) => opText(db, o, WHO)).join(' ')}`,
     icons: opIcons(act),
     // (its Primed goes into that strike, as an enemy's does: DECISIONS #361)
-    damage: first
-      ? Math.floor(
-          (modifiedDamage(
-            // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
-            Math.round(
-              (first.amount +
-                (first.scale ? 0 : (u.statuses.vigor ?? 0)) +
-                attackAuraBonus(s.sides[u.side], u, true) +
-                (s.sides[u.side].units.find((x) => x.kind === 'hero')?.statuses.marrow ?? 0)) *
-                (1 + (s.sides[u.side].allyPct ?? 0) / 100),
-            ),
-            u,
-            first.to === 'target' ? front : null,
-          ) *
-            (100 +
-              disciplineAttack(s, s.sides[u.side], u, null, front, db.units[u.def]?.slots ?? 1))) /
-            100,
-        )
-      : null,
-    hits: first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0,
+    ...(preview ? { damagePreview: preview } : {}),
+    damage:
+      preview?.lo ??
+      (first
+        ? Math.floor(
+            (modifiedDamage(
+              // (the Foreman's companions hit harder by a percentage, on the base and rounded, as the engine does it: DECISIONS #542)
+              Math.round(
+                (first.amount +
+                  (first.scale ? 0 : (u.statuses.vigor ?? 0)) +
+                  attackAuraBonus(s.sides[u.side], u, true) +
+                  (s.sides[u.side].units.find((x) => x.kind === 'hero')?.statuses.marrow ?? 0)) *
+                  (1 + (s.sides[u.side].allyPct ?? 0) / 100),
+              ),
+              u,
+              first.to === 'target' ? front : null,
+            ) *
+              (100 +
+                disciplineAttack(
+                  s,
+                  s.sides[u.side],
+                  u,
+                  null,
+                  front,
+                  db.units[u.def]?.slots ?? 1,
+                ))) /
+              100,
+          )
+        : null),
+    hits: preview?.hits ?? (first ? dmg.reduce((n, o) => n + (o.hits ?? 1), 0) : 0),
     target: first?.to === 'target' ? (front?.id ?? null) : null,
     ...(area ? { area } : {}),
   };
@@ -2127,6 +2146,12 @@ function liveDamageText(
   l: LiveDamage,
 ): string {
   const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
+  if (l.conditional) {
+    const total = l.total ?? { lo: l.lo, hi: l.hi };
+    const sum = total.lo === total.hi ? String(total.lo) : `${total.lo}-${total.hi}`;
+    return `${text} (${l.hits === 0 ? 'no damage now' : `[[live:calc:${sum}]] total damage now`})`;
+  }
+  if (l.hits === 0) return `${text} ([[live:calc:0]] total now)`;
   // (a card that plays others: how many, and what they come to, DECISIONS #489)
   if (l.played !== undefined) {
     const dot = text.lastIndexOf('.');
@@ -2135,13 +2160,13 @@ function liveDamageText(
   }
   // (more than one hit: the rule stays, and what it comes to now follows it, "Deal 5 damage, 1 more time per 2 Spell Power (7 hits, 35 total)", DECISIONS #487)
   if (l.hits !== undefined) {
-    const per = `[[live:${l.lo === l.printed && l.lo === l.hi ? 'same' : l.lo >= l.printed ? 'up' : 'calc'}:${num}]]`;
+    const per = `[[live:${l.lo === l.printed && l.lo === l.hi ? 'same' : l.lo >= l.printed ? 'up' : l.hi <= l.printed ? 'down' : 'calc'}:${num}]]`;
     // (an amount that is a formula keeps it too, and says what one hit comes to: "Deal 5 (+2 per Spell Power) damage (21 a hit, 2 hits...)")
     const said = l.calc ? text : text.replace(/^Deal \d+/, `Deal ${per}`);
     const end = said.search(/\.( |$)/);
     const sum = l.total ?? { lo: l.lo * l.hits, hi: l.hi * l.hits };
     const all = sum.lo === sum.hi ? String(sum.lo) : `${sum.lo}-${sum.hi}`;
-    const hits = `${l.hits} ${l.hits === 1 ? 'hit' : 'hits'}${l.echoed ? ' with Blade Echo' : ''}`;
+    const hits = `${l.variableHits ? 'up to ' : ''}${l.hits} ${l.hits === 1 ? 'hit' : 'hits'}${l.echoed ? ' with Blade Echo' : ''}`;
     const mark = ` (${l.calc ? `[[live:calc:${num}]] a hit, ` : ''}${hits}, [[live:calc:${all}]] total${l.each ? ' each' : ''})`;
     return end < 0 ? `${said}${mark}` : `${said.slice(0, end)}${mark}${said.slice(end)}`;
   }
@@ -2192,7 +2217,25 @@ function liveDamageText(
  * is marked with what it would really come to, for the card in your hand.
  */
 export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
-  if (c.text) return c.text;
+  if (c.text) {
+    const known = [...(live?.values() ?? [])].filter((l) => !l.barrier && !l.uncertain);
+    return (
+      c.text +
+      (known.length
+        ? ' Damage now: ' +
+          known
+            .map((l) => {
+              const sum = l.total ?? { lo: l.lo, hi: l.hi };
+              return `[[live:calc:${sum.lo === sum.hi ? sum.lo : `${sum.lo}-${sum.hi}`}]] total${l.each ? ' per enemy' : ''}`;
+            })
+            .join('; ') +
+          '.'
+        : '') +
+      (live?.get(-1)?.uncertain
+        ? ' Further damage can depend on random effects, drawn cards or unresolved choices.'
+        : '')
+    );
+  }
   const parts: string[] = [];
   // (what depends on a condition or a trigger goes last, each on its own, so no sentence after it can be taken for part of it: DECISIONS #485)
   const late: string[] = [];
@@ -2305,7 +2348,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
       // (a Trap's effects all hang on its trigger, so they stay together below)
       const isTrap = c.kind === 'snare';
       if (!isTrap && (o.op === 'when' || o.op === 'power')) {
-        late.push(opText(db, o, who));
+        const known = live?.get(i);
+        late.push(known ? liveDamageText(opText(db, o, who), null, known) : opText(db, o, who));
         continue;
       }
       // ("If this is fatal" is a condition too: the hit stays in its place, and the clause goes with the others)
@@ -2314,8 +2358,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
         ? (({ onKill: _gone, ...rest }) => rest)(o as Extract<Op, { op: 'damage' }>)
         : o;
       if (kills) late.push(`If this is fatal: ${joinClause(kills.map((x) => opText(db, x, who)))}`);
-      const l =
-        o.op === 'damage' || o.op === 'barrier' || o.op === 'playPile' ? live?.get(i) : undefined;
+      const l = live?.get(i);
       const line = l
         ? liveDamageText(opText(db, plain, who), plain.op === 'damage' ? plain : null, l)
         : opText(db, plain, who);
@@ -2387,6 +2430,8 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     parts.push(
       `Whenever you create ${article(TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate)} ${TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate}, this costs 1 less until played.`,
     );
+  if (live?.get(-1)?.uncertain)
+    late.push('Further damage can depend on random effects, drawn cards or unresolved choices.');
   const text = [...parts, ...late].join(' ');
   // a Trap that springs on a summon or on Barrier answers an enemy that did not attack: "that enemy", not "the attacker"
   // (an "HP lost" Trap still answers whoever hit you: it keeps "the attacker")

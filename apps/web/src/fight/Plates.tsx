@@ -116,7 +116,10 @@ export function UnitPlates({
           ...(k !== 1 ? { scale: String(k) } : {}),
         };
         return (
-          <div key={u.id}>
+          <div
+            key={u.id}
+            className={`unit-group${u.kind === 'ally' ? ' is-ally' : ''}${hover === u.id ? ' is-hover' : ''}`}
+          >
             {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}
             {u.kind !== 'hero' && iv && (
               <div
@@ -144,6 +147,9 @@ export function UnitPlates({
                 {iv.damage !== null && (
                   <b className="intent__num">
                     {iv.damage}
+                    {iv.damagePreview &&
+                      iv.damagePreview.hi !== iv.damage &&
+                      `–${iv.damagePreview.hi}`}
                     {iv.hits > 1 && <small>×{iv.hits}</small>}
                   </b>
                 )}
@@ -155,6 +161,32 @@ export function UnitPlates({
                 )}
                 <span className="intent__tip" role="tooltip">
                   <b>{iv.name}</b> {iv.text}
+                  {u.kind === 'ally' && iv.damagePreview && (
+                    <>
+                      <span className="intent__calculation">
+                        <b>Damage calculation</b>
+                        {iv.damagePreview.how?.join(' → ')}
+                      </span>
+                      <span className="intent__calculation">
+                        <b>Total damage now</b>
+                        {iv.damagePreview.total?.lo === iv.damagePreview.total?.hi
+                          ? iv.damagePreview.total?.lo
+                          : `${iv.damagePreview.total?.lo}–${iv.damagePreview.total?.hi}`}
+                        {iv.damagePreview.each ? ' per enemy' : ''}
+                      </span>
+                      <span className="intent__calculation">
+                        <b>Current target</b>
+                        {iv.area === 'all'
+                          ? 'All enemies'
+                          : (items.find((p) => p.unit.id === iv.target)?.unit.name ??
+                            'The front enemy')}
+                      </span>
+                      <span className="intent__caveat">
+                        If it acted now, before Barrier and HP loss. Earlier actions can change its
+                        target or damage.
+                      </span>
+                    </>
+                  )}
                 </span>
               </div>
             )}
@@ -180,6 +212,32 @@ export function UnitPlates({
               )}
               <div
                 className="plate__name"
+                {...(u.kind === 'ally'
+                  ? {
+                      tabIndex: 0,
+                      ...tipAttrs({
+                        kicker: 'Companion',
+                        title: u.name,
+                        text:
+                          iv?.text ??
+                          'No automatic attack. Cards that command this companion determine its damage.',
+                        ...(iv?.damagePreview
+                          ? {
+                              lines: [
+                                {
+                                  title: 'Damage calculation',
+                                  text: iv.damagePreview.how?.join(' → ') ?? String(iv.damage),
+                                },
+                                {
+                                  title: 'If it acted now',
+                                  text: 'This uses the current board. Earlier actions can change its target and damage; Barrier and HP loss are separate.',
+                                },
+                              ],
+                            }
+                          : {}),
+                      }),
+                    }
+                  : {})}
                 {...(u.kind === 'hero' && heroId && RIFTWALKERS[heroId as HeroId]
                   ? tipAttrs({
                       kicker: 'Innate',

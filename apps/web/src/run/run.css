@@ -92,7 +92,7 @@
   text-align: center;
 }
 
-/* One vertical scrolling map on desktop and phones; controls stay above the path. */
+/* One bounded viewport; the shared route turns horizontally on landscape desktop. */
 .run--map {
   height: 100dvh;
   min-height: 36rem;
@@ -140,10 +140,10 @@
     grid-template-columns: minmax(0, 1fr) auto;
   }
   .run--map .stage-panel__title {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
-    justify-self: start;
-    text-align: left;
+    justify-self: center;
+    text-align: center;
   }
   .run--map .stage-panel__hint {
     grid-column: 1;
@@ -156,12 +156,12 @@
   }
   .run--map .mapink__dock {
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: 2;
     align-self: center;
     margin: 0;
     width: auto;
   }
-  .run--map .map__holder {
+  .run--map .mapframe {
     grid-column: 1 / -1;
     grid-row: 3;
     width: 100%;
@@ -169,10 +169,6 @@
   .run--map .maplegend {
     grid-column: 1 / -1;
     grid-row: 4;
-  }
-  .run--map .map__holder,
-  .mapmodal .map__holder {
-    overflow: auto;
   }
 }
 @media (min-width: 64rem) and (orientation: landscape) and (max-height: 42rem) {
@@ -2303,6 +2299,137 @@ button.mapnode--warden {
   display: grid;
   justify-content: safe center;
   min-width: 0;
+}
+
+.mapframe {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.mapframe--wide {
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+}
+.mapframe--wide .map__holder {
+  display: flex;
+  justify-content: safe center;
+  align-items: safe center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+  overscroll-behavior: contain;
+}
+.mapframe--wide .map__holder::-webkit-scrollbar {
+  display: none;
+}
+.mapframe--wide .map {
+  flex: none;
+}
+.map__holder.is-pannable {
+  cursor: grab;
+  user-select: none;
+}
+.map__holder.is-dragging,
+.map__holder.is-dragging .mapnode {
+  cursor: grabbing;
+}
+.mapframe--compact .mapnode:not(.mapnode--warden) {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.mapframe--compact .mapnode:not(.mapnode--warden) .mapnode__label {
+  top: 50%;
+  left: calc(100% + 0.35rem);
+  translate: 0 -50%;
+  width: 5.3rem;
+  text-align: left;
+  font-size: 0.65rem;
+}
+.mapnav {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) 3.5rem;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.2rem 0.3rem;
+}
+.mapnav__arrow {
+  min-height: 3rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--c-gold-light);
+  border-radius: 0.7rem;
+  color: var(--c-gold-light);
+  background: linear-gradient(180deg, #25345a, #0b1025 65%);
+  box-shadow:
+    inset 0 2px 0 #f6d68b33,
+    0 3px 8px #0008;
+  cursor: pointer;
+}
+.mapnav__arrow svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mapnav__arrow:hover:not(:disabled) {
+  background: linear-gradient(180deg, #43517c, #151d39 65%);
+  box-shadow:
+    inset 0 2px 0 #f6d68b55,
+    0 0 14px #d9b45b44;
+}
+.mapnav__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.mapnav__track {
+  appearance: none;
+  width: 100%;
+  height: 1rem;
+  margin: 0;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 1rem;
+  background: linear-gradient(
+    to right,
+    #b38b42 0%,
+    #e4bf6e var(--map-scroll),
+    #10172e var(--map-scroll)
+  );
+  box-shadow: inset 0 2px 5px #0009;
+  cursor: ew-resize;
+}
+.mapnav__track::-webkit-slider-thumb {
+  appearance: none;
+  width: 3rem;
+  height: 1.65rem;
+  border: 1px solid #ffe1a0;
+  border-radius: 0.4rem;
+  background: linear-gradient(180deg, #fff0b3, #c59a4f 50%, #7e5728);
+  box-shadow: 0 2px 7px #0009;
+}
+.mapnav__track::-moz-range-thumb {
+  width: 3rem;
+  height: 1.65rem;
+  border: 1px solid #ffe1a0;
+  border-radius: 0.4rem;
+  background: linear-gradient(180deg, #fff0b3, #c59a4f 50%, #7e5728);
+  box-shadow: 0 2px 7px #0009;
+}
+.mapnav__track:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.mapnav__arrow:focus-visible,
+.mapnav__track:focus-visible {
+  outline: 2px solid var(--c-cyan);
+  outline-offset: 4px;
 }
 
 /* the Brass Reel's removal window: what is chosen, and the button that takes it */

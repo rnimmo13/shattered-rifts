@@ -15,6 +15,7 @@ export {
   heroOf,
   modifiedDamage,
   previewCardDamage,
+  previewAllyDamage,
   summonsThatFit,
   type LiveDamage,
   activePattern,

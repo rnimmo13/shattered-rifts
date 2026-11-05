@@ -111,7 +111,7 @@ describe('the twelve-tier campaign', () => {
       run = finishDuel(run, true, 10);
       expect(run.maxHp).toBeGreaterThanOrEqual(before + 5);
       expect(run.hp).toBeGreaterThanOrEqual(15 + Math.ceil(run.maxHp * 0.15));
-      if(i===0) expect(run.hp).toBe(15+Math.ceil(run.maxHp*0.15));
+      if (i === 0) expect(run.hp).toBe(15 + Math.ceil(run.maxHp * 0.15));
       if (i === 0) expect(run.maxHp).toBe(before + 5);
       expect(run.phase).toBe('gift');
       const restored = parseRun(serializeRun(run));
@@ -119,9 +119,17 @@ describe('the twelve-tier campaign', () => {
       run = chooseCard(restored!, null);
       expect(run.stats.nodesCleared).toBe(i + 1);
       if (i < 11) {
-        expect(run.phase).toBe('duel');
-        expect(run.context!.nodeId).toBe(run.map.nodes[i + 1]!.id);
+        expect(run.phase).toBe('map');
+        expect(run.context).toBeNull();
+        expect(run.at).toBe(run.map.nodes[i]!.id);
+        expect(run.cleared).toContain(run.at);
         expect(run.won).not.toBe(true);
+        const parked = parseRun(serializeRun(run))!;
+        expect(parked).toEqual(run);
+        expect(availableNodes(parked).map((n) => n.id)).toEqual([run.map.nodes[i + 1]!.id]);
+        run = enterNode(parked, availableNodes(parked)[0]!.id);
+        expect(run.context!.nodeId).toBe(run.map.nodes[i + 1]!.id);
+        expect(duelPlan(parseRun(serializeRun(run))!)!.seed).toBe(duelPlan(run)!.seed);
       }
     }
     expect(run.phase).toBe('loopCleared');

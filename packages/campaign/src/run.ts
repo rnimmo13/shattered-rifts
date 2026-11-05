@@ -369,14 +369,13 @@ export function chooseAscendancy(run: RunState, id: string): RunState {
   return r;
 }
 
-/** After the Warden's Gift the tier is cleared (DECISIONS #352, #531). */
+/** After a Gift, pause on the gauntlet map or clear the tier (DECISIONS #352, #531, #627). */
 function afterGift(r: RunState): void {
   const node = r.map.nodes.find((n) => n.id === r.at);
   if (node?.enemyId === 'vorthax') r.won = true;
   if (r.map.gauntlet && node?.next.length) {
     r.phase = 'map';
     r.context = null;
-    Object.assign(r, enterNode(r, node.next[0]!));
     return;
   }
   // Legacy saves finish their current map before entering the new finale; earned progress stays intact.

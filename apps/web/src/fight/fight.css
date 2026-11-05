@@ -1015,6 +1015,26 @@ img.intent__pic {
 .intent:focus-within .intent__tip {
   display: block;
 }
+.unit-group.is-ally.is-hover .intent__tip {
+  display: block;
+}
+.intent__calculation {
+  display: block;
+  margin-top: 0.55rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--c-gold-dark);
+  font-size: 0.85rem;
+}
+.intent__calculation b {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+.intent__caveat {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--c-text-dim);
+  font-size: 0.75rem;
+}
 
 /* the potion belt: three slots, flask icons, clearly potions. It sits under the Leave button at the top left, clear of the hero's plate,
    its buffs and the hand */

@@ -1,0 +1,14 @@
+# Release 0.204.0 validation
+
+2026-11-05. Robert approved pushing the complete current changes (decision #628), including automatic website deployment and matching desktop updater publication. Web and desktop versions match at0.204.0; shared combat rules remain83.
+
+- Final complete regression: **182 files,3,863 tests passed**, including the gauntlet navigation changes. Workspace type-checking and changed-source formatting pass. Repository lint passes with the two existing React refresh warnings in PileArt.tsx and MapInk.tsx; subsequent gauntlet-source lint also passes.
+- Production web and separate desktop renderer/shell builds pass. Existing dynamic-import/chunk-size warnings remain. Native isolated desktop smoke passes save write, restart/read, update handoff and save isolation with synthetic data.
+- Map layout verified at2560x1440,1920x1080,1366x768,1280x720,1024x600,390x844 and320x640: centered heading/canvas, viewport fit, stable end coordinates for90frames, arrows and draggable track. Actual native inputs verify wheel, keyboard, click-and-drag panning, suppression of dragged node clicks, normal node clicks and pen compatibility.
+- Actual companion intent hover and real FightCard rendering checked at desktop/phone sizes. Current modifiers and totals render without invalid numbers or horizontal overflow. Deterministic coverage of602 immediately resolvable damage definitions and all base/upgraded companions is detailed in DAMAGE_PREVIEW_REVIEW_2026-11-05.md. Random/draw/choice outcomes remain qualified, future Trap triggers separate, original state/RNG unchanged. These are display correctness fixtures, not balance simulations or measured matchup parity.
+- Gauntlet tests preserve the completed node, sole next node, saved order, rewards, healing, resumed seed and final victory through every map break. Existing saved action-log/cloud paths remain tested. Actual Home/Continue navigation preserves the serialized inter-fight checkpoint at1366x768 and390x844. Fight-map overlay navigation fits those sizes and320x640 using the real map in its shell without a GPU fight renderer.
+- Player notes pass isolated responsive checks at1360,390 and320px, including current notes and previous card art/exact buff/nerf rows. Synthetic exact-deck report filtering also passes.
+
+No combat stats, costs, damage formulas, campaign healing, enemy difficulty, Warden order or rewards change. The campaign navigation fix does not require save migration: active fights remain active and can be parked; later Gifts return to the existing map. Existing release0.202 desktop draft remains unpublished.
+
+Package from the clean committed source, validate installer/feed/checksum/source stamp, push that commit and publish the three updater assets together under v0.204.0. Then verify live website version/commit, server health and stable Windows release asset metadata against the local package. Synthetic saves/screenshots and raw audit data remain ignored.

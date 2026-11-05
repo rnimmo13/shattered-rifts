@@ -44,6 +44,40 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.204.0',
+    date: '2026-11-05',
+    title: 'Clearer damage and smoother maps',
+    summary:
+      'Companion damage breakdowns, fuller card damage totals and a centered map you can drag to scroll.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Take a break during the final gauntlet',
+        text: 'Campaign: after each Warden Gift in Tier XII, return to the gauntlet map and choose the next fight when ready. Home keeps your run for later. During a gauntlet fight, View map also offers Home; returning resumes the saved fight without forfeiting or spending Resolve. Existing active gauntlets keep their Warden order, progress and rewards. Healing and enemy difficulty are unchanged.',
+      },
+      {
+        kind: 'new',
+        title: 'Companion damage calculations',
+        text: 'Campaign and Arena: hover a summoned companion or its attack intent to see its current damage calculation, including active bonuses, penalties, target protections and the total across its hits. Its name also exposes the calculation on keyboard focus. These estimates use the current board; earlier actions can change the target or damage. Barrier absorption and remaining enemy HP are separate from the displayed attack damage.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Card damage totals, including Hunter multi-hit attacks',
+        text: 'Campaign and Arena: Run Wild and Reckless Blow now show both hits and their current total, including damage modifiers. Their base damage remains 7 twice (14 total); their upgraded damage remains 8 twice (16 total). Known effects before a hit, such as Reckless Blow paying HP or a card gaining Barrier or a status, now count in the following damage preview. Conditional damage, companion commands and known Totem follow-up attacks also show a current total where it can be resolved. Zero-damage formulas show 0. Target-dependent outcomes show ranges; random effects, draws and unresolved choices are labelled as uncertain. Trap trigger damage remains a future effect. This changes the display, with no changes to card stats or combat damage.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Map centering and scroll stability',
+        text: 'The Tier heading is centered above the map again. Horizontal routes sit vertically in the middle of their reserved area, including tall desktop screens. Node sizing uses a stable viewport measurement so scrollbar changes cannot repeatedly resize and shift the route. Reopening or resizing centers the current stop inside the map without moving the surrounding page.',
+      },
+      {
+        kind: 'changed',
+        title: 'Map navigation controls',
+        text: 'Landscape desktop maps now have larger left/right arrow buttons and a draggable gold scroll track styled to match the game. Click and drag the map itself to scroll; dragging over a node does not select it. Turn off Draw or Erase to pan again. The arrows dim at each end; the track also supports keyboard navigation. Mouse wheels and trackpads can move along the route. Reduced motion disables smooth arrow scrolling. Phone maps retain vertical scrolling and drawing controls remain available.',
+      },
+    ],
+  },
+  {
     version: '0.203.0',
     date: '2026-11-05',
     title: 'Twelve tiers, the Warden gauntlet and a true ending',

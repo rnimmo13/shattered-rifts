@@ -603,9 +603,20 @@ export default function RunScreen() {
                   />
                 </div>
                 <MapLegend />
-                <button className="btn" onClick={() => setShowMap(false)}>
-                  <span>Back to the fight</span>
-                </button>
+                <div className="modal__row">
+                  {run.map.gauntlet && !plan.ghost && (
+                    <button
+                      className="btn btn--ghost"
+                      title="Keep this run and fight saved, then resume from Home."
+                      onClick={goHome}
+                    >
+                      <span>Home</span>
+                    </button>
+                  )}
+                  <button className="btn" onClick={() => setShowMap(false)}>
+                    <span>Back to the fight</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -1029,8 +1040,16 @@ function Body(props: {
             Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
           </h2>
           <p className="stage-panel__hint">
-            Choose a glowing stop. Follow the paths {horizontalMap ? 'to the right' : 'down'} as
-            they split and meet; the Warden waits at the end.
+            {run.map.gauntlet ? (
+              <>
+                Choose the next Warden when ready. You can go Home and resume this gauntlet later.
+              </>
+            ) : (
+              <>
+                Choose a glowing stop. Follow the paths {horizontalMap ? 'to the right' : 'down'} as
+                they split and meet; the Warden waits at the end.
+              </>
+            )}
           </p>
           <div className="mapwrap">
             <MapView

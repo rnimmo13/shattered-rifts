@@ -176,22 +176,77 @@ export function MapView(props: {
   const ink = useMapInk(props.inkKey && props.inkKey + (wide ? ':horizontal-5' : ':vertical-5'));
   const holder = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState({ width: 320, height: 500 });
+  const [scroll, setScroll] = useState({ position: 0, maximum: 0 });
+  const [dragging, setDragging] = useState(false);
+  const drag = useRef<{
+    pointer: number;
+    x: number;
+    y: number;
+    left: number;
+    top: number;
+    moved: boolean;
+  } | null>(null);
+  const suppressClick = useRef(false);
+  const measureScroll = () => {
+    const element = holder.current;
+    if (!element) return;
+    const next = {
+      position: Math.round(element.scrollLeft),
+      maximum: Math.max(0, element.scrollWidth - element.clientWidth),
+    };
+    setScroll((previous) =>
+      previous.position === next.position && previous.maximum === next.maximum ? previous : next,
+    );
+  };
   useEffect(() => {
     const element = holder.current;
     if (!element) return;
     const observer = new ResizeObserver(([entry]) => {
-      if (entry) setBounds({ width: entry.contentRect.width, height: entry.contentRect.height });
+      if (!entry) return;
+      // The outer box stays fixed when a scrollbar appears. Measuring the content box instead
+      // fed scrollbar changes back into node sizing and could oscillate at a scroll boundary.
+      const box = entry.borderBoxSize?.[0];
+      const next = {
+        // Portrait maps reserve a permanent vertical scrollbar gutter; keep their canvas inside it.
+        width: element.clientWidth,
+        height: Math.round(box?.blockSize ?? element.getBoundingClientRect().height),
+      };
+      setBounds((previous) =>
+        previous.width === next.width && previous.height === next.height ? previous : next,
+      );
     });
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
   const place = `${props.inkKey ?? ''}:${props.map.nodes[0]?.id ?? ''}:${props.map.floors}:${props.at ?? ''}`;
   useEffect(() => {
+    const element = holder.current;
+    if (!wide || !element) return;
+    const wheel = (event: WheelEvent) => {
+      if (
+        event.ctrlKey ||
+        Math.abs(event.deltaX) >= Math.abs(event.deltaY) ||
+        element.scrollWidth <= element.clientWidth
+      )
+        return;
+      event.preventDefault();
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? element.clientWidth : 1;
+      element.scrollLeft += event.deltaY * unit;
+    };
+    element.addEventListener('wheel', wheel, { passive: false });
+    return () => element.removeEventListener('wheel', wheel);
+  }, [wide]);
+  useEffect(() => {
     // Run after layout and browser scroll restoration, including a full-page reload.
-    const center = () =>
-      holder.current
-        ?.querySelector('.mapnode.is-open, .mapnode.is-here')
-        ?.scrollIntoView({ inline: 'nearest', block: 'center' });
+    const center = () => {
+      const element = holder.current;
+      const node = element?.querySelector<HTMLElement>('.mapnode.is-open, .mapnode.is-here');
+      if (!element || !node) return;
+      // Move this viewport only; scrollIntoView also moved ancestor/page scrollbars.
+      if (wide) element.scrollLeft = Math.max(0, node.offsetLeft - element.clientWidth / 2);
+      else element.scrollTop = Math.max(0, node.offsetTop - element.clientHeight / 2);
+      measureScroll();
+    };
     let frame = requestAnimationFrame(center);
     const restored = () => {
       cancelAnimationFrame(frame);
@@ -203,20 +258,135 @@ export function MapView(props: {
       window.removeEventListener('pageshow', restored);
     };
   }, [place, bounds.width, bounds.height, wide]);
+  const move = (direction: -1 | 1) => {
+    const element = holder.current;
+    element?.scrollBy({
+      left: direction * element.clientWidth * 0.7,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+  };
   return (
     <>
       <MapInkTools ink={ink} />
-      <div ref={holder} className="map__holder">
-        <RouteMap
-          {...props}
-          ink={ink}
-          wide={wide}
-          cross={
-            wide
-              ? Math.max(220, Math.min(720, bounds.height - 15))
-              : Math.max(240, Math.min(720, bounds.width))
-          }
-        />
+      <div
+        className={`mapframe${wide ? ' mapframe--wide' : ''}${wide && bounds.height < 320 ? ' mapframe--compact' : ''}`}
+      >
+        <div
+          ref={holder}
+          className={`map__holder${wide && !ink.tool ? ' is-pannable' : ''}${dragging ? ' is-dragging' : ''}`}
+          onScroll={measureScroll}
+          onDragStart={(event) => event.preventDefault()}
+          onPointerDown={(event) => {
+            if (!wide || ink.tool || event.pointerType !== 'mouse' || event.button !== 0) return;
+            suppressClick.current = false;
+            drag.current = {
+              pointer: event.pointerId,
+              x: event.clientX,
+              y: event.clientY,
+              left: event.currentTarget.scrollLeft,
+              top: event.currentTarget.scrollTop,
+              moved: false,
+            };
+          }}
+          onPointerMove={(event) => {
+            const start = drag.current;
+            if (!start || start.pointer !== event.pointerId) return;
+            if (event.buttons !== 1) {
+              drag.current = null;
+              setDragging(false);
+              return;
+            }
+            const dx = event.clientX - start.x,
+              dy = event.clientY - start.y;
+            if (!start.moved && Math.hypot(dx, dy) < 6) return;
+            if (!start.moved) {
+              start.moved = true;
+              setDragging(true);
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
+            suppressClick.current = true;
+            event.preventDefault();
+            event.currentTarget.scrollLeft = start.left - dx;
+          }}
+          onPointerUp={(event) => {
+            if (drag.current?.pointer !== event.pointerId) return;
+            drag.current = null;
+            setDragging(false);
+            if (event.currentTarget.hasPointerCapture(event.pointerId))
+              event.currentTarget.releasePointerCapture(event.pointerId);
+            requestAnimationFrame(() => {
+              suppressClick.current = false;
+            });
+          }}
+          onPointerCancel={() => {
+            drag.current = null;
+            setDragging(false);
+            suppressClick.current = false;
+          }}
+          onLostPointerCapture={() => {
+            drag.current = null;
+            setDragging(false);
+          }}
+          onClickCapture={(event) => {
+            if (suppressClick.current) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }}
+        >
+          <RouteMap
+            {...props}
+            ink={ink}
+            wide={wide}
+            cross={
+              wide
+                ? Math.max(140, Math.min(720, bounds.height - 32))
+                : Math.max(240, Math.min(720, bounds.width))
+            }
+          />
+        </div>
+        {wide && (
+          <nav className="mapnav" aria-label="Map navigation">
+            <button
+              className="mapnav__arrow"
+              aria-label="Scroll map left"
+              disabled={scroll.position <= 1}
+              onClick={() => move(-1)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 5-7 7 7 7" />
+              </svg>
+            </button>
+            <input
+              className="mapnav__track"
+              type="range"
+              aria-label="Map position"
+              min={0}
+              max={Math.max(1, scroll.maximum)}
+              value={Math.min(scroll.position, scroll.maximum)}
+              disabled={scroll.maximum <= 1}
+              style={
+                {
+                  '--map-scroll': `${(scroll.position / Math.max(1, scroll.maximum)) * 100}%`,
+                } as CSSProperties
+              }
+              onChange={(event) => {
+                if (holder.current) holder.current.scrollLeft = Number(event.currentTarget.value);
+                measureScroll();
+              }}
+            />
+            <button
+              className="mapnav__arrow"
+              aria-label="Scroll map right"
+              disabled={scroll.maximum <= 1 || scroll.position >= scroll.maximum - 1}
+              onClick={() => move(1)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 5 7 7-7 7" />
+              </svg>
+            </button>
+          </nav>
+        )}
       </div>
     </>
   );

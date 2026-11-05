@@ -1214,7 +1214,7 @@ describe('the damage preview, as the card will see it', () => {
     expect(hp - after.sides.b.units[0]!.hp).toBe(3);
   });
 
-  it('shows nothing it cannot know: a damage effect after another effect keeps the printed number', () => {
+  it('projects a known Barrier gain before damage without mutating combat', () => {
     const tdb: CombatDb = {
       ...db,
       cards: {
@@ -1233,7 +1233,9 @@ describe('the damage preview, as the card will see it', () => {
       },
     };
     const c = clone(start(['cultist'], ['braced']));
-    expect(previewCardDamage(tdb, c, 't0').size).toBe(0);
+    const before = hashState(c);
+    expect(previewCardDamage(tdb, c, 't0').get(1)).toMatchObject({ lo: 10, hi: 10 });
+    expect(hashState(c)).toBe(before);
   });
 });
 
