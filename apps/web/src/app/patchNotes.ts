@@ -44,6 +44,18 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.205.0',
+    date: '2026-11-05',
+    title: 'Maintenance update',
+    summary: 'A small maintenance release with no gameplay changes.',
+    notes: [
+      {
+        kind: 'changed',
+        text: 'Routine maintenance build. Cards, enemies, maps and saves are unchanged.',
+      },
+    ],
+  },
+  {
     version: '0.204.0',
     date: '2026-11-05',
     title: 'Clearer damage and smoother maps',

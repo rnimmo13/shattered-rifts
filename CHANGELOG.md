@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.205.0 / rules 83 — release approved
+
+Robert asked to push and deploy a maintenance build on 2026-11-05. Version bump and patch note only; no gameplay, combat, card or save changes. Web and desktop versions match.
+
 ## 0.204.0 / rules 83 — release approved
 
 Robert approved pushing the full current changes on2026-11-05 (decision #628), including automatic website deployment and matching desktop update. Earlier local-only status below records the pre-approval implementation stage. See docs/RELEASE_0.204_VALIDATION.md.
