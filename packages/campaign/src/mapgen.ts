@@ -1,4 +1,4 @@
-// Seeded realm maps lead to unique Wardens; a separate final map contains the Warden gauntlet and Vorthax.
+// Seeded realm maps lead to unique Wardens; a separate final map contains the Warden gauntlet and Valerion.
 // Existing saved maps retain their topology. Historical generic generation remains available for legacy fixtures.
 
 import { nextInt, shuffle, type RngState } from '@sr/combat';
@@ -83,7 +83,7 @@ export function wardenFor(realm: StageRealm): Encounter {
 
 /**
  * (DECISIONS #437, #531) Every Warden a tier in this realm can end with: its first Warden and the ones of the expansion; from the second depth
- * the far realms' Wardens too, and not one that waits for a deeper tier. Tier XX, the Rift, ends with Vorthax.
+ * the far realms' Wardens too, and not one that waits for a deeper tier. Tier XX, the Rift, ends with Valerion.
  */
 export function wardensFor(realm: StageRealm, stage: number, tier = 1): Encounter[] {
   if (realm === 'rift' || tier >= LAST_TIER) return [wardenFor('rift')];
@@ -153,7 +153,7 @@ export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
 export const ALL_ELITE_TIER = 11;
 /** At this Rift Tier every one of those Elites is a Warden's fight (DECISIONS #526). */
 export const ALL_WARDEN_TIER = 20;
-/** The last Rift Tier, whose Warden is Vorthax. */
+/** The last Rift Tier, whose Warden is Valerion. */
 const LAST_TIER = 20;
 /** The chance (percent) that a plain fight is an Elite instead: none at Tier I, then evenly up to all of them at ALL_ELITE_TIER. */
 export const eliteFightChance = (tier: number): number =>
@@ -166,7 +166,7 @@ export const rollEliteFight = (rng: RngState, tier: number): boolean => {
 
 /**
  * The Wardens an act's fights can bring at ALL_WARDEN_TIER: the ones of its realms and of the far realms, so even a first act has a few to
- * bring. Never Vorthax, who is the Rift's finale.
+ * bring. Never Valerion, who is the Rift's finale.
  */
 function fightWardens(pool: readonly StageRealm[], stage: number): Encounter[] {
   const realms = fightRealms(pool, stage);
@@ -295,7 +295,7 @@ export function generateStageMap(
   if (campaignRoute === 'twelve' && tier <= WARDEN_SEQUENCE.length)
     warden.enemyId = wardenOrder[tier - 1]!;
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
-  // (never Vorthax: the climb ends with him, DECISIONS #531)
+  // (never Valerion: the climb ends with him, DECISIONS #531)
   if (
     CAMPAIGN_GHOSTS_ENABLED &&
     tier > GHOST_FROM_TIER &&

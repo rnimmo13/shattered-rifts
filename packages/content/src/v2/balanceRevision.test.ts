@@ -165,7 +165,7 @@ describe('simulation-led balance revision', () => {
     },
   );
 
-  it('Vorthax opens with a setup intent; the smaller Ward grants Primed without permanent Might growth', () => {
+  it('Valerion opens with a setup intent; the smaller Ward grants Primed without permanent Might growth', () => {
     let s = createCombat(db, {
       seed: 'revision-vorthax',
       a: { hero: 'engineer', deck: [], hp: 10000, maxHp: 10000 },

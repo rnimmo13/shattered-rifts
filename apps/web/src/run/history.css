@@ -46,7 +46,8 @@
 .history__run--collapsed {
   border-color: rgb(255 120 110 / 0.35);
 }
-.history__run--banked {
+.history__run--banked,
+.history__run--completed {
   border-color: rgb(240 200 100 / 0.4);
 }
 .history__runHead {
@@ -80,6 +81,9 @@
   color: #ffb1a6;
 }
 .history__end--banked {
+  color: #ffe08a;
+}
+.history__end--completed {
   color: #ffe08a;
 }
 .history__end--abandoned {

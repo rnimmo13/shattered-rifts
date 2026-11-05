@@ -597,3 +597,7 @@ See [the Ascendancy pass](ASCENDANCY_PASS_2026-11-04.md) for exact values and tu
 ### Soulreaper harvest (0.182.0, decision #581)
 
 Consume now grants 3 Barrier, with one Reap after end-turn cleanup/actions if consumption occurred that turn: 4 + 2 per genuine consumption this fight, non-attack damage against the lowest-current-HP enemy. At three consumes per turn, Reap is 10/28/52 on turns 1/4/8, plus 9 Barrier each turn. Four turns total 76 damage and 36 Barrier versus the prior 48 Barrier; this requires twelve actual consumptions and sustained generation. Retained base Grave Chill supplies Fate too, but an execution threshold is not immediate damage and cannot simply be added to this budget. Aura removal, playing a Fleeting card normally and discards are not consumption. See the Ascendancy pass for exact timing, protections and playtest limits.
+
+## 18. Warden Hearts revision, 2026-11-05 (local0.206)
+
+Section16 Heart examples are historical pre-revision prices. Current effects and hand calculations: WARDEN_HEARTS_2026-11-05.md. Flat15–25-point five-turn comparisons do not establish parity for percentage card output, proportional HP loss, economic opportunity or Resurgent threshold overkill prevention. Assess actual card output/rounding, Attack-only Faltering, three-turn openings, prolonged fights and early-versus-late reward acquisition. No simulations or measured parity.

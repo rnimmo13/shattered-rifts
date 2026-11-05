@@ -17,7 +17,7 @@ import './history.css';
 const ReplayPlayer = lazy(() => import('../fight/ReplayPlayer'));
 
 const END_LABEL: Record<RunRecord['end'], string> = {
-  collapsed: 'Fell',
+  collapsed: 'Dead',
   banked: 'Saved',
   abandoned: 'Abandoned',
 };
@@ -173,7 +173,7 @@ function RunRow(props: {
   const lines = useMemo(() => deckLines(run.deck), [run.deck]);
   const fight = run.lastFight;
   return (
-    <li className={`history__run history__run--${run.end}`}>
+    <li className={`history__run history__run--${run.won ? 'completed' : run.end}`}>
       <button className="history__runHead" aria-expanded={props.open} onClick={props.onToggle}>
         {hero && <HeroIcon hero={hero} size={40} />}
         <span className="history__runName">
@@ -183,8 +183,8 @@ function RunRow(props: {
           </small>
         </span>
         <span className="history__runWhere">
-          <b className={`history__end history__end--${run.end}`}>
-            {run.won ? 'Victory' : END_LABEL[run.end]}
+          <b className={`history__end history__end--${run.won ? 'completed' : run.end}`}>
+            {run.won ? 'Completed' : END_LABEL[run.end]}
           </b>
           <small>Tier {run.tier}</small>
         </span>

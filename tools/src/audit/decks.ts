@@ -48,7 +48,7 @@ export const LEVEL_SPEC: Record<Level, LevelSpec> = {
     tier: 1,
     stage: 1,
   },
-  // the end of the first loop (Vorthax)
+  // the end of the first loop (Valerion)
   t1s3: {
     offers: 18,
     eliteShare: 0.2,

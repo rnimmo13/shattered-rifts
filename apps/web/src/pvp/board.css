@@ -310,6 +310,9 @@
 .board__status--fell {
   color: #ff6b81;
 }
+.board__status--completed {
+  color: #ffe08a;
+}
 .board__status--abandoned {
   color: var(--c-text-dim);
 }

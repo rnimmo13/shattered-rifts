@@ -105,7 +105,7 @@ function TierTable() {
             return (
               <tr key={t}>
                 <th>{t}</th>
-                <td>{t === MAX_TIER ? '11 Wardens + Vorthax' : floorsOf(t) + 1}</td>
+                <td>{t === MAX_TIER ? '11 Wardens + Valerion' : floorsOf(t) + 1}</td>
                 <td>{x.hp}%</td>
                 <td>{x.dmg}%</td>
               </tr>
@@ -337,7 +337,7 @@ export function LearnScreen() {
           <p>
             Progress through the realms, facing each Warden once in a shuffled order. Maps start at{' '}
             {floorsOf(1) + 1} stops and add one stop per tier. The final gauntlet brings back every
-            Warden in a fresh shuffled order: all eleven Wardens, then Vorthax, with normal Warden
+            Warden in a fresh shuffled order: all eleven Wardens, then Valerion, with normal Warden
             healing and rewards between fights. Desktop paths run left to right; mobile paths run
             top to bottom.
           </p>
@@ -384,7 +384,7 @@ export function LearnScreen() {
             tier&apos;s Warden and you can stop there, or <b>Continue</b> to the next Rift Tier: you
             keep your deck and your HP, and enemies have more HP and hit harder. Fall (or give up in
             the middle of a fight) and the run&apos;s deck leaves the Arena; give up anywhere else
-            and it stays. Defeat the final gauntlet and Vorthax to seal the rifts.
+            and it stays. Defeat the final gauntlet and Valerion to seal the rifts.
           </p>
           <div className="learn__tierbox">
             <p>
@@ -432,7 +432,7 @@ export function LearnScreen() {
           <h3>Boons</h3>
           <p>
             Boons last for the whole run, and every tier after it. Elites often give one; the
-            merchant sells one; some events and Threshold options give one; and beating Vorthax
+            merchant sells one; some events and Threshold options give one; and beating Valerion
             leaves one {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
           </p>
           <BoonList />

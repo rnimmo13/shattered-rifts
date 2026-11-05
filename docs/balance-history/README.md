@@ -1,5 +1,7 @@
 # Balance history
 
+Latest local assessment: [0.206.0 Warden Hearts](0.206.0.md), [CSV](0.206.0.csv), [JSON](0.206.0.json), [exact ledger](../WARDEN_HEARTS_2026-11-05.md). All30 Ascendancies, class starts and mixed builds retain unmeasured status. Campaign-only passive Hearts; no simulations, Arena balance changes or release approval. Earlier snapshots remain intact.
+
 Release0.203.0/rules83 is approved for commit, push and deployment (decision #623). The final [campaign review1](0.203.0-campaign-review-1.md) supersedes initial local0.203 route assumptions. Assessment-time local labels are preserved; approval and deterministic checks add no measured matches or balance simulations.
 
 Final local follow-up: [0.203.0 campaign review1](0.203.0-campaign-review-1.md), [CSV](0.203.0-campaign-review-1.csv), [JSON](0.203.0-campaign-review-1.json). Supersedes earlier local fixed-order and no-late-Omen assumptions: shuffled unique Wardens, Elite promotion100% atXI, an Omen every tier, halved finale automatic recovery, unspent-shard tiebreak. All30 styles/class starts/mixed builds remain Campaign-unrated. Arena unchanged; no simulations or measured parity. Broader difficulty tuning follows later.

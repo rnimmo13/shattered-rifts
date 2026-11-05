@@ -78,5 +78,5 @@ for (let i = 0; i < variants.length; i++) {
 writeFileSync(dir + 'selection.json', JSON.stringify(selection, null, 2) + '\n');
 writeFileSync(dir + 'decks.json', JSON.stringify(output, null, 2) + '\n');
 console.log(
-  'Selected separate Arena/Vorthax decks using training seeds only; produced 120 frozen deck specifications.',
+  'Selected separate Arena/Valerion decks using training seeds only; produced 120 frozen deck specifications.',
 );

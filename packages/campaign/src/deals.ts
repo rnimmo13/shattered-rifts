@@ -1,3 +1,4 @@
+import { changeMaxHp, heartCrossedChance } from './hearts';
 // Data-driven event options. An option carries a list of DealSteps (hurt, heal, shards, upgrade, remove...); applyDeal runs
 // them in order and says what happened, dealFeasible checks an option can be taken right now. New events are data only.
 
@@ -76,12 +77,12 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       out.push(`You heal ${r.hp - before} HP.`);
       return;
     }
-    case 'maxHp':
+    case 'maxHp': {
       if (s.n < 0 && r.maxHp + s.n < 30) fail('You could not spare that much');
-      r.maxHp += s.n;
-      r.hp = s.n > 0 ? r.hp + s.n : Math.min(r.hp, r.maxHp);
-      out.push(`${s.n > 0 ? '+' : ''}${s.n} max HP.`);
+      const gained = changeMaxHp(r, s.n);
+      out.push(`${gained > 0 ? '+' : ''}${gained} max HP.`);
       return;
+    }
     case 'resolve':
       if (r.resolve >= r.maxResolve) fail('Your Resolve is already full');
       r.resolve = Math.min(r.maxResolve, r.resolve + s.n);
@@ -149,7 +150,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const from = pool[nextInt(r.rng, pool.length)] as string;
       let made = '';
       for (let g = 0; g < 20 && !made; g++)
-        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, heartCrossedChance(r)))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
       if (!made) fail('Nothing comes of it');
       r.deck[r.deck.indexOf(from)] = made;
@@ -227,8 +228,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const id = r.boons.splice(nextInt(r.rng, r.boons.length), 1)[0] as string;
       const b = COMBAT_DB.boons[id];
       if (b?.maxHp) {
-        r.maxHp = Math.max(1, r.maxHp - b.maxHp);
-        r.hp = Math.min(r.hp, r.maxHp);
+        changeMaxHp(r, -b.maxHp, false);
       }
       out.push(`${b?.name ?? 'A Boon'} is gone.`);
       return;
@@ -505,7 +505,7 @@ function pinCard(
       const from = pool[nextInt(r.rng, pool.length)] as string;
       let made = '';
       for (let g = 0; g < 20 && !made; g++)
-        for (const id of offerCards(r.rng, r.character, deck, 'duel', 3))
+        for (const id of offerCards(r.rng, r.character, deck, 'duel', 3, heartCrossedChance(r)))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(deck, id)) made = id;
       return made ? { step: { k: 'swap', from, to: made }, lose: [from], gain: [made] } : null;
     }

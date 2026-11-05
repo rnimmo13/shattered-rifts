@@ -43,6 +43,7 @@ import {
 
 export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
+import { changeMaxHp, heartCrossedChance, migrateHeart } from './hearts';
 import { rollEvent, resolveEvent, promisedTreasure } from './events';
 import { applyChoice, applyDeal } from './deals';
 import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
@@ -292,8 +293,7 @@ function gainBoon(r: RunState, id: string): void {
   need(!r.boons.includes(id), 'You already have that boon');
   r.boons.push(id);
   if (b.maxHp) {
-    r.maxHp += b.maxHp;
-    r.hp += b.maxHp;
+    changeMaxHp(r, b.maxHp);
   }
 }
 
@@ -310,15 +310,26 @@ function heartOffers(r: RunState): string[] {
 export function chooseHeart(run: RunState, id: string): RunState {
   need(run.phase === 'gift' && run.context?.hearts?.includes(id), 'That Heart is not on offer');
   const r = clone(run);
+  migrateHeart(r);
   const old = r.heart ? COMBAT_DB.boons[r.heart] : undefined;
   if (old?.maxHp) {
     // (the Max HP it changed comes back; HP does not, so a Heart cannot be swapped in and out for health)
     r.maxHp = Math.max(1, r.maxHp - old.maxHp);
     r.hp = Math.max(1, Math.min(r.maxHp, r.hp));
   }
+  if (r.heartMaxHpLoss !== undefined) {
+    r.maxHp += r.heartMaxHpLoss;
+    delete r.heartMaxHpLoss;
+  }
   const h = COMBAT_DB.boons[id];
   need(h?.heart, 'That is not a Heart');
   r.heart = id;
+  if (h.maxHpPct) {
+    const before = r.maxHp;
+    const hpBefore = r.hp;
+    changeMaxHp(r, 0, false);
+    r.hp = Math.max(1, hpBefore - (before - r.maxHp));
+  }
   if (h.maxHp) {
     r.maxHp = Math.max(1, r.maxHp + h.maxHp);
     r.hp = Math.max(1, Math.min(r.maxHp, r.hp + h.maxHp));
@@ -343,7 +354,14 @@ function nextReward(
   const count = Math.max(2, 3 - omenEffects(r.tier, !r.campaignRoute).fewerChoices);
   r.context = {
     nodeId: c.nodeId,
-    offers: offerCards(r.rng, r.character, r.deck, kind === 'duel' ? 'duel' : 'elite', count),
+    offers: offerCards(
+      r.rng,
+      r.character,
+      r.deck,
+      kind === 'duel' ? 'duel' : 'elite',
+      count,
+      heartCrossedChance(r),
+    ),
     extraReward: true,
     ...(left > 1 ? { extraRewards: left - 1 } : {}),
     ...(afterWarden ? { afterWarden: true } : {}),
@@ -393,6 +411,15 @@ function afterGift(r: RunState): void {
   }
   r.phase = 'loopCleared';
   r.context = null;
+}
+
+/** Valerion has fallen: the run is won and the next page is the victory screen, with nothing to choose first. */
+export function finishCampaign(r: RunState, nodeId: string): void {
+  clearNode(r, nodeId);
+  delete r.eventResult;
+  delete r.eventFlips;
+  r.won = true;
+  r.phase = 'loopCleared';
 }
 
 const heal = (r: RunState, n: number): void => {
@@ -482,7 +509,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       if (crossed) {
         stock = [];
         for (let g = 0; g < 40 && stock.length < 4; g++)
-          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4))
+          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, 0))
             if (
               COMBAT_DB.cards[id]?.hero === crossed &&
               // (not a card that only works in its owner's deck: the Trickster's Suits, DECISIONS #387)
@@ -492,7 +519,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             )
               stock.push(id);
       } else {
-        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4);
+        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, heartCrossedChance(r));
       }
       const items: MerchantItem[] = stock.map((cardId) => ({
         cardId,
@@ -607,6 +634,7 @@ export interface FightPlan {
   /** the HP you enter with (and restart with after a loss) */
   hp: number;
   maxHp: number;
+  maxHpBeforeHeart?: number;
   tier: number;
   boons: string[];
   potions: string[];
@@ -873,6 +901,7 @@ export function duelPlan(run: RunState): FightPlan | null {
     deck: [...run.deck, ...omen.fightCards],
     hp: run.hp,
     maxHp: run.maxHp,
+    maxHpBeforeHeart: run.maxHp + (run.heartMaxHpLoss ?? 0),
     // the engine's own tier scaling stays off: tierTable.ts carries all of it, through hpPct and dmgPct below
     tier: 1,
     // (a Warden's Heart works in every fight like a Boon)
@@ -939,7 +968,11 @@ export function finishDuel(
     Number.isInteger(maxHpGained) && maxHpGained >= 0 && maxHpGained <= MAX_HP_GAIN_PER_FIGHT,
     'Invalid max HP gain at the end of a fight',
   );
-  r.maxHp += maxHpGained;
+  need(
+    Number.isInteger(hpLeft) && hpLeft >= 1 && hpLeft <= r.maxHp + maxHpGained,
+    'Invalid HP at the end of a fight',
+  );
+  changeMaxHp(r, maxHpGained, false);
   need(
     Number.isInteger(extraRewards) && extraRewards >= 0,
     'Invalid extra card rewards at the end of a fight',
@@ -965,6 +998,11 @@ export function finishDuel(
       r.potions.push(id);
     }
   }
+  // Valerion ends the campaign: no Gift, shards, potion, Boon, Max HP or healing, straight to the victory screen
+  if (node.enemyId === 'vorthax') {
+    finishCampaign(r, node.id);
+    return r;
+  }
   let potionGained: string | undefined;
   const elitePays = eliteRewards(r.tier);
   // (an Echo pays as an Elite does, Boon chance and all, with one of its own cards for the card reward; DECISIONS #549, #550)
@@ -981,7 +1019,8 @@ export function finishDuel(
   }
   const gain = Math.round(
     (node.kind === 'duel' ? FIGHT_SHARDS.duel : asElite ? elitePays.shards : FIGHT_SHARDS.warden) *
-      (1 - omenEffects(r.tier, !r.campaignRoute).shardsPct / 100),
+      (1 - omenEffects(r.tier, !r.campaignRoute).shardsPct / 100) *
+      (1 + (r.heart ? (COMBAT_DB.boons[r.heart]?.fightShardsPct ?? 0) : 0) / 100),
   );
   // (an Elite's or an Echo's shards are one of its spoils, chosen on the reward page: DECISIONS #555)
   if (!asElite) r.shards += gain;
@@ -1014,9 +1053,8 @@ export function finishDuel(
     clearNode(r, node.id);
     // a Warden falls: you grow a little sturdier for good (more deeper in, where enemies hit harder; DECISIONS #237), and catch your breath
     const sturdier = wardenMaxHp(r.tier);
-    r.maxHp += sturdier;
-    r.hp += sturdier;
-    r.eventResult = `The Warden falls: +${sturdier} Max HP.`;
+    const gained = changeMaxHp(r, sturdier);
+    r.eventResult = `The Warden falls: +${gained} Max HP.`;
     healAfterFight(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     // Tier III's last Warden: the reward is an Ascendancy, in place of the Gift, a Heart and whatever the Heart of the Rift leaves. A run
@@ -1102,7 +1140,14 @@ export function finishDuel(
     nodeId: node.id,
     offers: echoed.length
       ? echoed
-      : offerCards(r.rng, r.character, r.deck, asElite ? 'elite' : 'duel', count),
+      : offerCards(
+          r.rng,
+          r.character,
+          r.deck,
+          asElite ? 'elite' : 'duel',
+          count,
+          heartCrossedChance(r),
+        ),
     ...extra,
     ...(asElite ? { spoils: { shards: gain } } : { shardsGained: gain }),
     ...(boonGained ? { boonGained } : {}),
@@ -1126,7 +1171,10 @@ export function spoilAmounts(
   if (!sp) return null;
   return {
     shards: sp.shards,
-    maxHp: ELITE_SPOIL_MAX_HP,
+    maxHp: (() => {
+      const copy = clone(run);
+      return changeMaxHp(copy, ELITE_SPOIL_MAX_HP);
+    })(),
     heal: Math.min(run.maxHp - run.hp, Math.ceil((run.maxHp * ELITE_SPOIL_HEAL_PCT) / 100)),
   };
 }
@@ -1141,9 +1189,8 @@ function takeSpoil(r: RunState, spoil: Spoil): void {
     c.shardsGained = sp.shards;
     c.spoilTaken = `+${sp.shards} shards`;
   } else if (spoil === 'maxHp') {
-    r.maxHp += ELITE_SPOIL_MAX_HP;
-    r.hp += ELITE_SPOIL_MAX_HP;
-    c.spoilTaken = `+${ELITE_SPOIL_MAX_HP} Max HP`;
+    const gained = changeMaxHp(r, ELITE_SPOIL_MAX_HP);
+    c.spoilTaken = `+${gained} Max HP`;
   } else {
     const before = r.hp;
     heal(r, (r.maxHp * ELITE_SPOIL_HEAL_PCT) / 100);
@@ -1186,7 +1233,14 @@ export function rerollReward(run: RunState): RunState {
   c.offers =
     r.phase === 'gift'
       ? giftOffers(r.rng, r.character, r.deck, count)
-      : offerCards(r.rng, r.character, r.deck, node.kind === 'duel' ? 'duel' : 'elite', count);
+      : offerCards(
+          r.rng,
+          r.character,
+          r.deck,
+          node.kind === 'duel' ? 'duel' : 'elite',
+          count,
+          heartCrossedChance(r),
+        );
   r.rewardRerollTier = r.tier;
   return r;
 }
@@ -1343,8 +1397,7 @@ const isPlainBasic = (id: string): boolean =>
 function applyEffect(r: RunState, e: PreludeEffect): string | null {
   switch (e.k) {
     case 'maxHp':
-      r.maxHp = Math.max(10, r.maxHp + e.n);
-      r.hp = e.n > 0 ? r.hp + e.n : Math.min(r.hp, r.maxHp);
+      changeMaxHp(r, e.n, true, 10);
       return null;
     case 'heal':
       heal(r, (r.maxHp * e.pct) / 100);
@@ -1515,9 +1568,8 @@ function wagerAt(
   if (choice.kind === 'ledger') {
     const gain = ledgerGain(r);
     r.ledger = (r.ledger ?? 0) + 1;
-    r.maxHp += gain;
-    r.hp += gain;
-    g.note = `You sign the Ledger (${r.ledger} ${r.ledger === 1 ? 'time' : 'times'} now): +${gain} Max HP. The next signature gives ${ledgerGain(r)}.`;
+    const gained = changeMaxHp(r, gain);
+    g.note = `You sign the Ledger (${r.ledger} ${r.ledger === 1 ? 'time' : 'times'} now): +${gained} Max HP. The next signature gives ${ledgerGain(r)} before Heart modifiers.`;
     return;
   }
   const i = r.deck.indexOf(choice.card);

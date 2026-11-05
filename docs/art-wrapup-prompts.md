@@ -27,7 +27,7 @@ Four things are left. Everything else has its own art. An upgraded companion ("+
 These units stand in front of or beside a Warden, and the player has to deal with them first:
 - **Foundry Hatch:** Kron's. It must be broken before attacks reach him.
 - **Hollow Acolytes:** the Hollow Benediction's. They make every enemy stronger each turn they stand.
-- **Rift Ward:** Vorthax's. It shields the Heart of the Rift.
+- **Rift Ward:** Valerion's. It shields the Heart of the Rift.
 
 Attach these three figures alongside Valeria, so the helpers match their masters:
 - `apps/web/public/art/figures/kron.png`
@@ -43,7 +43,7 @@ LAYOUT (critical): three separate full-body figures on a plain flat dark navy ba
 THE THREE, in this exact order, left to right:
 1. FOUNDRY HATCH (Kron's; it stands in front of him and must be broken first): a squat, wide armoured furnace door that walks. A heavy round riveted iron hatch, as big as the figure, set in a thick steel frame on two short stumpy piston legs. Molten orange light leaks from the seams round the hatch and through a small barred viewport in it; yellow-and-black hazard stripes on the frame; two teal indicator lamps on top; a big locking wheel in the middle of the hatch. Solid, stubborn and immovable, a living blast door, no face. Same orange, teal, steel and soot as the attached Kron.
 2. HOLLOW ACOLYTE (the Hollow Benediction's; two stand beside it): a small hollow suit of priestly armour with nobody inside, in the same ivory-white plate, gold trim and royal-blue cloth as the attached Hollow Benediction. Where the face should be, an open helm with darkness inside; in the empty chest, a small dim golden sun glowing through the gaps. It swings a gold censer on a chain, trailing warm gold incense smoke, and wears a blue-and-gold sash with a sun emblem. About half the height of a soldier, devout and eerie, not monstrous.
-3. RIFT WARD (Vorthax's; it shields the Heart of the Rift): a floating obelisk of dark cracked stone, taller than it is wide, hovering just above the ground, split by bright glowing violet-and-cyan rift seams like the attached Vorthax. Three jagged crystal shards orbit it, and a glowing abstract rift sigil (a ring and a split, NO letters or runes that read as writing) is carved in its face. A thin shimmering dome of violet light just around it. No face, no limbs: a ward, not a creature.
+3. RIFT WARD (Valerion's; it shields the Heart of the Rift): a floating obelisk of dark cracked stone, taller than it is wide, hovering just above the ground, split by bright glowing violet-and-cyan rift seams like the attached Valerion. Three jagged crystal shards orbit it, and a glowing abstract rift sigil (a ring and a split, NO letters or runes that read as writing) is carved in its face. A thin shimmering dome of violet light just around it. No face, no limbs: a ward, not a creature.
 
 Draw the Foundry Hatch and the Rift Ward about the size of a big soldier, the Acolyte smaller.
 PALETTE: each figure in its boss's colours; soft rim light from the upper left.

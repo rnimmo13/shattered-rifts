@@ -359,7 +359,13 @@ export function LeaderboardScreen() {
                   </b>,
                   // (still going, or how it ended; DECISIONS #292)
                   <span key="s" className={`board__status board__status--${s.status ?? 'live'}`}>
-                    {s.status === 'fell' ? 'Fell' : s.status === 'abandoned' ? 'Abandoned' : 'Live'}
+                    {s.status === 'completed'
+                      ? 'Completed'
+                      : s.status === 'fell'
+                        ? 'Dead'
+                        : s.status === 'abandoned'
+                          ? 'Abandoned'
+                          : 'Live'}
                   </span>,
                 ]}
               />

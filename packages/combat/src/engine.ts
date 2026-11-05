@@ -610,6 +610,7 @@ function applyDamage(
     ((source && source.side !== t.side) || (causeSide !== undefined && causeSide !== t.side)) &&
     lost >= t.hp &&
     survival?.rule.kind === 'desperation' &&
+    !t.rise?.length &&
     !survival.used
   ) {
     survival.used = true;
@@ -685,6 +686,11 @@ function isAttackAct(a: Act): boolean {
 
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 /** One hit of an attack. Returns the HP it took off (for Lifesteal). */
+function cardBoonBonus(r: Run, a: Act, field: 'cardDamagePct' | 'cardBarrierPct'): number {
+  if (!a.card || a.actor.kind !== 'hero') return 0;
+  return r.s.sides[a.actor.side].boons.reduce((n, id) => n + (r.db.boons[id]?.[field] ?? 0), 0);
+}
+
 function attackHit(
   r: Run,
   a: Act,
@@ -706,7 +712,16 @@ function attackHit(
       return 0;
     }
   }
-  let amount = modifiedDamage(base, a.actor, t, attacked, steps);
+  const heartBonus = cardBoonBonus(r, a, 'cardDamagePct');
+  const modify = (): number => {
+    let n = modifiedDamage(base, a.actor, t, attacked, steps);
+    if (heartBonus && t.side !== a.actor.side) {
+      n = Math.floor((n * (100 + heartBonus)) / 100);
+      steps?.push(`Card damage +${heartBonus}% = ${n}`);
+    }
+    return n;
+  };
+  let amount = modify();
   if (attacked && t.side !== a.actor.side) {
     const sd = r.s.sides[a.actor.side];
     if (a.disciplineBonus === undefined) {
@@ -729,7 +744,7 @@ function attackHit(
           steps.length,
           'Modifiers',
         );
-      amount = modifiedDamage(base, a.actor, t, attacked, steps);
+      amount = modify();
     }
     const extra =
       a.actor.kind === 'hero' && a.card?.kind === 'attack' ? disciplineTarget(sd, t) : 0;
@@ -2136,6 +2151,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n > 0) n += stacks(a.actor, 'bracing');
         // (assassin) Shadowmeld: what you gain is doubled
         if (n > 0 && stacks(t, 'meld') > 0) n *= 2;
+        if (n > 0) n = Math.floor((n * (100 + cardBoonBonus(r, a, 'cardBarrierPct'))) / 100);
         if (n > 0 && (stacks(t, 'brittle') > 0 || stacks(t, 'stunned') > 0))
           n = Math.floor(n * 0.75);
         // a Trap that punishes defending springs first, so the Barrier cannot soak what it deals
@@ -2792,10 +2808,21 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const t of resolve(r, a, op.to)) {
         const n = amountOf(r, a, op.amount, undefined, t);
         if (n <= 0 || t.hp <= 0) continue;
-        t.maxHp += n;
-        t.hp += n;
-        if (t.kind === 'hero') side.maxHpGained = (side.maxHpGained ?? 0) + n;
-        r.ev.push({ type: 'heal', target: t.id, amount: n, hp: t.hp, maxHp: t.maxHp });
+        const owner = r.s.sides[t.side];
+        const pct =
+          t.kind === 'hero'
+            ? owner.boons.reduce((sum, key) => sum + (r.db.boons[key]?.maxHpPct ?? 0), 0)
+            : 0;
+        let gained = n;
+        if (pct) {
+          owner.maxHpBeforeHeart =
+            (owner.maxHpBeforeHeart ?? Math.ceil((t.maxHp * 100) / (100 + pct))) + n;
+          gained = Math.max(1, Math.floor((owner.maxHpBeforeHeart * (100 + pct)) / 100)) - t.maxHp;
+        }
+        t.maxHp += gained;
+        t.hp += gained;
+        if (t.kind === 'hero') owner.maxHpGained = (owner.maxHpGained ?? 0) + n;
+        r.ev.push({ type: 'heal', target: t.id, amount: gained, hp: t.hp, maxHp: t.maxHp });
       }
       return;
     case 'extraReward':
@@ -4241,7 +4268,7 @@ function reap(r: Run): void {
   if (r.s.winner) return;
   for (const side of ['a', 'b'] as const) {
     const sd = r.s.sides[side];
-    // (a leader that falls takes the rest of its side with it: Vorthax's Ward and Shards, DECISIONS #547)
+    // (a leader that falls takes the rest of its side with it: Valerion's Ward and Shards, DECISIONS #547)
     if (sd.hero === null && sd.units.some((u) => u.hp <= 0 && r.db.units[u.def]?.leader))
       for (const u of sd.units) u.hp = 0;
     const dead = sd.units.filter((u) => u.hp <= 0);
@@ -5037,6 +5064,11 @@ function buildHeroSide(r: Run, id: Side, h: HeroSetup): SideState {
   });
   // statuses the setup starts the hero with (an Omen's Dread)
   const hero = sd.units[sd.units.length - 1] as Unit;
+  const maxHpPct = sd.boons.reduce((sum, key) => sum + (r.db.boons[key]?.maxHpPct ?? 0), 0);
+  if (maxHpPct)
+    sd.maxHpBeforeHeart = h.maxHpBeforeHeart ?? Math.ceil((maxHp * 100) / (100 + maxHpPct));
+  const rises = sd.boons.flatMap((key) => r.db.boons[key]?.rise ?? []);
+  if (rises.length) hero.rise = clone(rises);
   for (const [st, n] of Object.entries(h.statuses ?? {}) as [StatusId, number][])
     if (n > 0) hero.statuses[st] = (hero.statuses[st] ?? 0) + n;
   r.s.sides[id] = sd;
@@ -6239,11 +6271,12 @@ export function previewCardDamage(
     // (a Barrier that reads the board shows its real number, worked out as the engine's 'barrier' op does: DECISIONS #486)
     // (no ally picked yet: a number that reads it is not known, so the printed text stays)
     const unaimed = friendly && !mine && 'scale' in op && op.scale?.of === 'target';
-    if (op.op === 'barrier' && op.to === 'self' && op.scale && !earlier && !unaimed) {
+    if (op.op === 'barrier' && op.to === 'self' && !earlier && !unaimed) {
       let n = amountOf(r, a, op.amount, op.scale, hero) + resonanceOf(a);
       if (n > 0 && stacks(hero, 'unmovable') > 0 && !sd.barrierDoubled) n *= 2;
       if (n > 0) n += stacks(hero, 'bracing');
       if (n > 0 && stacks(hero, 'meld') > 0) n *= 2;
+      if (n > 0) n = Math.floor((n * (100 + cardBoonBonus(r, a, 'cardBarrierPct'))) / 100);
       if (n > 0 && (stacks(hero, 'brittle') > 0 || stacks(hero, 'stunned') > 0))
         n = Math.floor(n * 0.75);
       out.set(i, { lo: n, hi: n, printed: op.amount, calc: true, barrier: true });
@@ -6382,6 +6415,11 @@ export function previewCardDamage(
         def.kind === 'attack',
         how,
       );
+      const heartBonus = cardBoonBonus(r, a, 'cardDamagePct');
+      if (heartBonus) {
+        n = Math.floor((n * (100 + heartBonus)) / 100);
+        how.push(`Card damage +${heartBonus}% = ${n}`);
+      }
       if (styleBonus) {
         n = Math.floor((n * (100 + styleBonus)) / 100);
         how.push(`Ascendancy +${styleBonus}% = ${n}`);

@@ -1,4 +1,4 @@
-// Vorthax, the Heart of the Rift (DECISIONS #547): four quarters, each with Wardens' rules, and the Rift closing at the last.
+// Valerion, the Heart of the Rift (DECISIONS #547): four quarters, each with Wardens' rules, and the Rift closing at the last.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -27,7 +27,7 @@ function finale(): CombatState {
 const vx = (s: CombatState): Unit => s.sides.b.units.find((u) => u.def === 'vorthax')!;
 const heroOf = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
-/** Vorthax at this share of its max HP, with this move next. */
+/** Valerion at this share of its max HP, with this move next. */
 function at(pct: number, move: string): CombatState {
   const s = finale();
   const v = vx(s);
@@ -36,7 +36,7 @@ function at(pct: number, move: string): CombatState {
   return s;
 }
 
-describe('Vorthax, the Heart of the Rift', () => {
+describe('Valerion, the Heart of the Rift', () => {
   it('says its rule, and stands behind a Rift Ward that aimed attacks must break', () => {
     expect(encounter('vorthax').rule).toBeTruthy();
     const s = finale();

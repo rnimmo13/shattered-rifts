@@ -178,7 +178,7 @@ One line per card: subject → key visual idea. Combine with the realm modifier 
 **Boss portraits:** Seraphine (a winged armoured woman with a halo of broken gold, serene and severe) ·
 Kron (a towering industrial overseer robot with a single red optic in a cathedral of machinery) ·
 Gorrmaw (an enormous many-toothed maw rising from a pit, multiple eyes) · Nyxara (a veiled queen whose veil
-is spiderweb, faceless darkness under it, an elegant hand raised) · Vorthax (a humanoid silhouette made of
+is spiderweb, faceless darkness under it, an elegant hand raised) · Valerion (a humanoid silhouette made of
 a fractured crystal heart, with fragments of all four realms orbiting).
 
 **Boss signature cards** (from `03_CAMPAIGN.md`): Seraphine's Oath, Bell of Judgment, Gilded Halberdier,
@@ -186,7 +186,7 @@ Kron's Assembly Arm, Override Virus, Orbital Uplink, The Hunger Below, Maw Spawn
 Nyxara's Web, Whisper Net, Faceless Courtier. Write briefs alongside their card stats when they're authored.
 
 **Arenas:** the cathedral nave (Seraphine) · the conveyor foundry (Kron) · the ribcage jungle (Gorrmaw) · the
-shadow ballroom (Nyxara) · the orbiting fragments void (Vorthax) · a neutral Sanctum hub (a cozy floating
+shadow ballroom (Nyxara) · the orbiting fragments void (Valerion) · a neutral Sanctum hub (a cozy floating
 library-observatory between worlds).
 
 **Card backs:** the default "Riftwalker" back (an obsidian slab with a prismatic crack forming a sigil), designed

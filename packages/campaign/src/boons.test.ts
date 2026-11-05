@@ -60,7 +60,9 @@ describe('boons in a run', () => {
     const owned = BOONS.slice(0, BOONS.length - 1).map((b) => b.id);
     const run = { ...inFight(fresh('knight', 'owned'), 'elite'), boons: owned, hp: 30 };
     const won = finishDuel(run, true, 30);
-    expect(won.boons.filter((b) => !owned.includes(b))).toEqual([(BOONS[BOONS.length - 1] as (typeof BOONS)[number]).id]);
+    expect(won.boons.filter((b) => !owned.includes(b))).toEqual([
+      (BOONS[BOONS.length - 1] as (typeof BOONS)[number]).id,
+    ]);
     const all = { ...run, boons: BOONS.map((b) => b.id) };
     expect(finishDuel(all, true, 30).boons).toHaveLength(BOONS.length);
   });
@@ -100,10 +102,16 @@ describe('boons in a run', () => {
   it('saves refuse unknown boons, hold a repeated one once, and turn the retired Ward Stone into an Iron Sigil (DECISIONS #462)', () => {
     const r = fresh('trickster', 'sv');
     expect(parseRun(JSON.stringify({ ...r, boons: ['nope'] }))).toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
+    expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil', 'iron-sigil'] }))?.boons).toEqual([
+      'iron-sigil',
+    ]);
     expect(parseRun(JSON.stringify({ ...r, boons: ['iron-sigil'] }))).not.toBeNull();
-    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone'] }))?.boons).toEqual(['iron-sigil']);
-    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone', 'iron-sigil'] }))?.boons).toEqual(['iron-sigil']);
+    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone'] }))?.boons).toEqual([
+      'iron-sigil',
+    ]);
+    expect(parseRun(JSON.stringify({ ...r, boons: ['ward-stone', 'iron-sigil'] }))?.boons).toEqual([
+      'iron-sigil',
+    ]);
   });
 
   it('a run that held a Boon since taken out holds its nearest one (DECISIONS #496, #497)', () => {
@@ -119,7 +127,9 @@ describe('boons in a run', () => {
       expect(parseRun(JSON.stringify({ ...r, boons: [gone, now] }))?.boons).toEqual([now]);
     }
     // (both Boons that became a Satchel are held as one)
-    expect(parseRun(JSON.stringify({ ...r, boons: ['rift-core', 'scholars-tome'] }))?.boons).toEqual(['rift-satchel']);
+    expect(
+      parseRun(JSON.stringify({ ...r, boons: ['rift-core', 'scholars-tome'] }))?.boons,
+    ).toEqual(['rift-satchel']);
   });
 
   it('a Legendary waiting to be swapped in leaves the save with the rule that made it', () => {
@@ -136,11 +146,16 @@ describe('boons in a run', () => {
     expect([...BOONS, ...HEARTS].filter((x) => x.mana)).toEqual([]);
   });
 
-  it('Aegis of Ages gives one Shielded, and there is no other Shielded Boon but the Warded Heart', () => {
-    expect(COMBAT_DB.boons['aegis-of-ages']?.fightStart?.[0]).toMatchObject({ status: 'shielded', amount: 1 });
+  it('Aegis of Ages is the only Boon granting opening Shielded', () => {
+    expect(COMBAT_DB.boons['aegis-of-ages']?.fightStart?.[0]).toMatchObject({
+      status: 'shielded',
+      amount: 1,
+    });
     expect(COMBAT_DB.boons['ward-stone']).toBeUndefined();
-    const shielded = Object.values(COMBAT_DB.boons).filter((x) => x.fightStart?.some((o) => o.op === 'status' && o.status === 'shielded'));
-    expect(shielded.map((x) => x.id).sort()).toEqual(['aegis-of-ages', 'warded-heart']);
+    const shielded = Object.values(COMBAT_DB.boons).filter((x) =>
+      x.fightStart?.some((o) => o.op === 'status' && o.status === 'shielded'),
+    );
+    expect(shielded.map((x) => x.id).sort()).toEqual(['aegis-of-ages']);
   });
 });
 
@@ -297,4 +312,3 @@ describe('a lost fight is retried at full HP (DECISIONS #289, #355)', () => {
     }
   });
 });
-

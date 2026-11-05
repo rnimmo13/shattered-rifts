@@ -27,7 +27,7 @@ it('uses Arena HP and distinguishes censored results from real outcomes reproduc
   expect({ ...a, ms: 0 }).toEqual({ ...b, ms: 0 });
   expect(a.turns.a).toBeGreaterThan(0);
 });
-it('uses the actual Tier XX Normal Vorthax plan and campaign Boon HP', () => {
+it('uses the actual Tier XX Normal Valerion plan and campaign Boon HP', () => {
   const r = fight({ id: 1, mode: 'boss', a: deck, seed: 'harness-boss', budget: 30 });
   expect(r.maxHp).toEqual({ a: 88, b: 2550 });
   expect(r.tier).toBe(20);

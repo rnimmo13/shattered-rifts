@@ -24,9 +24,9 @@ import { MULTIVERSE_UNITS } from './unitsMultiverse';
 
 /** Nyxara's rule: her intent is hidden until you hit her (DECISIONS #546) */
 const veil = () => status('veiled', 1);
-/** Barrier as a share of its own max HP, so it counts at every tier (Vorthax, DECISIONS #547) */
+/** Barrier as a share of its own max HP, so it counts at every tier (Valerion, DECISIONS #547) */
 const ownBarrier = (pct: number) => scaled(barrier(0), per('maxHp', pct / 100, 'each'));
-/** The Rift Closes: Fate on the hero, a share of their max HP (Vorthax's last quarter, DECISIONS #547) */
+/** The Rift Closes: Fate on the hero, a share of their max HP (Valerion's last quarter, DECISIONS #547) */
 const closing = (pct: number) => scaled(status('doom', 0, 'foeHero'), per('maxHp', pct / 100, 'each'));
 
 // --- companions ---------------------------------------------------------------------------------------------
@@ -452,7 +452,7 @@ export const ENEMY_UNITS: UnitDef[] = [
     ),
   ),
 
-  // ---- the finale: Vorthax, the Heart of the Rift (DECISIONS #547) ----
+  // ---- the finale: Valerion, the Heart of the Rift (DECISIONS #547) ----
   // Tier XX Normal uses 850% HP / 185% damage; its quarters replace extra Omen phase rises. Barrier and healing are
   // shares of its max HP: a flat 12 would be nothing there. Every quarter of its HP it fights with the rules of the Wardens it made,
   // and in the last it closes the Rift: Fate on you every turn, so only a deck that can finish it gets to.
@@ -468,7 +468,7 @@ export const ENEMY_UNITS: UnitDef[] = [
   ),
   foe(
     'vorthax',
-    'Vorthax, Heart of the Rift',
+    'Valerion, Heart of the Rift',
     300,
     [
       // I. The Heart Wakes (Kron, the Hollow Benediction)

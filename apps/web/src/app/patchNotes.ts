@@ -14,6 +14,7 @@ export interface PatchItem {
   title?: string;
   card?: string;
   hero?: string;
+  boon?: string;
   changes?: {
     label: string;
     before: string;
@@ -43,6 +44,205 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 };
 
 export const PATCH_NOTES: PatchNote[] = [
+  {
+    version: '0.206.0',
+    date: '2026-11-05',
+    title: 'Choose your Warden’s Heart',
+    summary: 'Six passive Hearts and clearer Campaign completion statuses.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'The final boss is Valerion',
+        text: 'The tyrant at the Heart of the Rift now goes by Valerion, everywhere in the game and the lore. Saves, replays and leaderboards are unaffected.',
+      },
+      {
+        kind: 'changed',
+        title: 'Straight to victory',
+        text: 'Beating Valerion now takes you straight to the victory screen, with no Gift or card reward first. A run saved on that old Gift page opens on the victory screen.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Campaign status',
+        text: 'Campaign leaderboard and History now show Completed for a victory and Dead instead of Fell for a lost run. Completed runs use a gold label. Saved victories and retained winning finale replays repair older fallen/abandoned board entries when the game or Campaign board syncs. Reaching the final tier alone does not count as completion; late death reports cannot replace a completed status.',
+      },
+      {
+        kind: 'balance',
+        title: 'Glutton’s Heart',
+        boon: 'gluttons-heart',
+        text: 'Campaign only. Extra draw remains +1 each turn. The percentage follows Max HP growth; the resulting maximum rounds down, minimum 1. Swapping restores the withheld maximum without healing. Existing flat-penalty saves migrate once, preserving wounds.',
+        changes: [
+          {
+            label: 'Max HP penalty',
+            before: '−20 HP',
+            after: '−5%',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Blood Heart',
+        boon: 'blood-heart',
+        text: 'Campaign only. Replaces starting Might and recurring HP loss with a multiplier to direct card damage, including damaging Skills, Traps and Auras. Excludes HP payments, companion attacks, totems and status ticks. Faltering retains its usual Attack-only effect and can be cleansed.',
+        changes: [
+          {
+            label: 'Starting Might',
+            before: '3',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'HP lost each turn',
+            before: '2',
+            after: '0',
+            direction: 'buff',
+          },
+          {
+            label: 'Card damage bonus',
+            before: '0%',
+            after: '+25%',
+            direction: 'buff',
+          },
+          {
+            label: 'Starting Faltering',
+            before: '0 turns',
+            after: '3 turns',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Warded Heart',
+        boon: 'warded-heart',
+        text: 'Campaign only. Replaces temporary opening protection and recurring Brittle with stronger Barrier from cards and a finite opening penalty. The bonus does not multiply passive Plating, Boon or phase Barrier. Brittle can be cleansed.',
+        changes: [
+          {
+            label: 'Barrier from cards',
+            before: 'Normal',
+            after: '+25%',
+            direction: 'buff',
+          },
+          {
+            label: 'Starting Shielded',
+            before: '1',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'Starting Plating',
+            before: '7',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'Brittle',
+            before: 'Reapplied every turn',
+            after: '3 turns at fight start',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Ember Heart → Rift Heart',
+        boon: 'ember-heart',
+        text: 'Campaign only. Replaces random Burn and self-Burn with more Rift-Crossed opportunities at the cost of fight shards. Applies to newly generated ordinary rewards, rerolls and merchant stock; explicit foreign-class offers remain available. Already displayed offers and earned shards remain intact.',
+        changes: [
+          {
+            label: 'Burn applied each turn',
+            before: '3 to a random enemy',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'Starting self-Burn',
+            before: '2',
+            after: '0',
+            direction: 'buff',
+          },
+          {
+            label: 'Ordinary Rift-Crossed chance per card',
+            before: '3%',
+            after: '10%',
+            direction: 'buff',
+          },
+          {
+            label: 'Fight-victory shards',
+            before: '100%',
+            after: '75%',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Thorned Heart → Gilded Heart',
+        boon: 'thorned-heart',
+        text: 'Campaign only. Replaces combat bonuses and opening Exposed with greater fight income and class-focused ordinary offers. Explicit Rift-Crossed events and merchants are unchanged. Fight-shard multipliers include selectable Elite shards, exclude fixed Boon/event income and round to the nearest whole shard after Omens.',
+        changes: [
+          {
+            label: 'Starting Thorns',
+            before: '4',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'Starting Might',
+            before: '2',
+            after: '0',
+            direction: 'nerf',
+          },
+          {
+            label: 'Starting Exposed',
+            before: '2 turns',
+            after: '0 turns',
+            direction: 'buff',
+          },
+          {
+            label: 'Fight-victory shards',
+            before: '100%',
+            after: '140%',
+            direction: 'buff',
+          },
+          {
+            label: 'Ordinary Rift-Crossed chance per card',
+            before: '3%',
+            after: '0%',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Resurgent Heart',
+        boon: 'resurgent-heart',
+        text: 'Campaign only. Once per fight, damage that would reach or cross half HP stops there, then grants Barrier equal to 25% of Max HP, rounded up. Resets next fight. Starting below half HP never heals you; the phase then blocks one damaging hit before granting Barrier. Start with 3 turns of Exposed as its tradeoff.',
+        changes: [
+          {
+            label: 'Half-health phase',
+            before: 'Not available',
+            after: 'Once per fight',
+            direction: 'buff',
+          },
+          {
+            label: 'Phase Barrier',
+            before: '0',
+            after: '25% of Max HP',
+            direction: 'buff',
+          },
+          {
+            label: 'Starting Exposed',
+            before: '0 turns',
+            after: '3 turns',
+            direction: 'nerf',
+          },
+        ],
+      },
+    ],
+    heads:
+      'Campaign Hearts update in existing runs. Opening debuffs add to any Omen debuffs and can be cleansed. Older unfinished battles restart from their saved encounter checkpoint; earned rewards and progress remain. Hearts do not apply in Arena.',
+  },
   {
     version: '0.205.0',
     date: '2026-11-05',

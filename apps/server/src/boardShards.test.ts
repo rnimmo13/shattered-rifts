@@ -70,3 +70,66 @@ it('migrates old boards and updates spending at equal progress without restoring
   const result = await view.json<{ board: { shards: number }[] }>();
   expect(result.board[0]!.shards).toBe(40);
 });
+
+it('records and repairs completed runs without letting late death reports overwrite victory', async () => {
+  const db = (database = new DatabaseSync(':memory:'));
+  const kv = new Map<string, unknown>();
+  const board = new Leaderboard(
+    {
+      storage: {
+        kv: {
+          get: (key: string) => kv.get(key),
+          put: (key: string, value: unknown) => kv.set(key, value),
+        },
+        sql: {
+          exec: (q: string, ...args: SQLInputValue[]) => {
+            const rows = db.prepare(q).all(...args);
+            return { toArray: () => rows };
+          },
+        },
+      },
+    } as unknown as ConstructorParameters<typeof Leaderboard>[0],
+    {} as ConstructorParameters<typeof Leaderboard>[1],
+  );
+  const player = 'b'.repeat(64);
+  db.prepare('INSERT INTO names (player,key,name,at) VALUES (?,?,?,?)').run(
+    player,
+    'bob',
+    'Bob',
+    Date.now(),
+  );
+  const ask = (body: object) =>
+    board.fetch(
+      new Request('https://board.invalid/run', {
+        method: 'POST',
+        body: JSON.stringify({
+          player,
+          run: 'winner',
+          hero: 'knight',
+          tier: 12,
+          stage: 3,
+          ...body,
+        }),
+      }),
+    );
+  expect((await ask({ ended: 'completed', shards: 80 })).status).toBe(200);
+  expect(db.prepare('SELECT ended FROM runs').get()).toEqual({ ended: 'completed' });
+  await ask({ ended: 'fell' });
+  await ask({ ended: 'abandoned' });
+  expect(db.prepare('SELECT ended FROM runs').get()).toEqual({ ended: 'completed' });
+  db.exec("UPDATE runs SET ended='fell'");
+  await ask({ ended: 'completed' });
+  expect(db.prepare('SELECT ended,shards FROM runs').get()).toEqual({
+    ended: 'completed',
+    shards: 80,
+  });
+  const view = await board.fetch(
+    new Request('https://board.invalid/view', {
+      method: 'POST',
+      body: JSON.stringify({ kind: 'runs', period: 'week', player }),
+    }),
+  );
+  expect((await view.json<{ board: { status: string }[] }>()).board[0]!.status).toBe('completed');
+  expect((await ask({ ended: 'completed', tier: 11 })).status).toBe(400);
+  expect((await ask({ ended: 'completed', stage: 0 })).status).toBe(400);
+});

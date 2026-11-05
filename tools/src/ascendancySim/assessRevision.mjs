@@ -115,7 +115,7 @@ const result = {
   corrections: [
     'The all-A projection was contradicted by the v0.198.0 benchmark and is not reasserted.',
     'Final comparison combines rule and deck changes; frozen candidate-b isolates rule changes separately.',
-    'Vorthax is an isolated full-health fight with fixed Boons, not a full campaign success rate.',
+    'Valerion is an isolated full-health fight with fixed Boons, not a full campaign success rate.',
     'No new early/deep campaign or human letter grades are inferred from boss/Arena bot wins.',
   ],
 };

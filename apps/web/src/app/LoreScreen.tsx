@@ -88,7 +88,7 @@ export default function LoreScreen() {
             Ward, and each had a Warden to keep it.
           </p>
           <p>
-            Then Vorthax shattered a vast section of the Ward. A few can walk the Rifts and live.
+            Then Valerion shattered a vast section of the Ward. A few can walk the Rifts and live.
             They are the Riftwalkers—and there are not enough shards for everyone.
           </p>
           <button

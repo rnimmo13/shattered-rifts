@@ -725,6 +725,7 @@ export const BOON_ICONS: Record<string, IconArt> = {
     art([], [p(C.leaf, 'M6 18C16 28 32 28 42 18', 3)]),
   ),
   'warded-heart': mix(HEART_ART, place(shield(C.steelHi, C.steel, C.white), 0.48, 12.5, 11)),
+  'resurgent-heart': mix(HEART_ART, place(shield(C.gold, C.goldLo, C.white), 0.48, 12.5, 11)),
 };
 
 // ---- the map's pens ----
@@ -756,6 +757,8 @@ export const boonIcon = (id: string): IconArt | undefined =>
 /** Reuse an existing painting when it already depicts the buff exactly. */
 const PAINTED_PATHS: Readonly<Record<string, string>> = {
   backup: 'art/cards/backup-core.jpg',
+  'resurgent-heart': 'art/icons/aegis-of-ages.png',
+  'thorned-heart': 'art/icons/gilded-crown.png',
 };
 
 /** The ids with a painted picture. Retired statuses have none. */
@@ -770,7 +773,7 @@ export const PAINTED: ReadonlySet<string> = new Set(
     // (the Wardens' rules, DECISIONS #546: painted on icons-07, with Slippery)
     'veiled gravity unmaking',
     'iron-sigil thorn-charm might-idol ember-lamp healing-vial rift-satchel crystal-heart coin-purse vigor-wick hex-lantern hunters-lens aegis-of-ages',
-    'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart',
+    'gilded-crown ember-heart gluttons-heart blood-heart thorned-heart warded-heart resurgent-heart',
   ].flatMap((row) => row.split(' ')),
 );
 

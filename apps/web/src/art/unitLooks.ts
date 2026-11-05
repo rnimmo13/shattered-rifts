@@ -755,7 +755,7 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(200,100,255,0.4)',
   },
   // ---- the Rift
-  // (Vorthax's Ward, DECISIONS #547: a squat crystal wall)
+  // (Valerion's Ward, DECISIONS #547: a squat crystal wall)
   'rift-ward': {
     hue: 300,
     sat: 1.3,

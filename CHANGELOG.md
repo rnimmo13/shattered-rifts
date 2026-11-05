@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.206.0 / rules84 — release approved
+
+Robert approved committing, pushing and deploying everything on 2026-11-05: Warden Hearts, Campaign completion status, the Valerion rename (#631) and the instant finale victory (#629).
+
+- The final boss is now named Valerion (was Vorthax). Saves, replays and leaderboards are unaffected.
+- Campaign: beating Vorthax goes straight to the victory screen. No Gift, card reward, shards or other rewards come first. Runs saved on the old post-Vorthax Gift open on the victory screen.
+
+- Campaign statuses: victories report Completed; fallen runs display Dead. Preserve internal fell IDs for compatibility. Add completed status through owned run reporting, server storage and standings. Completed overrides legacy fell/abandoned labels and cannot be overwritten by delayed death reports. Reannounce explicit victories from active saves/history or retained winning final-boss replays on startup/board sync. Never infer a win from tier alone. Keep completed progress when banking; completion itself triggers a report even without new shards/stage progress. Completed History and board labels are gold. No gameplay or rules-version change. Glutton’s Heart: Max HP penalty −20 HP → −5%.
+
+Blood Heart: Starting Might 3 → 0; HP lost each turn 2 → 0; Card damage bonus 0% → +25%; Starting Faltering 0 turns → 3 turns.
+
+Warded Heart: Barrier from cards Normal → +25%; Starting Shielded 1 → 0; Starting Plating 7 → 0; Brittle Reapplied every turn → 3 turns at fight start.
+
+Ember Heart → Rift Heart: Burn applied each turn 3 to a random enemy → 0; Starting self-Burn 2 → 0; Ordinary Rift-Crossed chance per card 3% → 10%; Fight-victory shards 100% → 75%.
+
+Thorned Heart → Gilded Heart: Starting Thorns 4 → 0; Starting Might 2 → 0; Starting Exposed 2 turns → 0 turns; Fight-victory shards 100% → 140%; Ordinary Rift-Crossed chance per card 3% → 0%.
+
+Resurgent Heart: Half-health phase Not available → Once per fight; Phase Barrier 0 → 25% of Max HP; Starting Exposed 0 turns → 3 turns.
+
+Implementation, exact scopes, rounding, migration, six-Heart switching and assessment: [Warden Heart ledger](docs/WARDEN_HEARTS_2026-11-05.md). Blood includes direct card-trigger/Trap damage, not HP payments, companions, totems or DOT. Warded multiplies card Barrier only. Reward multipliers cover victory/Elite spoils, exclude fixed event/Boon income. Preserve old IDs for renamed Hearts and already-earned/displayed rewards. Exact Glutton percentage tracks growth in and out of combat; old saves migrate once without healing. Resurgent uses the Omen damage stop and phase before Deathwish rescue; starting below half blocks one triggering hit without healing. Rules84 uses existing checkpoint restart for unfinished old battles. Web/desktop0.206.0; no Arena changes or simulations.
+
 ## 0.205.0 / rules 83 — release approved
 
 Robert asked to push and deploy a maintenance build on 2026-11-05. Version bump and patch note only; no gameplay, combat, card or save changes. Web and desktop versions match.

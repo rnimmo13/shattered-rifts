@@ -1,6 +1,6 @@
 # Shattered Rifts: Cards
 
-Current local revision: [0.199.0 balance ledger](BALANCE_REVISION_2026-11-05.md), with exact resource limits, protection, costs and Vorthax changes. Applies to Campaign/Arena as specified; not released. The generated [current card list](10_CARD_LIST.md) and `packages/content/src/v2` describe the live implementation; historical legacy material below is unchanged.
+Current local revision: [0.199.0 balance ledger](BALANCE_REVISION_2026-11-05.md), with exact resource limits, protection, costs and Valerion changes. Applies to Campaign/Arena as specified; not released. The generated [current card list](10_CARD_LIST.md) and `packages/content/src/v2` describe the live implementation; historical legacy material below is unchanged.
 
 > Current v0.198.0/rules81: [exact shared long-fight changes](LONG_FIGHT_BALANCE_2026-11-04.md), [all30 projected grades](balance-history/0.198.0.md). Implements the remaining proposals plus Bonelord/Deathwish protection; historical notices below retain their original context.
 
@@ -341,7 +341,7 @@ specified in `03_CAMPAIGN.md` and were set by the dev (DECISIONS #49).**
 | UMB-18 | Whisper Net | 2 | Trap | R | Trigger: When an enemy casts a spell. They discard a random card. | Nyxara |
 | UMB-19 | Faceless Courtier | 2 | Unit — Human Cultist · 2/2 | R | **Ambush**. Flip: look at the enemy's hand. | Nyxara |
 
-New token: **TOK-MAWSPAWN** Maw Spawn (Beast · 6/6), made by WYL-18. Vorthax's signature is NEU-10 Prism.
+New token: **TOK-MAWSPAWN** Maw Spawn (Beast · 6/6), made by WYL-18. Valerion's signature is NEU-10 Prism.
 
 ---
 
@@ -385,3 +385,5 @@ Whispered Bargain ×2, Shadow Coil ×3, Rift Wanderer ×1, Rift Bolt ×2, Shatte
 - **Set 3: "Tidebreak"** (deep-sea realm: bounce, Veiled leviathans).
 - Each set: 1 new realm (16), +4 cards per existing realm, 2 Mythics, 1 new keyword max.
 - Target: ~150 cards for Steam Early Access, ~250 by 1.0.
+
+Current Campaign Warden Hearts (local0.206/rules84) are passive run modifiers, not cards. See [exact Heart ledger](WARDEN_HEARTS_2026-11-05.md) and packages/content/src/v2/boons.ts; this legacy card list does not define their values.

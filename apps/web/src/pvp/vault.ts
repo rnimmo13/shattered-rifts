@@ -58,11 +58,12 @@ export function deckFromRun(
 
 /** How many of the tier's stages the run has cleared (3: the tier is cleared). */
 export function stagesCleared(
-  run: Pick<RunState, 'phase'> & { context?: RunState['context'] },
+  run: Pick<RunState, 'phase'> & { context?: RunState['context']; won?: boolean },
 ): number {
   // (a tier has no acts now, DECISIONS #531, but the boards and old decks still count 3 for a cleared tier. The Warden's gift comes after
   // the Warden has fallen, so the tier is already beaten)
-  return run.phase === 'loopCleared' ||
+  return run.won ||
+    run.phase === 'loopCleared' ||
     run.phase === 'gift' ||
     run.phase === 'ascend' ||
     run.context?.afterWarden

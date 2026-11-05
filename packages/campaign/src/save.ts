@@ -2,6 +2,7 @@
 // and the deck rules, so a hand-edited or damaged save is refused instead of crashing the game.
 
 import { boxNamedCard } from './eventBoxes';
+import { migrateHeart } from './hearts';
 import type { EventCtx } from './deals';
 import {
   COMBAT_DB,
@@ -20,7 +21,13 @@ import {
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
 import { FINAL_STAGE, gauntletMap, shuffledWardens, WARDEN_SEQUENCE } from './mapgen';
-import { FIGHT_SHARDS, MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
+import {
+  FIGHT_SHARDS,
+  MAX_EXTRA_REWARDS,
+  checkGhostBoss,
+  finishCampaign,
+  restartAtThreshold,
+} from './run';
 import { CAMPAIGN_GHOSTS_ENABLED, withoutCampaignGhosts } from './features';
 
 export const RUN_SAVE_VERSION = 2;
@@ -480,6 +487,8 @@ export function parseRun(text: string): RunState | null {
   const heart = (r as { heart?: unknown }).heart;
   if (heart !== undefined && !(typeof heart === 'string' && COMBAT_DB.boons[heart]?.heart === true))
     delete (r as { heart?: unknown }).heart;
+  if (r.heartMaxHpLoss !== undefined && !isInt(r.heartMaxHpLoss, 0, 9999)) return null;
+  migrateHeart(r as RunState);
   // (merchant removals bought: a count, or nothing)
   const removals = (r as { removals?: unknown }).removals;
   if (removals !== undefined && !isInt(removals, 0, 10000)) return null;
@@ -556,6 +565,13 @@ export function parseRun(text: string): RunState | null {
       activeNode?.ghost ||
       (isObj(r.context) && r.context.ghost !== undefined));
   const run = withoutCampaignGhosts(r as RunState);
+  // A run saved on a page after Valerion (his old Gift, an extra reward or an Ascendancy) goes straight to victory.
+  if (
+    (run.phase === 'gift' || run.phase === 'reward' || run.phase === 'ascend') &&
+    run.context &&
+    run.map.nodes.find((n) => n.id === run.context?.nodeId)?.enemyId === 'vorthax'
+  )
+    finishCampaign(run, run.context.nodeId);
   if (!run.campaignRoute && run.phase === 'loopCleared' && run.tier >= 12) {
     if (run.map.nodes.find((n) => n.id === run.at)?.enemyId === 'vorthax') run.won = true;
     else {
@@ -569,7 +585,7 @@ export function parseRun(text: string): RunState | null {
       run.context = null;
       run.phase = 'map';
       run.reworkNotice =
-        'Your cleared legacy tier is preserved in your earned progress. The campaign now ends with the Warden gauntlet, then Vorthax.';
+        'Your cleared legacy tier is preserved in your earned progress. The campaign now ends with the Warden gauntlet, then Valerion.';
     }
   }
   if (restartGhost) {

@@ -3,7 +3,7 @@
 //
 //   pnpm audit:balance -- burst  [--seeds 12] [--heroes monk,knight]   the most damage a deck can deal on turn 1 and turn 3 (a combo search)
 //   pnpm audit:balance -- ladder [--decks 4] [--levels t1s1,t5]             each deck level against its own tier: win %, turns, HP lost, peak round
-//   pnpm audit:balance -- matrix [--decks 3] [--tiers 1,2,3,5,10,15,20]     deck level x tier: Warden + Vorthax win % (is a tier an accomplishment?)
+//   pnpm audit:balance -- matrix [--decks 3] [--tiers 1,2,3,5,10,15,20]     deck level x tier: Warden + Valerion win % (is a tier an accomplishment?)
 //
 // Read every number as a bot playing: the beam bot plans a turn but not a fight, so a person does better with engines (stances,
 // totems) and worse with nothing. Burst is a search, so it is close to what a person hunting for a combo finds.
@@ -289,7 +289,7 @@ async function matrixMode(): Promise<void> {
     }
   }
   console.log(
-    `\nMatrix: boss win % (4 Wardens at stage 2 + Vorthax at stage 3), full HP. Rows = deck level, columns = Rift Tier.`,
+    `\nMatrix: boss win % (4 Wardens at stage 2 + Valerion at stage 3), full HP. Rows = deck level, columns = Rift Tier.`,
   );
   console.log(`Cell = win% / avg turns on wins\n`);
   for (const who of ['ALL', ...(HEROES.length > 1 ? HEROES : [])]) {

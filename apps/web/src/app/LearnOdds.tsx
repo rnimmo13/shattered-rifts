@@ -81,7 +81,8 @@ export function LearnOdds() {
         has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
         About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
         card). A reward offers three cards (an Omen takes one away from Tier III), each rolled like
-        this.
+        this. Rift Heart changes the ordinary Rift-Crossed chance to 10% per card; Gilded Heart
+        changes it to 0%. Explicit Rift-Crossed events and merchants are unaffected.
       </p>
       <table className="learn__table">
         <thead>
@@ -148,7 +149,7 @@ export function LearnOdds() {
         Deeper in, plain fights turn into Elites, past those limits: {eliteFightChance(2)}% of them
         at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10, and
         every one from Tier {ALL_ELITE_TIER}. The final gauntlet is a fresh shuffled line of Wardens
-        followed by Vorthax, with normal Warden rewards and healing. Before that, ambushes and
+        followed by Valerion, with normal Warden rewards and healing. Before that, ambushes and
         fights an event starts follow the same Elite odds.
       </p>
 

@@ -107,7 +107,7 @@ describe('stage maps', () => {
       expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
-  it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Vorthax (DECISIONS #531, #536)', () => {
+  it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Valerion (DECISIONS #531, #536)', () => {
     expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([11, 12, 13, 30]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
@@ -209,7 +209,7 @@ describe('stage maps', () => {
     expect(back?.stageRealms.slice(-2)).toEqual(['umbral', 'wyldmaw']);
   });
 
-  it('Tier XX ends with Vorthax himself, never a ghost', () => {
+  it('Tier XX ends with Valerion himself, never a ghost', () => {
     for (let i = 0; i < 100; i++) {
       const m = generateStageMap(
         seedRng('finale-' + i),

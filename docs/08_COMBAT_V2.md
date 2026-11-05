@@ -153,7 +153,7 @@ Keeps the structure of `03_CAMPAIGN.md` (map, rewards, shrines, merchant, events
 | **C2** | Content v2 in `packages/content`: card schema v2 + the four starter decks + ~25 cards each; ~15 enemies with intent patterns, 2 elites, 1 Warden to prove it. | rewrite of the 74 cards in the new model |
 | **C3** | New fight screen: side-to-side Pixi scene (reuse monsters, avatars, juice, reveal), intents, targeting-by-drop, auto-aim, hand, HUD. | reuses most of `apps/web/src/duel` |
 | **C4** | Campaign wired to the new fights (map/rewards/shrine/merchant already built), HP persistence, Resolve rules. | reuses `packages/campaign` |
-| **C5** | Full enemy roster, all Wardens + Vorthax, Boons, upgrades, remaining Riftwalker cards. | |
+| **C5** | Full enemy roster, all Wardens + Valerion, Boons, upgrades, remaining Riftwalker cards. | |
 | **C6** | PvP on the same engine (turn alternation, no intents). | after the PvE loop is fun |
 
 The current duel (`#/play`, `#/run`) keeps working until C4 replaces it. The old engine/AI/tests are deleted at the end of

@@ -39,6 +39,22 @@ export interface RunRecord {
   version?: string;
 }
 
+/** Explicit victory evidence also repairs older histories whose final win was labelled fallen. */
+export function completedRecord(run: Pick<RunRecord, 'won' | 'lastFight'>): boolean {
+  const fight = run.lastFight;
+  const opponent = fight?.setup?.b;
+  return (
+    run.won === true ||
+    !!(
+      fight?.won &&
+      opponent &&
+      'enemies' in opponent &&
+      Array.isArray(opponent.enemies) &&
+      opponent.enemies.includes('vorthax')
+    )
+  );
+}
+
 function read(): RunRecord[] {
   try {
     const raw = localStorage.getItem(KEY);
@@ -65,7 +81,9 @@ function read(): RunRecord[] {
 
 /** The runs that have ended on this device, newest first. */
 export function runHistory(): RunRecord[] {
-  return read().sort((a, b) => b.at - a.at);
+  return read()
+    .map((r) => (completedRecord(r) ? { ...r, won: true } : r))
+    .sort((a, b) => b.at - a.at);
 }
 
 /** The record a run makes when it ends. */

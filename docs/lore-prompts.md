@@ -2,7 +2,7 @@
 
 Art for the lore page (`docs/15_LORE.md §5`), the startup splash, Rift Tier transitions and Steam. Robert generates the images in
 ChatGPT; the asset pipeline encodes and wires them. The first complete set was generated with the built-in imagegen tool;
-final augmented prompts, source hashes and references are recorded in `docs/lore-art-manifest.json`. These briefs now reflect the partial Shattering caused by Vorthax and his conquest motive (#597-598); the manifest preserves the prompts actually used for the existing art. No artwork was regenerated for the lore correction.
+final augmented prompts, source hashes and references are recorded in `docs/lore-art-manifest.json`. These briefs now reflect the partial Shattering caused by Valerion and his conquest motive (#597-598); the manifest preserves the prompts actually used for the existing art. No artwork was regenerated for the lore correction.
 
 Three sets, 26 images in all:
 1. **Story panels:** comic panels for the six chapters of the story (16 images).
@@ -36,7 +36,7 @@ published by this work. `pnpm lore:smoke` checks the built page and startup at d
 ### Starter (paste once per chat, with the Knight image)
 
 ```
-You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. Vorthax, the unmatched tyrant of his original realm, sacrificed cities to break out and seek other worlds to conquer. From the space between worlds he unleashed a cataclysmic blast that shattered a vast section of the Ward; distant sections remain intact. Rifts tore open between the exposed worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is Vorthax, the Heart of the Rift, who takes Wardens to claim their worlds' laws. His original realm is unnamed; do not depict an existing class homeland as his birthplace. His precise nature and appearance remain unrevealed.
+You are painting STORY PANELS for the lore page of a dark-fantasy card-battler game called Shattered Rifts. The story: many separate worlds were sealed apart by an invisible barrier called the Ward, each kept by a guardian called a Warden. Valerion, the unmatched tyrant of his original realm, sacrificed cities to break out and seek other worlds to conquer. From the space between worlds he unleashed a cataclysmic blast that shattered a vast section of the Ward; distant sections remain intact. Rifts tore open between the exposed worlds, and champions from each world (Riftwalkers) now fight the corrupted Wardens and each other for the shards of the broken Ward. At the centre is Valerion, the Heart of the Rift, who takes Wardens to claim their worlds' laws. His original realm is unnamed; do not depict an existing class homeland as his birthplace. His precise nature and appearance remain unrevealed.
 
 I will send one panel per message; make ONE image per message.
 
@@ -71,7 +71,7 @@ Reply "ready" and wait for the first panel.
 
 **Chapter 3: The Shattering**
 5. **ch3-crack.png**: The first crack: a single jagged violet-cyan line splitting across the glassy Ward sky above a golden city, people on the rooftops looking up. Ominous stillness. Accent: violet against gold.
-6. **ch3-shatter.png**: A vast section of the Ward shattering under Vorthax's cataclysmic blast: the glass sky breaking into a storm of falling iridescent shards, rifts tearing open across the exposed land, light pouring through. Distant sections of the barrier remain intact. Huge scale, chaotic, beautiful. Accent: violet, cyan, iridescent white.
+6. **ch3-shatter.png**: A vast section of the Ward shattering under Valerion's cataclysmic blast: the glass sky breaking into a storm of falling iridescent shards, rifts tearing open across the exposed land, light pouring through. Distant sections of the barrier remain intact. Huge scale, chaotic, beautiful. Accent: violet, cyan, iridescent white.
 7. **ch3-spill.png**: Through a fresh rift in a quiet machine-world street, wild things spill in: a vine-covered beast, a swirl of shadow birds, a floating golden relic. The machines turn to look. Accent: industrial orange, green, violet rift light.
 8. **ch3-taken.png**: A Warden guardian on their knees as dark tendrils of rift light wrap around them from a crack behind, their light turning from gold to sickly violet. Tragic, not gory. Accent: gold fading into violet.
 

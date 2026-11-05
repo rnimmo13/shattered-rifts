@@ -191,11 +191,11 @@ const cell = (s) => (s.n ? `${pct(s.decisiveWinPct)} (${s.w}-${s.l}-${s.u})` : '
 const lines = [
   '# v0.198.0 simulation results',
   '',
-  'Simulation outcomes, not human win-rate estimates. Arena cells show decisive win percentage and W-L-unresolved; draws are separately recorded in JSON/CSV. Vorthax percentages mean wins within the experiment limit. Prior grades are the saved static estimates.',
+  'Simulation outcomes, not human win-rate estimates. Arena cells show decisive win percentage and W-L-unresolved; draws are separately recorded in JSON/CSV. Valerion percentages mean wins within the experiment limit. Prior grades are the saved static estimates.',
   '',
   `Main games completed: ${data.length}/9,480.`,
   '',
-  '| Ascendancy | Prior Arena / late Campaign | Arena tuned | Arena good | Vorthax tuned | Vorthax good |',
+  '| Ascendancy | Prior Arena / late Campaign | Arena tuned | Arena good | Valerion tuned | Valerion good |',
   '|---|---|---|---|---|---|',
   ...result.map(
     (r) =>

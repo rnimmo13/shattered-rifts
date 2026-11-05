@@ -1,3 +1,4 @@
+import { changeMaxHp, heartCrossedChance } from './hearts';
 // Random events on the map. Each is a small story with a choice: some are generous, some are a gamble, some are a bad deal
 // with an upside, and only a few offer a card. rollEvent picks one by weight among those that make sense right now;
 // resolveEvent carries out the player's choice and says what happened.
@@ -51,7 +52,7 @@ export const EVENTS: EventDef[] = [
       // a card is on the table only now and then
       const card =
         nextInt(r.rng, 100) < 35
-          ? (offerCards(r.rng, r.character, r.deck, 'duel', 1)[0] ?? '')
+          ? (offerCards(r.rng, r.character, r.deck, 'duel', 1, heartCrossedChance(r))[0] ?? '')
           : '';
       return {
         title: 'A rift cache',
@@ -120,7 +121,7 @@ export const EVENTS: EventDef[] = [
       const from = others[nextInt(r.rng, others.length)] as HeroId;
       let card = '';
       for (let g = 0; g < 30 && !card; g++)
-        for (const id of offerCards(r.rng, from, r.deck, 'elite', 3))
+        for (const id of offerCards(r.rng, from, r.deck, 'elite', 3, 0))
           if (
             !card &&
             COMBAT_DB.cards[id]?.hero === from &&
@@ -402,7 +403,7 @@ export function pinOptions(r: RunState, ev: EventCtx): EventCtx {
       const from = pickOf(basics(r.deck).filter((id) => id !== 'wound'));
       let made = '';
       for (let g = 0; g < 20 && from && !made; g++)
-        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, heartCrossedChance(r)))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
       if (from && made) shows = { lose: [from], gain: [made] };
     }
@@ -572,11 +573,11 @@ export function resolveEvent(
     case 'sell':
       r.shards += 35;
       return 'You sell some scrap for 35 shards.';
-    case 'maxhp':
-      r.maxHp += 6;
-      r.hp += 6;
+    case 'maxhp': {
+      const gained = changeMaxHp(r, 6);
       r.deck.push('wound');
-      return 'The scale is cold in your pocket. +6 max HP, and a Wound joins your deck.';
+      return `The scale is cold in your pocket. +${gained} max HP, and a Wound joins your deck.`;
+    }
     case 'tend':
       if (r.shards < 35) fail('You need 35 shards');
       r.shards -= 35;
@@ -659,7 +660,7 @@ export function resolveEvent(
       const out = pinnedOr(r, chosen, 'lose', 0, pool);
       let made = pinned(chosen, 'gain', 0, (id) => canAdd(r.deck, id)) ?? '';
       for (let g = 0; g < 20 && !made; g++)
-        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3))
+        for (const id of offerCards(r.rng, r.character, r.deck, 'duel', 3, heartCrossedChance(r)))
           if (!made && COMBAT_DB.cards[id]?.hero === r.character && canAdd(r.deck, id)) made = id;
       if (!made) fail('The wall stays grey');
       r.deck[r.deck.indexOf(out)] = made;

@@ -54,16 +54,16 @@ export const LORE_CHAPTERS: LoreChapter[] = [
   {
     id: 'shattering',
     title: 'The Shattering',
-    subtitle: 'Vorthax broke the barrier. The worlds paid the price.',
+    subtitle: 'Valerion broke the barrier. The worlds paid the price.',
     introduction: [
-      'Vorthax was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed rival powers and claimed their knowledge. His people survived by obeying. Then his experiments revealed other realms beyond the Ward: unfamiliar magic and rulers who had never heard his name.',
+      'Valerion was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed rival powers and claimed their knowledge. His people survived by obeying. Then his experiments revealed other realms beyond the Ward: unfamiliar magic and rulers who had never heard his name.',
       "He wanted their power and could not tolerate being kept outside. He spent years forcing a breach through his own boundary, consuming his realm's resources and sacrificing entire cities. When he finally broke out, he found where the Ward joined around neighboring worlds.",
     ],
     panels: [
       {
         image: 'ch3-crack',
         title: 'The first crack',
-        text: 'Vorthax struck from the space between worlds. He gathered his power against one junction of the Ward and released it in a catastrophic blast. The barrier held for an instant. Then a vast section shattered, opening the neighboring worlds to his conquest. That attack was the Shattering.',
+        text: 'Valerion struck from the space between worlds. He gathered his power against one junction of the Ward and released it in a catastrophic blast. The barrier held for an instant. Then a vast section shattered, opening the neighboring worlds to his conquest. That attack was the Shattering.',
         alt: 'Citizens of Aurelion look up at a violet-cyan crack in their glassy sky.',
       },
       {
@@ -81,7 +81,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch3-taken',
         title: 'The first to fall',
-        text: "The Wardens tried to hold the broken edges. Vorthax reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.",
+        text: "The Wardens tried to hold the broken edges. Valerion reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.",
         alt: 'The robed guardian kneels as violet tendrils corrupt its once-golden light.',
       },
     ],
@@ -106,7 +106,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch4-many',
         title: 'Lights in the dark',
-        text: 'Vorthax had no equal in his own realm. Beyond it, there are powers he has not mastered. Riftwalkers carry those powers across the boundaries, combining them in ways he did not anticipate. Each has a different home to save. Together, their worlds hold the means to challenge him.',
+        text: 'Valerion had no equal in his own realm. Beyond it, there are powers he has not mastered. Riftwalkers carry those powers across the boundaries, combining them in ways he did not anticipate. Each has a different home to save. Together, their worlds hold the means to challenge him.',
         alt: 'Many small travelers carry their worlds’ lights along a floating path through the Far Rifts.',
       },
     ],
@@ -145,13 +145,13 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch6-sealed',
         title: 'A moment of silence',
-        text: "A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Vorthax's reach, and he tears another open, worse than before. The climb continues through the realms, deeper into the territory he has taken.",
+        text: "A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Valerion's reach, and he tears another open, worse than before. The climb continues through the realms, deeper into the territory he has taken.",
         alt: 'A Riftwalker seals one crack with a shard while new cracks open in the distance.',
       },
       {
         image: 'ch6-heart',
-        title: 'Vorthax',
-        text: 'At the centre of the shattered section waits Vorthax, the Heart of the Rift. He fights with the rules of the Wardens he has taken. The broken worlds are his first foothold. He intends to breach more realms, seize their powers and make every world answer to him.',
+        title: 'Valerion',
+        text: 'At the centre of the shattered section waits Valerion, the Heart of the Rift. He fights with the rules of the Wardens he has taken. The broken worlds are his first foothold. He intends to breach more realms, seize their powers and make every world answer to him.',
         alt: 'A vast hidden presence pulses faintly beneath an immense violet-cyan chasm.',
       },
     ],

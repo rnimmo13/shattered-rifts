@@ -70,7 +70,7 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
     expect(gained.every((n) => n < 17)).toBe(true);
   });
 
-  it('a share of max HP is not grown twice (Vorthax’s Refract)', () => {
+  it('a share of max HP is not grown twice (Valerion’s Refract)', () => {
     const s = fight(['vorthax'], 1000);
     const v = first(s, 'vorthax');
     v.hp = Math.floor(v.maxHp * 0.9);

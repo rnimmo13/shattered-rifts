@@ -120,7 +120,7 @@ const lines = [
   '',
   'Bot/deck benchmarks, not human win-rate estimates. Arena excludes unresolved games; boss percentages include all 50 attempts. Exact counts and Wilson intervals are in CSV/JSON. Old letter grades remain archived predictions, not validated parity.',
   '',
-  '| Ascendancy | Prior Arena | Arena before → revised | Arena good before → revised | Vorthax before → revised | Vorthax good before → revised |',
+  '| Ascendancy | Prior Arena | Arena before → revised | Arena good before → revised | Valerion before → revised | Valerion good before → revised |',
   '|---|---|---|---|---|---|',
   ...table.map(
     (r) =>

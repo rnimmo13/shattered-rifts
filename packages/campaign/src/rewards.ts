@@ -182,13 +182,14 @@ export function offerCards(
   deck: readonly string[],
   quality: OfferQuality,
   count: number,
+  crossedChance = CROSSED_OFFER_CHANCE,
 ): string[] {
   const own = rewardPool(hero).filter((id) => canAdd(deck, id));
   const crossed = crossedPool(hero).filter((id) => canAdd(deck, id));
   const out: string[] = [];
   for (let guard = 0; out.length < count && guard < 200; guard++) {
     // a Rift-crossed card (another class's) is rare: about 3 in 100, so rewards are nearly always for your own deck
-    const fromCrossed = nextInt(rng, 100) < CROSSED_OFFER_CHANCE && crossed.length > 0;
+    const fromCrossed = nextInt(rng, 100) < crossedChance && crossed.length > 0;
     const pool = (fromCrossed ? crossed : own).filter((id) => !out.includes(id));
     if (pool.length === 0) continue;
     let from = LADDER.indexOf(rollRarity(rng, quality));
@@ -258,7 +259,7 @@ export function giftOffers(
   return out;
 }
 
-/** The chance (percent) that clearing a loop (beating Vorthax) leaves a Boon you do not have yet. */
+/** The chance (percent) that clearing a loop (beating Valerion) leaves a Boon you do not have yet. */
 export const LOOP_BOON_CHANCE = 40;
 
 /** A Boon the player does not own yet, or null if they have them all. Boons have no rarity: each is as likely as any other (DECISIONS #497). */

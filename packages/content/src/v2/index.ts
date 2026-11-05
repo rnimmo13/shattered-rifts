@@ -559,7 +559,7 @@ export const ENCOUNTERS: Encounter[] = [
   ),
 
   ruled(
-    enc('vorthax', 'Vorthax, Heart of the Rift', 'all', 'finale', 'rift-ward', 'vorthax'),
+    enc('vorthax', 'Valerion, Heart of the Rift', 'all', 'finale', 'rift-ward', 'vorthax'),
     'The Heart remembers every Warden: each quarter of its HP it fights with their rules, and at the last it closes the Rift on you, Fate every turn.',
   ),
 

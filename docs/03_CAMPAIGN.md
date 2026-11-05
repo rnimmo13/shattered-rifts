@@ -2,7 +2,7 @@
 
 > **Final local follow-up (#619–622):** New runs shuffle the unique Warden roster without repeats, and shuffle it again independently for the final gauntlet. Every tier introduces an Omen fromI; all ordinary fights are Elites byXI. Finale Fraying Ward halves automatic post-victory healing (Warden30→15%maxHP), retaining normal Gifts/shards/maxHP/Resolve rewards. Active legacy tiers keep their previous Omen profile until advancing. Campaign standings use unspent shards in the ranked run after progress, then arrival time. Earlier local descriptions below are superseded where they conflict.
 
-> **Current local campaign (0.203.0, decision #618):** twelve tiers. I–XI each end with a different Warden. XII consists only of the eleven Wardens, then Vorthax, with usual Warden healing and rewards between fights. Final baseline530% HP/145% damage; per-tier formula unchanged. Existing active maps/fights are preserved, with legacy endgame conversion after clearing their current tier. Victory persists and offers keeping the deck or returning home. Desktop landscape maps scroll horizontally; phone maps scroll vertically over the same saved five-lane graph. Earlier twenty-tier descriptions below are historical. Not yet released.
+> **Current local campaign (0.203.0, decision #618):** twelve tiers. I–XI each end with a different Warden. XII consists only of the eleven Wardens, then Valerion, with usual Warden healing and rewards between fights. Final baseline530% HP/145% damage; per-tier formula unchanged. Existing active maps/fights are preserved, with legacy endgame conversion after clearing their current tier. Victory persists and offers keeping the deck or returning home. Desktop landscape maps scroll horizontally; phone maps scroll vertically over the same saved five-lane graph. Earlier twenty-tier descriptions below are historical. Not yet released.
 
 
 > **Current map layout (0.202.0, DECISIONS #614):** desktop and mobile share a top-to-bottom scrolling map. Newly generated tiers start with five routes; later rows have one to five stops, converging every sixth floor and splitting again afterward. The final two Shrines lead into the Warden. Paths do not cross, every node is reachable and each route visits one stop per floor. Tier lengths, enemy scaling, reward amounts and placement caps stay the same. Existing saved tiers retain their routes in the new layout; previous map drawings are stored separately. Older map descriptions below are historical.
@@ -53,7 +53,7 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)
    Stage 1 ─ realm A  (14 floors + one of that realm's two Wardens, even odds; 15 floors in all, DECISIONS #512)
    Stage 2 ─ realm B  (14 floors + a Warden: that realm's two, or one of the three far realms', each a fifth)
-   Stage 3 ─ the Rift  (14 floors of the two realms not yet visited and the far realms, then Vorthax, Heart of the Rift)
+   Stage 3 ─ the Rift  (14 floors of the two realms not yet visited and the far realms, then Valerion, Heart of the Rift)
    (the far realms, Gloomfen / the Hollow Crown / the Far Rifts, have no stage of their own: DECISIONS #437)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
@@ -66,7 +66,7 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
 
 ### 2.1 Stage map
 A run is **three stages** (DECISIONS #160). Each is a branching node map generated from the run seed, with 2–4 nodes
-per floor and paths that branch and merge: **14 floors + the Warden** for Stages 1 and 2, **14 floors + Vorthax**
+per floor and paths that branch and merge: **14 floors + the Warden** for Stages 1 and 2, **14 floors + Valerion**
 for the Rift (Stage 3, whose fights come from the two realms the run has not visited). The last stop before every Warden is a
 Shrine (every node on that floor); each stage still has a Merchant somewhere before it (DECISIONS #175).
 
@@ -125,7 +125,7 @@ previous tiers' mutators.
 | **VII** | Every enemy starts with a random Trap from its realm set | One free **reroll** per card reward |
 | **VIII** | Omens can be **veiled** ("?") until the turn before. Loop clears restore no Resolve | Shrines offer **two** of their three options |
 | **IX** | Enemies start with +1 max Mana | Shards ×2.0 |
-| **X** | **"Shattered":** Vorthax gains Phase 3. Merchant prices +25% | **Prismatic** finish (1%), title *Riftbreaker* |
+| **X** | **"Shattered":** Valerion gains Phase 3. Merchant prices +25% | **Prismatic** finish (1%), title *Riftbreaker* |
 | **XI+** | **Endless:** each tier adds +3 enemy Essence and one random stacking mutator (§3.1) | Deck badge shows the tier; cosmetic flair per tier |
 
 **Design rule (power plateau):** deeper tiers mostly buy *choice* (more options, rerolls, removal, Tempering) and
@@ -211,7 +211,7 @@ Rules every Warden follows:
   and walked in anyway."*
 - **Arena:** a moonlit ballroom where the guests are shadows. Mirrors show the wrong reflections.
 
-### 4.5 Stage 5: Vorthax, Heart of the Rift
+### 4.5 Stage 5: Valerion, Heart of the Rift
 - **Essence:** 50 · **Deck:** the best cards of all four realms. It changes between loops (seeded).
 - **Signature, Shifting Rift:** every 2 turns his Rift card changes to another realm's Rift (the next
   one is shown).
@@ -280,7 +280,7 @@ Choose 1 of 3 after Elites (less often in deeper tiers, DECISIONS #526), from so
 | Elite | Pick 1 of 3, +1 rarity tier chance | 40–60 | Boon (1 of 3), less often in deeper tiers (DECISIONS #526) |
 | Anomaly | Pick 1 of 3 ×2 | 50 | |
 | Warden | **Warden's Gift** (§2.4) | 100 | Character unlock (Nyxara, first time) |
-| Vorthax | **Warden's Gift** with Prism | 150 | Bank / Continue choice |
+| Valerion | None: straight to the victory screen (DECISIONS #629) | 0 | Keep the victorious deck |
 
 ### 6.2 Rarity odds per card offer
 | Tier | Common | Rare | Epic | Legendary |
@@ -337,3 +337,7 @@ future deck.
 ## Ancestral cards
 
 A twelve-card classless set (rarity `ancestral`, jade frame): powerful, one copy each and at most two in a deck (DECISIONS #238), never in ordinary reward rolls. Offered by the Ancestors' Offering event, the Warden's Gift (sometimes), the merchant (rarely, 240 shards) and the "Call on the Ancestors" bargain. See DECISIONS #119.
+
+### Current Warden Hearts — local0.206
+
+Campaign only, one held at a time, selected instead of the Gift card; another replaces it. Glutton: +1 draw/turn, −5% Max HP. Blood: +25% direct card damage, opening Faltering3. Warded: +25% card Barrier, opening Brittle3. Rift (formerly Ember): ordinary foreign-card slot chance10%, fight shards−25%. Gilded (formerly Thorned): fight shards+40%, ordinary foreign chance0%; explicit foreign events/merchants retained. Resurgent: once/fight stop damage at half HP and gain25%-Max-HP Barrier, opening Exposed3. Glutton percentage tracks growth; swaps restore maximum without healing. Full rounding, scopes, legacy-save behavior and assessment: WARDEN_HEARTS_2026-11-05.md.

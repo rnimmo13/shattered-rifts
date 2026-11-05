@@ -1106,7 +1106,7 @@ export interface UnitDef {
   name: string;
   maxHp: number;
   taunt?: boolean;
-  /** when it falls, the rest of its side falls with it (Vorthax, DECISIONS #547) */
+  /** when it falls, the rest of its side falls with it (Valerion, DECISIONS #547) */
   leader?: boolean;
   /** how many of its side's companion slots it takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383) */
   slots?: number;
@@ -1193,6 +1193,16 @@ export interface BoonDef {
   fightStart?: Op[];
   turnStart?: Op[];
   maxHp?: number;
+  /** Campaign maximum HP multiplier; the run tracks the withheld HP for reversible Heart swaps. */
+  maxHpPct?: number;
+  /** Percentage bonuses to damage/Barrier operations sourced from a hero's card. */
+  cardDamagePct?: number;
+  cardBarrierPct?: number;
+  /** Ordinary reward/shop card slot chance; explicit foreign-class offers are unaffected. */
+  crossedOfferPct?: number;
+  fightShardsPct?: number;
+  /** One-time fight phases, including the same damage stop used by enemy Omens. */
+  rise?: Rise[];
   healAfterFight?: number;
   shardsPerFight?: number;
   /** a Warden's Heart (DECISIONS #246): a run holds at most one, and it is never offered or sold as a Boon */
@@ -1539,6 +1549,8 @@ export interface SideState {
   barrierDoubled?: boolean;
   /** max HP the hero has gained this fight (a run keeps it) */
   maxHpGained?: number;
+  /** Underlying campaign maximum before a percentage Heart, for exact in-fight growth. */
+  maxHpBeforeHeart?: number;
   /** extra card rewards earned this fight (a run offers them after a win) */
   extraRewards?: number;
   /** cards whose copies arrive at the start of your next turn (Nightmare); Honed's first knife this turn has been played */
@@ -1689,6 +1701,7 @@ export interface HeroSetup {
   hp?: number;
   /** the hero's max HP in this run (Boons and the blood altar can raise it); defaults to the hero's base */
   maxHp?: number;
+  maxHpBeforeHeart?: number;
   /** the Boons the hero carries */
   boons?: string[];
   potions?: string[];

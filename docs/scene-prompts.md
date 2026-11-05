@@ -4,7 +4,7 @@ Four sets of art for ChatGPT. Robert generates them; Claude cuts and wires them 
 
 1. **Event scenes:** a painted scene behind every event, the way Slay the Spire 2 gives each event its own place (97 images).
 2. **New arenas:** finish the three half-made arenas, then add eight new fight sites so plain fights vary more (21 images).
-3. **Warden arenas:** a unique boss arena for each of the 11 Wardens and Vorthax (24 images).
+3. **Warden arenas:** a unique boss arena for each of the 11 Wardens and Valerion (24 images).
 4. **The Crossing:** a Rift-crossed arena for Echo (ghost) fights and PvP (2 images).
 
 Floors for sets 2 to 4 come from three tile sheets (3 images). That's about 147 images in all; the order to make them in is at the end.
@@ -261,7 +261,7 @@ This is a BOSS ARENA: make it epic and grand. Put one huge centrepiece in the RI
 | `boss-tide` | The Mourning Tide (Gloomfen) | A drowned funeral harbour: a sunken chapel with only its bell tower above black water, coffins drifting, a low tide line of stones, grey lanterns, a huge wave frozen in the fog | grey, black water, pale green, lantern yellow | 1 tall half-sunk bell tower 2 tall dead mast of a sunken ship 3 tall weeping statue 4 a floating coffin with a candle 5 a pile of mooring posts and rope 6 a funeral wreath on a rock 7 a grey lantern on a post 8 hanging: dripping seaweed strands 9 hanging: a tolling bell |
 | `boss-queen` | Queen of the Unmade (The Hollow Crown) | A palace dissolving into sand and glass: a colossal shattered crown as the throne room's ceiling, walls breaking apart into floating shards, ember chess pieces on a cracked board floor | amber, black glass, ember red, gold | 1 tall column dissolving into shards 2 tall shattered crown spike 3 tall ember chess king 4 a giant ember chess pawn 5 a pile of shattered crown jewels 6 a cracked throne step 7 a brazier of amber glass fire 8 hanging: floating crown shards 9 hanging: unravelling tapestry threads |
 | `boss-regent` | Event Horizon Regent (The Far Rifts) | A palace at the edge of a black hole: a huge black sphere ringed by a bright accretion disk filling the sky, staircases bending toward it, debris orbiting, starlight stretched into streaks | black, white-gold disk, deep blue, violet | 1 tall bent staircase spire 2 tall orbiting pillar 3 tall throne of folded space 4 a floating debris chunk with a glow 5 a cracked gravity well pedestal 6 a ring of orbiting stones 7 a star-lantern being pulled sideways 8 hanging: streaks of stretched starlight 9 hanging: a chain bending toward the right |
-| `boss-vorthax` | Vorthax, Heart of the Rift (the finale) | The Heart of the Rift: a colossal broken stone pillar perch at the centre of everything, a huge glowing violet-cyan rift heart pulsing behind it, floating chunks of every realm around it (a gold spire, a smokestack, a jungle tree, a ballroom arch, a swamp hut, a glass dune, a brick chimney) | dark purple, violet, cyan, white light | 1 tall broken pillar perch 2 tall floating chunk of a gold cathedral spire 3 tall floating chunk of a jungle tree with roots 4 a cracked rift-heart crystal 5 a floating chunk of foundry machinery 6 a floating chunk of swamp hut 7 a rift-fire brazier 8 hanging: shards of all realms on violet threads 9 hanging: a torn rift seam |
+| `boss-vorthax` | Valerion, Heart of the Rift (the finale) | The Heart of the Rift: a colossal broken stone pillar perch at the centre of everything, a huge glowing violet-cyan rift heart pulsing behind it, floating chunks of every realm around it (a gold spire, a smokestack, a jungle tree, a ballroom arch, a swamp hut, a glass dune, a brick chimney) | dark purple, violet, cyan, white light | 1 tall broken pillar perch 2 tall floating chunk of a gold cathedral spire 3 tall floating chunk of a jungle tree with roots 4 a cracked rift-heart crystal 5 a floating chunk of foundry machinery 6 a floating chunk of swamp hut 7 a rift-fire brazier 8 hanging: shards of all realms on violet threads 9 hanging: a torn rift seam |
 
 Send each as: "Backdrop `<name>`: <Warden>. BOSS ARENA line. SCENE: <backdrop>. PALETTE: <palette>." and "Props `<name>`: <Warden>. THE NINE: <props>. PALETTE: <palette>."
 
@@ -324,7 +324,7 @@ Same prompt as `floors-2`, with THE EIGHT replaced by:
 1. Mourning Tide: wet black flagstones with pools of grey tide water. Palette: grey, black, pale green.
 2. Queen of the Unmade: a cracked chessboard of amber and black glass. Palette: amber, black glass.
 3. Event Horizon Regent: dark stone tiles stretched and bent, star specks. Palette: black, white-gold, violet.
-4. Vorthax: dark cracked stone slabs with bright violet-and-cyan rift seams. Palette: dark purple, violet, cyan.
+4. Valerion: dark cracked stone slabs with bright violet-and-cyan rift seams. Palette: dark purple, violet, cyan.
 5. The Crossing: a patchwork of seven different floor materials (gold marble, steel, wood, black marble, swamp boards, glass, brick) stitched by glowing rift seams. Palette: mixed, violet and cyan seams.
 6. The Crossing, sand: pale arena sand with faint violet rift-glass flecks. Palette: sand, violet.
 7. The Crossing, centre: a stone circle with a carved rift sigil (abstract, no letters). Palette: grey stone, cyan glow.

@@ -197,7 +197,7 @@ describe('Elites by Rift Tier', () => {
     }
   });
 
-  it('an ambush at Tier 20 brings a Warden, on every act, and never Vorthax', () => {
+  it('an ambush at Tier 20 brings a Warden, on every act, and never Valerion', () => {
     for (let stage = 1; stage <= FINAL_STAGE; stage++) {
       const id = ambushEnemy(seedRng(`a${stage}`), ['umbral'], 'elite', [], stage, ALL_WARDEN_TIER);
       expect(encounter(id!).kind).toBe('warden');

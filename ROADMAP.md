@@ -16,7 +16,7 @@ support funds the full game on Steam.
 - Save export/import
 
 ## 🔵 Phase 2: The Full Run & PvP Beta
-- All 20 Rift Tiers, including the Umbral Veil (the trap realm), and the final boss **Vorthax**
+- All 20 Rift Tiers, including the Umbral Veil (the trap realm), and the final boss **Valerion**
 - Unlock a fourth character: **Vesper Nightlace**
 - **Stop or Continue:** your deck is saved for PvP as you go; push one Rift Tier deeper and a fall takes it out of the Arena
 - **Rift Tiers I–X**, Boons, events, Tempering, foil and alternate-art drops

@@ -225,8 +225,9 @@ export default function RunScreen() {
       slotRef.current = null;
       // (an ended run goes into the run history, with the fight that ended it)
       addToHistory(recordOf(run, run.phase, Date.now(), lastFightRef.current ?? undefined));
+      if (run.won) endOnBoard(run, 'completed');
       // a run that falls takes its saved Arena deck with it
-      if (run.phase === 'collapsed') {
+      if (run.phase === 'collapsed' && !run.won) {
         void loseSavedDecks(run).then(setLostDecks);
         // (the board shows the run as fallen)
         endOnBoard(run, 'fell');
@@ -248,6 +249,7 @@ export default function RunScreen() {
     // (from its first finished stop: a run abandoned before its first fight does not use up a new-run slot on the server)
     if (stagesInAll(r.tier, done) === 0 && r.stats.nodesCleared === 0) return;
     void reportRun({
+      completed: r.won === true,
       shards: r.shards,
       seed: r.seed,
       hero: r.character,
@@ -288,6 +290,7 @@ export default function RunScreen() {
         // (and after every finished stop, so a new run is on the board from its first fight; a repeat costs the server nothing)
         if (
           (now > was ||
+            (next.won && !cur.won) ||
             next.tier > cur.tier ||
             next.shards !== cur.shards ||
             shouldAutoSave(cur, next)) &&
@@ -295,6 +298,7 @@ export default function RunScreen() {
           hasUsername()
         )
           void reportRun({
+            completed: next.won === true,
             shards: next.shards,
             seed: next.seed,
             hero: next.character,
@@ -523,6 +527,9 @@ export default function RunScreen() {
               deck: plan.deck,
               hp: plan.hp,
               maxHp: plan.maxHp,
+              ...(plan.maxHpBeforeHeart !== undefined
+                ? { maxHpBeforeHeart: plan.maxHpBeforeHeart }
+                : {}),
               boons: plan.boons,
               potions: plan.potions,
               statuses: plan.heroStatuses,
@@ -665,6 +672,9 @@ export default function RunScreen() {
                   deck: plan.deck,
                   hp: plan.hp,
                   maxHp: plan.maxHp,
+                  ...(plan.maxHpBeforeHeart !== undefined
+                    ? { maxHpBeforeHeart: plan.maxHpBeforeHeart }
+                    : {}),
                   boons: plan.boons,
                   potions: plan.potions,
                   statuses: plan.heroStatuses,
@@ -1241,7 +1251,7 @@ function Body(props: {
                 back to it later.
               </>
             ) : (
-              ' You have climbed the whole Rift, and beaten Vorthax at the top of it.'
+              ' You have climbed the whole Rift, and beaten Valerion at the top of it.'
             )}
           </p>
           <div className="choices-row">
@@ -1250,7 +1260,7 @@ function Body(props: {
                 <b>Continue to Tier {run.tier + 1}</b>
                 <span>
                   {run.tier + 1 === MAX_TIER
-                    ? 'Face all 11 Wardens, then Vorthax. Normal Warden healing and rewards between fights.'
+                    ? 'Face all 11 Wardens, then Valerion. Normal Warden healing and rewards between fights.'
                     : 'Keep your deck and HP. One tier deeper, one floor longer.'}
                 </span>
                 <span className="bigchoice__omen">

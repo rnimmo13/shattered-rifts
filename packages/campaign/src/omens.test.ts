@@ -172,7 +172,7 @@ describe("Warden's Hearts", () => {
     const r = gift();
     const g = chooseHeart(r, 'gluttons-heart');
     expect(g.heart).toBe('gluttons-heart');
-    expect(g.maxHp).toBe(r.maxHp - 20);
+    expect(g.maxHp).toBe(Math.floor(r.maxHp * 0.95));
     expect(g.phase).toBe('loopCleared');
   });
 
@@ -270,7 +270,7 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
 });
 
 describe('the finale and the Omens (DECISIONS #547)', () => {
-  it("Vorthax's quarters stand in for the rises: none is added, the statuses still are", () => {
+  it("Valerion's quarters stand in for the rises: none is added, the statuses still are", () => {
     const e = omenEffects(MAX_TIER);
     const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
     const units = ['rift-ward', 'vorthax'];

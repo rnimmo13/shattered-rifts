@@ -108,6 +108,22 @@ describe('the twelve-tier campaign', () => {
     for (let i = 0; i < 12; i++) {
       expect(run.phase).toBe('duel');
       const before = run.maxHp;
+      if (i === 11) {
+        // Valerion: no Gift, shards, potion, Boon, Max HP or healing; straight to the victory screen
+        const { shards, potions, boons, resolve } = run;
+        run = finishDuel(run, true, 10, run.potions, 0, 2);
+        expect(run.maxHp).toBe(before);
+        expect(run.hp).toBe(10);
+        expect(run.shards).toBe(shards);
+        expect(run.potions).toEqual(potions);
+        expect(run.boons).toEqual(boons);
+        expect(run.resolve).toBe(resolve);
+        expect(run.context).toBeNull();
+        expect(run.eventResult).toBeUndefined();
+        expect(run.stats.nodesCleared).toBe(12);
+        expect(run.cleared).toContain(run.map.nodes[11]!.id);
+        break;
+      }
       run = finishDuel(run, true, 10);
       expect(run.maxHp).toBeGreaterThanOrEqual(before + 5);
       expect(run.hp).toBeGreaterThanOrEqual(15 + Math.ceil(run.maxHp * 0.15));
@@ -137,6 +153,28 @@ describe('the twelve-tier campaign', () => {
     expect(parseRun(serializeRun(run))?.won).toBe(true);
     expect(() => continueLoop(run)).toThrow();
     expect(bank(run).phase).toBe('banked');
+  });
+
+  it('sends a run saved on the old post-Valerion Gift straight to victory', () => {
+    const base = newRun('knight', 'vorthax-gift-save');
+    const map = gauntletMap();
+    const last = map.nodes.at(-1)!;
+    const saved: RunState = {
+      ...base,
+      tier: MAX_TIER,
+      map,
+      at: last.id,
+      cleared: map.nodes.map((n) => n.id),
+      phase: 'gift',
+      context: { nodeId: last.id, offers: [base.deck[0]!] },
+      eventResult: 'The Warden falls: +5 Max HP.',
+    };
+    const loaded = parseRun(serializeRun(saved))!;
+    expect(loaded.phase).toBe('loopCleared');
+    expect(loaded.won).toBe(true);
+    expect(loaded.context).toBeNull();
+    expect(loaded.eventResult).toBeUndefined();
+    expect(loaded.stats.nodesCleared).toBe(base.stats.nodesCleared);
   });
 
   it('does not erase an existing map, and migrates a cleared legacy tier without discarding earned progress', () => {

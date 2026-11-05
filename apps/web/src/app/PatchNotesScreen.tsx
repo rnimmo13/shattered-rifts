@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { BUILD } from '../build';
 import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
+import { GameIcon } from '../ui/GameIcon';
+import { BOON_ICONS } from '../art/gameIcons';
 import { cardArtV2 } from '../fight/art';
 import { KIND_LABEL, PATCH_NOTES, markSeen, type NoteKind } from './patchNotes';
 import './patchnotes.css';
@@ -148,6 +150,8 @@ export default function PatchNotesScreen() {
                               alt=""
                               loading="lazy"
                             />
+                          ) : n.boon && BOON_ICONS[n.boon] ? (
+                            <GameIcon art={BOON_ICONS[n.boon]!} pic={n.boon} />
                           ) : n.hero ? (
                             <HeroIcon hero={n.hero} size={42} />
                           ) : null}

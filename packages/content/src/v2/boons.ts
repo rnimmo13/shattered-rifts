@@ -6,7 +6,7 @@
 // here gives Mana every turn (DECISIONS #496, #516); an extra card every turn is only ever a Warden's Heart, at a price.
 
 import type { BoonDef } from '@sr/combat';
-import { barrier, draw, heal, lose, status } from './build';
+import { barrier, draw, heal, status } from './build';
 
 export const BOONS: BoonDef[] = [
   {
@@ -97,41 +97,50 @@ export const BOONS: BoonDef[] = [
 export const HEARTS: BoonDef[] = [
   {
     id: 'ember-heart',
-    name: 'Ember Heart',
+    name: 'Rift Heart',
     heart: true,
-    text: 'At the start of each of your turns, a random enemy gains 3 Burn. You start each fight with 2 Burn.',
-    fightStart: [status('burn', 2)],
-    turnStart: [status('burn', 3, 'randomFoe')],
+    text: 'Ordinary card offers have a 10% Rift-Crossed chance per card instead of 3%. Earn 25% fewer shards from fight victories.',
+    crossedOfferPct: 10,
+    fightShardsPct: -25,
   },
   {
     id: 'gluttons-heart',
     name: "Glutton's Heart",
     heart: true,
-    text: 'Draw one card more every turn. 20 less Max HP.',
+    text: 'Draw one card more every turn. 5% less Max HP (rounded down, minimum 1 HP).',
     handSize: 1,
-    maxHp: -20,
+    maxHpPct: -5,
   },
   {
     id: 'blood-heart',
     name: 'Blood Heart',
     heart: true,
-    text: 'Start each fight with 3 Might. Lose 2 HP at the start of each of your turns.',
-    fightStart: [status('might', 3)],
-    turnStart: [lose(2)],
+    text: 'Your cards deal 25% more damage, excluding HP payments, companions, totems and status damage. Start each fight with 3 turns of Faltering.',
+    cardDamagePct: 25,
+    fightStart: [status('faltering', 3)],
   },
   {
     id: 'thorned-heart',
-    name: 'Thorned Heart',
+    name: 'Gilded Heart',
     heart: true,
-    text: 'Start each fight with 4 Thorns and 2 Might, and Exposed for 2 turns.',
-    fightStart: [status('thorns', 4), status('might', 2), status('exposed', 2)],
+    text: 'Earn 40% more shards from fight victories. Ordinary card offers contain no Rift-Crossed cards. Explicit Rift-Crossed events and merchants are unchanged.',
+    crossedOfferPct: 0,
+    fightShardsPct: 40,
   },
   {
     id: 'warded-heart',
     name: 'Warded Heart',
     heart: true,
-    text: 'Start each fight Shielded, with 7 Plating. At the start of each of your turns, become Brittle (the Barrier you gain is 25% smaller).',
-    fightStart: [status('shielded', 1), status('plating', 7)],
-    turnStart: [status('brittle', 1)],
+    text: 'Gain 25% more Barrier from your cards. Start each fight with 3 turns of Brittle.',
+    cardBarrierPct: 25,
+    fightStart: [status('brittle', 3)],
+  },
+  {
+    id: 'resurgent-heart',
+    name: 'Resurgent Heart',
+    heart: true,
+    text: 'Once each fight, a hit that would take you to half HP or below stops at half HP, then grants 25% of your Max HP as Barrier (rounded up). Start each fight with 3 turns of Exposed. Starting below half HP does not heal you.',
+    rise: [{ atPct: 50, barrierPct: 25, might: 0 }],
+    fightStart: [status('exposed', 3)],
   },
 ];

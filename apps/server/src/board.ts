@@ -1130,6 +1130,8 @@ export class Leaderboard extends DurableObject<Env> {
     )
       return json({ ok: false, error: 'bad-run' }, 400);
     const total = stagesInAll(tier, stage);
+    const completed = b['ended'] === 'completed';
+    if (completed && (tier < 12 || stage !== 3)) return json({ ok: false, error: 'bad-run' }, 400);
     // a run counts under the player's username (one is needed to be on the campaign board)
     const name = this.claimedName(b['player']);
     if (!name) return json({ ok: true, counted: false, error: 'no-name' });
@@ -1169,6 +1171,14 @@ export class Leaderboard extends DurableObject<Env> {
       )
       .toArray()[0];
     if (old) {
+      // A saved victory can correct an older client's death/abandonment label. Late death
+      // reports cannot overwrite it because ordinary endings only fill a null status.
+      if (completed)
+        this.ctx.storage.sql.exec(
+          "UPDATE runs SET ended = 'completed' WHERE player = ? AND run = ?",
+          b['player'],
+          run,
+        );
       if (
         !old.ended &&
         total === old.total &&
@@ -1233,7 +1243,7 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, counted: false, limited: true });
     for (const [key, windowMs, max] of limits) this.within(key, windowMs, max, now);
     this.ctx.storage.sql.exec(
-      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at, shards, shards_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at, shards, shards_at, ended) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       b['player'],
       run,
       name,
@@ -1246,6 +1256,7 @@ export class Leaderboard extends DurableObject<Env> {
       now,
       shards,
       reportedAt,
+      completed ? 'completed' : null,
     );
     this.prune(now);
     return json({ ok: true, counted: true });
@@ -1290,7 +1301,8 @@ export class Leaderboard extends DurableObject<Env> {
       stage: r.stage,
       at: r.at,
       shards: r.shards,
-      ended: r.ended === 'fell' || r.ended === 'abandoned' ? r.ended : null,
+      ended:
+        r.ended === 'fell' || r.ended === 'abandoned' || r.ended === 'completed' ? r.ended : null,
     }));
     const all = standingsRuns(flat);
     return {

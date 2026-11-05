@@ -300,7 +300,7 @@ export interface RunRow {
 }
 
 /** How a run on the board stands: still going, fallen, or abandoned. */
-export type RunEnd = 'fell' | 'abandoned';
+export type RunEnd = 'fell' | 'abandoned' | 'completed';
 export type RunStatus = 'live' | RunEnd;
 
 export interface RunStanding {

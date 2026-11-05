@@ -34,7 +34,7 @@ export interface MapNode {
 export type StageRealm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'rift';
 
 export interface StageMap {
-  /** The final consecutive Warden challenge, ending with Vorthax. */
+  /** The final consecutive Warden challenge, ending with Valerion. */
   gauntlet?: true;
   stage: number;
   realm: StageRealm;
@@ -357,7 +357,7 @@ export interface RunState {
   campaignRoute?: 'twelve';
   /** Saved permutation: one unique Warden per tier I–XI. Finale has its own order in the saved map. */
   wardenOrder?: string[];
-  /** Vorthax has fallen; the saved run opens on the victory screen. */
+  /** Valerion has fallen; the saved run opens on the victory screen. */
   won?: boolean;
   v: 2;
   /** (DECISIONS #436) its deck holds its starting weapon as a card (missing: from before, and the weapon is added once on load) */
@@ -376,6 +376,8 @@ export interface RunState {
   rewardRerollTier?: number;
   /** the Warden's Heart this run holds, if any (DECISIONS #246) */
   heart?: string;
+  /** Max HP withheld by a percentage Heart; missing on legacy flat-HP saves. */
+  heartMaxHpLoss?: number;
   /** the Ascendancy this run has taken (DECISIONS #519) */
   ascendancy?: string;
   seed: string;
