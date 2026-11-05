@@ -4,6 +4,9 @@
 
 import { useEffect, useState } from 'react';
 import { BUILD } from '../build';
+import { COMBAT_DB } from '@sr/content/v2';
+import { HeroIcon } from '../ui/HeroIcon';
+import { cardArtV2 } from '../fight/art';
 import { KIND_LABEL, PATCH_NOTES, markSeen, type NoteKind } from './patchNotes';
 import './patchnotes.css';
 
@@ -135,7 +138,50 @@ export default function PatchNotesScreen() {
                 {patch.notes
                   .filter((n) => n.kind === k)
                   .map((n, i) => (
-                    <li key={i}>{n.text}</li>
+                    <li key={i} className={n.title ? 'patch__entry' : undefined}>
+                      {n.title && (
+                        <div className="patch__entity">
+                          {n.card && COMBAT_DB.cards[n.card] ? (
+                            <img
+                              className="patch__art"
+                              src={cardArtV2(COMBAT_DB.cards[n.card]!)}
+                              alt=""
+                              loading="lazy"
+                            />
+                          ) : n.hero ? (
+                            <HeroIcon hero={n.hero} size={42} />
+                          ) : null}
+                          <b>{n.title}</b>
+                        </div>
+                      )}
+                      {n.changes && (
+                        <dl className="patch__changes">
+                          {n.changes.map((c, index) => (
+                            <div key={index}>
+                              <dt>{c.label}</dt>
+                              <dd>
+                                <span>{c.before}</span>
+                                <span aria-hidden="true"> → </span>
+                                <span className={`patch__value--${c.direction}`}>{c.after}</span>
+                                <small className={`patch__value--${c.direction}`}>
+                                  {' '}
+                                  (
+                                  {c.direction === 'buff'
+                                    ? 'Buff'
+                                    : c.direction === 'nerf'
+                                      ? 'Nerf'
+                                      : 'Changed'}
+                                  )
+                                </small>
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      )}
+                      {n.text && (
+                        <p className={n.title ? 'patch__explanation' : undefined}>{n.text}</p>
+                      )}
+                    </li>
                   ))}
               </ul>
             </section>

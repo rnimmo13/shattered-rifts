@@ -25,7 +25,7 @@ import { COMBAT_DB as db, type HeroId } from '@sr/content/v2';
 
 const RANK: Record<string, number> = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4 };
 /** Who plays the fights: the greedy one-card bot, or the smart one that plans a whole turn (fairer to decks that need setup). */
-export let pilot: 'greedy' | 'smart' = 'greedy';
+export let pilot: 'greedy' | 'smart' = 'smart';
 export const setPilot = (p: 'greedy' | 'smart'): void => {
   pilot = p;
 };

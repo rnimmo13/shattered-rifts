@@ -4,6 +4,40 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+### 0.200.0 / rules 83 — local, not released
+
+- Arena: class base HP ×6 → fixed1,000 current/max HP for every hero/ghost. Second-seat bonus HP60 →0; opening bonus Mana1 →0. Retain its existing +1 opening card exactly once; no later draw bonus. Campaign HP unchanged.
+- Arena game clock20 →30 minutes. Both players passing three consecutive own turns without playing a card ends the entire match as a draw. Playing a card resets that seat's streak; a lethal takes precedence.75-second turns and two-timeout forfeiture unchanged. Reconnect reconstructs pass streaks from accepted moves.
+- Shared ghost/simulation AI `synergy-2`: preserves strategically distinct search states, plans through pending choices, values more resources/setup, and uses a sampled belief state instead of the actual hidden draw order/opponent cards/RNG. Shared default8-wide/10-deep/900-budget policy; no automatic learning. Matched diagnostic38–22 Arena versus legacy; boss17/30 versus13/30, one unresolved each. These are not human rates or class balance grades.
+- Private developer Arena reporting records exact starting decks/upgrades, class/Ascendancy, source/seat, rules/AI/HP, results, turns and attributed hero damage. Owner-only paginated export, bounded90-day/20,000-game retention, local searchable HTML/CSV/JSON report. Collection begins after deployment; no retrospective/private offline decks. Player-facing disclosure in Arena and patch notes. See docs/ARENA_TESTING_2026-11-05.md for setup and metric limits.
+- Structured patch notes show short labelled before→after rows, green Buff/red Nerf new values, and card art/class icons. Converted the local0.199 entries without changing their effects; historical releases remain intact. Exact card/Ascendancy changes remain listed below and in player notes. Internal writing rules added to AGENTS.md.
+- Append all30 local0.200 assessment rows.0.199 win rates are historical after changing HP/AI/second-seat Mana; no new A-tier claims. Existing card IDs preserved; incompatible unfinished fights/replays follow existing rules-version handling. No push/deployment approval.
+
+### 0.199.0 / rules 82 — local, not released
+
+- Knight — Blood Oath: The 3/2 HP payment and 3-Reserve gain now work once on your own turn across all base/upgraded copies and replays, instead of every play. Later plays that turn neither pay HP nor grant Reserves. It remains repeatable on future turns, not Consume.
+- Marshal: Gain 1 Reserve at each own-turn start, including the opening turn, within your Reserve cap. Max Reserves 4 and the attack bonus of 10% per Reserve spent, capped at 40%, remain unchanged.
+- Knight — Measured Conviction: Base and upgraded cost 2 → 1 Mana. The end-turn Reserve requirement and Might/Barrier rewards stay unchanged.
+- Necromancer — The Drowned King+: Cost 0 → 1 Mana. Each companion still attacks for 15 + its own max HP; base remains 1 Mana for 10 + max HP. No minion HP cap was added.
+- Necromancer — Restless Spirits: Each Aura now gives its full 4/6 HP loss plus 1 per three previously consumed souls on only its first 3 soul plays on your own turn. Later soul plays that turn cause 1/2 HP loss instead. Previously every soul play received the full scaling payoff. Copies count separately and reset each own turn; opponent-turn plays no longer trigger this Aura. Accumulated soul scaling and Soulreaper’s Reap remain.
+- Rogue — Bloodburst: Base and upgraded cost 1 → 2 Mana. Applying 9/12 Bleed to all enemies and immediately ticking it remain unchanged.
+- Artillerist: Might at each own-turn start increases 1 → 2. Barrier from the first Attack on your own turn increases 3 → 6.
+- Golemancer: After your companions gain their usual 3 max HP at turn start, you now gain Barrier equal to 10% of your largest living companion’s max HP, rounded down, capped at 12. With no companion you gain none. Companion HP growth, damage-per-HP and death recovery remain unchanged.
+- Swarmwright: Each of your first 3 successful summons on your own turn now gives you 3 Barrier. Failed summons give none. The allowance resets each own turn. Four slots, 1 Primed per companion at turn start and Fabrication growth remain unchanged.
+- Engineer — Link Up: Barrier to you and each companion increases 4/6 → 6/8; draw 1 and cost 1 Mana remain. Heavy Industry: Base/upgraded cost 2 → 1 Mana; its turn-start Barrier remains 4/6 to all friends, with no immediate shield on play.
+- Engineer — Bulwark Frame: Now shields you as well as the selected companion. Both receive 8/11 + 20% of that companion’s max HP, rounded down; previously only the companion received it. Cost remains 1 Mana. A 160-HP companion gives each recipient 40/43 Barrier.
+- Beastmaster: Now gains 1 hero Might at each own-turn start. Companions still share 75% of hero Might. Reaver: Its first self-effect HP payment each turn now grants 4 Barrier in addition to drawing 1 and gaining 2 Primed.
+- Hunter — Pack Tactics: Barrier to all friends increases 2/4 → 4/6; cost 1 Mana and Might 1 remain. Pack Bond: Base/upgraded cost 2 → 1 Mana; still gives all friends 4/6 Barrier at turn start, not immediately on play.
+- Spiritwalker: Your first ordered totem command on your own turn now grants 1 Spirit. Pushing a totem out does not earn this new reward. Existing draw 1 and Barrier 4 from the first command/push-out each turn remain.
+- Blademaster: The first Sword played each turn now gives 4 Barrier as well as drawing 1. Its +1 damage per Sword hit remains. Archmage: Now gains 2 Spell Power at each own-turn start, in addition to its existing opening +3, first paid Spell Attack bonus and next-turn refund.
+- Vorthax — Campaign only: Base HP 360 → 300 (Tier XX Normal: 3,060 → 2,550). Rift Ward base HP 40 → 15 (340 → 128 at Tier XX); Resonant Hum grants 1 Primed to all its allies instead of 1 permanent Might. Rift Shard base HP 21 → 12 (179 → 102 at Tier XX). The campaign tier multipliers remain unchanged.
+- Vorthax — Campaign only: The opening cycle now starts with Refract, then Crystal Shards, Raise the Ward and Collapse. Raise the Ward’s Barrier drops 4% → 1% of boss max HP; first-phase Refract drops 6% → 2%. First-phase Collapse base damage drops 26 → 22; second-phase Collapse 30 → 24; third/fourth-phase Prismatic Beam 17 × 2 → 12 × 2. Feed on the Shards heals 2% instead of 4% boss max HP per consumed Shard. Phase thresholds, later Barrier, disruption and final Fate pressure remain.
+
+Existing cards and saves keep their IDs and use the revised effects. Older unfinished battles restart through the normal rules-update checkpoint handling. Arena HP, targeting and the 20-minute match limit are unchanged.
+
+Exact hand budgets, experiment limitations and local status: `docs/BALANCE_REVISION_2026-11-05.md`. No push/deploy authorization.
+
+
 ### Changed (newest)
 - **0.198.0/rules81 — Necromancer — Grave Chill (Campaign and Arena):** Genuine Consumes give 3 Fate each for the first 6 per owner-round, then 1 each (previously 3 without a limit). An owner-round starts on your turn and lasts until your next turn starts, including reactive Consumes on the opponent’s turn. Ally deaths still give 2 Fate.
 - **0.198.0/rules81 — Soulreaper — Harvest (Campaign and Arena):** Only the first 3 genuine Consumes per owner-round add Harvest (was 6). The first 6 still grant 3 Barrier each. Reap remains 4 + 2 damage per accumulated Harvest, once at the end of your own turn if you consumed that turn; accumulated Harvest has no fight-total cap.

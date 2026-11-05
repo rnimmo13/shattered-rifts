@@ -36,7 +36,9 @@ function fight(hero: 'knight' | 'assassin', hand: string[] = []): CombatState {
 const play = (s: CombatState, id: string): CombatState => {
   const inst = s.sides.a.hand.find((c) => c.card === id);
   const acts = legalActions(db, s).filter((a) => a.type === 'play' && a.card === inst?.id);
-  const act = acts.find((a) => a.type === 'play' && (!a.target || a.target === s.sides.b.units[0]!.id)) ?? acts[0];
+  const act =
+    acts.find((a) => a.type === 'play' && (!a.target || a.target === s.sides.b.units[0]!.id)) ??
+    acts[0];
   expect(act, `${id} playable`).toBeTruthy();
   return applyAction(db, s, act!).state;
 };
@@ -44,7 +46,7 @@ const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'end
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 const lost = (s: CombatState, i = 0): number => 500 - s.sides.b.units[i]!.hp;
 
-describe("the Mana Reserves trait", () => {
+describe('the Mana Reserves trait', () => {
   it('is the Knight’s trait: Max Reserves 3, 1 Reserve at the start (2 until DECISIONS #560), and no opening Barrier or Plating (DECISIONS #521)', () => {
     const t = RIFTWALKERS.knight.trait;
     expect(t.name).toBe('Mana Reserves');
@@ -250,16 +252,22 @@ describe('the Reserves cards', () => {
     const t = play(fight('knight', ['scarred-hide']), 'scarred-hide');
     for (const u of t.sides.b.units) u.intent = { move: 'slash', target: hero(t).id };
     const res = applyAction(db, t, { type: 'endTurn' });
-    expect(res.events.some((e) => e.type === 'status' && e.status === 'sapped' && e.amount === 3)).toBe(true);
+    expect(
+      res.events.some((e) => e.type === 'status' && e.status === 'sapped' && e.amount === 3),
+    ).toBe(true);
     // (the hit really cost HP)
-    expect(res.events.some((e) => e.type === 'damage' && e.target === hero(t).id && e.lost > 0)).toBe(true);
+    expect(
+      res.events.some((e) => e.type === 'damage' && e.target === hero(t).id && e.lost > 0),
+    ).toBe(true);
     // (a hit that Barrier soaks completely costs no HP: nothing is Sapped)
     const soaked = play(fight('knight', ['scarred-hide']), 'scarred-hide');
     hero(soaked).barrier = 500;
     for (const u of soaked.sides.b.units) u.intent = { move: 'slash', target: hero(soaked).id };
     const none = applyAction(db, soaked, { type: 'endTurn' });
     expect(none.events.some((e) => e.type === 'status' && e.status === 'sapped')).toBe(false);
-    expect(cardText(db, db.cards['scarred-hide']!)).toBe("Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn.");
+    expect(cardText(db, db.cards['scarred-hide']!)).toBe(
+      "Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn.",
+    );
   });
 
   it('some Barrier cards split their Barrier with Plating (and have one more Plating on top)', () => {
@@ -273,7 +281,7 @@ describe('the Reserves cards', () => {
     expect(text('dawn-smite')).toContain('Gain 3 Barrier. Gain 2 Plating.');
   });
 
-  it('Brace and Press, the Knight\'s second basic: 3 Barrier, 2 Plating and 1 Exposed', () => {
+  it("Brace and Press, the Knight's second basic: 3 Barrier, 2 Plating and 1 Exposed", () => {
     const s = play(fight('knight', ['brace-and-press']), 'brace-and-press');
     expect(hero(s).barrier).toBe(3);
     expect(hero(s).statuses.plating).toBe(2);
@@ -285,7 +293,9 @@ describe('the Reserves cards', () => {
   it('the cards say it', () => {
     const text = (id: string): string => cardText(db, db.cards[id]!);
     expect(text('stand-fast')).toBe('Gain 5 Barrier. Gain 2 Plating. Max Reserves +2 this turn.');
-    expect(text('blood-oath')).toBe('Lose 3 HP. Gain 3 Reserves.');
+    expect(text('blood-oath')).toBe(
+      'Once on your turn across all copies: Lose 3 HP and gain 3 Reserves.',
+    );
     expect(text('oath-unbroken')).toContain('Max Reserves +2 for the rest of the fight.');
     expect(text('unyielding-line')).toContain('Gain 2 Reserves.');
   });

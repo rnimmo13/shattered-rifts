@@ -2,7 +2,7 @@
 // counts how often the seat that moves first (a) and the one that moves second (b) wins. It is the number behind the question
 // "does going first matter?" (docs/BALANCE.md). The bot is not a person, so read it as a hint, not a verdict.
 
-import { chooseAction } from '@sr/combat';
+import { chooseSmartAction } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { Match } from '@sr/pvp';
 
@@ -40,7 +40,7 @@ for (const x of heroes)
       const m = new Match(`bal-${x}-${y}-${i}`, entry(x), entry(y), 0);
       let guard = 0;
       while (!m.over && guard++ < 4000) {
-        const r = m.submit(m.active, m.log.length + 1, chooseAction(COMBAT_DB, m.state), 0);
+        const r = m.submit(m.active, m.log.length + 1, chooseSmartAction(COMBAT_DB, m.state), 0);
         if (!r.ok) throw new Error(r.message);
       }
       const w = m.over?.winner ?? 'draw';

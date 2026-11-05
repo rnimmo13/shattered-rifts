@@ -3,7 +3,19 @@
 // leaning the deck one way. The banked deck keeps it in Arena and ghosts. The identity pass is documented in DECISIONS #580.
 
 import type { CombatDb, HeroDef, HeroTrait, Op } from '@sr/combat';
-import { barrier, draw, growHp, mana, on, per, raise, scaled, status, stars } from './build';
+import {
+  barrier,
+  draw,
+  growHp,
+  mana,
+  on,
+  per,
+  raise,
+  scaled,
+  status,
+  stars,
+  reserves,
+} from './build';
 
 export interface Ascendancy {
   /** `<hero>:<name>`, so a class named after another's id can never be taken for it */
@@ -57,9 +69,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Marshal',
     'Reserves',
     // (Max Reserves 4, was 5, DECISIONS #545)
-    'Max Reserves 4. Your Attacks deal 10% more damage per Reserve spent this turn, up to 40% more.',
+    'Max Reserves 4. At the start of your turn, gain 1 Reserve. Your Attacks deal 10% more damage per Reserve spent this turn, up to 40% more.',
     {
       set: { maxReserves: 4 },
+      turnStart: [reserves(1)],
       fightStart: [{ op: 'discipline', rule: { kind: 'reserves', perSpent: 10, cap: 40 } }],
     },
   ),
@@ -82,10 +95,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Artillerist',
     'Personal weapons',
-    'At the start of your turn, gain 1 Might. The first Attack you play on your turn gives you 3 Barrier.',
+    'At the start of your turn, gain 2 Might. The first Attack you play on your turn gives you 6 Barrier.',
     {
-      turnStart: [status('might', 1)],
-      triggers: [on('play', [barrier(3)], { filter: 'attack', once: true, ownTurn: true })],
+      turnStart: [status('might', 2)],
+      triggers: [on('play', [barrier(6)], { filter: 'attack', once: true, ownTurn: true })],
     },
   ),
   a(
@@ -93,9 +106,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Golemancer',
     'One big machine',
     // (3, was 2, DECISIONS #545)
-    'At the start of your turn, your companions gain 3 more max HP. Heavy and Colossal companions deal 1% more attack damage per max HP, up to 100% more. When one dies, save half its earned max HP growth, up to 30, for your next new Heavy or Colossal build this fight. Inherited growth does not count. Scrapping and revivals do not use this reserve.',
+    "At the start of your turn, your companions gain 3 more max HP, then you gain Barrier equal to 10% of your largest companion's max HP, rounded down, up to 12. Heavy and Colossal companions deal 1% more attack damage per max HP, up to 100% more. When one dies, save half its earned max HP growth, up to 30, for your next new Heavy or Colossal build this fight. Inherited growth does not count. Scrapping and revivals do not use this reserve.",
     {
-      turnStart: [growHp(3, 'allAllies')],
+      turnStart: [
+        growHp(3, 'allAllies'),
+        scaled(barrier(0), { by: 'biggestAlly', mult: 0.1, max: 12 }),
+      ],
       fightStart: [
         {
           op: 'discipline',
@@ -110,9 +126,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Swarmwright',
     'A fourth machine',
-    'You have a 4th companion slot. At the start of your turn, each companion gains 1 Primed. Fabrication: your companions deal +1 attack damage per hit for every 3 companions summoned this fight. Starting companions do not count; replacements keep the bonus.',
+    'You have a 4th companion slot. At the start of your turn, each companion gains 1 Primed. Your first 3 successful summons on your turn each give you 3 Barrier. Fabrication: your companions deal +1 attack damage per hit for every 3 companions summoned this fight. Starting companions do not count; replacements keep the bonus.',
     {
       maxAllies: 4,
+      triggers: [on('summon', [barrier(3)], { ownTurn: true, perTurnLimit: 3 })],
       turnStart: [status('vigor', 1, 'allAllies')],
       fightStart: [{ op: 'attackAura', amount: 0, scope: 'companions', perSummons: 3 }],
     },
@@ -123,9 +140,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'hunter',
     'Beastmaster',
     'The pack',
-    'Your companions share three quarters of your Might, not half.',
+    'Your companions share three quarters of your Might, not half. At the start of your turn, gain 1 Might.',
     {
       set: { shareMight: 0.75 },
+      turnStart: [status('might', 1)],
     },
   ),
   a(
@@ -133,9 +151,9 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Reaver',
     'Paying blood',
     // (and 2 Primed, DECISIONS #545)
-    'The first time each turn one of your own effects costs you HP, draw 1 card and gain 2 Primed.',
+    'The first time each turn one of your own effects costs you HP, draw 1 card, gain 2 Primed and gain 4 Barrier.',
     {
-      triggers: [on('loseHp', [draw(1), status('vigor', 2)], { once: true })],
+      triggers: [on('loseHp', [draw(1), status('vigor', 2), barrier(4)], { once: true })],
     },
   ),
   a(
@@ -233,9 +251,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Spiritwalker',
     'Commands',
     // (4 Barrier, was 2, DECISIONS #545)
-    'The first time a totem acts each turn on your order or as it leaves the row, draw 1 card and gain 4 Barrier.',
+    'The first time a totem acts each turn on your order or as it leaves the row, draw 1 card and gain 4 Barrier. Your first ordered totem command on your turn also gives 1 Spirit.',
     {
-      triggers: [on('command', [draw(1), barrier(4)], { once: true })],
+      triggers: [
+        on('command', [draw(1), barrier(4)], { once: true }),
+        on('orderedCommand', [status('spirit', 1)], { once: true, ownTurn: true }),
+      ],
     },
   ),
   // (the Elementalist took the Pyromancer's place, DECISIONS #542: one burst for each element the first time it is cast each turn)
@@ -283,22 +304,23 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'spellblade',
     'Blademaster',
     'Swords',
-    'Every hit of your Swords deals 1 more damage, and the first Sword you play each turn draws 1 card.',
+    'Every hit of your Swords deals 1 more damage, and the first Sword you play each turn draws 1 card and gives 4 Barrier.',
     {
       fightStart: [status('keen', 1)],
-      triggers: [on('play', [draw(1)], { tag: 'sword', once: true })],
+      triggers: [on('play', [draw(1), barrier(4)], { tag: 'sword', once: true })],
     },
   ),
   a(
     'spellblade',
     'Archmage',
     'Spells',
-    'Start each fight with 3 more Spell Power. Your first Spell Attack each turn that spends Spell Power deals 1 extra damage per point spent on every hit. Half that expenditure, rounded down, returns next turn.',
+    'Start each fight with 3 more Spell Power and gain 2 Spell Power at the start of your turn. Your first Spell Attack each turn that spends Spell Power deals 1 extra damage per point spent on every hit. Half that expenditure, rounded down, returns next turn.',
     {
       fightStart: [
         stars(3),
         { op: 'discipline', rule: { kind: 'spellCycle', perSpent: 1, refundDivisor: 2 } },
       ],
+      turnStart: [stars(2)],
     },
   ),
   // (15% more, not 5 more: a percentage grows as the Shatters do, DECISIONS #542)

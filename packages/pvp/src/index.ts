@@ -2,6 +2,7 @@
 
 export * from './protocol';
 export * from './balanceReport';
+export * from './arenaBalance';
 export * from './trophies';
 export * from './ranks';
 export * from './seasons';
@@ -22,7 +23,14 @@ export {
 } from './deck';
 export { enqueue, leave, pairUp, type Pairing, type Waiting } from './queue';
 export { decideOrder, seatsFor, type Arrival, type Order } from './order';
-export { newSeries, scoreGame, seriesFor, seriesWinner, type SeriesState } from './series';
+export {
+  newSeries,
+  scoreGame,
+  seriesFor,
+  seriesWinner,
+  endsSeries,
+  type SeriesState,
+} from './series';
 export {
   BOARD_KEEP_DAYS,
   BOARD_SIZE,

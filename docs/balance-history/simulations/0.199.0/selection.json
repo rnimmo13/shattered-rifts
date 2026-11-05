@@ -1,0 +1,2552 @@
+[
+  {
+    "id": "knight:paladin",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.07760784313725491,
+        "arenaWins": 2,
+        "arenaScore": 1.994390413943355
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.08174509803921569,
+        "arenaWins": 1,
+        "arenaScore": 0.9899722222222223
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.06972549019607843,
+        "arenaWins": 1,
+        "arenaScore": 0.9899270152505447
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.05741176470588236,
+        "arenaWins": 2,
+        "arenaScore": 1.9941138616557734
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.11829411764705881,
+        "arenaWins": 3,
+        "arenaScore": 3.0084197984749452
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.1041372549019608,
+        "arenaWins": 1,
+        "arenaScore": 0.9908411764705883
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 1,
+        "bossScore": 1.1130244097639057,
+        "arenaWins": 4,
+        "arenaScore": 4.016002314814815
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.05421568627450982,
+        "arenaWins": 2,
+        "arenaScore": 1.9904535675381263
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 4,
+        "bossScore": 4.081632653061224,
+        "arenaWins": 3,
+        "arenaScore": 2.999412037037037
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.0911764705882353,
+        "arenaWins": 2,
+        "arenaScore": 1.9862171023965143
+      }
+    ]
+  },
+  {
+    "id": "knight:marshal",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.03539215686274509,
+        "arenaWins": 2,
+        "arenaScore": 1.9999258169934642
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.050039215686274514,
+        "arenaWins": 2,
+        "arenaScore": 1.9969690359477124
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.04005882352941177,
+        "arenaWins": 2,
+        "arenaScore": 2.000209422657952
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.11633333333333332,
+        "arenaWins": 2,
+        "arenaScore": 1.9976120915032678
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.1279607843137255,
+        "arenaWins": 3,
+        "arenaScore": 3.004299836601307
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.0957450980392157,
+        "arenaWins": 2,
+        "arenaScore": 1.999073474945534
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.0709183673469385,
+        "arenaWins": 2,
+        "arenaScore": 1.999051225490196
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 3,
+        "bossScore": 3.070360144057623,
+        "arenaWins": 1,
+        "arenaScore": 0.9874581699346404
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 4,
+        "bossScore": 4.059183673469388,
+        "arenaWins": 2,
+        "arenaScore": 1.994233006535948
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.11539215686274511,
+        "arenaWins": 1,
+        "arenaScore": 0.9921322440087147
+      }
+    ]
+  },
+  {
+    "id": "knight:blood-knight",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.10047058823529412,
+        "arenaWins": 2,
+        "arenaScore": 2.0120793572984748
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.08643137254901961,
+        "arenaWins": 2,
+        "arenaScore": 2.0076667755991284
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.06529411764705884,
+        "arenaWins": 4,
+        "arenaScore": 4.022388888888889
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 1,
+        "bossScore": 1.129316526610644,
+        "arenaWins": 4,
+        "arenaScore": 4.020476851851852
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.12525490196078432,
+        "arenaWins": 4,
+        "arenaScore": 4.0228518518518515
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.054901960784313725,
+        "arenaWins": 2,
+        "arenaScore": 2.009241176470588
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.0780612244897965,
+        "arenaWins": 2,
+        "arenaScore": 2.0102716775599125
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 2,
+        "bossScore": 2.1072440976390556,
+        "arenaWins": 3,
+        "arenaScore": 3.0185625000000003
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 4,
+        "bossScore": 4.116326530612246,
+        "arenaWins": 4,
+        "arenaScore": 4.024842592592592
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 4,
+        "bossScore": 4.090306122448979,
+        "arenaWins": 4,
+        "arenaScore": 4.024706018518518
+      }
+    ]
+  },
+  {
+    "id": "engineer:artillerist",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.027313725490196082,
+        "arenaWins": 0,
+        "arenaScore": -0.018481018518518518
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.029156862745098037,
+        "arenaWins": 1,
+        "arenaScore": 0.9845271164021164
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.032078431372549024,
+        "arenaWins": 1,
+        "arenaScore": 0.9853999183006537
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.029137254901960785,
+        "arenaWins": 2,
+        "arenaScore": 1.9915919312169315
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.08288235294117648,
+        "arenaWins": 0,
+        "arenaScore": -0.018078458605664486
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.025980392156862746,
+        "arenaWins": 1,
+        "arenaScore": 0.9825378968253968
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.03292156862745098,
+        "arenaWins": 2,
+        "arenaScore": 1.9896607142857143
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.027313725490196075,
+        "arenaWins": 2,
+        "arenaScore": 1.9899421296296296
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.022078431372549015,
+        "arenaWins": 1,
+        "arenaScore": 0.9873443121693122
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.024960784313725497,
+        "arenaWins": 1,
+        "arenaScore": 0.9829923941798941
+      }
+    ]
+  },
+  {
+    "id": "engineer:golemancer",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.031568627450980394,
+        "arenaWins": 1,
+        "arenaScore": 0.978239705882353
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.01992156862745098,
+        "arenaWins": 0,
+        "arenaScore": -0.027475571895424836
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.06674509803921569,
+        "arenaWins": 1,
+        "arenaScore": 0.9871366713352007
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 1.5486274509803923,
+        "arenaWins": 2,
+        "arenaScore": 1.983845459850607
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 1,
+        "bossScore": 2.1358039215686273,
+        "arenaWins": 0,
+        "arenaScore": -0.026919035947712416
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.03947058823529411,
+        "arenaWins": 1,
+        "arenaScore": 0.9830244825708062
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 1,
+        "bossScore": 1.14278431372549,
+        "arenaWins": 2,
+        "arenaScore": 1.989510889355742
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 1,
+        "bossScore": 2.1542549019607846,
+        "arenaWins": 2,
+        "arenaScore": 1.9881748599439775
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 1,
+        "bossScore": 1.0510588235294118,
+        "arenaWins": 1,
+        "arenaScore": 0.9808595004668536
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 2,
+        "bossScore": 2.6845882352941173,
+        "arenaWins": 2,
+        "arenaScore": 1.9884399509803918
+      }
+    ]
+  },
+  {
+    "id": "engineer:swarmwright",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.0656078431372549,
+        "arenaWins": 1,
+        "arenaScore": 0.9886695332445333
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 1,
+        "bossScore": 1.1166078431372548,
+        "arenaWins": 2,
+        "arenaScore": 1.9937021173271174
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 1,
+        "bossScore": 1.1164839572192513,
+        "arenaWins": 2,
+        "arenaScore": 1.997487692862693
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 2,
+        "bossScore": 2.1330975935828875,
+        "arenaWins": 1,
+        "arenaScore": 0.9829443187531423
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 1,
+        "bossScore": 2.6802745098039216,
+        "arenaWins": 0,
+        "arenaScore": -0.02338565176653412
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 1,
+        "bossScore": 1.0974817290552585,
+        "arenaWins": 0,
+        "arenaScore": -0.03082173316879199
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 2,
+        "bossScore": 2.1488235294117644,
+        "arenaWins": 2,
+        "arenaScore": 1.9879687812187812
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 3,
+        "bossScore": 3.1469982174688056,
+        "arenaWins": 2,
+        "arenaScore": 2.00377210983461
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.04290196078431373,
+        "arenaWins": 1,
+        "arenaScore": 0.9893808164058163
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.08503921568627451,
+        "arenaWins": 2,
+        "arenaScore": 1.9984831210456213
+      }
+    ]
+  },
+  {
+    "id": "hunter:beastmaster",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.06568627450980394,
+        "arenaWins": 0,
+        "arenaScore": -0.018424744046802874
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.07237254901960785,
+        "arenaWins": 0,
+        "arenaScore": -0.023115569724393256
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.05923529411764707,
+        "arenaWins": 0,
+        "arenaScore": -0.0185662256044609
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.06794117647058824,
+        "arenaWins": 0,
+        "arenaScore": -0.02712440925087984
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.0641764705882353,
+        "arenaWins": 0,
+        "arenaScore": -0.023236156817039173
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.047921568627450985,
+        "arenaWins": 0,
+        "arenaScore": -0.021883177933177934
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.08358823529411766,
+        "arenaWins": 0,
+        "arenaScore": -0.021990225787284615
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.10170588235294117,
+        "arenaWins": 0,
+        "arenaScore": -0.022780561268796563
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 4,
+        "bossScore": 4.097959183673469,
+        "arenaWins": 0,
+        "arenaScore": -0.020128144567850448
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 1,
+        "bossScore": 1.120362545018007,
+        "arenaWins": 0,
+        "arenaScore": -0.025216494126788246
+      }
+    ]
+  },
+  {
+    "id": "hunter:reaver",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.055901960784313726,
+        "arenaWins": 0,
+        "arenaScore": -0.014508918369212486
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.055568627450980394,
+        "arenaWins": 0,
+        "arenaScore": -0.019038872891814065
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.05105882352941177,
+        "arenaWins": 0,
+        "arenaScore": -0.016703950134832488
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.049862745098039216,
+        "arenaWins": 0,
+        "arenaScore": -0.017752148178618768
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.060490196078431376,
+        "arenaWins": 0,
+        "arenaScore": -0.019750193107546048
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.05262745098039216,
+        "arenaWins": 0,
+        "arenaScore": -0.019707951688834043
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.05829411764705883,
+        "arenaWins": 0,
+        "arenaScore": -0.019034217743041273
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.05652941176470589,
+        "arenaWins": 0,
+        "arenaScore": -0.014990864527629235
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.041882352941176475,
+        "arenaWins": 0,
+        "arenaScore": -0.02026662210338681
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.07031372549019609,
+        "arenaWins": 0,
+        "arenaScore": -0.014386490470314001
+      }
+    ]
+  },
+  {
+    "id": "hunter:predator",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.020000000000000004,
+        "arenaWins": 0,
+        "arenaScore": -0.010430065359477124
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.016470588235294115,
+        "arenaWins": 1,
+        "arenaScore": 0.9888418300653594
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.015137254901960783,
+        "arenaWins": 2,
+        "arenaScore": 2.001724591503268
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.016078431372549017,
+        "arenaWins": 1,
+        "arenaScore": 0.9902925925925926
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.016411764705882355,
+        "arenaWins": 1,
+        "arenaScore": 0.9985010893246187
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.02035294117647059,
+        "arenaWins": 1,
+        "arenaScore": 0.9886305010893246
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.01727450980392157,
+        "arenaWins": 0,
+        "arenaScore": -0.013925490196078433
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.011,
+        "arenaWins": 0,
+        "arenaScore": -0.01544313725490196
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.013882352941176474,
+        "arenaWins": 0,
+        "arenaScore": -0.01798954248366013
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.01419607843137255,
+        "arenaWins": 0,
+        "arenaScore": -0.020836601307189544
+      }
+    ]
+  },
+  {
+    "id": "trickster:trapmaster",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 2.077372549019608,
+        "arenaWins": 1,
+        "arenaScore": 0.9979957788671024
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 1.6782352941176473,
+        "arenaWins": 4,
+        "arenaScore": 4.020101851851852
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.5526470588235295,
+        "arenaWins": 1,
+        "arenaScore": 0.9943398148148148
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 2.1042549019607844,
+        "arenaWins": 1,
+        "arenaScore": 0.9932114651416122
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 2.0660392156862746,
+        "arenaWins": 1,
+        "arenaScore": 1.0007945533769063
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 1.1048235294117648,
+        "arenaWins": 2,
+        "arenaScore": 2.003136791938998
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 2.100901960784314,
+        "arenaWins": 1,
+        "arenaScore": 1.0008834422657953
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 2.075843137254902,
+        "arenaWins": 1,
+        "arenaScore": 0.9895879357298475
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 2.100901960784314,
+        "arenaWins": 1,
+        "arenaScore": 1.0008834422657953
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 2.075843137254902,
+        "arenaWins": 1,
+        "arenaScore": 0.9895879357298475
+      }
+    ]
+  },
+  {
+    "id": "trickster:cardsharp",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.05462745098039217,
+        "arenaWins": 2,
+        "arenaScore": 2.004460920479303
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.05172549019607844,
+        "arenaWins": 2,
+        "arenaScore": 2.002355119825708
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.10186274509803922,
+        "arenaWins": 3,
+        "arenaScore": 3.012751851851852
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.09223529411764705,
+        "arenaWins": 4,
+        "arenaScore": 4.017335648148148
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 1,
+        "bossScore": 1.630216886754702,
+        "arenaWins": 0,
+        "arenaScore": -0.019133333333333332
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.02309803921568627,
+        "arenaWins": 0,
+        "arenaScore": -0.01582091503267974
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 2,
+        "bossScore": 2.114890356142457,
+        "arenaWins": 3,
+        "arenaScore": 3.000131944444445
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.10933333333333335,
+        "arenaWins": 4,
+        "arenaScore": 4.018472222222222
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 2,
+        "bossScore": 2.114890356142457,
+        "arenaWins": 3,
+        "arenaScore": 3.000131944444445
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.10933333333333335,
+        "arenaWins": 4,
+        "arenaScore": 4.018472222222222
+      }
+    ]
+  },
+  {
+    "id": "trickster:seer",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.005352941176470588,
+        "arenaWins": 3,
+        "arenaScore": 3.0103179713804717
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.0041568627450980335,
+        "arenaWins": 2,
+        "arenaScore": 2.0009207135457134
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.005882352941176472,
+        "arenaWins": 3,
+        "arenaScore": 3.015682239057239
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.012607843137254904,
+        "arenaWins": 3,
+        "arenaScore": 3.009231837606838
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.010117647058823526,
+        "arenaWins": 2,
+        "arenaScore": 1.9997550343175343
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.007784313725490194,
+        "arenaWins": 3,
+        "arenaScore": 3.0024478114478117
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.008156862745098036,
+        "arenaWins": 3,
+        "arenaScore": 3.0100334595959595
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.010137254901960786,
+        "arenaWins": 2,
+        "arenaScore": 2.008173400673401
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.008156862745098036,
+        "arenaWins": 3,
+        "arenaScore": 3.0100334595959595
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.010137254901960786,
+        "arenaWins": 2,
+        "arenaScore": 2.008173400673401
+      }
+    ]
+  },
+  {
+    "id": "assassin:assassin",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 1,
+        "bossScore": 1.0522618595825428,
+        "arenaWins": 0,
+        "arenaScore": -0.017776063222491794
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.15488235294117647,
+        "arenaWins": 0,
+        "arenaScore": -0.018555293912436772
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 2,
+        "bossScore": 2.103452877925364,
+        "arenaWins": 0,
+        "arenaScore": -0.01349894153465582
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.14233333333333334,
+        "arenaWins": 0,
+        "arenaScore": -0.011611900004757147
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 2,
+        "bossScore": 2.1016559139784947,
+        "arenaWins": 0,
+        "arenaScore": -0.013331777349634491
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 1,
+        "bossScore": 1.1207501581277675,
+        "arenaWins": 0,
+        "arenaScore": -0.019862409415980845
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 1,
+        "bossScore": 1.1083219481340922,
+        "arenaWins": 0,
+        "arenaScore": -0.011655031476460048
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 1,
+        "bossScore": 1.110381404174573,
+        "arenaWins": 0,
+        "arenaScore": -0.018389556871699728
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.11243137254901961,
+        "arenaWins": 0,
+        "arenaScore": -0.013193423639852212
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.13409803921568628,
+        "arenaWins": 0,
+        "arenaScore": -0.017823198626770058
+      }
+    ]
+  },
+  {
+    "id": "assassin:bladedancer",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 1,
+        "bossScore": 1.0996869070208728,
+        "arenaWins": 3,
+        "arenaScore": 3.015149613784908
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 1,
+        "bossScore": 1.1274965211891208,
+        "arenaWins": 4,
+        "arenaScore": 4.0233960784313725
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 1,
+        "bossScore": 1.1066888045540797,
+        "arenaWins": 3,
+        "arenaScore": 3.0184357466063347
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 2,
+        "bossScore": 2.1137362428842503,
+        "arenaWins": 3,
+        "arenaScore": 3.019982397504456
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 2,
+        "bossScore": 2.1948431372549018,
+        "arenaWins": 3,
+        "arenaScore": 3.021226203208556
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 1,
+        "bossScore": 1.1132953826691967,
+        "arenaWins": 2,
+        "arenaScore": 2.0127286416198182
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.120967741935484,
+        "arenaWins": 3,
+        "arenaScore": 3.0191897058823525
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 4,
+        "bossScore": 4.179032258064516,
+        "arenaWins": 4,
+        "arenaScore": 4.022908496732025
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.118569259962049,
+        "arenaWins": 3,
+        "arenaScore": 3.0142878330819505
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 2,
+        "bossScore": 2.1577963314358004,
+        "arenaWins": 4,
+        "arenaScore": 4.030079738562092
+      }
+    ]
+  },
+  {
+    "id": "assassin:bloodletter",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 3,
+        "bossScore": 3.0393466160657816,
+        "arenaWins": 4,
+        "arenaScore": 4.02317385620915
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.14398039215686276,
+        "arenaWins": 2,
+        "arenaScore": 2.009659827264239
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 4,
+        "bossScore": 4.0462365591397855,
+        "arenaWins": 3,
+        "arenaScore": 3.0188295051353875
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 2,
+        "bossScore": 2.1038494623655914,
+        "arenaWins": 3,
+        "arenaScore": 3.0172238562091507
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 4,
+        "bossScore": 4.175268817204301,
+        "arenaWins": 2,
+        "arenaScore": 2.0087039332399628
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 2,
+        "bossScore": 2.072294117647059,
+        "arenaWins": 2,
+        "arenaScore": 2.0089727591036413
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.099462365591398,
+        "arenaWins": 4,
+        "arenaScore": 4.0215477124183
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 2,
+        "bossScore": 2.049201138519924,
+        "arenaWins": 4,
+        "arenaScore": 4.027572549019608
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.0478279569892472,
+        "arenaWins": 4,
+        "arenaScore": 4.0238692810457515
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 1,
+        "bossScore": 1.0997685009487665,
+        "arenaWins": 4,
+        "arenaScore": 4.026652287581699
+      }
+    ]
+  },
+  {
+    "id": "shaman:totemist",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 4,
+        "bossScore": 4.093010752688172,
+        "arenaWins": 2,
+        "arenaScore": 1.9984862745098042
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 4,
+        "bossScore": 4.091397849462365,
+        "arenaWins": 2,
+        "arenaScore": 1.9984033029878614
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 4,
+        "bossScore": 4.09784946236559,
+        "arenaWins": 2,
+        "arenaScore": 1.9990852707749767
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 3,
+        "bossScore": 3.12727577482606,
+        "arenaWins": 2,
+        "arenaScore": 1.9945732376283851
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 3,
+        "bossScore": 3.1024832384566734,
+        "arenaWins": 2,
+        "arenaScore": 1.9941881419234357
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 2,
+        "bossScore": 2.133468058191019,
+        "arenaWins": 2,
+        "arenaScore": 1.9960530578898228
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.086559139784946,
+        "arenaWins": 2,
+        "arenaScore": 1.986231617647059
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 3,
+        "bossScore": 3.120588867805186,
+        "arenaWins": 2,
+        "arenaScore": 1.9905621732026149
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 2,
+        "bossScore": 2.1202099936748895,
+        "arenaWins": 2,
+        "arenaScore": 1.9899309640522875
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 3,
+        "bossScore": 3.1098659076533837,
+        "arenaWins": 2,
+        "arenaScore": 1.9903111928104578
+      }
+    ]
+  },
+  {
+    "id": "shaman:spiritwalker",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.018000000000000002,
+        "arenaWins": 0,
+        "arenaScore": -0.02562110177404295
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.01507843137254902,
+        "arenaWins": 0,
+        "arenaScore": -0.03163964752567694
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.034725490196078436,
+        "arenaWins": 0,
+        "arenaScore": -0.02699749066293184
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.11170588235294118,
+        "arenaWins": 0,
+        "arenaScore": -0.03184544817927171
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 1,
+        "bossScore": 1.1098785578747628,
+        "arenaWins": 0,
+        "arenaScore": -0.02754666199813259
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.0162156862745098,
+        "arenaWins": 0,
+        "arenaScore": -0.029636963118580766
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 1,
+        "bossScore": 1.1074079696394687,
+        "arenaWins": 0,
+        "arenaScore": -0.02836358543417367
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.11698039215686273,
+        "arenaWins": 0,
+        "arenaScore": -0.033434512138188606
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.07545098039215686,
+        "arenaWins": 0,
+        "arenaScore": -0.03267748599439776
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.042254901960784325,
+        "arenaWins": 0,
+        "arenaScore": -0.03311812558356676
+      }
+    ]
+  },
+  {
+    "id": "shaman:elementalist",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 4,
+        "bossScore": 4.123118279569892,
+        "arenaWins": 4,
+        "arenaScore": 4.023313725490196
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 2,
+        "bossScore": 2.1017887413029723,
+        "arenaWins": 4,
+        "arenaScore": 4.017528104575163
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 2,
+        "bossScore": 2.1326375711574954,
+        "arenaWins": 4,
+        "arenaScore": 4.0218091503267965
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 3,
+        "bossScore": 3.1098640101201767,
+        "arenaWins": 4,
+        "arenaScore": 4.02094248366013
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 4,
+        "bossScore": 4.144086021505377,
+        "arenaWins": 4,
+        "arenaScore": 4.022729411764706
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 1,
+        "bossScore": 1.1263042378241617,
+        "arenaWins": 4,
+        "arenaScore": 4.01916339869281
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.105376344086022,
+        "arenaWins": 4,
+        "arenaScore": 4.013875816993464
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 3,
+        "bossScore": 3.1254016445287793,
+        "arenaWins": 4,
+        "arenaScore": 4.014291503267974
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 2,
+        "bossScore": 2.0953118279569893,
+        "arenaWins": 3,
+        "arenaScore": 3.006443404634581
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 2,
+        "bossScore": 2.1075667299177736,
+        "arenaWins": 4,
+        "arenaScore": 4.012524183006536
+      }
+    ]
+  },
+  {
+    "id": "monk:sage",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 2,
+        "bossScore": 2.089496323529412,
+        "arenaWins": 1,
+        "arenaScore": 0.9936820758606473
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 2,
+        "bossScore": 2.1450906862745103,
+        "arenaWins": 1,
+        "arenaScore": 0.9982879560915275
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 4,
+        "bossScore": 4.109375,
+        "arenaWins": 2,
+        "arenaScore": 1.9982803208696067
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 4,
+        "bossScore": 4.109375,
+        "arenaWins": 2,
+        "arenaScore": 1.998840635554921
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 3,
+        "bossScore": 3.0986874999999996,
+        "arenaWins": 1,
+        "arenaScore": 0.989425221603793
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 3,
+        "bossScore": 3.066080882352941,
+        "arenaWins": 1,
+        "arenaScore": 0.9939597419775992
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 3,
+        "bossScore": 3.1092230392156863,
+        "arenaWins": 3,
+        "arenaScore": 3.0044344405594403
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 2,
+        "bossScore": 2.1649117647058826,
+        "arenaWins": 2,
+        "arenaScore": 2.0072196883804025
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.1092230392156863,
+        "arenaWins": 3,
+        "arenaScore": 3.0044344405594403
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 2,
+        "bossScore": 2.1649117647058826,
+        "arenaWins": 2,
+        "arenaScore": 2.0072196883804025
+      }
+    ]
+  },
+  {
+    "id": "monk:zealot",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.038647058823529416,
+        "arenaWins": 2,
+        "arenaScore": 2.0002251521626526
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.05456862745098039,
+        "arenaWins": 2,
+        "arenaScore": 2.0009491388241387
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.04186274509803922,
+        "arenaWins": 2,
+        "arenaScore": 1.9996379176379182
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.06794117647058824,
+        "arenaWins": 2,
+        "arenaScore": 1.996928888241388
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.09901960784313726,
+        "arenaWins": 2,
+        "arenaScore": 2.002771286583787
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.06527450980392158,
+        "arenaWins": 2,
+        "arenaScore": 2.000918204480705
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.011215686274509801,
+        "arenaWins": 2,
+        "arenaScore": 1.995933129370629
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.020862745098039214,
+        "arenaWins": 2,
+        "arenaScore": 1.9968936156436152
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.014333333333333332,
+        "arenaWins": 2,
+        "arenaScore": 1.9953914627039624
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.030431372549019606,
+        "arenaWins": 2,
+        "arenaScore": 1.996779979279979
+      }
+    ]
+  },
+  {
+    "id": "monk:sunwalker",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 3,
+        "bossScore": 3.047055147058823,
+        "arenaWins": 3,
+        "arenaScore": 3.013604020979021
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 1,
+        "bossScore": 1.1346237745098038,
+        "arenaWins": 2,
+        "arenaScore": 2.0115196886446887
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 1,
+        "bossScore": 1.1078713235294118,
+        "arenaWins": 2,
+        "arenaScore": 2.0063583846708846
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 3,
+        "bossScore": 3.1322720588235295,
+        "arenaWins": 3,
+        "arenaScore": 3.016977453102453
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 3,
+        "bossScore": 3.1447181372549022,
+        "arenaWins": 2,
+        "arenaScore": 2.0013546731046734
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.0717843137254902,
+        "arenaWins": 2,
+        "arenaScore": 1.999322143134643
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.15505882352941178,
+        "arenaWins": 2,
+        "arenaScore": 1.996364531302031
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.13794117647058823,
+        "arenaWins": 2,
+        "arenaScore": 2.005439914252414
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 2,
+        "bossScore": 2.094498774509804,
+        "arenaWins": 2,
+        "arenaScore": 1.9948819166944167
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.14219607843137258,
+        "arenaWins": 2,
+        "arenaScore": 2.0088793290043294
+      }
+    ]
+  },
+  {
+    "id": "spellblade:blademaster",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 1,
+        "bossScore": 1.1422966476913345,
+        "arenaWins": 2,
+        "arenaScore": 1.9941380485527544
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 3,
+        "bossScore": 3.07935357368754,
+        "arenaWins": 2,
+        "arenaScore": 1.9958097922502334
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.16874509803921572,
+        "arenaWins": 2,
+        "arenaScore": 1.9996568744164331
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 2,
+        "bossScore": 2.118347881087919,
+        "arenaWins": 2,
+        "arenaScore": 1.9939223622782447
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.14350980392156865,
+        "arenaWins": 2,
+        "arenaScore": 1.997933380018674
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.08919607843137255,
+        "arenaWins": 2,
+        "arenaScore": 1.9915643090569561
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 3,
+        "bossScore": 3.130219481340924,
+        "arenaWins": 2,
+        "arenaScore": 1.9962783263305321
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 1,
+        "bossScore": 1.1097830487033522,
+        "arenaWins": 2,
+        "arenaScore": 1.9981121265172734
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 2,
+        "bossScore": 2.135941176470588,
+        "arenaWins": 2,
+        "arenaScore": 1.9969068977591036
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.15719607843137257,
+        "arenaWins": 2,
+        "arenaScore": 1.9971801003734828
+      }
+    ]
+  },
+  {
+    "id": "spellblade:archmage",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.013921568627450982,
+        "arenaWins": 1,
+        "arenaScore": 0.9863553921568627
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.022215686274509813,
+        "arenaWins": 2,
+        "arenaScore": 1.9959980625583567
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.014039215686274508,
+        "arenaWins": 2,
+        "arenaScore": 1.992032376283847
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.053294117647058825,
+        "arenaWins": 0,
+        "arenaScore": -0.016336309523809524
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.03937254901960785,
+        "arenaWins": 1,
+        "arenaScore": 0.9850236344537815
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.02445098039215687,
+        "arenaWins": 1,
+        "arenaScore": 0.9878384920634921
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.07949019607843137,
+        "arenaWins": 2,
+        "arenaScore": 1.987557609710551
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.035784313725490194,
+        "arenaWins": 2,
+        "arenaScore": 1.9965526960784314
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.09868627450980393,
+        "arenaWins": 2,
+        "arenaScore": 1.9966940476190476
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.03876470588235294,
+        "arenaWins": 2,
+        "arenaScore": 2.0011638071895423
+      }
+    ]
+  },
+  {
+    "id": "spellblade:shatterer",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 1,
+        "bossScore": 1.0381865907653383,
+        "arenaWins": 1,
+        "arenaScore": 0.9833898148148148
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 1,
+        "bossScore": 1.0463662239089184,
+        "arenaWins": 0,
+        "arenaScore": -0.029064814814814818
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.02935294117647059,
+        "arenaWins": 1,
+        "arenaScore": 0.9848510348583878
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 3,
+        "bossScore": 3.0507722960151806,
+        "arenaWins": 1,
+        "arenaScore": 0.9866259259259259
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 3,
+        "bossScore": 3.039495888678052,
+        "arenaWins": 0,
+        "arenaScore": -0.028905092592592593
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.033960784313725484,
+        "arenaWins": 0,
+        "arenaScore": -0.018041666666666668
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 4,
+        "bossScore": 4.14247311827957,
+        "arenaWins": 2,
+        "arenaScore": 1.9891823529411763
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 4,
+        "bossScore": 4.086021505376343,
+        "arenaWins": 3,
+        "arenaScore": 2.9977764705882355
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 4,
+        "bossScore": 4.091397849462366,
+        "arenaWins": 3,
+        "arenaScore": 2.997012826797386
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 4,
+        "bossScore": 4.066666666666667,
+        "arenaWins": 2,
+        "arenaScore": 1.9890254901960784
+      }
+    ]
+  },
+  {
+    "id": "drunkard:brewmaster",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.08466666666666667,
+        "arenaWins": 2,
+        "arenaScore": 1.9935314797636228
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.06992156862745098,
+        "arenaWins": 3,
+        "arenaScore": 2.9965315227100944
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.6641176470588235,
+        "arenaWins": 0,
+        "arenaScore": -0.021833333333333333
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.04915686274509805,
+        "arenaWins": 3,
+        "arenaScore": 2.9967550848622277
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.14401960784313728,
+        "arenaWins": 1,
+        "arenaScore": 0.9858390022675737
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.03227450980392157,
+        "arenaWins": 2,
+        "arenaScore": 1.9954244185047758
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 1,
+        "bossScore": 1.1090366259711433,
+        "arenaWins": 2,
+        "arenaScore": 1.9989216141001853
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.14172549019607844,
+        "arenaWins": 2,
+        "arenaScore": 1.9928437564419708
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 1,
+        "bossScore": 1.1090366259711433,
+        "arenaWins": 2,
+        "arenaScore": 1.9989216141001853
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.14172549019607844,
+        "arenaWins": 2,
+        "arenaScore": 1.9928437564419708
+      }
+    ]
+  },
+  {
+    "id": "drunkard:gunslinger",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.047529411764705876,
+        "arenaWins": 3,
+        "arenaScore": 3.0031992888064316
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 1,
+        "bossScore": 1.0851516833148354,
+        "arenaWins": 2,
+        "arenaScore": 1.99894653164296
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.07190196078431374,
+        "arenaWins": 1,
+        "arenaScore": 0.9922860922146637
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 1,
+        "bossScore": 1.0847761746207918,
+        "arenaWins": 3,
+        "arenaScore": 3.0034693104514534
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.0651372549019608,
+        "arenaWins": 2,
+        "arenaScore": 1.995199271627843
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.07623529411764707,
+        "arenaWins": 2,
+        "arenaScore": 1.998172138047138
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.029549019607843136,
+        "arenaWins": 3,
+        "arenaScore": 2.9987261131725416
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.12466666666666669,
+        "arenaWins": 2,
+        "arenaScore": 1.9992728475228474
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.029549019607843136,
+        "arenaWins": 3,
+        "arenaScore": 2.9987261131725416
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.12466666666666669,
+        "arenaWins": 2,
+        "arenaScore": 1.9992728475228474
+      }
+    ]
+  },
+  {
+    "id": "drunkard:deathwish",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 0,
+        "bossScore": 0.02592156862745098,
+        "arenaWins": 1,
+        "arenaScore": 0.9839170403009688
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.018725490196078432,
+        "arenaWins": 2,
+        "arenaScore": 2.000728161719233
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.024490196078431378,
+        "arenaWins": 1,
+        "arenaScore": 0.9807262162440733
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.02074509803921569,
+        "arenaWins": 1,
+        "arenaScore": 0.9852343588950732
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 0,
+        "bossScore": 0.07541176470588236,
+        "arenaWins": 1,
+        "arenaScore": 0.9832822227375799
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.030725490196078432,
+        "arenaWins": 3,
+        "arenaScore": 3.0073375463821894
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 0,
+        "bossScore": 0.07845098039215688,
+        "arenaWins": 1,
+        "arenaScore": 0.9926868300350443
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 0,
+        "bossScore": 0.0423921568627451,
+        "arenaWins": 1.5,
+        "arenaScore": 1.4975848622277192
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 0,
+        "bossScore": 0.07845098039215688,
+        "arenaWins": 1,
+        "arenaScore": 0.9926868300350443
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 0,
+        "bossScore": 0.0423921568627451,
+        "arenaWins": 1.5,
+        "arenaScore": 1.4975848622277192
+      }
+    ]
+  },
+  {
+    "id": "necromancer:bonelord",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 2,
+        "bossScore": 2.1422326203208555,
+        "arenaWins": 4,
+        "arenaScore": 4.024098214285714
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 0,
+        "bossScore": 0.13872549019607844,
+        "arenaWins": 4,
+        "arenaScore": 4.023964285714285
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 0,
+        "bossScore": 0.16290196078431374,
+        "arenaWins": 3,
+        "arenaScore": 3.019200066137566
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 0,
+        "bossScore": 0.16366666666666668,
+        "arenaWins": 4,
+        "arenaScore": 4.02453869047619
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 3,
+        "bossScore": 3.146057040998217,
+        "arenaWins": 3,
+        "arenaScore": 3.0151597222222217
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.11586274509803923,
+        "arenaWins": 2,
+        "arenaScore": 2.0088845899470895
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 3,
+        "bossScore": 3.1634367201426024,
+        "arenaWins": 3,
+        "arenaScore": 3.019893518518519
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 3,
+        "bossScore": 3.1346764705882353,
+        "arenaWins": 3,
+        "arenaScore": 3.0209722222222215
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.1634367201426024,
+        "arenaWins": 3,
+        "arenaScore": 3.019893518518519
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 3,
+        "bossScore": 3.1346764705882353,
+        "arenaWins": 3,
+        "arenaScore": 3.0209722222222215
+      }
+    ]
+  },
+  {
+    "id": "necromancer:fateweaver",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 1,
+        "bossScore": 1.0264242424242422,
+        "arenaWins": 4,
+        "arenaScore": 4.019505952380952
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 3,
+        "bossScore": 3.0189852941176474,
+        "arenaWins": 4,
+        "arenaScore": 4.023389880952381
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 4,
+        "bossScore": 4.0130681818181815,
+        "arenaWins": 4,
+        "arenaScore": 4.0166964285714295
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 4,
+        "bossScore": 4.0420454545454545,
+        "arenaWins": 4,
+        "arenaScore": 4.024892857142858
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 4,
+        "bossScore": 4.112500000000001,
+        "arenaWins": 4,
+        "arenaScore": 4.0246845238095235
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 2,
+        "bossScore": 2.0118734402852048,
+        "arenaWins": 3,
+        "arenaScore": 3.009848214285714
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 3,
+        "bossScore": 3.0681091800356506,
+        "arenaWins": 4,
+        "arenaScore": 4.022860119047619
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 4,
+        "bossScore": 4.033522727272727,
+        "arenaWins": 4,
+        "arenaScore": 4.024464285714286
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.0681091800356506,
+        "arenaWins": 4,
+        "arenaScore": 4.022860119047619
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 4,
+        "bossScore": 4.033522727272727,
+        "arenaWins": 4,
+        "arenaScore": 4.024464285714286
+      }
+    ]
+  },
+  {
+    "id": "necromancer:soulreaper",
+    "stats": [
+      {
+        "k": 0,
+        "variant": "optimized",
+        "bossWins": 2,
+        "bossScore": 2.1561176470588235,
+        "arenaWins": 4,
+        "arenaScore": 4.033300595238095
+      },
+      {
+        "k": 1,
+        "variant": "optimized-defense",
+        "bossWins": 3,
+        "bossScore": 3.1375686274509804,
+        "arenaWins": 4,
+        "arenaScore": 4.016366071428571
+      },
+      {
+        "k": 2,
+        "variant": "optimized-lean",
+        "bossWins": 4,
+        "bossScore": 4.115340909090909,
+        "arenaWins": 4,
+        "arenaScore": 4.026095238095238
+      },
+      {
+        "k": 3,
+        "variant": "optimized-alternative-0",
+        "bossWins": 3,
+        "bossScore": 3.1750022281639927,
+        "arenaWins": 4,
+        "arenaScore": 4.027059523809524
+      },
+      {
+        "k": 4,
+        "variant": "optimized-alternative-1",
+        "bossWins": 1,
+        "bossScore": 1.1610623885918003,
+        "arenaWins": 4,
+        "arenaScore": 4.027604166666666
+      },
+      {
+        "k": 5,
+        "variant": "optimized-alternative-2",
+        "bossWins": 0,
+        "bossScore": 0.07539215686274511,
+        "arenaWins": 4,
+        "arenaScore": 4.027645833333334
+      },
+      {
+        "k": 6,
+        "variant": "optimized-support-0-full",
+        "bossWins": 3,
+        "bossScore": 3.156146167557932,
+        "arenaWins": 4,
+        "arenaScore": 4.032690476190477
+      },
+      {
+        "k": 7,
+        "variant": "optimized-support-0-lean",
+        "bossWins": 2,
+        "bossScore": 2.118353386809269,
+        "arenaWins": 4,
+        "arenaScore": 4.025833333333333
+      },
+      {
+        "k": 8,
+        "variant": "optimized-support-1-full",
+        "bossWins": 3,
+        "bossScore": 3.156146167557932,
+        "arenaWins": 4,
+        "arenaScore": 4.032690476190477
+      },
+      {
+        "k": 9,
+        "variant": "optimized-support-1-lean",
+        "bossWins": 2,
+        "bossScore": 2.118353386809269,
+        "arenaWins": 4,
+        "arenaScore": 4.025833333333333
+      }
+    ]
+  }
+]

@@ -1,0 +1,104 @@
+[
+  {
+    "file": "baseline-db.json.gz",
+    "compressedBytes": 68140,
+    "rawBytes": 637717,
+    "sha256": "1367ef92c56c1a301bd95c4b13ad718c798498bfa51078c222905c3a519b476f"
+  },
+  {
+    "file": "candidate-a-db.json.gz",
+    "compressedBytes": 68385,
+    "rawBytes": 639201,
+    "sha256": "a85fad5967d91da985e1ac02ba71143a3902b5bdec4e8c8de9af345cc32dbf09"
+  },
+  {
+    "file": "candidate-a-jobs.json.gz",
+    "compressedBytes": 19562,
+    "rawBytes": 624031,
+    "sha256": "9180fa825ee682ab7be48b259031e50bac21c0c37beea96cc1b652e59c25b303"
+  },
+  {
+    "file": "candidate-a.jsonl.gz",
+    "compressedBytes": 39540,
+    "rawBytes": 344685,
+    "sha256": "87972f2a1b258b1803315831b1c73d1420f1bee8cc4722818516c1afdc9024f4"
+  },
+  {
+    "file": "candidate-b-db.json.gz",
+    "compressedBytes": 68399,
+    "rawBytes": 639378,
+    "sha256": "f6e1606478b2ab1bac98a95b3c65da9dcfd194ca6a86f133dc8ed20653a618b6"
+  },
+  {
+    "file": "candidate-b-jobs.json.gz",
+    "compressedBytes": 175788,
+    "rawBytes": 5958207,
+    "sha256": "f0e6a0a5bcf0afff83285f3aa6841e9c095c9482398411230e2525348b889565"
+  },
+  {
+    "file": "candidate-b.jsonl.gz",
+    "compressedBytes": 303490,
+    "rawBytes": 2609248,
+    "sha256": "bc18d7fefe745d4fe6d2db49de45aa81fe755828fb4221403104f16c62a77d3a"
+  },
+  {
+    "file": "final-db.json.gz",
+    "compressedBytes": 68399,
+    "rawBytes": 639378,
+    "sha256": "f6e1606478b2ab1bac98a95b3c65da9dcfd194ca6a86f133dc8ed20653a618b6"
+  },
+  {
+    "file": "final-jobs.json.gz",
+    "compressedBytes": 203192,
+    "rawBytes": 8029431,
+    "sha256": "d609c3c65d74a818c53914b7870e9c6cc508c939ccc9c49fbee3ec2c48e16436"
+  },
+  {
+    "file": "final.jsonl.gz",
+    "compressedBytes": 394482,
+    "rawBytes": 3821929,
+    "sha256": "23b92610f98a4368e6b59be0fd1d58e375572754e7223ae242d2cc935e33475e"
+  },
+  {
+    "file": "golem-probe-db.json.gz",
+    "compressedBytes": 68399,
+    "rawBytes": 639378,
+    "sha256": "f6e1606478b2ab1bac98a95b3c65da9dcfd194ca6a86f133dc8ed20653a618b6"
+  },
+  {
+    "file": "golem-probe-jobs.json.gz",
+    "compressedBytes": 5877,
+    "rawBytes": 179127,
+    "sha256": "f9753e2eb330ee6b91fdd46026425196b2c11a1b4eda8006e44db09027ebb4d7"
+  },
+  {
+    "file": "golem-probe.jsonl.gz",
+    "compressedBytes": 9187,
+    "rawBytes": 73304,
+    "sha256": "78dd555ec3fdf453ea6c51fc9f117b03477b9143babcceb466bb2748c1be336a"
+  },
+  {
+    "file": "pilot-audit-jobs.json.gz",
+    "compressedBytes": 19561,
+    "rawBytes": 620731,
+    "sha256": "22979c89a3ac329df9013f3cf6f511639b9dcfd41cbf908cbf0b1d919d02e4a0"
+  },
+  {
+    "file": "pilot-audit.jsonl.gz",
+    "compressedBytes": 36434,
+    "rawBytes": 336236,
+    "sha256": "22565379732c0759f181b1a59e99d4de5e5160238f75a06f3d4f620917e6457a"
+  },
+  {
+    "file": "train-b300-jobs.json.gz",
+    "compressedBytes": 43674,
+    "rawBytes": 2435859,
+    "sha256": "797ee1cee7243e92892f589665e9906d2123b8c78e2decfcc9571ffdd7fc2fb6"
+  },
+  {
+    "file": "train-b300.jsonl.gz",
+    "compressedBytes": 114952,
+    "rawBytes": 1350890,
+    "sha256": "053b89274aeb42e6e3b78b498062c8533a2e06dcc46097d411626ad1e9ca50c7"
+  }
+]

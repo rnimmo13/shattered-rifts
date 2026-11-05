@@ -59,6 +59,7 @@ import {
   seasonOf,
   type RankBadge,
   type RankedStanding,
+  isArenaBalanceGame,
 } from '@sr/pvp';
 import { ascendancyOf } from '@sr/content/v2';
 import type { Env } from './env';
@@ -278,6 +279,10 @@ export class Leaderboard extends DurableObject<Env> {
        )`,
     );
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS replays_at ON replays (at)');
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS balance_games (seq INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL, at INTEGER NOT NULL, data TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS balance_games_at ON balance_games (at)');
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -1205,6 +1210,25 @@ export class Leaderboard extends DurableObject<Env> {
     // (a week or month that has ended is settled before anything is shown or recorded)
     this.settleTrophies(now);
     if (request.method === 'GET') {
+      if (url.pathname === '/balance/export') {
+        const after = Number(url.searchParams.get('after') ?? 0);
+        if (!Number.isSafeInteger(after) || after < 0) return json({ ok: false }, 400);
+        const rows = this.ctx.storage.sql
+          .exec<{ seq: number; data: string }>(
+            'SELECT seq, data FROM balance_games WHERE seq > ? ORDER BY seq LIMIT 251',
+            after,
+          )
+          .toArray();
+        const page = rows.slice(0, 250);
+        return json({
+          schema: 1,
+          games: page.map((r) => JSON.parse(r.data) as unknown),
+          next: page.at(-1)?.seq ?? after,
+          more: rows.length > 250,
+          retentionDays: 90,
+          maxGames: 20000,
+        });
+      }
       const period: Period = url.searchParams.get('period') === 'month' ? 'month' : 'week';
       if (url.pathname === '/pvp') return json(this.pvpBoard(period, now));
       if (url.pathname === '/runs') return json(this.runBoard(period, now));
@@ -1221,6 +1245,21 @@ export class Leaderboard extends DurableObject<Env> {
       body = parsed as Record<string, unknown>;
     } catch {
       return json({ ok: false, error: 'bad-body' }, 400);
+    }
+    if (url.pathname === '/balance/save') {
+      const game = body['game'];
+      if (!isArenaBalanceGame(game)) return json({ ok: false }, 400);
+      this.ctx.storage.sql.exec(
+        'INSERT OR IGNORE INTO balance_games (id, at, data) VALUES (?, ?, ?)',
+        game.id,
+        now,
+        JSON.stringify(game),
+      );
+      this.ctx.storage.sql.exec('DELETE FROM balance_games WHERE at < ?', now - 90 * DAY);
+      this.ctx.storage.sql.exec(
+        'DELETE FROM balance_games WHERE seq IN (SELECT seq FROM balance_games ORDER BY seq DESC LIMIT -1 OFFSET 20000)',
+      );
+      return json({ ok: true });
     }
     if (url.pathname === '/view') {
       // a board seen by someone who is known: it also says where they stand

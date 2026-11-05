@@ -76,7 +76,7 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
     v.hp = Math.floor(v.maxHp * 0.9);
     v.intent = { move: 'refract', target: s.sides.a.units[0]!.id };
     expect(first(applyAction(db, s, { type: 'endTurn' }).state, 'vorthax').barrier).toBe(
-      Math.floor(v.maxHp * 0.06),
+      Math.floor(v.maxHp * 0.02),
     );
   });
 });

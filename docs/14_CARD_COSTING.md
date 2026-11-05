@@ -1,5 +1,7 @@
 # Card costing: what every number on a card is worth
 
+Local simulation-led revision: [2026-11-05 ledger](BALANCE_REVISION_2026-11-05.md). Includes shared once-per-turn Reserve pricing, diminishing soul triggers, invested companion HP converted into hero protection, and reduced recurring finale defenses. Simulation results supplement these hand budgets; they do not replace card-level reasoning or establish human A-tier parity.
+
 Current local shared pass: [0.195.0 ledger](SHARED_BALANCE_2026-11-04.md), including proportional Soul Tithe, six resource-card comparisons, diminishing triggers, recovery and uncertainty. [Versioned strength charts](balance-history/README.md) preserve estimates separately from future measured data.
 
 How to price a card, worked out from the five baseline classes (Knight, Assassin, Spellblade, Necromancer, Shaman: the

@@ -1,5 +1,7 @@
 # Shattered Rifts: Cards
 
+Current local revision: [0.199.0 balance ledger](BALANCE_REVISION_2026-11-05.md), with exact resource limits, protection, costs and Vorthax changes. Applies to Campaign/Arena as specified; not released. The generated [current card list](10_CARD_LIST.md) and `packages/content/src/v2` describe the live implementation; historical legacy material below is unchanged.
+
 > Current v0.198.0/rules81: [exact shared long-fight changes](LONG_FIGHT_BALANCE_2026-11-04.md), [all30 projected grades](balance-history/0.198.0.md). Implements the remaining proposals plus Bonelord/Deathwish protection; historical notices below retain their original context.
 
 > v0.197.0/rules80: focused Engineer changes (Heavy Hitter and Resonant Pulse) are specified in [ENGINEER_SCALING_2026-11-04.md](ENGINEER_SCALING_2026-11-04.md). See [the implemented assessment](balance-history/0.197.0.md); the separate longer-Arena review includes proposals that have not been applied.

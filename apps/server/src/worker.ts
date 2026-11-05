@@ -25,6 +25,7 @@ export { MatchRoom } from './room';
 export { Vault } from './vault';
 export { Identity } from './identity';
 export { Leaderboard } from './board';
+import { balanceAdmin } from './balanceAdmin';
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), {
@@ -369,6 +370,7 @@ async function playSocketRequest(
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname === '/admin/balance') return balanceAdmin(request, env);
     if (url.pathname === '/pvp/health') return json({ ok: true, service: 'shattered-rifts-pvp' });
 
     // a browser says where the page came from; other clients (a test script) say nothing

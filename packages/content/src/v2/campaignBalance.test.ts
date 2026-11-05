@@ -61,15 +61,15 @@ describe('approved campaign balance pass', () => {
     let s = fight('engineer', ['pulse-pistol', 'pulse-pistol'], 'engineer:foreman');
     expect(ascendancyOf('engineer', 'engineer:foreman')?.id).toBe('engineer:artillerist');
     expect(hero(s).name).toBe('Artillerist');
-    expect(hero(s).statuses.might).toBe(1);
+    expect(hero(s).statuses.might).toBe(2);
     expect(allies(s)).toHaveLength(1);
     expect(s.sides.a.allyPct).toBeUndefined();
     s = play(play(s, 'pulse-pistol'), 'pulse-pistol');
-    expect(hero(s).barrier).toBe(3);
+    expect(hero(s).barrier).toBe(6);
     s = end(s);
-    expect(hero(s).statuses.might).toBe(2);
+    expect(hero(s).statuses.might).toBe(4);
     s = play(hand(s, ['pulse-pistol']), 'pulse-pistol');
-    expect(hero(s).barrier).toBe(3);
+    expect(hero(s).barrier).toBe(6);
   });
 
   it('two Weapon Benches grow once each after the first Attack, not on every hit or card', () => {
@@ -355,8 +355,8 @@ describe('approved campaign balance pass', () => {
   });
 
   it.each([
-    ['restless-spirits', 27],
-    ['restless-spirits+', 39],
+    ['restless-spirits', 15],
+    ['restless-spirits+', 24],
   ] as const)('%s scales from earlier consumed Gravesouls', (card, expected) => {
     let s = play(fight('necromancer', [card]), card);
     for (let i = 0; i < 6; i++) s = play(hand(s, ['gravesoul']), 'gravesoul');

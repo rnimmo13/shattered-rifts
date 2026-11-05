@@ -35,6 +35,8 @@ interface Snapshot {
   source: string;
   basis: string;
   measuredMatches: number;
+  simulatedMatches?: number;
+  gradeMode?: 'review-signals';
   target: string;
   ratings: Rating[];
   starters: { hero: string; grade: string; rationale: string }[];
@@ -62,7 +64,9 @@ for (const file of files) {
     '',
     `Measured matches used: ${s.measuredMatches}. Target: ${s.target}`,
     '',
-    'Grades are estimates of complete deck strength, not isolated passive value. A+/A/A− are competitive sub-bands; B indicates a meaningful reliability problem; S flags a suspected outlier. They are not win rates. Ascendancies unlock after Tier III. Developing = IV–X, deep = XI–XVI, endgame = XVII–XX. Fight opening = turns 1–3; extended = turns 6–10. These bands describe different things.',
+    s.gradeMode === 'review-signals'
+      ? `Current labels are benchmark review signals, not letter grades or human tier claims. ${s.simulatedMatches ?? 0} final bot games are recorded separately from human matches. Earlier letter projections remain in the JSON and archived snapshots. Developing = IV–X, deep = XI–XVI, endgame = XVII–XX; only the isolated Tier XX boss was evaluated here. Fight opening and extended bands remain unrated.`
+      : 'Grades are estimates of complete deck strength, not isolated passive value. A+/A/A− are competitive sub-bands; B indicates a meaningful reliability problem; S flags a suspected outlier. They are not win rates. Ascendancies unlock after Tier III. Developing = IV–X, deep = XI–XVI, endgame = XVII–XX. Fight opening = turns 1–3; extended = turns 6–10. These bands describe different things.',
     '',
     '## Class start, before Ascendancy (tiers I–III)',
     '',

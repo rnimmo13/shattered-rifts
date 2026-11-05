@@ -282,7 +282,7 @@ export const NECROMANCER: CardDef[] = [
     1,
     'foe',
     [command(scaled(dmg(10), per('maxHp')))],
-    { ...CMD, up: { cost: 0, effects: [command(scaled(dmg(15), per('maxHp')))] } },
+    { ...CMD, up: { effects: [command(scaled(dmg(15), per('maxHp')))] } },
   ),
 
   // --- Fate ---
@@ -621,7 +621,7 @@ export const NECROMANCER: CardDef[] = [
       on(
         'play',
         [scaled(lose(4, 'randomFoe'), { by: 'tagExhaustedBeforePlay', tag: 'soul', step: 3 })],
-        { tag: 'soul' },
+        { tag: 'soul', ownTurn: true, perTurnLimit: 3, afterLimit: [lose(1, 'randomFoe')] },
       ),
     ],
     {
@@ -630,7 +630,7 @@ export const NECROMANCER: CardDef[] = [
           on(
             'play',
             [scaled(lose(6, 'randomFoe'), { by: 'tagExhaustedBeforePlay', tag: 'soul', step: 3 })],
-            { tag: 'soul' },
+            { tag: 'soul', ownTurn: true, perTurnLimit: 3, afterLimit: [lose(2, 'randomFoe')] },
           ),
         ],
       },

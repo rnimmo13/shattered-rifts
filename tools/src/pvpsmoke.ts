@@ -7,7 +7,7 @@ import { chooseAction } from '@sr/combat';
 import { smokeTransport } from './playLeaseClient';
 import { COMBAT_DB, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
-  ARENA_HP_MULT,
+  ARENA_START_HP,
   Match,
   SECOND_PLAYER_HP,
   RULES_VERSION,
@@ -299,7 +299,7 @@ async function playQueue(): Promise<void> {
     throw new Error(`wrong order: Cat ${ca.seat}, Dan ${cb.seat}, coin ${JSON.stringify(ca.toss)}`);
   const hp = (bot: Bot): number =>
     (bot.match!.state.sides.b.units.find((u) => u.kind === 'hero') as { maxHp: number }).maxHp;
-  const base = RIFTWALKERS.engineer.hero.maxHp * ARENA_HP_MULT + SECOND_PLAYER_HP;
+  const base = ARENA_START_HP + SECOND_PLAYER_HP;
   if (hp(cb) !== base) throw new Error(`the second player has ${hp(cb)} HP, expected ${base}`);
   console.log(`  order: Cat first, Dan second with ${hp(cb)} HP (no coin)`);
   await until(() => ca.ended !== null && cb.ended !== null, 'the end');

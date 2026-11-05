@@ -1,0 +1,86 @@
+[
+  {
+    "file": "pilot-b300-jobs.json",
+    "bytes": 20615,
+    "sha256": "381a21f646e67f7daa833a8608cfe008e07ad7b65329fa37421fd3bcfd375e3e",
+    "gzipBytes": 1897
+  },
+  {
+    "file": "pilot-b300.jsonl",
+    "bytes": 10997,
+    "sha256": "8ab0750ec766ecf2c5540ad0d106103190b35e0d22c187089ebb3360d050041c",
+    "gzipBytes": 2532
+  },
+  {
+    "file": "train-b300-jobs.json",
+    "bytes": 1470627,
+    "sha256": "59e93de6e0ad43f60e5ae22e4347bd9eecdcb9f38eebc495cc68f5ac4293ac36",
+    "gzipBytes": 30375
+  },
+  {
+    "file": "train-b300.jsonl",
+    "bytes": 810558,
+    "sha256": "9cf8faf9af80e1e1612791b7a1b07a23caa27773cd13a1ddfce3ccd6dfcb014b",
+    "gzipBytes": 74910
+  },
+  {
+    "file": "evaluate-b300-jobs.json",
+    "bytes": 9530907,
+    "sha256": "2ede9c6872b20aba6436e76dc78572c80d4e8f1edb9cabfd51b1b33bc79e46fe",
+    "gzipBytes": 221922
+  },
+  {
+    "file": "evaluate-b300.jsonl",
+    "bytes": 5262533,
+    "sha256": "f5c670d698872f3245536f37aaddfc8258bc893f48e97e33efb474f80a79f0e8",
+    "gzipBytes": 482774
+  },
+  {
+    "file": "pilotcheck-b900-jobs.json",
+    "bytes": 538231,
+    "sha256": "aaf101b706d8133b8af7ef6c2b1a9f52cef3f131bef72f5f9e1d6c3095e1c730",
+    "gzipBytes": 18716
+  },
+  {
+    "file": "pilotcheck-b900.jsonl",
+    "bytes": 334505,
+    "sha256": "b5670e5a211b0858f59eba0e5f8ce4403d9b42a2381f4e74109cce279ca73733",
+    "gzipBytes": 35969
+  },
+  {
+    "file": "sensitivity-b300-jobs.json",
+    "bytes": 462391,
+    "sha256": "3cf4175c89f84ecdc8dda2f18e9578912105e657f6b27e8fda1b4e83d78ce82f",
+    "gzipBytes": 13233
+  },
+  {
+    "file": "sensitivity-b300.jsonl",
+    "bytes": 303661,
+    "sha256": "7b442b69a2820b4263448c2745b23435637435a58f9de6708b02eb28996ce322",
+    "gzipBytes": 31472
+  },
+  {
+    "file": "bossprobe-b300-jobs.json",
+    "bytes": 480991,
+    "sha256": "a5bb96936b1f871c33bdd6be70fe08f68dd93bd90176d5a8c4a4861e583029e8",
+    "gzipBytes": 13357
+  },
+  {
+    "file": "bossprobe-b300.jsonl",
+    "bytes": 326777,
+    "sha256": "7eb4a2c2b1c3f5151629af1aeaa259f1425f29a5d6e04e695e554bcec726e8c7",
+    "gzipBytes": 33214
+  },
+  {
+    "file": "oathprobe-b300-jobs.json",
+    "bytes": 243709,
+    "sha256": "afb31c670dd338a9cb2d42309780e9d3ed6c98dcd662e6bb42ea3ab98a5e191b",
+    "gzipBytes": 6598
+  },
+  {
+    "file": "oathprobe-b300.jsonl",
+    "bytes": 127023,
+    "sha256": "ea7e942ef62c1f70b47a86490b7e4261ab6058340f8ad56e15a87560885a2f0d",
+    "gzipBytes": 12081
+  }
+]

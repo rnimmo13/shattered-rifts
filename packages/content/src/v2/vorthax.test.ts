@@ -12,7 +12,7 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, encounter } from './index';
 
-/** The finale as a run meets it at Tier XX (campaign duelPlan: engine tier 1, the tier table's 1000% HP, 438% damage x Warden's Fury). */
+/** Stress fixture at 1000% HP / 499% damage; the actual Tier XX plan is tested separately. */
 function finale(): CombatState {
   const { state } = createCombat(db, {
     seed: 'vorthax',
@@ -51,8 +51,8 @@ describe('Vorthax, the Heart of the Rift', () => {
     const s = at(90, 'refract');
     s.sides.b.units = s.sides.b.units.filter((u) => u.def !== 'rift-ward');
     const r = endTurn(s);
-    expect(vx(r).barrier).toBe(Math.floor(vx(s).maxHp * 0.06));
-    expect(vx(r).maxHp).toBe(3600);
+    expect(vx(r).barrier).toBe(Math.floor(vx(s).maxHp * 0.02));
+    expect(vx(r).maxHp).toBe(3000);
   });
 
   it('when it falls, its Ward and Shards fall with it', () => {
@@ -104,7 +104,7 @@ describe('Vorthax, the Heart of the Rift', () => {
     expect(after.sides.b.units.filter((u) => u.def === 'rift-shard')).toHaveLength(0);
     // (1 Might a Shard)
     expect((vx(after).statuses.might ?? 0) - before).toBe(2);
-    expect(vx(after).hp).toBe(v.hp + 2 * Math.floor(v.maxHp * 0.04));
+    expect(vx(after).hp).toBe(v.hp + 2 * Math.floor(v.maxHp * 0.02));
     const lean = clone(fed);
     lean.sides.b.units = lean.sides.b.units.filter((u) => u.def !== 'rift-shard');
     expect(vx(endTurn(lean)).statuses.exposed ?? 0).toBeGreaterThan(0);

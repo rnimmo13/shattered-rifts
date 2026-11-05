@@ -467,7 +467,7 @@ export const ASSASSIN: CardDef[] = [
     'bloodburst',
     'Bloodburst',
     'skill',
-    1,
+    2,
     'none',
     [status('seared', 9, 'allFoes'), tick('allFoes')],
     { up: { effects: [status('seared', 12, 'allFoes'), tick('allFoes')] } },

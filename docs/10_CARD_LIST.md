@@ -36,7 +36,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Hot Temper | 0 | attack | common | Deal 6 damage. Add a copy of this card to your discard pile. |
 | Stand Fast | 1 | skill | common | Gain 5 Barrier. Gain 2 Plating. Max Reserves +2 this turn. |
 | Measured Strike | 1 | attack | common | Deal 7 damage. If your Reserves is 2 or more: Deal 5 damage. |
-| Blood Oath | 0 | skill | common | Lose 3 HP. Gain 3 Reserves. |
+| Blood Oath | 0 | skill | common | Once on your turn across all copies: Lose 3 HP and gain 3 Reserves. |
 | Cold Stare | 1 | skill | uncommon | Gain 8 Barrier. If you have consumed a card this turn: Gain 8 Barrier. |
 | Provoke | 1 | skill | uncommon | Gain 5 Barrier. Gain 2 Plating. Apply 1 Exposed. |
 | Stoneskin | 1 | aura | uncommon | On play: Gain 5 Plating. |
@@ -77,7 +77,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Cast the Shield | 1 | attack | uncommon | Deal damage equal to 2 times your Barrier. Remove all Barrier from yourself. |
 | Hardened Scars | 1 | aura | uncommon | Whenever you lose HP to your own cards or Hangover: Gain 3 Barrier. |
 | Scarred Hide | 1 | aura | uncommon | Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn. |
-| Measured Conviction | 2 | aura | uncommon | At the end of your turn, if your Reserves is 2 or more: Gain 1 Might and gain 2 Barrier. |
+| Measured Conviction | 1 | aura | uncommon | At the end of your turn, if your Reserves is 2 or more: Gain 1 Might and gain 2 Barrier. |
 | Bastion Engine | 2 | aura | rare | Whenever you gain Barrier: Deal 5 damage to a random enemy. |
 | Immovable Oath | 2 | skill | rare | Gain 30 Barrier. Consume. |
 | Unbroken Wall | 3 | aura | rare | On play: Gain Fortified for the rest of the fight. |
@@ -160,7 +160,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Assemble | 1 | skill | uncommon | All your allies act now. Draw 1 card. |
 | Overdrive | 1 | skill | uncommon | Apply 1 Might to all friends. Each of your companions gains 2 Primed. |
 | Overwatch | 1 | trap | uncommon | When you or an ally is attacked: Each of your companions gains 4 Primed and deal 7 damage to the attacker. |
-| Link Up | 1 | skill | uncommon | Gain 4 Barrier to all friends. Draw 1 card. |
+| Link Up | 1 | skill | uncommon | Gain 6 Barrier to all friends. Draw 1 card. |
 | Arc Relay | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Apply 4 Primed to all friends. |
 | Clockwork Trap | 1 | trap | uncommon | When you lose 5+ HP at once: Each of your companions gains 3 Primed and gain 8 Barrier. |
 | Surge Protocol | X | skill | uncommon | Apply Might equal to the Mana spent to all friends. |
@@ -169,7 +169,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Reinforce | 1 | skill | uncommon | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
 | Upgrade Chip | 1 | skill | uncommon | Apply 2 Might to the ally. The ally gains 6 max HP. |
 | Weld Armor | 1 | skill | uncommon | The ally gains 5 max HP. Gain 5 Barrier to the ally. |
-| Bulwark Frame | 1 | skill | uncommon | Gain 8 (+1 per 5 max HP on the target) Barrier to the ally. |
+| Bulwark Frame | 1 | skill | uncommon | Gain 8 (+1 per 5 max HP on the target) Barrier to the ally. Gain 8 (+1 per 5 max HP on the target) Barrier to your hero. |
 | Rebuild | 1 | skill | uncommon | Your most recently fallen ally returns with 75% of its HP (rounded down, at least 1). Gain 3 Barrier. Consume. |
 | Siege Protocol | 2 | attack | uncommon | Deal 10 (+2 per Might) damage. |
 | Titan Forge | 2 | summon | uncommon | Summon Enforcer Mk.II (Heavy: 2 slots, 11 HP; at the end of your turn it will deal 6 damage). Apply 1 Might to all friends. Consume. |
@@ -208,7 +208,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Reactor | 2 | aura | rare | Your attacks and your companions’ attacks deal 3 more damage per hit for the rest of the fight. Companions summoned later also benefit. |
 | Overclock Core | 2 | aura | rare | At the start of your turn: Apply 1 Might to all friends. |
 | Reactor Meltdown | 0 | skill | rare | Deal damage equal to the target's HP to ALL enemies. Sacrifice the chosen ally. Consume. |
-| Heavy Industry | 2 | aura | rare | At the start of your turn: Gain 4 Barrier to all friends. |
+| Heavy Industry | 1 | aura | rare | At the start of your turn: Gain 4 Barrier to all friends. |
 | Backup Core | 2 | skill | rare | Gain 1 Backup Core. Consume. |
 | Dreadnought | 3 | summon | rare | Summon Dreadnought (Colossal: 3 slots, 22 HP; at the end of your turn it will deal 4 damage 2 times to ALL enemies). |
 | Railgun | 3 | attack | rare | Deal 34 damage. |
@@ -235,7 +235,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
 | Rummage | 1 | attack | common | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
 | Pound | 1 | attack | common | Deal 8 damage. Draw 1 card. Lose 1 HP. |
-| Pack Tactics | 1 | skill | common | Gain 1 Might. Gain 2 Barrier to all friends. |
+| Pack Tactics | 1 | skill | common | Gain 1 Might. Gain 4 Barrier to all friends. |
 | Thick Hide | 1 | skill | common | Gain 5 Barrier to all friends. |
 | Summon Pup | 1 | summon | common | Summon Pup (5 HP; at the end of your turn it will deal 3 damage). |
 | Trail of Blood | 1 | aura | common | Whenever you summon an ally: Gain 1 Might. |
@@ -261,7 +261,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 7 damage 2 times. |
 | Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Savage Command | 1 | skill | uncommon | All your allies act now. Gain 1 Might. |
-| Pack Bond | 2 | aura | uncommon | At the start of your turn: Gain 4 Barrier to all friends. |
+| Pack Bond | 1 | aura | uncommon | At the start of your turn: Gain 4 Barrier to all friends. |
 | Unchained | 2 | aura | uncommon | On play: Gain 4 Might for the rest of the fight. |
 | Feeding Time | 1 | skill | uncommon | Your companions gain 3 max HP. Gain 1 Might. |
 | Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP; at the end of your turn it will deal 4 damage). Each of your allies gains 3 Barrier. |
@@ -485,7 +485,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Final Bow | 0 | attack | rare | Only playable while your draw pile is empty. Deal 60 damage to ALL enemies. |
 | Red Tide | 1 | skill | rare | This turn, whenever you draw a card: Apply 2 Bleed to ALL enemies. |
 | Serrated Edges | 2 | aura | rare | Whenever an Attack of yours deals damage to an enemy’s HP: Apply 1 Bleed. |
-| Bloodburst | 1 | skill | rare | Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now. |
+| Bloodburst | 2 | skill | rare | Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now. |
 | Sapping Wound | X | skill | rare | Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Consume. |
 | Blood Scent | 2 | aura | rare | On play: Gain Tracking. |
 | Razor Skin | 3 | aura | rare | Premeditate. On play: Gain 1 Bracing. Gain 4 Thorns. These last the rest of the fight. |
@@ -973,7 +973,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Fester | 1 | skill | uncommon | Apply 2 Faltering. Apply 2 Exposed. Consume. |
 | Bottled Soul | 1 | skill | uncommon | The target loses 3 HP. Add 3 Gravesouls to your draw pile. |
 | Lament | X | skill | uncommon | Raise 3 X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume. |
-| Restless Spirits | 1 | aura | uncommon | Whenever you play a Gravesoul: A random enemy loses 4 (+1 per 3 previously consumed Gravesoul) HP. |
+| Restless Spirits | 1 | aura | uncommon | Whenever you play a Gravesoul (first 3 activations on your turn): A random enemy loses 4 (+1 per 3 previously consumed Gravesoul) HP. Whenever it activates again that turn: A random enemy loses 1 HP. |
 | Killing Chill | 1 | aura | uncommon | On play: For the rest of the fight, your first Attack each turn deals 50% more damage. Fleeting. |
 | Grimoire Gale | 1 | aura | uncommon | Whenever you draw a Fleeting card: Draw 1 card. |
 | Spectral Ledger | 1 | skill | uncommon | Draw 3 cards. Fleeting. |

@@ -1,0 +1,2609 @@
+[
+  {
+    "id": 6224,
+    "mode": "arena",
+    "a": "knight:marshal",
+    "b": "necromancer:soulreaper",
+    "quality": "optimized",
+    "seed": "holdout-arena-1-29-0",
+    "budget": 300,
+    "winner": "b",
+    "censored": false,
+    "turns": {
+      "a": 2,
+      "b": 2
+    },
+    "steps": 106,
+    "hp": {
+      "a": 0,
+      "b": 70
+    },
+    "maxHp": {
+      "a": 480,
+      "b": 480
+    },
+    "plays": {
+      "a:blood-oath+": 10,
+      "a:vow-kept+": 3,
+      "a:oath-of-iron+": 14,
+      "a:hilt-strike+": 16,
+      "a:crimson-offering+": 2,
+      "a:vow-fulfilled+": 3,
+      "a:draw-blood+": 2,
+      "b:barrow-keeper+": 1,
+      "b:soul-tithe+": 2,
+      "b:burial-shroud+": 2,
+      "b:bottled-soul+": 8,
+      "b:gravesoul": 32,
+      "b:soul-harvest+": 2,
+      "b:marsh-light+": 2,
+      "b:spectral-ledger+": 1,
+      "a:measured-conviction+": 1,
+      "b:restless-spirits+": 2
+    },
+    "ms": 7059,
+    "hpBonus": 0,
+    "tier": 20,
+    "trace": [
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 3,
+        "reserves": 1,
+        "hp": 480,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-kept+",
+        "mana": 3,
+        "reserves": 4,
+        "hp": 478,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 2,
+        "reserves": 4,
+        "hp": 478,
+        "foeHp": 452,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 1,
+        "reserves": 4,
+        "hp": 478,
+        "foeHp": 452,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 4,
+        "hp": 478,
+        "foeHp": 440,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "crimson-offering+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 478,
+        "foeHp": 440,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "crimson-offering+",
+        "mana": 1,
+        "reserves": 3,
+        "hp": 473,
+        "foeHp": 440,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-fulfilled+",
+        "mana": 2,
+        "reserves": 3,
+        "hp": 468,
+        "foeHp": 440,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 468,
+        "foeHp": 395,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 468,
+        "foeHp": 380,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 4,
+        "hp": 466,
+        "foeHp": 380,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 466,
+        "foeHp": 364,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "draw-blood+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 466,
+        "foeHp": 348,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-kept+",
+        "mana": 2,
+        "reserves": 2,
+        "hp": 464,
+        "foeHp": 348,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 1,
+        "reserves": 2,
+        "hp": 464,
+        "foeHp": 326,
+        "barrier": 18
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "draw-blood+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 464,
+        "foeHp": 326,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 2,
+        "reserves": 2,
+        "hp": 462,
+        "foeHp": 326,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-fulfilled+",
+        "mana": 2,
+        "reserves": 4,
+        "hp": 460,
+        "foeHp": 326,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 460,
+        "foeHp": 262,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 460,
+        "foeHp": 246,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 460,
+        "foeHp": 230,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-fulfilled+",
+        "mana": 0,
+        "reserves": 4,
+        "hp": 458,
+        "foeHp": 230,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 458,
+        "foeHp": 188,
+        "barrier": 27
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 458,
+        "foeHp": 188,
+        "barrier": 36
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 456,
+        "foeHp": 188,
+        "barrier": 36
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 456,
+        "foeHp": 188,
+        "barrier": 45
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 456,
+        "foeHp": 172,
+        "barrier": 45
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 456,
+        "foeHp": 156,
+        "barrier": 45
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "vow-kept+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 454,
+        "foeHp": 156,
+        "barrier": 45
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 454,
+        "foeHp": 134,
+        "barrier": 45
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 454,
+        "foeHp": 134,
+        "barrier": 54
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 454,
+        "foeHp": 118,
+        "barrier": 54
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 452,
+        "foeHp": 118,
+        "barrier": 54
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 452,
+        "foeHp": 102,
+        "barrier": 54
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 452,
+        "foeHp": 86,
+        "barrier": 54
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 452,
+        "foeHp": 70,
+        "barrier": 54
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "barrow-keeper+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 452,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "soul-tithe+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 452,
+        "barrier": 11
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "burial-shroud+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 452,
+        "barrier": 11
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 452,
+        "barrier": 11
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 11
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 17
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 23
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "soul-harvest+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 29
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 29
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 448,
+        "barrier": 35
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 35
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 41
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 47
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 50
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "marsh-light+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 53
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "soul-harvest+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 56
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "marsh-light+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 56
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "spectral-ledger+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 59
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "soul-tithe+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 59
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 444,
+        "barrier": 59
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 440,
+        "barrier": 59
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 440,
+        "barrier": 62
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 440,
+        "barrier": 65
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 440,
+        "barrier": 68
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 440,
+        "barrier": 71
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 9
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 18
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 440,
+        "foeHp": 70,
+        "barrier": 18
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 438,
+        "foeHp": 70,
+        "barrier": 18
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 438,
+        "foeHp": 70,
+        "barrier": 27
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 438,
+        "foeHp": 70,
+        "barrier": 36
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "measured-conviction+",
+        "mana": 0,
+        "reserves": 4,
+        "hp": 436,
+        "foeHp": 70,
+        "barrier": 36
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 436,
+        "foeHp": 70,
+        "barrier": 36
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "hilt-strike+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 436,
+        "foeHp": 70,
+        "barrier": 45
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "blood-oath+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 436,
+        "foeHp": 70,
+        "barrier": 45
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 3,
+        "hp": 434,
+        "foeHp": 70,
+        "barrier": 45
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 2,
+        "hp": 434,
+        "foeHp": 70,
+        "barrier": 54
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "oath-of-iron+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 434,
+        "foeHp": 70,
+        "barrier": 63
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 434,
+        "foeHp": 70,
+        "barrier": 72
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 9,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 434,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 8,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 8,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 6
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 8,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 12
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 8,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 18
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "restless-spirits+",
+        "mana": 8,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 24
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 7,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 430,
+        "barrier": 24
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "restless-spirits+",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 426,
+        "barrier": 24
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 426,
+        "barrier": 24
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 404,
+        "barrier": 30
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 382,
+        "barrier": 36
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 358,
+        "barrier": 39
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 334,
+        "barrier": 42
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 330,
+        "barrier": 42
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 306,
+        "barrier": 45
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 280,
+        "barrier": 48
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 254,
+        "barrier": 51
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 250,
+        "barrier": 51
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 224,
+        "barrier": 54
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 196,
+        "barrier": 57
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bottled-soul+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 168,
+        "barrier": 60
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 164,
+        "barrier": 60
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 136,
+        "barrier": 63
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "burial-shroud+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 106,
+        "barrier": 66
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 106,
+        "barrier": 66
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 76,
+        "barrier": 72
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 46,
+        "barrier": 78
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "gravesoul",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 70,
+        "foeHp": 14,
+        "barrier": 84
+      }
+    ],
+    "peakPlayed": {
+      "a": 35,
+      "b": 27
+    }
+  },
+  {
+    "id": 6529,
+    "mode": "arena",
+    "a": "necromancer:bonelord",
+    "b": "engineer:golemancer",
+    "quality": "optimized",
+    "seed": "holdout-arena-4-27-0",
+    "budget": 300,
+    "winner": "a",
+    "censored": false,
+    "turns": {
+      "a": 3,
+      "b": 2
+    },
+    "steps": 27,
+    "hp": {
+      "a": 420,
+      "b": 0
+    },
+    "maxHp": {
+      "a": 420,
+      "b": 480
+    },
+    "plays": {
+      "a:spectral-ledger+": 2,
+      "a:goad+": 3,
+      "a:the-drowned-king+": 4,
+      "a:marsh-light+": 2,
+      "a:calcify+": 1,
+      "a:knucklebone+": 2,
+      "b:heavy-hitter+": 1,
+      "b:resonant-pulse+": 2,
+      "a:at-the-threshold+": 1,
+      "b:war-engine+": 1,
+      "b:overcharge+": 1,
+      "b:static-field+": 1,
+      "b:patch-job+": 1,
+      "b:crankshaft+": 1
+    },
+    "ms": 415,
+    "hpBonus": 0,
+    "tier": 20,
+    "trace": [
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "spectral-ledger+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "goad+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "goad+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "the-drowned-king+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 480,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "marsh-light+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 381,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "calcify+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 381,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "the-drowned-king+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 381,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "knucklebone+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 256,
+        "barrier": 9
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 205,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "heavy-hitter+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 206,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "resonant-pulse+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 206,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "resonant-pulse+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 206,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 206,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "goad+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 206,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "the-drowned-king+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 206,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "marsh-light+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 51,
+        "barrier": 9
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "at-the-threshold+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 51,
+        "barrier": 9
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 51,
+        "barrier": 30
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "war-engine+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 52,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "overcharge+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 52,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "static-field+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 54,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "patch-job+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 54,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "crankshaft+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 56,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 56,
+        "foeHp": 420,
+        "barrier": 0
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "knucklebone+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 56,
+        "barrier": 0
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "spectral-ledger+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 52,
+        "barrier": 9
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "the-drowned-king+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 420,
+        "foeHp": 52,
+        "barrier": 9
+      }
+    ],
+    "peakPlayed": {
+      "a": 8,
+      "b": 5
+    }
+  },
+  {
+    "id": 6077,
+    "mode": "arena",
+    "a": "monk:sunwalker",
+    "b": "knight:paladin",
+    "quality": "optimized",
+    "seed": "holdout-arena-0-20-0",
+    "budget": 300,
+    "winner": "a",
+    "censored": false,
+    "turns": {
+      "a": 4,
+      "b": 3
+    },
+    "steps": 68,
+    "hp": {
+      "a": 182,
+      "b": 0
+    },
+    "maxHp": {
+      "a": 468,
+      "b": 540
+    },
+    "plays": {
+      "a:sanctity+": 4,
+      "a:deep-breath+": 2,
+      "a:quick-palms+": 8,
+      "a:thousand-palms+": 5,
+      "a:litany+": 2,
+      "a:bowing-low+": 5,
+      "b:oath-of-iron+": 5,
+      "b:hilt-strike+": 4,
+      "b:bulwark-blow+": 5,
+      "b:crimson-offering+": 2,
+      "b:stand-fast+": 2,
+      "b:cast-the-shield+": 2,
+      "b:draw-blood+": 2,
+      "b:bastion-engine+": 1,
+      "b:bloodied-plate+": 2,
+      "a:centre-yourself+": 5,
+      "a:daily-rite+": 2,
+      "a:devotion+": 1,
+      "a:still-water+": 3
+    },
+    "ms": 2214,
+    "hpBonus": 0,
+    "tier": 20,
+    "trace": [
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "sanctity+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 540,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "deep-breath+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 540,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 540,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "deep-breath+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 533,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "thousand-palms+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 533,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 509,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "litany+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 502,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "bowing-low+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 502,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 468,
+        "foeHp": 502,
+        "barrier": 2
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "oath-of-iron+",
+        "mana": 4,
+        "reserves": 1,
+        "hp": 502,
+        "foeHp": 468,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "hilt-strike+",
+        "mana": 3,
+        "reserves": 1,
+        "hp": 502,
+        "foeHp": 468,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bulwark-blow+",
+        "mana": 2,
+        "reserves": 1,
+        "hp": 502,
+        "foeHp": 458,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "crimson-offering+",
+        "mana": 1,
+        "reserves": 1,
+        "hp": 502,
+        "foeHp": 446,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "stand-fast+",
+        "mana": 2,
+        "reserves": 1,
+        "hp": 497,
+        "foeHp": 446,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bulwark-blow+",
+        "mana": 1,
+        "reserves": 1,
+        "hp": 497,
+        "foeHp": 446,
+        "barrier": 16
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "cast-the-shield+",
+        "mana": 0,
+        "reserves": 1,
+        "hp": 497,
+        "foeHp": 427,
+        "barrier": 16
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "crimson-offering+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 497,
+        "foeHp": 389,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "draw-blood+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 492,
+        "foeHp": 389,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "hilt-strike+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 490,
+        "foeHp": 389,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bastion-engine+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 490,
+        "foeHp": 377,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "oath-of-iron+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 490,
+        "foeHp": 377,
+        "barrier": 0
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "draw-blood+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 490,
+        "foeHp": 372,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "oath-of-iron+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 488,
+        "foeHp": 372,
+        "barrier": 9
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bulwark-blow+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 488,
+        "foeHp": 367,
+        "barrier": 18
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bloodied-plate+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 488,
+        "foeHp": 346,
+        "barrier": 18
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "bloodied-plate+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 488,
+        "foeHp": 346,
+        "barrier": 18
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 488,
+        "foeHp": 346,
+        "barrier": 18
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "centre-yourself+",
+        "mana": 7,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "daily-rite+",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "devotion+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "litany+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "bowing-low+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 7,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 2
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "daily-rite+",
+        "mana": 7,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 2
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 341,
+        "foeHp": 488,
+        "barrier": 2
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "bulwark-blow+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 333,
+        "barrier": 17
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "hilt-strike+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 313,
+        "barrier": 17
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "hilt-strike+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 301,
+        "barrier": 17
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "oath-of-iron+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 289,
+        "barrier": 17
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "cast-the-shield+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 284,
+        "barrier": 26
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 486,
+        "foeHp": 226,
+        "barrier": 0
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "sanctity+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 486,
+        "barrier": 4
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "thousand-palms+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 486,
+        "barrier": 4
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 399,
+        "barrier": 4
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "centre-yourself+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 372,
+        "barrier": 4
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "still-water+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 372,
+        "barrier": 4
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "bowing-low+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 372,
+        "barrier": 17
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "thousand-palms+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 372,
+        "barrier": 19
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 276,
+        "barrier": 19
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "sanctity+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 249,
+        "barrier": 19
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "bowing-low+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 249,
+        "barrier": 19
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 249,
+        "barrier": 21
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "centre-yourself+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 222,
+        "barrier": 21
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 221,
+        "foeHp": 222,
+        "barrier": 21
+      },
+      {
+        "turn": 6,
+        "side": "b",
+        "card": "oath-of-iron+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 220,
+        "foeHp": 221,
+        "barrier": 16
+      },
+      {
+        "turn": 6,
+        "side": "b",
+        "card": "stand-fast+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 220,
+        "foeHp": 221,
+        "barrier": 25
+      },
+      {
+        "turn": 6,
+        "side": "b",
+        "card": "bulwark-blow+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 220,
+        "foeHp": 221,
+        "barrier": 32
+      },
+      {
+        "turn": 6,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 220,
+        "foeHp": 187,
+        "barrier": 32
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "sanctity+",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 220,
+        "barrier": 4
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "still-water+",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 220,
+        "barrier": 4
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 220,
+        "barrier": 11
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "centre-yourself+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 220,
+        "barrier": 11
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "thousand-palms+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 220,
+        "barrier": 11
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "still-water+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 126,
+        "barrier": 11
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "centre-yourself+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 126,
+        "barrier": 18
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "bowing-low+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 126,
+        "barrier": 18
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "thousand-palms+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 126,
+        "barrier": 20
+      },
+      {
+        "turn": 7,
+        "side": "a",
+        "card": "quick-palms+",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 182,
+        "foeHp": 18,
+        "barrier": 20
+      }
+    ],
+    "peakPlayed": {
+      "a": 12,
+      "b": 17
+    }
+  },
+  {
+    "id": 7260,
+    "mode": "arena",
+    "a": "assassin:bloodletter",
+    "b": "shaman:totemist",
+    "quality": "optimized",
+    "seed": "holdout-arena-14-15-0",
+    "budget": 300,
+    "winner": "a",
+    "censored": false,
+    "turns": {
+      "a": 3,
+      "b": 2
+    },
+    "steps": 39,
+    "hp": {
+      "a": 322,
+      "b": 0
+    },
+    "maxHp": {
+      "a": 450,
+      "b": 510
+    },
+    "plays": {
+      "a:rush-of-blood+": 2,
+      "a:backspring+": 2,
+      "a:open-vein+": 2,
+      "a:bloodburst+": 2,
+      "a:thin-the-blood+": 1,
+      "a:sleeve-knife": 1,
+      "b:hail-chant+": 1,
+      "b:wellspring+": 2,
+      "b:swift-study+": 3,
+      "b:spirit-surge+": 3,
+      "b:totem-circle+": 3,
+      "b:spirit-offering+": 3,
+      "b:turning-wheel+": 1,
+      "b:tidecaller+": 3,
+      "a:reopen-the-wound+": 2,
+      "a:nimble-deal+": 1,
+      "b:frostbound-hide+": 1
+    },
+    "ms": 1177,
+    "hpBonus": 0,
+    "tier": 20,
+    "trace": [
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "rush-of-blood+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "backspring+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 0
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "backspring+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 8
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "rush-of-blood+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 16
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "open-vein+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 16
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "bloodburst+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 510,
+        "barrier": 16
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "thin-the-blood+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 491,
+        "barrier": 16
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "sleeve-knife",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 491,
+        "barrier": 16
+      },
+      {
+        "turn": 1,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 450,
+        "foeHp": 487,
+        "barrier": 16
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "hail-chant+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 8
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "wellspring+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 8
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "swift-study+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 8
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "spirit-surge+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 8
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "swift-study+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 20
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "wellspring+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 20
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "totem-circle+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 20
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "spirit-offering+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 34
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "spirit-offering+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 34
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "turning-wheel+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 34
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "tidecaller+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 34
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "tidecaller+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 44
+      },
+      {
+        "turn": 2,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 421,
+        "foeHp": 450,
+        "barrier": 54
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "reopen-the-wound+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "open-vein+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "nimble-deal+",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "pick",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "reopen-the-wound+",
+        "mana": 2,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "bloodburst+",
+        "mana": 1,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 421,
+        "barrier": 0
+      },
+      {
+        "turn": 3,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 0,
+        "reserves": 0,
+        "hp": 439,
+        "foeHp": 364,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "spirit-surge+",
+        "mana": 15,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 425,
+        "barrier": 0
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "swift-study+",
+        "mana": 13,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 425,
+        "barrier": 12
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "spirit-surge+",
+        "mana": 11,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 425,
+        "barrier": 12
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "totem-circle+",
+        "mana": 9,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 425,
+        "barrier": 24
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "totem-circle+",
+        "mana": 7,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 390,
+        "barrier": 44
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "spirit-offering+",
+        "mana": 5,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 355,
+        "barrier": 64
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "frostbound-hide+",
+        "mana": 6,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 355,
+        "barrier": 64
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "tidecaller+",
+        "mana": 4,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 338,
+        "barrier": 89
+      },
+      {
+        "turn": 4,
+        "side": "b",
+        "card": "endTurn",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 146,
+        "foeHp": 338,
+        "barrier": 99
+      },
+      {
+        "turn": 5,
+        "side": "a",
+        "card": "endTurn",
+        "mana": 3,
+        "reserves": 0,
+        "hp": 322,
+        "foeHp": 146,
+        "barrier": 0
+      }
+    ],
+    "peakPlayed": {
+      "a": 8,
+      "b": 12
+    }
+  }
+]

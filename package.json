@@ -7,6 +7,7 @@
     "node": ">=22.12"
   },
   "scripts": {
+    "balance:arena": "pnpm --filter @sr/tools balance:arena",
     "balance:report": "pnpm --filter @sr/tools balance:report",
     "balance:history": "pnpm --filter @sr/tools balance:history",
     "lore:smoke": "pnpm --filter @sr/web lore:smoke",

@@ -283,7 +283,7 @@ describe('distinct late-game Ascendancy disciplines', () => {
     r = play(r.state, 'probe-spell');
     expect(damage(r)).toEqual([10, 10, 10]);
     s = end(r.state);
-    expect(s.sides.a.stars).toBe(4); // refund 3 plus the class's ordinary 1
+    expect(s.sides.a.stars).toBe(6); // refund 3, class 1 and Archmage's sustained 2
     expect(s.sides.a.nextStars).toBe(0);
   });
   it('Archmage damage support does not also boost Barrier on a Spell Attack', () => {

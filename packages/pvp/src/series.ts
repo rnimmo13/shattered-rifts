@@ -1,7 +1,7 @@
 // A match is a best of three: the first player to win two games wins the match. Pure rules for keeping the score (the room
 // keeps the state, keyed by player id, because the seats swap whenever the order of play is decided again).
 
-import type { Seat, Series } from './protocol';
+import type { Seat, Series, EndReason } from './protocol';
 import { SERIES_MAX_GAMES, SERIES_WINS } from './protocol';
 
 /** The score of a match in progress: the game being played (1, 2, 3) and each player's wins, by player id. */
@@ -11,6 +11,9 @@ export interface SeriesState {
 }
 
 export const newSeries = (): SeriesState => ({ game: 1, wins: {} });
+/** Mutual inactivity ends the whole match instead of scheduling another drawn game. */
+export const endsSeries = (reason: EndReason): boolean =>
+  reason === 'disconnect' || reason === 'passes';
 
 /** A game ended: the winner (null for a drawn game, which does not count and is played again) scores, and the next game is due. */
 export function scoreGame(s: SeriesState, winner: string | null): SeriesState {

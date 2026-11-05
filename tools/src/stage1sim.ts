@@ -18,7 +18,7 @@ const DIFF = arg('difficulty', 'normal') as Difficulty;
 const HEROES = (arg('heroes', Object.keys(RIFTWALKERS).join(',')).split(',') as HeroId[]).filter(
   (h) => RIFTWALKERS[h],
 );
-setPilot(arg('pilot', 'greedy') === 'smart' ? 'smart' : 'greedy');
+setPilot(arg('pilot', 'smart') === 'smart' ? 'smart' : 'greedy');
 // experiment knobs: --duelHp 1.2 --duelDmg 1.3 --wardenHp 0.8 --wardenDmg 0.9 (multipliers on top of the game's numbers)
 for (const k of ['duelHp', 'duelDmg', 'wardenHp', 'wardenDmg'] as const)
   scale[k] = Number(arg(k, '1'));

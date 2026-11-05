@@ -16,7 +16,7 @@ import {
   picksDone,
   MAX_MATCH_DECKS,
   QUEUE_WIDEN_MS,
-  ARENA_HP_MULT,
+  ARENA_START_HP,
   SECOND_PLAYER_HP,
   seatsFor,
   setupFor,
@@ -47,7 +47,10 @@ describe('checkEntry', () => {
 
   it('leaves out copies of an Aura past 2, a "+" counting as one (DECISIONS #498)', () => {
     const base = entryOf('knight');
-    const r = checkEntry({ ...base, deck: [...base.deck, 'inner-furnace', 'inner-furnace+', 'inner-furnace', 'inner-furnace'] });
+    const r = checkEntry({
+      ...base,
+      deck: [...base.deck, 'inner-furnace', 'inner-furnace+', 'inner-furnace', 'inner-furnace'],
+    });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.entry.deck).toEqual([...base.deck, 'inner-furnace', 'inner-furnace+']);
   });
@@ -290,17 +293,15 @@ describe('who goes first', () => {
     expect(seatsFor('b')).toEqual({ a: 'b', b: 'a' });
   });
 
-  it('gives the second seat more HP, and only the second seat', () => {
+  it('gives both seats the same fixed HP', () => {
     const a = entryOf('knight');
     const b = entryOf('hunter');
     const setup = setupFor('hp', a, b);
     const m = new Match('hp', a, b, 0);
     const hero = (side: 'a' | 'b') => m.state.sides[side].units.find((u) => u.kind === 'hero');
     // everyone has three times their usual HP in the Arena, and the second seat a little more
-    expect(hero('a')?.maxHp).toBe((COMBAT_DB.heroes.knight?.maxHp ?? 0) * ARENA_HP_MULT);
-    expect(hero('b')?.maxHp).toBe(
-      (COMBAT_DB.heroes.hunter?.maxHp ?? 0) * ARENA_HP_MULT + SECOND_PLAYER_HP,
-    );
+    expect(hero('a')?.maxHp).toBe(ARENA_START_HP);
+    expect(hero('b')?.maxHp).toBe(ARENA_START_HP + SECOND_PLAYER_HP);
     expect(hero('b')?.hp).toBe(hero('b')?.maxHp);
     expect(setup.b).toMatchObject({ hero: 'hunter' });
   });
@@ -309,7 +310,7 @@ describe('who goes first', () => {
 describe('the game clock (DECISIONS #259)', () => {
   it('a game is called after GAME_MS for the larger share of HP left, never before', () => {
     const m = new Match('clock-1', entryOf('knight', 'A'), entryOf('hunter', 'B'), 0);
-    expect(GAME_MS).toBe(20 * 60_000);
+    expect(GAME_MS).toBe(30 * 60_000);
     expect(m.callTime(15 * 60_000)).toBeNull();
     expect(m.callTime(GAME_MS - 1)).toBeNull();
     const b = m.state.sides.b.units.find((u) => u.kind === 'hero')!;
@@ -332,7 +333,10 @@ describe('the decks a player brings to a match (DECISIONS #307)', () => {
   it('takes 1 to MAX_MATCH_DECKS decks of any Riftwalkers, under one name and board id', () => {
     const who = 'a'.repeat(64);
     // (the Arena takes decks of 15 cards or more, DECISIONS #460)
-    const big = (e: ReturnType<typeof entryOf>) => ({ ...e, deck: [...e.deck, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']] });
+    const big = (e: ReturnType<typeof entryOf>) => ({
+      ...e,
+      deck: [...e.deck, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']],
+    });
     const r = checkArenaDecks([
       big({ ...entryOf('knight', 'Ann'), who }),
       big({ ...entryOf('hunter', 'Someone else'), who: 'b'.repeat(64) }),
@@ -347,7 +351,10 @@ describe('the decks a player brings to a match (DECISIONS #307)', () => {
     expect(small.ok).toBe(false);
     expect(!small.ok && small.message).toMatch(/at least 15 cards; this one holds 10/);
     const fifteen = { ...entryOf('knight', 'Ann') };
-    fifteen.deck = [...fifteen.deck, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']];
+    fifteen.deck = [
+      ...fifteen.deck,
+      ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave'],
+    ];
     expect(checkArenaDecks([fifteen]).ok).toBe(true);
     fifteen.deck = fifteen.deck.slice(0, 14);
     expect(checkArenaDecks([fifteen]).ok).toBe(false);

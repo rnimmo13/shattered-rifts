@@ -2,7 +2,13 @@
 // fight a ghost or play a friend with a room code; every deck in your Vault comes along, and you choose one before each game.
 
 import { useEffect, useRef, useState } from 'react';
-import { ARENA_MIN_DECK, MAX_MATCH_DECKS, QUEUE_WIDEN_MS, checkArenaEntry, type Entry } from '@sr/pvp';
+import {
+  ARENA_MIN_DECK,
+  MAX_MATCH_DECKS,
+  QUEUE_WIDEN_MS,
+  checkArenaEntry,
+  type Entry,
+} from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import { arenaFor } from './arenaVenue';
@@ -312,6 +318,14 @@ export default function PvpScreen() {
           its deck to your Vault as you play ({vault.length} of {VAULT_SLOTS} used).
         </p>
         {/* (someone the board does not know yet starts where everyone starts) */}
+        <p>
+          1,000 HP each. Second player: +1 card on their first turn. Games last at most 30 minutes;
+          three consecutive passes without playing a card by both players end in a draw.
+        </p>
+        <p className="pvp__balanceNotice">
+          Completed online Arena games record both deck lists and match results for private
+          developer balance analysis. Human and ghost results are reviewed separately.
+        </p>
         <RankPanel rank={ranked} place={ranked?.place ?? null} />
       </header>
 
@@ -444,7 +458,9 @@ export default function PvpScreen() {
               {problem && <p className="pvp__error">{problem}</p>}
               {!problem && skipped > 0 && usable.length > 0 && (
                 <p className="pvp__hint">
-                  {skipped} of your saved decks {skipped === 1 ? 'does' : 'do'} not pass the Arena&apos;s check (a deck needs at least {ARENA_MIN_DECK} cards) and {skipped === 1 ? 'is' : 'are'} left out.
+                  {skipped} of your saved decks {skipped === 1 ? 'does' : 'do'} not pass the
+                  Arena&apos;s check (a deck needs at least {ARENA_MIN_DECK} cards) and{' '}
+                  {skipped === 1 ? 'is' : 'are'} left out.
                 </p>
               )}
               <div className="pvp__actions">

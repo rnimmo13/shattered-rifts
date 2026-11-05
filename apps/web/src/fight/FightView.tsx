@@ -3136,6 +3136,8 @@ function watchLine(
   names: Record<Side, string>,
   me: Side,
 ): string {
+  if (winner === 'draw' && reason === 'passes')
+    return 'Draw: both players passed three turns in a row without playing a card.';
   if (winner === 'draw')
     return reason === 'time'
       ? 'Time was called with both even: nobody won this one.'
@@ -3160,6 +3162,8 @@ function watchLine(
 /** What the result line says in a PvP match. */
 function endLine(winner: Winner, reason: string | null, foe: string): string {
   const won = winner === 'a';
+  if (winner === 'draw' && reason === 'passes')
+    return 'Draw: both players passed three turns in a row without playing a card.';
   if (winner === 'draw')
     return reason === 'time'
       ? 'Time was called with you both even. Nobody wins.'

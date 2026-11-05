@@ -4,7 +4,7 @@
 //
 //   pnpm traitscan -- --seeds 120 --hp 115 --dmg 110
 
-import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
+import { applyAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';
 
 function arg(name: string, fallback: string): string {
@@ -46,7 +46,7 @@ function score(
   });
   const maxHp = heroOf(state.sides.a)?.maxHp ?? 1;
   for (let t = 0; t < 700 && !state.winner; t++)
-    state = applyAction(d, state, chooseAction(d, state)).state;
+    state = applyAction(d, state, chooseSmartAction(d, state)).state;
   return state.winner === 'a' ? (heroOf(state.sides.a)?.hp ?? 0) / maxHp : 0;
 }
 

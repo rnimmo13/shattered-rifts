@@ -1,5 +1,17 @@
 # Balance Notes
 
+## Equal-HP Arena baseline (0.200.0/rules83, local)
+
+Robert authorizes1,000 HP for every Arena hero/ghost, no second-seat HP/Mana bonus, retaining one extra opening card only.30-minute games; mutual three-cardless-turn streak ends the match as a draw. Arena is the priority; Vorthax optimized-deck target is about50% or somewhat higher. [Implementation/report guide](ARENA_TESTING_2026-11-05.md), [all30 assessment rows](balance-history/0.200.0.md), [shared-AI diagnostic](balance-history/simulations/0.200.0/README.md). No new field-balance grades; previous rates cannot be transferred to the new HP/pilot baseline. Human/ghost deck observations are kept separate. No release approval.
+
+## Local revision (0.199.0/rules82, 2026-11-05)
+
+Robert authorized a broader implementation following the requested simulations. [Exact revisions](BALANCE_REVISION_2026-11-05.md), [all 30 before/after results](balance-history/simulations/0.199.0/RESULTS.md), [interpretation and unresolved work](balance-history/simulations/0.199.0/README.md), and [new assessment](balance-history/0.199.0.md). The 6,480-game final benchmark raises matched-seed Vorthax wins from 17.3%/1.5% to 47.5%/18.9% for tuned/good decks, combining content changes and retuned recipes. Arena median rounds remain 5/7, and large strength outliers remain. This is not all-A parity or the ten-own-turn target. 14,396 total experimental executions are archived, including training and diagnostics, with zero human matches. Earlier snapshots remain intact. Local only: **no push/deploy approval**.
+
+## Requested simulations (0.198.0/rules81, 2026-11-04)
+
+Robert requested simulations for every Ascendancy in Arena and against Vorthax. The [new review](balance-history/simulations/0.198.0/README.md) archives 9,480 main bot fights, prior-grade comparisons, frozen decks, additional paired experiments and proposals. These results do not support the earlier all-A-band estimates: Arena median rounds are 5/7 for tuned/good fields, and Tier XX Vorthax wins are 535/3,000 and 42/3,000 under the documented full-health loadout. These are limited deck/bot benchmarks, not human win-rate estimates or full campaign simulations. No production balance changes or release; historical assessments below retain their original context.
+
 ## Focused implementation (0.197.0/rules80, decision #602)
 
 Robert authorized pushing/deploying validated work. The release implements **only P4** from the review: gentler Heavy Hitter HP conversion and four own-turn Skill triggers per Resonant Pulse Aura, alongside the20-minute Arena game timer and lore. See [exact changes and risks](ENGINEER_SCALING_2026-11-04.md) and [all30 implemented estimates](balance-history/0.197.0.md). The review below captures the preceding rules79 assessment; its other proposals remain unapplied. Golemancer HP growth/damage-per-HP identity remains. Zero measured matches or balance simulations.

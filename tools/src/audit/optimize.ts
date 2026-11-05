@@ -51,7 +51,7 @@ export function openingDamage(
   let round = 0;
   for (let g = 0; g < 400 && !state.winner && per.length < rounds; g++) {
     const foes = new Set(state.sides.b.units.map((u) => u.id));
-    const a = chooseSmartAction(db, state, { budget: 300 });
+    const a = chooseSmartAction(db, state);
     const res = applyAction(db, state, a);
     round += dealt(res.events, foes);
     state = res.state;

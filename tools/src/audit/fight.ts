@@ -4,6 +4,7 @@
 import {
   applyAction,
   chooseSmartAction,
+  BOT_SEARCH,
   createCombat,
   heroOf,
   legalActions,
@@ -67,7 +68,7 @@ export function playFight(f: FightSpec): FightResult {
   for (; steps < 3000 && !state.winner; steps++) {
     const act =
       state.active === 'a' || state.pending
-        ? chooseSmartAction(db, state, { budget: f.budget ?? 500 })
+        ? chooseSmartAction(db, state, { budget: f.budget ?? BOT_SEARCH.budget })
         : ({ type: 'endTurn' } as const);
     const foes = foeIds(state);
     const res = applyAction(db, state, act);

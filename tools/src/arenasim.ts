@@ -11,6 +11,7 @@
 import { applyAction, chooseSmartAction, createCombat, heroOf, type CombatState } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import { enemyScale } from '@sr/campaign';
+import { Match, ARENA_START_HP } from '@sr/pvp';
 import { readFileSync } from 'node:fs';
 import { buildDeck, hashSeed, LEVEL_SPEC, type Level } from './audit/decks';
 
@@ -43,14 +44,24 @@ interface Row {
 }
 
 function play(level: Level, mult: number, x: HeroId, y: HeroId, seed: string): Row {
-  const deckOf = (h: HeroId, k: string) =>
-    buildDeck(h, level, hashSeed(`${h}/${level}/${k}`)).deck;
-  const hp = (h: HeroId, extra: number) => db.heroes[h]!.maxHp * mult + extra;
-  let s: CombatState = createCombat(db, {
-    seed,
-    a: { hero: x, deck: deckOf(x, `${seed}a`), hp: hp(x, 0), maxHp: hp(x, 0) },
-    b: { hero: y, deck: deckOf(y, `${seed}b`), hp: hp(y, 10 * mult), maxHp: hp(y, 10 * mult) },
-  }).state;
+  const deckOf = (h: HeroId, k: string) => buildDeck(h, level, hashSeed(`${h}/${level}/${k}`)).deck;
+  const hp = (h: HeroId, extra: number) =>
+    mult === 0 ? ARENA_START_HP : db.heroes[h]!.maxHp * mult + extra;
+  const entry = (h: HeroId, k: string) => ({
+    name: h,
+    hero: h,
+    deck: deckOf(h, k),
+    boons: [],
+    tier: 1,
+  });
+  const match = mult === 0 ? new Match(seed, entry(x, `${seed}a`), entry(y, `${seed}b`), 0) : null;
+  let s: CombatState =
+    match?.state ??
+    createCombat(db, {
+      seed,
+      a: { hero: x, deck: deckOf(x, `${seed}a`), hp: hp(x, 0), maxHp: hp(x, 0) },
+      b: { hero: y, deck: deckOf(y, `${seed}b`), hp: hp(y, 10 * mult), maxHp: hp(y, 10 * mult) },
+    }).state;
   const peak = { a: 0, b: 0 };
   const maxOf = { a: heroOf(s.sides.a)!.maxHp, b: heroOf(s.sides.b)!.maxHp };
   const turns = { a: 0, b: 0 };
@@ -58,8 +69,13 @@ function play(level: Level, mult: number, x: HeroId, y: HeroId, seed: string): R
   let otherStart = heroOf(s.sides[side === 'a' ? 'b' : 'a'])!.hp;
   turns[side]++;
   let guard = 0;
-  while (!s.winner && guard++ < 3000) {
-    s = applyAction(db, s, chooseSmartAction(db, s, { budget: 600 })).state;
+  while (!s.winner && !match?.over && guard++ < 3000) {
+    const action = chooseSmartAction(db, s);
+    if (match) {
+      const accepted = match.submit(match.active, match.log.length + 1, action, 0);
+      if (!accepted.ok) throw Error(accepted.message);
+      s = match.state;
+    } else s = applyAction(db, s, action).state;
     const foe = side === 'a' ? 'b' : 'a';
     const dealt = otherStart - Math.max(0, heroOf(s.sides[foe])?.hp ?? 0);
     peak[side] = Math.max(peak[side], (100 * dealt) / maxOf[foe]);
@@ -69,7 +85,7 @@ function play(level: Level, mult: number, x: HeroId, y: HeroId, seed: string): R
       otherStart = heroOf(s.sides[side === 'a' ? 'b' : 'a'])?.hp ?? 0;
     }
   }
-  const winner = s.winner === 'a' || s.winner === 'b' ? s.winner : 'draw';
+  const winner = match?.over?.winner ?? (s.winner === 'a' || s.winner === 'b' ? s.winner : 'draw');
   const loser = winner === 'a' ? 'b' : 'a';
   return {
     level,
@@ -88,7 +104,7 @@ function report(file: string): void {
   const rows = lines(file).map((l) => JSON.parse(l) as Row);
   const groups = new Map<string, Row[]>();
   for (const r of rows) {
-    const k = `${r.level} x${r.mult}`;
+    const k = `${r.level} ${r.mult === 0 ? '1000HP' : 'x' + r.mult}`;
     groups.set(k, [...(groups.get(k) ?? []), r]);
   }
   console.log(
@@ -180,8 +196,7 @@ function ghostFight(
     b: { hero: y, deck: gh.deck, boons: gh.boons, hp: ghostHp, maxHp: ghostHp, dmgPct },
   }).state;
   let guard = 0;
-  while (!st.winner && guard++ < 4000)
-    st = applyAction(db, st, chooseSmartAction(db, st, { budget: 600 })).state;
+  while (!st.winner && guard++ < 4000) st = applyAction(db, st, chooseSmartAction(db, st)).state;
   const left = Math.max(0, heroOf(st.sides.a)?.hp ?? 0);
   return {
     level,
@@ -234,7 +249,7 @@ else if (process.argv.includes('--ghost')) {
       }
 } else {
   const levels = arg('levels', 't5,t10,t20').split(',') as Level[];
-  const mults = arg('mults', '3,5,6').split(',').map(Number);
+  const mults = arg('mults', '0').split(',').map(Number);
   const per = Number(arg('per', '1'));
   let n = 0;
   for (const level of levels)

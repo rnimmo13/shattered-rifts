@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { classNameOf } from '@sr/content/v2';
-import { SECOND_PLAYER_HP, cleanRank, cleanTrophies } from '@sr/pvp';
+import { ARENA_START_HP, cleanRank, cleanTrophies } from '@sr/pvp';
 import { HeroIcon } from '../ui/HeroIcon';
 import { progressLabel } from './deckLayout';
 import { TrophyBadges } from './Trophies';
@@ -190,7 +190,8 @@ export function ChoosePanel(props: {
       )}
 
       <p>
-        Go second and you start with <b>{SECOND_PLAYER_HP} more HP</b>.{' '}
+        Both players start with <b>{ARENA_START_HP.toLocaleString()} HP</b>. The second player draws
+        one extra card on their first turn only.{' '}
         {info.series
           ? info.chooser
             ? 'You lost the last game, so the order is yours to choose. If you do not choose in time, the reel decides.'
@@ -213,7 +214,7 @@ export function ChoosePanel(props: {
             <span>I will go first</span>
           </button>
           <button className="btn" onClick={() => props.onChoose(false, shown)}>
-            <span>I will go second (+{SECOND_PLAYER_HP} HP)</span>
+            <span>I will go second (+1 opening card)</span>
           </button>
         </div>
       )}
@@ -301,8 +302,8 @@ export function WhoGoesFirst(props: {
         <small>{heroName(winner.hero)}</small>
       </p>
       <p className={`coinsub${landed ? ' is-shown' : ''}`}>
-        {winner.name} goes first. {loser.name} goes second and starts with {SECOND_PLAYER_HP} more
-        HP.
+        {winner.name} goes first. {loser.name} goes second with one extra opening card. Both start
+        at {ARENA_START_HP.toLocaleString()} HP.
       </p>
     </div>
   );

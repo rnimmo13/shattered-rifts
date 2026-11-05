@@ -453,44 +453,43 @@ export const ENEMY_UNITS: UnitDef[] = [
   ),
 
   // ---- the finale: Vorthax, the Heart of the Rift (DECISIONS #547) ----
-  // It is met only at the end of Tier XX (ten times its written HP, about five times its damage with Warden's Fury, Might from the
-  // Omens' Blood Rites every turn; its quarters stand in for the Omens' rises), so its Barrier and healing are
+  // Tier XX Normal uses 850% HP / 185% damage; its quarters replace extra Omen phase rises. Barrier and healing are
   // shares of its max HP: a flat 12 would be nothing there. Every quarter of its HP it fights with the rules of the Wardens it made,
   // and in the last it closes the Rift: Fate on you every turn, so only a deck that can finish it gets to.
-  foe('rift-shard', 'Rift Shard', 21, [move('slice', 'Slice', dmg(7))], cycle('slice')),
-  // (Kron's Hatch and the Benediction's Acolytes at once: it must be broken first, and while it stands every enemy grows)
+  foe('rift-shard', 'Rift Shard', 12, [move('slice', 'Slice', dmg(7))], cycle('slice')),
+  // Taunt must be broken first. Hum charges the next strike instead of compounding permanent Might.
   foe(
     'rift-ward',
     'Rift Ward',
-    40,
-    [move('hum', 'Resonant Hum', status('might', 1, 'allFriends'), dmg(4))],
+    15,
+    [move('hum', 'Resonant Hum', status('vigor', 1, 'allFriends'), dmg(4))],
     cycle('hum'),
     { taunt: true },
   ),
   foe(
     'vorthax',
     'Vorthax, Heart of the Rift',
-    360,
+    300,
     [
       // I. The Heart Wakes (Kron, the Hollow Benediction)
       move('shards', 'Crystal Shards', dmg(6, 'target', 3)),
-      move('ward', 'Raise the Ward', { op: 'summon', unit: 'rift-ward', ifAbsent: true }, ownBarrier(4)),
-      move('collapse', 'Collapse', dmg(26)),
-      move('refract', 'Refract', ownBarrier(6), status('might', 1)),
+      move('ward', 'Raise the Ward', { op: 'summon', unit: 'rift-ward', ifAbsent: true }, ownBarrier(1)),
+      move('collapse', 'Collapse', dmg(22)),
+      move('refract', 'Refract', ownBarrier(2), status('might', 1)),
       // II. The Hunger and the Veil (Gorrmaw, Nyxara): every move leaves it Veiled
       move('shatter', 'The Shattering', dmg(12, 'allFoes'), summon('rift-shard'), summon('rift-shard'), veil()),
       move('shardstorm', 'Shard Storm', dmg(6, 'target', 3), veil()),
       move(
         'feed',
         'Feed on the Shards',
-        { op: 'devour', unit: 'rift-shard', heal: 0, healPct: 4, might: 1, none: [status('exposed', 2)] },
+        { op: 'devour', unit: 'rift-shard', heal: 0, healPct: 2, might: 1, none: [status('exposed', 2)] },
         veil(),
       ),
       move('reshatter', 'Shatter Again', dmg(10, 'allFoes'), summon('rift-shard'), veil()),
-      move('collapse2', 'Collapse', dmg(30), veil()),
+      move('collapse2', 'Collapse', dmg(24), veil()),
       // III. The Unmaking (the Queen, the Regent, the Stag, Mother of Static)
       move('pull', 'The Pull', status('gravity', 2, 'foeHero'), status('unmaking', 1, 'foeHero'), ownBarrier(6)),
-      move('beam', 'Prismatic Beam', dmg(17, 'target', 2), status('unmaking', 1, 'foeHero')),
+      move('beam', 'Prismatic Beam', dmg(12, 'target', 2), status('unmaking', 1, 'foeHero')),
       move('turnover', 'Turn the Heart', { op: 'swapBarrier' }, dmg(22)),
       move(
         'rupture',
@@ -503,12 +502,12 @@ export const ENEMY_UNITS: UnitDef[] = [
       move('refract2', 'Refract', ownBarrier(6), status('might', 1)),
       // IV. The Last Light (the Applause Below, and its own): every move leaves it Slippery and curses you with Fate
       move('core', 'Prismatic Core', status('shielded', 2), ownBarrier(8), status('slippery', 2), closing(10)),
-      move('beam2', 'Prismatic Beam', dmg(17, 'target', 2), status('slippery', 1), closing(8)),
+      move('beam2', 'Prismatic Beam', dmg(12, 'target', 2), status('slippery', 1), closing(8)),
       move('rupture2', 'Rupture', lose(8, 'target'), dmg(14), status('slippery', 1), closing(8)),
       move('close', 'The Rift Closes', ownBarrier(5), status('slippery', 1), closing(12)),
     ],
     phases(
-      [100, { kind: 'cycle', order: ['shards', 'ward', 'collapse', 'refract'] }],
+      [100, { kind: 'cycle', order: ['refract', 'shards', 'ward', 'collapse'] }],
       [75, { kind: 'cycle', lead: ['shatter'], order: ['shardstorm', 'feed', 'reshatter', 'collapse2'] }],
       [50, { kind: 'cycle', lead: ['pull'], order: ['beam', 'turnover', 'rupture', 'refract2'] }],
       [25, { kind: 'cycle', lead: ['core'], order: ['beam2', 'rupture2', 'close'] }],

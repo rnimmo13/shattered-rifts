@@ -4387,7 +4387,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   // the second PvP player gets a small head start on their first turn
   const first = r.s.mode === 'pvp' && side === 'b' && r.s.turn === 2;
   // Mana owed from a borrowed turn comes off the top, but a turn never starts below 0
-  const rawMana = sd.maxMana + (first ? 1 : 0) + sd.nextMana;
+  const rawMana = sd.maxMana + sd.nextMana;
   sd.mana = Math.max(0, rawMana);
   const extraDraw = sd.nextDraw;
   // debt beyond this turn's Mana is carried to the next, not forgiven

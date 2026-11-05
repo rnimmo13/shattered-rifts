@@ -1,0 +1,3 @@
+# Exact raw copies remain locally; losslessly compressed copies are versioned.
+*-jobs.json
+*.jsonl

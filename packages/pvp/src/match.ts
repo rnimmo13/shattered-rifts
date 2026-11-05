@@ -16,7 +16,8 @@ import {
 import { COMBAT_DB } from '@sr/content/v2';
 import {
   MAX_MISSED_TURNS,
-  ARENA_HP_MULT,
+  ARENA_START_HP,
+  EMPTY_TURN_LIMIT,
   GAME_MS,
   SECOND_PLAYER_HP,
   TURN_MS,
@@ -50,15 +51,15 @@ export type Refused = {
 
 export const other = (s: Seat): Seat => (s === 'a' ? 'b' : 'a');
 
-/** A hero's HP in the Arena: ARENA_HP_MULT times its usual (nothing for a hero the game does not know). */
+/** Every recognized Arena hero starts at the same HP, independent of campaign growth. */
 const arenaHp = (hero: string): { hp: number; maxHp: number } | Record<string, never> => {
   const base = COMBAT_DB.heroes[hero]?.maxHp ?? 0;
-  return base > 0 ? { hp: base * ARENA_HP_MULT, maxHp: base * ARENA_HP_MULT } : {};
+  return base > 0 ? { hp: ARENA_START_HP, maxHp: ARENA_START_HP } : {};
 };
 
 /**
  * The engine's setup for two entries: seat a is side a (moves first), seat b is side b (moves second, and starts with
- * SECOND_PLAYER_HP more HP and max HP). Both heroes have ARENA_HP_MULT times their usual HP.
+ * SECOND_PLAYER_HP more HP and max HP, currently zero). Both start at ARENA_START_HP.
  */
 export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
   const first = arenaHp(a.hero);
@@ -96,6 +97,12 @@ export class Match {
   private outcome: Outcome | null = null;
   /** turns each seat has let run out in a row (kept by the room, so it survives a sleep) */
   missed: Record<Seat, number> = { a: 0, b: 0 };
+  /** Reconstructed from accepted moves on reconnect; never stored independently. */
+  emptyTurns: Record<Seat, number> = { a: 0, b: 0 };
+  turns: Record<Seat, number> = { a: 1, b: 0 };
+  heroDamage: Record<Seat, number> = { a: 0, b: 0 };
+  peakHeroDamage: Record<Seat, number> = { a: 0, b: 0 };
+  private turnDamage: Record<Seat, number> = { a: 0, b: 0 };
   /** when the game began (epoch ms): it is called GAME_MS later */
   startedAt: number;
 
@@ -179,11 +186,40 @@ export class Match {
     }
     const turnPassed =
       step.state.active !== this.state.active || step.state.turn !== this.state.turn;
+    const unitSides = new Map<string, Seat>(
+      [...this.state.sides.a.units, ...step.state.sides.a.units].map((u) => [u.id, 'a']),
+    );
+    for (const u of [...this.state.sides.b.units, ...step.state.sides.b.units])
+      unitSides.set(u.id, 'b');
+    const heroes = new Map((['a', 'b'] as const).map((s) => [heroOf(this.state.sides[s])?.id, s]));
+    for (const e of step.events) {
+      if (e.type === 'turnStart') {
+        this.turns[e.side]++;
+        this.turnDamage[e.side] = 0;
+      }
+      if (e.type !== 'damage' || !e.source) continue;
+      const source = unitSides.get(e.source),
+        target = heroes.get(e.target);
+      if (!source || !target || source === target) continue;
+      this.heroDamage[source] += e.lost;
+      this.turnDamage[source] += e.lost;
+      this.peakHeroDamage[source] = Math.max(this.peakHeroDamage[source], this.turnDamage[source]);
+    }
+    if (action.type === 'play') this.emptyTurns[seat] = 0;
+    if (turnPassed)
+      this.emptyTurns[seat] = this.state.sides[seat].played === 0 ? this.emptyTurns[seat] + 1 : 0;
     this.state = step.state;
     this.log.push({ seat, action });
     // a player who acts on their own is not away
     if (!auto) this.missed[seat] = 0;
     if (turnPassed) this.deadline = now + TURN_MS;
+    this.finishIfOver();
+    if (
+      !this.outcome &&
+      this.emptyTurns.a >= EMPTY_TURN_LIMIT &&
+      this.emptyTurns.b >= EMPTY_TURN_LIMIT
+    )
+      this.outcome = { winner: 'draw', reason: 'passes' };
     return {
       ok: true,
       seq: this.log.length,
@@ -224,7 +260,7 @@ export class Match {
 
   /** Put back what a rebuilt match cannot learn from its moves: how it ended, and who has been away from the table. */
   restore(outcome: Outcome | null, missed: Record<Seat, number>): void {
-    this.outcome = outcome;
+    this.outcome = outcome ?? this.outcome;
     this.missed = { ...missed };
   }
 

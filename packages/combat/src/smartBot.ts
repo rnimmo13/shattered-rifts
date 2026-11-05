@@ -7,7 +7,44 @@
 import { applyAction, legalActions } from './engine';
 import { chooseAction, evaluate } from './bot';
 import type { Action, CombatDb, CombatState, Side } from './types';
-import { other } from './types';
+import { other, clone } from './types';
+import { seedRng, shuffle } from './rng';
+
+/** Stamp ghost results and simulations so different policies never share a balance sample. */
+export const BOT_VERSION = 'synergy-2';
+export const BOT_SEARCH = { width: 8, depth: 10, budget: 900 } as const;
+
+/** Plan against a plausible unknown draw, never the live RNG or an opponent's secret cards.
+ * Own deck contents are known; draw order is not. A pending revealed choice keeps its actual pool.
+ * This is one deterministic belief sample, not perfect-information play or a learned policy. */
+export function botPlanningState(db: CombatDb, state: CombatState): CombatState {
+  const s = clone(state);
+  const me = s.active;
+  const mine = s.sides[me];
+  const theirs = s.sides[other(me)];
+  s.seed = `bot:${BOT_VERSION}:${me}:${s.turn}:${mine.played}`;
+  s.rng = seedRng(s.seed);
+  const revealed = new Set(s.pending?.pool ?? []);
+  const unknown = mine.draw
+    .filter((c) => !revealed.has(c.id))
+    .sort((a, b) => a.card.localeCompare(b.card) || a.id.localeCompare(b.id));
+  shuffle(s.rng, unknown);
+  let next = 0;
+  mine.draw = mine.draw.map((c) => (revealed.has(c.id) ? c : unknown[next++]!));
+  // Neutral public prior, independent of the actual hidden identities and trap definitions.
+  const prior = Object.values(db.cards).find(
+    (c) => c.hero === theirs.hero && c.kind === 'attack',
+  )?.id;
+  const hidden = (cards: typeof theirs.hand, zone: string) =>
+    cards.map((_, i) => ({
+      id: `belief-${zone}-${i}`,
+      card: prior ?? Object.keys(db.cards)[0]!,
+    }));
+  theirs.hand = hidden(theirs.hand, 'hand');
+  theirs.draw = hidden(theirs.draw, 'draw');
+  theirs.snares = [];
+  return s;
+}
 
 export interface SmartOptions {
   /** how many lines are kept at each step */
@@ -34,6 +71,23 @@ function estimatedThreat(s: CombatState, me: Side): number {
 function value(db: CombatDb, s: CombatState, from: CombatState, me: Side): number {
   let v = evaluate(db, s, me);
   if (s.winner) return v;
+  const mine = s.sides[me];
+  const hero = mine.units.find((u) => u.kind === 'hero');
+  if (hero && s.mode === 'pve') v += hero.hp * 1.5;
+  if (hero)
+    v +=
+      (hero.statuses.spirit ?? 0) * 7 +
+      (hero.statuses.keen ?? 0) * 4 +
+      (hero.statuses.might ?? 0) * 2;
+  v += mine.reserves * 2 + (mine.nextStars ?? 0) * 1.5;
+  v += (mine.totems?.filter(Boolean).length ?? 0) * 6;
+  for (const aura of mine.attackAuras ?? [])
+    v +=
+      (aura.amount +
+        (aura.perSummons ? Math.floor((mine.summonedFight ?? 0) / aura.perSummons) : 0)) *
+      (aura.scope === 'friends' ? 5 : 3);
+  for (const unit of s.sides[other(me)].units) v += (unit.statuses.fracture ?? 0) * 1.5;
+  v += mine.powers.filter((p) => !p.card.startsWith('__')).length * 2;
   if (s.mode === 'pvp') {
     const hero = s.sides[me].units.find((u) => u.kind === 'hero');
     if (hero) v += Math.min(hero.barrier, estimatedThreat(s, me)) * 0.6;
@@ -82,33 +136,22 @@ interface Line {
 function sig(s: CombatState, me: Side): string {
   const m = s.sides[me];
   const t = s.sides[other(me)];
-  return [
-    m.mana,
-    m.stars,
-    m.hand
-      .map((c) => c.id)
-      .sort()
-      .join(','),
-    m.units.map((u) => `${u.id}:${u.hp}:${u.barrier}`).join('|'),
-    t.units.map((u) => `${u.id}:${u.hp}:${u.barrier}`).join('|'),
-    s.pending ? 'p' : '',
-  ].join('/');
+  return JSON.stringify([s.active, s.turn, s.rng, m, t.units, t.powers, t.totems, s.pending]);
 }
 
 /** The smart bot's choice for the side whose turn it is. */
 export function chooseSmartAction(db: CombatDb, s: CombatState, opts: SmartOptions = {}): Action {
+  s = botPlanningState(db, s);
   const me = s.active;
-  // a choice that is owed is answered the way the greedy bot would (there is always at least one answer)
-  if (s.pending) return chooseAction(db, s);
-  if (s.sides[me].played >= 60) return { type: 'endTurn' };
-  const width = opts.width ?? 8;
-  const depth = opts.depth ?? 10;
-  let budget = opts.budget ?? 900;
+  if (!s.pending && s.sides[me].played >= 60) return { type: 'endTurn' };
+  const width = opts.width ?? BOT_SEARCH.width;
+  const depth = opts.depth ?? BOT_SEARCH.depth;
+  let budget = opts.budget ?? BOT_SEARCH.budget;
 
   // stopping now (ending the turn here) is always an option; a line must beat it by a little to be worth the cards
   let best: { first: Action; score: number } = {
-    first: { type: 'endTurn' },
-    score: stopValue(db, s, s, me) + 0.5,
+    first: s.pending ? chooseAction(db, s) : { type: 'endTurn' },
+    score: s.pending ? -Infinity : stopValue(db, s, s, me) + 0.5,
   };
   let frontier: Line[] = [{ state: s, first: { type: 'endTurn' }, score: -Infinity }];
   const seen = new Set<string>([sig(s, me)]);

@@ -7,7 +7,7 @@
 // The bot is a decent, not great, player: it drafts the best-rarity card on offer (skipping weak ones in a fat deck), rests when
 // hurt, takes elites when healthy, never uses potions, and the fight bot is the greedy 1-ply one in @sr/combat.
 
-import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
+import { applyAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
 import {
   DIFFICULTY,
   availableNodes,
@@ -83,7 +83,7 @@ function fight(run: RunState): { won: boolean; hp: number } {
     },
   });
   for (let t = 0; t < 900 && !state.winner; t++)
-    state = applyAction(db, state, chooseAction(db, state)).state;
+    state = applyAction(db, state, chooseSmartAction(db, state)).state;
   const hp = heroOf(state.sides.a)?.hp ?? 0;
   return { won: state.winner === 'a' && hp >= 1, hp };
 }

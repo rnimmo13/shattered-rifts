@@ -4,7 +4,7 @@
 // brought up to date by replaying the moves.
 
 import { DurableObject } from 'cloudflare:workers';
-import { chooseSmartAction, type Action } from '@sr/combat';
+import { chooseSmartAction, BOT_VERSION, type Action } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import {
   checkEntry,
@@ -23,6 +23,7 @@ import {
   seatsFor,
   seriesFor,
   seriesWinner,
+  endsSeries,
   type Accepted,
   type Entry,
   type Outcome,
@@ -34,6 +35,9 @@ import {
   cleanTrophies,
   cleanRank,
   REPLAY_MIN_MOVES,
+  ARENA_START_HP,
+  arenaDeckSnapshot,
+  type ArenaBalanceGame,
 } from '@sr/pvp';
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
@@ -864,13 +868,46 @@ export class MatchRoom extends DurableObject<Env> {
    */
   private async finish(outcome: Outcome): Promise<void> {
     const d = this.data;
+    if (d.entries.a && d.entries.b && this.match && d.rules === RULES_VERSION) {
+      const game: ArenaBalanceGame = {
+        schema: 1,
+        id: `${this.code}:${d.seed}`,
+        at: Date.now(),
+        rules: RULES_VERSION,
+        bot: BOT_VERSION,
+        startingHp: ARENA_START_HP,
+        source: d.ghost ? 'ghost' : 'human',
+        ghostSeat: d.ghost?.seat ?? null,
+        a: arenaDeckSnapshot(d.entries.a),
+        b: arenaDeckSnapshot(d.entries.b),
+        winner: outcome.winner,
+        reason: outcome.reason,
+        durationMs: Math.max(0, Date.now() - (d.gameStart ?? Date.now())),
+        actions: d.log.length,
+        turns: { ...this.match.turns },
+        heroDamage: { ...this.match.heroDamage },
+        peakHeroDamage: { ...this.match.peakHeroDamage },
+      };
+      this.ctx.waitUntil(
+        this.env.BOARD.get(this.env.BOARD.idFromName('main'))
+          .fetch(
+            new Request('https://board.invalid/balance/save', {
+              method: 'POST',
+              body: JSON.stringify({ game }),
+              signal: AbortSignal.timeout(3000),
+            }),
+          )
+          .then(() => undefined)
+          .catch(() => undefined),
+      );
+    }
     d.over = outcome;
     d.moves += d.log.length;
     // (what its replay holds is taken now; it is kept once the result is out)
     const replay = this.replayOf(outcome);
     const seed = d.seed;
     delete d.lastReplay;
-    const gameOnly = outcome.reason !== 'disconnect';
+    const gameOnly = !endsSeries(outcome.reason);
     if (gameOnly) {
       const winnerId = outcome.winner === 'draw' ? null : (d.ids[outcome.winner] ?? null);
       d.series = scoreGame(d.series, winnerId);

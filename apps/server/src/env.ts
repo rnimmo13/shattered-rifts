@@ -1,5 +1,7 @@
 /** What the Worker is given by Cloudflare (see wrangler.jsonc). */
 export interface Env {
+  /** Owner-only balance exports; configured as a Worker secret, never sent to game clients. */
+  BALANCE_ADMIN_TOKEN?: string;
   MATCHMAKER: DurableObjectNamespace;
   MATCH: DurableObjectNamespace;
   VAULT: DurableObjectNamespace;

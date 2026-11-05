@@ -1,4 +1,4 @@
-// Who goes first. Each player says whether they want to: going first, or going second with more HP (SECOND_PLAYER_HP). If
+// Who goes first. Second seat has one extra opening card, with equal starting HP and Mana. If
 // the two answers differ everyone gets what they asked for. If they are the same (or someone did not answer) the referee's
 // coin decides. Pure: the coin is passed in.
 

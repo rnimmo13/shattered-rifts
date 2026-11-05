@@ -5,7 +5,7 @@
 //   pnpm sim -- --n 100 --draft 8
 //   pnpm sim -- --hp 60 --dmg 55   Easy mode numbers (see DIFFICULTY in packages/campaign)   add 8 random reward cards (seeded) to each deck first
 
-import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
+import { applyAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';
 
 function arg(name: string, fallback: number): number {
@@ -47,7 +47,7 @@ for (const e of ENCOUNTERS) {
       });
       const maxHp = heroOf(state.sides.a)?.maxHp ?? 0;
       for (let t = 0; t < 800 && !state.winner; t++)
-        state = applyAction(db, state, chooseAction(db, state)).state;
+        state = applyAction(db, state, chooseSmartAction(db, state)).state;
       if (!state.winner) stalls++;
       if (state.winner === 'a') {
         wins++;

@@ -1,0 +1,28 @@
+{
+  "bot": "synergy-2",
+  "search": {
+    "width": 8,
+    "depth": 10,
+    "budget": 900
+  },
+  "matches": 120,
+  "arena": {
+    "newWins": 38,
+    "oldWins": 22,
+    "draws": 0,
+    "unresolved": 0
+  },
+  "boss": {
+    "released": {
+      "wins": 17,
+      "attempts": 30,
+      "unresolved": 1
+    },
+    "legacy": {
+      "wins": 13,
+      "attempts": 30,
+      "unresolved": 1
+    }
+  },
+  "limitation": "One seed per style, same frozen tuned decks, mirrored Arena seats. Current shared 1000-HP/card-only second-seat rules for both policies. No deck retuning, human games, learning or class tier inference. Legacy has draw-order foreknowledge; current policy does not."
+}

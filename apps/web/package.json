@@ -1,9 +1,10 @@
 {
   "name": "@sr/web",
-  "version": "0.198.0",
+  "version": "0.200.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "balance:smoke": "node scripts/balance-ui-smoke.mjs",
     "dev": "vite",
     "lore:smoke": "node scripts/lore-smoke.mjs",
     "build": "tsc -p tsconfig.json && vite build",

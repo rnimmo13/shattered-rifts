@@ -544,9 +544,27 @@ export const KNIGHT: CardDef[] = [
       up: { effects: [dmg(9), when('reserves', { atLeast: 2 }, [dmg(6)])] },
     },
   ),
-  m('common', 'blood-oath', 'Blood Oath', 'skill', 0, 'none', [lose(3), reserves(3)], {
-    up: { effects: [lose(2), reserves(3)] },
-  }),
+  m(
+    'common',
+    'blood-oath',
+    'Blood Oath',
+    'skill',
+    0,
+    'none',
+    [{ op: 'oncePerTurn', key: 'blood-oath-reserves', ownTurn: true, ops: [lose(3), reserves(3)] }],
+    {
+      up: {
+        effects: [
+          {
+            op: 'oncePerTurn',
+            key: 'blood-oath-reserves',
+            ownTurn: true,
+            ops: [lose(2), reserves(3)],
+          },
+        ],
+      },
+    },
+  ),
   m('uncommon', 'vow-kept', 'Vow Kept', 'attack', 1, 'foe', [scaled(dmg(3), per('reserves', 5))], {
     up: { effects: [scaled(dmg(4), per('reserves', 6))] },
   }),
@@ -663,7 +681,7 @@ export const KNIGHT: CardDef[] = [
     'measured-conviction',
     'Measured Conviction',
     'power',
-    2,
+    1,
     'none',
     [on('turnEnd', [when('reserves', { atLeast: 2 }, [status('might', 1), barrier(2)])])],
     {

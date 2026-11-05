@@ -4,7 +4,7 @@ export * from './types';
 export { validateDb } from './validate';
 export { SUITS, suitOf, suitShown } from './suits';
 export { chooseAction, evaluate } from './bot';
-export { chooseSmartAction, type SmartOptions } from './smartBot';
+export { chooseSmartAction, BOT_VERSION, BOT_SEARCH, type SmartOptions } from './smartBot';
 export { nextInt, seedRng, shuffle, type RngState } from './rng';
 export {
   applyAction,

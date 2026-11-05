@@ -230,6 +230,57 @@
   border-color: var(--k);
 }
 
+.patch__entry {
+  list-style: none;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #ffffff20;
+}
+.patch__entity {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+}
+.patch__art {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+.patch__changes {
+  margin: 0.6rem 0;
+}
+.patch__changes > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  margin: 0.3rem 0;
+}
+.patch__changes dt {
+  min-width: 12rem;
+  color: #d6dce6;
+}
+.patch__changes dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.patch__value--buff {
+  color: #7ee0a0;
+  font-weight: 700;
+}
+.patch__value--nerf {
+  color: #ff9595;
+  font-weight: 700;
+}
+.patch__value--neutral {
+  color: #d6dce6;
+  font-weight: 700;
+}
+.patch__explanation {
+  margin: 0.4rem 0 0;
+  font-size: 0.93rem;
+  color: #c4cddd;
+}
+
 /* narrower windows: the versions run across the top and scroll sideways */
 @media (max-width: 860px) {
   .patch__layout {

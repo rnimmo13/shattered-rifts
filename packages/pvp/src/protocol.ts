@@ -93,7 +93,7 @@ export interface Entry {
 // (78: Backup Core is a Consume skill granting finite revival buff charges, #593)
 // (80: Heavy Hitter HP conversion and Resonant Pulse per-turn limit, #602)
 // (81: long-fight balance, shared effect limits and before-play defense, #603)
-export const RULES_VERSION = 81;
+export const RULES_VERSION = 83;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;
@@ -119,7 +119,7 @@ export type ClientMsg =
   | { type: 'watch'; rules?: number };
 
 /** 'time': the game's GAME_MS ran out and it was called for the larger share of HP left (DECISIONS #259) */
-export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect' | 'time';
+export type EndReason = 'win' | 'resign' | 'timeout' | 'disconnect' | 'time' | 'passes';
 
 export type ServerMsg =
   | { type: 'queued'; waiting: number }
@@ -204,23 +204,22 @@ export type ErrorCode =
   /** this browser plays by older rules than the server (RULES_VERSION): reload the page */
   | 'outdated';
 
-/**
- * Every Arena hero (a player's, or a ghost's) has this many times its usual HP, so a match lasts long enough to play and no deck
- * wins on its first turn (DECISIONS #237: the strongest first turn found is about 60% of the lowest Arena HP; `pnpm arenasim`).
- */
-export const ARENA_HP_MULT = 6;
-/** The player who goes second starts with this much more HP (and max HP): the old 10, scaled with everyone else's. */
-export const SECOND_PLAYER_HP = 10 * ARENA_HP_MULT;
+/** Equal starting current/max HP for every Arena class and both seats. */
+export const ARENA_START_HP = 1000;
+/** No seat HP advantage. The second player's compensation is one opening card. */
+export const SECOND_PLAYER_HP = 0;
+export const SECOND_PLAYER_DRAW = 1;
+export const EMPTY_TURN_LIMIT = 3;
 /** How long each player has to say whether they want to go first, ms. */
 export const CHOOSE_MS = 20_000;
 /** How long the active player has for a turn, ms. */
 export const TURN_MS = 75_000;
 /**
  * How long one game of a match may last, ms (DECISIONS #259): then it is called for whoever has the larger share of their HP
- * left (equal: a draw). A match is the best of three, so each game has its own 20 minutes (DECISIONS #600).
+ * left (equal: a draw). Each game has its own 30 minutes.
  * The turn limit is independent; engine sudden death starts much later than the intended Arena pacing band.
  */
-export const GAME_MS = 20 * 60_000;
+export const GAME_MS = 30 * 60_000;
 /** How long a disconnected player has to come back before forfeiting, ms. */
 export const RECONNECT_MS = 60_000;
 /** Turns missed in a row (timed out) that forfeit the match. */

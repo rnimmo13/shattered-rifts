@@ -224,8 +224,8 @@ export const ENGINEER: CardDef[] = [
   ),
 
   // (more Assemble)
-  r('uncommon', 'link-up', 'Link Up', 'skill', 1, 'none', [barrier(4, 'allFriends'), draw(1)], {
-    up: { effects: [barrier(6, 'allFriends'), draw(1)] },
+  r('uncommon', 'link-up', 'Link Up', 'skill', 1, 'none', [barrier(6, 'allFriends'), draw(1)], {
+    up: { effects: [barrier(8, 'allFriends'), draw(1)] },
   }),
   r('rare', 'chain-reaction', 'Chain Reaction', 'skill', 1, 'none', [draw(2), prime(4)]),
   r('rare', 'command-chip', 'Command Chip', 'power', 3, 'none', [
@@ -359,9 +359,17 @@ export const ENGINEER: CardDef[] = [
     'skill',
     1,
     'ally',
-    [scaled(barrier(8, 'target'), per('maxHp', 0.2, 'target'))],
+    [
+      scaled(barrier(8, 'target'), per('maxHp', 0.2, 'target')),
+      scaled(barrier(8, 'hero'), per('maxHp', 0.2, 'target')),
+    ],
     {
-      up: { effects: [scaled(barrier(11, 'target'), per('maxHp', 0.2, 'target'))] },
+      up: {
+        effects: [
+          scaled(barrier(11, 'target'), per('maxHp', 0.2, 'target')),
+          scaled(barrier(11, 'hero'), per('maxHp', 0.2, 'target')),
+        ],
+      },
     },
   ),
   r(
@@ -393,7 +401,7 @@ export const ENGINEER: CardDef[] = [
     'heavy-industry',
     'Heavy Industry',
     'power',
-    2,
+    1,
     'none',
     [on('turnStart', [barrier(4, 'allFriends')])],
     { up: { effects: [on('turnStart', [barrier(6, 'allFriends')])] } },

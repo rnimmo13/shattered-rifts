@@ -1,0 +1,17 @@
+[
+  {
+    "file": "policy-check.jsonl.gz",
+    "sha256": "5069be667bd92e4012e97ac8a80a7742547b2b9fd7c0ecc154965d27d1b7dfc4",
+    "bytes": 73377
+  },
+  {
+    "file": "policy-db.json.gz",
+    "sha256": "f6e1606478b2ab1bac98a95b3c65da9dcfd194ca6a86f133dc8ed20653a618b6",
+    "bytes": 639378
+  },
+  {
+    "file": "policy-jobs.json.gz",
+    "sha256": "aafa03c5eff7eee46d50f18d8ad228008c1a60156a041ef2bfbdec41e0aea592",
+    "bytes": 145945
+  }
+]

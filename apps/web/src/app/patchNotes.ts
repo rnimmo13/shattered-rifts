@@ -1,3 +1,4 @@
+import { BALANCE_NOTES_199 } from './balanceNotes199';
 // The patch notes (#/patch-notes): what changed from version to version, written for players. Newest first. Each version
 // is a few short lines in a handful of kinds, so a play tester can see at a glance what to look at.
 //
@@ -7,6 +8,20 @@
 
 export type NoteKind = 'new' | 'changed' | 'balance' | 'fixed';
 
+export interface PatchItem {
+  kind: NoteKind;
+  text: string;
+  title?: string;
+  card?: string;
+  hero?: string;
+  changes?: {
+    label: string;
+    before: string;
+    after: string;
+    direction: 'buff' | 'nerf' | 'neutral';
+  }[];
+}
+
 export interface PatchNote {
   version: string;
   /** yyyy-mm-dd */
@@ -15,7 +30,7 @@ export interface PatchNote {
   title: string;
   /** one line on what this patch is about */
   summary: string;
-  notes: { kind: NoteKind; text: string }[];
+  notes: PatchItem[];
   /** something play testers should know (an old replay that no longer plays, a reload) */
   heads?: string;
 }
@@ -28,6 +43,60 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 };
 
 export const PATCH_NOTES: PatchNote[] = [
+  {
+    version: '0.200.0',
+    date: '2026-11-05',
+    title: 'A shared Arena baseline',
+    summary:
+      'Equal HP, an opening card for second seat, better ghost planning and clearer balance notes.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Arena — every class',
+        text: 'Both players start at 1,000 current and maximum HP. Second seat keeps its existing +1 opening card only; later draws are normal. Campaign HP is unchanged.',
+        changes: [
+          { label: 'Starting HP', before: '6 × class HP', after: '1,000', direction: 'neutral' },
+          { label: 'Second-seat bonus HP', before: '+60', after: '0', direction: 'nerf' },
+          { label: 'Second-seat opening bonus Mana', before: '+1', after: '0', direction: 'nerf' },
+        ],
+      },
+      {
+        kind: 'changed',
+        title: 'Arena clock and passes',
+        text: 'If both players pass three consecutive turns without playing a card, the whole Arena match ends in a draw. Playing a card resets that player’s streak. Turn timeout remains 75 seconds; two missed turns still forfeit.',
+        changes: [
+          { label: 'Game limit', before: '20 minutes', after: '30 minutes', direction: 'neutral' },
+        ],
+      },
+      {
+        kind: 'changed',
+        title: 'Ghost decision-making',
+        text: 'Ghosts plan through card choices and value more setup resources, companion Auras and totems. Planning no longer uses the real hidden draw order or opponent hand. Simulations use this same AI; it does not learn automatically from games.',
+      },
+      {
+        kind: 'new',
+        title: 'Arena balance review',
+        text: 'Completed online Arena games record exact deck lists, outcomes, seat order, turns and damage measurements for private developer analysis. Human and ghost results stay separate.',
+      },
+      {
+        kind: 'changed',
+        title: 'Readable patch notes',
+        text: 'Balance entries show before → after values, green buffs, red nerfs and card art or class icons. Colour is paired with a text label.',
+      },
+    ],
+    heads:
+      'Second-seat bonus draw applies only to its first turn. Existing decks keep their cards. Older unfinished fights use the normal rules-update checkpoint handling; older Arena replays remain version-gated.',
+  },
+  {
+    version: '0.199.0',
+    date: '2026-11-05',
+    title: 'Sustained engines and a clearer path through the Rift',
+    summary:
+      'Balance revisions for resource loops, setup protection and Vorthax. Class and card changes apply to Campaign and Arena; Vorthax changes apply only to Campaign.',
+    notes: BALANCE_NOTES_199,
+    heads:
+      'Existing cards and saves keep their IDs and use the revised effects. Older unfinished battles restart through the normal rules-update checkpoint handling. Arena HP, targeting and the 20-minute match limit are unchanged.',
+  },
   {
     version: '0.198.0',
     date: '2026-11-04',

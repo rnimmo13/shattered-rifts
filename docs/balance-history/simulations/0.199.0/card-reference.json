@@ -1,0 +1,5818 @@
+{
+  "cards": [
+    {
+      "id": "strike",
+      "name": "Strike",
+      "rarity": "basic",
+      "upgrade": "strike+"
+    },
+    {
+      "id": "defend",
+      "name": "Defend",
+      "rarity": "basic",
+      "upgrade": "defend+"
+    },
+    {
+      "id": "rift-bolt",
+      "name": "Rift Bolt",
+      "rarity": "common",
+      "upgrade": "rift-bolt+"
+    },
+    {
+      "id": "catch-breath",
+      "name": "Catch Breath",
+      "rarity": "common",
+      "upgrade": "catch-breath+"
+    },
+    {
+      "id": "steady-guard",
+      "name": "Steady Guard",
+      "rarity": "common",
+      "upgrade": "steady-guard+"
+    },
+    {
+      "id": "haft-strike",
+      "name": "Haft Strike",
+      "rarity": "common",
+      "upgrade": "haft-strike+"
+    },
+    {
+      "id": "shatter-strike",
+      "name": "Shatter Strike",
+      "rarity": "common",
+      "upgrade": "shatter-strike+"
+    },
+    {
+      "id": "reckless-swing",
+      "name": "Reckless Swing",
+      "rarity": "common",
+      "upgrade": "reckless-swing+"
+    },
+    {
+      "id": "stagger",
+      "name": "Off Balance",
+      "rarity": "common",
+      "upgrade": "stagger+"
+    },
+    {
+      "id": "glimpse-ahead",
+      "name": "Glimpse Ahead",
+      "rarity": "common",
+      "upgrade": "glimpse-ahead+"
+    },
+    {
+      "id": "rift-storm",
+      "name": "Rift Storm",
+      "rarity": "uncommon",
+      "upgrade": "rift-storm+"
+    },
+    {
+      "id": "rift-whirl",
+      "name": "Rift Whirl",
+      "rarity": "uncommon",
+      "upgrade": "rift-whirl+"
+    },
+    {
+      "id": "wanderers-draught",
+      "name": "Wanderer's Draught",
+      "rarity": "uncommon",
+      "upgrade": "wanderers-draught+"
+    },
+    {
+      "id": "shrug-it-off",
+      "name": "Shake It Off",
+      "rarity": "common",
+      "upgrade": "shrug-it-off+"
+    },
+    {
+      "id": "steady-nerves",
+      "name": "Steady Nerves",
+      "rarity": "uncommon",
+      "upgrade": "steady-nerves+"
+    },
+    {
+      "id": "purging-light",
+      "name": "Purging Light",
+      "rarity": "rare",
+      "upgrade": "purging-light+"
+    },
+    {
+      "id": "rift-surge",
+      "name": "Rift Surge",
+      "rarity": "common",
+      "upgrade": "rift-surge+"
+    },
+    {
+      "id": "nerve-surge",
+      "name": "Nerve Surge",
+      "rarity": "uncommon",
+      "upgrade": "nerve-surge+"
+    },
+    {
+      "id": "cull-the-hand",
+      "name": "Cull the Hand",
+      "rarity": "uncommon",
+      "upgrade": "cull-the-hand+"
+    },
+    {
+      "id": "rift-resonance",
+      "name": "Rift Resonance",
+      "rarity": "rare",
+      "upgrade": "rift-resonance+"
+    },
+    {
+      "id": "pitfall",
+      "name": "Hidden Pitfall",
+      "rarity": "common",
+      "upgrade": "pitfall+"
+    },
+    {
+      "id": "alarm-bell",
+      "name": "Alarm Bell",
+      "rarity": "common",
+      "upgrade": "alarm-bell+"
+    },
+    {
+      "id": "heave",
+      "name": "Heave",
+      "rarity": "common",
+      "upgrade": "heave+"
+    },
+    {
+      "id": "needling-blow",
+      "name": "Needling Blow",
+      "rarity": "common",
+      "upgrade": "needling-blow+"
+    },
+    {
+      "id": "rift-windfall",
+      "name": "Rift Windfall",
+      "rarity": "uncommon",
+      "upgrade": "rift-windfall+"
+    },
+    {
+      "id": "plan-ahead",
+      "name": "Plan Ahead",
+      "rarity": "common",
+      "upgrade": "plan-ahead+"
+    },
+    {
+      "id": "fever-dream",
+      "name": "Fever Dream",
+      "rarity": "uncommon",
+      "upgrade": "fever-dream+"
+    },
+    {
+      "id": "echoing-blow",
+      "name": "Echoing Blow",
+      "rarity": "rare",
+      "upgrade": "echoing-blow+"
+    },
+    {
+      "id": "rift-smithing",
+      "name": "Rift Smithing",
+      "rarity": "rare",
+      "upgrade": "rift-smithing+"
+    },
+    {
+      "id": "heart-of-the-rift",
+      "name": "Heart of the Rift",
+      "rarity": "uncommon",
+      "upgrade": "heart-of-the-rift+"
+    },
+    {
+      "id": "rift-collapse",
+      "name": "Rift Collapse",
+      "rarity": "rare",
+      "upgrade": "rift-collapse+"
+    },
+    {
+      "id": "attunement",
+      "name": "Attunement",
+      "rarity": "rare",
+      "upgrade": "attunement+"
+    },
+    {
+      "id": "sundering-blow",
+      "name": "Sundering Blow",
+      "rarity": "basic",
+      "upgrade": "sundering-blow+"
+    },
+    {
+      "id": "brace-and-press",
+      "name": "Brace and Press",
+      "rarity": "basic",
+      "upgrade": "brace-and-press+"
+    },
+    {
+      "id": "set-your-shield",
+      "name": "Set Your Shield",
+      "rarity": "basic",
+      "upgrade": "set-your-shield+"
+    },
+    {
+      "id": "heavy-swing",
+      "name": "Heavy Swing",
+      "rarity": "basic",
+      "upgrade": "heavy-swing+"
+    },
+    {
+      "id": "bulwark-blow",
+      "name": "Bulwark Blow",
+      "rarity": "common",
+      "upgrade": "bulwark-blow+"
+    },
+    {
+      "id": "oath-of-iron",
+      "name": "Oath of Iron",
+      "rarity": "common",
+      "upgrade": "oath-of-iron+"
+    },
+    {
+      "id": "field-repairs",
+      "name": "Field Repairs",
+      "rarity": "common",
+      "upgrade": "field-repairs+"
+    },
+    {
+      "id": "cold-stare",
+      "name": "Cold Stare",
+      "rarity": "uncommon",
+      "upgrade": "cold-stare+"
+    },
+    {
+      "id": "provoke",
+      "name": "Provoke",
+      "rarity": "uncommon",
+      "upgrade": "provoke+"
+    },
+    {
+      "id": "stoneskin",
+      "name": "Stoneskin",
+      "rarity": "uncommon",
+      "upgrade": "stoneskin+"
+    },
+    {
+      "id": "giants-stance",
+      "name": "Giant's Stance",
+      "rarity": "uncommon",
+      "upgrade": "giants-stance+"
+    },
+    {
+      "id": "bastion-engine",
+      "name": "Bastion Engine",
+      "rarity": "rare",
+      "upgrade": "bastion-engine+"
+    },
+    {
+      "id": "immovable-oath",
+      "name": "Immovable Oath",
+      "rarity": "rare",
+      "upgrade": "immovable-oath+"
+    },
+    {
+      "id": "unbroken-wall",
+      "name": "Unbroken Wall",
+      "rarity": "rare",
+      "upgrade": "unbroken-wall+"
+    },
+    {
+      "id": "stone-stance",
+      "name": "Stone Stance",
+      "rarity": "rare",
+      "upgrade": "stone-stance+"
+    },
+    {
+      "id": "ember-ward",
+      "name": "Ember Ward",
+      "rarity": "uncommon",
+      "upgrade": "ember-ward+"
+    },
+    {
+      "id": "twin-cut",
+      "name": "Twin Cut",
+      "rarity": "common",
+      "upgrade": "twin-cut+"
+    },
+    {
+      "id": "braced-strike",
+      "name": "Braced Strike",
+      "rarity": "common",
+      "upgrade": "braced-strike+"
+    },
+    {
+      "id": "cleaving-throws",
+      "name": "Cleaving Throws",
+      "rarity": "common",
+      "upgrade": "cleaving-throws+"
+    },
+    {
+      "id": "hilt-strike",
+      "name": "Hilt Strike",
+      "rarity": "common",
+      "upgrade": "hilt-strike+"
+    },
+    {
+      "id": "clarion-clap",
+      "name": "Clarion Clap",
+      "rarity": "common",
+      "upgrade": "clarion-clap+"
+    },
+    {
+      "id": "rattle",
+      "name": "Rattle",
+      "rarity": "common",
+      "upgrade": "rattle+"
+    },
+    {
+      "id": "mastered-strike",
+      "name": "Mastered Strike",
+      "rarity": "common",
+      "upgrade": "mastered-strike+"
+    },
+    {
+      "id": "steel-resolve",
+      "name": "Steel Resolve",
+      "rarity": "uncommon",
+      "upgrade": "steel-resolve+"
+    },
+    {
+      "id": "challenge",
+      "name": "Challenge",
+      "rarity": "uncommon",
+      "upgrade": "challenge+"
+    },
+    {
+      "id": "intimidate",
+      "name": "Intimidate",
+      "rarity": "uncommon",
+      "upgrade": "intimidate+"
+    },
+    {
+      "id": "break-guard",
+      "name": "Break Guard",
+      "rarity": "uncommon",
+      "upgrade": "break-guard+"
+    },
+    {
+      "id": "rising-fist",
+      "name": "Rising Fist",
+      "rarity": "uncommon",
+      "upgrade": "rising-fist+"
+    },
+    {
+      "id": "pile-on",
+      "name": "Pile On",
+      "rarity": "uncommon",
+      "upgrade": "pile-on+"
+    },
+    {
+      "id": "whirling-blade",
+      "name": "Whirling Blade",
+      "rarity": "uncommon",
+      "upgrade": "whirling-blade+"
+    },
+    {
+      "id": "mounting-fury",
+      "name": "Mounting Fury",
+      "rarity": "uncommon",
+      "upgrade": "mounting-fury+"
+    },
+    {
+      "id": "hammer-fall",
+      "name": "Hammer Fall",
+      "rarity": "uncommon",
+      "upgrade": "hammer-fall+"
+    },
+    {
+      "id": "plunder",
+      "name": "Plunder",
+      "rarity": "uncommon",
+      "upgrade": "plunder+"
+    },
+    {
+      "id": "trampling-charge",
+      "name": "Trampling Charge",
+      "rarity": "uncommon",
+      "upgrade": "trampling-charge+"
+    },
+    {
+      "id": "relentless-push",
+      "name": "Relentless Push",
+      "rarity": "uncommon",
+      "upgrade": "relentless-push+"
+    },
+    {
+      "id": "berserkers-rage",
+      "name": "Berserker's Rage",
+      "rarity": "uncommon",
+      "upgrade": "berserkers-rage+"
+    },
+    {
+      "id": "charging-herd",
+      "name": "Charging Herd",
+      "rarity": "uncommon",
+      "upgrade": "charging-herd+"
+    },
+    {
+      "id": "jugglers-rhythm",
+      "name": "Juggler's Rhythm",
+      "rarity": "uncommon",
+      "upgrade": "jugglers-rhythm+"
+    },
+    {
+      "id": "scent-of-weakness",
+      "name": "Scent of Weakness",
+      "rarity": "uncommon",
+      "upgrade": "scent-of-weakness+"
+    },
+    {
+      "id": "warlords-oath",
+      "name": "Warlord's Oath",
+      "rarity": "rare",
+      "upgrade": "warlords-oath+"
+    },
+    {
+      "id": "wildfire",
+      "name": "Wildfire",
+      "rarity": "rare",
+      "upgrade": "wildfire+"
+    },
+    {
+      "id": "double-down",
+      "name": "Double Down",
+      "rarity": "rare",
+      "upgrade": "double-down+"
+    },
+    {
+      "id": "cruel-streak",
+      "name": "Cruel Streak",
+      "rarity": "rare",
+      "upgrade": "cruel-streak+"
+    },
+    {
+      "id": "crippling-blow",
+      "name": "Crippling Blow",
+      "rarity": "rare",
+      "upgrade": "crippling-blow+"
+    },
+    {
+      "id": "bloodfeast",
+      "name": "Bloodfeast",
+      "rarity": "rare",
+      "upgrade": "bloodfeast+"
+    },
+    {
+      "id": "raised-hell",
+      "name": "Raised Hell",
+      "rarity": "rare",
+      "upgrade": "raised-hell+"
+    },
+    {
+      "id": "unforgiving-drill",
+      "name": "Unforgiving Drill",
+      "rarity": "rare",
+      "upgrade": "unforgiving-drill+"
+    },
+    {
+      "id": "stone-fury",
+      "name": "Stone Fury",
+      "rarity": "rare",
+      "upgrade": "stone-fury+"
+    },
+    {
+      "id": "giant-rock",
+      "name": "Giant Rock",
+      "rarity": "common"
+    },
+    {
+      "id": "sacrificial-guard",
+      "name": "Sacrificial Guard",
+      "rarity": "common",
+      "upgrade": "sacrificial-guard+"
+    },
+    {
+      "id": "scorching-blow",
+      "name": "Scorching Blow",
+      "rarity": "common",
+      "upgrade": "scorching-blow+"
+    },
+    {
+      "id": "searing-fist",
+      "name": "Searing Fist",
+      "rarity": "common",
+      "upgrade": "searing-fist+"
+    },
+    {
+      "id": "ram-home",
+      "name": "Ram Home",
+      "rarity": "common",
+      "upgrade": "ram-home+"
+    },
+    {
+      "id": "wild-gamble",
+      "name": "Wild Gamble",
+      "rarity": "common",
+      "upgrade": "wild-gamble+"
+    },
+    {
+      "id": "smoldering-blow",
+      "name": "Smoldering Blow",
+      "rarity": "uncommon",
+      "upgrade": "smoldering-blow+"
+    },
+    {
+      "id": "grim-focus",
+      "name": "Grim Focus",
+      "rarity": "uncommon",
+      "upgrade": "grim-focus+"
+    },
+    {
+      "id": "numbing-rite",
+      "name": "Numbing Rite",
+      "rarity": "uncommon",
+      "upgrade": "numbing-rite+"
+    },
+    {
+      "id": "borrowed-blade",
+      "name": "Borrowed Blade",
+      "rarity": "uncommon",
+      "upgrade": "borrowed-blade+"
+    },
+    {
+      "id": "bitter-breath",
+      "name": "Bitter Breath",
+      "rarity": "uncommon",
+      "upgrade": "bitter-breath+"
+    },
+    {
+      "id": "war-drums",
+      "name": "War Drums",
+      "rarity": "uncommon",
+      "upgrade": "war-drums+"
+    },
+    {
+      "id": "brace-for-battle",
+      "name": "Brace for Battle",
+      "rarity": "uncommon",
+      "upgrade": "brace-for-battle+"
+    },
+    {
+      "id": "ritual-of-ash",
+      "name": "Ritual of Ash",
+      "rarity": "uncommon",
+      "upgrade": "ritual-of-ash+"
+    },
+    {
+      "id": "flailing-blows",
+      "name": "Flailing Blows",
+      "rarity": "rare",
+      "upgrade": "flailing-blows+"
+    },
+    {
+      "id": "rite-of-recall",
+      "name": "Rite of Recall",
+      "rarity": "rare",
+      "upgrade": "rite-of-recall+"
+    },
+    {
+      "id": "unholy-pact",
+      "name": "Unholy Pact",
+      "rarity": "rare",
+      "upgrade": "unholy-pact+"
+    },
+    {
+      "id": "burn-it-all",
+      "name": "Burn It All",
+      "rarity": "rare",
+      "upgrade": "burn-it-all+"
+    },
+    {
+      "id": "forsake",
+      "name": "Forsake",
+      "rarity": "rare",
+      "upgrade": "forsake+"
+    },
+    {
+      "id": "unravel",
+      "name": "Unravel",
+      "rarity": "rare",
+      "upgrade": "unravel+"
+    },
+    {
+      "id": "fan-the-flames",
+      "name": "Fan the Flames",
+      "rarity": "rare",
+      "upgrade": "fan-the-flames+"
+    },
+    {
+      "id": "howl-of-the-fallen",
+      "name": "Howl of the Fallen",
+      "rarity": "uncommon",
+      "upgrade": "howl-of-the-fallen+"
+    },
+    {
+      "id": "ashen-reckoning",
+      "name": "Ashen Reckoning",
+      "rarity": "rare",
+      "upgrade": "ashen-reckoning+"
+    },
+    {
+      "id": "draw-blood",
+      "name": "Draw Blood",
+      "rarity": "common",
+      "upgrade": "draw-blood+"
+    },
+    {
+      "id": "blood-plate",
+      "name": "Blood Plate",
+      "rarity": "common",
+      "upgrade": "blood-plate+"
+    },
+    {
+      "id": "breach",
+      "name": "Breach",
+      "rarity": "common",
+      "upgrade": "breach+"
+    },
+    {
+      "id": "reckless-smite",
+      "name": "Reckless Smite",
+      "rarity": "uncommon",
+      "upgrade": "reckless-smite+"
+    },
+    {
+      "id": "scar-over",
+      "name": "Scar Over",
+      "rarity": "uncommon",
+      "upgrade": "scar-over+"
+    },
+    {
+      "id": "blood-fire",
+      "name": "Blood Fire",
+      "rarity": "uncommon",
+      "upgrade": "blood-fire+"
+    },
+    {
+      "id": "spiteful-jab",
+      "name": "Spiteful Jab",
+      "rarity": "uncommon",
+      "upgrade": "spiteful-jab+"
+    },
+    {
+      "id": "crimson-offering",
+      "name": "Crimson Offering",
+      "rarity": "rare",
+      "upgrade": "crimson-offering+"
+    },
+    {
+      "id": "bloodied-plate",
+      "name": "Bloodied Plate",
+      "rarity": "rare",
+      "upgrade": "bloodied-plate+"
+    },
+    {
+      "id": "rending-fury",
+      "name": "Rending Fury",
+      "rarity": "rare",
+      "upgrade": "rending-fury+"
+    },
+    {
+      "id": "rally",
+      "name": "Rally",
+      "rarity": "rare",
+      "upgrade": "rally+"
+    },
+    {
+      "id": "dawn-smite",
+      "name": "Dawn Smite",
+      "rarity": "common",
+      "upgrade": "dawn-smite+"
+    },
+    {
+      "id": "hot-temper",
+      "name": "Hot Temper",
+      "rarity": "common",
+      "upgrade": "hot-temper+"
+    },
+    {
+      "id": "pact-of-embers",
+      "name": "Pact of Embers",
+      "rarity": "uncommon",
+      "upgrade": "pact-of-embers+"
+    },
+    {
+      "id": "inner-furnace",
+      "name": "Inner Furnace",
+      "rarity": "rare",
+      "upgrade": "inner-furnace+"
+    },
+    {
+      "id": "stand-fast",
+      "name": "Stand Fast",
+      "rarity": "common",
+      "upgrade": "stand-fast+"
+    },
+    {
+      "id": "measured-strike",
+      "name": "Measured Strike",
+      "rarity": "common",
+      "upgrade": "measured-strike+"
+    },
+    {
+      "id": "blood-oath",
+      "name": "Blood Oath",
+      "rarity": "common",
+      "upgrade": "blood-oath+"
+    },
+    {
+      "id": "vow-kept",
+      "name": "Vow Kept",
+      "rarity": "uncommon",
+      "upgrade": "vow-kept+"
+    },
+    {
+      "id": "unyielding-line",
+      "name": "Unyielding Line",
+      "rarity": "uncommon",
+      "upgrade": "unyielding-line+"
+    },
+    {
+      "id": "cast-the-shield",
+      "name": "Cast the Shield",
+      "rarity": "uncommon",
+      "upgrade": "cast-the-shield+"
+    },
+    {
+      "id": "hardened-scars",
+      "name": "Hardened Scars",
+      "rarity": "uncommon",
+      "upgrade": "hardened-scars+"
+    },
+    {
+      "id": "scarred-hide",
+      "name": "Scarred Hide",
+      "rarity": "uncommon",
+      "upgrade": "scarred-hide+"
+    },
+    {
+      "id": "patient-wall",
+      "name": "Patient Wall",
+      "rarity": "rare",
+      "upgrade": "patient-wall+"
+    },
+    {
+      "id": "oath-unbroken",
+      "name": "Oath Unbroken",
+      "rarity": "rare",
+      "upgrade": "oath-unbroken+"
+    },
+    {
+      "id": "vow-fulfilled",
+      "name": "Vow Fulfilled",
+      "rarity": "rare",
+      "upgrade": "vow-fulfilled+"
+    },
+    {
+      "id": "gilded-bulwark",
+      "name": "Gilded Bulwark",
+      "rarity": "rare",
+      "upgrade": "gilded-bulwark+"
+    },
+    {
+      "id": "measured-conviction",
+      "name": "Measured Conviction",
+      "rarity": "uncommon",
+      "upgrade": "measured-conviction+"
+    },
+    {
+      "id": "deploy-drone",
+      "name": "Deploy Drone",
+      "rarity": "basic",
+      "upgrade": "deploy-drone+"
+    },
+    {
+      "id": "overclock",
+      "name": "Tune-Up",
+      "rarity": "basic",
+      "upgrade": "overclock+"
+    },
+    {
+      "id": "spot-weld",
+      "name": "Spot Weld",
+      "rarity": "basic",
+      "upgrade": "spot-weld+"
+    },
+    {
+      "id": "spare-parts",
+      "name": "Spare Parts",
+      "rarity": "common",
+      "upgrade": "spare-parts+"
+    },
+    {
+      "id": "formation-strike",
+      "name": "Formation Strike",
+      "rarity": "common",
+      "upgrade": "formation-strike+"
+    },
+    {
+      "id": "call-turret",
+      "name": "Call Turret",
+      "rarity": "uncommon",
+      "upgrade": "call-turret+"
+    },
+    {
+      "id": "recycle",
+      "name": "Strip for Parts",
+      "rarity": "common",
+      "upgrade": "recycle+"
+    },
+    {
+      "id": "overcharge-blast",
+      "name": "Overcharge Blast",
+      "rarity": "uncommon",
+      "upgrade": "overcharge-blast+"
+    },
+    {
+      "id": "legion",
+      "name": "Legion",
+      "rarity": "rare",
+      "upgrade": "legion+"
+    },
+    {
+      "id": "parts-bin",
+      "name": "Parts Bin",
+      "rarity": "uncommon",
+      "upgrade": "parts-bin+"
+    },
+    {
+      "id": "scrap-heap",
+      "name": "Scrap Heap",
+      "rarity": "uncommon",
+      "upgrade": "scrap-heap+"
+    },
+    {
+      "id": "swarm-tactics",
+      "name": "Swarm Tactics",
+      "rarity": "uncommon",
+      "upgrade": "swarm-tactics+"
+    },
+    {
+      "id": "detonate",
+      "name": "Detonate",
+      "rarity": "uncommon",
+      "upgrade": "detonate+"
+    },
+    {
+      "id": "hive-mind",
+      "name": "Hive Mind",
+      "rarity": "rare",
+      "upgrade": "hive-mind+"
+    },
+    {
+      "id": "mass-production",
+      "name": "Mass Production",
+      "rarity": "rare",
+      "upgrade": "mass-production+"
+    },
+    {
+      "id": "drone-carrier",
+      "name": "Drone Carrier",
+      "rarity": "rare",
+      "upgrade": "drone-carrier+"
+    },
+    {
+      "id": "breach-charge",
+      "name": "Breach Charge",
+      "rarity": "common",
+      "upgrade": "breach-charge+"
+    },
+    {
+      "id": "drone-ambush",
+      "name": "Drone Ambush",
+      "rarity": "uncommon",
+      "upgrade": "drone-ambush+"
+    },
+    {
+      "id": "deploy-spotter",
+      "name": "Deploy Spotter",
+      "rarity": "common",
+      "upgrade": "deploy-spotter+"
+    },
+    {
+      "id": "ping",
+      "name": "Ping",
+      "rarity": "common",
+      "upgrade": "ping+"
+    },
+    {
+      "id": "jumpstart",
+      "name": "Jumpstart",
+      "rarity": "common",
+      "upgrade": "jumpstart+"
+    },
+    {
+      "id": "countermeasure-grid",
+      "name": "Countermeasure Grid",
+      "rarity": "common",
+      "upgrade": "countermeasure-grid+"
+    },
+    {
+      "id": "assemble",
+      "name": "Assemble",
+      "rarity": "uncommon",
+      "upgrade": "assemble+"
+    },
+    {
+      "id": "double-time",
+      "name": "Double Time",
+      "rarity": "rare",
+      "upgrade": "double-time+"
+    },
+    {
+      "id": "overdrive",
+      "name": "Overdrive",
+      "rarity": "uncommon",
+      "upgrade": "overdrive+"
+    },
+    {
+      "id": "emp",
+      "name": "EMP",
+      "rarity": "rare",
+      "upgrade": "emp+"
+    },
+    {
+      "id": "perpetual-motion",
+      "name": "Perpetual Motion",
+      "rarity": "rare",
+      "upgrade": "perpetual-motion+"
+    },
+    {
+      "id": "relay-strike",
+      "name": "Relay Strike",
+      "rarity": "common",
+      "upgrade": "relay-strike+"
+    },
+    {
+      "id": "overwatch",
+      "name": "Overwatch",
+      "rarity": "uncommon",
+      "upgrade": "overwatch+"
+    },
+    {
+      "id": "grand-assembly",
+      "name": "Grand Assembly",
+      "rarity": "rare",
+      "upgrade": "grand-assembly+"
+    },
+    {
+      "id": "link-up",
+      "name": "Link Up",
+      "rarity": "uncommon",
+      "upgrade": "link-up+"
+    },
+    {
+      "id": "chain-reaction",
+      "name": "Chain Reaction",
+      "rarity": "rare",
+      "upgrade": "chain-reaction+"
+    },
+    {
+      "id": "command-chip",
+      "name": "Command Chip",
+      "rarity": "rare",
+      "upgrade": "command-chip+"
+    },
+    {
+      "id": "tandem-strike",
+      "name": "Tandem Strike",
+      "rarity": "common",
+      "upgrade": "tandem-strike+"
+    },
+    {
+      "id": "arc-relay",
+      "name": "Arc Relay",
+      "rarity": "uncommon",
+      "upgrade": "arc-relay+"
+    },
+    {
+      "id": "clockwork-snare",
+      "name": "Clockwork Trap",
+      "rarity": "uncommon",
+      "upgrade": "clockwork-snare+"
+    },
+    {
+      "id": "surge-protocol",
+      "name": "Surge Protocol",
+      "rarity": "uncommon",
+      "upgrade": "surge-protocol+"
+    },
+    {
+      "id": "pulse-pistol",
+      "name": "Pulse Pistol",
+      "rarity": "common",
+      "upgrade": "pulse-pistol+"
+    },
+    {
+      "id": "laser-grid",
+      "name": "Laser Grid",
+      "rarity": "uncommon",
+      "upgrade": "laser-grid+"
+    },
+    {
+      "id": "targeting-uplink",
+      "name": "Targeting Uplink",
+      "rarity": "uncommon",
+      "upgrade": "targeting-uplink+"
+    },
+    {
+      "id": "full-salvo",
+      "name": "Full Salvo",
+      "rarity": "rare",
+      "upgrade": "full-salvo+"
+    },
+    {
+      "id": "full-throttle",
+      "name": "Full Throttle",
+      "rarity": "rare",
+      "upgrade": "full-throttle+"
+    },
+    {
+      "id": "final-volley",
+      "name": "Final Volley",
+      "rarity": "rare",
+      "upgrade": "final-volley+"
+    },
+    {
+      "id": "critical-mass",
+      "name": "Critical Mass",
+      "rarity": "rare",
+      "upgrade": "critical-mass+"
+    },
+    {
+      "id": "repair-bot",
+      "name": "Repair Bot",
+      "rarity": "common",
+      "upgrade": "repair-bot+"
+    },
+    {
+      "id": "build-enforcer",
+      "name": "Build Enforcer",
+      "rarity": "common",
+      "upgrade": "build-enforcer+"
+    },
+    {
+      "id": "reinforce",
+      "name": "Reinforce",
+      "rarity": "uncommon",
+      "upgrade": "reinforce+"
+    },
+    {
+      "id": "upgrade-chip",
+      "name": "Upgrade Chip",
+      "rarity": "uncommon",
+      "upgrade": "upgrade-chip+"
+    },
+    {
+      "id": "siege-engine",
+      "name": "Siege Engine",
+      "rarity": "rare",
+      "upgrade": "siege-engine+"
+    },
+    {
+      "id": "war-engine",
+      "name": "War Engine",
+      "rarity": "rare",
+      "upgrade": "war-engine+"
+    },
+    {
+      "id": "reactor",
+      "name": "Reactor",
+      "rarity": "rare",
+      "upgrade": "reactor+"
+    },
+    {
+      "id": "overclock-core",
+      "name": "Overclock Core",
+      "rarity": "rare",
+      "upgrade": "overclock-core+"
+    },
+    {
+      "id": "weld-armor",
+      "name": "Weld Armor",
+      "rarity": "uncommon",
+      "upgrade": "weld-armor+"
+    },
+    {
+      "id": "heavy-plating",
+      "name": "Heavy Plating",
+      "rarity": "common",
+      "upgrade": "heavy-plating+"
+    },
+    {
+      "id": "retrofit",
+      "name": "Retrofit",
+      "rarity": "common",
+      "upgrade": "retrofit+"
+    },
+    {
+      "id": "bulwark-frame",
+      "name": "Bulwark Frame",
+      "rarity": "uncommon",
+      "upgrade": "bulwark-frame+"
+    },
+    {
+      "id": "reactor-meltdown",
+      "name": "Reactor Meltdown",
+      "rarity": "rare",
+      "upgrade": "reactor-meltdown+"
+    },
+    {
+      "id": "rebuild",
+      "name": "Rebuild",
+      "rarity": "uncommon",
+      "upgrade": "rebuild+"
+    },
+    {
+      "id": "heavy-industry",
+      "name": "Heavy Industry",
+      "rarity": "rare",
+      "upgrade": "heavy-industry+"
+    },
+    {
+      "id": "armor-piercer",
+      "name": "Armor Piercer",
+      "rarity": "common",
+      "upgrade": "armor-piercer+"
+    },
+    {
+      "id": "siege-protocol",
+      "name": "Siege Protocol",
+      "rarity": "uncommon",
+      "upgrade": "siege-protocol+"
+    },
+    {
+      "id": "titan-forge",
+      "name": "Titan Forge",
+      "rarity": "uncommon",
+      "upgrade": "titan-forge+"
+    },
+    {
+      "id": "backup-core",
+      "name": "Backup Core",
+      "rarity": "rare",
+      "upgrade": "backup-core+"
+    },
+    {
+      "id": "build-bulwark-walker",
+      "name": "Build Bulwark Walker",
+      "rarity": "uncommon",
+      "upgrade": "build-bulwark-walker+"
+    },
+    {
+      "id": "scrap-golem",
+      "name": "Scrap Golem",
+      "rarity": "uncommon",
+      "upgrade": "scrap-golem+"
+    },
+    {
+      "id": "dreadnought",
+      "name": "Dreadnought",
+      "rarity": "rare",
+      "upgrade": "dreadnought+"
+    },
+    {
+      "id": "welding-arc",
+      "name": "Arc Welder",
+      "rarity": "common",
+      "upgrade": "welding-arc+"
+    },
+    {
+      "id": "static-field",
+      "name": "Static Field",
+      "rarity": "common",
+      "upgrade": "static-field+"
+    },
+    {
+      "id": "plating",
+      "name": "Plating",
+      "rarity": "common",
+      "upgrade": "plating+"
+    },
+    {
+      "id": "ion-lance",
+      "name": "Ion Lance",
+      "rarity": "uncommon",
+      "upgrade": "ion-lance+"
+    },
+    {
+      "id": "railgun",
+      "name": "Railgun",
+      "rarity": "rare",
+      "upgrade": "railgun+"
+    },
+    {
+      "id": "particle-cannon",
+      "name": "Particle Cannon",
+      "rarity": "rare",
+      "upgrade": "particle-cannon+"
+    },
+    {
+      "id": "foundry-awakens",
+      "name": "The Foundry Awakens",
+      "rarity": "rare",
+      "upgrade": "foundry-awakens+"
+    },
+    {
+      "id": "overclocked-legion",
+      "name": "Overclocked Legion",
+      "rarity": "rare",
+      "upgrade": "overclocked-legion+"
+    },
+    {
+      "id": "overcharge",
+      "name": "Overcharge",
+      "rarity": "uncommon",
+      "upgrade": "overcharge+"
+    },
+    {
+      "id": "battery-pack",
+      "name": "Battery Pack",
+      "rarity": "common",
+      "upgrade": "battery-pack+"
+    },
+    {
+      "id": "schematics",
+      "name": "Schematics",
+      "rarity": "uncommon",
+      "upgrade": "schematics+"
+    },
+    {
+      "id": "build-generator",
+      "name": "Build Generator",
+      "rarity": "rare",
+      "upgrade": "build-generator+"
+    },
+    {
+      "id": "sync-pulse",
+      "name": "Sync Pulse",
+      "rarity": "common",
+      "upgrade": "sync-pulse+"
+    },
+    {
+      "id": "hardened-chassis",
+      "name": "Hardened Chassis",
+      "rarity": "common",
+      "upgrade": "hardened-chassis+"
+    },
+    {
+      "id": "factory-floor",
+      "name": "Factory Floor",
+      "rarity": "uncommon",
+      "upgrade": "factory-floor+"
+    },
+    {
+      "id": "blueprint",
+      "name": "Blueprint",
+      "rarity": "uncommon",
+      "upgrade": "blueprint+"
+    },
+    {
+      "id": "salvage-rights",
+      "name": "Salvage Rights",
+      "rarity": "uncommon",
+      "upgrade": "salvage-rights+"
+    },
+    {
+      "id": "scrapyard-king",
+      "name": "Scrapyard King",
+      "rarity": "uncommon",
+      "upgrade": "scrapyard-king+"
+    },
+    {
+      "id": "echo-command",
+      "name": "Echo Command",
+      "rarity": "uncommon",
+      "upgrade": "echo-command+"
+    },
+    {
+      "id": "resonant-pulse",
+      "name": "Resonant Pulse",
+      "rarity": "uncommon",
+      "upgrade": "resonant-pulse+"
+    },
+    {
+      "id": "self-repair",
+      "name": "Self-Mending",
+      "rarity": "uncommon",
+      "upgrade": "self-repair+"
+    },
+    {
+      "id": "swarm-surge",
+      "name": "Swarm Surge",
+      "rarity": "rare",
+      "upgrade": "swarm-surge+"
+    },
+    {
+      "id": "patch-job",
+      "name": "Patch Job",
+      "rarity": "uncommon",
+      "upgrade": "patch-job+"
+    },
+    {
+      "id": "relay-network",
+      "name": "Relay Network",
+      "rarity": "uncommon",
+      "upgrade": "relay-network+"
+    },
+    {
+      "id": "crankshaft",
+      "name": "Crankshaft",
+      "rarity": "common",
+      "upgrade": "crankshaft+"
+    },
+    {
+      "id": "reinforced-frame",
+      "name": "Reinforced Frame",
+      "rarity": "common",
+      "upgrade": "reinforced-frame+"
+    },
+    {
+      "id": "heavy-hitter",
+      "name": "Heavy Hitter",
+      "rarity": "rare",
+      "upgrade": "heavy-hitter+"
+    },
+    {
+      "id": "weapon-bench",
+      "name": "Weapon Bench",
+      "rarity": "uncommon",
+      "upgrade": "weapon-bench+"
+    },
+    {
+      "id": "rotary-cannon",
+      "name": "Rotary Cannon",
+      "rarity": "uncommon",
+      "upgrade": "rotary-cannon+"
+    },
+    {
+      "id": "savage-bite",
+      "name": "Savage Bite",
+      "rarity": "basic",
+      "upgrade": "savage-bite+"
+    },
+    {
+      "id": "blood-frenzy",
+      "name": "Blood Frenzy",
+      "rarity": "basic",
+      "upgrade": "blood-frenzy+"
+    },
+    {
+      "id": "rend",
+      "name": "Rend",
+      "rarity": "basic",
+      "upgrade": "rend+"
+    },
+    {
+      "id": "twin-fang",
+      "name": "Twin Fang",
+      "rarity": "common",
+      "upgrade": "twin-fang+"
+    },
+    {
+      "id": "feral-instinct",
+      "name": "Feral Instinct",
+      "rarity": "common",
+      "upgrade": "feral-instinct+"
+    },
+    {
+      "id": "pain-ward",
+      "name": "Pain Ward",
+      "rarity": "common",
+      "upgrade": "pain-ward+"
+    },
+    {
+      "id": "blood-tithe",
+      "name": "Blood Tithe",
+      "rarity": "rare",
+      "upgrade": "blood-tithe+"
+    },
+    {
+      "id": "crushing-blow",
+      "name": "Crushing Blow",
+      "rarity": "uncommon",
+      "upgrade": "crushing-blow+"
+    },
+    {
+      "id": "run-wild",
+      "name": "Run Wild",
+      "rarity": "uncommon",
+      "upgrade": "run-wild+"
+    },
+    {
+      "id": "ravage",
+      "name": "Ravage",
+      "rarity": "uncommon",
+      "upgrade": "ravage+"
+    },
+    {
+      "id": "the-hunger",
+      "name": "The Hunger",
+      "rarity": "uncommon",
+      "upgrade": "the-hunger+"
+    },
+    {
+      "id": "scavenge",
+      "name": "Rummage",
+      "rarity": "common",
+      "upgrade": "scavenge+"
+    },
+    {
+      "id": "pound",
+      "name": "Pound",
+      "rarity": "common",
+      "upgrade": "pound+"
+    },
+    {
+      "id": "scar-tissue",
+      "name": "Scar Tissue",
+      "rarity": "rare",
+      "upgrade": "scar-tissue+"
+    },
+    {
+      "id": "whirling-maul",
+      "name": "Whirling Maul",
+      "rarity": "uncommon",
+      "upgrade": "whirling-maul+"
+    },
+    {
+      "id": "reckless-blow",
+      "name": "Reckless Blow",
+      "rarity": "uncommon",
+      "upgrade": "reckless-blow+"
+    },
+    {
+      "id": "hamstring-slam",
+      "name": "Hamstring Slam",
+      "rarity": "uncommon",
+      "upgrade": "hamstring-slam+"
+    },
+    {
+      "id": "skullcrusher",
+      "name": "Skullcrusher",
+      "rarity": "rare",
+      "upgrade": "skullcrusher+"
+    },
+    {
+      "id": "scarred-warrior",
+      "name": "Scarred Warrior",
+      "rarity": "rare",
+      "upgrade": "scarred-warrior+"
+    },
+    {
+      "id": "pack-tactics",
+      "name": "Pack Tactics",
+      "rarity": "common",
+      "upgrade": "pack-tactics+"
+    },
+    {
+      "id": "thick-hide",
+      "name": "Thick Hide",
+      "rarity": "common",
+      "upgrade": "thick-hide+"
+    },
+    {
+      "id": "savage-command",
+      "name": "Savage Command",
+      "rarity": "uncommon",
+      "upgrade": "savage-command+"
+    },
+    {
+      "id": "pack-bond",
+      "name": "Pack Bond",
+      "rarity": "uncommon",
+      "upgrade": "pack-bond+"
+    },
+    {
+      "id": "alpha-call",
+      "name": "Alpha Call",
+      "rarity": "rare",
+      "upgrade": "alpha-call+"
+    },
+    {
+      "id": "unchained",
+      "name": "Unchained",
+      "rarity": "uncommon",
+      "upgrade": "unchained+"
+    },
+    {
+      "id": "den-mother",
+      "name": "Den Mother",
+      "rarity": "rare",
+      "upgrade": "den-mother+"
+    },
+    {
+      "id": "dire-wolf",
+      "name": "Dire Wolf",
+      "rarity": "rare",
+      "upgrade": "dire-wolf+"
+    },
+    {
+      "id": "summon-pup",
+      "name": "Summon Pup",
+      "rarity": "common",
+      "upgrade": "summon-pup+"
+    },
+    {
+      "id": "feeding-time",
+      "name": "Feeding Time",
+      "rarity": "uncommon",
+      "upgrade": "feeding-time+"
+    },
+    {
+      "id": "rally-the-pack",
+      "name": "Rally the Pack",
+      "rarity": "uncommon",
+      "upgrade": "rally-the-pack+"
+    },
+    {
+      "id": "trail-of-blood",
+      "name": "Trail of Blood",
+      "rarity": "common",
+      "upgrade": "trail-of-blood+"
+    },
+    {
+      "id": "pack-frenzy",
+      "name": "Pack Frenzy",
+      "rarity": "rare",
+      "upgrade": "pack-frenzy+"
+    },
+    {
+      "id": "wild-hunt",
+      "name": "Wild Hunt",
+      "rarity": "rare",
+      "upgrade": "wild-hunt+"
+    },
+    {
+      "id": "devour",
+      "name": "Devour",
+      "rarity": "uncommon",
+      "upgrade": "devour+"
+    },
+    {
+      "id": "devour-ally",
+      "name": "Devour Ally",
+      "rarity": "uncommon",
+      "upgrade": "devour-ally+"
+    },
+    {
+      "id": "fell-the-prey",
+      "name": "Fell the Prey",
+      "rarity": "uncommon",
+      "upgrade": "fell-the-prey+"
+    },
+    {
+      "id": "gnarltooth-trap",
+      "name": "Gnarltooth Trap",
+      "rarity": "uncommon",
+      "upgrade": "gnarltooth-trap+"
+    },
+    {
+      "id": "hunger-unleashed",
+      "name": "The Hunger Unleashed",
+      "rarity": "rare",
+      "upgrade": "hunger-unleashed+"
+    },
+    {
+      "id": "apex-maw",
+      "name": "Apex Frenzy",
+      "rarity": "rare",
+      "upgrade": "apex-maw+"
+    },
+    {
+      "id": "blood-pact",
+      "name": "Blood Pact",
+      "rarity": "rare",
+      "upgrade": "blood-pact+"
+    },
+    {
+      "id": "bone-offering",
+      "name": "Bone Offering",
+      "rarity": "uncommon",
+      "upgrade": "bone-offering+"
+    },
+    {
+      "id": "open-a-vein",
+      "name": "Open a Vein",
+      "rarity": "common",
+      "upgrade": "open-a-vein+"
+    },
+    {
+      "id": "bloodied-howl",
+      "name": "Bloodied Howl",
+      "rarity": "uncommon",
+      "upgrade": "bloodied-howl+"
+    },
+    {
+      "id": "frothing-rage",
+      "name": "Frothing Rage",
+      "rarity": "uncommon",
+      "upgrade": "frothing-rage+"
+    },
+    {
+      "id": "wounded-wrath",
+      "name": "Wounded Wrath",
+      "rarity": "common",
+      "upgrade": "wounded-wrath+"
+    },
+    {
+      "id": "death-or-glory",
+      "name": "Death or Glory",
+      "rarity": "rare",
+      "upgrade": "death-or-glory+"
+    },
+    {
+      "id": "bared-teeth",
+      "name": "Bared Teeth",
+      "rarity": "common",
+      "upgrade": "bared-teeth+"
+    },
+    {
+      "id": "lead-the-charge",
+      "name": "Lead the Charge",
+      "rarity": "common",
+      "upgrade": "lead-the-charge+"
+    },
+    {
+      "id": "blood-bond",
+      "name": "Blood Bond",
+      "rarity": "uncommon",
+      "upgrade": "blood-bond+"
+    },
+    {
+      "id": "litter",
+      "name": "Litter",
+      "rarity": "uncommon",
+      "upgrade": "litter+"
+    },
+    {
+      "id": "bone-collar",
+      "name": "Bone Collar",
+      "rarity": "uncommon",
+      "upgrade": "bone-collar+"
+    },
+    {
+      "id": "hunters-call",
+      "name": "Hunter's Call",
+      "rarity": "uncommon",
+      "upgrade": "hunters-call+"
+    },
+    {
+      "id": "throw-scraps",
+      "name": "Throw Scraps",
+      "rarity": "common",
+      "upgrade": "throw-scraps+"
+    },
+    {
+      "id": "gut-trap",
+      "name": "Gut Trap",
+      "rarity": "uncommon",
+      "upgrade": "gut-trap+"
+    },
+    {
+      "id": "bone-crack",
+      "name": "Bone Crack",
+      "rarity": "common",
+      "upgrade": "bone-crack+"
+    },
+    {
+      "id": "whet-the-fangs",
+      "name": "Whet the Fangs",
+      "rarity": "uncommon",
+      "upgrade": "whet-the-fangs+"
+    },
+    {
+      "id": "primal-feast",
+      "name": "Primal Feast",
+      "rarity": "common",
+      "upgrade": "primal-feast+"
+    },
+    {
+      "id": "bloodsong",
+      "name": "Bloodsong",
+      "rarity": "rare",
+      "upgrade": "bloodsong+"
+    },
+    {
+      "id": "slip-the-leash",
+      "name": "Slip the Leash",
+      "rarity": "rare",
+      "upgrade": "slip-the-leash+"
+    },
+    {
+      "id": "rush-in",
+      "name": "Rush In",
+      "rarity": "common",
+      "upgrade": "rush-in+"
+    },
+    {
+      "id": "heart-pound",
+      "name": "Pounding Heart",
+      "rarity": "common",
+      "upgrade": "heart-pound+"
+    },
+    {
+      "id": "wild-swings",
+      "name": "Wild Swings",
+      "rarity": "common",
+      "upgrade": "wild-swings+"
+    },
+    {
+      "id": "shake-loose",
+      "name": "Shake Loose",
+      "rarity": "common",
+      "upgrade": "shake-loose+"
+    },
+    {
+      "id": "frenzied-gulp",
+      "name": "Frenzied Gulp",
+      "rarity": "uncommon",
+      "upgrade": "frenzied-gulp+"
+    },
+    {
+      "id": "adrenal-surge",
+      "name": "Adrenal Surge",
+      "rarity": "uncommon",
+      "upgrade": "adrenal-surge+"
+    },
+    {
+      "id": "blur-of-claws",
+      "name": "Blur of Claws",
+      "rarity": "uncommon",
+      "upgrade": "blur-of-claws+"
+    },
+    {
+      "id": "battle-rhythm",
+      "name": "Battle Rhythm",
+      "rarity": "uncommon",
+      "upgrade": "battle-rhythm+"
+    },
+    {
+      "id": "reckless-abandon",
+      "name": "Reckless Abandon",
+      "rarity": "uncommon",
+      "upgrade": "reckless-abandon+"
+    },
+    {
+      "id": "burst-of-speed",
+      "name": "Burst of Speed",
+      "rarity": "uncommon",
+      "upgrade": "burst-of-speed+"
+    },
+    {
+      "id": "rip-and-tear",
+      "name": "Rip and Tear",
+      "rarity": "uncommon",
+      "upgrade": "rip-and-tear+"
+    },
+    {
+      "id": "berserk-tempo",
+      "name": "Berserk Tempo",
+      "rarity": "rare",
+      "upgrade": "berserk-tempo+"
+    },
+    {
+      "id": "red-frenzy",
+      "name": "Red Frenzy",
+      "rarity": "rare",
+      "upgrade": "red-frenzy+"
+    },
+    {
+      "id": "bloodstorm",
+      "name": "Bloodstorm",
+      "rarity": "rare",
+      "upgrade": "bloodstorm+"
+    },
+    {
+      "id": "rising-howl",
+      "name": "Rising Howl",
+      "rarity": "rare",
+      "upgrade": "rising-howl+"
+    },
+    {
+      "id": "killing-spree",
+      "name": "Killing Spree",
+      "rarity": "rare",
+      "upgrade": "killing-spree+"
+    },
+    {
+      "id": "pack-leader",
+      "name": "Pack Leader",
+      "rarity": "uncommon",
+      "upgrade": "pack-leader+"
+    },
+    {
+      "id": "tear-loose",
+      "name": "Tear Loose",
+      "rarity": "uncommon",
+      "upgrade": "tear-loose+"
+    },
+    {
+      "id": "ancient-fury",
+      "name": "Ancient Fury",
+      "rarity": "rare",
+      "upgrade": "ancient-fury+"
+    },
+    {
+      "id": "hunger-unbound",
+      "name": "Hunger Unbound",
+      "rarity": "rare",
+      "upgrade": "hunger-unbound+"
+    },
+    {
+      "id": "bear-trap",
+      "name": "Bear Trap",
+      "rarity": "common",
+      "upgrade": "bear-trap+"
+    },
+    {
+      "id": "snare-line",
+      "name": "Snare Line",
+      "rarity": "common",
+      "upgrade": "snare-line+"
+    },
+    {
+      "id": "deadfall",
+      "name": "Deadfall",
+      "rarity": "uncommon",
+      "upgrade": "deadfall+"
+    },
+    {
+      "id": "baited-snare",
+      "name": "Baited Snare",
+      "rarity": "uncommon",
+      "upgrade": "baited-snare+"
+    },
+    {
+      "id": "hunting-grounds",
+      "name": "Hunting Grounds",
+      "rarity": "uncommon",
+      "upgrade": "hunting-grounds+"
+    },
+    {
+      "id": "single-out",
+      "name": "Single Out",
+      "rarity": "common",
+      "upgrade": "single-out+"
+    },
+    {
+      "id": "run-it-down",
+      "name": "Run It Down",
+      "rarity": "uncommon",
+      "upgrade": "run-it-down+"
+    },
+    {
+      "id": "veil-strike",
+      "name": "Veil Strike",
+      "rarity": "basic",
+      "upgrade": "veil-strike+"
+    },
+    {
+      "id": "set-the-web",
+      "name": "Set the Web",
+      "rarity": "basic",
+      "upgrade": "set-the-web+"
+    },
+    {
+      "id": "pick-a-card",
+      "name": "Pick a Card",
+      "rarity": "basic",
+      "upgrade": "pick-a-card+"
+    },
+    {
+      "id": "pinprick-trap",
+      "name": "Pinprick Trap",
+      "rarity": "basic",
+      "upgrade": "pinprick-trap+"
+    },
+    {
+      "id": "trip-line",
+      "name": "Trip Line",
+      "rarity": "common",
+      "upgrade": "trip-line+"
+    },
+    {
+      "id": "hollow-snare",
+      "name": "Hollow Trap",
+      "rarity": "common",
+      "upgrade": "hollow-snare+"
+    },
+    {
+      "id": "snare-kit",
+      "name": "Trap Kit",
+      "rarity": "common",
+      "upgrade": "snare-kit+"
+    },
+    {
+      "id": "mirror-veil",
+      "name": "Mirror Veil",
+      "rarity": "uncommon",
+      "upgrade": "mirror-veil+"
+    },
+    {
+      "id": "time-bomb",
+      "name": "Time Bomb",
+      "rarity": "rare",
+      "upgrade": "time-bomb+"
+    },
+    {
+      "id": "spring-loaded",
+      "name": "Spring-Loaded",
+      "rarity": "common",
+      "upgrade": "spring-loaded+"
+    },
+    {
+      "id": "master-trapper",
+      "name": "Master Trapper",
+      "rarity": "rare",
+      "upgrade": "master-trapper+"
+    },
+    {
+      "id": "bait-and-switch",
+      "name": "Bait and Switch",
+      "rarity": "rare",
+      "upgrade": "bait-and-switch+"
+    },
+    {
+      "id": "silencing-snare",
+      "name": "Silencing Trap",
+      "rarity": "rare",
+      "upgrade": "silencing-snare+"
+    },
+    {
+      "id": "tripwire-garrote",
+      "name": "Tripwire Garrote",
+      "rarity": "uncommon",
+      "upgrade": "tripwire-garrote+"
+    },
+    {
+      "id": "snare-net",
+      "name": "Trap Net",
+      "rarity": "uncommon",
+      "upgrade": "snare-net+"
+    },
+    {
+      "id": "trappers-dividend",
+      "name": "Trapper's Dividend",
+      "rarity": "rare",
+      "upgrade": "trappers-dividend+"
+    },
+    {
+      "id": "spring-the-trap",
+      "name": "Spring the Trap",
+      "rarity": "rare",
+      "upgrade": "spring-the-trap+"
+    },
+    {
+      "id": "mark-prey",
+      "name": "Mark Prey",
+      "rarity": "common",
+      "upgrade": "mark-prey+"
+    },
+    {
+      "id": "unmask",
+      "name": "Unmask",
+      "rarity": "common",
+      "upgrade": "unmask+"
+    },
+    {
+      "id": "exploit-weakness",
+      "name": "Exploit Weakness",
+      "rarity": "common",
+      "upgrade": "exploit-weakness+"
+    },
+    {
+      "id": "veil-dance",
+      "name": "Veil Dance",
+      "rarity": "common",
+      "upgrade": "veil-dance+"
+    },
+    {
+      "id": "death-mark",
+      "name": "Death Mark",
+      "rarity": "uncommon",
+      "upgrade": "death-mark+"
+    },
+    {
+      "id": "shadow-volley",
+      "name": "Shadow Volley",
+      "rarity": "uncommon",
+      "upgrade": "shadow-volley+"
+    },
+    {
+      "id": "coup-de-grace",
+      "name": "Coup de Grace",
+      "rarity": "rare",
+      "upgrade": "coup-de-grace+"
+    },
+    {
+      "id": "patient-hunter",
+      "name": "Patient Hunter",
+      "rarity": "rare",
+      "upgrade": "patient-hunter+"
+    },
+    {
+      "id": "cheap-shot",
+      "name": "Cheap Shot",
+      "rarity": "common",
+      "upgrade": "cheap-shot+"
+    },
+    {
+      "id": "stalk",
+      "name": "Stalk",
+      "rarity": "uncommon",
+      "upgrade": "stalk+"
+    },
+    {
+      "id": "strip-the-guard",
+      "name": "Strip the Guard",
+      "rarity": "uncommon",
+      "upgrade": "strip-the-guard+"
+    },
+    {
+      "id": "smoke-bomb",
+      "name": "Smoke Bomb",
+      "rarity": "uncommon",
+      "upgrade": "smoke-bomb+"
+    },
+    {
+      "id": "opening-strike",
+      "name": "Opening Strike",
+      "rarity": "rare",
+      "upgrade": "opening-strike+"
+    },
+    {
+      "id": "hunters-eye",
+      "name": "Hunter's Eye",
+      "rarity": "rare",
+      "upgrade": "hunters-eye+"
+    },
+    {
+      "id": "blindside",
+      "name": "Blindside",
+      "rarity": "rare",
+      "upgrade": "blindside+"
+    },
+    {
+      "id": "cold-read",
+      "name": "Cold Read",
+      "rarity": "common",
+      "upgrade": "cold-read+"
+    },
+    {
+      "id": "patient-blade",
+      "name": "Patient Blade",
+      "rarity": "common",
+      "upgrade": "patient-blade+"
+    },
+    {
+      "id": "shadow-cloak",
+      "name": "Shadow Cloak",
+      "rarity": "common",
+      "upgrade": "shadow-cloak+"
+    },
+    {
+      "id": "roll-with-it",
+      "name": "Weigh the Odds",
+      "rarity": "common",
+      "upgrade": "roll-with-it+"
+    },
+    {
+      "id": "discarded-hand",
+      "name": "Hidden Hand",
+      "rarity": "common",
+      "upgrade": "discarded-hand+"
+    },
+    {
+      "id": "flourish",
+      "name": "Flourish",
+      "rarity": "common",
+      "upgrade": "flourish+"
+    },
+    {
+      "id": "shadow-step",
+      "name": "Fade Back",
+      "rarity": "uncommon",
+      "upgrade": "shadow-step+"
+    },
+    {
+      "id": "long-con",
+      "name": "Long Con",
+      "rarity": "uncommon",
+      "upgrade": "long-con+"
+    },
+    {
+      "id": "card-fan",
+      "name": "Card Fan",
+      "rarity": "uncommon",
+      "upgrade": "card-fan+"
+    },
+    {
+      "id": "card-sharp",
+      "name": "Card Sharp",
+      "rarity": "uncommon",
+      "upgrade": "card-sharp+"
+    },
+    {
+      "id": "cut-the-deck",
+      "name": "Cut the Deck",
+      "rarity": "uncommon",
+      "upgrade": "cut-the-deck+"
+    },
+    {
+      "id": "queen-of-hearts",
+      "name": "Queen of Hearts",
+      "rarity": "uncommon",
+      "upgrade": "queen-of-hearts+"
+    },
+    {
+      "id": "ace-of-clubs",
+      "name": "Ace of Clubs",
+      "rarity": "uncommon",
+      "upgrade": "ace-of-clubs+"
+    },
+    {
+      "id": "wild-card",
+      "name": "Wild Card",
+      "rarity": "uncommon",
+      "upgrade": "wild-card+"
+    },
+    {
+      "id": "second-act",
+      "name": "Second Act",
+      "rarity": "rare",
+      "upgrade": "second-act+"
+    },
+    {
+      "id": "pickpocket-master",
+      "name": "Pickpocket Master",
+      "rarity": "rare",
+      "upgrade": "pickpocket-master+"
+    },
+    {
+      "id": "royal-flourish",
+      "name": "Royal Flourish",
+      "rarity": "rare",
+      "upgrade": "royal-flourish+"
+    },
+    {
+      "id": "showstopper",
+      "name": "Showstopper",
+      "rarity": "rare",
+      "upgrade": "showstopper+"
+    },
+    {
+      "id": "the-joker",
+      "name": "The Joker",
+      "rarity": "rare",
+      "upgrade": "the-joker+"
+    },
+    {
+      "id": "the-whole-deck",
+      "name": "The Whole Deck",
+      "rarity": "rare",
+      "upgrade": "the-whole-deck+"
+    },
+    {
+      "id": "masquerade",
+      "name": "Masquerade",
+      "rarity": "rare",
+      "upgrade": "masquerade+"
+    },
+    {
+      "id": "saved-breath",
+      "name": "Saved Breath",
+      "rarity": "uncommon",
+      "upgrade": "saved-breath+"
+    },
+    {
+      "id": "long-game",
+      "name": "The Long Game",
+      "rarity": "uncommon",
+      "upgrade": "long-game+"
+    },
+    {
+      "id": "frozen-moment",
+      "name": "Frozen Moment",
+      "rarity": "uncommon",
+      "upgrade": "frozen-moment+"
+    },
+    {
+      "id": "deep-pockets",
+      "name": "Deep Pockets",
+      "rarity": "rare",
+      "upgrade": "deep-pockets+"
+    },
+    {
+      "id": "the-perfect-trap",
+      "name": "The Perfect Trap",
+      "rarity": "rare",
+      "upgrade": "the-perfect-trap+"
+    },
+    {
+      "id": "gleeful-trapsmith",
+      "name": "Gleeful Trapsmith",
+      "rarity": "uncommon",
+      "upgrade": "gleeful-trapsmith+"
+    },
+    {
+      "id": "fang-pit",
+      "name": "Fang Pit",
+      "rarity": "common",
+      "upgrade": "fang-pit+"
+    },
+    {
+      "id": "false-floor",
+      "name": "False Floor",
+      "rarity": "common",
+      "upgrade": "false-floor+"
+    },
+    {
+      "id": "metronome-trap",
+      "name": "Metronome Trap",
+      "rarity": "uncommon",
+      "upgrade": "metronome-trap+"
+    },
+    {
+      "id": "trapline-rider",
+      "name": "Trapline Rider",
+      "rarity": "uncommon",
+      "upgrade": "trapline-rider+"
+    },
+    {
+      "id": "grim-collection",
+      "name": "Grim Collection",
+      "rarity": "uncommon",
+      "upgrade": "grim-collection+"
+    },
+    {
+      "id": "trap-door",
+      "name": "Trap Door",
+      "rarity": "uncommon",
+      "upgrade": "trap-door+"
+    },
+    {
+      "id": "dread-gaze",
+      "name": "Dread Gaze",
+      "rarity": "uncommon",
+      "upgrade": "dread-gaze+"
+    },
+    {
+      "id": "slit-and-run",
+      "name": "Slit and Run",
+      "rarity": "common",
+      "upgrade": "slit-and-run+"
+    },
+    {
+      "id": "culling",
+      "name": "Culling",
+      "rarity": "rare",
+      "upgrade": "culling+"
+    },
+    {
+      "id": "cripple",
+      "name": "Cripple",
+      "rarity": "uncommon",
+      "upgrade": "cripple+"
+    },
+    {
+      "id": "spotlight",
+      "name": "Spotlight",
+      "rarity": "uncommon",
+      "upgrade": "spotlight+"
+    },
+    {
+      "id": "low-blow",
+      "name": "Low Blow",
+      "rarity": "common",
+      "upgrade": "low-blow+"
+    },
+    {
+      "id": "tear-the-veil",
+      "name": "Tear the Veil",
+      "rarity": "common",
+      "upgrade": "tear-the-veil+"
+    },
+    {
+      "id": "step-aside",
+      "name": "Step Aside",
+      "rarity": "uncommon",
+      "upgrade": "step-aside+"
+    },
+    {
+      "id": "between-worlds",
+      "name": "Between Worlds",
+      "rarity": "rare",
+      "upgrade": "between-worlds+"
+    },
+    {
+      "id": "perfect-alibi",
+      "name": "Perfect Alibi",
+      "rarity": "rare",
+      "upgrade": "perfect-alibi+"
+    },
+    {
+      "id": "sleight-of-hand",
+      "name": "Sleight of Hand",
+      "rarity": "uncommon",
+      "upgrade": "sleight-of-hand+"
+    },
+    {
+      "id": "mask-of-faces",
+      "name": "Mask of Faces",
+      "rarity": "uncommon",
+      "upgrade": "mask-of-faces+"
+    },
+    {
+      "id": "poison-pantry",
+      "name": "Poison Pantry",
+      "rarity": "uncommon",
+      "upgrade": "poison-pantry+"
+    },
+    {
+      "id": "compound-fear",
+      "name": "Compound Fear",
+      "rarity": "rare",
+      "upgrade": "compound-fear+"
+    },
+    {
+      "id": "hamstring",
+      "name": "Hamstring",
+      "rarity": "uncommon",
+      "upgrade": "hamstring+"
+    },
+    {
+      "id": "trick-of-the-light",
+      "name": "Trick of the Light",
+      "rarity": "uncommon",
+      "upgrade": "trick-of-the-light+"
+    },
+    {
+      "id": "stolen-moment",
+      "name": "Stolen Moment",
+      "rarity": "uncommon",
+      "upgrade": "stolen-moment+"
+    },
+    {
+      "id": "curtain-call",
+      "name": "Curtain Call",
+      "rarity": "uncommon",
+      "upgrade": "curtain-call+"
+    },
+    {
+      "id": "misdirection",
+      "name": "Patient Guard",
+      "rarity": "rare",
+      "upgrade": "misdirection+"
+    },
+    {
+      "id": "hobbling-jab",
+      "name": "Hobbling Jab",
+      "rarity": "basic",
+      "upgrade": "hobbling-jab+"
+    },
+    {
+      "id": "duck-and-weave",
+      "name": "Duck and Weave",
+      "rarity": "basic",
+      "upgrade": "duck-and-weave+"
+    },
+    {
+      "id": "fang-and-claw",
+      "name": "Fang and Claw",
+      "rarity": "basic",
+      "upgrade": "fang-and-claw+"
+    },
+    {
+      "id": "pocket-blades",
+      "name": "Pocket Blades",
+      "rarity": "basic",
+      "upgrade": "pocket-blades+"
+    },
+    {
+      "id": "sleeve-knife",
+      "name": "Dagger",
+      "rarity": "common",
+      "upgrade": "sleeve-knife+"
+    },
+    {
+      "id": "inked-knife",
+      "name": "Inked Dagger",
+      "rarity": "common"
+    },
+    {
+      "id": "knife-juggle",
+      "name": "Knife Juggle",
+      "rarity": "common",
+      "upgrade": "knife-juggle+"
+    },
+    {
+      "id": "shroud-and-shank",
+      "name": "Shroud and Shank",
+      "rarity": "common",
+      "upgrade": "shroud-and-shank+"
+    },
+    {
+      "id": "feint-strike",
+      "name": "Feint Strike",
+      "rarity": "common",
+      "upgrade": "feint-strike+"
+    },
+    {
+      "id": "blade-flurry",
+      "name": "Blade Flurry",
+      "rarity": "common",
+      "upgrade": "blade-flurry+"
+    },
+    {
+      "id": "quick-slash",
+      "name": "Quick Slash",
+      "rarity": "common",
+      "upgrade": "quick-slash+"
+    },
+    {
+      "id": "dirty-hit",
+      "name": "Dirty Hit",
+      "rarity": "common",
+      "upgrade": "dirty-hit+"
+    },
+    {
+      "id": "stalkers-lunge",
+      "name": "Stalker's Lunge",
+      "rarity": "common",
+      "upgrade": "stalkers-lunge+"
+    },
+    {
+      "id": "glancing-knives",
+      "name": "Glancing Knives",
+      "rarity": "common",
+      "upgrade": "glancing-knives+"
+    },
+    {
+      "id": "cartwheel-cut",
+      "name": "Cartwheel Cut",
+      "rarity": "common",
+      "upgrade": "cartwheel-cut+"
+    },
+    {
+      "id": "whetted-edge",
+      "name": "Whetted Edge",
+      "rarity": "uncommon",
+      "upgrade": "whetted-edge+"
+    },
+    {
+      "id": "knife-in-the-back",
+      "name": "Knife in the Back",
+      "rarity": "uncommon",
+      "upgrade": "knife-in-the-back+"
+    },
+    {
+      "id": "sleeve-drop",
+      "name": "Sleeve Drop",
+      "rarity": "uncommon",
+      "upgrade": "sleeve-drop+"
+    },
+    {
+      "id": "bottomless-sleeves",
+      "name": "Bottomless Sleeves",
+      "rarity": "uncommon",
+      "upgrade": "bottomless-sleeves+"
+    },
+    {
+      "id": "ghost-knives",
+      "name": "Ghost Knives",
+      "rarity": "uncommon",
+      "upgrade": "ghost-knives+"
+    },
+    {
+      "id": "spare-blades",
+      "name": "Spare Blades",
+      "rarity": "uncommon",
+      "upgrade": "spare-blades+"
+    },
+    {
+      "id": "rippling-cut",
+      "name": "Rippling Cut",
+      "rarity": "uncommon",
+      "upgrade": "rippling-cut+"
+    },
+    {
+      "id": "darting-strike",
+      "name": "Darting Strike",
+      "rarity": "uncommon",
+      "upgrade": "darting-strike+"
+    },
+    {
+      "id": "final-flourish",
+      "name": "Final Flourish",
+      "rarity": "uncommon",
+      "upgrade": "final-flourish+"
+    },
+    {
+      "id": "run-through",
+      "name": "Run Through",
+      "rarity": "uncommon",
+      "upgrade": "run-through+"
+    },
+    {
+      "id": "spring-attack",
+      "name": "Spring Attack",
+      "rarity": "uncommon",
+      "upgrade": "spring-attack+"
+    },
+    {
+      "id": "nerve-strike",
+      "name": "Nerve Strike",
+      "rarity": "uncommon",
+      "upgrade": "nerve-strike+"
+    },
+    {
+      "id": "clean-cut",
+      "name": "Clean Cut",
+      "rarity": "uncommon",
+      "upgrade": "clean-cut+"
+    },
+    {
+      "id": "killing-stroke",
+      "name": "Killing Stroke",
+      "rarity": "rare",
+      "upgrade": "killing-stroke+"
+    },
+    {
+      "id": "inked-blades",
+      "name": "Inked Blades",
+      "rarity": "rare",
+      "upgrade": "inked-blades+"
+    },
+    {
+      "id": "wide-arc",
+      "name": "Wide Arc",
+      "rarity": "rare",
+      "upgrade": "wide-arc+"
+    },
+    {
+      "id": "recall-the-blades",
+      "name": "Recall the Blades",
+      "rarity": "rare",
+      "upgrade": "recall-the-blades+"
+    },
+    {
+      "id": "serpents-coil",
+      "name": "Serpent's Coil",
+      "rarity": "rare",
+      "upgrade": "serpents-coil+"
+    },
+    {
+      "id": "into-the-shadows",
+      "name": "Into the Shadows",
+      "rarity": "rare",
+      "upgrade": "into-the-shadows+"
+    },
+    {
+      "id": "steel-monsoon",
+      "name": "Steel Monsoon",
+      "rarity": "rare",
+      "upgrade": "steel-monsoon+"
+    },
+    {
+      "id": "marked-for-death",
+      "name": "Marked for Death",
+      "rarity": "rare",
+      "upgrade": "marked-for-death+"
+    },
+    {
+      "id": "final-bow",
+      "name": "Final Bow",
+      "rarity": "rare",
+      "upgrade": "final-bow+"
+    },
+    {
+      "id": "open-vein",
+      "name": "Open Vein",
+      "rarity": "common",
+      "upgrade": "open-vein+"
+    },
+    {
+      "id": "barbed-stab",
+      "name": "Barbed Stab",
+      "rarity": "common",
+      "upgrade": "barbed-stab+"
+    },
+    {
+      "id": "vipers-kiss",
+      "name": "Viper's Kiss",
+      "rarity": "common",
+      "upgrade": "vipers-kiss+"
+    },
+    {
+      "id": "chilling-shriek",
+      "name": "Chilling Shriek",
+      "rarity": "common",
+      "upgrade": "chilling-shriek+"
+    },
+    {
+      "id": "thin-the-blood",
+      "name": "Thin the Blood",
+      "rarity": "uncommon",
+      "upgrade": "thin-the-blood+"
+    },
+    {
+      "id": "tossed-vials",
+      "name": "Tossed Vials",
+      "rarity": "uncommon",
+      "upgrade": "tossed-vials+"
+    },
+    {
+      "id": "reopen-the-wound",
+      "name": "Reopen the Wound",
+      "rarity": "uncommon",
+      "upgrade": "reopen-the-wound+"
+    },
+    {
+      "id": "blood-mist",
+      "name": "Blood Mist",
+      "rarity": "uncommon",
+      "upgrade": "blood-mist+"
+    },
+    {
+      "id": "red-mirage",
+      "name": "Red Mirage",
+      "rarity": "uncommon",
+      "upgrade": "red-mirage+"
+    },
+    {
+      "id": "weeping-cuts",
+      "name": "Weeping Cuts",
+      "rarity": "uncommon",
+      "upgrade": "weeping-cuts+"
+    },
+    {
+      "id": "hemorrhage",
+      "name": "Red Tide",
+      "rarity": "rare",
+      "upgrade": "hemorrhage+"
+    },
+    {
+      "id": "serrated-edges",
+      "name": "Serrated Edges",
+      "rarity": "rare",
+      "upgrade": "serrated-edges+"
+    },
+    {
+      "id": "bloodburst",
+      "name": "Bloodburst",
+      "rarity": "rare",
+      "upgrade": "bloodburst+"
+    },
+    {
+      "id": "sapping-wound",
+      "name": "Sapping Wound",
+      "rarity": "rare",
+      "upgrade": "sapping-wound+"
+    },
+    {
+      "id": "blood-scent",
+      "name": "Blood Scent",
+      "rarity": "rare",
+      "upgrade": "blood-scent+"
+    },
+    {
+      "id": "sense-the-blow",
+      "name": "Sense the Blow",
+      "rarity": "common",
+      "upgrade": "sense-the-blow+"
+    },
+    {
+      "id": "backspring",
+      "name": "Backspring",
+      "rarity": "common",
+      "upgrade": "backspring+"
+    },
+    {
+      "id": "flick-knife",
+      "name": "Flick Knife",
+      "rarity": "common",
+      "upgrade": "flick-knife+"
+    },
+    {
+      "id": "turn-aside",
+      "name": "Turn Aside",
+      "rarity": "common",
+      "upgrade": "turn-aside+"
+    },
+    {
+      "id": "roll-away",
+      "name": "Roll Away",
+      "rarity": "common",
+      "upgrade": "roll-away+"
+    },
+    {
+      "id": "shuffle-up",
+      "name": "Shuffle Up",
+      "rarity": "common",
+      "upgrade": "shuffle-up+"
+    },
+    {
+      "id": "slip-the-blow",
+      "name": "Slip the Blow",
+      "rarity": "common",
+      "upgrade": "slip-the-blow+"
+    },
+    {
+      "id": "nimble-deal",
+      "name": "Nimble Deal",
+      "rarity": "uncommon",
+      "upgrade": "nimble-deal+"
+    },
+    {
+      "id": "smoke-veil",
+      "name": "Smoke Veil",
+      "rarity": "uncommon",
+      "upgrade": "smoke-veil+"
+    },
+    {
+      "id": "all-or-nothing",
+      "name": "All or Nothing",
+      "rarity": "uncommon",
+      "upgrade": "all-or-nothing+"
+    },
+    {
+      "id": "bolt-hole",
+      "name": "Bolt Hole",
+      "rarity": "uncommon",
+      "upgrade": "bolt-hole+"
+    },
+    {
+      "id": "practiced-hands",
+      "name": "Practiced Hands",
+      "rarity": "uncommon",
+      "upgrade": "practiced-hands+"
+    },
+    {
+      "id": "lay-bare",
+      "name": "Lay Bare",
+      "rarity": "uncommon",
+      "upgrade": "lay-bare+"
+    },
+    {
+      "id": "needle-rain",
+      "name": "Needle Rain",
+      "rarity": "uncommon",
+      "upgrade": "needle-rain+"
+    },
+    {
+      "id": "fleet-step",
+      "name": "Fleet Step",
+      "rarity": "uncommon",
+      "upgrade": "fleet-step+"
+    },
+    {
+      "id": "palm-switch",
+      "name": "Palm Switch",
+      "rarity": "uncommon",
+      "upgrade": "palm-switch+"
+    },
+    {
+      "id": "sweep-the-leg",
+      "name": "Sweep the Leg",
+      "rarity": "uncommon",
+      "upgrade": "sweep-the-leg+"
+    },
+    {
+      "id": "graveside-cut",
+      "name": "Graveside Cut",
+      "rarity": "uncommon",
+      "upgrade": "graveside-cut+"
+    },
+    {
+      "id": "quick-reflexes",
+      "name": "Quick Reflexes",
+      "rarity": "uncommon",
+      "upgrade": "quick-reflexes+"
+    },
+    {
+      "id": "side-slip",
+      "name": "Side Slip",
+      "rarity": "common",
+      "upgrade": "side-slip+"
+    },
+    {
+      "id": "fleet-fingers",
+      "name": "Fleet Fingers",
+      "rarity": "uncommon",
+      "upgrade": "fleet-fingers+"
+    },
+    {
+      "id": "cool-head",
+      "name": "Cool Head",
+      "rarity": "uncommon",
+      "upgrade": "cool-head+"
+    },
+    {
+      "id": "razor-skin",
+      "name": "Razor Skin",
+      "rarity": "rare",
+      "upgrade": "razor-skin+"
+    },
+    {
+      "id": "rush-of-blood",
+      "name": "Rush of Blood",
+      "rarity": "rare",
+      "upgrade": "rush-of-blood+"
+    },
+    {
+      "id": "shadow-echo",
+      "name": "Shadow Echo",
+      "rarity": "rare",
+      "upgrade": "shadow-echo+"
+    },
+    {
+      "id": "stilled-time",
+      "name": "Stilled Time",
+      "rarity": "rare",
+      "upgrade": "stilled-time+"
+    },
+    {
+      "id": "double-trick",
+      "name": "Double Trick",
+      "rarity": "rare",
+      "upgrade": "double-trick+"
+    },
+    {
+      "id": "grand-scheme",
+      "name": "Grand Scheme",
+      "rarity": "rare",
+      "upgrade": "grand-scheme+"
+    },
+    {
+      "id": "slow-murder",
+      "name": "Slow Murder",
+      "rarity": "rare",
+      "upgrade": "slow-murder+"
+    },
+    {
+      "id": "recurring-dream",
+      "name": "Recurring Dream",
+      "rarity": "rare",
+      "upgrade": "recurring-dream+"
+    },
+    {
+      "id": "mantle-of-night",
+      "name": "Mantle of Night",
+      "rarity": "rare",
+      "upgrade": "mantle-of-night+"
+    },
+    {
+      "id": "nimble-routine",
+      "name": "Nimble Routine",
+      "rarity": "rare",
+      "upgrade": "nimble-routine+"
+    },
+    {
+      "id": "patient-hands",
+      "name": "Patient Hands",
+      "rarity": "rare",
+      "upgrade": "patient-hands+"
+    },
+    {
+      "id": "raise-the-hawk",
+      "name": "Raise the Hawk",
+      "rarity": "basic",
+      "upgrade": "raise-the-hawk+"
+    },
+    {
+      "id": "frost-ward",
+      "name": "Frost Ward",
+      "rarity": "basic",
+      "upgrade": "frost-ward+"
+    },
+    {
+      "id": "forked-lightning",
+      "name": "Forked Lightning",
+      "rarity": "basic",
+      "upgrade": "forked-lightning+"
+    },
+    {
+      "id": "spirit-call",
+      "name": "Spirit Call",
+      "rarity": "basic",
+      "upgrade": "spirit-call+"
+    },
+    {
+      "id": "twin-cinders",
+      "name": "Twin Cinders",
+      "rarity": "common",
+      "upgrade": "twin-cinders+"
+    },
+    {
+      "id": "flame-spear",
+      "name": "Flame Spear",
+      "rarity": "common",
+      "upgrade": "flame-spear+"
+    },
+    {
+      "id": "spreading-flames",
+      "name": "Wildfire",
+      "rarity": "uncommon",
+      "upgrade": "spreading-flames+"
+    },
+    {
+      "id": "spirit-lance",
+      "name": "Spirit Lance",
+      "rarity": "uncommon",
+      "upgrade": "spirit-lance+"
+    },
+    {
+      "id": "smoulder",
+      "name": "Smoulder",
+      "rarity": "uncommon",
+      "upgrade": "smoulder+"
+    },
+    {
+      "id": "phoenix-feather",
+      "name": "Phoenix Feather",
+      "rarity": "rare",
+      "upgrade": "phoenix-feather+"
+    },
+    {
+      "id": "flash-burn",
+      "name": "Flashpoint",
+      "rarity": "rare",
+      "upgrade": "flash-burn+"
+    },
+    {
+      "id": "heart-of-the-pyre",
+      "name": "Heart of the Pyre",
+      "rarity": "rare",
+      "upgrade": "heart-of-the-pyre+"
+    },
+    {
+      "id": "inferno",
+      "name": "Inferno",
+      "rarity": "rare",
+      "upgrade": "inferno+"
+    },
+    {
+      "id": "frost-needle",
+      "name": "Frost Needle",
+      "rarity": "common",
+      "upgrade": "frost-needle+"
+    },
+    {
+      "id": "chill-touch",
+      "name": "Chill Touch",
+      "rarity": "common",
+      "upgrade": "chill-touch+"
+    },
+    {
+      "id": "hoarfrost",
+      "name": "Hoarfrost",
+      "rarity": "common",
+      "upgrade": "hoarfrost+"
+    },
+    {
+      "id": "hasty-ward",
+      "name": "Hasty Ward",
+      "rarity": "common",
+      "upgrade": "hasty-ward+"
+    },
+    {
+      "id": "wardkeepers-pact",
+      "name": "Bear Call",
+      "rarity": "common",
+      "upgrade": "wardkeepers-pact+"
+    },
+    {
+      "id": "glacier-guard",
+      "name": "Glacier Guard",
+      "rarity": "uncommon",
+      "upgrade": "glacier-guard+"
+    },
+    {
+      "id": "frozen-grasp",
+      "name": "Frozen Grasp",
+      "rarity": "uncommon",
+      "upgrade": "frozen-grasp+"
+    },
+    {
+      "id": "frost-shatter",
+      "name": "Ice Shatter",
+      "rarity": "uncommon",
+      "upgrade": "frost-shatter+"
+    },
+    {
+      "id": "frostbound",
+      "name": "Frostbound",
+      "rarity": "rare",
+      "upgrade": "frostbound+"
+    },
+    {
+      "id": "absolute-zero",
+      "name": "Absolute Zero",
+      "rarity": "rare",
+      "upgrade": "absolute-zero+"
+    },
+    {
+      "id": "gathering-storm",
+      "name": "Gathering Storm",
+      "rarity": "common",
+      "upgrade": "gathering-storm+"
+    },
+    {
+      "id": "gale-call",
+      "name": "Gale Call",
+      "rarity": "common",
+      "upgrade": "gale-call+"
+    },
+    {
+      "id": "wind-wall",
+      "name": "Wind Wall",
+      "rarity": "common",
+      "upgrade": "wind-wall+"
+    },
+    {
+      "id": "thunderbird-call",
+      "name": "Thunderbird Call",
+      "rarity": "common",
+      "upgrade": "thunderbird-call+"
+    },
+    {
+      "id": "charged-sky",
+      "name": "Charged Sky",
+      "rarity": "uncommon",
+      "upgrade": "charged-sky+"
+    },
+    {
+      "id": "static-veil",
+      "name": "Static Veil",
+      "rarity": "uncommon",
+      "upgrade": "static-veil+"
+    },
+    {
+      "id": "lightning-rod",
+      "name": "Lightning Rod",
+      "rarity": "uncommon",
+      "upgrade": "lightning-rod+"
+    },
+    {
+      "id": "calm-before-the-storm",
+      "name": "Calm Before the Storm",
+      "rarity": "rare",
+      "upgrade": "calm-before-the-storm+"
+    },
+    {
+      "id": "spark-cast",
+      "name": "Hawk Call",
+      "rarity": "common",
+      "upgrade": "spark-cast+"
+    },
+    {
+      "id": "spirit-offering",
+      "name": "Spirit Offering",
+      "rarity": "common",
+      "upgrade": "spirit-offering+"
+    },
+    {
+      "id": "spirit-rush",
+      "name": "Spirit Rush",
+      "rarity": "common",
+      "upgrade": "spirit-rush+"
+    },
+    {
+      "id": "raise-a-totem",
+      "name": "Raise a Totem",
+      "rarity": "common",
+      "upgrade": "raise-a-totem+"
+    },
+    {
+      "id": "totem-circle",
+      "name": "Totem Circle",
+      "rarity": "uncommon",
+      "upgrade": "totem-circle+"
+    },
+    {
+      "id": "carve-the-spirit-pole",
+      "name": "Carve the Spirit Pole",
+      "rarity": "rare",
+      "upgrade": "carve-the-spirit-pole+"
+    },
+    {
+      "id": "call-the-elder-tree",
+      "name": "Call the Elder Tree",
+      "rarity": "rare",
+      "upgrade": "call-the-elder-tree+"
+    },
+    {
+      "id": "call-the-moon-owl",
+      "name": "Call the Moon Owl",
+      "rarity": "rare",
+      "upgrade": "call-the-moon-owl+"
+    },
+    {
+      "id": "spirit-strike",
+      "name": "Spirit Strike",
+      "rarity": "common",
+      "upgrade": "spirit-strike+"
+    },
+    {
+      "id": "spirit-ward",
+      "name": "Spirit Ward",
+      "rarity": "common",
+      "upgrade": "spirit-ward+"
+    },
+    {
+      "id": "hawks-dive",
+      "name": "Hawk's Dive",
+      "rarity": "common",
+      "upgrade": "hawks-dive+"
+    },
+    {
+      "id": "storm-sovereign",
+      "name": "Storm Sovereign",
+      "rarity": "rare",
+      "upgrade": "storm-sovereign+"
+    },
+    {
+      "id": "spirit-surge",
+      "name": "Spirit Surge",
+      "rarity": "uncommon",
+      "upgrade": "spirit-surge+"
+    },
+    {
+      "id": "spirit-walk",
+      "name": "Spirit Walk",
+      "rarity": "rare",
+      "upgrade": "spirit-walk+"
+    },
+    {
+      "id": "stone-skin",
+      "name": "Stone Skin",
+      "rarity": "common",
+      "upgrade": "stone-skin+"
+    },
+    {
+      "id": "tidecaller",
+      "name": "Tidecaller",
+      "rarity": "common",
+      "upgrade": "tidecaller+"
+    },
+    {
+      "id": "read-the-winds",
+      "name": "Read the Winds",
+      "rarity": "common",
+      "upgrade": "read-the-winds+"
+    },
+    {
+      "id": "sweep-away",
+      "name": "Sweep Away",
+      "rarity": "common",
+      "upgrade": "sweep-away+"
+    },
+    {
+      "id": "wind-whisper",
+      "name": "Wind Whisper",
+      "rarity": "common",
+      "upgrade": "wind-whisper+"
+    },
+    {
+      "id": "shamans-insight",
+      "name": "Shaman's Insight",
+      "rarity": "uncommon",
+      "upgrade": "shamans-insight+"
+    },
+    {
+      "id": "ash-chant",
+      "name": "Ash Chant",
+      "rarity": "uncommon",
+      "upgrade": "ash-chant+"
+    },
+    {
+      "id": "echoing-strike",
+      "name": "Echoing Strike",
+      "rarity": "rare",
+      "upgrade": "echoing-strike+"
+    },
+    {
+      "id": "return-of-the-free",
+      "name": "Return of the Free",
+      "rarity": "rare",
+      "upgrade": "return-of-the-free+"
+    },
+    {
+      "id": "twin-talons",
+      "name": "Twin Talons",
+      "rarity": "uncommon",
+      "upgrade": "twin-talons+"
+    },
+    {
+      "id": "boon-strike",
+      "name": "Boon Strike",
+      "rarity": "uncommon",
+      "upgrade": "boon-strike+"
+    },
+    {
+      "id": "spent-strike",
+      "name": "Spent Strike",
+      "rarity": "rare",
+      "upgrade": "spent-strike+"
+    },
+    {
+      "id": "flak-burst",
+      "name": "Flak Burst",
+      "rarity": "rare",
+      "upgrade": "flak-burst+"
+    },
+    {
+      "id": "frostbound-hide",
+      "name": "Frostbound Hide",
+      "rarity": "uncommon",
+      "upgrade": "frostbound-hide+"
+    },
+    {
+      "id": "grim-ward",
+      "name": "Grim Ward",
+      "rarity": "uncommon",
+      "upgrade": "grim-ward+"
+    },
+    {
+      "id": "dawn-ward",
+      "name": "Dawn Ward",
+      "rarity": "uncommon",
+      "upgrade": "dawn-ward+"
+    },
+    {
+      "id": "hail-chant",
+      "name": "Hail Chant",
+      "rarity": "rare",
+      "upgrade": "hail-chant+"
+    },
+    {
+      "id": "consuming-dusk",
+      "name": "Consuming Dusk",
+      "rarity": "rare",
+      "upgrade": "consuming-dusk+"
+    },
+    {
+      "id": "storm-chant",
+      "name": "Storm Chant",
+      "rarity": "uncommon",
+      "upgrade": "storm-chant+"
+    },
+    {
+      "id": "blighted-chorus",
+      "name": "Blighted Chorus",
+      "rarity": "rare",
+      "upgrade": "blighted-chorus+"
+    },
+    {
+      "id": "swift-strike",
+      "name": "Swift Strike",
+      "rarity": "uncommon",
+      "upgrade": "swift-strike+"
+    },
+    {
+      "id": "shattering-call",
+      "name": "Shattering Call",
+      "rarity": "rare",
+      "upgrade": "shattering-call+"
+    },
+    {
+      "id": "thunder-rush",
+      "name": "Thunder Rush",
+      "rarity": "uncommon",
+      "upgrade": "thunder-rush+"
+    },
+    {
+      "id": "spark-strike",
+      "name": "Spark Strike",
+      "rarity": "uncommon",
+      "upgrade": "spark-strike+"
+    },
+    {
+      "id": "thunder-beam",
+      "name": "Thunder Beam",
+      "rarity": "rare",
+      "upgrade": "thunder-beam+"
+    },
+    {
+      "id": "swift-study",
+      "name": "Swift Study",
+      "rarity": "uncommon",
+      "upgrade": "swift-study+"
+    },
+    {
+      "id": "thunder-chant",
+      "name": "Thunder Chant",
+      "rarity": "uncommon",
+      "upgrade": "thunder-chant+"
+    },
+    {
+      "id": "hurried-prayer",
+      "name": "Hurried Prayer",
+      "rarity": "uncommon",
+      "upgrade": "hurried-prayer+"
+    },
+    {
+      "id": "harmonize",
+      "name": "Harmonize",
+      "rarity": "uncommon",
+      "upgrade": "harmonize+"
+    },
+    {
+      "id": "double-rite",
+      "name": "Double Rite",
+      "rarity": "uncommon",
+      "upgrade": "double-rite+"
+    },
+    {
+      "id": "burnt-offering",
+      "name": "Burnt Offering",
+      "rarity": "uncommon",
+      "upgrade": "burnt-offering+"
+    },
+    {
+      "id": "echoing-spirit",
+      "name": "Echoing Spirit",
+      "rarity": "rare",
+      "upgrade": "echoing-spirit+"
+    },
+    {
+      "id": "hawk-banner",
+      "name": "Hawk Banner",
+      "rarity": "rare",
+      "upgrade": "hawk-banner+"
+    },
+    {
+      "id": "wellspring",
+      "name": "Wellspring",
+      "rarity": "rare",
+      "upgrade": "wellspring+"
+    },
+    {
+      "id": "doubled-vow",
+      "name": "Doubled Vow",
+      "rarity": "rare",
+      "upgrade": "doubled-vow+"
+    },
+    {
+      "id": "free-hand",
+      "name": "Free Hand",
+      "rarity": "rare",
+      "upgrade": "free-hand+"
+    },
+    {
+      "id": "chain-of-calls",
+      "name": "Chain of Calls",
+      "rarity": "rare",
+      "upgrade": "chain-of-calls+"
+    },
+    {
+      "id": "salvage-spirit",
+      "name": "Salvage Spirit",
+      "rarity": "rare",
+      "upgrade": "salvage-spirit+"
+    },
+    {
+      "id": "snap-back",
+      "name": "Snap Back",
+      "rarity": "uncommon",
+      "upgrade": "snap-back+"
+    },
+    {
+      "id": "bitter-lesson",
+      "name": "Bitter Lesson",
+      "rarity": "uncommon",
+      "upgrade": "bitter-lesson+"
+    },
+    {
+      "id": "turning-wheel",
+      "name": "Turning Wheel",
+      "rarity": "uncommon",
+      "upgrade": "turning-wheel+"
+    },
+    {
+      "id": "ward-of-the-spirits",
+      "name": "Ward of the Spirits",
+      "rarity": "rare",
+      "upgrade": "ward-of-the-spirits+"
+    },
+    {
+      "id": "wild-vision",
+      "name": "Wild Vision",
+      "rarity": "uncommon",
+      "upgrade": "wild-vision+"
+    },
+    {
+      "id": "kindling-ward",
+      "name": "Kindling Ward",
+      "rarity": "uncommon",
+      "upgrade": "kindling-ward+"
+    },
+    {
+      "id": "fresh-start",
+      "name": "Fresh Start",
+      "rarity": "rare",
+      "upgrade": "fresh-start+"
+    },
+    {
+      "id": "thunder-memory",
+      "name": "Thunder Memory",
+      "rarity": "rare",
+      "upgrade": "thunder-memory+"
+    },
+    {
+      "id": "harvest-of-ruin",
+      "name": "Harvest of Ruin",
+      "rarity": "uncommon",
+      "upgrade": "harvest-of-ruin+"
+    },
+    {
+      "id": "spirit-pact",
+      "name": "Spirit Pact",
+      "rarity": "rare",
+      "upgrade": "spirit-pact+"
+    },
+    {
+      "id": "flame-echo",
+      "name": "Flame Echo",
+      "rarity": "common",
+      "upgrade": "flame-echo+"
+    },
+    {
+      "id": "kindle-fury",
+      "name": "Kindle Fury",
+      "rarity": "basic",
+      "upgrade": "kindle-fury+"
+    },
+    {
+      "id": "still-guard",
+      "name": "Still Guard",
+      "rarity": "basic",
+      "upgrade": "still-guard+"
+    },
+    {
+      "id": "mindful-palm",
+      "name": "Mindful Palm",
+      "rarity": "basic",
+      "upgrade": "mindful-palm+"
+    },
+    {
+      "id": "angry-palm",
+      "name": "Angry Palm",
+      "rarity": "common",
+      "upgrade": "angry-palm+"
+    },
+    {
+      "id": "ashen-fist",
+      "name": "Ashen Fist",
+      "rarity": "common",
+      "upgrade": "ashen-fist+"
+    },
+    {
+      "id": "temper-flare",
+      "name": "Temper Flare",
+      "rarity": "uncommon",
+      "upgrade": "temper-flare+"
+    },
+    {
+      "id": "rising-ire",
+      "name": "Rising Ire",
+      "rarity": "common",
+      "upgrade": "rising-ire+"
+    },
+    {
+      "id": "swift-step",
+      "name": "Swift Step",
+      "rarity": "uncommon",
+      "upgrade": "swift-step+"
+    },
+    {
+      "id": "final-account",
+      "name": "Final Account",
+      "rarity": "rare",
+      "upgrade": "final-account+"
+    },
+    {
+      "id": "surge-of-ire",
+      "name": "Surge of Ire",
+      "rarity": "rare",
+      "upgrade": "surge-of-ire+"
+    },
+    {
+      "id": "rage-of-ages",
+      "name": "Rage of Ages",
+      "rarity": "rare",
+      "upgrade": "rage-of-ages+"
+    },
+    {
+      "id": "wrath-incarnate",
+      "name": "Wrath Incarnate",
+      "rarity": "rare",
+      "upgrade": "wrath-incarnate+"
+    },
+    {
+      "id": "red-mist",
+      "name": "Burning Breath",
+      "rarity": "common",
+      "upgrade": "red-mist+"
+    },
+    {
+      "id": "flurry-of-palms",
+      "name": "Flurry of Palms",
+      "rarity": "common",
+      "upgrade": "flurry-of-palms+"
+    },
+    {
+      "id": "wheel-kick",
+      "name": "Spinning Heel",
+      "rarity": "uncommon",
+      "upgrade": "wheel-kick+"
+    },
+    {
+      "id": "wrathful-guard",
+      "name": "Wrathful Guard",
+      "rarity": "uncommon",
+      "upgrade": "wrathful-guard+"
+    },
+    {
+      "id": "rampage-of-ire",
+      "name": "Rampage of Ire",
+      "rarity": "rare",
+      "upgrade": "rampage-of-ire+"
+    },
+    {
+      "id": "rage-unbound",
+      "name": "Rage Unbound",
+      "rarity": "rare",
+      "upgrade": "rage-unbound+"
+    },
+    {
+      "id": "hot-blooded",
+      "name": "Hot-Blooded",
+      "rarity": "uncommon",
+      "upgrade": "hot-blooded+"
+    },
+    {
+      "id": "berserk-tide",
+      "name": "Storm of Fists",
+      "rarity": "uncommon",
+      "upgrade": "berserk-tide+"
+    },
+    {
+      "id": "unleashed-roar",
+      "name": "Unleashed Roar",
+      "rarity": "common",
+      "upgrade": "unleashed-roar+"
+    },
+    {
+      "id": "cornered-beast",
+      "name": "Coiled Serpent",
+      "rarity": "uncommon",
+      "upgrade": "cornered-beast+"
+    },
+    {
+      "id": "ashes-of-restraint",
+      "name": "Ashes of Restraint",
+      "rarity": "rare",
+      "upgrade": "ashes-of-restraint+"
+    },
+    {
+      "id": "centre-yourself",
+      "name": "Centre Yourself",
+      "rarity": "common",
+      "upgrade": "centre-yourself+"
+    },
+    {
+      "id": "unburdened-guard",
+      "name": "Shifting Guard",
+      "rarity": "common",
+      "upgrade": "unburdened-guard+"
+    },
+    {
+      "id": "thread-cutter",
+      "name": "Thread-Cutter",
+      "rarity": "common",
+      "upgrade": "thread-cutter+"
+    },
+    {
+      "id": "settled-mind",
+      "name": "Settled Mind",
+      "rarity": "uncommon",
+      "upgrade": "settled-mind+"
+    },
+    {
+      "id": "hushed-stillness",
+      "name": "Hushed Stillness",
+      "rarity": "common",
+      "upgrade": "hushed-stillness+"
+    },
+    {
+      "id": "unmoved-mind",
+      "name": "Unmoved Mind",
+      "rarity": "uncommon",
+      "upgrade": "unmoved-mind+"
+    },
+    {
+      "id": "ascendant-form",
+      "name": "Ascendant Form",
+      "rarity": "rare",
+      "upgrade": "ascendant-form+"
+    },
+    {
+      "id": "perfect-calm",
+      "name": "Perfect Calm",
+      "rarity": "rare",
+      "upgrade": "perfect-calm+"
+    },
+    {
+      "id": "vigilance",
+      "name": "Watchful Calm",
+      "rarity": "common",
+      "upgrade": "vigilance+"
+    },
+    {
+      "id": "empty-fist",
+      "name": "Settling Fist",
+      "rarity": "common",
+      "upgrade": "empty-fist+"
+    },
+    {
+      "id": "inner-calm",
+      "name": "Wheel of Motion",
+      "rarity": "uncommon",
+      "upgrade": "inner-calm+"
+    },
+    {
+      "id": "fearless",
+      "name": "Unafraid",
+      "rarity": "uncommon",
+      "upgrade": "fearless+"
+    },
+    {
+      "id": "meditate",
+      "name": "Recollect",
+      "rarity": "rare",
+      "upgrade": "meditate+"
+    },
+    {
+      "id": "sanctity",
+      "name": "Let Go",
+      "rarity": "uncommon",
+      "upgrade": "sanctity+"
+    },
+    {
+      "id": "all-seeing",
+      "name": "All-Seeing",
+      "rarity": "rare",
+      "upgrade": "all-seeing+"
+    },
+    {
+      "id": "serenity-incarnate",
+      "name": "Serenity Incarnate",
+      "rarity": "rare",
+      "upgrade": "serenity-incarnate+"
+    },
+    {
+      "id": "still-water",
+      "name": "Still Water",
+      "rarity": "uncommon",
+      "upgrade": "still-water+"
+    },
+    {
+      "id": "exhale",
+      "name": "Exhale",
+      "rarity": "uncommon",
+      "upgrade": "exhale+"
+    },
+    {
+      "id": "mirror-pool",
+      "name": "Mirror Pool",
+      "rarity": "uncommon",
+      "upgrade": "mirror-pool+"
+    },
+    {
+      "id": "gentle-return",
+      "name": "Gentle Return",
+      "rarity": "rare",
+      "upgrade": "gentle-return+"
+    },
+    {
+      "id": "tide-of-peace",
+      "name": "Tide of Peace",
+      "rarity": "rare",
+      "upgrade": "tide-of-peace+"
+    },
+    {
+      "id": "whispered-vow",
+      "name": "Whispered Vow",
+      "rarity": "common",
+      "upgrade": "whispered-vow+"
+    },
+    {
+      "id": "bowing-low",
+      "name": "Bowing Low",
+      "rarity": "common",
+      "upgrade": "bowing-low+"
+    },
+    {
+      "id": "sunlit-blade",
+      "name": "Sunlit Blade",
+      "rarity": "common",
+      "upgrade": "sunlit-blade+"
+    },
+    {
+      "id": "the-offering",
+      "name": "The Offering",
+      "rarity": "uncommon",
+      "upgrade": "the-offering+"
+    },
+    {
+      "id": "litany",
+      "name": "Litany",
+      "rarity": "rare",
+      "upgrade": "litany+"
+    },
+    {
+      "id": "daily-rite",
+      "name": "Daily Rite",
+      "rarity": "uncommon",
+      "upgrade": "daily-rite+"
+    },
+    {
+      "id": "rise-radiant",
+      "name": "Rise Radiant",
+      "rarity": "rare",
+      "upgrade": "rise-radiant+"
+    },
+    {
+      "id": "reading-the-signs",
+      "name": "Reading the Signs",
+      "rarity": "common",
+      "upgrade": "reading-the-signs+"
+    },
+    {
+      "id": "perfect-balance",
+      "name": "Perfect Balance",
+      "rarity": "rare",
+      "upgrade": "perfect-balance+"
+    },
+    {
+      "id": "still-flame-ascendant",
+      "name": "Still Flame Ascendant",
+      "rarity": "rare",
+      "upgrade": "still-flame-ascendant+"
+    },
+    {
+      "id": "deep-breath",
+      "name": "Gather Breath",
+      "rarity": "uncommon",
+      "upgrade": "deep-breath+"
+    },
+    {
+      "id": "prostrate",
+      "name": "Kneel",
+      "rarity": "common",
+      "upgrade": "prostrate+"
+    },
+    {
+      "id": "worship",
+      "name": "Hymn of Embers",
+      "rarity": "uncommon",
+      "upgrade": "worship+"
+    },
+    {
+      "id": "devotion",
+      "name": "Morning Prayer",
+      "rarity": "uncommon",
+      "upgrade": "devotion+"
+    },
+    {
+      "id": "scrawl",
+      "name": "Flood of Visions",
+      "rarity": "rare",
+      "upgrade": "scrawl+"
+    },
+    {
+      "id": "last-rites-of-flame",
+      "name": "Last Rites of the Flame",
+      "rarity": "rare",
+      "upgrade": "last-rites-of-flame+"
+    },
+    {
+      "id": "radiant-heart",
+      "name": "Radiant Heart",
+      "rarity": "rare",
+      "upgrade": "radiant-heart+"
+    },
+    {
+      "id": "foretold-flame",
+      "name": "Foretold Flame",
+      "rarity": "uncommon",
+      "upgrade": "foretold-flame+"
+    },
+    {
+      "id": "faith-kept",
+      "name": "Faith Kept",
+      "rarity": "common",
+      "upgrade": "faith-kept+"
+    },
+    {
+      "id": "mantra-engine",
+      "name": "Mantra Engine",
+      "rarity": "uncommon",
+      "upgrade": "mantra-engine+"
+    },
+    {
+      "id": "burning-litany",
+      "name": "Burning Litany",
+      "rarity": "rare",
+      "upgrade": "burning-litany+"
+    },
+    {
+      "id": "unwavering",
+      "name": "Unwavering",
+      "rarity": "rare",
+      "upgrade": "unwavering+"
+    },
+    {
+      "id": "crushing-palm",
+      "name": "Crushing Palm",
+      "rarity": "common",
+      "upgrade": "crushing-palm+"
+    },
+    {
+      "id": "inner-sight",
+      "name": "Inner Sight",
+      "rarity": "uncommon",
+      "upgrade": "inner-sight+"
+    },
+    {
+      "id": "quick-palms",
+      "name": "Quick Palms",
+      "rarity": "common",
+      "upgrade": "quick-palms+"
+    },
+    {
+      "id": "spirit-shield",
+      "name": "Mountain's Stillness",
+      "rarity": "rare",
+      "upgrade": "spirit-shield+"
+    },
+    {
+      "id": "breath-between-blows",
+      "name": "Breath Between Blows",
+      "rarity": "rare",
+      "upgrade": "breath-between-blows+"
+    },
+    {
+      "id": "held-breath",
+      "name": "Held Breath",
+      "rarity": "uncommon",
+      "upgrade": "held-breath+"
+    },
+    {
+      "id": "rending-hands",
+      "name": "Rending Hands",
+      "rarity": "uncommon",
+      "upgrade": "rending-hands+"
+    },
+    {
+      "id": "blood-on-the-sand",
+      "name": "Iron Body",
+      "rarity": "uncommon",
+      "upgrade": "blood-on-the-sand+"
+    },
+    {
+      "id": "open-palm",
+      "name": "Open Palm",
+      "rarity": "uncommon",
+      "upgrade": "open-palm+"
+    },
+    {
+      "id": "shield-of-faith",
+      "name": "Shield of Faith",
+      "rarity": "uncommon",
+      "upgrade": "shield-of-faith+"
+    },
+    {
+      "id": "poise",
+      "name": "Poise",
+      "rarity": "uncommon",
+      "upgrade": "poise+"
+    },
+    {
+      "id": "thousand-palms",
+      "name": "Thousand Palms",
+      "rarity": "rare",
+      "upgrade": "thousand-palms+"
+    },
+    {
+      "id": "unbroken-calm",
+      "name": "Unbroken Calm",
+      "rarity": "rare",
+      "upgrade": "unbroken-calm+"
+    },
+    {
+      "id": "wreath-of-flame",
+      "name": "Crown of Embers",
+      "rarity": "uncommon",
+      "upgrade": "wreath-of-flame+"
+    },
+    {
+      "id": "meteor-jab",
+      "name": "Cinderfall",
+      "rarity": "basic",
+      "upgrade": "meteor-jab+"
+    },
+    {
+      "id": "gather-light",
+      "name": "Gather Power",
+      "rarity": "basic",
+      "upgrade": "gather-light+"
+    },
+    {
+      "id": "obsidian-ward",
+      "name": "Obsidian Ward",
+      "rarity": "basic",
+      "upgrade": "obsidian-ward+"
+    },
+    {
+      "id": "starforged-blade",
+      "name": "Obsidian Blade",
+      "rarity": "common",
+      "upgrade": "starforged-blade+"
+    },
+    {
+      "id": "rubble",
+      "name": "Rubble",
+      "rarity": "basic"
+    },
+    {
+      "id": "forged-in-fury",
+      "name": "Forged in Fury",
+      "rarity": "common",
+      "upgrade": "forged-in-fury+"
+    },
+    {
+      "id": "whetstone",
+      "name": "Deepening Enchantment",
+      "rarity": "common",
+      "upgrade": "whetstone+"
+    },
+    {
+      "id": "faint-glow",
+      "name": "Faint Ember",
+      "rarity": "common",
+      "upgrade": "faint-glow+"
+    },
+    {
+      "id": "ember-cache",
+      "name": "Ember Cache",
+      "rarity": "common",
+      "upgrade": "ember-cache+"
+    },
+    {
+      "id": "pale-beacon",
+      "name": "Pale Ward",
+      "rarity": "common",
+      "upgrade": "pale-beacon+"
+    },
+    {
+      "id": "sunstrike",
+      "name": "Emberstrike",
+      "rarity": "common",
+      "upgrade": "sunstrike+"
+    },
+    {
+      "id": "empty-crucible",
+      "name": "Empty Crucible",
+      "rarity": "common",
+      "upgrade": "empty-crucible+"
+    },
+    {
+      "id": "bladewall",
+      "name": "Bladewall",
+      "rarity": "uncommon",
+      "upgrade": "bladewall+"
+    },
+    {
+      "id": "banked-embers",
+      "name": "Banked Embers",
+      "rarity": "uncommon",
+      "upgrade": "banked-embers+"
+    },
+    {
+      "id": "growing-crucible",
+      "name": "Growing Crucible",
+      "rarity": "uncommon",
+      "upgrade": "growing-crucible+"
+    },
+    {
+      "id": "measured-recharge",
+      "name": "Measured Recharge",
+      "rarity": "uncommon",
+      "upgrade": "measured-recharge+"
+    },
+    {
+      "id": "last-ember",
+      "name": "Last Ember",
+      "rarity": "uncommon",
+      "upgrade": "last-ember+"
+    },
+    {
+      "id": "big-bang",
+      "name": "Magma Surge",
+      "rarity": "rare",
+      "upgrade": "big-bang+"
+    },
+    {
+      "id": "the-forgemaster",
+      "name": "The Forgemaster",
+      "rarity": "rare",
+      "upgrade": "the-forgemaster+"
+    },
+    {
+      "id": "obsidian-flurry",
+      "name": "Obsidian Flurry",
+      "rarity": "common",
+      "upgrade": "obsidian-flurry+"
+    },
+    {
+      "id": "cosmic-lance",
+      "name": "Obsidian Lance",
+      "rarity": "common",
+      "upgrade": "cosmic-lance+"
+    },
+    {
+      "id": "gleam",
+      "name": "Glint",
+      "rarity": "common",
+      "upgrade": "gleam+"
+    },
+    {
+      "id": "etching-edge",
+      "name": "Etching Edge",
+      "rarity": "common",
+      "upgrade": "etching-edge+"
+    },
+    {
+      "id": "rift-sweep",
+      "name": "Rift Sweep",
+      "rarity": "common",
+      "upgrade": "rift-sweep+"
+    },
+    {
+      "id": "glass-needle",
+      "name": "Glass Needle",
+      "rarity": "common",
+      "upgrade": "glass-needle+"
+    },
+    {
+      "id": "guarded-cut",
+      "name": "Guarded Cut",
+      "rarity": "common",
+      "upgrade": "guarded-cut+"
+    },
+    {
+      "id": "shard-strike",
+      "name": "Shard Strike",
+      "rarity": "uncommon",
+      "upgrade": "shard-strike+"
+    },
+    {
+      "id": "sovereign-strike",
+      "name": "Tyrant Strike",
+      "rarity": "uncommon",
+      "upgrade": "sovereign-strike+"
+    },
+    {
+      "id": "crosscut",
+      "name": "Crosscut",
+      "rarity": "uncommon",
+      "upgrade": "crosscut+"
+    },
+    {
+      "id": "fault-piercer",
+      "name": "Fault Piercer",
+      "rarity": "uncommon",
+      "upgrade": "fault-piercer+"
+    },
+    {
+      "id": "hammer-and-anvil",
+      "name": "Hammer and Anvil",
+      "rarity": "rare",
+      "upgrade": "hammer-and-anvil+"
+    },
+    {
+      "id": "storm-of-glass",
+      "name": "Storm of Glass",
+      "rarity": "rare",
+      "upgrade": "storm-of-glass+"
+    },
+    {
+      "id": "thousand-shards",
+      "name": "Thousand Shards",
+      "rarity": "rare",
+      "upgrade": "thousand-shards+"
+    },
+    {
+      "id": "obsidian-drill",
+      "name": "Obsidian Drill",
+      "rarity": "rare",
+      "upgrade": "obsidian-drill+"
+    },
+    {
+      "id": "call-the-blade",
+      "name": "Call the Blade",
+      "rarity": "uncommon",
+      "upgrade": "call-the-blade+"
+    },
+    {
+      "id": "feint",
+      "name": "Feint",
+      "rarity": "common",
+      "upgrade": "feint+"
+    },
+    {
+      "id": "conqueror",
+      "name": "Crowned Edge",
+      "rarity": "uncommon",
+      "upgrade": "conqueror+"
+    },
+    {
+      "id": "forge-heat",
+      "name": "Heat of the Forge",
+      "rarity": "uncommon",
+      "upgrade": "forge-heat+"
+    },
+    {
+      "id": "crowns-weight",
+      "name": "Weight of the Crown",
+      "rarity": "uncommon",
+      "upgrade": "crowns-weight+"
+    },
+    {
+      "id": "soul-of-steel",
+      "name": "Soul of Steel",
+      "rarity": "rare",
+      "upgrade": "soul-of-steel+"
+    },
+    {
+      "id": "whispering-edge",
+      "name": "Whispering Edge",
+      "rarity": "rare",
+      "upgrade": "whispering-edge+"
+    },
+    {
+      "id": "parry",
+      "name": "Glass Guard",
+      "rarity": "uncommon",
+      "upgrade": "parry+"
+    },
+    {
+      "id": "quenched-edge",
+      "name": "Quenched Edge",
+      "rarity": "uncommon",
+      "upgrade": "quenched-edge+"
+    },
+    {
+      "id": "tempered-focus",
+      "name": "Tempered Focus",
+      "rarity": "rare",
+      "upgrade": "tempered-focus+"
+    },
+    {
+      "id": "cleaving-edge",
+      "name": "Cleaving Edge",
+      "rarity": "rare",
+      "upgrade": "cleaving-edge+"
+    },
+    {
+      "id": "echoing-blade",
+      "name": "Echoing Blade",
+      "rarity": "rare",
+      "upgrade": "echoing-blade+"
+    },
+    {
+      "id": "patient-edge-aura",
+      "name": "Patient Edge",
+      "rarity": "uncommon",
+      "upgrade": "patient-edge-aura+"
+    },
+    {
+      "id": "skybolt",
+      "name": "Spellbolt",
+      "rarity": "common",
+      "upgrade": "skybolt+"
+    },
+    {
+      "id": "astral-pulse",
+      "name": "Arcane Pulse",
+      "rarity": "common",
+      "upgrade": "astral-pulse+"
+    },
+    {
+      "id": "tempered-bolt",
+      "name": "Tempered Bolt",
+      "rarity": "common",
+      "upgrade": "tempered-bolt+"
+    },
+    {
+      "id": "glassbrand",
+      "name": "Glassbrand",
+      "rarity": "common",
+      "upgrade": "glassbrand+"
+    },
+    {
+      "id": "gamma-burst",
+      "name": "Glass Burst",
+      "rarity": "uncommon",
+      "upgrade": "gamma-burst+"
+    },
+    {
+      "id": "controlled-release",
+      "name": "Controlled Release",
+      "rarity": "uncommon",
+      "upgrade": "controlled-release+"
+    },
+    {
+      "id": "falling-sky",
+      "name": "Falling Shards",
+      "rarity": "uncommon",
+      "upgrade": "falling-sky+"
+    },
+    {
+      "id": "devastate",
+      "name": "Molten Ruin",
+      "rarity": "uncommon",
+      "upgrade": "devastate+"
+    },
+    {
+      "id": "radiance",
+      "name": "Arcane Flood",
+      "rarity": "uncommon",
+      "upgrade": "radiance+"
+    },
+    {
+      "id": "dying-star",
+      "name": "Dying Ember",
+      "rarity": "rare",
+      "upgrade": "dying-star+"
+    },
+    {
+      "id": "comet",
+      "name": "Lava Bomb",
+      "rarity": "rare",
+      "upgrade": "comet+"
+    },
+    {
+      "id": "supernova",
+      "name": "Cataclysm",
+      "rarity": "rare",
+      "upgrade": "supernova+"
+    },
+    {
+      "id": "faultline-hex",
+      "name": "Faultline Hex",
+      "rarity": "common",
+      "upgrade": "faultline-hex+"
+    },
+    {
+      "id": "spreading-fault",
+      "name": "Spreading Fault",
+      "rarity": "common",
+      "upgrade": "spreading-fault+"
+    },
+    {
+      "id": "pressure-point-hex",
+      "name": "Pressure Point",
+      "rarity": "common",
+      "upgrade": "pressure-point-hex+"
+    },
+    {
+      "id": "glass-prison",
+      "name": "Glass Prison",
+      "rarity": "common",
+      "upgrade": "glass-prison+"
+    },
+    {
+      "id": "crack-the-shell",
+      "name": "Crack the Shell",
+      "rarity": "common",
+      "upgrade": "crack-the-shell+"
+    },
+    {
+      "id": "hairline-crack",
+      "name": "Hairline Crack",
+      "rarity": "common",
+      "upgrade": "hairline-crack+"
+    },
+    {
+      "id": "stress-the-glass",
+      "name": "Stress the Glass",
+      "rarity": "uncommon",
+      "upgrade": "stress-the-glass+"
+    },
+    {
+      "id": "fault-memory",
+      "name": "Fault Memory",
+      "rarity": "uncommon",
+      "upgrade": "fault-memory+"
+    },
+    {
+      "id": "final-shatter",
+      "name": "Final Shatter",
+      "rarity": "uncommon",
+      "upgrade": "final-shatter+"
+    },
+    {
+      "id": "collapsing-star",
+      "name": "Collapsing Vein",
+      "rarity": "uncommon",
+      "upgrade": "collapsing-star+"
+    },
+    {
+      "id": "carry-the-fault",
+      "name": "Carry the Fault",
+      "rarity": "uncommon",
+      "upgrade": "carry-the-fault+"
+    },
+    {
+      "id": "deep-fault",
+      "name": "Deep Fault",
+      "rarity": "uncommon",
+      "upgrade": "deep-fault+"
+    },
+    {
+      "id": "rupture-script",
+      "name": "Rupture Script",
+      "rarity": "rare",
+      "upgrade": "rupture-script+"
+    },
+    {
+      "id": "breaking-point-hex",
+      "name": "Breaking Point",
+      "rarity": "rare",
+      "upgrade": "breaking-point-hex+"
+    },
+    {
+      "id": "deepening-fault",
+      "name": "Deepening Fault",
+      "rarity": "uncommon",
+      "upgrade": "deepening-fault+"
+    },
+    {
+      "id": "gravity-well",
+      "name": "Hungering Void",
+      "rarity": "uncommon",
+      "upgrade": "gravity-well+"
+    },
+    {
+      "id": "pillar-of-light",
+      "name": "Pillar of Glass",
+      "rarity": "uncommon",
+      "upgrade": "pillar-of-light+"
+    },
+    {
+      "id": "fault-reader",
+      "name": "Fault Reader",
+      "rarity": "uncommon",
+      "upgrade": "fault-reader+"
+    },
+    {
+      "id": "fault-lines",
+      "name": "Fault Lines",
+      "rarity": "uncommon",
+      "upgrade": "fault-lines+"
+    },
+    {
+      "id": "glass-armory",
+      "name": "Glass Armory",
+      "rarity": "uncommon",
+      "upgrade": "glass-armory+"
+    },
+    {
+      "id": "warm-anvil",
+      "name": "Warm Anvil",
+      "rarity": "uncommon",
+      "upgrade": "warm-anvil+"
+    },
+    {
+      "id": "orion",
+      "name": "Sigil of Kindling",
+      "rarity": "uncommon",
+      "upgrade": "orion+"
+    },
+    {
+      "id": "cygnus",
+      "name": "Sigil of Glass",
+      "rarity": "uncommon",
+      "upgrade": "cygnus+"
+    },
+    {
+      "id": "afterglow",
+      "name": "Afterglow",
+      "rarity": "uncommon",
+      "upgrade": "afterglow+"
+    },
+    {
+      "id": "crucible-heart",
+      "name": "Crucible Heart",
+      "rarity": "rare",
+      "upgrade": "crucible-heart+"
+    },
+    {
+      "id": "measured-ruin",
+      "name": "Measured Ruin",
+      "rarity": "rare",
+      "upgrade": "measured-ruin+"
+    },
+    {
+      "id": "star-barrier",
+      "name": "Arcane Barrier",
+      "rarity": "common",
+      "upgrade": "star-barrier+"
+    },
+    {
+      "id": "glass-veil",
+      "name": "Glass Veil",
+      "rarity": "common",
+      "upgrade": "glass-veil+"
+    },
+    {
+      "id": "glass-wall",
+      "name": "Glass Wall",
+      "rarity": "uncommon",
+      "upgrade": "glass-wall+"
+    },
+    {
+      "id": "mirror-glass",
+      "name": "Mirror Glass",
+      "rarity": "uncommon",
+      "upgrade": "mirror-glass+"
+    },
+    {
+      "id": "stellar-wind",
+      "name": "Ash Wind",
+      "rarity": "uncommon",
+      "upgrade": "stellar-wind+"
+    },
+    {
+      "id": "recenter",
+      "name": "Recenter",
+      "rarity": "uncommon",
+      "upgrade": "recenter+"
+    },
+    {
+      "id": "obsidian-aegis",
+      "name": "Obsidian Aegis",
+      "rarity": "rare",
+      "upgrade": "obsidian-aegis+"
+    },
+    {
+      "id": "unbreakable-crown",
+      "name": "Unbreakable Crown",
+      "rarity": "rare",
+      "upgrade": "unbreakable-crown+"
+    },
+    {
+      "id": "fated-hand",
+      "name": "Fated Hand",
+      "rarity": "rare",
+      "upgrade": "fated-hand+"
+    },
+    {
+      "id": "bloodmoon-hunt",
+      "name": "Bloodmoon Hunt",
+      "rarity": "rare",
+      "upgrade": "bloodmoon-hunt+"
+    },
+    {
+      "id": "the-long-ambush",
+      "name": "The Long Ambush",
+      "rarity": "rare",
+      "upgrade": "the-long-ambush+"
+    },
+    {
+      "id": "eye-of-the-storm",
+      "name": "Eye of the Storm",
+      "rarity": "rare",
+      "upgrade": "eye-of-the-storm+"
+    },
+    {
+      "id": "the-twelve-gauge-opera",
+      "name": "The Twelve-Gauge Opera",
+      "rarity": "rare",
+      "upgrade": "the-twelve-gauge-opera+"
+    },
+    {
+      "id": "raise-thrall",
+      "name": "Raise Thrall",
+      "rarity": "basic",
+      "upgrade": "raise-thrall+"
+    },
+    {
+      "id": "marked-for-the-grave",
+      "name": "Marked for the Grave",
+      "rarity": "basic",
+      "upgrade": "marked-for-the-grave+"
+    },
+    {
+      "id": "off-the-leash",
+      "name": "Off the Leash",
+      "rarity": "basic",
+      "upgrade": "off-the-leash+"
+    },
+    {
+      "id": "gravesoul",
+      "name": "Gravesoul",
+      "rarity": "common",
+      "upgrade": "gravesoul+"
+    },
+    {
+      "id": "baleful-glance",
+      "name": "Baleful Glance",
+      "rarity": "common"
+    },
+    {
+      "id": "after-the-end",
+      "name": "After the End",
+      "rarity": "common",
+      "upgrade": "after-the-end+"
+    },
+    {
+      "id": "bone-crush",
+      "name": "Bone Crush",
+      "rarity": "common",
+      "upgrade": "bone-crush+"
+    },
+    {
+      "id": "call-at-dusk",
+      "name": "Call at Dusk",
+      "rarity": "common",
+      "upgrade": "call-at-dusk+"
+    },
+    {
+      "id": "knucklebone",
+      "name": "Knucklebone",
+      "rarity": "common",
+      "upgrade": "knucklebone+"
+    },
+    {
+      "id": "bone-bulwark",
+      "name": "Bone Bulwark",
+      "rarity": "common",
+      "upgrade": "bone-bulwark+"
+    },
+    {
+      "id": "bone-snap",
+      "name": "Bone Snap",
+      "rarity": "common",
+      "upgrade": "bone-snap+"
+    },
+    {
+      "id": "bone-rain",
+      "name": "Bone Rain",
+      "rarity": "uncommon",
+      "upgrade": "bone-rain+"
+    },
+    {
+      "id": "calcify",
+      "name": "Ossify",
+      "rarity": "uncommon",
+      "upgrade": "calcify+"
+    },
+    {
+      "id": "bone-sift",
+      "name": "Bone Sift",
+      "rarity": "uncommon",
+      "upgrade": "bone-sift+"
+    },
+    {
+      "id": "bone-toss",
+      "name": "Bone Toss",
+      "rarity": "uncommon",
+      "upgrade": "bone-toss+"
+    },
+    {
+      "id": "grasping-hands",
+      "name": "Grasping Hands",
+      "rarity": "uncommon",
+      "upgrade": "grasping-hands+"
+    },
+    {
+      "id": "army-of-the-drowned",
+      "name": "Army of the Drowned",
+      "rarity": "uncommon",
+      "upgrade": "army-of-the-drowned+"
+    },
+    {
+      "id": "rattle-the-bones",
+      "name": "Rattle the Bones",
+      "rarity": "uncommon",
+      "upgrade": "rattle-the-bones+"
+    },
+    {
+      "id": "helping-hand",
+      "name": "Helping Hand",
+      "rarity": "uncommon",
+      "upgrade": "helping-hand+"
+    },
+    {
+      "id": "seize-them",
+      "name": "Seize Them",
+      "rarity": "uncommon",
+      "upgrade": "seize-them+"
+    },
+    {
+      "id": "goad",
+      "name": "Goad",
+      "rarity": "uncommon",
+      "upgrade": "goad+"
+    },
+    {
+      "id": "shared-agony",
+      "name": "Shared Agony",
+      "rarity": "rare",
+      "upgrade": "shared-agony+"
+    },
+    {
+      "id": "grave-colossus",
+      "name": "Grave Colossus",
+      "rarity": "rare",
+      "upgrade": "grave-colossus+"
+    },
+    {
+      "id": "fen-offering",
+      "name": "Fen Offering",
+      "rarity": "rare",
+      "upgrade": "fen-offering+"
+    },
+    {
+      "id": "ever-watchful",
+      "name": "Ever Watchful",
+      "rarity": "rare",
+      "upgrade": "ever-watchful+"
+    },
+    {
+      "id": "death-grip",
+      "name": "Death Grip",
+      "rarity": "rare",
+      "upgrade": "death-grip+"
+    },
+    {
+      "id": "the-drowned-king",
+      "name": "The Drowned King",
+      "rarity": "rare",
+      "upgrade": "the-drowned-king+"
+    },
+    {
+      "id": "rot-strike",
+      "name": "Rot Strike",
+      "rarity": "common",
+      "upgrade": "rot-strike+"
+    },
+    {
+      "id": "creeping-end",
+      "name": "Creeping End",
+      "rarity": "common",
+      "upgrade": "creeping-end+"
+    },
+    {
+      "id": "tolling-bell",
+      "name": "Tolling Bell",
+      "rarity": "common",
+      "upgrade": "tolling-bell+"
+    },
+    {
+      "id": "inevitable",
+      "name": "Inevitable",
+      "rarity": "uncommon",
+      "upgrade": "inevitable+"
+    },
+    {
+      "id": "at-the-threshold",
+      "name": "At the Threshold",
+      "rarity": "uncommon",
+      "upgrade": "at-the-threshold+"
+    },
+    {
+      "id": "the-final-hour",
+      "name": "The Final Hour",
+      "rarity": "uncommon",
+      "upgrade": "the-final-hour+"
+    },
+    {
+      "id": "last-rites",
+      "name": "Last Rites",
+      "rarity": "uncommon",
+      "upgrade": "last-rites+"
+    },
+    {
+      "id": "burial-shroud",
+      "name": "Burial Shroud",
+      "rarity": "uncommon",
+      "upgrade": "burial-shroud+"
+    },
+    {
+      "id": "fleshcraft",
+      "name": "Fleshcraft",
+      "rarity": "uncommon",
+      "upgrade": "fleshcraft+"
+    },
+    {
+      "id": "toll-in-advance",
+      "name": "Toll in Advance",
+      "rarity": "uncommon",
+      "upgrade": "toll-in-advance+"
+    },
+    {
+      "id": "wither",
+      "name": "Wither",
+      "rarity": "uncommon",
+      "upgrade": "wither+"
+    },
+    {
+      "id": "fester",
+      "name": "Fester",
+      "rarity": "uncommon",
+      "upgrade": "fester+"
+    },
+    {
+      "id": "the-last-toll",
+      "name": "The Last Toll",
+      "rarity": "rare",
+      "upgrade": "the-last-toll+"
+    },
+    {
+      "id": "mark-of-ending",
+      "name": "Mark of Ending",
+      "rarity": "rare",
+      "upgrade": "mark-of-ending+"
+    },
+    {
+      "id": "reapers-mantle",
+      "name": "Reaper's Mantle",
+      "rarity": "rare",
+      "upgrade": "reapers-mantle+"
+    },
+    {
+      "id": "final-reckoning",
+      "name": "Final Reckoning",
+      "rarity": "rare",
+      "upgrade": "final-reckoning+"
+    },
+    {
+      "id": "spreading-rot",
+      "name": "Spreading Rot",
+      "rarity": "rare",
+      "upgrade": "spreading-rot+"
+    },
+    {
+      "id": "common-grave",
+      "name": "Common Grave",
+      "rarity": "rare",
+      "upgrade": "common-grave+"
+    },
+    {
+      "id": "soul-tithe",
+      "name": "Soul Tithe",
+      "rarity": "rare",
+      "upgrade": "soul-tithe+"
+    },
+    {
+      "id": "barrow-keeper",
+      "name": "Barrow Keeper",
+      "rarity": "common",
+      "upgrade": "barrow-keeper+"
+    },
+    {
+      "id": "soul-rend",
+      "name": "Soul Rend",
+      "rarity": "common",
+      "upgrade": "soul-rend+"
+    },
+    {
+      "id": "desecrate",
+      "name": "Desecrate",
+      "rarity": "common",
+      "upgrade": "desecrate+"
+    },
+    {
+      "id": "grave-defiance",
+      "name": "Grave Defiance",
+      "rarity": "common",
+      "upgrade": "grave-defiance+"
+    },
+    {
+      "id": "cold-dread",
+      "name": "Cold Dread",
+      "rarity": "common",
+      "upgrade": "cold-dread+"
+    },
+    {
+      "id": "wraith-strike",
+      "name": "Wraith Strike",
+      "rarity": "common",
+      "upgrade": "wraith-strike+"
+    },
+    {
+      "id": "marsh-light",
+      "name": "Marsh Light",
+      "rarity": "common",
+      "upgrade": "marsh-light+"
+    },
+    {
+      "id": "bottled-soul",
+      "name": "Bottled Soul",
+      "rarity": "uncommon",
+      "upgrade": "bottled-soul+"
+    },
+    {
+      "id": "dirge",
+      "name": "Lament",
+      "rarity": "uncommon",
+      "upgrade": "dirge+"
+    },
+    {
+      "id": "restless-spirits",
+      "name": "Restless Spirits",
+      "rarity": "uncommon",
+      "upgrade": "restless-spirits+"
+    },
+    {
+      "id": "killing-chill",
+      "name": "Killing Chill",
+      "rarity": "uncommon",
+      "upgrade": "killing-chill+"
+    },
+    {
+      "id": "grimoire-gale",
+      "name": "Grimoire Gale",
+      "rarity": "uncommon",
+      "upgrade": "grimoire-gale+"
+    },
+    {
+      "id": "spectral-ledger",
+      "name": "Spectral Ledger",
+      "rarity": "uncommon",
+      "upgrade": "spectral-ledger+"
+    },
+    {
+      "id": "drag-under",
+      "name": "Drag Under",
+      "rarity": "uncommon",
+      "upgrade": "drag-under+"
+    },
+    {
+      "id": "sever-the-thread",
+      "name": "Sever the Thread",
+      "rarity": "uncommon",
+      "upgrade": "sever-the-thread+"
+    },
+    {
+      "id": "withering-touch",
+      "name": "Withering Touch",
+      "rarity": "uncommon",
+      "upgrade": "withering-touch+"
+    },
+    {
+      "id": "veilpiercer",
+      "name": "Soul Lance",
+      "rarity": "uncommon",
+      "upgrade": "veilpiercer+"
+    },
+    {
+      "id": "dance-of-bones",
+      "name": "Dance of Bones",
+      "rarity": "uncommon",
+      "upgrade": "dance-of-bones+"
+    },
+    {
+      "id": "funeral-march",
+      "name": "Funeral March",
+      "rarity": "uncommon",
+      "upgrade": "funeral-march+"
+    },
+    {
+      "id": "stay-of-execution",
+      "name": "Stay of Execution",
+      "rarity": "uncommon",
+      "upgrade": "stay-of-execution+"
+    },
+    {
+      "id": "dredge",
+      "name": "Grave Digging",
+      "rarity": "uncommon",
+      "upgrade": "dredge+"
+    },
+    {
+      "id": "mourning",
+      "name": "Mourning",
+      "rarity": "uncommon",
+      "upgrade": "mourning+"
+    },
+    {
+      "id": "wailing-cry",
+      "name": "Wailing Cry",
+      "rarity": "rare",
+      "upgrade": "wailing-cry+"
+    },
+    {
+      "id": "whispers-beyond",
+      "name": "Whispers Beyond",
+      "rarity": "rare",
+      "upgrade": "whispers-beyond+"
+    },
+    {
+      "id": "phylactery",
+      "name": "Phylactery",
+      "rarity": "rare",
+      "upgrade": "phylactery+"
+    },
+    {
+      "id": "soul-harvest",
+      "name": "Soul Harvest",
+      "rarity": "rare",
+      "upgrade": "soul-harvest+"
+    },
+    {
+      "id": "ghostform",
+      "name": "Spirit Walk",
+      "rarity": "rare",
+      "upgrade": "ghostform+"
+    },
+    {
+      "id": "oblivion",
+      "name": "Unmaking",
+      "rarity": "rare",
+      "upgrade": "oblivion+"
+    },
+    {
+      "id": "gather-souls",
+      "name": "Gather Souls",
+      "rarity": "rare",
+      "upgrade": "gather-souls+"
+    },
+    {
+      "id": "gallows",
+      "name": "Gallows",
+      "rarity": "rare",
+      "upgrade": "gallows+"
+    },
+    {
+      "id": "call-the-departed",
+      "name": "Call the Departed",
+      "rarity": "rare",
+      "upgrade": "call-the-departed+"
+    },
+    {
+      "id": "requiem",
+      "name": "Requiem",
+      "rarity": "rare",
+      "upgrade": "requiem+"
+    },
+    {
+      "id": "ashfall",
+      "name": "Ashfall",
+      "rarity": "rare",
+      "upgrade": "ashfall+"
+    },
+    {
+      "id": "reaping-scythe",
+      "name": "Reaping Scythe",
+      "rarity": "rare",
+      "upgrade": "reaping-scythe+"
+    },
+    {
+      "id": "echo-of-the-dead",
+      "name": "Echo of the Dead",
+      "rarity": "rare",
+      "upgrade": "echo-of-the-dead+"
+    },
+    {
+      "id": "unquiet-rest",
+      "name": "Unquiet Rest",
+      "rarity": "rare",
+      "upgrade": "unquiet-rest+"
+    },
+    {
+      "id": "leech-lore",
+      "name": "Leech Lore",
+      "rarity": "common",
+      "upgrade": "leech-lore+"
+    },
+    {
+      "id": "grave-robbery",
+      "name": "Grave Robbery",
+      "rarity": "common",
+      "upgrade": "grave-robbery+"
+    },
+    {
+      "id": "harvest",
+      "name": "Harvest",
+      "rarity": "common",
+      "upgrade": "harvest+"
+    },
+    {
+      "id": "scatter-ashes",
+      "name": "Scatter Ashes",
+      "rarity": "common",
+      "upgrade": "scatter-ashes+"
+    },
+    {
+      "id": "entomb",
+      "name": "Entomb",
+      "rarity": "uncommon",
+      "upgrade": "entomb+"
+    },
+    {
+      "id": "bonded-dead",
+      "name": "Bonded Dead",
+      "rarity": "uncommon",
+      "upgrade": "bonded-dead+"
+    },
+    {
+      "id": "hammer-swing",
+      "name": "Hammer Swing",
+      "rarity": "basic",
+      "upgrade": "hammer-swing+"
+    },
+    {
+      "id": "pane-up",
+      "name": "Pane Up",
+      "rarity": "basic",
+      "upgrade": "pane-up+"
+    },
+    {
+      "id": "bottle-tripwire",
+      "name": "Bottle Tripwire",
+      "rarity": "basic",
+      "upgrade": "bottle-tripwire+"
+    },
+    {
+      "id": "buckshot-shell",
+      "name": "Buckshot Shell",
+      "rarity": "common",
+      "upgrade": "buckshot-shell+"
+    },
+    {
+      "id": "shard-toss",
+      "name": "Shard Toss",
+      "rarity": "common",
+      "upgrade": "shard-toss+"
+    },
+    {
+      "id": "shatter",
+      "name": "Smash the Pane",
+      "rarity": "uncommon",
+      "upgrade": "shatter+"
+    },
+    {
+      "id": "load-shells",
+      "name": "Load Shells",
+      "rarity": "common",
+      "upgrade": "load-shells+"
+    },
+    {
+      "id": "slug-round",
+      "name": "Slug Round",
+      "rarity": "common",
+      "upgrade": "slug-round+"
+    },
+    {
+      "id": "pump-action",
+      "name": "Pump Action",
+      "rarity": "uncommon",
+      "upgrade": "pump-action+"
+    },
+    {
+      "id": "shotgun-wedding",
+      "name": "Shotgun Wedding",
+      "rarity": "uncommon",
+      "upgrade": "shotgun-wedding+"
+    },
+    {
+      "id": "shell-game",
+      "name": "Shell Game",
+      "rarity": "uncommon",
+      "upgrade": "shell-game+"
+    },
+    {
+      "id": "boomstick",
+      "name": "Boomstick",
+      "rarity": "rare",
+      "upgrade": "boomstick+"
+    },
+    {
+      "id": "last-shell",
+      "name": "The Last Shell",
+      "rarity": "rare",
+      "upgrade": "last-shell+"
+    },
+    {
+      "id": "one-more-round",
+      "name": "One More Round",
+      "rarity": "rare",
+      "upgrade": "one-more-round+"
+    },
+    {
+      "id": "the-glass-palace",
+      "name": "The Glass Palace",
+      "rarity": "rare",
+      "upgrade": "the-glass-palace+"
+    },
+    {
+      "id": "old-twelve-gauge",
+      "name": "Old Twelve Gauge",
+      "rarity": "common"
+    },
+    {
+      "id": "rack-the-slide",
+      "name": "Rack the Slide",
+      "rarity": "common",
+      "upgrade": "rack-the-slide+"
+    },
+    {
+      "id": "powder-load",
+      "name": "Powder Load",
+      "rarity": "common",
+      "upgrade": "powder-load+"
+    },
+    {
+      "id": "pistol-whip",
+      "name": "Pistol Whip",
+      "rarity": "common",
+      "upgrade": "pistol-whip+"
+    },
+    {
+      "id": "glass-cover",
+      "name": "Glass Cover",
+      "rarity": "uncommon",
+      "upgrade": "glass-cover+"
+    },
+    {
+      "id": "hair-trigger",
+      "name": "Hair Trigger",
+      "rarity": "uncommon",
+      "upgrade": "hair-trigger+"
+    },
+    {
+      "id": "reload",
+      "name": "Reload",
+      "rarity": "uncommon",
+      "upgrade": "reload+"
+    },
+    {
+      "id": "extended-mag",
+      "name": "Extended Mag",
+      "rarity": "rare",
+      "upgrade": "extended-mag+"
+    },
+    {
+      "id": "rack-and-ruin",
+      "name": "Rack and Ruin",
+      "rarity": "rare",
+      "upgrade": "rack-and-ruin+"
+    },
+    {
+      "id": "trigger-discipline",
+      "name": "Trigger Discipline",
+      "rarity": "rare",
+      "upgrade": "trigger-discipline+"
+    },
+    {
+      "id": "shell-shock",
+      "name": "Shell Shock",
+      "rarity": "common",
+      "upgrade": "shell-shock+"
+    },
+    {
+      "id": "slugfest",
+      "name": "Slugfest",
+      "rarity": "uncommon",
+      "upgrade": "slugfest+"
+    },
+    {
+      "id": "shellshocked",
+      "name": "Shellshocked",
+      "rarity": "uncommon",
+      "upgrade": "shellshocked+"
+    },
+    {
+      "id": "fire-in-the-hole",
+      "name": "Fire in the Hole",
+      "rarity": "rare",
+      "upgrade": "fire-in-the-hole+"
+    },
+    {
+      "id": "ammo-dump",
+      "name": "Ammo Dump",
+      "rarity": "rare",
+      "upgrade": "ammo-dump+"
+    },
+    {
+      "id": "rolling-thunder",
+      "name": "Rolling Thunder",
+      "rarity": "rare",
+      "upgrade": "rolling-thunder+"
+    },
+    {
+      "id": "aim",
+      "name": "Aim",
+      "rarity": "common",
+      "upgrade": "aim+"
+    },
+    {
+      "id": "scope",
+      "name": "Scope",
+      "rarity": "uncommon",
+      "upgrade": "scope+"
+    },
+    {
+      "id": "ironsights",
+      "name": "Ironsights",
+      "rarity": "rare",
+      "upgrade": "ironsights+"
+    },
+    {
+      "id": "gunmetal-soul",
+      "name": "Gunmetal Soul",
+      "rarity": "rare",
+      "upgrade": "gunmetal-soul+"
+    },
+    {
+      "id": "bar-stool",
+      "name": "Bar Stool",
+      "rarity": "uncommon",
+      "upgrade": "bar-stool+"
+    },
+    {
+      "id": "last-orders",
+      "name": "Last Orders",
+      "rarity": "rare",
+      "upgrade": "last-orders+"
+    },
+    {
+      "id": "rusty-nail-board",
+      "name": "Rusty Nail Board",
+      "rarity": "uncommon",
+      "upgrade": "rusty-nail-board+"
+    },
+    {
+      "id": "molotov-cocktail",
+      "name": "Molotov Cocktail",
+      "rarity": "uncommon",
+      "upgrade": "molotov-cocktail+"
+    },
+    {
+      "id": "glass-jaw",
+      "name": "Glass Jaw",
+      "rarity": "rare",
+      "upgrade": "glass-jaw+"
+    },
+    {
+      "id": "sawn-off",
+      "name": "Sawn-Off",
+      "rarity": "uncommon",
+      "upgrade": "sawn-off+"
+    },
+    {
+      "id": "tin-can-alley",
+      "name": "Tin Can Alley",
+      "rarity": "uncommon",
+      "upgrade": "tin-can-alley+"
+    },
+    {
+      "id": "pick-up-the-brass",
+      "name": "Pick Up the Brass",
+      "rarity": "uncommon",
+      "upgrade": "pick-up-the-brass+"
+    },
+    {
+      "id": "hot-brass",
+      "name": "Hot Brass",
+      "rarity": "rare",
+      "upgrade": "hot-brass+"
+    },
+    {
+      "id": "spray-and-pray",
+      "name": "Spray and Pray",
+      "rarity": "uncommon",
+      "upgrade": "spray-and-pray+"
+    },
+    {
+      "id": "birdshot",
+      "name": "Birdshot",
+      "rarity": "common",
+      "upgrade": "birdshot+"
+    },
+    {
+      "id": "buttstroke",
+      "name": "Buttstroke",
+      "rarity": "common",
+      "upgrade": "buttstroke+"
+    },
+    {
+      "id": "spare-barrel",
+      "name": "Spare Barrel",
+      "rarity": "uncommon",
+      "upgrade": "spare-barrel+"
+    },
+    {
+      "id": "gun-oil",
+      "name": "Gun Oil",
+      "rarity": "common",
+      "upgrade": "gun-oil+"
+    },
+    {
+      "id": "dead-eye",
+      "name": "Dead Eye",
+      "rarity": "uncommon",
+      "upgrade": "dead-eye+"
+    },
+    {
+      "id": "broken-bottle",
+      "name": "Broken Bottle",
+      "rarity": "common",
+      "upgrade": "broken-bottle+"
+    },
+    {
+      "id": "chaser",
+      "name": "Chaser",
+      "rarity": "common",
+      "upgrade": "chaser+"
+    },
+    {
+      "id": "dumpster-dive",
+      "name": "Dumpster Dive",
+      "rarity": "uncommon",
+      "upgrade": "dumpster-dive+"
+    },
+    {
+      "id": "rummage-the-bin",
+      "name": "Rummage the Bin",
+      "rarity": "common",
+      "upgrade": "rummage-the-bin+"
+    },
+    {
+      "id": "sway",
+      "name": "Sway",
+      "rarity": "uncommon",
+      "upgrade": "sway+"
+    },
+    {
+      "id": "whiskey-miracle",
+      "name": "Whiskey Miracle",
+      "rarity": "rare",
+      "upgrade": "whiskey-miracle+"
+    },
+    {
+      "id": "rock-bottom",
+      "name": "Rock Bottom",
+      "rarity": "rare",
+      "upgrade": "rock-bottom+"
+    },
+    {
+      "id": "liquid-courage",
+      "name": "Liquid Courage",
+      "rarity": "uncommon",
+      "upgrade": "liquid-courage+"
+    },
+    {
+      "id": "window-pane",
+      "name": "Window Pane",
+      "rarity": "uncommon",
+      "upgrade": "window-pane+"
+    },
+    {
+      "id": "mean-drunk",
+      "name": "Mean Drunk",
+      "rarity": "uncommon",
+      "upgrade": "mean-drunk+"
+    },
+    {
+      "id": "booby-trapped-window",
+      "name": "Booby-Trapped Window",
+      "rarity": "rare",
+      "upgrade": "booby-trapped-window+"
+    },
+    {
+      "id": "broken-window-theory",
+      "name": "Broken Window Theory",
+      "rarity": "rare",
+      "upgrade": "broken-window-theory+"
+    },
+    {
+      "id": "double-tap",
+      "name": "Double Tap",
+      "rarity": "uncommon",
+      "upgrade": "double-tap+"
+    },
+    {
+      "id": "bandolier",
+      "name": "Bandolier",
+      "rarity": "uncommon",
+      "upgrade": "bandolier+"
+    },
+    {
+      "id": "scattergun-symphony",
+      "name": "Scattergun Symphony",
+      "rarity": "rare",
+      "upgrade": "scattergun-symphony+"
+    },
+    {
+      "id": "ricochet",
+      "name": "Ricochet",
+      "rarity": "rare",
+      "upgrade": "ricochet+"
+    },
+    {
+      "id": "bar-fight",
+      "name": "Bar Fight",
+      "rarity": "common",
+      "upgrade": "bar-fight+"
+    },
+    {
+      "id": "nurse-the-hangover",
+      "name": "Nurse the Hangover",
+      "rarity": "common",
+      "upgrade": "nurse-the-hangover+"
+    },
+    {
+      "id": "take-it-on-the-chin",
+      "name": "Take It on the Chin",
+      "rarity": "uncommon",
+      "upgrade": "take-it-on-the-chin+"
+    },
+    {
+      "id": "liquid-lunch",
+      "name": "Liquid Lunch",
+      "rarity": "common",
+      "upgrade": "liquid-lunch+"
+    },
+    {
+      "id": "one-for-the-road",
+      "name": "One for the Road",
+      "rarity": "common",
+      "upgrade": "one-for-the-road+"
+    },
+    {
+      "id": "drunken-swing",
+      "name": "Drunken Swing",
+      "rarity": "common",
+      "upgrade": "drunken-swing+"
+    },
+    {
+      "id": "bottle-to-the-head",
+      "name": "Bottle to the Head",
+      "rarity": "common",
+      "upgrade": "bottle-to-the-head+"
+    },
+    {
+      "id": "sob-story",
+      "name": "Sob Story",
+      "rarity": "common",
+      "upgrade": "sob-story+"
+    },
+    {
+      "id": "sweat-it-out",
+      "name": "Sweat It Out",
+      "rarity": "common",
+      "upgrade": "sweat-it-out+"
+    },
+    {
+      "id": "swig",
+      "name": "Swig",
+      "rarity": "uncommon",
+      "upgrade": "swig+"
+    },
+    {
+      "id": "barroom-brawl",
+      "name": "Barroom Brawl",
+      "rarity": "uncommon",
+      "upgrade": "barroom-brawl+"
+    },
+    {
+      "id": "black-out",
+      "name": "Black Out",
+      "rarity": "uncommon",
+      "upgrade": "black-out+"
+    },
+    {
+      "id": "bender",
+      "name": "Bender",
+      "rarity": "uncommon",
+      "upgrade": "bender+"
+    },
+    {
+      "id": "hair-of-the-dog",
+      "name": "Hair of the Dog",
+      "rarity": "uncommon",
+      "upgrade": "hair-of-the-dog+"
+    },
+    {
+      "id": "liquid-dinner",
+      "name": "Liquid Dinner",
+      "rarity": "uncommon",
+      "upgrade": "liquid-dinner+"
+    },
+    {
+      "id": "dutch-courage",
+      "name": "Dutch Courage",
+      "rarity": "uncommon",
+      "upgrade": "dutch-courage+"
+    },
+    {
+      "id": "hammer-time",
+      "name": "Haymaker",
+      "rarity": "rare",
+      "upgrade": "hammer-time+"
+    },
+    {
+      "id": "bottoms-up",
+      "name": "Bottoms Up",
+      "rarity": "rare",
+      "upgrade": "bottoms-up+"
+    },
+    {
+      "id": "last-call",
+      "name": "Last Call",
+      "rarity": "rare",
+      "upgrade": "last-call+"
+    },
+    {
+      "id": "bottomless-flask",
+      "name": "Bottomless Flask",
+      "rarity": "rare",
+      "upgrade": "bottomless-flask+"
+    },
+    {
+      "id": "pass-out",
+      "name": "Pass Out",
+      "rarity": "rare",
+      "upgrade": "pass-out+"
+    },
+    {
+      "id": "haphazard-hook",
+      "name": "Haphazard Hook",
+      "rarity": "common",
+      "upgrade": "haphazard-hook+"
+    },
+    {
+      "id": "drunken-lurch",
+      "name": "Drunken Lurch",
+      "rarity": "common",
+      "upgrade": "drunken-lurch+"
+    },
+    {
+      "id": "stumble",
+      "name": "Stumble",
+      "rarity": "uncommon",
+      "upgrade": "stumble+"
+    },
+    {
+      "id": "free-for-all",
+      "name": "Free-for-All",
+      "rarity": "uncommon",
+      "upgrade": "free-for-all+"
+    },
+    {
+      "id": "drunken-master",
+      "name": "Drunken Master",
+      "rarity": "uncommon",
+      "upgrade": "drunken-master+"
+    },
+    {
+      "id": "blind-drunk",
+      "name": "Blind Drunk",
+      "rarity": "rare",
+      "upgrade": "blind-drunk+"
+    },
+    {
+      "id": "morning-after",
+      "name": "Morning After",
+      "rarity": "uncommon",
+      "upgrade": "morning-after+"
+    },
+    {
+      "id": "bell-of-judgment",
+      "name": "Bell of Judgment",
+      "rarity": "rare",
+      "upgrade": "bell-of-judgment+"
+    },
+    {
+      "id": "gilded-guard",
+      "name": "Gilded Guard",
+      "rarity": "rare",
+      "upgrade": "gilded-guard+"
+    },
+    {
+      "id": "seraphines-oath",
+      "name": "Seraphine's Oath",
+      "rarity": "rare",
+      "upgrade": "seraphines-oath+"
+    },
+    {
+      "id": "orbital-uplink",
+      "name": "Orbital Uplink",
+      "rarity": "rare",
+      "upgrade": "orbital-uplink+"
+    },
+    {
+      "id": "override-virus",
+      "name": "Override Virus",
+      "rarity": "rare",
+      "upgrade": "override-virus+"
+    },
+    {
+      "id": "assembly-arm",
+      "name": "Kron's Assembly Arm",
+      "rarity": "rare",
+      "upgrade": "assembly-arm+"
+    },
+    {
+      "id": "the-hunger-below",
+      "name": "The Hunger Below",
+      "rarity": "rare",
+      "upgrade": "the-hunger-below+"
+    },
+    {
+      "id": "maw-spawn-egg",
+      "name": "Maw Spawn Egg",
+      "rarity": "rare",
+      "upgrade": "maw-spawn-egg+"
+    },
+    {
+      "id": "gorrmaws-tooth",
+      "name": "Gorrmaw's Tooth",
+      "rarity": "rare",
+      "upgrade": "gorrmaws-tooth+"
+    },
+    {
+      "id": "nyxaras-web",
+      "name": "Nyxara's Web",
+      "rarity": "rare",
+      "upgrade": "nyxaras-web+"
+    },
+    {
+      "id": "faceless-courtier",
+      "name": "Faceless Courtier",
+      "rarity": "rare",
+      "upgrade": "faceless-courtier+"
+    },
+    {
+      "id": "unmasking",
+      "name": "Unmasking",
+      "rarity": "rare",
+      "upgrade": "unmasking+"
+    },
+    {
+      "id": "ancestral-blade",
+      "name": "Ancestral Blade",
+      "rarity": "ancestral",
+      "upgrade": "ancestral-blade+"
+    },
+    {
+      "id": "elders-bulwark",
+      "name": "Elder's Bulwark",
+      "rarity": "ancestral",
+      "upgrade": "elders-bulwark+"
+    },
+    {
+      "id": "forebears-gift",
+      "name": "Forebear's Gift",
+      "rarity": "ancestral",
+      "upgrade": "forebears-gift+"
+    },
+    {
+      "id": "echo-of-ages",
+      "name": "Echo of Ages",
+      "rarity": "ancestral",
+      "upgrade": "echo-of-ages+"
+    },
+    {
+      "id": "rite-of-renewal",
+      "name": "Rite of Renewal",
+      "rarity": "ancestral",
+      "upgrade": "rite-of-renewal+"
+    },
+    {
+      "id": "ancient-pact",
+      "name": "Ancient Pact",
+      "rarity": "ancestral",
+      "upgrade": "ancient-pact+"
+    },
+    {
+      "id": "ancestral-memory",
+      "name": "Ancestral Memory",
+      "rarity": "ancestral",
+      "upgrade": "ancestral-memory+"
+    },
+    {
+      "id": "spirit-hunt",
+      "name": "Spirit Hunt",
+      "rarity": "ancestral",
+      "upgrade": "spirit-hunt+"
+    },
+    {
+      "id": "lineage",
+      "name": "Lineage",
+      "rarity": "ancestral",
+      "upgrade": "lineage+"
+    },
+    {
+      "id": "wrath-of-ages",
+      "name": "Wrath of Ages",
+      "rarity": "ancestral",
+      "upgrade": "wrath-of-ages+"
+    },
+    {
+      "id": "the-long-memory",
+      "name": "The Long Memory",
+      "rarity": "ancestral",
+      "upgrade": "the-long-memory+"
+    },
+    {
+      "id": "unbroken-line",
+      "name": "Unbroken Line",
+      "rarity": "ancestral",
+      "upgrade": "unbroken-line+"
+    },
+    {
+      "id": "wound",
+      "name": "Wound",
+      "rarity": "basic"
+    },
+    {
+      "id": "static",
+      "name": "Static",
+      "rarity": "basic"
+    },
+    {
+      "id": "beckoning",
+      "name": "Beckoning",
+      "rarity": "basic"
+    },
+    {
+      "id": "haze",
+      "name": "Haze",
+      "rarity": "basic"
+    },
+    {
+      "id": "scorch",
+      "name": "Scorch",
+      "rarity": "basic"
+    },
+    {
+      "id": "muck",
+      "name": "Muck",
+      "rarity": "basic"
+    },
+    {
+      "id": "void-drain",
+      "name": "Void",
+      "rarity": "basic"
+    },
+    {
+      "id": "blight",
+      "name": "Blight",
+      "rarity": "basic"
+    },
+    {
+      "id": "venom",
+      "name": "Venom",
+      "rarity": "basic"
+    },
+    {
+      "id": "smudge",
+      "name": "Smudge",
+      "rarity": "basic"
+    },
+    {
+      "id": "scrap",
+      "name": "Scrap",
+      "rarity": "basic"
+    },
+    {
+      "id": "tinder",
+      "name": "Tinder",
+      "rarity": "basic"
+    },
+    {
+      "id": "dry-tinder",
+      "name": "Dry Tinder",
+      "rarity": "basic"
+    }
+  ]
+}

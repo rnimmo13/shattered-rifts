@@ -2,7 +2,7 @@
 // for decks with N drafted cards. Use it to spot a character that is far from the others (see docs/BALANCE.md).
 //   pnpm balance -- --n 12 --draft 10 --hp 100 --dmg 100
 
-import { applyAction, chooseAction, createCombat, heroOf } from '@sr/combat';
+import { applyAction, chooseSmartAction, createCombat, heroOf } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from '@sr/content/v2';
 
 function arg(name: string, fallback: number): number {
@@ -60,7 +60,7 @@ for (const h of Object.keys(RIFTWALKERS) as HeroId[]) {
         });
         const maxHp = heroOf(state.sides.a)?.maxHp ?? 0;
         for (let t = 0; t < 800 && !state.winner; t++)
-          state = applyAction(db, state, chooseAction(db, state)).state;
+          state = applyAction(db, state, chooseSmartAction(db, state)).state;
         fights++;
         if (state.winner === 'a') {
           wins++;

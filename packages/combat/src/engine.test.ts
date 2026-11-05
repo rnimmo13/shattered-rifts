@@ -758,7 +758,7 @@ describe('pvp mode', () => {
     const r = end(s0);
     expect(r.state.active).toBe('b');
     expect(r.state.sides.b.hand).toHaveLength(6);
-    expect(r.state.sides.b.mana).toBe(4);
+    expect(r.state.sides.b.mana).toBe(3);
     expect(end(r.state).state.sides.a.hand).toHaveLength(5);
   });
 

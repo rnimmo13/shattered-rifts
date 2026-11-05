@@ -126,13 +126,12 @@ packs; Umbral enemies set Traps of their own and debuff.
 
 ## 8. PvP
 
-> **Built (DECISIONS #161):** the first playable version is described in `11_PVP.md`. The bullets below are the design it follows; the turn clock is 75 s with two missed turns forfeiting, and the second player's head start is the engine's (+1 Mana, +1 card on their first turn).
+> **Current local rules83:** see `11_PVP.md` and `ARENA_TESTING_2026-11-05.md`. Both seats start at1,000 HP; the second player's only opening bonus is one card, no extra Mana. Turn clock75 s; two missed turns forfeit. Game clock30 minutes; three consecutive cardless passes by both players draw the game.
 
 - Two heroes, each with their run deck and Sigil, each with up to 3 allies and 3 Traps. Turns **alternate**; your turn
   is the player turn in §3, and during it you pick targets on the other side (hero or ally; Taunt applies).
 - No intents (the opponent is a person); you see their board, their Traps as sealed sigils, and their hand size.
-- The second player draws 1 extra card on their first turn and gets 1 free Mana of "Rift Spark" on turn 1 (confirm,
-  balance later). Turn timer 60 s with a bank.
+- The second player draws1 extra card on their first turn only. Normal Mana and later draws; no time bank.
 - The engine is the same, so the existing PvP plans (ghosts, seasons, tournaments) still apply; only the duel rules change.
 
 ## 9. Campaign changes
