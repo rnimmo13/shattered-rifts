@@ -712,6 +712,8 @@ export type Op =
       ownTurn?: boolean;
       /** Number of qualifying activations before switching to afterLimit (or stopping). */
       perTurnLimit?: number;
+      /** Maximum actual Barrier granted by this trigger instance per turn, after modifiers. */
+      barrierCap?: number;
       /** Same limit measured from the start of the owner's turn to its next turn. */
       perRoundLimit?: number;
       afterLimit?: Op[];
@@ -813,6 +815,8 @@ export type Op =
        * enemy; `upgrade`: each is upgraded first (Knife Trap) */
       tag?: string;
       all?: boolean;
+      /** Maximum fitting cards taken by an all-pile play, in existing pile order. */
+      limit?: number;
       aim?: 'target';
       upgrade?: boolean;
       /** each card taken is played this many times */
@@ -1394,6 +1398,9 @@ export interface PowerState {
   once?: boolean;
   ownTurn?: boolean;
   perTurnLimit?: number;
+  barrierCap?: number;
+  barrierAt?: number;
+  barrierUsed?: number;
   perRoundLimit?: number;
   afterLimit?: Op[];
   usesAt?: number;

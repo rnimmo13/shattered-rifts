@@ -8,16 +8,21 @@ import {
   clone,
   createCombat,
   legalActions,
+  previewCardDamage,
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
-function fight(hero: 'knight' | 'assassin', hand: string[] = []): CombatState {
+function fight(
+  hero: 'knight' | 'assassin',
+  hand: string[] = [],
+  mode: 'pve' | 'pvp' = 'pve',
+): CombatState {
   const deck = RIFTWALKERS[hero].starter;
   const { state } = createCombat(db, {
     seed: 'vow-test',
     a: { hero, deck: [...deck, ...deck] },
-    b: { enemies: ['squire', 'squire'] },
+    b: mode === 'pvp' ? { hero: 'knight', deck } : { enemies: ['squire', 'squire'] },
   });
   const s = clone(state);
   for (const u of s.sides.b.units) {
@@ -129,6 +134,114 @@ describe('the Mana Reserves trait', () => {
 });
 
 describe('the Reserves cards', () => {
+  it.each([
+    ['set-your-shield', 1, 6, 3],
+    ['set-your-shield+', 1, 8, 4],
+    ['measured-strike', 2, 7, 5],
+    ['measured-strike+', 2, 9, 6],
+  ] as const)('%s checks its threshold after spending Reserves', (card, threshold, base, bonus) => {
+    for (const mana of [0, 3]) {
+      for (const reserves of [threshold - 1, threshold, threshold + 1]) {
+        const s = fight('knight', [card]);
+        s.sides.a.mana = mana;
+        s.sides.a.reserves = reserves;
+        if (mana + reserves < 1) continue;
+        const remaining = reserves - (mana === 0 ? 1 : 0);
+        const expected = base + (remaining >= threshold ? bonus : 0);
+        const next = play(s, card);
+        expect(card.startsWith('set-') ? hero(next).barrier : lost(next)).toBe(expected);
+      }
+    }
+  });
+
+  it.each(['oath-unbroken', 'oath-unbroken+', 'measured-conviction', 'measured-conviction+'])(
+    '%s checks the banked end-turn total at its exact threshold',
+    (card) => {
+      const oath = card.startsWith('oath-');
+      const threshold = oath ? 4 : 2;
+      for (const final of [threshold - 1, threshold, threshold + 1]) {
+        const s = play(fight('knight', [card]), card);
+        s.sides.a.reserves = final - 1;
+        s.sides.a.mana = 1;
+        const result = endTurn(s);
+        expect(result.sides.a.reserves).toBe(final);
+        expect(hero(result).statuses.might ?? 0).toBe(final >= threshold ? (oath ? 3 : 1) : 0);
+      }
+    },
+  );
+  it.each([0, 1, 3, 7, 23])(
+    'Patient Wall base/upgraded reads all %i current Reserves independently per copy',
+    (reserves) => {
+      for (const mode of ['pve', 'pvp'] as const) {
+        for (const [card, multiplier] of [
+          ['patient-wall', 4],
+          ['patient-wall+', 5],
+        ] as const) {
+          let s = fight('knight', [card, card], mode);
+          s.sides.a.mana = 4;
+          s = play(play(s, card), card);
+          s.sides.a.reserves = reserves;
+          s.sides.a.mana = 0;
+          const result = applyAction(db, s, { type: 'endTurn' });
+          const gains = result.events.flatMap((e) =>
+            e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : [],
+          );
+          expect(gains).toEqual([reserves, reserves * multiplier, reserves * multiplier]);
+        }
+      }
+    },
+  );
+
+  it.each([false, true])(
+    'Patient Wall applies Warded Heart before Brittle (brittle: %s), without boosting the trait',
+    (brittle) => {
+      const s = play(fight('knight', ['patient-wall+']), 'patient-wall+');
+      s.sides.a.boons = ['warded-heart'];
+      s.sides.a.reserves = 7;
+      s.sides.a.mana = 0;
+      if (brittle) hero(s).statuses.brittle = 1;
+      const result = applyAction(db, s, { type: 'endTurn' });
+      expect(
+        result.events.flatMap((e) =>
+          e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : [],
+        ),
+      ).toEqual(brittle ? [5, 32] : [7, 43]);
+    },
+  );
+
+  it.each([
+    ['vow-kept', 1, 3, 5],
+    ['vow-kept+', 1, 4, 6],
+    ['vow-fulfilled', 3, 18, 7],
+    ['vow-fulfilled+', 3, 22, 8],
+  ] as const)(
+    '%s preview and damage use Reserves left after paying the cost',
+    (card, cost, base, multiplier) => {
+      for (const mana of [0, 1, 3]) {
+        for (const reserves of [3, 7, 23]) {
+          const s = fight('knight', [card]);
+          s.sides.a.reserves = reserves;
+          s.sides.a.mana = mana;
+          const expected = base + multiplier * (reserves - Math.max(0, cost - mana));
+          const before = JSON.stringify(s);
+          expect(previewCardDamage(db, s, 'T0', s.sides.b.units[0]!.id).get(0)?.lo).toBe(expected);
+          expect(JSON.stringify(s)).toBe(before);
+          expect(lost(play(s, card))).toBe(expected);
+        }
+      }
+    },
+  );
+
+  it('end-turn Reserves gains affect later Auras in play order, with no stale snapshot', () => {
+    let s = fight('knight', ['unyielding-line', 'patient-wall']);
+    s = play(play(s, 'unyielding-line'), 'patient-wall');
+    s.sides.a.reserves = 1;
+    s.sides.a.mana = 0;
+    hero(s).barrier = 10;
+    const result = applyAction(db, s, { type: 'endTurn' });
+    expect(result.state.sides.a.reserves).toBe(3);
+    expect(result.events.some((e) => e.type === 'barrier' && e.amount === 12)).toBe(true);
+  });
   it('Stand Fast: 5 Barrier and 2 Plating, and 2 more Max Reserves for this turn only, so more Mana is kept', () => {
     let s = play(fight('knight', ['stand-fast']), 'stand-fast');
     expect(hero(s).barrier).toBe(5);

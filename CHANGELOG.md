@@ -1,3 +1,12 @@
+## 0.208.0 / rules85 — release approved (decision640)
+
+Robert authorizes commit, push and deployment of the complete Reserves/Heart correctness and Recall/Shadow Echo cap candidate below, including matching Windows updater. All3,916tests/188files, workspace typechecks, lint (two existing warnings) and production builds pass. Release validation: [0.208](docs/RELEASE_0.208_VALIDATION.md). Historical local assessment labels remain unchanged.
+
+## 0.208.0 / rules85 — local, not released
+
+- Fix recurring Aura, Trap and discard/Consume card provenance for existing Warded/Blood Heart multipliers; preserve non-Attack semantics and exclude trait/status/companion/totem/phase sources. Patient Wall at3 Reserves with Warded:12→15 Barrier base,15→18 upgraded before Brittle; with Brittle9→11 and11→13. No card costs/scaling coefficients changed.
+- Audit every current Reserves scale/threshold, cost payment, high stored totals and trigger ordering; add deterministic Campaign/Arena, upgrade, stacking and preview regressions. Exact affected-card inventory, scope and migration in [Reserves audit](docs/RESERVES_AUDIT_2026-11-05.md) and player patch notes. No simulations or measured regrades. Web/desktop0.208.0; incompatible older combat restarts through existing checkpoint migration. Fresh release approval required.
+
 ## 0.207.0 / rules84 — release approved: finale refinement, run timing and mobile targeting
 
 - Per-run elapsedMs timer counts idle time in every screen of that run, pauses outside, freezes on completion/collapse and survives reload. Visible in sticky map/event header and battle top bar. Checkpoint every10seconds, on actions/leave and before update/Quit. Old runs track from update only; no leaderboard timing claim.
@@ -900,3 +909,9 @@ Exact hand budgets, experiment limitations and local status: `docs/BALANCE_REVIS
   unlocks and cosmetics are permanent.
 
 
+
+## Local0.208.0 follow-up — knife caps (rules85)
+
+- Campaign/Arena Recall the Blades, base/upgraded: all consumed Daggers→first15eligible per cast in existing pile order; upgraded still upgrades selected Daggers.2Mana and return-to-consumed behavior retained. Update live totals/counts.
+- Campaign/Arena Shadow Echo, base/upgraded: unlimited→15actual Barrier per copy per turn, counted after modifiers; automatic plays included. Two copies30. Zero gains do not spend budget; Barrier loss does not refill it. Save/restore preserves counter; next turn resets.1Mana and upgraded Opening hand retained.
+- Existing deck copies inherit limits; existing rules85 candidate migration retained. Exact evidence/scope in [knife ledger](docs/ASSASSIN_KNIFE_CAPS_2026-11-05.md), append-only assessment0.208.0-knives-review-1. No simulations, measured regrades or release approval.

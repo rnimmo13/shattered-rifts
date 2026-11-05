@@ -34,7 +34,7 @@ export function validateDb(db: CombatDb): string[] {
           errs.push(`${where}: scale minimum exceeds maximum`);
       }
       if (o.op === 'power') {
-        for (const limit of [o.perTurnLimit, o.perRoundLimit])
+        for (const limit of [o.perTurnLimit, o.perRoundLimit, o.barrierCap])
           if (limit !== undefined && (!Number.isInteger(limit) || limit < 1))
             errs.push(`${where}: trigger limits must be positive integers`);
         if (o.perTurnLimit !== undefined && o.perRoundLimit !== undefined)
@@ -42,6 +42,12 @@ export function validateDb(db: CombatDb): string[] {
         if (o.afterLimit && o.perTurnLimit === undefined && o.perRoundLimit === undefined)
           errs.push(`${where}: afterLimit requires a trigger limit`);
       }
+      if (
+        o.op === 'playPile' &&
+        o.limit !== undefined &&
+        (!o.all || !Number.isInteger(o.limit) || o.limit < 1)
+      )
+        errs.push(`${where}: pile limit requires all and a positive integer`);
       if (
         o.op === 'attackAura' &&
         (!Number.isFinite(o.amount) ||

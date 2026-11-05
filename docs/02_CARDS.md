@@ -387,3 +387,7 @@ Whispered Bargain ×2, Shadow Coil ×3, Rift Wanderer ×1, Rift Bolt ×2, Shatte
 - Target: ~150 cards for Steam Early Access, ~250 by 1.0.
 
 Current Campaign Warden Hearts (local0.206/rules84) are passive run modifiers, not cards. See [exact Heart ledger](WARDEN_HEARTS_2026-11-05.md) and packages/content/src/v2/boons.ts; this legacy card list does not define their values.
+
+### Local0.208.0 / rules85: approved knife caps
+
+Recall the Blades base/upgraded replays at most15consumed Daggers per cast (was all); upgraded still upgrades selected knives. Shadow Echo base/upgraded grants at most15actual Barrier per copy per turn (was unlimited), including automatic plays; two copies30. Costs unchanged2/1Mana; upgraded Echo retains Opening hand. Shared Campaign/Arena. [Exact ledger](ASSASSIN_KNIFE_CAPS_2026-11-05.md). No release approval.

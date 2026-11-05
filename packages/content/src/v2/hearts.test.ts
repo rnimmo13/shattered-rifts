@@ -12,6 +12,37 @@ const db: CombatDb = {
   ...original,
   cards: {
     ...original.cards,
+    heartAura: {
+      id: 'heartAura',
+      name: 'Recurring guard and damage',
+      kind: 'power',
+      rarity: 'common',
+      cost: 0,
+      target: 'none',
+      effects: [
+        {
+          op: 'power',
+          when: 'turnEnd',
+          ops: [
+            { op: 'barrier', amount: 40, to: 'self' },
+            { op: 'damage', amount: 40, to: 'allFoes' },
+          ],
+        },
+      ],
+    },
+    heartTrap: {
+      id: 'heartTrap',
+      name: 'Reactive guard and damage',
+      kind: 'snare',
+      rarity: 'common',
+      cost: 0,
+      target: 'none',
+      trigger: { on: 'foeTurn' },
+      effects: [
+        { op: 'barrier', amount: 40, to: 'self' },
+        { op: 'damage', amount: 40, to: 'allFoes' },
+      ],
+    },
     heartHit: {
       id: 'heartHit',
       name: 'Hit',
@@ -106,6 +137,73 @@ describe("Warden's Hearts", () => {
   it('Blood does not increase HP payments', () => {
     expect(hero(play(start('blood-heart', 'heartPay'))).hp).toBe(20);
   });
+  it.each(['discard', 'exhaustCards'] as const)(
+    'Heart bonuses follow %s card callbacks, not the card moving them',
+    (op) => {
+      const callbackDb: CombatDb = {
+        ...db,
+        cards: {
+          ...db.cards,
+          callback: {
+            id: 'callback',
+            name: 'Callback',
+            kind: 'skill',
+            rarity: 'common',
+            cost: 0,
+            target: 'none',
+            effects: [],
+            onDiscard: [{ op: 'barrier', amount: 40, to: 'self' }],
+            onExhaust: [{ op: 'barrier', amount: 40, to: 'self' }],
+          },
+          mover: {
+            id: 'mover',
+            name: 'Mover',
+            kind: 'skill',
+            rarity: 'common',
+            cost: 0,
+            target: 'none',
+            effects: [{ op, amount: 1, random: true }],
+          },
+        },
+      };
+      const s = start('warded-heart');
+      s.sides.a.hand = [
+        { id: 'move', card: 'mover' },
+        { id: 'cb', card: 'callback' },
+      ];
+      expect(hero(applyAction(callbackDb, s, { type: 'play', card: 'move' }).state).barrier).toBe(
+        37,
+      );
+    },
+  );
+  it.each(['heartAura', 'heartTrap'])(
+    '%s retains its card origin for Heart bonuses without becoming an Attack',
+    (card) => {
+      for (const heart of ['blood-heart', 'warded-heart']) {
+        const s = start(heart, card);
+        hero(s).statuses.might = 100;
+        for (const foe of s.sides.b.units) {
+          foe.hp = foe.maxHp = 1000;
+          foe.statuses.exposed = 2;
+        }
+        const active = JSON.parse(JSON.stringify(play(s))) as CombatState;
+        const result = applyAction(db, active, { type: 'endTurn' });
+        expect(
+          result.events
+            .filter((e) => e.type === 'damage' && e.source === hero(s).id)
+            .map((e) => (e.type === 'damage' ? e.lost + e.blocked : 0)),
+        ).toEqual(heart === 'blood-heart' ? [50, 50] : [40, 40]);
+        expect(
+          result.events.some(
+            (e) =>
+              e.type === 'barrier' &&
+              e.target === hero(s).id &&
+              e.amount === (heart === 'warded-heart' ? 37 : 40),
+          ),
+        ).toBe(true);
+      }
+    },
+  );
   it('Glutton uses the exact underlying max HP when growth rounds down', () => {
     const s = start('gluttons-heart', 'heartGrow', 95, 95);
     const after = play(s);

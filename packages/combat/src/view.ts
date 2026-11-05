@@ -1682,7 +1682,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? said.split('until the end of their next turn').join("until the end of the enemy's turn")
           : said;
       const opening =
-        (o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when) + limitText;
+        (o.temp ? `This turn, ${when.charAt(0).toLowerCase()}${when.slice(1)}` : when) +
+        limitText +
+        (o.barrierCap !== undefined
+          ? ` (up to ${o.barrierCap} Barrier per copy each turn, after modifiers)`
+          : '');
       // ("At the end of your turn, if you spent none: ...", not two colons in a row)
       return body.startsWith('If ') ? `${opening}, if ${body.slice(3)}` : `${opening}: ${body}`;
     }
@@ -1813,7 +1817,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : `Play the top card of your draw pile${end}.`;
       if (o.from === 'exhaust' && o.all) {
         const nm = o.tag ? (TAG_NAMES[o.tag] ?? o.tag) : what;
-        return `${o.upgrade ? 'Upgrade and play' : 'Play'} every ${nm} in your consumed pile${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
+        const quantity =
+          o.limit === undefined
+            ? `every ${nm}`
+            : `up to ${o.limit} ${nm}${o.limit === 1 ? '' : 's'}`;
+        return `${o.upgrade ? 'Upgrade and play' : 'Play'} ${quantity} in your consumed pile${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
       }
       if (o.from === 'exhaust')
         return 'Play a random card from your consumed pile; it goes back there.';

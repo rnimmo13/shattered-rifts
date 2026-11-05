@@ -1,3 +1,9 @@
+Release mapping: Robert approved the complete0.208.0/rules85 Reserves/provenance and knife-cap candidate for website/server and Windows publication, decision640. [Validation](../RELEASE_0.208_VALIDATION.md). Assessment-time local labels below remain historical; no new measured grades.
+
+Latest local follow-up: [0.208.0 knife review1](0.208.0-knives-review-1.md), [CSV](0.208.0-knives-review-1.csv), [ledger and real-player evidence](../ASSASSIN_KNIFE_CAPS_2026-11-05.md). Approved15Dagger/cast Recall and15actualBarrier/copy/turn Echo caps; historical saved Assassin finale only, no new-rules parity or simulations. Earlier snapshots preserved; no release approval.
+
+Latest local correction: [0.208.0 Reserves audit](0.208.0.md), [CSV](0.208.0.csv), [exact scope](../RESERVES_AUDIT_2026-11-05.md). Correct existing Heart modifiers on recurring card effects; no changed card coefficients, new grades or simulations. No release approval.
+
 # Balance history
 
 Latest local assessment: [0.207 finale refinement](0.207.0.md), [CSV](0.207.0.csv), [JSON](0.207.0.json), [ledger](../FINALE_REFINEMENT_2026-11-05.md). All30 Ascendancies/class starts/mixed builds remain unmeasured for the new five Tier XII upgrade/remove shrines. One retained client-observed victory supports completion correction only. No simulations. Robert approved the complete0.207 release after final validation (decision637).

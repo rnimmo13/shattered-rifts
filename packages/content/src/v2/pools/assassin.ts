@@ -41,7 +41,13 @@ const q = pool('assassin', 'umbral');
 /** Deal `amount` damage per Skill in hand, on one hit (Flechettes, DECISIONS #507). */
 const perSkill = (amount: number): Op => scaled(dmg(0), per('skillsInHand', amount));
 const knifeTrap = (upgrade: boolean): Op =>
-  playPile('exhaust', { tag: 'knife', all: true, aim: 'target', ...(upgrade ? { upgrade } : {}) });
+  playPile('exhaust', {
+    tag: 'knife',
+    all: true,
+    limit: 15,
+    aim: 'target',
+    ...(upgrade ? { upgrade } : {}),
+  });
 const tick = (to: 'allFoes' | 'target'): Op => ({ op: 'tick', to });
 
 export const ASSASSIN: CardDef[] = [
@@ -638,9 +644,18 @@ export const ASSASSIN: CardDef[] = [
     up: { effects: [mana(1), manaNext(1), draw(2)] },
   }),
   // (Afterimage: the upgrade is in your opening hand)
-  q('rare', 'shadow-echo', 'Shadow Echo', 'power', 1, 'none', [on('play', [barrier(1)])], {
-    up: { innate: true },
-  }),
+  q(
+    'rare',
+    'shadow-echo',
+    'Shadow Echo',
+    'power',
+    1,
+    'none',
+    [on('play', [barrier(1)], { barrierCap: 15 })],
+    {
+      up: { innate: true },
+    },
+  ),
   // (Bullet Time)
   q('rare', 'stilled-time', 'Stilled Time', 'skill', 3, 'none', [drawLock, { op: 'freeHand' }]),
   // (Burst)

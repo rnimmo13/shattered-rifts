@@ -1,5 +1,11 @@
 # Shattered Rifts: Agent Guide
 
+**Release approval, 2026-11-05 (#640):** Robert explicitly authorizes committing, pushing and deploying the complete0.208.0/rules85 candidate: Reserves audit/recurring card Heart-provenance fixes, Recall the Blades15Daggers/cast and Shadow Echo15actualBarrier/copy/turn caps, updated previews/tests/notes and append-only assessments. Publish website/server and matching Windows updater from clean validated source and verify live versions. Earlier local labels are historical; future changes require new approval.
+
+**Local0.208 follow-up (#639):** approved Recall the Blades15Daggers/cast (base/upgraded) and Shadow Echo15actualBarrier/copy/turn caps, Campaign/Arena. Preserve costs, upgraded Recall upgrades, upgraded Echo Opening hand. Real historical Assassin finale trace supports the review; no new-rules simulations or regrades. Exact ledger docs/ASSASSIN_KNIFE_CAPS_2026-11-05.md and append-only0.208.0-knives-review-1 assessment. No release approval.
+
+**Local0.208.0 / rules85, 2026-11-05 (#638):** Reserves audit confirms current stored values after payment/banking, including high totals and Aura order. Fix lost card provenance so Warded/Blood Heart bonuses reach recurring Aura/Trap/discard/Consume effects; preserve non-Attack semantics and non-card exclusions. Exact ledger: docs/RESERVES_AUDIT_2026-11-05.md. No card coefficient changes, simulations or measured regrades. Not released; fresh approval required.
+
 **Release approval, 2026-11-05 (#637):** Robert explicitly authorizes finishing, committing, pushing and deploying the complete0.207.0/rules84 change set: Tier XII upgrade/remove shrines, Golemancer completion sync/repair, Tier > Status > Shards > arrival rankings, required safe-boundary updates, separate persistent run timers and mobile model/companion targeting improvements. Publish website/server and matching Windows updater from clean validated source; verify live versions. Future changes require new approval.
 
 **Release approval, 2026-11-05 (#633):** Robert authorizes committing, pushing and deploying everything as0.206.0/rules84: Warden Hearts, Campaign Completed/Dead statuses, final boss renamed Valerion (internal id stays `vorthax`, #631) and instant victory after Valerion (#629). Website/server plus matching desktop updater. Future changes require new approval.

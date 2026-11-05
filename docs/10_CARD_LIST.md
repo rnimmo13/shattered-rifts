@@ -477,7 +477,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Killing Stroke | 0 | attack | rare | Deal 10 damage. Apply 1 Exposed. Consume. Opening hand. |
 | Inked Blades | 1 | skill | rare | Add 2 Inked Daggers to your hand. |
 | Wide Arc | 2 | aura | rare | On play: Gain Fanned. Add 2 Daggers to your hand. |
-| Recall the Blades | 2 | skill | rare | Play every Dagger in your consumed pile against the target; they go back there. |
+| Recall the Blades | 2 | skill | rare | Play up to 15 Daggers in your consumed pile against the target; they go back there. |
 | Serpent's Coil | 3 | aura | rare | Whenever you play a card: Deal 4 damage to a random enemy. |
 | Into the Shadows | 2 | skill | rare | Defer up to 3 cards. Discard your hand. Gain Poised. |
 | Steel Monsoon | 1 | skill | rare | Discard your hand. Add Daggers to your hand equal to the cards discarded this way. |
@@ -490,7 +490,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Blood Scent | 2 | aura | rare | On play: Gain Tracking. |
 | Razor Skin | 3 | aura | rare | Premeditate. On play: Gain 1 Bracing. Gain 4 Thorns. These last the rest of the fight. |
 | Rush of Blood | 0 | skill | rare | Gain 1 Mana. Draw 2 cards. Consume. |
-| Shadow Echo | 1 | aura | rare | Whenever you play a card: Gain 1 Barrier. |
+| Shadow Echo | 1 | aura | rare | Whenever you play a card (up to 15 Barrier per copy each turn, after modifiers): Gain 1 Barrier. |
 | Stilled Time | 3 | skill | rare | You cannot draw more cards this turn. Every card in your hand costs 0 this turn. |
 | Double Trick | 1 | skill | rare | Gain 1 Mirrored. |
 | Grand Scheme | 2 | aura | rare | On play: Gain Planner. |

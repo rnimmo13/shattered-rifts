@@ -45,6 +45,91 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.208.0',
+    date: '2026-11-05',
+    title: 'Knife limits and recurring card effects',
+    summary:
+      'Recall and Shadow Echo gain limits; recurring card effects receive their Heart bonuses correctly.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Recall the Blades',
+        card: 'recall-the-blades',
+        text: 'Campaign and Arena, base and upgraded. Replay the first eligible Daggers in consumed-pile order, up to 15 per cast. Replayed Daggers return to the consumed pile; unselected cards stay unchanged. The upgrade still upgrades selected Daggers before playing them. Mana cost remains 2, and Fanned targeting is unchanged. Existing deck copies use the new limit.',
+        changes: [
+          {
+            label: 'Base — Daggers replayed per cast',
+            before: 'All',
+            after: 'Up to 15',
+            direction: 'nerf',
+          },
+          {
+            label: 'Upgraded — Daggers upgraded and replayed per cast',
+            before: 'All',
+            after: 'Up to 15',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Shadow Echo',
+        card: 'shadow-echo',
+        text: 'Campaign and Arena, base and upgraded. Each Aura still triggers for 1 Barrier per card played, including automatic Recall plays, but can grant at most 15 actual Barrier per turn after modifiers. Each copy has its own allowance: two copies can grant up to 30. Losing or spending Barrier does not refill the allowance; it resets each new turn and persists through saving/reloading. The upgraded card still starts in your opening hand. Existing deck copies use the cap.',
+        changes: [
+          {
+            label: 'Base — Barrier per copy per turn',
+            before: 'Unlimited',
+            after: 'Up to 15',
+            direction: 'nerf',
+          },
+          {
+            label: 'Upgraded — Barrier per copy per turn',
+            before: 'Unlimited',
+            after: 'Up to 15',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'fixed',
+        title: 'Patient Wall and Reserves',
+        card: 'patient-wall',
+        text: 'Campaign and Arena: Reserves scaling is checked against the current stored amount, with no cap at 3. Attacks and conditional cards use Reserves left after paying their Mana cost; end-turn Auras use the total after unspent Mana is banked and read earlier Aura effects in play order. Patient Wall remains 4 Barrier per Reserve, or 5 upgraded, per copy. Its Barrier protects through the enemy turn and follows the usual reset or retention at your next turn.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Warded Heart — recurring card Barrier',
+        boon: 'warded-heart',
+        text: "Campaign only. Recurring Aura, Trap and discard/Consume card effects now receive the existing +25% card Barrier bonus before Brittle reduces the gain by 25% and rounds down. At 3 Reserves, Patient Wall gives 12 → 15 Barrier, or 15 → 18 upgraded, before Brittle. Trait Barrier, Plating, companion/totem actions, Boons and phase Barrier keep their existing rules. Affected cards (base and upgraded): Alarm Bell, Berserker's Rage, Numbing Rite, Bloodied Plate, Hardened Scars, Patient Wall, Measured Conviction, Countermeasure Grid, Clockwork Trap, Heavy Plating, Heavy Industry, Salvage Rights, Scar Tissue, Scarred Warrior, Pack Bond, Pack Leader, Snare Line, Baited Snare, Master Trapper, Trapper's Dividend, Metronome Trap, Patient Guard, Shadow Echo, Frostbound, Storm Sovereign, Hail Chant, Spirit Pact, Surge of Ire, Unmoved Mind, Serenity Incarnate, Gentle Return, Perfect Balance, Morning Prayer, Mantra Engine, Unwavering, Breath Between Blows, Unbroken Calm, Glass Guard, Pillar of Glass, Fault Reader, Sigil of Kindling, Sigil of Glass, Afterglow, Obsidian Aegis, Eye of the Storm, The Twelve-Gauge Opera, Burial Shroud, Dance of Bones, Ashfall, The Glass Palace, Gunmetal Soul, Glass Jaw, Hot Brass, Gun Oil, Mean Drunk, Bandolier, Dutch Courage, Drunken Master, Morning After, Nyxara's Web, Unbroken Line.",
+        changes: [
+          {
+            label: 'Heart multiplier on affected card Barrier',
+            before: '×1 (bonus skipped)',
+            after: '×1.25',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'fixed',
+        title: 'Blood Heart — recurring card damage',
+        boon: 'blood-heart',
+        text: "Campaign only. Direct damage from Aura, Trap and discard/Consume card effects now receives the existing +25% bonus. These effects remain non-Attacks: Might, Faltering and Exposed do not start multiplying them. HP payments, status ticks, companions and totems keep their existing rules. Affected cards (base and upgraded): Hidden Pitfall, Alarm Bell, Bastion Engine, Blood Fire, Gilded Bulwark, Swarm Tactics, Drone Ambush, Countermeasure Grid, Overwatch, Den Mother, Gnarltooth Trap, Wounded Wrath, Gut Trap, Bear Trap, Deadfall, Baited Snare, Set the Web, Pinprick Trap, Trip Line, Hollow Trap, Time Bomb, Bait and Switch, Tripwire Garrote, Trap Net, Masquerade, The Perfect Trap, Gleeful Trapsmith, Fang Pit, False Floor, Metronome Trap, Poison Pantry, Serpent's Coil, Fleet Fingers, Heart of the Pyre, Lightning Rod, Storm Sovereign, Rampage of Ire, Coiled Serpent, Unmoved Mind, Wheel of Motion, The Long Ambush, Eye of the Storm, Fleshcraft, Bottle Tripwire, The Glass Palace, Shellshocked, Rusty Nail Board, Molotov Cocktail, Glass Jaw, Booby-Trapped Window, Broken Window Theory, Scattergun Symphony, Bell of Judgment, Orbital Uplink.",
+        changes: [
+          {
+            label: 'Heart multiplier on affected direct card damage',
+            before: '×1 (bonus skipped)',
+            after: '×1.25',
+            direction: 'buff',
+          },
+        ],
+      },
+    ],
+    heads:
+      'Existing decks and card upgrades are retained. An unfinished battle from older combat rules restarts at its saved checkpoint; old rules84 Arena replays require their original rules.',
+  },
+  {
     version: '0.207.0',
     date: '2026-11-05',
     title: 'One last refinement',

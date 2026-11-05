@@ -67,6 +67,7 @@ import {
   type HeroSetup,
   type Metric,
   type Op,
+  type PowerState,
   type Pattern,
   type RuneState,
   type Scale,
@@ -184,6 +185,10 @@ interface Act {
   hit: { prevented: boolean } | null;
   /** the card being played (null for anything else) and its instance */
   card: CardDef | null;
+  /** The card owning an Aura, Trap or movement callback, without treating it as a card play. */
+  sourceCard: CardDef | null;
+  /** Shared with the owning Power, including nested operations and reactive triggers. */
+  barrierPower: PowerState | null;
   inst: CardInst | null;
   /** Mana spent on an X card */
   x: number;
@@ -238,6 +243,8 @@ const mkAct = (actor: Unit, extra: Partial<Act> = {}): Act => ({
   attacker: null,
   hit: null,
   card: null,
+  sourceCard: null,
+  barrierPower: null,
   inst: null,
   x: 0,
   charge: 0,
@@ -687,7 +694,7 @@ function isAttackAct(a: Act): boolean {
 /** One attack hit from `a.actor` on `t`: Traps may spring first and may cancel it. */
 /** One hit of an attack. Returns the HP it took off (for Lifesteal). */
 function cardBoonBonus(r: Run, a: Act, field: 'cardDamagePct' | 'cardBarrierPct'): number {
-  if (!a.card || a.actor.kind !== 'hero') return 0;
+  if ((!a.card && !a.sourceCard) || a.actor.kind !== 'hero') return 0;
   return r.s.sides[a.actor.side].boons.reduce((n, id) => n + (r.db.boons[id]?.[field] ?? 0), 0);
 }
 
@@ -1364,7 +1371,12 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
   });
   runOps(
     r,
-    mkAct(hero, { target: attacker, attacker, hit: t.on === 'attacked' ? t.hit : null }),
+    mkAct(hero, {
+      sourceCard: cd,
+      target: attacker,
+      attacker,
+      hit: t.on === 'attacked' ? t.hit : null,
+    }),
     cd.effects,
   );
   sd.discard.push({ id: sn.id, card: sn.card });
@@ -2154,9 +2166,18 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (n > 0) n = Math.floor((n * (100 + cardBoonBonus(r, a, 'cardBarrierPct'))) / 100);
         if (n > 0 && (stacks(t, 'brittle') > 0 || stacks(t, 'stunned') > 0))
           n = Math.floor(n * 0.75);
+        const budget = a.barrierPower;
+        const remaining = (): number =>
+          budget?.barrierCap === undefined
+            ? Infinity
+            : Math.max(0, budget.barrierCap - (budget.barrierUsed ?? 0));
+        n = Math.min(n, remaining());
         // a Trap that punishes defending springs first, so the Barrier cannot soak what it deals
         if (n > 0) fireSnare(r, other(t.side), { on: 'foeDefends', unit: t });
         if (t.hp <= 0 || r.s.winner) continue;
+        // A reactive effect can spend the same budget while the Trap resolves.
+        n = Math.min(n, remaining());
+        if (budget) budget.barrierUsed = (budget.barrierUsed ?? 0) + n;
         t.barrier += n;
         r.ev.push({ type: 'barrier', target: t.id, amount: n, total: t.barrier });
         if (n > 0 && t.kind === 'hero') fireTriggers(r, r.s.sides[t.side], 'barrier');
@@ -2461,7 +2482,7 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'power':
       side.powers.push({
         id: newId(r.s, 'p'),
-        card: a.card?.id ?? '',
+        card: (a.card ?? a.sourceCard)?.id ?? '',
         when: op.when,
         ops: op.ops,
         ...(op.filter ? { filter: op.filter } : {}),
@@ -2472,6 +2493,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.once ? { once: true } : {}),
         ...(op.ownTurn ? { ownTurn: true } : {}),
         ...(op.perTurnLimit ? { perTurnLimit: op.perTurnLimit } : {}),
+        ...(op.barrierCap !== undefined ? { barrierCap: op.barrierCap } : {}),
         ...(op.perRoundLimit ? { perRoundLimit: op.perRoundLimit } : {}),
         ...(op.afterLimit ? { afterLimit: op.afterLimit } : {}),
         ...(op.round ? { round: true } : {}),
@@ -2485,7 +2507,7 @@ function execOp(r: Run, a: Act, op: Op): void {
         ...(op.status ? { status: op.status } : {}),
         ...(op.only ? { only: op.only } : {}),
       });
-      r.ev.push({ type: 'power', side: side.id, card: a.card?.id ?? '' });
+      r.ev.push({ type: 'power', side: side.id, card: (a.card ?? a.sourceCard)?.id ?? '' });
       return;
     case 'channel': {
       const n = amountOf(r, a, op.times ?? 1, op.scale, null);
@@ -2833,9 +2855,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (!hero) return;
       const how = op.from === 'exhaust' ? 'stay' : op.exhaust ? 'exhaust' : 'normal';
       const aim = op.aim === 'target' ? a.target : null;
-      // (assassin) Knife Trap: every fitting card in the pile, once each (one that goes back is not played again)
+      // Snapshot eligible cards in pile order, optionally capped; returned cards are not selected again.
       if (op.all && op.from === 'exhaust') {
-        const all = side.exhausted.filter((c) => fitsFree(r, op, c));
+        const all = side.exhausted.filter((c) => fitsFree(r, op, c)).slice(0, op.limit);
         for (const inst of all) {
           if (r.s.winner) break;
           if (!side.exhausted.includes(inst)) continue;
@@ -3185,7 +3207,18 @@ function execOp(r: Run, a: Act, op: Op): void {
         const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
         const at = a.target && a.target.hp > 0 && a.target.side !== u.side ? a.target : front;
         r.ev.push({ type: 'act', unit: u.id, move: null });
-        runOps(r, mkAct(u, { target: at, card: a.card, inst: a.inst, x: a.x }), op.ops);
+        runOps(
+          r,
+          mkAct(u, {
+            target: at,
+            card: a.card,
+            sourceCard: a.sourceCard,
+            barrierPower: a.barrierPower,
+            inst: a.inst,
+            x: a.x,
+          }),
+          op.ops,
+        );
         reap(r);
       }
       side.allyStrikes = (side.allyStrikes ?? 0) + 1;
@@ -3793,7 +3826,7 @@ function moveFromHand(
     const hero = heroOf(sd);
     if (cd.onDiscard && hero && r.depth < MAX_DEPTH) {
       r.depth++;
-      runOps(r, mkAct(hero), cd.onDiscard);
+      runOps(r, mkAct(hero, { sourceCard: cd }), cd.onDiscard);
       r.depth--;
     }
     // (assassin) Premeditate (DECISIONS #433; was Sly, played for free at once): a card an effect discards comes back to the hand
@@ -3860,7 +3893,7 @@ function exhaustCard(r: Run, sd: SideState, c: CardInst): void {
   const hero = heroOf(sd);
   if (cd.onExhaust && hero && r.depth < MAX_DEPTH) {
     r.depth++;
-    runOps(r, mkAct(hero), cd.onExhaust);
+    runOps(r, mkAct(hero, { sourceCard: cd }), cd.onExhaust);
     r.depth--;
   }
   fireTriggers(r, sd, 'exhaust');
@@ -4191,11 +4224,17 @@ function fireTriggers(
       p.uses = (p.uses ?? 0) + 1;
     }
     // (it answers now: a once-a-turn Aura is spent for the turn, a limited one has one answer fewer)
+    if (p.barrierCap !== undefined && p.barrierAt !== r.s.turn) {
+      p.barrierAt = r.s.turn;
+      p.barrierUsed = 0;
+    }
     if (p.once || p.round) p.firedTurn = r.s.turn;
     if (p.left !== undefined && --p.left <= 0) sd.powers = sd.powers.filter((x) => x !== p);
     runOps(
       r,
       mkAct(hero, {
+        sourceCard: r.db.cards[p.card] ?? null,
+        barrierPower: p.barrierCap !== undefined ? p : null,
         target: pinned ?? ctx.target ?? null,
         attacker: ctx.attacker ?? null,
         healed: ctx.healed ?? 0,
@@ -4702,6 +4741,7 @@ function beginHeroTurn(r: Run, side: Side): void {
         ...(t.once ? { once: true } : {}),
         ...(t.ownTurn ? { ownTurn: true } : {}),
         ...(t.perTurnLimit ? { perTurnLimit: t.perTurnLimit } : {}),
+        ...(t.barrierCap !== undefined ? { barrierCap: t.barrierCap } : {}),
         ...(t.perRoundLimit ? { perRoundLimit: t.perRoundLimit } : {}),
         ...(t.afterLimit ? { afterLimit: t.afterLimit } : {}),
         ...(t.round ? { round: true } : {}),
@@ -6236,7 +6276,7 @@ export function previewCardDamage(
       const sim = clone(after);
       const simSide = sim.sides[sd.id];
       const simHero = heroOf(simSide);
-      const piled = sd.exhausted.filter((c) => fitsFree(r, op, c));
+      const piled = sd.exhausted.filter((c) => fitsFree(r, op, c)).slice(0, op.limit);
       let lo = 0;
       let hi = 0;
       let each = false;
