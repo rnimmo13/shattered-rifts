@@ -1,5 +1,15 @@
 # Balance Notes
 
+## Focused implementation (0.197.0/rules80, decision #602)
+
+Robert authorized pushing/deploying validated work. The release implements **only P4** from the review: gentler Heavy Hitter HP conversion and four own-turn Skill triggers per Resonant Pulse Aura, alongside the20-minute Arena game timer and lore. See [exact changes and risks](ENGINEER_SCALING_2026-11-04.md) and [all30 implemented estimates](balance-history/0.197.0.md). The review below captures the preceding rules79 assessment; its other proposals remain unapplied. Golemancer HP growth/damage-per-HP identity remains. Zero measured matches or balance simulations.
+
+## Ten-plus-turn review and approved clock change (2026-11-04, decisions #600–601)
+
+The [full review](ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md) and [new30-Ascendancy chart](balance-history/0.197.0-arena-review-1.md) assess turns10–15, resource bursts, sustain, targeting, recovery and both seats. Golemancer's healing-to-max-HP and HP-conversion pool correct the earlier passive-only assessment; the160-HP friend report is recorded as anecdotal. Soulreaper/Shatterer are suspected outliers; Archmage/Brewmaster have high conditional ceilings; Bonelord/Deathwish have reliability concerns. These are low-confidence estimates, with no simulations or measured matches.
+
+Only Robert's approved15→20-minute limit per Arena game is implemented locally in0.197.0; turns stay75 seconds, including ghosts. All card/Ascendancy changes in the review remain proposals. Existing6x hero HP/+60 second seat and combat rules79 remain. The earlier direction-only record below describes decision#599 before this follow-up; current timer is20 minutes. No push/deploy authorization.
+
 ## Arena pacing target (2026-11-04, DECISIONS #599)
 
 Robert wants PvP fights in the **10+ turn range**. Following the preceding discussion's per-player ranges, the working

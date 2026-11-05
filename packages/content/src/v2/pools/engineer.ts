@@ -555,7 +555,7 @@ export const ENGINEER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [heal(1, 'allFriends')], { filter: 'skill' })],
+    [on('play', [heal(1, 'allFriends')], { filter: 'skill', ownTurn: true, perTurnLimit: 4 })],
     { up: { innate: true } },
   ),
   r(
@@ -602,9 +602,18 @@ export const ENGINEER: CardDef[] = [
     [growHp(5, 'target'), draw(1)],
     { up: { effects: [growHp(8, 'target'), draw(1)] } },
   ),
-  r('rare', 'heavy-hitter', 'Heavy Hitter', 'attack', 2, 'foe', [
-    scaled(dmg(0), per('biggestAlly')),
-  ]),
+  r(
+    'rare',
+    'heavy-hitter',
+    'Heavy Hitter',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(12), per('biggestAlly', 0.5))],
+    {
+      up: { effects: [scaled(dmg(15), per('biggestAlly', 0.5))] },
+    },
+  ),
   // Open-ended personal weapons and growth; no predefined card groups.
   r(
     'uncommon',

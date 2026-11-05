@@ -1,6 +1,10 @@
 # Balance history
 
-Start with [the current balance chart, 0.195.0](0.195.0.md). Compare [0.194.0](0.194.0.md), the prior released baseline. Release 0.196.0 carries exactly the 0.195.0 balance pass (rules 79), with a lore correction only. Robert approved release on 2026-11-04. Snapshots preserve their original assessment-time local/unreleased labels; this release mapping does not change any grades or add measured evidence.
+Current implemented release candidate: [0.197.0 / rules80](0.197.0.md), [CSV](0.197.0.csv), [exact Engineer changes](../ENGINEER_SCALING_2026-11-04.md). Following Robert's release authorization, only the focused Heavy Hitter/Resonant Pulse proposal P4 joins the20-minute Arena clock and approved lore. The wider review remains available below; P1–P3/P5–P7 and candidate buffs are unapplied. Prior review labels describe their assessment-time state. No measured parity is claimed.
+
+Latest assessment: [0.197.0 Arena ten-plus-turn review](0.197.0-arena-review-1.md), [CSV](0.197.0-arena-review-1.csv), and [full reasoning/proposals](../ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md). This revisits all30 Ascendancies under the longer target, with corrected Golemancer HP/card analysis. Only the approved Arena clock15→20 minutes is implemented locally; balance proposals are not applied, and rules79 still match the released balance. Zero measured matches; the friend's160-HP Golemancer report is anecdotal. Earlier snapshots stay intact.
+
+The last implemented balance pass is [0.195.0](0.195.0.md). Compare [0.194.0](0.194.0.md), the prior released baseline. Release 0.196.0 carries exactly the 0.195.0 balance pass (rules 79), with a lore correction only. Robert approved release on 2026-11-04. Snapshots preserve their original assessment-time local/unreleased labels; this release mapping does not change any grades or add measured evidence.
 
 [Baseline assessment revision 2](0.194.0-review-2.md) corrects retrospective progression and fight-development sub-grades that initially reused projected values. The original assessment remains intact. The original overall Arena grades are unchanged; this is an assessment correction, not another game version.
 

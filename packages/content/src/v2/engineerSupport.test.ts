@@ -56,6 +56,71 @@ function end(s: CombatState): CombatState {
 }
 
 describe('Engineer support and continuous attack Auras', () => {
+  it('Heavy Hitter retains its flat fallback with no living companion', () => {
+    for (const suffix of ['', '+']) {
+      let s = fight();
+      for (const unit of allies(s)) unit.hp = 0;
+      const before = foe(s).hp;
+      s = play(s, `heavy-hitter${suffix}`);
+      expect(before - foe(s).hp).toBe(suffix ? 15 : 12);
+    }
+  });
+  it.each([22, 23, 160, 161, 320])(
+    'Heavy Hitter scales from %i max HP with matching previews and upgrades',
+    (hp) => {
+      for (const suffix of ['', '+']) {
+        let s = play(fight('engineer:golemancer'), 'war-engine');
+        const machine = allies(s).find((u) => u.def === 'war-engine')!;
+        machine.maxHp = hp;
+        machine.hp = 1; // wounded machines still use max HP, without the companion-only multiplier
+        const card = `heavy-hitter${suffix}`;
+        const expected = (suffix ? 15 : 12) + Math.floor(hp / 2);
+        s.sides.a.hand = [{ id: 'preview-hitter', card }];
+        expect(previewCardDamage(db, s, 'preview-hitter', foe(s).id).get(0)?.lo).toBe(expected);
+        const before = foe(s).hp;
+        s = play(s, card, foe(s).id);
+        expect(before - foe(s).hp).toBe(expected);
+      }
+    },
+  );
+  it('Pulse copies each grow companions on four Skills, preserve upgrade behavior, and reset after restoration', () => {
+    let s = play(play(fight('engineer:golemancer'), 'resonant-pulse'), 'resonant-pulse+');
+    const id = allies(s)[0]!.id;
+    const unit = () => allies(s).find((u) => u.id === id)!;
+    const initial = unit().maxHp;
+    for (let i = 1; i <= 5; i++) {
+      s = play(s, 'defend');
+      expect(unit().maxHp).toBe(initial + 2 * Math.min(4, i));
+    }
+    s = JSON.parse(JSON.stringify(s)) as CombatState;
+    s = play(s, 'defend');
+    expect(unit().maxHp).toBe(initial + 8);
+    s = end(s);
+    const afterStart = unit().maxHp;
+    s = play(s, 'defend');
+    expect(unit().maxHp).toBe(afterStart + 2);
+    expect(db.cards['resonant-pulse+']?.innate).toBe(true);
+    expect(cardText(db, db.cards['resonant-pulse']!)).toContain('first 4 activations on your turn');
+    for (const suffix of ['', '+'])
+      expect(db.cards[`resonant-pulse${suffix}`]?.effects[0]).toMatchObject({
+        ownTurn: true,
+        perTurnLimit: 4,
+        filter: 'skill',
+      });
+  });
+  it.each([100, 160, 320])(
+    'preserves unlimited machine HP and the capped damage bonus at %i HP',
+    (hp) => {
+      let s = play(fight('engineer:golemancer'), 'war-engine');
+      const machine = allies(s).find((u) => u.def === 'war-engine')!;
+      machine.hp = machine.maxHp = hp;
+      machine.statuses = {};
+      const before = foe(s).hp;
+      s = play(s, 'assemble');
+      expect(before - foe(s).hp).toBe(24);
+      expect(allies(s).find((u) => u.id === machine.id)?.maxHp).toBe(hp);
+    },
+  );
   it('starts with a stronger Drone and a real weapon without increasing deck size', () => {
     expect(RIFTWALKERS.engineer.hero.startUnits).toEqual([{ unit: 'drone', hp: 8 }]);
     expect(RIFTWALKERS.engineer.starter).toHaveLength(10);

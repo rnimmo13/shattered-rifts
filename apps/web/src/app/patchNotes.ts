@@ -31,14 +31,32 @@ export const PATCH_NOTES: PatchNote[] = [
   {
     version: '0.197.0',
     date: '2026-11-04',
-    title: 'The conqueror beyond the Ward',
-    summary: 'Why Vorthax broke out, and why he takes the Wardens.',
+    title: 'Growing machines and longer Arena games',
+    summary: 'Focused Engineer tuning, a longer Arena clock, and Vorthax’s origins.',
     notes: [
+      {
+        kind: 'balance',
+        text: 'Engineer — Heavy Hitter (Campaign and Arena): damage changes from your biggest living companion’s max HP to 12 + half that max HP, rounded down. Upgraded: 3 + max HP becomes 15 + half max HP. Cost stays 2 Mana. At 22 max HP, damage is 23/26 instead of 22/25; at 160, it is 92/95 instead of 160/163. Without a living companion it deals 12/15 instead of 0/3. Golemancer keeps its HP growth and existing HP-scaled companion attack bonus.',
+      },
+      {
+        kind: 'balance',
+        text: 'Engineer — Resonant Pulse (Campaign and Arena): each Aura now heals all friends by 1 on the first 4 Skills you play on your own turn, instead of every Skill without a limit. Later Skills and off-turn Skills do not trigger it. Copies count separately and reset each own turn. Companion healing still adds current and max HP; two Auras can add up to 8 HP per companion each turn. Cost stays 1 Mana and the upgrade still starts in your opening hand.',
+      },
+      {
+        kind: 'changed',
+        text: 'Arena: each game now has a 20-minute limit (was 15), including ghost games. The turn limit remains 75 seconds. At the game limit, the higher percentage of hero HP remaining wins; equal percentages draw.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Limited Aura descriptions now specify when activations are restricted to your own turn, including Fault Lines. Fault Lines itself is unchanged.',
+      },
       {
         kind: 'new',
         text: 'The Story now follows Vorthax from the conquest of his home realm to the Shattering. Learn why he sacrificed his own cities to breach the Ward, how the captured Wardens give him new powers, and why Riftwalkers can challenge him.',
       },
     ],
+    heads:
+      'Existing cards and decks receive these changes. Unfinished battles from older versions restart from their saved encounter checkpoint; Campaign progress and decks are kept.',
   },
   {
     version: '0.196.0',

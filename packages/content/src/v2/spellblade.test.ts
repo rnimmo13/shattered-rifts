@@ -520,7 +520,7 @@ describe('Fracture and Shatter', () => {
     expect(foe(hexed).statuses.fracture).toBe(2 + 7 + 2);
     expect(foe(play(hexed, 'strike')).statuses.fracture).toBe(11);
     expect(cardText(db, db.cards['fault-lines']!)).toContain(
-      'Whenever you play a Sword or a Spell (first 6 activations each turn): Apply 2 Fracture to its target (or the enemy with the most Fracture).',
+      'Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 2 Fracture to its target (or the enemy with the most Fracture).',
     );
   });
 

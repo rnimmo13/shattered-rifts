@@ -1,0 +1,1184 @@
+{
+  "schema": 1,
+  "date": "2026-11-04",
+  "measuredMatches": 0,
+  "target": "Distinct A-band styles in both modes, typical competitive Arena games ten-plus turns per player; proposed working band 10-14, not a hard minimum or a measured result. Campaign XVII-XX difficult but beatable.",
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "A",
+      "rationale": "Reserves and straightforward defense/attacks provide a reliable opening."
+    },
+    {
+      "hero": "engineer",
+      "grade": "A−",
+      "rationale": "Improved Drone and Pulse Pistol help; large-machine setup is still resource hungry."
+    },
+    {
+      "hero": "hunter",
+      "grade": "A",
+      "rationale": "Pack damage and blood resources are productive early."
+    },
+    {
+      "hero": "trickster",
+      "grade": "A+",
+      "rationale": "Efficient suit/cycling pool gives broad early flexibility; pool parity unresolved."
+    },
+    {
+      "hero": "assassin",
+      "grade": "A",
+      "rationale": "Recurring Dagger and efficient Skills provide consistent damage."
+    },
+    {
+      "hero": "shaman",
+      "grade": "A",
+      "rationale": "Two starting totems offer immediate value before row investment."
+    },
+    {
+      "hero": "monk",
+      "grade": "A",
+      "rationale": "Stance sequencing is strong but mistakes can expose the hero."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "A",
+      "rationale": "Starting Spell Power supplies an early spend/rebuild rhythm."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "A−",
+      "rationale": "Small Thralls and slower Fate/Consume development need protection."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "A−",
+      "rationale": "Gun and drink setup can compete, but HP/Hangover management is less forgiving."
+    }
+  ],
+  "basis": "Static rule/card review and conditional arithmetic. No simulations or measured matchup dataset. Updates the rules 79 ten-plus-turn review for the implemented Heavy Hitter/Resonant Pulse changes. Other proposals remain unapplied; unchanged estimates are carried forward, not newly measured.",
+  "version": "0.197.0",
+  "rules": 80,
+  "status": "Implemented release candidate; Robert authorized push/deploy after validation. Only review P4 plus timer/lore included.",
+  "source": "Working tree based on 9f16335; decision 602. Includes decisions 598/600, rules 80.",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "A-",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A-",
+        "opening": "A",
+        "extended": "A",
+        "long": "A-"
+      },
+      "setup": "Low–medium",
+      "recovery": "Strong while Barrier survives",
+      "rareReliance": "Moderate for finishers",
+      "scaling": "Retention supports defense and Barrier attacks, but constant Barrier generation converges rather than growing forever. More turns help only if the deck increases its generation or converts it into a finish.",
+      "rationale": "Retention supports defense and Barrier attacks, but constant Barrier generation converges rather than growing forever. More turns help only if the deck increases its generation or converts it into a finish.",
+      "watch": "Timeout/sustain risk; piercing and direct HP loss bypass the main defense.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/knight.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Timeout/sustain risk; piercing and direct HP loss bypass the main defense."
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "A-",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A-",
+        "opening": "A−",
+        "extended": "A",
+        "long": "A-"
+      },
+      "setup": "Medium",
+      "recovery": "Good; resources refill",
+      "rareReliance": "Low–moderate",
+      "scaling": "Four Reserves and up to 40% Attack bonus provide strong repeatable turns, not permanent turn-by-turn scaling. The pool must supply Might, Exposed and finishers to compete with growing engines.",
+      "rationale": "Four Reserves and up to 40% Attack bonus provide strong repeatable turns, not permanent turn-by-turn scaling. The pool must supply Might, Exposed and finishers to compete with growing engines.",
+      "watch": "Watch damage after turn ten and resource access after consuming the initial accelerants.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/knight.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Watch damage after turn ten and resource access after consuming the initial accelerants."
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; spent HP still matters",
+      "rareReliance": "Low–moderate",
+      "scaling": "First paid HP card helps charge Retaliation despite Arena HP dilution. Stored 60% and 30 percentage points per owner-round are bounded; multi-hit attacks and resource cards determine the actual ceiling.",
+      "rationale": "First paid HP card helps charge Retaliation despite Arena HP dilution. Stored 60% and 30 percentage points per owner-round are bounded; multi-hit attacks and resource cards determine the actual ceiling.",
+      "watch": "Cheap HP payments are much safer at 480+ HP; resource burst can finish before the target band.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/knight.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Cheap HP payments are much safer at 480+ HP; resource burst can finish before the target band."
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "A-",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A-",
+        "opening": "A−",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; replacements retain Fabrication",
+      "rareReliance": "Moderate",
+      "scaling": "Four slots and retained Fabrication reward replacement summons. One Primed per body is useful but is not the only scaling: every three successful non-starting summons adds damage to every companion hit. Shared HP engines and HP-payoff cards also matter. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy.",
+      "rationale": "Four slots and retained Fabrication reward replacement summons. One Primed per body is useful but is not the only scaling: every three successful non-starting summons adds damage to every companion hit. Shared HP engines and HP-payoff cards also matter. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy.",
+      "watch": "Removal taxes setup; compare summon count and attacks actually delivered, not four bodies assumed alive.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/engineer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Removal taxes setup; compare summon count and attacks actually delivered, not four bodies assumed alive."
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "B+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "B+",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "High",
+      "recovery": "True death banks half earned growth, capped 30; next new large build consumes it. Revive is fresh; scrapping instead transfers half current HP through Salvage.",
+      "rareReliance": "Uncommon growth engine; common Crankshaft; rare Heavy Hitter/Meltdown improve burst.",
+      "scaling": "Correcting the passive-only picture: all companion healing grows max/current HP. Resonant Pulse, Self-Mending, Patch Job and Reinforced Frame accelerate this; Heavy Hitter and Crankshaft convert max HP into hero attacks. At 160 max HP the companion bonus is already capped at +100%, but these cards continue scaling. Campaign IV-X and XVII-XX estimates rise from A- to A because the previous review underweighted healing growth and HP-conversion cards; this is a corrected hypothesis, not proof of clears. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy.",
+      "rationale": "Correcting the passive-only picture: all companion healing grows max/current HP. Resonant Pulse, Self-Mending, Patch Job and Reinforced Frame accelerate this; Heavy Hitter and Crankshaft convert max HP into hero attacks. At 160 max HP the companion bonus is already capped at +100%, but these cards continue scaling. Campaign IV-X and XVII-XX estimates rise from A- to A because the previous review underweighted healing growth and HP-conversion cards; this is a corrected hypothesis, not proof of clears. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy. Conditional long-fight grade A+ to A relative to the immediately preceding review: reduced HP-conversion burst, not a removed growth identity. Overall A and Campaign grades remain uncertain estimates.",
+      "watch": "High HP-conversion burst; a non-Taunt machine can be bypassed. Friend report of easy 160 HP is anecdotal, not a measured match. No automatic buff.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/engineer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "High HP-conversion burst; a non-Taunt machine can be bypassed. Friend report of easy 160 HP is anecdotal, not a measured match. No automatic buff."
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; hero retains Might",
+      "rareReliance": "Moderate",
+      "scaling": "Permanent Might is especially productive on Rotary Cannon and other multi-hit weapons. Weapon Bench and Ion Lance provide additional pool growth; the small first-Attack Barrier does not itself solve survival. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy.",
+      "rationale": "Permanent Might is especially productive on Rotary Cannon and other multi-hit weapons. Weapon Bench and Ion Lance provide additional pool growth; the small first-Attack Barrier does not itself solve survival. Rules 80: Heavy Hitter now 12/15+floor(half biggest living ally maxHP), and Pulse triggers only on first 4 own-turn Skills per Aura. Ordinary growth, companion attack scaling and recovery remain; the shared pool change also affects this Ascendancy.",
+      "watch": "Can race ahead with multi-hit bonuses; check survivability separately from sustained damage.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/engineer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Can race ahead with multi-hit bonuses; check survivability separately from sustained damage."
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "A-",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A-",
+        "opening": "A",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; companions inherit current share",
+      "rareReliance": "Moderate",
+      "scaling": "Sharing 75% Might scales the whole pack and new summons inherit current hero Might. Long games help a functioning Might engine, but protecting or replacing bodies remains a real cost.",
+      "rationale": "Sharing 75% Might scales the whole pack and new summons inherit current hero Might. Long games help a functioning Might engine, but protecting or replacing bodies remains a real cost.",
+      "watch": "Removal and direct hero pressure prevent equating a full board with guaranteed output.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/hunter.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Removal and direct hero pressure prevent equating a full board with guaranteed output."
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A+",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Low–medium",
+      "recovery": "Moderate; hero HP is the resource",
+      "rareReliance": "Low–moderate",
+      "scaling": "First HP payment draws and primes each turn; this improves consistency rather than providing independent exponential growth. Hunter Might, companions and HP-payment resources supply the late game.",
+      "rationale": "First HP payment draws and primes each turn; this improves consistency rather than providing independent exponential growth. Hunter Might, companions and HP-payment resources supply the late game.",
+      "watch": "Burst funded by cheap blood resources; first-payment benefit should not be mistaken for every-payment benefit.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/hunter.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Burst funded by cheap blood resources; first-payment benefit should not be mistaken for every-payment benefit."
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good while draw remains available",
+      "rareReliance": "Moderate",
+      "scaling": "First six additional own-turn draws give two Primed each and later draws give one. This still rewards large draw chains; Hunter blood resources can fund the chain and its payoff.",
+      "rationale": "First six additional own-turn draws give two Primed each and later draws give one. This still rewards large draw chains; Hunter blood resources can fund the chain and its payoff.",
+      "watch": "High card-throughput burst before turn ten remains possible.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/hunter.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "High card-throughput burst before turn ten remains possible."
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "A-",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A-",
+        "opening": "A−",
+        "extended": "A",
+        "long": "A-"
+      },
+      "setup": "Medium",
+      "recovery": "Good if traps can be reset",
+      "rareReliance": "Low–moderate",
+      "scaling": "Draw and Barrier depend on opponents triggering traps. Full Trick supplies growing damage for all Trickster Ascendancies; Trapmaster trades some proactive tempo for reactive resource recovery.",
+      "rationale": "Draw and Barrier depend on opponents triggering traps. Full Trick supplies growing damage for all Trickster Ascendancies; Trapmaster trades some proactive tempo for reactive resource recovery.",
+      "watch": "Opponent control over trap triggers and choice of attack target can reduce reliability.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/trickster.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Opponent control over trap triggers and choice of attack target can reduce reliability."
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Good; little board investment",
+      "rareReliance": "Low–moderate",
+      "scaling": "Full Trick gives growing damage/draw and Cardsharp adds one Mana. Cut the Deck cycling improves consistent access; the pool is a large part of the grade, not just the extra Mana.",
+      "rationale": "Full Trick gives growing damage/draw and Cardsharp adds one Mana. Cut the Deck cycling improves consistent access; the pool is a large part of the grade, not just the extra Mana.",
+      "watch": "Repeatable conditional free draw compresses too many actions into one turn.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/trickster.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Repeatable conditional free draw compresses too many actions into one turn."
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; target switch restarts growth",
+      "rareReliance": "Low–moderate",
+      "scaling": "Keeping the same marked target reaches +50% and Exposed adds pressure. Full Trick and suit cycling continue to develop after Seer itself caps.",
+      "rationale": "Keeping the same marked target reaches +50% and Exposed adds pressure. Full Trick and suit cycling continue to develop after Seer itself caps.",
+      "watch": "Switching target resets the streak; Taunt and diversions can disrupt the preferred hero focus.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/trickster.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Switching target resets the streak; Taunt and diversions can disrupt the preferred hero focus."
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; Daggers regenerate each turn",
+      "rareReliance": "Moderate for multipliers",
+      "scaling": "Two generated Daggers per turn provide reliable attacks and fuel the Rogue pool. Repeated bonuses and additional hits matter more than the printed Dagger base damage.",
+      "rationale": "Two generated Daggers per turn provide reliable attacks and fuel the Rogue pool. Repeated bonuses and additional hits matter more than the printed Dagger base damage.",
+      "watch": "Resource/draw chains and repeated amplified attacks can end games early.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/assassin.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Resource/draw chains and repeated amplified attacks can end games early."
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; stacks can be cleansed",
+      "rareReliance": "Low–moderate",
+      "scaling": "Extra Bleed/Burn ticks accelerate damage but also decay the stacks again. Sustained reapplication and pool support are necessary; it is not automatically double total damage per stack.",
+      "rationale": "Extra Bleed/Burn ticks accelerate damage but also decay the stacks again. Sustained reapplication and pool support are necessary; it is not automatically double total damage per stack.",
+      "watch": "Cleanse and application efficiency determine long-fight pressure.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/assassin.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Cleanse and application efficiency determine long-fight pressure."
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good; preparation rebuilt from Skills",
+      "rareReliance": "Low–moderate",
+      "scaling": "Skills build up to +60% for the next Attack, with another +20% against a hero at half HP or lower. Sequencing and multi-hit payoffs remain valuable but the passive has bounded amplification.",
+      "rationale": "Skills build up to +60% for the next Attack, with another +20% against a hero at half HP or lower. Sequencing and multi-hit payoffs remain valuable but the passive has bounded amplification.",
+      "watch": "Execute-window burst rather than unlimited passive growth.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/assassin.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Execute-window burst rather than unlimited passive growth."
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "Starting Spirit and qualifying end-turn Spirit grow recurring totem output. The totem row cannot be attacked like companions, so ordinary minion removal is not a counter to this engine.",
+      "rationale": "Starting Spirit and qualifying end-turn Spirit grow recurring totem output. The totem row cannot be attacked like companions, so ordinary minion removal is not a counter to this engine.",
+      "watch": "Automatic scaling and free recurring sustain can stall or outgrow bounded decks.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/shaman.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Automatic scaling and free recurring sustain can stall or outgrow bounded decks."
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "First command/push draw and Barrier give consistency; Spirit Pact can supply additional permanent Spirit. Commands replace or spend the row, whereas opponents do not normally kill its totems.",
+      "rationale": "First command/push draw and Barrier give consistency; Spirit Pact can supply additional permanent Spirit. Commands replace or spend the row, whereas opponents do not normally kill its totems.",
+      "watch": "Command throughput, stacked Spirit Pact and Storm Sovereign need combined review.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/shaman.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Command throughput, stacked Spirit Pact and Storm Sovereign need combined review."
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "Each element has its own permanent count. First Flame/Frost/Storm each turn grows its payoff, with a switching bonus; mixed-element access supports damage and defense together.",
+      "rationale": "Each element has its own permanent count. First Flame/Frost/Storm each turn grows its payoff, with a switching bonus; mixed-element access supports damage and defense together.",
+      "watch": "More turns improve all three tracks; grade rises from the old shorter-horizon assessment.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/shaman.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "More turns improve all three tracks; grade rises from the old shorter-horizon assessment."
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A+",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A+",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; no persistent board required",
+      "rareReliance": "Low–moderate",
+      "scaling": "Extra Mana on the first Serene exit combines with the base Monk Mana refund. Stance sequencing, recurring Might and Radiant windows give the whole deck scaling beyond the passive refund.",
+      "rationale": "Extra Mana on the first Serene exit combines with the base Monk Mana refund. Stance sequencing, recurring Might and Radiant windows give the whole deck scaling beyond the passive refund.",
+      "watch": "Large stance turns and 3x Radiant windows can violate the duration target.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/monk.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Large stance turns and 3x Radiant windows can violate the duration target."
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A−",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Good if a safe exit is available",
+      "rareReliance": "Moderate",
+      "scaling": "First Fury entry each own turn builds toward +40%; first exit Barrier reaches 14. These bonuses cap, while the base class continues gaining Might/Fervor.",
+      "rationale": "First Fury entry each own turn builds toward +40%; first exit Barrier reaches 14. These bonuses cap, while the base class continues gaining Might/Fervor.",
+      "watch": "Fury incoming-damage exposure is meaningful; do not assume every turn is a safe burst turn.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/monk.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Fury incoming-damage exposure is meaningful; do not assume every turn is a safe burst turn."
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "High",
+      "recovery": "Moderate; must reach another Radiant window",
+      "rareReliance": "Moderate",
+      "scaling": "More Fervor accelerates Radiant and returning up to four Fervor after Radiant improves later access. Morning Prayer copies support continued stance cycles.",
+      "rationale": "More Fervor accelerates Radiant and returning up to four Fervor after Radiant improves later access. Morning Prayer copies support continued stance cycles.",
+      "watch": "Frequency and size of Radiant lethal windows, including resource acceleration.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/monk.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Frequency and size of Radiant lethal windows, including resource acceleration."
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; payoff requires little banking",
+      "rareReliance": "Low–moderate",
+      "scaling": "Sword Keen and first-Sword draw help consistency. Obsidian Blade scales with retained Power, and Echoing Blade can add hits; a modest-looking passive can sit on a powerful late-game pool.",
+      "rationale": "Sword Keen and first-Sword draw help consistency. Obsidian Blade scales with retained Power, and Echoing Blade can add hits; a modest-looking passive can sit on a powerful late-game pool.",
+      "watch": "Stacked extra Blade hits and Power growth, not just one Keen per hit.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/spellblade.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Stacked extra Blade hits and Power growth, not just one Keen per hit."
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A",
+        "extended": "A+",
+        "long": "S"
+      },
+      "setup": "Medium",
+      "recovery": "Good after refund arrives",
+      "rareReliance": "Moderate",
+      "scaling": "Power spending, first-spell amplification and next-turn refund support repeated bursts. Measured Ruin stacks with Spell-tagged spenders such as Molten Ruin; high stored Power can threaten an entire Arena HP bar. Sword-tagged Obsidian Drill does not receive these Spell-only bonuses.",
+      "rationale": "Power spending, first-spell amplification and next-turn refund support repeated bursts. Measured Ruin stacks with Spell-tagged spenders such as Molten Ruin; high stored Power can threaten an entire Arena HP bar. Sword-tagged Obsidian Drill does not receive these Spell-only bonuses.",
+      "watch": "Rare stacked-burst engine and high Power requirement; assess time to assemble and counterpressure before treating S ceiling as universal S reliability.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/spellblade.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Rare stacked-burst engine and high Power requirement; assess time to assemble and counterpressure before treating S ceiling as universal S reliability."
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "S"
+      },
+      "setup": "High",
+      "recovery": "Good; Fracture persists on target",
+      "rareReliance": "Moderate",
+      "scaling": "Permanent Fracture raises later Shatter damage. Two Fault Lines copies multiply generation; the first-six limit per copy still grants large output and later plays continue adding Fracture.",
+      "rationale": "Permanent Fracture raises later Shatter damage. Two Fault Lines copies multiply generation; the first-six limit per copy still grants large output and later plays continue adding Fracture.",
+      "watch": "Likely long-fight outlier; escalating proc count and escalating proc damage multiply together.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/spellblade.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Likely long-fight outlier; escalating proc count and escalating proc damage multiply together."
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "A",
+        "extended": "A",
+        "long": "A"
+      },
+      "setup": "Medium",
+      "recovery": "Improved recurring Raise; vulnerable board",
+      "rareReliance": "Moderate",
+      "scaling": "Raise 2 plus another Raise 2 adds four HP across the board per turn, not four to every Thrall. Marrow improves attacks; Off the Leash converts living Thrall HP into damage. Disruption is the reliability problem.",
+      "rationale": "Raise 2 plus another Raise 2 adds four HP across the board per turn, not four to every Thrall. Marrow improves attacks; Off the Leash converts living Thrall HP into damage. Disruption is the reliability problem.",
+      "watch": "Tiny early Thralls and Command access; preserved armies scale much better than repeatedly cleared ones.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/necromancer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Tiny early Thralls and Command access; preserved armies scale much better than repeatedly cleared ones."
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "A+"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; Fate reduction delays execution",
+      "rareReliance": "Low–moderate",
+      "scaling": "Fate application scales with target max HP and accumulates alongside ordinary damage. Random targeting, cleanse and enemy companion diversion limit reliability.",
+      "rationale": "Fate application scales with target max HP and accumulates alongside ordinary damage. Random targeting, cleanse and enemy companion diversion limit reliability.",
+      "watch": "Percentage execution pressure is not diluted by increasing Arena HP.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/necromancer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Percentage execution pressure is not diluted by increasing Arena HP."
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "S",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "S",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "S"
+      },
+      "setup": "High",
+      "recovery": "Good if Consume generation continues",
+      "rareReliance": "Moderate",
+      "scaling": "Up to six Harvest per owner-round permanently increases Reap; Grave Chill independently adds Fate for every genuine Consume without that limit. The same engine supplies Barrier, damage and execution pressure.",
+      "rationale": "Up to six Harvest per owner-round permanently increases Reap; Grave Chill independently adds Fate for every genuine Consume without that limit. The same engine supplies Barrier, damage and execution pressure.",
+      "watch": "Repeated Consume engines can threaten lethal well before the intended band even at current 6x HP.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/necromancer.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Repeated Consume engines can threaten lethal well before the intended band even at current 6x HP."
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "A+",
+      "campaign": {
+        "developing": "A",
+        "deep": "A+",
+        "endgame": "A",
+        "openingFight": "A−",
+        "extendedFight": "A+"
+      },
+      "arena": {
+        "overall": "A+",
+        "opening": "A−",
+        "extended": "A+",
+        "long": "S"
+      },
+      "setup": "Medium–high",
+      "recovery": "Good once paid growth is established",
+      "rareReliance": "Moderate",
+      "scaling": "Five actual Hangover payments build permanent 5%-max-HP healing and 10 Barrier each end turn. Once established it no longer requires new payments; that sustain is much larger in Arena than Campaign.",
+      "rationale": "Five actual Hangover payments build permanent 5%-max-HP healing and 10 Barrier each end turn. Once established it no longer requires new payments; that sustain is much larger in Arena than Campaign.",
+      "watch": "Stall/timeout advantage; gross healing is not net after Hangover or overheal.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/drunkard.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Stall/timeout advantage; gross healing is not net after Hangover or overheal."
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "A",
+      "campaign": {
+        "developing": "A",
+        "deep": "A",
+        "endgame": "A",
+        "openingFight": "A",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "A",
+        "opening": "A",
+        "extended": "A",
+        "long": "A+"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; weapon copies grow each turn",
+      "rareReliance": "Moderate",
+      "scaling": "Starting Precision plus two each own turn continues growing all Old Twelve Gauge copies. Lone-target bonus and Clutch improve output; access to the gun still depends on drawing it after play.",
+      "rationale": "Starting Precision plus two each own turn continues growing all Old Twelve Gauge copies. Lone-target bonus and Clutch improve output; access to the gun still depends on drawing it after play.",
+      "watch": "Reliable damage growth but survival, gun access and Hangover costs must be counted.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/drunkard.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Reliable damage growth but survival, gun access and Hangover costs must be counted."
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "A−",
+        "deep": "A",
+        "endgame": "A−",
+        "openingFight": "A−",
+        "extendedFight": "A"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "A−",
+        "extended": "A",
+        "long": "A-"
+      },
+      "setup": "High",
+      "recovery": "Limited; one rescue buys a brief window",
+      "rareReliance": "Moderate",
+      "scaling": "Clutch plus a capped low-HP ramp improves attack damage. The once-fight hostile-lethal rescue is not immunity; follow-up hits, Fate and self-payment remain threats.",
+      "rationale": "Clutch plus a capped low-HP ramp improves attack damage. The once-fight hostile-lethal rescue is not immunity; follow-up hits, Fate and self-payment remain threats.",
+      "watch": "Low-HP plans are fragile against multi-hit, Fate and growing long-fight bursts.",
+      "confidence": "low; no measured matchup dataset",
+      "evidence": [
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/index.ts",
+        "packages/content/src/v2/pools/drunkard.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/combat/src/engine.ts",
+        "docs/ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md",
+        "docs/ENGINEER_SCALING_2026-11-04.md"
+      ],
+      "pacing": "Low-HP plans are fragile against multi-hit, Fate and growing long-fight bursts."
+    }
+  ],
+  "corrections": [
+    "This snapshot follows 0.197.0-arena-review-1, not 0.195.0 directly. All prior files are preserved. Current combat rules 80 implement P4 only, with 20-minute Arena games and the approved lore release.",
+    "Golemancer overall A is unchanged; conditional turns 10-15 estimate A+ to A. Its earlier Campaign corrections are retained. No measured parity or completed late-tier clear is implied.",
+    "All other Ascendancy grades are carried forward. Soulreaper/Shatterer suspected outliers, Archmage/Brewmaster conditional ceilings, and Bonelord/Deathwish reliability concerns remain unresolved. P1-P3/P5-P7 and later candidate buffs are unimplemented.",
+    "Machine HP remains uncapped; Heavy Hitter uses maxHP, sacrifice cards use current HP. At 160 maxHP Heavy Hitter is 92/95, and companion damage scaling is still capped+100%.",
+    "Rule tests and static arithmetic are not balance simulations or measured matches. Keep comparative human/ghost playtests separate and revisit Campaign XVII-XX exposure after reduced burst."
+  ],
+  "assessmentId": "engineer-scaling-implementation",
+  "longFightBand": "own turns 10-15"
+}

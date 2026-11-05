@@ -309,6 +309,8 @@ describe('who goes first', () => {
 describe('the game clock (DECISIONS #259)', () => {
   it('a game is called after GAME_MS for the larger share of HP left, never before', () => {
     const m = new Match('clock-1', entryOf('knight', 'A'), entryOf('hunter', 'B'), 0);
+    expect(GAME_MS).toBe(20 * 60_000);
+    expect(m.callTime(15 * 60_000)).toBeNull();
     expect(m.callTime(GAME_MS - 1)).toBeNull();
     const b = m.state.sides.b.units.find((u) => u.kind === 'hero')!;
     b.hp = Math.floor(b.maxHp / 2); // b is down to half; a is untouched

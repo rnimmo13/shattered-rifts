@@ -15,7 +15,8 @@ interface Rating {
     openingFight: string;
     extendedFight: string;
   };
-  arena: { overall: string; opening: string; extended: string };
+  arena: { overall: string; opening: string; extended: string; long?: string };
+  pacing?: string;
   setup: string;
   recovery: string;
   rareReliance: string;
@@ -38,6 +39,8 @@ interface Snapshot {
   ratings: Rating[];
   starters: { hero: string; grade: string; rationale: string }[];
   corrections: string[];
+  assessmentId?: string;
+  longFightBand?: string;
 }
 const root = fileURLToPath(new URL('../../docs/balance-history/', import.meta.url));
 const args = process.argv.slice(2);
@@ -77,6 +80,21 @@ for (const file of files) {
       (r) =>
         `| ${r.hero} / ${r.name} | ${r.build} | ${r.campaign.developing} | ${r.campaign.deep} | ${r.campaign.endgame} | ${r.previousArena ?? '—'} → ${r.arena.overall} | ${r.arena.opening} | ${r.arena.extended} |`,
     ),
+    ...(s.longFightBand
+      ? [
+          '',
+          `## Longer Arena fights: ${s.longFightBand}`,
+          '',
+          'Conditional strength after reaching this band with a functioning engine. Overall includes setup and disruption. Neither column predicts match length. Opening/extended and Campaign grades above retain the preceding assessment unless a correction is explicitly described below.',
+          '',
+          '| Ascendancy | Overall | Long-fight power | Pacing / reliability concern |',
+          '|---|---|---|---|',
+          ...s.ratings.map(
+            (r) =>
+              `| ${r.name} | ${r.arena.overall} | ${r.arena.long ?? 'Unrated'} | ${r.pacing ?? ''} |`,
+          ),
+        ]
+      : []),
     '',
     '## Scaling, dependency and recovery',
     '',
@@ -119,6 +137,7 @@ for (const file of files) {
       'opening',
       'extended',
       'confidence',
+      ...(s.longFightBand ? ['arena_long', 'long_fight_band', 'pacing'] : []),
     ],
     ...s.ratings.map((r) => [
       r.id,
@@ -132,6 +151,7 @@ for (const file of files) {
       r.arena.opening,
       r.arena.extended,
       r.confidence,
+      ...(s.longFightBand ? [r.arena.long ?? '', s.longFightBand, r.pacing ?? ''] : []),
     ]),
   ];
   writeFileSync(

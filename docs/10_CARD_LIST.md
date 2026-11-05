@@ -183,7 +183,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Salvage Rights | 1 | aura | uncommon | Whenever one of your allies dies or is scrapped: Draw 1 card and gain 2 Barrier. |
 | Scrapyard King | 2 | aura | uncommon | Whenever one of your allies dies or is scrapped: Apply 1 Might to all friends. |
 | Echo Command | 1 | skill | uncommon | Apply 5 Primed to all friends. Draw 1 card. Consume. |
-| Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill: Heal 1 and your companions gain 1 max HP. |
+| Resonant Pulse | 1 | aura | uncommon | Whenever you play a Skill (first 4 activations on your turn): Heal 1 and your companions gain 1 max HP. |
 | Self-Mending | 2 | aura | uncommon | At the start of your turn: Heal 2 and your companions gain 2 max HP. |
 | Patch Job | 0 | skill | uncommon | The ally gains 5 max HP. |
 | Relay Network | 1 | aura | uncommon | Whenever one of your Traps is triggered: Apply 3 Primed to all friends. |
@@ -217,7 +217,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Overclocked Legion | 2 | aura | rare | Apply 2 Might to all friends. At the start of your turn: Each of your companions gains 3 Primed. |
 | Build Generator | 2 | summon | rare | Summon Generator (8 HP; at the end of your turn it will give you 1 extra Mana next turn). |
 | Swarm Surge | 2 | skill | rare | Summon Patrol Drone (4 HP; at the end of your turn it will deal 3 damage). Draw cards equal to the number of your allies. |
-| Heavy Hitter | 2 | attack | rare | Deal damage equal to your biggest living companion's max HP. |
+| Heavy Hitter | 2 | attack | rare | Deal 12 (+1 per 2 max HP of your biggest living companion) damage. |
 
 ## Hunter (wyldmaw, 80 HP)
 
@@ -774,7 +774,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
 | Pillar of Glass | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Fault Reader | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
-| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell (first 6 activations each turn): Apply 2 Fracture to its target (or the enemy with the most Fracture). Whenever it activates again that turn: Apply 1 Fracture to its target (or the enemy with the most Fracture). |
+| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 2 Fracture to its target (or the enemy with the most Fracture). Whenever it activates again that turn: Apply 1 Fracture to its target (or the enemy with the most Fracture). |
 | Glass Armory | 1 | aura | uncommon | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
 | Warm Anvil | 2 | aura | uncommon | At the start of your turn: Gain 2 Spell Power. |
 | Sigil of Kindling | 1 | aura | uncommon | The first time each turn a card of yours grows: Gain 2 Spell Power and gain 2 (+1 per 3 Spell Power) Barrier. |

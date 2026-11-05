@@ -1643,10 +1643,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             ? { ...who, target: ' to that enemy' }
             : who;
       const limit = o.perTurnLimit ?? o.perRoundLimit;
-      const limitText =
-        limit === undefined
-          ? ''
-          : ` (first ${limit} activations ${o.perRoundLimit !== undefined ? 'each round, until your next turn' : 'each turn'})`;
+      const limitPeriod =
+        o.perRoundLimit !== undefined
+          ? 'each round, until your next turn'
+          : o.ownTurn
+            ? 'on your turn'
+            : 'each turn';
+      const limitText = limit === undefined ? '' : ` (first ${limit} activations ${limitPeriod})`;
       const later = o.afterLimit?.length
         ? ` Whenever it activates again that turn: ${joinClause(o.afterLimit.map((x) => opText(db, x, inner)))}`
         : '';

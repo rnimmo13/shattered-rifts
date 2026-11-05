@@ -65,10 +65,10 @@ describe('healing a companion grows it', () => {
     foe().hp = foe().maxHp = 200;
     foe().barrier = 0;
     s = play(s, 'T1');
-    expect(foe().hp).toBe(189); // its max HP
+    expect(foe().hp).toBe(183); // 12 + floor(11 max HP / 2)
     const enforcer = allies(s).find((u) => u.maxHp === 11)!; // (not the Drone Rivet starts with)
     s = play(s, 'T2', enforcer.id);
-    expect(foe().hp).toBe(189 - 11); // its HP, and it is gone
+    expect(foe().hp).toBe(183 - 11); // its current HP, and it is gone
     expect(allies(s).some((u) => u.id === enforcer.id && u.hp > 0)).toBe(false);
   });
 

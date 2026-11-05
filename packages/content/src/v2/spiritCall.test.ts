@@ -113,7 +113,10 @@ describe('Heavy Hitter', () => {
   it('reads the biggest companion that is alive, never one that has died', () => {
     const { state } = createCombat(db, {
       seed: 'heavy-hitter',
-      a: { hero: 'engineer', deck: [...RIFTWALKERS.engineer.starter, ...RIFTWALKERS.engineer.starter] },
+      a: {
+        hero: 'engineer',
+        deck: [...RIFTWALKERS.engineer.starter, ...RIFTWALKERS.engineer.starter],
+      },
       b: { enemies: ['squire'] },
     });
     let s = clone(state);
@@ -134,7 +137,7 @@ describe('Heavy Hitter', () => {
     // the Enforcer has fallen (it is still in the list at 0 HP, as when an attack has just killed it)
     enforcer.hp = 0;
     play2('T1');
-    expect(200 - foe().hp).toBe(drone.maxHp);
+    expect(200 - foe().hp).toBe(12 + Math.floor(drone.maxHp / 2));
     expect(cardText(db, db.cards['heavy-hitter']!)).toMatch(/living/);
   });
 });
