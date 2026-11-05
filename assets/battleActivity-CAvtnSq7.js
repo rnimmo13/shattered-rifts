@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-XKyaHtl9.js";var t=e({battleActive:()=>i,enterBattle:()=>o,subscribeBattle:()=>a}),n=0,r=new Set,i=()=>n>0,a=e=>(r.add(e),()=>r.delete(e));function o(){n++;for(let e of r)e();let e=!1;return()=>{if(!e){e=!0,n--;for(let e of r)e()}}}export{a as i,t as n,o as r,i as t};
