@@ -44,6 +44,139 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.203.0',
+    date: '2026-11-05',
+    title: 'Twelve tiers, the Warden gauntlet and a true ending',
+    summary:
+      'A shorter campaign with a final boss gauntlet, illustrated victory, horizontal desktop maps and safer account saves.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'The twelve-tier campaign',
+        changes: [
+          { label: 'Campaign tiers', before: '20', after: '12', direction: 'neutral' },
+          {
+            label: 'Tier XII encounters',
+            before: '21 map stops + 1 Warden',
+            after: '11 Wardens + Vorthax; no regular map',
+            direction: 'neutral',
+          },
+        ],
+        text: 'Campaign only. Each pre-finale tier ends with a different Warden, shuffled once per run without repeats: Seraphine, KR-0N, Gorrmaw, Nyxara, The Hollow Benediction, Mother of Static, The Upside-Down Stag, The Applause Below, The Mourning Tide, Queen of the Unmade and Event Horizon Regent. The final gauntlet independently shuffles all eleven, then ends with Vorthax. Each Gift leads straight into the next fight; there are no Shrines, merchants or regular fights between them. Warden rewards retain +5 max HP in the finale, +1 Resolve up to cap and a Gift; Fraying Ward reduces the usual 30% max-HP victory heal to 15%. Vorthax still leaves a final Gift before victory. Existing saved maps keep their order; new runs receive the full unique shuffled roster. Arena combat is unchanged.',
+      },
+      {
+        kind: 'balance',
+        title: 'Finale tier scaling',
+        changes: [
+          {
+            label: 'Finale enemy HP multiplier',
+            before: '850% at Tier XX',
+            after: '530% at Tier XII',
+            direction: 'buff',
+          },
+          {
+            label: 'Finale enemy damage multiplier',
+            before: '185% at Tier XX',
+            after: '145% at Tier XII',
+            direction: 'buff',
+          },
+          {
+            label: 'Final Warden max-HP reward',
+            before: '+7 at Tier XX',
+            after: '+5 at Tier XII',
+            direction: 'nerf',
+          },
+        ],
+        text: 'Campaign only, before difficulty, Omens and encounter effects. The per-tier curve stays +40 HP percentage points and +5 damage percentage points; the campaign now ends earlier. Omens now fill every tier as listed below. Existing decks, cards and Ascendancies are unchanged; the shorter build-up and consecutive bosses have not been rated as measured class parity.',
+      },
+      {
+        kind: 'balance',
+        title: 'Omens on every tier',
+        changes: [
+          { label: 'Rallied Foes unlock', before: 'IV', after: 'I', direction: 'nerf' },
+          { label: 'Rift Scars unlock', before: 'V', after: 'IV', direction: 'nerf' },
+          { label: 'Dread unlock', before: 'VI', after: 'V', direction: 'nerf' },
+          { label: 'Rift Static unlock', before: 'VII', after: 'VI', direction: 'nerf' },
+          { label: 'Ironclad unlock', before: 'VIII', after: 'VII', direction: 'nerf' },
+          { label: 'Third Phase unlock', before: 'XIII', after: 'X', direction: 'nerf' },
+          { label: 'Vigilant unlock', before: 'XII', after: 'XI', direction: 'nerf' },
+          { label: 'Hunted unlock', before: 'XV', after: 'XII', direction: 'nerf' },
+          { label: 'The Rift Awakens unlock', before: 'XX', after: 'XII', direction: 'nerf' },
+          {
+            label: 'Rallied Foes Barrier at XII',
+            before: '9% of enemy HP',
+            after: '10.5%',
+            direction: 'nerf',
+          },
+        ],
+        text: 'Campaign only. Earlier Omens remain active and grow from their new unlock tier using their existing formulas. Rallied Foes gives the strongest ordinary enemy a half-HP phase with 5% HP as Barrier, growing by 0.5 percentage points per later tier to 13%. Third Phase gives Elites/Wardens a quarter-HP phase with 10% Barrier +0.5 points per later tier (max14%) and 1 Might. Hunted adds 1 damage to the strongest enemy’s first attack; The Rift Awakens gives enemies a half-HP phase with 10% Barrier/0 Might, retaining existing own-phase exceptions. Rift Scars still adds 1 Wound per new tier, capped at6 held; Dread starts you with1 Faltering, Rift Static adds1 temporary Static, Ironclad gives bosses1 Armored and Vigilant gives every enemy1 Steadfast. Second Wind (II), Times Are Tough (III), Brittle Wards (VIII) and Blood Rites (IX) keep their unlocks and formulas. Existing active legacy tiers/fights retain their previous Omen schedule until advancing; saved event choices remain intact.',
+      },
+      {
+        kind: 'balance',
+        title: 'Fraying Ward — final-gauntlet recovery',
+        changes: [
+          {
+            label: 'Automatic victory healing reduction',
+            before: '0%',
+            after: '50%',
+            direction: 'nerf',
+          },
+          {
+            label: 'Warden victory heal',
+            before: '30% max HP',
+            after: '15% max HP',
+            direction: 'nerf',
+          },
+        ],
+        text: 'Campaign only, from the final gauntlet. Fraying Ward halves each automatic post-victory heal, rounded up, including Warden recovery, the Hunter’s Pack Instinct (2→1 HP), Boon recovery and any applicable Elite recovery. Max-HP gains still add their usual current HP. In-fight healing, potion effects and full-HP Resolve retries are unchanged. Gifts, shards and Resolve rewards remain available after every Warden.',
+      },
+      {
+        kind: 'balance',
+        title: 'Elites before the finale',
+        changes: [
+          {
+            label: 'Tier when all normal fights become Elites',
+            before: 'XIX',
+            after: 'XI',
+            direction: 'nerf',
+          },
+          {
+            label: 'Normal-fight promotion at II / V / X / XI',
+            before: '6% / 22% / 50% / 56%',
+            after: '10% / 40% / 90% / 100%',
+            direction: 'nerf',
+          },
+        ],
+        text: 'Campaign only. Promotion odds now rise by10 percentage points per tier after I, capped at100%; already placed Elites are additional. Before the final gauntlet, every combat stop except its Warden is an Elite, including event ambushes; merchants, Shrines and other noncombat stops remain. Per-Elite reward amounts, rarity odds and healing keep their prior per-tier formulas; their reward fade was separated from the promotion threshold. Broader difficulty tuning is a follow-up. Existing saved map nodes and active fights keep their kinds.',
+      },
+      {
+        kind: 'changed',
+        title: 'Campaign shard standings and Resolve retries',
+        text: 'The Campaign leaderboard shows the unspent shards held by its ranked run. Equal progress is ordered by more shards, then who reached that progress first. Balances decrease when spent; totals are not combined across runs. Older unknown balances show — until reported. Using Resolve starts a fresh seeded fight shuffle while retaining the encounter, deck contents and full-HP recovery; reloading preserves that retry rather than rerolling it. Campaign introductions and lore describe progressing through realms without promising a fixed tier count.',
+      },
+      {
+        kind: 'new',
+        title: 'The rifts are sealed',
+        text: 'After defeating Vorthax and taking or skipping the final Gift, a dedicated illustrated victory screen celebrates the reclaimed realms and repaired Ward. Keep your victorious deck or return home. The ending persists across saves, and saved victorious decks are labelled Victory in run history. The art reveal respects reduced motion.',
+      },
+      {
+        kind: 'changed',
+        title: 'Desktop maps and existing runs',
+        text: 'Desktop maps run left to right again; phones retain top-to-bottom scrolling. Both show the same five-lane graph, icons, connections and choices. Each orientation keeps its own drawings. Existing maps and unfinished fights remain intact. After an older run clears a tier at XII or above, it enters the new Tier XII gauntlet with its earned cards, HP, Boons and statistics preserved. A legacy Vorthax clear receives the victory ending. Held treasure maps still deliver before the next required stop, including before the gauntlet.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Mobile card selection',
+        text: 'Swiping over cards now scrolls the remove/upgrade picker. Its header and Cancel button stay in view, and combat card dragging keeps its existing controls.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Account campaign saves',
+        text: 'Campaign and fight progress upload promptly during continuous play. The game shows whether the account save is confirmed; failures pause online play and preserve the local copy. Save-and-stop, desktop close and update handoffs wait for confirmation, and newer local checkpoints are offered for recovery rather than silently replaced. Recent account checkpoints and local recovery copies are retained. Local offline campaigns remain separate from the online account.',
+      },
+    ],
+  },
+  {
     version: '0.202.0',
     date: '2026-11-05',
     title: 'Five-lane maps and reliable treasure',

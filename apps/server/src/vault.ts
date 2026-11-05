@@ -23,6 +23,7 @@ import {
   dropFrom,
   isListName,
   keepRunCopies,
+  regressesRun,
   mergeCosmetics,
   mergeList,
   type Cosmetics,
@@ -68,6 +69,9 @@ export class Vault extends DurableObject<Env> {
     );
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS play_replays (k INTEGER PRIMARY KEY, data TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS run_backups (id TEXT NOT NULL, updated INTEGER NOT NULL, text TEXT NOT NULL, PRIMARY KEY(id, updated))',
     );
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS decks (
@@ -165,6 +169,17 @@ export class Vault extends DurableObject<Env> {
     for (const c of keep) {
       const h = had.get(c.id);
       if (h && h.updated === c.updated && !!h.gone === !!c.gone) continue;
+      if (h && !h.gone && h.text && h.text !== c.text) {
+        this.ctx.storage.sql.exec(
+          'INSERT OR IGNORE INTO run_backups (id, updated, text) VALUES (?, ?, ?)',
+          h.id,
+          h.updated,
+          h.text,
+        );
+        this.ctx.storage.sql.exec(
+          'DELETE FROM run_backups WHERE rowid NOT IN (SELECT rowid FROM run_backups ORDER BY updated DESC LIMIT 20)',
+        );
+      }
       this.ctx.storage.sql.exec(
         'INSERT OR REPLACE INTO runs (id, updated, gone, text) VALUES (?, ?, ?, ?)',
         c.id,
@@ -245,6 +260,13 @@ export class Vault extends DurableObject<Env> {
     }
     if (sealed) return json({ error: 'account-linked-reconnect' }, 409);
     if (action === 'list') return json({ ok: true, decks: this.list() });
+    if (action === 'runbackups')
+      return json({
+        ok: true,
+        runs: this.ctx.storage.sql
+          .exec('SELECT id, updated, text FROM run_backups ORDER BY updated DESC')
+          .toArray(),
+      });
     if (action === 'runs')
       return json({
         ok: true,
@@ -353,6 +375,13 @@ export class Vault extends DurableObject<Env> {
       if (body['revision'] !== lease.revision)
         return json(
           { ok: false, error: 'save-conflict', revision: lease.revision, runs: this.runs() },
+          409,
+        );
+      const arrived = cleanRunCopies(body['runs']);
+      const existing = this.runs();
+      if (arrived.some((c) => existing.some((old) => regressesRun(old, c))))
+        return json(
+          { ok: false, error: 'save-conflict', revision: lease.revision, runs: existing },
           409,
         );
       const replays = body['replays'];

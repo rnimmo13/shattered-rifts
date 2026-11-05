@@ -32,11 +32,13 @@ import {
   depthOf,
   ghostCleared,
   GHOST_FROM_TIER,
-  ALL_ELITE_TIER,
   ambushEnemy,
   generateStageMap,
   rollEliteFight,
   reachableNodes,
+  WARDEN_SEQUENCE,
+  gauntletMap,
+  shuffledWardens,
 } from './mapgen';
 
 export { CROSSED_MERCHANT_CHANCE };
@@ -146,8 +148,10 @@ export const ELITE_HEAL_PCT = 10;
 export const ELITE_HEAL_LAST_TIER = 10;
 /** The chance (percent) that an Elite leaves a Boon once its rewards have faded all the way. */
 export const ELITE_BOON_FLOOR = 10;
+/** Reward fade is separate from encounter frequency; difficulty/reward retuning is a follow-up. */
+export const ELITE_REWARD_FADE_TIER = 19;
 /**
- * What winning an Elite pays at this tier: Tier I in full, fading evenly until by ALL_ELITE_TIER its shards and potion chance are a plain
+ * What winning an Elite pays at this tier: Tier I in full, fading evenly until by ELITE_REWARD_FADE_TIER its shards and potion chance are a plain
  * fight's and its Boon is rare, as most fights are Elites by then. Its card reward keeps an Elite's rarity chance at every tier (DECISIONS #526).
  */
 export function eliteRewards(tier: number): {
@@ -156,7 +160,8 @@ export function eliteRewards(tier: number): {
   boonPct: number;
   healPct: number;
 } {
-  const left = Math.max(0, ALL_ELITE_TIER - Math.max(1, tier)) / (ALL_ELITE_TIER - 1);
+  const left =
+    Math.max(0, ELITE_REWARD_FADE_TIER - Math.max(1, tier)) / (ELITE_REWARD_FADE_TIER - 1);
   const fade = (floor: number, full: number): number => Math.round(floor + (full - floor) * left);
   return {
     shards: fade(FIGHT_SHARDS.duel, FIGHT_SHARDS.elite),
@@ -170,10 +175,10 @@ export function eliteRewards(tier: number): {
 export const REST_HEAL = 0.35;
 /** What a rest heals in this run (the Omen Times Are Tough takes some away), in HP. */
 export const restHeal = (run: RunState): number =>
-  Math.ceil(run.maxHp * REST_HEAL * (1 - omenEffects(run.tier).restPct / 100));
+  Math.ceil(run.maxHp * REST_HEAL * (1 - omenEffects(run.tier, !run.campaignRoute).restPct / 100));
 /** A merchant's price in this run (the Omen Times Are Tough adds to it). */
 export const shopPrice = (run: RunState, n: number): number =>
-  Math.round((n * (100 + omenEffects(run.tier).pricePct)) / 100);
+  Math.round((n * (100 + omenEffects(run.tier, !run.campaignRoute).pricePct)) / 100);
 
 /** The realm of the tier being walked. */
 export const realmOfRun = (run: Pick<RunState, 'map'>): StageRealm => run.map.realm;
@@ -183,9 +188,15 @@ function realmOfTier(
   rng: RngState,
   tier: number,
   last?: StageRealm,
+  wardenOrder: readonly string[] = WARDEN_SEQUENCE,
 ): { realm: StageRealm; order: StageRealm[] } {
   const order = shuffledRealms(rng).filter((x) => x !== last);
-  return { realm: tier >= MAX_TIER ? 'rift' : (order[0] as StageRealm), order };
+  const boss = wardenOrder[tier - 1];
+  const bossRealm = boss ? encounter(boss).realm : 'rift';
+  const realm: StageRealm = ['aurelion', 'nexus', 'wyldmaw', 'umbral'].includes(bossRealm)
+    ? (bossRealm as StageRealm)
+    : 'rift';
+  return { realm, order: realm === 'rift' ? order : [realm, ...order.filter((x) => x !== realm)] };
 }
 
 /** Where a tier's enemies come from: its own realm, or in the Rift the last two of its order (an old save's Rift map was built from them too). */
@@ -202,13 +213,17 @@ function shuffledRealms(rng: RngState): StageRealm[] {
 
 export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'normal'): RunState {
   const rng = seedRng(`run:${seed}`);
-  const stageRealms = shuffledRealms(rng);
-  const map = generateStageMap(rng, 1, stageRealms[0] as StageRealm, hero);
+  const wardenOrder = shuffledWardens(rng);
+  const first = realmOfTier(rng, 1, undefined, wardenOrder);
+  const stageRealms = first.order;
+  const map = generateStageMap(rng, 1, first.realm, hero, undefined, 1, 'twelve', wardenOrder);
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
   const rework = CLASS_REWORKS[hero]?.version;
   const run: RunState = {
     v: 2,
+    campaignRoute: 'twelve',
+    wardenOrder,
     ...(rework ? { reworked: rework } : {}),
     weaponCards: true,
     seed,
@@ -325,7 +340,7 @@ function nextReward(
   const left = c.extraRewards ?? 0;
   if (left <= 0 || c.nodeId === '') return false;
   const kind = nodeOf(r, c.nodeId).kind;
-  const count = Math.max(2, 3 - omenEffects(r.tier).fewerChoices);
+  const count = Math.max(2, 3 - omenEffects(r.tier, !r.campaignRoute).fewerChoices);
   r.context = {
     nodeId: c.nodeId,
     offers: offerCards(r.rng, r.character, r.deck, kind === 'duel' ? 'duel' : 'elite', count),
@@ -356,6 +371,27 @@ export function chooseAscendancy(run: RunState, id: string): RunState {
 
 /** After the Warden's Gift the tier is cleared (DECISIONS #352, #531). */
 function afterGift(r: RunState): void {
+  const node = r.map.nodes.find((n) => n.id === r.at);
+  if (node?.enemyId === 'vorthax') r.won = true;
+  if (r.map.gauntlet && node?.next.length) {
+    r.phase = 'map';
+    r.context = null;
+    Object.assign(r, enterNode(r, node.next[0]!));
+    return;
+  }
+  // Legacy saves finish their current map before entering the new finale; earned progress stays intact.
+  if (!r.campaignRoute && r.tier >= MAX_TIER && !r.won) {
+    r.campaignRoute = 'twelve';
+    r.tier = MAX_TIER;
+    if (r.rewardRerollTier !== undefined && r.rewardRerollTier > MAX_TIER)
+      r.rewardRerollTier = MAX_TIER;
+    r.map = gauntletMap(1, shuffledWardens(r.rng));
+    r.cleared = [];
+    r.at = null;
+    r.context = null;
+    r.phase = 'map';
+    return;
+  }
   r.phase = 'loopCleared';
   r.context = null;
 }
@@ -363,6 +399,9 @@ function afterGift(r: RunState): void {
 const heal = (r: RunState, n: number): void => {
   r.hp = Math.min(r.maxHp, r.hp + Math.ceil(n));
 };
+/** Only victory recovery is reduced; combat healing and earned permanent Max HP keep their rules. */
+const healAfterFight = (r: RunState, n: number): void =>
+  heal(r, n * (1 - omenEffects(r.tier, !r.campaignRoute).afterFightHealPct / 100));
 
 export function availableNodes(run: RunState): MapNode[] {
   return run.phase === 'map' ? reachableNodes(run.map, run.at, run.cleared) : [];
@@ -509,7 +548,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
           : {}),
       };
       // the Omen Times Are Tough: everything costs more (a card held for you keeps the price you were promised)
-      const up = omenEffects(r.tier).pricePct;
+      const up = omenEffects(r.tier, !r.campaignRoute).pricePct;
       if (up > 0) {
         const m = r.context.merchant;
         const dear = (n: number): number => shopPrice(r, n);
@@ -799,7 +838,7 @@ export function duelPlan(run: RunState): FightPlan | null {
   const e = encounter(node.enemyId);
   const ghost = CAMPAIGN_GHOSTS_ENABLED && node.ghost ? run.context.ghost : undefined;
   // the tier's Omens: phases and guards for the enemies, a shaken start for you, Static in your draw pile
-  const omen = omenEffects(run.tier);
+  const omen = omenEffects(run.tier, !run.campaignRoute);
   const boss = node.kind === 'elite' || node.kind === 'warden';
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
@@ -943,16 +982,16 @@ export function finishDuel(
   }
   const gain = Math.round(
     (node.kind === 'duel' ? FIGHT_SHARDS.duel : asElite ? elitePays.shards : FIGHT_SHARDS.warden) *
-      (1 - omenEffects(r.tier).shardsPct / 100),
+      (1 - omenEffects(r.tier, !r.campaignRoute).shardsPct / 100),
   );
   // (an Elite's or an Echo's shards are one of its spoils, chosen on the reward page: DECISIONS #555)
   if (!asElite) r.shards += gain;
   // a Riftwalker whose trait heals after a won fight (Kesh's Pack Instinct; DECISIONS #285)
   const traitHeal = COMBAT_DB.heroes[r.character]?.trait?.healAfterFight;
-  if (traitHeal) heal(r, traitHeal);
+  if (traitHeal) healAfterFight(r, traitHeal);
   for (const id of r.boons) {
     const b = COMBAT_DB.boons[id];
-    if (b?.healAfterFight) heal(r, b.healAfterFight);
+    if (b?.healAfterFight) healAfterFight(r, b.healAfterFight);
     if (b?.shardsPerFight) r.shards += b.shardsPerFight;
   }
   let boonGained: string | undefined;
@@ -971,7 +1010,7 @@ export function finishDuel(
       boonGained = id;
     }
   }
-  if (asElite && elitePays.healPct > 0) heal(r, (r.maxHp * elitePays.healPct) / 100); // an elite leaves you a little breathing room
+  if (asElite && elitePays.healPct > 0) healAfterFight(r, (r.maxHp * elitePays.healPct) / 100); // an elite leaves you a little breathing room
   if (node.kind === 'warden') {
     clearNode(r, node.id);
     // a Warden falls: you grow a little sturdier for good (more deeper in, where enemies hit harder; DECISIONS #237), and catch your breath
@@ -979,7 +1018,7 @@ export function finishDuel(
     r.maxHp += sturdier;
     r.hp += sturdier;
     r.eventResult = `The Warden falls: +${sturdier} Max HP.`;
-    heal(r, r.maxHp * 0.3);
+    healAfterFight(r, r.maxHp * 0.3);
     r.resolve = Math.min(r.maxResolve, r.resolve + 1);
     // Tier III's last Warden: the reward is an Ascendancy, in place of the Gift, a Heart and whatever the Heart of the Rift leaves. A run
     // past it without one (saved before they came) is offered it at its next Warden of any act (DECISIONS #519, #529). A new run
@@ -1057,7 +1096,7 @@ export function finishDuel(
     delete node.bonus;
     if (said.length) r.eventResult = `The spoils: ${said.join(' ')}`;
   }
-  const count = Math.max(2, 3 - omenEffects(r.tier).fewerChoices);
+  const count = Math.max(2, 3 - omenEffects(r.tier, !r.campaignRoute).fewerChoices);
   // a fallen Echo lays out its own cards (the Omen that takes a choice away does not reach them); with none to give, an Elite's reward
   const echoed = node.kind === 'echo' && ctx.ghost ? echoOffers(r, ctx.ghost) : [];
   r.context = {
@@ -1187,7 +1226,11 @@ export const MAX_SCARS = 6;
 function scarDeck(r: RunState): void {
   let added = 0;
   const held = r.deck.filter((id) => id === 'wound').length;
-  for (let i = 0; i < omenEffects(r.tier).actWounds && held + i < MAX_SCARS; i++) {
+  for (
+    let i = 0;
+    i < omenEffects(r.tier, !r.campaignRoute).actWounds && held + i < MAX_SCARS;
+    i++
+  ) {
     r.deck.push('wound');
     added++;
   }
@@ -1850,11 +1893,21 @@ export function bank(run: RunState): RunState {
 /** Push on: one Rift Tier deeper, same deck. The Warden's own heal and Resolve are all the rest there is (DECISIONS #531). */
 export function continueLoop(run: RunState): RunState {
   need(run.phase === 'loopCleared', 'You can only continue a cleared loop');
-  need(run.tier < MAX_TIER, `Rift Tier ${MAX_TIER} is as deep as it goes`);
+  need(!run.won && run.tier < MAX_TIER, `Rift Tier ${MAX_TIER} is the final gauntlet`);
   const r = clone(run);
+  if (!r.wardenOrder) {
+    r.wardenOrder = shuffledWardens(r.rng);
+    // A legacy save cannot reconstruct earlier maps; keep its known current Warden out of later tiers.
+    const current = r.map.nodes.find((n) => n.kind === 'warden')?.enemyId;
+    const index = r.wardenOrder.indexOf(current ?? '');
+    if (index >= 0 && r.tier <= 11) {
+      [r.wardenOrder[index], r.wardenOrder[r.tier - 1]] = [r.wardenOrder[r.tier - 1]!, current!];
+    }
+  }
+  r.campaignRoute = 'twelve';
   r.tier += 1;
   r.stage = 1;
-  const next = realmOfTier(r.rng, r.tier, r.map.realm);
+  const next = realmOfTier(r.rng, r.tier, r.map.realm, r.wardenOrder);
   r.stageRealms = next.order;
   r.map = generateStageMap(
     r.rng,
@@ -1863,10 +1916,15 @@ export function continueLoop(run: RunState): RunState {
     r.character,
     next.realm === 'rift' ? next.order.slice(-2) : [next.realm],
     r.tier,
+    r.campaignRoute,
+    r.wardenOrder,
   );
   r.cleared = [];
   r.at = null;
-  openPrelude(r, 'stage');
+  if (r.map.gauntlet) {
+    r.phase = 'map';
+    r.context = null;
+  } else openPrelude(r, 'stage');
   scarDeck(r);
   return r;
 }

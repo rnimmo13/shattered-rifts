@@ -333,7 +333,7 @@ export const EVENTS: EventDef[] = [
 /** Deliver held treasure before a route stop when its promised tier is reached. */
 export function promisedTreasure(r: RunState): EventCtx | null {
   if (!(r.marks ?? []).includes('map')) return null;
-  const due = r.treasureMapTier === undefined || r.tier > r.treasureMapTier || r.tier >= 20;
+  const due = r.treasureMapTier === undefined || r.tier > r.treasureMapTier || r.tier >= 12;
   if (!due) return null;
   const dig = EVENTS.find((e) => e.id === 'treasure-dig') as EventDef;
   return withScene(pinOptions(r, dig.build(r)), dig.id);

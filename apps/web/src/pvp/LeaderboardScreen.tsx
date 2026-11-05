@@ -45,7 +45,7 @@ const HOW: Record<BoardKind | 'ranks', string> = {
   ranks:
     'Every Arena match against another player moves your rating: up for a win, down for a loss, further when the other player is rated higher. Bronze, Silver, Gold and Platinum have three divisions each; Diamond is the top. A season is a month, and a new season pulls every rating halfway back to the start. Matches against ghosts never count. The board lists players with at least 3 Arena matches this season.',
   pvp: 'Arena wins against other players this week or this month. When a week or month closes, its top 100 each win a trophy: silver for a week, gold for a month (see your Trophy case). Weeks start on Monday and months on the 1st, at midnight Pacific time.',
-  runs: 'Every run that made progress this week or month, at how far it has got in all, one place per player and Riftwalker. A run counts from its first fight; you need a username to be on it.',
+  runs: 'Every run that made progress this week or month, at how far it has got in all, one place per player and Riftwalker. Equal progress is ranked by unspent shards held by that run, then who reached it first. Spending lowers the total; historical balances not yet reported show —. A run counts from its first fight; you need a username to be on it.',
   ghosts:
     'Ghosts are decks that have played in the Arena, piloted by the computer. The first table ranks the ghosts by their wins, the second the people who beat them. Ghost matches never count toward Arena ranks or the Arena board.',
 };
@@ -329,8 +329,8 @@ export function LeaderboardScreen() {
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
                 // (the class and the Ascendancy it took, each in its own column; no Tiers cleared, DECISIONS #566)
-                head={['Player', 'Class', 'Ascendancy', 'Tier', 'Status']}
-                numeric={[3]}
+                head={['Player', 'Class', 'Ascendancy', 'Tier', 'Shards', 'Status']}
+                numeric={[3, 4]}
                 rows={view.board as RunStanding[]}
                 you={view.you as (RunStanding & { rank: number }) | null}
                 empty={`No runs yet this ${period}. Be the first.`}
@@ -354,6 +354,9 @@ export function LeaderboardScreen() {
                     </span>
                   ),
                   <b key="t">{s.tier}</b>,
+                  <b key="shards" title="Unspent shards held by this ranked run">
+                    {s.shards?.toLocaleString() ?? '—'}
+                  </b>,
                   // (still going, or how it ended; DECISIONS #292)
                   <span key="s" className={`board__status board__status--${s.status ?? 'live'}`}>
                     {s.status === 'fell' ? 'Fell' : s.status === 'abandoned' ? 'Abandoned' : 'Live'}

@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-05",
+  "purpose": "Campaign victory screen: reclaimed realms and sealed rifts.",
+  "tool": "Built-in imagegen",
+  "status": "Generated original concept art for review; not yet released",
+  "source": "assets-src/victory/rifts-sealed.png (ignored source)",
+  "asset": "apps/web/public/art/victory/rifts-sealed.webp",
+  "sha256": "7845e712a6658e2ca4798558deff1aed285c9efe112599c468511ad3229210be",
+  "brief": "Original dark fantasy painted panorama: a victorious cloaked Riftwalker reunites golden Ward shards over distinct reclaimed realms, violet rift seams sealing into warm light. Wide cinematic composition, no lettering, interface or franchise references.",
+  "processing": {
+    "format": "webp",
+    "width": 1600,
+    "quality": 85
+  },
+  "presentation": "Gentle CSS reveal; disabled for prefers-reduced-motion. No video."
+}

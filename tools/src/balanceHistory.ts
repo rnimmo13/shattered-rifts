@@ -38,6 +38,7 @@ interface Snapshot {
   simulatedMatches?: number;
   gradeMode?: 'review-signals';
   evaluationScope?: string;
+  progressionBands?: [string, string, string];
   target: string;
   ratings: Rating[];
   starters: { hero: string; grade: string; rationale: string }[];
@@ -80,7 +81,7 @@ for (const file of files) {
     '',
     'Examples for comparison, freely mixed cards and hybrids; these do not define card pools or force three decks per class.',
     '',
-    '| Class / Ascendancy | Example style | Campaign IV–X | XI–XVI | XVII–XX | Arena prior → current | Arena opening | Extended |',
+    `| Class / Ascendancy | Example style | Campaign ${s.progressionBands?.[0] ?? 'IV–X'} | ${s.progressionBands?.[1] ?? 'XI–XVI'} | ${s.progressionBands?.[2] ?? 'XVII–XX'} | Arena prior → current | Arena opening | Extended |`,
     '|---|---|---|---|---|---|---|---|',
     ...s.ratings.map(
       (r) =>

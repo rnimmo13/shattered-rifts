@@ -1,5 +1,12 @@
 # Balance history
 
+Release0.203.0/rules83 is approved for commit, push and deployment (decision #623). The final [campaign review1](0.203.0-campaign-review-1.md) supersedes initial local0.203 route assumptions. Assessment-time local labels are preserved; approval and deterministic checks add no measured matches or balance simulations.
+
+Final local follow-up: [0.203.0 campaign review1](0.203.0-campaign-review-1.md), [CSV](0.203.0-campaign-review-1.csv), [JSON](0.203.0-campaign-review-1.json). Supersedes earlier local fixed-order and no-late-Omen assumptions: shuffled unique Wardens, Elite promotion100% atXI, an Omen every tier, halved finale automatic recovery, unspent-shard tiebreak. All30 styles/class starts/mixed builds remain Campaign-unrated. Arena unchanged; no simulations or measured parity. Broader difficulty tuning follows later.
+
+Latest local assessment: [0.203.0 twelve-tier campaign](0.203.0.md), [CSV](0.203.0.csv), [JSON](0.203.0.json). All30 Ascendancies, ten starts and freely mixed builds reconsidered for I–III, IV–VII, VIII–X and XI–XII. Shorter acquisition route, consecutive reward-bearing Wardens and lower final-tier scaling require fresh Campaign evidence; no measured grades or simulations. Arena unchanged; beyond-ten-own-turn parity remains unmeasured. Earlier snapshots and their release-state labels are preserved. No current release approval.
+
+
 Release0.202.0/rules83 is approved for commit, push and deployment (DECISIONS #615), including the treasure and five-lane-map assessments below. Their local/unreleased labels preserve assessment-time context; approval does not add measured matches, simulations or combat grades.
 
 Latest local follow-up: [0.202.0 five-lane map review](0.202.0-map-review-1.md), [CSV](0.202.0-map-review-1.csv). Shared vertical map; five initial choices, periodic convergence and renewed splits alter route selection, with unchanged stops per path and reward amounts. Existing saved routes remain intact. All30 combat assessments remain unmeasured; no simulations. The earlier treasure assessment below is preserved. Local only, no release approval.

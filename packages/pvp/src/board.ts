@@ -37,7 +37,8 @@ export const RUN_MIN_STAGE_MS = 60_000;
 /** Stages a run may move on in one report beyond what the time since the last one allows (a tier change, a missed report). */
 export const RUN_STEP_ALLOWANCE = 3;
 /** The furthest a run can be believed to be (the last Rift Tier). */
-export const RUN_MAX_TIER = MAX_TIER;
+// Read historical 20-tier reports without relabelling their progression.
+export const RUN_MAX_TIER = Math.max(MAX_TIER, 20);
 /** Reports and new runs allowed per player and per address, so a script cannot flood the board. */
 export const RUN_REPORTS_PER_HOUR = 40;
 export const NEW_RUNS_PER_DAY = 10;
@@ -282,6 +283,8 @@ export function stagesInAll(tier: number, clearedInTier: number): number {
 }
 
 export interface RunRow {
+  /** Latest reported unspent balance for this run, not lifetime earnings. Missing on historical rows. */
+  shards?: number | null;
   player: string;
   name: string;
   hero: string;
@@ -301,6 +304,7 @@ export type RunEnd = 'fell' | 'abandoned';
 export type RunStatus = 'live' | RunEnd;
 
 export interface RunStanding {
+  shards: number | null;
   name: string;
   hero: string;
   /** the Ascendancy that run took, shown as its class (DECISIONS #539) */
@@ -322,11 +326,23 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
     const hero = canonicalHero(r.hero);
     const k = `${r.name.trim().toLowerCase()}|${hero}`;
     const cur = best.get(k);
-    if (!cur || total > cur.total || (total === cur.total && r.at < cur.at))
+    if (
+      !cur ||
+      total > cur.total ||
+      (total === cur.total &&
+        ((r.shards ?? 0) > (cur.shards ?? 0) ||
+          ((r.shards ?? 0) === (cur.shards ?? 0) && r.at < cur.at)))
+    )
       best.set(k, { ...r, hero, total });
   }
   return [...best.values()]
-    .sort((x, y) => y.total - x.total || x.at - y.at || x.name.localeCompare(y.name))
+    .sort(
+      (x, y) =>
+        y.total - x.total ||
+        (y.shards ?? 0) - (x.shards ?? 0) ||
+        x.at - y.at ||
+        x.name.localeCompare(y.name),
+    )
     .map((r) => ({
       player: r.player,
       name: r.name,
@@ -335,6 +351,7 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
       tier: r.tier,
       stage: r.stage,
       total: r.total,
+      shards: r.shards ?? null,
       status: r.ended ?? 'live',
     }));
 }

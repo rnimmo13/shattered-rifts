@@ -232,7 +232,9 @@ export function checkEntry(raw: unknown): Checked | Rejected {
         boons.push(b);
   const tier = e['tier'];
   const t =
-    typeof tier === 'number' && Number.isInteger(tier) ? Math.min(MAX_TIER, Math.max(1, tier)) : 1;
+    typeof tier === 'number' && Number.isInteger(tier)
+      ? Math.min(Math.max(MAX_TIER, 20), Math.max(1, tier))
+      : 1;
   const st = e['stage'];
   const stage = typeof st === 'number' && Number.isInteger(st) && st >= 0 && st <= 3 ? st : null;
   const who = typeof e['who'] === 'string' && /^[0-9a-f]{64}$/.test(e['who']) ? e['who'] : null;

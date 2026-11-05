@@ -118,7 +118,7 @@ const click=text=>js('[...document.querySelectorAll("button")].find(b=>b.textCon
 await win.loadURL(base+'/#/replay/Abcdef1234');await wait('!!document.querySelector("textarea")');
 for(const [w,h,n] of [[1360,960,'desktop'],[390,844,'mobile'],[320,740,'small-mobile']]){
 win.setSize(w,h);await pause(300);assert.equal(await js('document.documentElement.scrollWidth<=innerWidth'),true,n);
-assert.equal(await js('document.querySelector(".game-version").textContent.trim()'),'v0.202.0');
+assert.equal(await js('document.querySelector(".game-version").textContent.trim()'),'v0.203.0');
 assert.equal(await js('getComputedStyle(document.querySelector(".game-version")).pointerEvents'),'none');
 assert.equal(await js('(()=>{const r=document.querySelector(".game-version").getBoundingClientRect();return r.right<=innerWidth&&r.bottom<=innerHeight&&r.left>innerWidth-130&&r.top>innerHeight-40})()'),true,n+' version position');
 fs.writeFileSync(${JSON.stringify(work)}+'/'+n+'.png',(await win.webContents.capturePage()).toPNG());}
@@ -129,7 +129,7 @@ await click('Save match record');await downloaded;
 const archive=JSON.parse(fs.readFileSync(saved,'utf8'));assert.equal(archive.note,'I wanted to build a defensive engine.');assert.equal(archive.replay.evidence.frames.length,1);assert.equal(archive.contentRules,83);
 await click('Watch replay');await wait('!!document.querySelector(".fight")');
 await wait('!!document.querySelector(".fight__watch")');await pause(300);
-assert.equal(await js('document.querySelector(".game-version").textContent.trim()'),'v0.202.0');
+assert.equal(await js('document.querySelector(".game-version").textContent.trim()'),'v0.203.0');
 fs.writeFileSync(${JSON.stringify(work)}+'/battle-version-mobile.png',(await win.webContents.capturePage()).toPNG());
 await win.loadURL(base+'/#/replay');await wait('!!document.querySelector("input[type=file]")');
 win.webContents.debugger.attach('1.3');const doc=await win.webContents.debugger.sendCommand('DOM.getDocument');const input=await win.webContents.debugger.sendCommand('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'input[type=file]'});

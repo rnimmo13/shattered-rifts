@@ -1951,6 +1951,9 @@
   backdrop-filter: blur(3px);
 }
 .grimmodal__panel {
+  min-height: 0;
+  max-height: 100dvh;
+  overflow: hidden;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -2139,6 +2142,10 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+.grim--phone .grim__card,
+.grim--phone .card {
+  touch-action: pan-y pinch-zoom;
 }
 .grim--phone .grim__empty {
   margin: 2rem 0;

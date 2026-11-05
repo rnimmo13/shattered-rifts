@@ -3,12 +3,14 @@ import {
   canPlay,
   ensurePlay,
   localOnly,
+  localRecoveryAvailable,
   playState,
   releasePlayAccess,
   subscribePlay,
 } from './playAccess';
 import { desktopBridge, flushDesktopSave, quitDesktop } from './desktopBridge';
 import './playGate.css';
+import { campaignSyncState, subscribeCampaignSync } from './run/runCloud';
 
 export function PlayGate({ children, arena = false }: { children: ReactNode; arena?: boolean }) {
   const access = useSyncExternalStore(subscribePlay, playState);
@@ -20,7 +22,7 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
       });
   }, []);
   if (localOnly() && !arena) return <>{children}</>;
-  const allowed = canPlay() && !(localOnly() && arena);
+  const allowed = canPlay() && access.phase === 'playing' && !(localOnly() && arena);
   return (
     <>
       {(opened || allowed) && (
@@ -39,8 +41,10 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
             <h1 id="play-gate-title">
               {localOnly()
                 ? 'Local offline mode'
-                : access.phase === 'claiming'
-                  ? 'Connecting…'
+                : access.phase === 'claiming' || access.phase === 'saving'
+                  ? access.phase === 'saving'
+                    ? 'Saving your campaign…'
+                    : 'Connecting…'
                   : 'Gameplay unavailable'}
             </h1>
             <p>
@@ -48,7 +52,7 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
                 ? 'Arena requires your online account. Local campaigns stay on this device.'
                 : access.message || 'Connecting your account for play on this device.'}
             </p>
-            {!localOnly() && access.phase !== 'claiming' && (
+            {!localOnly() && access.phase !== 'claiming' && access.phase !== 'saving' && (
               <button
                 className="btn"
                 onClick={() => {
@@ -58,6 +62,18 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
                 }}
               >
                 Try again
+              </button>
+            )}
+            {localRecoveryAvailable() && (
+              <button
+                className="btn"
+                onClick={() => {
+                  void ensurePlay(true).then((ok) => {
+                    if (ok) setOpened(true);
+                  });
+                }}
+              >
+                Recover newer local progress
               </button>
             )}
             <a className="btn btn--ghost" href="#/">
@@ -93,6 +109,7 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
 }
 export function PlayStatus() {
   const access = useSyncExternalStore(subscribePlay, playState);
+  const sync = useSyncExternalStore(subscribeCampaignSync, campaignSyncState);
   if (localOnly())
     return (
       <aside className="play-status">
@@ -109,16 +126,27 @@ export function PlayStatus() {
   if (access.phase === 'busy' || access.phase === 'paused')
     return <aside className="play-status">{access.message}</aside>;
   if (access.phase !== 'playing') return null;
-  if (['#/run', '#/arena', '#/pvp', '#/fight', '#/trials'].includes(window.location.hash))
-    return null;
+  if (window.location.hash === '#/run')
+    return (
+      <aside className="play-status" role="status">
+        {sync === 'saved'
+          ? 'Saved to account'
+          : sync === 'saving'
+            ? 'Saving to account…'
+            : 'Account save not confirmed'}
+      </aside>
+    );
+  if (['#/arena', '#/pvp', '#/fight', '#/trials'].includes(window.location.hash)) return null;
   return (
     <aside className="play-status">
       Playing on this device.
       <button
         onClick={() => {
-          void releasePlayAccess().then(() => {
-            window.location.hash = '#/';
-          });
+          void releasePlayAccess()
+            .then(() => {
+              window.location.hash = '#/';
+            })
+            .catch(() => undefined);
         }}
       >
         Save and stop playing

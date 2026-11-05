@@ -41,9 +41,13 @@ describe('linear campaign growth', () => {
       expect(e.bossRise.reduce((sum, r) => sum + r.might, 0)).toBeLessThanOrEqual(3);
       expect(e.allRise.every((r) => r.might === 0)).toBe(true);
     }
-    expect(omenEffects(20).bossRise).toEqual([
+    expect(omenEffects(20,true).bossRise).toEqual([
       { atPct: 50, barrierPct: 24, might: 2 },
       { atPct: 25, barrierPct: 13.5, might: 1 },
+    ]);
+    expect(omenEffects(12).bossRise).toEqual([
+      {atPct:50,barrierPct:20,might:2},
+      {atPct:25,barrierPct:11,might:1},
     ]);
   });
 

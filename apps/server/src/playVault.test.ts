@@ -53,6 +53,91 @@ function create() {
   return { ask, db };
 }
 describe('actual Vault gameplay fences and save transactions', () => {
+  it('allows the one-way legacy finale conversion without allowing lost earned progress', async () => {
+    const { ask } = create();
+    const token = (await ask('play/claim', { holder: 'browser' })).data.token as string;
+    const legacy = {
+      id: 'legacy',
+      updated: 1,
+      text: JSON.stringify({ tier: 13, stats: { nodesCleared: 300 } }),
+    };
+    await ask('runsave', { runs: [legacy], revision: 0, replays: {} }, token);
+    const finale = {
+      tier: 12,
+      campaignRoute: 'twelve',
+      map: { gauntlet: true },
+      stats: { nodesCleared: 300 },
+    };
+    expect(
+      (
+        await ask(
+          'runsave',
+          {
+            runs: [
+              { ...legacy, text: JSON.stringify({ ...finale, stats: { nodesCleared: 299 } }) },
+            ],
+            revision: 1,
+            replays: {},
+          },
+          token,
+        )
+      ).status,
+    ).toBe(409);
+    expect(
+      (
+        await ask(
+          'runsave',
+          { runs: [{ ...legacy, text: JSON.stringify(finale) }], revision: 1, replays: {} },
+          token,
+        )
+      ).status,
+    ).toBe(200);
+  });
+  it('rejects a lower-tier checkpoint even with the current lease/revision and preserves account backups', async () => {
+    const { ask } = create();
+    const token = (await ask('play/claim', { holder: 'browser' })).data.token as string;
+    const text = (tier: number, nodes: number) =>
+      JSON.stringify({ tier, stats: { nodesCleared: nodes } });
+    const copy = { id: 'same-run', updated: 1, text: text(11, 210) };
+    expect((await ask('runsave', { runs: [copy], revision: 0, replays: {} }, token)).status).toBe(
+      200,
+    );
+    expect(
+      (
+        await ask(
+          'runsave',
+          { runs: [{ ...copy, text: text(10, 190) }], revision: 1, replays: {} },
+          token,
+        )
+      ).status,
+    ).toBe(409);
+    expect((await ask('runs')).data.revision).toBe(1);
+    expect((await ask('runs')).data.runs).toEqual([expect.objectContaining({ text: copy.text })]);
+    expect(
+      (
+        await ask(
+          'runsave',
+          { runs: [{ ...copy, text: text(12, 230) }], revision: 1, replays: {} },
+          token,
+        )
+      ).status,
+    ).toBe(200);
+    expect((await ask('runbackups')).data.runs).toEqual([
+      expect.objectContaining({ text: copy.text }),
+    ]);
+    expect(
+      (
+        await ask(
+          'runsave',
+          { runs: [{ id: copy.id, updated: 2, gone: true }], revision: 2, replays: {} },
+          token,
+        )
+      ).status,
+    ).toBe(200);
+    expect((await ask('runsave', { runs: [copy], revision: 3, replays: {} }, token)).status).toBe(
+      409,
+    );
+  });
   it('seals only a never-played Steam Vault and rejects all stale requests afterward', async () => {
     const empty = create(),
       target = 'a'.repeat(64);

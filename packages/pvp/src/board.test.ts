@@ -170,6 +170,22 @@ describe('the campaign board', () => {
 });
 
 describe('the campaign board with several characters', () => {
+  it('uses the ranked run’s unspent shards after progress, then arrival time, without combining runs', () => {
+    const rows = [
+      { player: 'a', name: 'Ann', hero: 'knight', tier: 5, stage: 0, at: 1, shards: 10 },
+      { player: 'a', name: 'Ann', hero: 'knight', tier: 5, stage: 0, at: 4, shards: 200 },
+      { player: 'b', name: 'Bob', hero: 'knight', tier: 5, stage: 0, at: 2, shards: 100 },
+      { player: 'c', name: 'Cy', hero: 'knight', tier: 6, stage: 0, at: 3, shards: 0 },
+      { player: 'd', name: 'Dee', hero: 'knight', tier: 5, stage: 0, at: 3, shards: 100 },
+    ];
+    const board = rankRuns(rows);
+    expect(board.map((r) => r.name)).toEqual(['Cy', 'Ann', 'Bob', 'Dee']);
+    expect(board.find((r) => r.name === 'Ann')!.shards).toBe(200);
+    expect(
+      rankRuns([{ player: 'old', name: 'Old', hero: 'knight', tier: 1, stage: 0, at: 1 }])[0]!
+        .shards,
+    ).toBeNull();
+  });
   const run = (player: string, hero: string, tier: number, stage: number, at: number) => ({
     player,
     name: player,

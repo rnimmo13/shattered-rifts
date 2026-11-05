@@ -97,3 +97,38 @@ export function keepRunCopies(have: readonly RunCopy[], arrived: readonly RunCop
     .sort((a, b) => Number(!!a.gone) - Number(!!b.gone) || b.updated - a.updated)
     .slice(0, MAX_RUN_COPIES);
 }
+/** A valid lease/revision does not make an older campaign checkpoint a valid replacement. */
+export function regressesRun(before: RunCopy, after: RunCopy): boolean {
+  if (before.id !== after.id || after.gone) return false;
+  if (before.gone) return true;
+  try {
+    type Progress = {
+      tier: number;
+      campaignRoute?: unknown;
+      map?: { gauntlet?: unknown };
+      stats?: { nodesCleared?: number };
+    };
+    const a = JSON.parse(before.text ?? '') as Progress,
+      b = JSON.parse(after.text ?? '') as Progress;
+    if (!Number.isInteger(a.tier) || !Number.isInteger(b.tier)) return false;
+    if (b.tier < a.tier) {
+      // One-way migration after a legacy tier has finished, preserving cumulative earned progress.
+      const finaleMigration =
+        !a.campaignRoute &&
+        a.tier > 12 &&
+        b.tier === 12 &&
+        b.campaignRoute === 'twelve' &&
+        b.map?.gauntlet === true &&
+        Number.isInteger(b.stats?.nodesCleared) &&
+        b.stats!.nodesCleared! >= (a.stats?.nodesCleared ?? 0);
+      if (!finaleMigration) return true;
+    }
+    return (
+      Number.isInteger(a.stats?.nodesCleared) &&
+      Number.isInteger(b.stats?.nodesCleared) &&
+      b.stats!.nodesCleared! < a.stats!.nodesCleared!
+    );
+  } catch {
+    return false;
+  }
+}

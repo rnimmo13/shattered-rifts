@@ -112,7 +112,9 @@ describe('stage maps', () => {
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
     expect(first.floors).toBe(floorsOf(1) + 1);
-    expect(['kron', 'mother-of-static']).toContain(first.nodes.find((n) => n.kind === 'warden')?.enemyId);
+    expect(['kron', 'mother-of-static']).toContain(
+      first.nodes.find((n) => n.kind === 'warden')?.enemyId,
+    );
     const map = generateStageMap(seedRng('x'), FINAL_STAGE, 'rift', undefined, [
       'umbral',
       'wyldmaw',
@@ -163,27 +165,31 @@ describe('stage maps', () => {
     for (const r of realms) expect(['umbral', 'wyldmaw', ...FAR_REALMS]).toContain(r);
   });
 
-  it('each tier walks a realm, never the same one twice running, and the last is the Rift', () => {
+  it('follows each shuffled Warden realm, then enters the final gauntlet', () => {
     let run: RunState = { ...newRun('knight', 'realms'), phase: 'loopCleared', context: null };
-    expect(realmOfRun(run)).toBe(run.stageRealms[0]);
-    for (let t = 2; t <= 20; t++) {
-      const before = realmOfRun(run);
+    for (let t = 2; t <= 12; t++) {
       const next = continueLoop(run);
       expect(next.tier).toBe(t);
-      if (t < 20) expect(realmOfRun(next)).not.toBe(before);
-      else {
+      if (t < 12) {
+        const realm = encounter(next.wardenOrder![t - 1]!).realm;
+        expect(realmOfRun(next)).toBe(
+          ['aurelion', 'nexus', 'wyldmaw', 'umbral'].includes(realm) ? realm : 'rift',
+        );
+      } else {
         expect(realmOfRun(next)).toBe('rift');
-        expect(next.map.nodes.find((n) => n.kind === 'warden')?.enemyId).toBe('vorthax');
+        if (t === 12) expect(next.map.nodes.at(-1)?.enemyId).toBe('vorthax');
       }
-      expect(next.map.floors).toBe(floorsOf(t) + 1);
-      expect(parseRun(serializeRun(next))?.map.floors).toBe(floorsOf(t) + 1);
+      expect(next.map.floors).toBe(t === 12 ? 12 : floorsOf(t) + 1);
+      expect(parseRun(serializeRun(next))?.map.floors).toBe(next.map.floors);
       run = { ...next, phase: 'loopCleared', context: null };
     }
   });
 
   it('a run saved inside the old acts carries on: between acts its tier is cleared, inside one it finishes that map', () => {
     const base = fresh('knight', 'old-act');
-    const between = parseRun(serializeRun({ ...base, stage: 2, phase: 'stageClear' as never, context: null }));
+    const between = parseRun(
+      serializeRun({ ...base, stage: 2, phase: 'stageClear' as never, context: null }),
+    );
     expect(between?.phase).toBe('loopCleared');
     expect(between?.stage).toBe(1);
     const inside = parseRun(serializeRun({ ...base, tier: 2, stage: 3 }));
@@ -205,7 +211,14 @@ describe('stage maps', () => {
 
   it('Tier XX ends with Vorthax himself, never a ghost', () => {
     for (let i = 0; i < 100; i++) {
-      const m = generateStageMap(seedRng('finale-' + i), 3, 'rift', 'knight', ['umbral', 'wyldmaw'], 20);
+      const m = generateStageMap(
+        seedRng('finale-' + i),
+        3,
+        'rift',
+        'knight',
+        ['umbral', 'wyldmaw'],
+        20,
+      );
       const w = m.nodes.find((n) => n.kind === 'warden');
       expect(w?.enemyId).toBe('vorthax');
       expect(w?.ghost).toBeUndefined();
@@ -460,10 +473,10 @@ describe('a whole run, played by the bot', () => {
     expect(c.stage).toBe(1);
   });
 
-  it('Rift Tier 20 is the last: you can only bank there', () => {
-    const r = { ...fresh('knight', 'cap'), phase: 'loopCleared' as const, tier: 20 };
+  it('Rift Tier 12 is the last: the gauntlet ends the campaign', () => {
+    const r = { ...fresh('knight', 'cap'), phase: 'loopCleared' as const, tier: 12 };
     expect(() => continueLoop(r)).toThrow(RunError);
-    expect(continueLoop({ ...r, tier: 19 }).tier).toBe(20);
+    expect(continueLoop({ ...r, tier: 11 }).map.gauntlet).toBe(true);
   });
 });
 
@@ -752,7 +765,14 @@ describe('a tier of its own length (DECISIONS #531)', () => {
   // (every tier below Elites everywhere: a stretch cut short was once a Merchant beside a Merchant at Tiers 4, 11 and 18)
   const tiers = Array.from({ length: 19 }, (_, i) => i + 1);
   const maps = Array.from({ length: 760 }, (_, i) =>
-    generateStageMap(seedRng('tiered-' + i), 1 + (i % 3), 'nexus', 'knight', ['nexus'], tiers[i % 19]),
+    generateStageMap(
+      seedRng('tiered-' + i),
+      1 + (i % 3),
+      'nexus',
+      'knight',
+      ['nexus'],
+      tiers[i % 19],
+    ),
   );
   const onFloor = (m: (typeof maps)[number], f: number) => m.nodes.filter((n) => n.floor === f);
 
@@ -764,7 +784,8 @@ describe('a tier of its own length (DECISIONS #531)', () => {
   });
 
   it('rests before the boss, and no floor before it is all Shrines by rule', () => {
-    for (const m of maps) expect(onFloor(m, m.floors - 1).every((n) => n.kind === 'shrine')).toBe(true);
+    for (const m of maps)
+      expect(onFloor(m, m.floors - 1).every((n) => n.kind === 'shrine')).toBe(true);
     const allShrines = maps.filter((m) => onFloor(m, 5).every((n) => n.kind === 'shrine'));
     expect(allShrines.length).toBeLessThan(maps.length / 10);
   });
@@ -778,7 +799,9 @@ describe('a tier of its own length (DECISIONS #531)', () => {
       for (let i = 1; i < at.length; i++) expect(at[i]! - at[i - 1]!).toBeLessThanOrEqual(19);
       expect(m.floors - at[at.length - 1]!).toBeLessThanOrEqual(14);
     }
-    const t1 = Array.from({ length: 100 }, (_, i) => generateStageMap(seedRng('t1-e' + i), 1, 'nexus', 'knight'));
+    const t1 = Array.from({ length: 100 }, (_, i) =>
+      generateStageMap(seedRng('t1-e' + i), 1, 'nexus', 'knight'),
+    );
     for (const m of t1) {
       expect(m.floors).toBe(floorsOf(1) + 1);
       expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(5);
@@ -788,7 +811,12 @@ describe('a tier of its own length (DECISIONS #531)', () => {
   it('never has two Merchants, Shrines or Elites in a row', () => {
     for (const m of maps) {
       for (const n of m.nodes) {
-        if (n.kind !== 'merchant' && n.kind !== 'shrine' && (n.kind !== 'elite' || m.floors !== floorsOf(1) + 1)) continue;
+        if (
+          n.kind !== 'merchant' &&
+          n.kind !== 'shrine' &&
+          (n.kind !== 'elite' || m.floors !== floorsOf(1) + 1)
+        )
+          continue;
         for (const id of n.next) {
           const after = m.nodes.find((x) => x.id === id)!;
           expect(after.kind, n.id).not.toBe(n.kind);

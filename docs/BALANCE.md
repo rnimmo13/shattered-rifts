@@ -1,5 +1,10 @@
 # Balance Notes
 
+> **Final local0.203 follow-up:** [Campaign review1](balance-history/0.203.0-campaign-review-1.md) supersedes the fixed-order/absent-late-Omens assumptions below. Shuffled Wardens, every-tier Omens, all-Elite combat atXI,50% reduced automatic finale recovery and shard-hoarding incentives require fresh real-deck evidence. Per-Elite reward fade remains unchanged. Broad difficulty tuning is a fast-follow; no simulations or measured regrades.
+
+> **Local0.203 progression revision:** twenty tiers become twelve; XI completes the unique Warden roster and XII repeats all eleven before Vorthax, with normal healing/rewards. Final baseline850%/185% →530%/145% HP/damage. Fewer acquisition stops and altered Omen access make prior Campaign rates/grades historical. [Full thirty-style assessment](balance-history/0.203.0.md) records new bands and uncertainties. Arena rules unchanged; zero new simulations/human matches.
+
+
 ## Equal-HP Arena baseline (0.200.0/rules83, local)
 
 Robert authorizes1,000 HP for every Arena hero/ghost, no second-seat HP/Mana bonus, retaining one extra opening card only.30-minute games; mutual three-cardless-turn streak ends the match as a draw. Arena is the priority; Vorthax optimized-deck target is about50% or somewhat higher. [Implementation/report guide](ARENA_TESTING_2026-11-05.md), [all30 assessment rows](balance-history/0.200.0.md), [shared-AI diagnostic](balance-history/simulations/0.200.0/README.md). No new field-balance grades; previous rates cannot be transferred to the new HP/pilot baseline. Human/ghost deck observations are kept separate. No release approval.

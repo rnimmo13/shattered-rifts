@@ -21,6 +21,7 @@ import {
   releaseHold,
   buyPotion,
   MAX_TIER,
+  bank,
   sellPotion,
   buyRemoval,
   buyUpgrade,
@@ -94,6 +95,8 @@ import { iconUrl } from '../art/gameIcons';
 import { Picture } from '../ui/Picture';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
+import { useHorizontalMap } from './useHorizontalMap';
+import { VictoryPanel } from './VictoryPanel';
 import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
@@ -245,6 +248,7 @@ export default function RunScreen() {
     // (from its first finished stop: a run abandoned before its first fight does not use up a new-run slot on the server)
     if (stagesInAll(r.tier, done) === 0 && r.stats.nodesCleared === 0) return;
     void reportRun({
+      shards: r.shards,
       seed: r.seed,
       hero: r.character,
       ascendancy: r.ascendancy,
@@ -283,11 +287,15 @@ export default function RunScreen() {
         // (going on to the next Rift Tier is told too: Tier 1 stage 3 and Tier 2 stage 0 are the same count, but the board should say Tier 2)
         // (and after every finished stop, so a new run is on the board from its first fight; a repeat costs the server nothing)
         if (
-          (now > was || next.tier > cur.tier || shouldAutoSave(cur, next)) &&
+          (now > was ||
+            next.tier > cur.tier ||
+            next.shards !== cur.shards ||
+            shouldAutoSave(cur, next)) &&
           next.seed === cur.seed &&
           hasUsername()
         )
           void reportRun({
+            shards: next.shards,
             seed: next.seed,
             hero: next.character,
             ascendancy: next.ascendancy,
@@ -494,7 +502,10 @@ export default function RunScreen() {
           {...(!plan.ghost && encounter(plan.encounterId).rule
             ? { rule: encounter(plan.encounterId).rule }
             : {})}
-          omens={omensAt(run.tier).map((o) => ({ name: o.name, text: o.text(run.tier) }))}
+          omens={omensAt(run.tier, !run.campaignRoute).map((o) => ({
+            name: o.name,
+            text: o.text(run.tier),
+          }))}
           {...(link
             ? { pvp: link }
             : {
@@ -817,9 +828,9 @@ function Sanctum(props: {
       <header className="setup__head">
         <h1 className="setup__title">The Sanctum</h1>
         <p className="setup__lead">
-          Choose a Riftwalker and begin a run: 20 Rift Tiers, each ending in a Warden. Win fights,
-          add cards to your deck, and survive: your HP carries from fight to fight. Lose a fight and
-          you lose Resolve; lose all of it and the run collapses.
+          Choose a Riftwalker and begin a journey through the realms. Defeat their Wardens, win
+          fights, add cards to your deck, and survive: your HP carries from fight to fight. Lose a
+          fight and you lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
       <CharacterPicker value={pick} onChange={setPick} />
@@ -915,20 +926,23 @@ function RunBar(props: {
             <BoonChip id={run.heart} />
           </span>
         )}
-        {omensAt(run.tier).length > 0 && (
+        {omensAt(run.tier, !run.campaignRoute).length > 0 && (
           <span
             className="runbar__omens"
             tabIndex={0}
             {...tipAttrs({
               kicker: 'Rift Omens',
-              title: `${omensAt(run.tier).length} ${omensAt(run.tier).length === 1 ? 'Omen' : 'Omens'} at Tier ${run.tier}`,
+              title: `${omensAt(run.tier, !run.campaignRoute).length} ${omensAt(run.tier, !run.campaignRoute).length === 1 ? 'Omen' : 'Omens'} at Tier ${run.tier}`,
               tone: 'bad',
-              text: 'Omens come with the Rift Tiers from II, and they stack. Each grows the deeper you go.',
-              lines: omensAt(run.tier).map((o) => ({ title: o.name, text: o.text(run.tier) })),
+              text: 'Every Rift Tier brings an Omen, starting with the first, and they stack. Each grows the deeper you go. Existing legacy tiers retain their saved schedule until advancing.',
+              lines: omensAt(run.tier, !run.campaignRoute).map((o) => ({
+                title: o.name,
+                text: o.text(run.tier),
+              })),
             })}
           >
-            <span aria-hidden>☾</span> {omensAt(run.tier).length}{' '}
-            {omensAt(run.tier).length === 1 ? 'Omen' : 'Omens'}
+            <span aria-hidden>☾</span> {omensAt(run.tier, !run.campaignRoute).length}{' '}
+            {omensAt(run.tier, !run.campaignRoute).length === 1 ? 'Omen' : 'Omens'}
           </span>
         )}
         <span className="resolve" aria-label={`Resolve ${run.resolve} of ${run.maxResolve}`}>
@@ -1005,6 +1019,7 @@ function Body(props: {
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
+  const horizontalMap = useHorizontalMap();
 
   switch (run.phase) {
     case 'map':
@@ -1014,8 +1029,8 @@ function Body(props: {
             Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
           </h2>
           <p className="stage-panel__hint">
-            Choose a glowing stop. Follow the paths down as they split and meet; the Warden waits at
-            the bottom.
+            Choose a glowing stop. Follow the paths {horizontalMap ? 'to the right' : 'down'} as
+            they split and meet; the Warden waits at the end.
           </p>
           <div className="mapwrap">
             <MapView
@@ -1191,6 +1206,7 @@ function Body(props: {
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'loopCleared':
+      if (run.won) return <VictoryPanel run={run} onKeep={() => act(bank)} onHome={props.onHome} />;
       return (
         <section className="stage-panel" aria-label="Tier cleared">
           <h2 className="stage-panel__title">
@@ -1213,14 +1229,19 @@ function Body(props: {
             {run.tier < MAX_TIER ? (
               <button className="bigchoice" onClick={() => act((r) => continueLoop(r))}>
                 <b>Continue to Tier {run.tier + 1}</b>
-                <span>Keep your deck and your HP. One Tier deeper, and 2 floors longer.</span>
+                <span>
+                  {run.tier + 1 === MAX_TIER
+                    ? 'Face all 11 Wardens, then Vorthax. Normal Warden healing and rewards between fights.'
+                    : 'Keep your deck and HP. One tier deeper, one floor longer.'}
+                </span>
                 <span className="bigchoice__omen">
                   {omensOf(run.tier + 1).map((o) => (
                     <span key={o.id}>
                       A new Omen: <b>{o.name}</b>. {o.text(run.tier + 1)}{' '}
                     </span>
                   ))}
-                  {omensAt(run.tier).length > 0 && 'The Omens you have grow too.'}
+                  {omensAt(run.tier, !run.campaignRoute).length > 0 &&
+                    'The Omens you have grow too.'}
                 </span>
               </button>
             ) : (

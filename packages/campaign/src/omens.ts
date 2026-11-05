@@ -35,6 +35,8 @@ export interface OmenEffects {
   fightCards: string[];
   /** Wounds added to your deck with each new tier */
   actWounds: number;
+  /** Percent less automatic healing after winning a fight; in-fight healing and Resolve are unaffected. */
+  afterFightHealPct: number;
 }
 
 export interface Omen {
@@ -56,7 +58,7 @@ export interface Omen {
 type Grows = { base: number; perTier: number; max: number };
 type Steps = { base: number; plusOneEvery: number };
 
-export const OMEN_TUNING = {
+const LEGACY_OMEN_TUNING = {
   secondWind: {
     tier: 2,
     barrierPct: { base: 15, perTier: 0.5, max: 24 },
@@ -80,10 +82,23 @@ export const OMEN_TUNING = {
   thirdPhase: { tier: 13, atPct: 25, barrierPct: { base: 10, perTier: 0.5, max: 14 }, might: 1 },
   hunted: { tier: 15, firstHit: { base: 1, perTier: 0, max: 1 } },
   riftAwakens: { tier: 20, atPct: 50, barrierPct: 10, might: 0 },
+  frayingWard: { tier: 99, afterFightHealPct: 50 },
 } satisfies Record<string, { tier: number; [k: string]: number | Grows | Steps }>;
+export const OMEN_TUNING = {
+  ...LEGACY_OMEN_TUNING,
+  ralliedFoes: { ...LEGACY_OMEN_TUNING.ralliedFoes, tier: 1 },
+  riftScars: { ...LEGACY_OMEN_TUNING.riftScars, tier: 4 },
+  dread: { ...LEGACY_OMEN_TUNING.dread, tier: 5 },
+  riftStatic: { ...LEGACY_OMEN_TUNING.riftStatic, tier: 6 },
+  ironclad: { ...LEGACY_OMEN_TUNING.ironclad, tier: 7 },
+  thirdPhase: { ...LEGACY_OMEN_TUNING.thirdPhase, tier: 10 },
+  vigilant: { ...LEGACY_OMEN_TUNING.vigilant, tier: 11 },
+  hunted: { ...LEGACY_OMEN_TUNING.hunted, tier: 12 },
+  riftAwakens: { ...LEGACY_OMEN_TUNING.riftAwakens, tier: 12 },
+  frayingWard: { ...LEGACY_OMEN_TUNING.frayingWard, tier: 12 },
+};
 // ------------------------------------------------------------------------------------------------------------------------------
 
-const T = OMEN_TUNING;
 const add = (to: Partial<Record<StatusId, number>>, st: StatusId, n: number): void => {
   if (n > 0) to[st] = (to[st] ?? 0) + n;
 };
@@ -96,166 +111,180 @@ const at = (tier: number, from: number, v: Grows | Steps): number => {
 };
 const turns = (n: number): string => `${n} ${n === 1 ? 'turn' : 'turns'}`;
 
-const secondWind = (t: number): Rise => ({
-  atPct: 50,
-  barrierPct: at(t, T.secondWind.tier, T.secondWind.barrierPct),
-  might: at(t, T.secondWind.tier, T.secondWind.might),
-});
-const thirdPhase = (t: number): Rise => ({
-  atPct: T.thirdPhase.atPct,
-  barrierPct: at(t, T.thirdPhase.tier, T.thirdPhase.barrierPct),
-  might: T.thirdPhase.might,
-});
+function buildOmens(T: typeof OMEN_TUNING): Omen[] {
+  const secondWind = (t: number): Rise => ({
+    atPct: 50,
+    barrierPct: at(t, T.secondWind.tier, T.secondWind.barrierPct),
+    might: at(t, T.secondWind.tier, T.secondWind.might),
+  });
+  const thirdPhase = (t: number): Rise => ({
+    atPct: T.thirdPhase.atPct,
+    barrierPct: at(t, T.thirdPhase.tier, T.thirdPhase.barrierPct),
+    might: T.thirdPhase.might,
+  });
 
-const LISTED: Omen[] = [
-  {
-    tier: T.secondWind.tier,
-    id: 'second-wind',
-    name: 'Second Wind',
-    text: (t) => {
-      const r = secondWind(t);
-      return `Elites and Wardens have a second phase: the first time they fall to half HP, they stop there and rise with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+  return [
+    {
+      tier: T.secondWind.tier,
+      id: 'second-wind',
+      name: 'Second Wind',
+      text: (t) => {
+        const r = secondWind(t);
+        return `Elites and Wardens have a second phase: the first time they fall to half HP, they stop there and rise with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+      },
+      apply: (e, t) => void e.bossRise.push(secondWind(t)),
     },
-    apply: (e, t) => void e.bossRise.push(secondWind(t)),
-  },
-  {
-    tier: T.timesAreTough.tier,
-    id: 'times-are-tough',
-    name: 'Times Are Tough',
-    text: (t) => {
-      const v = T.timesAreTough;
-      const f = v.tier;
-      return `Shrines heal ${at(t, f, v.restPct)}% less, fights pay ${at(t, f, v.shardsPct)}% fewer shards, card rewards offer ${v.fewerChoices === 1 ? 'one card' : `${v.fewerChoices} cards`} fewer (the Warden’s Gift is untouched), and merchants charge ${at(t, f, v.pricePct)}% more.`;
+    {
+      tier: T.timesAreTough.tier,
+      id: 'times-are-tough',
+      name: 'Times Are Tough',
+      text: (t) => {
+        const v = T.timesAreTough;
+        const f = v.tier;
+        return `Shrines heal ${at(t, f, v.restPct)}% less, fights pay ${at(t, f, v.shardsPct)}% fewer shards, card rewards offer ${v.fewerChoices === 1 ? 'one card' : `${v.fewerChoices} cards`} fewer (the Warden’s Gift is untouched), and merchants charge ${at(t, f, v.pricePct)}% more.`;
+      },
+      apply: (e, t) => {
+        const v = T.timesAreTough;
+        e.restPct += at(t, v.tier, v.restPct);
+        e.shardsPct += at(t, v.tier, v.shardsPct);
+        e.fewerChoices += v.fewerChoices;
+        e.pricePct += at(t, v.tier, v.pricePct);
+      },
     },
-    apply: (e, t) => {
-      const v = T.timesAreTough;
-      e.restPct += at(t, v.tier, v.restPct);
-      e.shardsPct += at(t, v.tier, v.shardsPct);
-      e.fewerChoices += v.fewerChoices;
-      e.pricePct += at(t, v.tier, v.pricePct);
+    {
+      tier: T.riftScars.tier,
+      id: 'rift-scars',
+      name: 'Rift Scars',
+      text: (t) => {
+        const n = at(t, T.riftScars.tier, T.riftScars.wounds);
+        return `Each new tier leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
+      },
+      apply: (e, t) => void (e.actWounds += at(t, T.riftScars.tier, T.riftScars.wounds)),
     },
-  },
-  {
-    tier: T.riftScars.tier,
-    id: 'rift-scars',
-    name: 'Rift Scars',
-    text: (t) => {
-      const n = at(t, T.riftScars.tier, T.riftScars.wounds);
-      return `Each new tier leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
+    {
+      tier: T.ralliedFoes.tier,
+      id: 'rallied-foes',
+      name: 'Rallied Foes',
+      text: (t) =>
+        `In ordinary fights the strongest enemy has a second phase too: at half HP it stops and rises with Barrier (${at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct)}% of its HP).`,
+      apply: (e, t) =>
+        void e.leaderRise.push({
+          atPct: 50,
+          barrierPct: at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct),
+          might: 0,
+        }),
     },
-    apply: (e, t) => void (e.actWounds += at(t, T.riftScars.tier, T.riftScars.wounds)),
-  },
-  {
-    tier: T.ralliedFoes.tier,
-    id: 'rallied-foes',
-    name: 'Rallied Foes',
-    text: (t) =>
-      `In ordinary fights the strongest enemy has a second phase too: at half HP it stops and rises with Barrier (${at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct)}% of its HP).`,
-    apply: (e, t) =>
-      void e.leaderRise.push({
-        atPct: 50,
-        barrierPct: at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct),
-        might: 0,
-      }),
-  },
-  {
-    tier: T.ironclad.tier,
-    id: 'ironclad',
-    name: 'Ironclad',
-    text: (t) =>
-      `Elites and Wardens start with ${at(t, T.ironclad.tier, T.ironclad.armored)} Armored.`,
-    apply: (e, t) => add(e.bossStatuses, 'armored', at(t, T.ironclad.tier, T.ironclad.armored)),
-  },
-  {
-    tier: T.dread.tier,
-    id: 'dread',
-    name: 'Dread',
-    text: (t) =>
-      `You start every fight Faltering for ${turns(at(t, T.dread.tier, T.dread.faltering))} (25% less attack damage).`,
-    apply: (e, t) => add(e.heroStatuses, 'faltering', at(t, T.dread.tier, T.dread.faltering)),
-  },
-  {
-    tier: T.riftStatic.tier,
-    id: 'rift-static',
-    name: 'Rift Static',
-    text: (t) => {
-      const n = at(t, T.riftStatic.tier, T.riftStatic.staticCards);
-      return `${n === 1 ? 'A Static card joins' : `${n} Static cards join`} your draw pile in every fight.`;
+    {
+      tier: T.ironclad.tier,
+      id: 'ironclad',
+      name: 'Ironclad',
+      text: (t) =>
+        `Elites and Wardens start with ${at(t, T.ironclad.tier, T.ironclad.armored)} Armored.`,
+      apply: (e, t) => add(e.bossStatuses, 'armored', at(t, T.ironclad.tier, T.ironclad.armored)),
     },
-    apply: (e, t) => {
-      for (let i = 0; i < at(t, T.riftStatic.tier, T.riftStatic.staticCards); i++)
-        e.fightCards.push('static');
+    {
+      tier: T.dread.tier,
+      id: 'dread',
+      name: 'Dread',
+      text: (t) =>
+        `You start every fight Faltering for ${turns(at(t, T.dread.tier, T.dread.faltering))} (25% less attack damage).`,
+      apply: (e, t) => add(e.heroStatuses, 'faltering', at(t, T.dread.tier, T.dread.faltering)),
     },
-  },
-  {
-    tier: T.bloodRites.tier,
-    id: 'rites',
-    name: 'Blood Rites',
-    text: () => `Elites and Wardens start with ${T.bloodRites.might} Might.`,
-    apply: (e) => add(e.bossStatuses, 'might', T.bloodRites.might),
-  },
-  {
-    tier: T.brittleWards.tier,
-    id: 'brittle-wards',
-    name: 'Brittle Wards',
-    text: (t) =>
-      `You start every fight Brittle for ${turns(at(t, T.brittleWards.tier, T.brittleWards.brittle))} (the Barrier you gain is 25% smaller).`,
-    apply: (e, t) =>
-      add(e.heroStatuses, 'brittle', at(t, T.brittleWards.tier, T.brittleWards.brittle)),
-  },
-  {
-    tier: T.thirdPhase.tier,
-    id: 'third-phase',
-    name: 'Third Phase',
-    text: (t) => {
-      const r = thirdPhase(t);
-      return `Elites and Wardens rise once more at ${r.atPct === 25 ? 'a quarter' : `${r.atPct}%`} of their HP, with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+    {
+      tier: T.riftStatic.tier,
+      id: 'rift-static',
+      name: 'Rift Static',
+      text: (t) => {
+        const n = at(t, T.riftStatic.tier, T.riftStatic.staticCards);
+        return `${n === 1 ? 'A Static card joins' : `${n} Static cards join`} your draw pile in every fight.`;
+      },
+      apply: (e, t) => {
+        for (let i = 0; i < at(t, T.riftStatic.tier, T.riftStatic.staticCards); i++)
+          e.fightCards.push('static');
+      },
     },
-    apply: (e, t) => void e.bossRise.push(thirdPhase(t)),
-  },
-  {
-    tier: T.vigilant.tier,
-    id: 'vigilant',
-    name: 'Vigilant',
-    text: () =>
-      `Every enemy starts with ${T.vigilant.steadfast} Steadfast: the first ${T.vigilant.steadfast === 1 ? 'debuff' : `${T.vigilant.steadfast} debuffs`} you put on it ${T.vigilant.steadfast === 1 ? 'is' : 'are'} ignored.`,
-    apply: (e) => add(e.enemyStatuses, 'steadfast', T.vigilant.steadfast),
-  },
-  {
-    tier: T.hunted.tier,
-    id: 'hunted',
-    name: 'Hunted',
-    text: (t) =>
-      `The strongest enemy's first attack deals ${at(t, T.hunted.tier, T.hunted.firstHit)} more damage.`,
-    // (the strongest enemy only: on every enemy, a swarm's first blows carried the bonus six times; DECISIONS #555)
-    apply: (e, t) => add(e.leadStatuses, 'vigor', at(t, T.hunted.tier, T.hunted.firstHit)),
-  },
-  {
-    tier: T.riftAwakens.tier,
-    id: 'rift-awakens',
-    name: 'The Rift Awakens',
-    text: () =>
-      `Every enemy has a second phase: at ${T.riftAwakens.atPct === 50 ? 'half' : `${T.riftAwakens.atPct}% of its`} HP it stops and rises with Barrier (${T.riftAwakens.barrierPct}% of its HP) and ${T.riftAwakens.might} Might.`,
-    apply: (e) =>
-      void e.allRise.push({
-        atPct: T.riftAwakens.atPct,
-        barrierPct: T.riftAwakens.barrierPct,
-        might: T.riftAwakens.might,
-      }),
-  },
-];
+    {
+      tier: T.bloodRites.tier,
+      id: 'rites',
+      name: 'Blood Rites',
+      text: () => `Elites and Wardens start with ${T.bloodRites.might} Might.`,
+      apply: (e) => add(e.bossStatuses, 'might', T.bloodRites.might),
+    },
+    {
+      tier: T.brittleWards.tier,
+      id: 'brittle-wards',
+      name: 'Brittle Wards',
+      text: (t) =>
+        `You start every fight Brittle for ${turns(at(t, T.brittleWards.tier, T.brittleWards.brittle))} (the Barrier you gain is 25% smaller).`,
+      apply: (e, t) =>
+        add(e.heroStatuses, 'brittle', at(t, T.brittleWards.tier, T.brittleWards.brittle)),
+    },
+    {
+      tier: T.thirdPhase.tier,
+      id: 'third-phase',
+      name: 'Third Phase',
+      text: (t) => {
+        const r = thirdPhase(t);
+        return `Elites and Wardens rise once more at ${r.atPct === 25 ? 'a quarter' : `${r.atPct}%`} of their HP, with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+      },
+      apply: (e, t) => void e.bossRise.push(thirdPhase(t)),
+    },
+    {
+      tier: T.vigilant.tier,
+      id: 'vigilant',
+      name: 'Vigilant',
+      text: () =>
+        `Every enemy starts with ${T.vigilant.steadfast} Steadfast: the first ${T.vigilant.steadfast === 1 ? 'debuff' : `${T.vigilant.steadfast} debuffs`} you put on it ${T.vigilant.steadfast === 1 ? 'is' : 'are'} ignored.`,
+      apply: (e) => add(e.enemyStatuses, 'steadfast', T.vigilant.steadfast),
+    },
+    {
+      tier: T.hunted.tier,
+      id: 'hunted',
+      name: 'Hunted',
+      text: (t) =>
+        `The strongest enemy's first attack deals ${at(t, T.hunted.tier, T.hunted.firstHit)} more damage.`,
+      // (the strongest enemy only: on every enemy, a swarm's first blows carried the bonus six times; DECISIONS #555)
+      apply: (e, t) => add(e.leadStatuses, 'vigor', at(t, T.hunted.tier, T.hunted.firstHit)),
+    },
+    {
+      tier: T.frayingWard.tier,
+      id: 'fraying-ward',
+      name: 'Fraying Ward',
+      text: () =>
+        `Automatic healing after a won fight is ${T.frayingWard.afterFightHealPct}% lower, including Warden recovery, class traits and Boons (rounded up per heal). In-fight healing, potions, Resolve recovery and permanent Max HP gains are unchanged.`,
+      apply: (e) => void (e.afterFightHealPct += T.frayingWard.afterFightHealPct),
+    },
+    {
+      tier: T.riftAwakens.tier,
+      id: 'rift-awakens',
+      name: 'The Rift Awakens',
+      text: () =>
+        `Every enemy has a second phase: at ${T.riftAwakens.atPct === 50 ? 'half' : `${T.riftAwakens.atPct}% of its`} HP it stops and rises with Barrier (${T.riftAwakens.barrierPct}% of its HP) and ${T.riftAwakens.might} Might.`,
+      apply: (e) =>
+        void e.allRise.push({
+          atPct: T.riftAwakens.atPct,
+          barrierPct: T.riftAwakens.barrierPct,
+          might: T.riftAwakens.might,
+        }),
+    },
+  ];
+}
 
 /** Every Omen, in the order they arrive. */
-export const OMENS: Omen[] = [...LISTED].sort((a, b) => a.tier - b.tier);
+export const OMENS: Omen[] = buildOmens(OMEN_TUNING).sort((a, b) => a.tier - b.tier);
+const LEGACY_OMENS = buildOmens(LEGACY_OMEN_TUNING)
+  .filter((o) => o.id !== 'fraying-ward')
+  .sort((a, b) => a.tier - b.tier);
 
 /** The Omens in force at a tier (every one from Tier II up to it). */
-export const omensAt = (tier: number): Omen[] => OMENS.filter((o) => o.tier <= tier);
+export const omensAt = (tier: number, legacy = false): Omen[] =>
+  (legacy ? LEGACY_OMENS : OMENS).filter((o) => o.tier <= tier);
 
 /** The Omens a tier brings: some bring two, some none. */
 export const omensOf = (tier: number): Omen[] => OMENS.filter((o) => o.tier === tier);
 
 /** Everything the Omens of a tier do, added up. */
-export function omenEffects(tier: number): OmenEffects {
+export function omenEffects(tier: number, legacy = false): OmenEffects {
   const e: OmenEffects = {
     bossRise: [],
     leaderRise: [],
@@ -270,8 +299,9 @@ export function omenEffects(tier: number): OmenEffects {
     fewerChoices: 0,
     fightCards: [],
     actWounds: 0,
+    afterFightHealPct: 0,
   };
-  for (const o of omensAt(tier)) o.apply(e, tier);
+  for (const o of omensAt(tier, legacy)) o.apply(e, tier);
   return e;
 }
 

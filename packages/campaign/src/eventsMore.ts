@@ -157,9 +157,9 @@ export const MORE_EVENTS: EventDef[] = (
       needs: (r) => !(r.marks ?? []).includes('map'),
       opts: [
         [
-          'Keep it: treasure guaranteed within the next 3 tiers (by the next tier; at Tier XX, before your next stop)',
+          'Keep it: treasure guaranteed within the next 3 tiers (by the next tier; in the final gauntlet, before your next stop)',
           [mark('map')],
-          'The X is close. If you continue, the treasure appears before your first stop next tier, or before your next stop at Tier XX.',
+          'The X is close. If you continue, the treasure appears before your first stop next tier, or before your next stop in the final gauntlet.',
         ],
         ['Sell it: +60 shards', [shards(60)]],
       ],

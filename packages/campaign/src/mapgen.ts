@@ -1,7 +1,7 @@
-// Tier maps: a run is 20 Rift Tiers with no acts between them (DECISIONS #531). Tier I is 10 floors and its Warden, and each tier after has
-// 1 floor more, so Tier XX is 29 and its Warden, 30 in all (#556; 2 more a tier and 50 at Tier XX until then, #536). Generated from the run seed, so a run always has the same maps.
+// Seeded realm maps lead to unique Wardens; a separate final map contains the Warden gauntlet and Vorthax.
+// Existing saved maps retain their topology. Historical generic generation remains available for legacy fixtures.
 
-import { nextInt, type RngState } from '@sr/combat';
+import { nextInt, shuffle, type RngState } from '@sr/combat';
 import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
 import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
 import { CAMPAIGN_GHOSTS_ENABLED } from './features';
@@ -11,6 +11,39 @@ export const CROSSED_MERCHANT_CHANCE = 7.5;
 
 /** How deep enemy pools reach: the most `depthOf` gives, where the far realms join. */
 export const FINAL_STAGE = 3;
+/** One unique Warden for each of the first eleven tiers, then the same roster in the finale. */
+export const WARDEN_SEQUENCE = [
+  'seraphine',
+  'kron',
+  'gorrmaw',
+  'nyxara',
+  'the-hollow-benediction',
+  'mother-of-static',
+  'the-upside-down-stag',
+  'the-applause-below',
+  'the-mourning-tide',
+  'queen-of-the-unmade',
+  'event-horizon-regent',
+] as const;
+export function shuffledWardens(rng: RngState): string[] {
+  return shuffle(rng, [...WARDEN_SEQUENCE]);
+}
+export function gauntletMap(stage = 1, order: readonly string[] = WARDEN_SEQUENCE): StageMap {
+  const bosses = [...order, 'vorthax'];
+  return {
+    stage,
+    realm: 'rift',
+    gauntlet: true,
+    floors: bosses.length,
+    nodes: bosses.map((enemyId, i) => ({
+      id: `s${stage}-gauntlet-${i + 1}`,
+      floor: i + 1,
+      kind: 'warden',
+      enemyId,
+      next: i < bosses.length - 1 ? [`s${stage}-gauntlet-${i + 2}`] : [],
+    })),
+  };
+}
 /** Which enemies a tier can bring: the trios from Tier III, the far realms from Tier VI. (Its difficulty is the tier table's.) */
 export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 : 1);
 
@@ -117,7 +150,7 @@ function rollKind(
 export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
 
 /** From this Rift Tier every fight is an Elite (DECISIONS #524, #526). */
-export const ALL_ELITE_TIER = 19;
+export const ALL_ELITE_TIER = 11;
 /** At this Rift Tier every one of those Elites is a Warden's fight (DECISIONS #526). */
 export const ALL_WARDEN_TIER = 20;
 /** The last Rift Tier, whose Warden is Vorthax. */
@@ -197,7 +230,10 @@ export function generateStageMap(
   character?: string,
   pool: readonly StageRealm[] = realm === 'rift' ? ['umbral', 'wyldmaw'] : [realm],
   tier = 1,
+  campaignRoute?: 'twelve',
+  wardenOrder: readonly string[] = WARDEN_SEQUENCE,
 ): StageMap {
+  if (campaignRoute === 'twelve' && tier === 12) return gauntletMap(stage, shuffledWardens(rng));
   const regulars = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'regular', stage));
   const elites = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'elite', stage));
   const used = new Set<string>();
@@ -256,6 +292,8 @@ export function generateStageMap(
     enemyId: pick(rng, wardensFor(realm, stage, tier)).id,
     next: [],
   };
+  if (campaignRoute === 'twelve' && tier <= WARDEN_SEQUENCE.length)
+    warden.enemyId = wardenOrder[tier - 1]!;
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
   // (never Vorthax: the climb ends with him, DECISIONS #531)
   if (

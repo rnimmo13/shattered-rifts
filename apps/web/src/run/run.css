@@ -1,5 +1,74 @@
 /* The campaign screens. Shared tokens, same look as the duel. */
 
+.campaign-victory {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 100rem);
+  min-height: 75dvh;
+  margin: auto;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 1rem;
+  background: #080b19;
+}
+.campaign-victory__art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 43%;
+  animation: victory-reveal 2s ease-out both;
+}
+.campaign-victory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, transparent 15%, #080b1933 35%, #080b19ed 78%);
+}
+.campaign-victory__story {
+  padding: clamp(1.2rem, 4vw, 4rem);
+  padding-top: clamp(14rem, 35vh, 28rem);
+  max-width: 56rem;
+  margin: auto;
+  text-align: center;
+}
+.campaign-victory__story h1 {
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+  font-size: clamp(2.2rem, 4vw, 4.2rem);
+  line-height: 1.08;
+  margin: 0.4rem 0 1rem;
+}
+.campaign-victory__eyebrow {
+  color: var(--c-gold-light);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.campaign-victory__record {
+  color: var(--c-text-dim);
+  margin: 1.3rem 0;
+}
+@keyframes victory-reveal {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-victory__art {
+    animation: none;
+  }
+}
+
 .run {
   min-height: 100vh;
   padding: 1rem clamp(0.8rem, 3vw, 2.5rem) 3rem;
@@ -65,6 +134,55 @@
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   scrollbar-gutter: stable both-edges;
+}
+@media (min-width: 64rem) and (orientation: landscape) {
+  .run--map > .stage-panel--map {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .run--map .stage-panel__title {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    text-align: left;
+  }
+  .run--map .stage-panel__hint {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    text-align: left;
+  }
+  .run--map .mapwrap {
+    display: contents;
+  }
+  .run--map .mapink__dock {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    margin: 0;
+    width: auto;
+  }
+  .run--map .map__holder {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+  }
+  .run--map .maplegend {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+  .run--map .map__holder,
+  .mapmodal .map__holder {
+    overflow: auto;
+  }
+}
+@media (min-width: 64rem) and (orientation: landscape) and (max-height: 42rem) {
+  .run--map .stage-panel__title {
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+  }
+  .run--map .stage-panel__hint {
+    font-size: 0.8rem;
+  }
 }
 .run--map .mapink__dock {
   position: static;
@@ -683,7 +801,7 @@ img.mapnode__pic {
   width: 2.5rem;
   height: 2.5rem;
 }
-.mapnode--warden {
+button.mapnode--warden {
   width: 6.2rem;
   height: 6.2rem;
 }
@@ -706,6 +824,8 @@ img.mapnode__pic {
   color: var(--c-text-dim);
 }
 .maplegend__item {
+  width: auto;
+  height: auto;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -2035,26 +2155,38 @@ img.mapnode__pic {
 .map--tall {
   container-type: inline-size;
 }
-.map--tall .mapnode {
+.map--route .mapnode {
   width: clamp(2.75rem, 14cqw, 4.5rem);
   height: clamp(2.75rem, 14cqw, 4.5rem);
 }
-.map--tall .mapnode svg {
+.map--route .mapnode svg {
   width: 60%;
   height: 60%;
 }
-.map--tall .mapnode img.mapnode__pic {
+.map--route .mapnode img.mapnode__pic {
   width: 70%;
   height: 70%;
 }
-.map--tall .mapnode--warden {
+.map--route .mapnode--warden {
   width: clamp(3.5rem, 18cqw, 5.5rem);
   height: clamp(3.5rem, 18cqw, 5.5rem);
 }
-.map--tall .mapnode__label {
+.map--route .mapnode__label {
   width: 19cqw;
   font-size: clamp(0.67rem, 2.7cqw, 0.95rem);
   white-space: normal;
+}
+.map--wide .mapnode {
+  width: clamp(2rem, calc((var(--map-cross) - 120px) * 0.16), 4.5rem);
+  height: clamp(2rem, calc((var(--map-cross) - 120px) * 0.16), 4.5rem);
+}
+.map--wide .mapnode--warden {
+  width: clamp(2.5rem, calc(var(--map-cross) * 0.16), 5.5rem);
+  height: clamp(2.5rem, calc(var(--map-cross) * 0.16), 5.5rem);
+}
+.map--wide .mapnode__label {
+  width: 7.5rem;
+  font-size: clamp(0.65rem, calc(var(--map-cross) * 0.025), 0.95rem);
 }
 
 /* ---- drawing on the map (DECISIONS #506) ---- */

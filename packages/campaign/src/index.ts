@@ -190,3 +190,5 @@ export {
   type Omen,
   type OmenEffects,
 } from './omens';
+export { WARDEN_SEQUENCE, gauntletMap } from './mapgen';
+export { ELITE_REWARD_FADE_TIER } from './run';

@@ -35,7 +35,6 @@ import {
   GHOST_HP_PER_TIER,
   GHOST_DAMAGE_PER_TIER,
   GHOST_MAX_HP_BONUS_PCT,
-  ALL_WARDEN_TIER,
   eliteFightChance,
   POTION_DROP_CHANCE,
   POTION_PRICE,
@@ -147,11 +146,10 @@ export function LearnOdds() {
 
       <p>
         Deeper in, plain fights turn into Elites, past those limits: {eliteFightChance(2)}% of them
-        at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10,{' '}
-        {eliteFightChance(15)}% at Tier 15, and every one from Tier {ALL_ELITE_TIER}. At Tier{' '}
-        {ALL_WARDEN_TIER} every one of them is a Warden&apos;s fight, with a Warden&apos;s numbers,
-        paid as an Elite and costing 2 Resolve if lost. Ambushes and fights an event starts follow
-        the same odds.
+        at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10, and
+        every one from Tier {ALL_ELITE_TIER}. The final gauntlet is a fresh shuffled line of Wardens
+        followed by Vorthax, with normal Warden rewards and healing. Before that, ambushes and
+        fights an event starts follow the same Elite odds.
       </p>
 
       <p>
@@ -185,7 +183,7 @@ export function LearnOdds() {
         </li>
         <li>
           A Warden also leaves you Max HP for good: +{wardenMaxHp(1)} to Tier IV, +{wardenMaxHp(5)}{' '}
-          from Tier V, +{wardenMaxHp(10)} from Tier X, +{wardenMaxHp(20)} at Tier XX.
+          from Tier V, and +{wardenMaxHp(10)} from Tier X through the final gauntlet.
         </li>
         <li>
           A potion drops {POTION_DROP_CHANCE.duel}% of the time after a fight and{' '}

@@ -23,15 +23,16 @@ import {
 } from './index';
 
 describe('Rift Omens', () => {
-  it('Second Wind at Tier II, Times Are Tough at III, Rallied Foes at IV, and they only add up (DECISIONS #515)', () => {
-    expect(omensAt(1)).toHaveLength(0);
+  it('every tier introduces an Omen, starting with Rallied Foes at I, and earlier Omens stack', () => {
+    expect(omensAt(1).map((o) => o.id)).toEqual(['rallied-foes']);
     expect(omensOf(2).map((o) => o.id)).toEqual(['second-wind']);
     expect(omensOf(3).map((o) => o.id)).toEqual(['times-are-tough']);
-    expect(omensOf(4).map((o) => o.id)).toEqual(['rallied-foes']);
+    expect(omensOf(4).map((o) => o.id)).toEqual(['rift-scars']);
+    for (let t = 1; t <= MAX_TIER; t++) expect(omensOf(t).length).toBeGreaterThan(0);
     for (let t = 2; t <= MAX_TIER; t++) {
       expect(omensAt(t).length).toBe(omensAt(t - 1).length + omensOf(t).length);
     }
-    expect(omensAt(MAX_TIER)).toHaveLength(OMENS.length);
+    expect(omensAt(MAX_TIER)).toHaveLength(OMENS.filter((o) => o.tier <= MAX_TIER).length);
     expect(new Set(OMENS.map((o) => o.id)).size).toBe(OMENS.length);
   });
 
@@ -55,11 +56,11 @@ describe('Rift Omens', () => {
     expect(omenEffects(MAX_TIER).enemyStatuses.thorns ?? 0).toBe(0);
   });
 
-  it('Rift Scars: from Tier V each new tier leaves a Wound in the deck', () => {
-    expect(omenEffects(4).actWounds).toBe(0);
-    expect(omenEffects(5).actWounds).toBe(1);
+  it('Rift Scars: from Tier IV each new tier leaves a Wound in the deck', () => {
+    expect(omenEffects(3).actWounds).toBe(0);
+    expect(omenEffects(4).actWounds).toBe(1);
     expect(omenEffects(12).actWounds).toBe(1);
-    const run = { ...newRun('knight', 'scars'), tier: 4, phase: 'loopCleared' as const };
+    const run = { ...newRun('knight', 'scars'), tier: 3, phase: 'loopCleared' as const };
     const after = continueLoop(run);
     expect(after.deck.filter((c) => c === 'wound')).toHaveLength(1);
     expect(after.context?.prelude?.text).toContain('Rift Scars: a Wound joins your deck.');
@@ -73,7 +74,8 @@ describe('Rift Omens', () => {
     expect(two.bossRise).toHaveLength(1);
     const deep = omenEffects(MAX_TIER);
     expect(deep.bossRise[0]!.barrierPct).toBeGreaterThan(two.bossRise[0]!.barrierPct);
-    expect(deep.bossRise.length).toBeGreaterThan(1);
+    expect(deep.bossRise.length).toBeGreaterThanOrEqual(two.bossRise.length);
+    expect(omenEffects(20).bossRise.length).toBeGreaterThan(1); // historical saves retain later Omens
     expect(deep.pricePct).toBeGreaterThan(omenEffects(3).pricePct);
     expect(Object.keys(deep.heroStatuses).length).toBeGreaterThan(0);
     for (const o of OMENS) expect(o.text(MAX_TIER).length).toBeGreaterThan(10);
@@ -111,6 +113,29 @@ function at(tier: number, kind: 'duel' | 'elite' | 'warden'): RunState {
 }
 
 describe('Omens in a fight', () => {
+  it('preserves legacy current-tier effects and reduces only new-finale automatic recovery', () => {
+    expect(omensAt(1, true)).toHaveLength(0);
+    expect(omenEffects(12, true).afterFightHealPct).toBe(0);
+    expect(omenEffects(12).afterFightHealPct).toBe(50);
+    expect(omenEffects(11).afterFightHealPct).toBe(0);
+    const fight = at(12, 'warden');
+    fight.boons = [];
+    const legacy = { ...fight };
+    delete legacy.campaignRoute;
+    const old = finishDuel(legacy, true, 10),
+      current = finishDuel(fight, true, 10);
+    expect(old.hp).toBe(15 + Math.ceil(old.maxHp * 0.3));
+    expect(current.hp).toBe(15 + Math.ceil(current.maxHp * 0.15));
+    expect(current.maxHp).toBe(old.maxHp);
+    const retried = finishDuel(fight, false);
+    expect(retried.hp).toBe(retried.maxHp);
+  });
+  it('shows the first Omen in an ordinary opening fight', () => {
+    const plan = duelPlan(at(1, 'duel'))!;
+    expect(plan.mods.some((m) => m.rise?.some((r) => r.atPct === 50 && r.barrierPct === 5))).toBe(
+      true,
+    );
+  });
   it('Tier I fights are as they were', () => {
     const plan = duelPlan(at(1, 'elite'))!;
     expect(plan.mods).toEqual([]);

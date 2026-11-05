@@ -3,9 +3,35 @@
 import { describe, expect, it } from 'vitest';
 import { clone, seedRng } from '@sr/combat';
 import { COMBAT_DB, encounter } from '@sr/content/v2';
-import { ALL_ELITE_TIER, ALL_WARDEN_TIER, FINAL_STAGE, ambushEnemy, eliteFightChance, generateStageMap, rollEliteFight, wardenFor } from './mapgen';
+import {
+  ALL_ELITE_TIER,
+  ALL_WARDEN_TIER,
+  FINAL_STAGE,
+  ambushEnemy,
+  eliteFightChance,
+  generateStageMap,
+  rollEliteFight,
+  wardenFor,
+} from './mapgen';
 import { omenEffects } from './omens';
-import { ELITE_HEAL_LAST_TIER, ELITE_HEAL_PCT, ELITE_SPOIL_HEAL_PCT, ELITE_SPOIL_MAX_HP, FIGHT_SHARDS, chooseCard, chooseSpoil, POTION_DROP_CHANCE, availableNodes, duelPlan, continueLoop, eliteRewards, enterNode, finishDuel, newRun } from './run';
+import {
+  ELITE_HEAL_LAST_TIER,
+  ELITE_REWARD_FADE_TIER,
+  ELITE_HEAL_PCT,
+  ELITE_SPOIL_HEAL_PCT,
+  ELITE_SPOIL_MAX_HP,
+  FIGHT_SHARDS,
+  chooseCard,
+  chooseSpoil,
+  POTION_DROP_CHANCE,
+  availableNodes,
+  duelPlan,
+  continueLoop,
+  eliteRewards,
+  enterNode,
+  finishDuel,
+  newRun,
+} from './run';
 import type { RunState, StageMap, StageRealm } from './types';
 
 const REALMS: StageRealm[] = ['aurelion', 'nexus', 'wyldmaw', 'umbral'];
@@ -14,13 +40,14 @@ const mapAt = (seed: string, stage: number, realm: StageRealm, tier: number): St
   generateStageMap(seedRng(seed), stage, realm, 'knight', undefined, tier);
 
 describe('Elites by Rift Tier', () => {
-  it('the chance starts at Tier 2, climbs every tier, and is all of them from Tier 19', () => {
+  it('the chance starts at Tier 2, climbs every tier, and is all of them from Tier 11', () => {
     expect(eliteFightChance(1)).toBe(0);
     expect(eliteFightChance(2)).toBeGreaterThan(0);
-    for (let t = 2; t <= ALL_ELITE_TIER; t++) expect(eliteFightChance(t)).toBeGreaterThan(eliteFightChance(t - 1));
-    expect(eliteFightChance(18)).toBeLessThan(100);
+    for (let t = 2; t <= ALL_ELITE_TIER; t++)
+      expect(eliteFightChance(t)).toBeGreaterThan(eliteFightChance(t - 1));
+    expect(eliteFightChance(10)).toBeLessThan(100);
     expect(eliteFightChance(ALL_ELITE_TIER)).toBe(100);
-    expect(ALL_ELITE_TIER).toBe(19);
+    expect(ALL_ELITE_TIER).toBe(11);
     expect(ALL_WARDEN_TIER).toBe(20);
     expect(eliteFightChance(ALL_WARDEN_TIER)).toBe(100);
   });
@@ -37,10 +64,12 @@ describe('Elites by Rift Tier', () => {
 
   it('the next tier builds its map at its own tier', () => {
     const base: RunState = { ...newRun('knight', 'next'), phase: 'loopCleared', context: null };
-    const looped = continueLoop({ ...base, tier: ALL_ELITE_TIER });
-    expect(looped.tier).toBe(ALL_WARDEN_TIER);
+    const looped = continueLoop({ ...base, tier: 11 });
+    expect(looped.tier).toBe(12);
+    expect(looped.map.gauntlet).toBe(true);
     expect(count(looped.map, 'duel')).toBe(0);
-    for (const n of looped.map.nodes) if (n.kind === 'elite') expect(encounter(n.enemyId!).kind).toBe('warden');
+    expect(looped.map.nodes).toHaveLength(12);
+    expect(looped.map.nodes.every((n) => n.kind === 'warden')).toBe(true);
   });
 
   it('Tier 1 uses no roll for this, and its map is pinned', () => {
@@ -49,10 +78,12 @@ describe('Elites by Rift Tier', () => {
     expect(rollEliteFight(rng, 1)).toBe(false);
     expect(rng).toEqual(before);
     const m = generateStageMap(seedRng('pinned-map'), 1, 'nexus', 'knight');
-    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(`"ddddddddddemmededeeddeeescdddeessw"`);
+    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(
+      `"ddddddddddemmededeeddeeescdddeessw"`,
+    );
   });
 
-  it('at Tier 19 no fight on any map is a plain one, on any floor of any act', () => {
+  it('at Tier 11 no fight on any map is a plain one, on any floor of any act', () => {
     for (let i = 0; i < 30; i++) {
       for (let stage = 1; stage <= FINAL_STAGE; stage++) {
         for (const realm of REALMS) {
@@ -96,7 +127,12 @@ describe('Elites by Rift Tier', () => {
       foes = [];
       const kinds: string[] = [];
       for (let i = 0; i < 80; i++) {
-        const run: RunState = { ...newRun('knight', `amb-${i}`), tier, phase: 'map', context: null };
+        const run: RunState = {
+          ...newRun('knight', `amb-${i}`),
+          tier,
+          phase: 'map',
+          context: null,
+        };
         const first = availableNodes(run)[0]!;
         const node = run.map.nodes.find((n) => n.id === first.next[0])!;
         run.cleared = run.map.nodes.filter((n) => n.floor < 2).map((n) => n.id);
@@ -143,7 +179,10 @@ describe('Elites by Rift Tier', () => {
         }
       }
     }
-    expect(mapAt('finale', FINAL_STAGE, 'rift', ALL_WARDEN_TIER).nodes.find((n) => n.kind === 'warden')?.enemyId).toBe(vorthax);
+    expect(
+      mapAt('finale', FINAL_STAGE, 'rift', ALL_WARDEN_TIER).nodes.find((n) => n.kind === 'warden')
+        ?.enemyId,
+    ).toBe(vorthax);
   });
 
   it("at Tier 20 an act's stops have a good few Wardens, and mostly not its own", () => {
@@ -167,7 +206,12 @@ describe('Elites by Rift Tier', () => {
   });
 
   it('an Elite that is a Warden does not bring a second one with the Omen that adds to Elites', () => {
-    const run: RunState = { ...newRun('knight', 'swarm'), tier: ALL_WARDEN_TIER, phase: 'map', context: null };
+    const run: RunState = {
+      ...newRun('knight', 'swarm'),
+      tier: ALL_WARDEN_TIER,
+      phase: 'map',
+      context: null,
+    };
     const node = availableNodes(run)[0]!;
     node.kind = 'elite';
     node.enemyId = wardenFor('nexus').id;
@@ -186,11 +230,21 @@ describe('what an Elite pays by Rift Tier', () => {
     return { before, after: finishDuel(before, true, 20) };
   };
 
-  it('Tier 1 pays in full, and it fades every tier to a plain fight\'s shards and potions at Tier 19', () => {
-    expect(eliteRewards(1)).toEqual({ shards: FIGHT_SHARDS.elite, potionPct: POTION_DROP_CHANCE.elite, boonPct: 100, healPct: ELITE_HEAL_PCT });
+  it("Tier 1 pays in full, and it fades every tier to a plain fight's shards and potions at Tier 19", () => {
+    expect(eliteRewards(1)).toEqual({
+      shards: FIGHT_SHARDS.elite,
+      potionPct: POTION_DROP_CHANCE.elite,
+      boonPct: 100,
+      healPct: ELITE_HEAL_PCT,
+    });
     expect(eliteRewards(10)).toMatchObject({ shards: 26, potionPct: 58, boonPct: 55 });
-    for (const t of [ALL_ELITE_TIER, ALL_WARDEN_TIER])
-      expect(eliteRewards(t)).toEqual({ shards: FIGHT_SHARDS.duel, potionPct: POTION_DROP_CHANCE.duel, boonPct: 10, healPct: 0 });
+    for (const t of [ELITE_REWARD_FADE_TIER, ALL_WARDEN_TIER])
+      expect(eliteRewards(t)).toEqual({
+        shards: FIGHT_SHARDS.duel,
+        potionPct: POTION_DROP_CHANCE.duel,
+        boonPct: 10,
+        healPct: 0,
+      });
     for (let t = 2; t <= ALL_ELITE_TIER; t++) {
       expect(eliteRewards(t).boonPct).toBeLessThan(eliteRewards(t - 1).boonPct);
       expect(eliteRewards(t).shards).toBeLessThanOrEqual(eliteRewards(t - 1).shards);
@@ -199,7 +253,9 @@ describe('what an Elite pays by Rift Tier', () => {
   });
 
   it('heals through Tier 10 and not after', () => {
-    expect(win(ELITE_HEAL_LAST_TIER, 'heal').after.hp).toBe(20 + Math.ceil((newRun('knight', 'heal').maxHp * ELITE_HEAL_PCT) / 100));
+    expect(win(ELITE_HEAL_LAST_TIER, 'heal').after.hp).toBe(
+      20 + Math.ceil((newRun('knight', 'heal').maxHp * ELITE_HEAL_PCT) / 100),
+    );
     expect(win(ELITE_HEAL_LAST_TIER + 1, 'heal').after.hp).toBe(20);
   });
 
@@ -213,7 +269,7 @@ describe('what an Elite pays by Rift Tier', () => {
       return n;
     };
     expect(boons(1)).toBe(60);
-    expect(boons(ALL_ELITE_TIER)).toBeLessThan(20);
+    expect(boons(ELITE_REWARD_FADE_TIER)).toBeLessThan(20);
   });
 
   it('a won Elite really pays the faded shards (as its spoils, DECISIONS #555) and potion chance', () => {
@@ -245,7 +301,9 @@ describe('what an Elite pays by Rift Tier', () => {
     expect(hp.context?.spoils).toBeUndefined();
     expect(() => chooseSpoil(hp, 'heal')).toThrow();
     const healed = chooseSpoil(hurt, 'heal');
-    expect(healed.hp).toBe(Math.min(after.maxHp, 30 + Math.ceil((after.maxHp * ELITE_SPOIL_HEAL_PCT) / 100)));
+    expect(healed.hp).toBe(
+      Math.min(after.maxHp, 30 + Math.ceil((after.maxHp * ELITE_SPOIL_HEAL_PCT) / 100)),
+    );
     expect(healed.maxHp).toBe(after.maxHp);
     const skipped = chooseCard(after, null);
     expect(skipped.shards - before.shards).toBe(after.context!.spoils!.shards);
@@ -263,12 +321,18 @@ describe('what an Elite pays by Rift Tier', () => {
     const better = (kind: 'elite' | 'duel'): number => {
       let n = 0;
       for (let i = 0; i < 150; i++) {
-        const run: RunState = { ...newRun('knight', `cards-${i}`), tier: ALL_ELITE_TIER, phase: 'map', context: null };
+        const run: RunState = {
+          ...newRun('knight', `cards-${i}`),
+          tier: ALL_ELITE_TIER,
+          phase: 'map',
+          context: null,
+        };
         const node = availableNodes(run)[0]!;
         node.kind = kind;
         node.enemyId = ambushEnemy(seedRng(`cards-${i}`), ['nexus'], kind, [], 1)!;
         const after = finishDuel(enterNode(run, node.id), true, 20);
-        for (const c of after.context?.offers ?? []) if (COMBAT_DB.cards[c]?.rarity !== 'common') n++;
+        for (const c of after.context?.offers ?? [])
+          if (COMBAT_DB.cards[c]?.rarity !== 'common') n++;
       }
       return n;
     };
@@ -276,7 +340,12 @@ describe('what an Elite pays by Rift Tier', () => {
   });
 
   it('a Warden on an Elite stop plays out as an Elite: no Gift, no Max HP, the act goes on, 2 Resolve if lost', () => {
-    const run: RunState = { ...newRun('knight', 'warden-stop'), tier: ALL_WARDEN_TIER, phase: 'map', context: null };
+    const run: RunState = {
+      ...newRun('knight', 'warden-stop'),
+      tier: ALL_WARDEN_TIER,
+      phase: 'map',
+      context: null,
+    };
     const node = availableNodes(run)[0]!;
     node.kind = 'elite';
     node.enemyId = wardenFor('nexus').id;

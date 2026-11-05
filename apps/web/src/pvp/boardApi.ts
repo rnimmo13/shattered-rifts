@@ -296,6 +296,7 @@ export async function reportRunEnd(
 }
 
 export async function reportRun(run: {
+  shards?: number;
   seed: string;
   hero: string;
   /** the Ascendancy the run took, for the campaign board (DECISIONS #539) */
@@ -305,6 +306,7 @@ export async function reportRun(run: {
   name: string;
 }): Promise<unknown> {
   const body: Record<string, unknown> = {
+    ...(run.shards !== undefined ? { shards: run.shards, reportedAt: Date.now() } : {}),
     run: run.seed.slice(0, 64),
     hero: run.hero,
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),

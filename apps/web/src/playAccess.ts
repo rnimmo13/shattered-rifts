@@ -1,4 +1,4 @@
-import { cleanRunCopies, cleanVault, type RunCopy } from '@sr/pvp';
+import { cleanRunCopies, cleanVault, regressesRun, type RunCopy } from '@sr/pvp';
 import { serverBase, playerId } from './pvp/config';
 import { vaultKey, whoAmI } from './pvp/vaultSync';
 
@@ -6,7 +6,7 @@ export const localOnly = (): boolean =>
   typeof window !== 'undefined' &&
   window.location.protocol === 'srgame:' &&
   window.location.hostname === 'local';
-type Phase = 'browsing' | 'claiming' | 'playing' | 'paused' | 'busy';
+type Phase = 'browsing' | 'claiming' | 'playing' | 'saving' | 'paused' | 'busy';
 export interface PlayAccess {
   phase: Phase;
   message: string;
@@ -17,6 +17,8 @@ let token = '';
 let deadline = 0;
 let revision = 0;
 let pending: Promise<boolean> | null = null;
+let recoveryAvailable = false;
+export const localRecoveryAvailable = (): boolean => recoveryAvailable;
 const listeners = new Set<() => void>();
 export const playState = (): PlayAccess => state;
 export const subscribePlay = (listener: () => void): (() => void) => {
@@ -28,7 +30,9 @@ const update = (phase: Phase, message = ''): void => {
   for (const on of listeners) on();
 };
 export const canPlay = (): boolean =>
-  !localOnly() && state.phase === 'playing' && performance.now() < deadline;
+  !localOnly() &&
+  (state.phase === 'playing' || state.phase === 'saving') &&
+  performance.now() < deadline;
 export const playToken = (): string => (canPlay() ? token : '');
 export const playRevision = (): number => revision;
 export const setPlayRevision = (value: number): void => {
@@ -37,10 +41,10 @@ export const setPlayRevision = (value: number): void => {
 export function pausePlay(
   message = 'Your play connection was interrupted. Reconnect before continuing.',
 ): void {
-  if (state.phase === 'playing') update('paused', message);
+  if (state.phase === 'playing' || state.phase === 'saving') update('paused', message);
 }
 export async function gameplayAction(action: () => void): Promise<void> {
-  if (localOnly() || (await ensurePlay())) action();
+  if (localOnly() || ((await ensurePlay()) && state.phase === 'playing')) action();
 }
 const base = (): string => serverBase().replace(/^ws/i, 'http');
 async function call(action: 'claim' | 'renew' | 'release'): Promise<Record<string, unknown>> {
@@ -57,7 +61,7 @@ async function call(action: 'claim' | 'renew' | 'release'): Promise<Record<strin
   if (!data || typeof data !== 'object') throw new Error('Gameplay server unavailable');
   return data as Record<string, unknown>;
 }
-export function ensurePlay(): Promise<boolean> {
+export function ensurePlay(recoverLocal = false): Promise<boolean> {
   if (localOnly()) return Promise.resolve(true);
   if (canPlay()) return Promise.resolve(true);
   pending ??= (async () => {
@@ -81,12 +85,24 @@ export function ensurePlay(): Promise<boolean> {
       sessionStorage.setItem('sr.play.token', token);
       deadline = performance.now() + Math.max(0, data.expires - data.now);
       revision = data.revision;
-      const { adoptSharedRuns, adoptSharedReplays } = await import('./run/saves');
+      const { adoptSharedRuns, adoptSharedReplays, runCopies } = await import('./run/saves');
       const remote: RunCopy[] = cleanRunCopies(data.runs);
+      const local = runCopies();
+      const newerLocal = local.filter((c) => remote.some((r) => regressesRun(c, r)));
+      recoveryAvailable = newerLocal.length > 0;
+      if (recoveryAvailable && !recoverLocal) {
+        update(
+          'paused',
+          'This device has campaign progress beyond the account save. Both copies are preserved. Recover the newer local progress before switching devices.',
+        );
+        return false;
+      }
       // The first migration may adopt local runs only when this identity has never saved remotely.
       if (revision !== 0 || remote.length) {
-        adoptSharedRuns(remote);
-        adoptSharedReplays(data.replays);
+        adoptSharedRuns(
+          recoverLocal ? remote.map((r) => newerLocal.find((c) => c.id === r.id) ?? r) : remote,
+        );
+        if (!recoverLocal || !newerLocal.length) adoptSharedReplays(data.replays);
         localStorage.setItem('sr-vault-v1', JSON.stringify(cleanVault(data.decks)));
         for (const [name, key] of [
           ['history', 'sr.runHistory'],
@@ -100,7 +116,10 @@ export function ensurePlay(): Promise<boolean> {
         localStorage.removeItem('sr.pendingDrops');
       }
       state = { ...state, epoch: state.epoch + 1 };
+      recoveryAvailable = false;
       update('playing');
+      const { soonSyncRuns } = await import('./run/runCloud');
+      soonSyncRuns();
       return true;
     } catch {
       update(
@@ -116,17 +135,29 @@ export function ensurePlay(): Promise<boolean> {
 }
 export async function releasePlayAccess(): Promise<void> {
   if (localOnly() || !token) return;
+  if (!canPlay())
+    throw new Error('Reconnect to confirm your latest account save before switching devices.');
+  update('saving', 'Confirming your latest account save before stopping play…');
   try {
-    if (canPlay()) {
-      const { syncRuns } = await import('./run/runCloud');
-      await syncRuns();
-      await syncRuns();
-    }
-    await call('release');
-  } finally {
+    const { flushCampaignSave } = await import('./run/runCloud');
+    if (!(await flushCampaignSave()))
+      throw new Error(
+        'Your latest campaign save has not reached your account. Reconnect and save before switching devices.',
+      );
+    const released = await call('release');
+    if (released.ok !== true)
+      throw new Error(
+        'Could not confirm that this device stopped playing. Reconnect before switching devices.',
+      );
     token = '';
     sessionStorage.removeItem('sr.play.token');
     update('browsing');
+  } catch (error) {
+    update(
+      'paused',
+      error instanceof Error ? error.message : 'The latest account save is not confirmed.',
+    );
+    throw error;
   }
 }
 export function playSocketUrl(path: string, address = serverBase()): string {
@@ -180,6 +211,8 @@ export function installPlayAccess(): void {
           return;
         }
         deadline = performance.now() + Math.max(0, data.expires - data.now);
+        if (typeof data.revision === 'number' && data.revision !== revision)
+          void import('./run/runCloud').then(({ syncRuns }) => syncRuns());
       })
       .catch(() => pausePlay());
   }, 10000);
@@ -190,11 +223,21 @@ export function installPlayAccess(): void {
   window.addEventListener('focus', () => {
     if (state.phase === 'playing' && !canPlay()) pausePlay();
   });
+  if (typeof document !== 'undefined')
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && canPlay())
+        void import('./run/runCloud').then(({ syncRuns }) => syncRuns());
+    });
   // Stop keyboard/mouse actions synchronously even if the browser throttled heartbeat timers in the background.
   for (const type of ['keydown', 'pointerdown', 'click'])
     window.addEventListener(
       type,
       (event) => {
+        if (state.phase === 'saving') {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
         if (state.phase === 'playing' && !canPlay()) {
           event.preventDefault();
           event.stopImmediatePropagation();

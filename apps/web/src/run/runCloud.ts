@@ -1,6 +1,5 @@
-// Runs that follow the player from device to device (DECISIONS #309): this browser's runs and the copies in the player's Vault on the
-// server (their account when signed in, else this browser's Vault code) are brought together, the newest copy of each run winning.
-// The browser's runs always work without the server: this only adds the copy, and never holds the game up.
+// Shared-account play confirms each checkpoint with the Vault; failed confirmation pauses online play.
+// Offline-origin campaigns remain separate. Never replace further local progress with an older account copy.
 
 import {
   cleanListItems,
@@ -9,6 +8,7 @@ import {
   type RunCopy,
   cleanRunCopies,
   RULES_VERSION,
+  regressesRun,
 } from '@sr/pvp';
 import { BUILD } from '../build';
 import { matchHistory, replaceMatches, type MatchRecord } from '../pvp/matchHistory';
@@ -139,6 +139,31 @@ export async function syncLists(): Promise<boolean> {
 }
 
 let running: Promise<boolean> | null = null;
+type SyncPhase = 'saved' | 'saving' | 'error';
+let syncPhase: SyncPhase = 'saved';
+const syncListeners = new Set<() => void>();
+export const campaignSyncState = (): SyncPhase => syncPhase;
+export const subscribeCampaignSync = (fn: () => void): (() => void) => {
+  syncListeners.add(fn);
+  return () => syncListeners.delete(fn);
+};
+const syncState = (next: SyncPhase): void => {
+  syncPhase = next;
+  for (const fn of syncListeners) fn();
+};
+const saveContents = (): string =>
+  JSON.stringify({
+    runs: runCopies().map((c) => [c.id, c.text, !!c.gone]),
+    replays: sharedReplays(),
+  });
+let confirmedContents = '';
+const failedSync = (): false => {
+  syncState('error');
+  pausePlay(
+    'Your latest campaign save is not confirmed online. Reconnect before playing or switching devices. Your local copy is preserved.',
+  );
+  return false;
+};
 
 /** Bring this browser's runs and the server's together. Resolves true when the runs here changed (so a list should be redrawn). */
 export function syncRuns(): Promise<boolean> {
@@ -148,32 +173,51 @@ export function syncRuns(): Promise<boolean> {
       // (signed in or not decides whose Vault: the account's, or this browser's code)
       await whoAmI();
       const epoch = playState().epoch;
-      const theirs = await ask('runs', {});
-      if (!theirs) return false;
-      if (playState().epoch !== epoch) return false;
-      if (!canPlay()) {
-        if (theirs.revision === 0 && theirs.runs.length === 0) return false;
-        const changed = adoptSharedRuns(theirs.runs);
-        adoptSharedReplays(theirs.replays);
-        return changed;
+      let changed = false;
+      while (true) {
+        const theirs = await ask('runs', {});
+        if (!theirs) return canPlay() ? failedSync() : false;
+        if (playState().epoch !== epoch) return false;
+        if (!canPlay()) {
+          if (theirs.revision === 0 && theirs.runs.length === 0) return false;
+          // Reading on a dormant tab must not erase progress that never reached the server.
+          if (runCopies().some((c) => theirs.runs.some((r) => regressesRun(c, r)))) return false;
+          const changed = adoptSharedRuns(theirs.runs);
+          adoptSharedReplays(theirs.replays);
+          return changed;
+        }
+        if (theirs.revision !== playRevision()) {
+          syncState('error');
+          pausePlay('Another confirmed save exists. Reconnect to load it before playing.');
+          return false;
+        }
+        const mine = runCopies();
+        // what the server lacks, or holds an older copy of, goes up
+        const newer = mine.filter((c) => {
+          const t = theirs.runs.find((x) => x.id === c.id);
+          return !t || c.text !== t.text || !!c.gone !== !!t.gone;
+        });
+        const replays = sharedReplays();
+        if (!newer.length && JSON.stringify(replays) === JSON.stringify(theirs.replays ?? {})) {
+          confirmedContents = saveContents();
+          syncState('saved');
+          return changed;
+        }
+        syncState('saving');
+        const sentContents = saveContents();
+        const after = await ask('runsave', { runs: newer, revision: playRevision(), replays });
+        // A response from a released/replaced session must never replace the new session's saves.
+        if (playState().epoch !== epoch || !canPlay()) return false;
+        if (!after) return failedSync();
+        setPlayRevision(after.revision);
+        changed = adoptSharedRuns(after.runs, mine) || changed;
+        if (saveContents() === sentContents) {
+          confirmedContents = saveContents();
+          syncState('saved');
+          return changed;
+        }
+        // Changes made during the request are sent immediately, rather than waiting for another action.
       }
-      if (theirs.revision !== playRevision()) {
-        pausePlay('Another confirmed save exists. Reconnect to load it before playing.');
-        return false;
-      }
-      const mine = runCopies();
-      // what the server lacks, or holds an older copy of, goes up
-      const newer = mine.filter((c) => {
-        const t = theirs.runs.find((x) => x.id === c.id);
-        return !t || c.text !== t.text || !!c.gone !== !!t.gone;
-      });
-      const replays = sharedReplays();
-      if (!newer.length && JSON.stringify(replays) === JSON.stringify(theirs.replays ?? {}))
-        return false;
-      const after = await ask('runsave', { runs: newer, revision: playRevision(), replays });
-      if (!after) return false;
-      setPlayRevision(after.revision);
-      return adoptSharedRuns(after.runs, mine);
     } finally {
       running = null;
     }
@@ -181,13 +225,24 @@ export function syncRuns(): Promise<boolean> {
   return running;
 }
 
+/** A handoff is allowed only after every current run and fight move has been acknowledged. */
+export async function flushCampaignSave(): Promise<boolean> {
+  if (localOnly()) return true;
+  if (!canPlay()) return false;
+  await syncRuns();
+  return canPlay() && campaignSyncState() === 'saved' && confirmedContents === saveContents();
+}
+
 let timer: number | undefined;
 
 /** A run was saved or ended here: send it up shortly (saves come one after another during a run, so they are gathered). */
 export function soonSyncRuns(): void {
-  window.clearTimeout(timer);
+  syncState('saving');
+  // This is a bounded delay, not a sliding debounce: continuous card play cannot postpone uploads.
+  if (timer !== undefined) return;
   timer = window.setTimeout(() => {
+    timer = undefined;
     void syncRuns();
     void syncLists();
-  }, 4000);
+  }, 250);
 }

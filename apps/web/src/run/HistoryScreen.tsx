@@ -183,7 +183,9 @@ function RunRow(props: {
           </small>
         </span>
         <span className="history__runWhere">
-          <b className={`history__end history__end--${run.end}`}>{END_LABEL[run.end]}</b>
+          <b className={`history__end history__end--${run.end}`}>
+            {run.won ? 'Victory' : END_LABEL[run.end]}
+          </b>
           <small>Tier {run.tier}</small>
         </span>
         <span className="history__runStats">

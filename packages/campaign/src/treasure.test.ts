@@ -38,7 +38,7 @@ describe('buried map delivery', () => {
     (tier) => {
       const held = keepMap({ ...base(), tier });
       expect(held.treasureMapTier).toBe(tier);
-      if (tier < 20) {
+      if (tier < 12) {
         const sameTier = enterNode(held, availableNodes(held)[0]!.id);
         expect(sameTier.context?.bonusEvent).not.toBe(true);
       }

@@ -37,6 +37,7 @@ declare global {
   interface Window {
     shatteredRiftsDesktop?: DesktopBridge;
     shatteredRiftsPrepareAccountSwitch?: () => Promise<void>;
+    shatteredRiftsConfirmOnlineSave?: () => Promise<void>;
   }
 }
 export const desktopBridge = (): DesktopBridge | undefined =>
@@ -86,6 +87,12 @@ export async function startDesktop(): Promise<void> {
     if (battleActive()) throw new Error('A battle has started. Change accounts afterward.');
   };
   await bridge.ready();
+  window.shatteredRiftsConfirmOnlineSave = async () => {
+    const { localOnly, playState } = await import('./playAccess');
+    if (localOnly() || playState().phase === 'browsing') return;
+    const { releasePlayAccess } = await import('./playAccess');
+    await releasePlayAccess();
+  };
   await flushDesktopSave();
   window.setInterval(() => {
     void flushDesktopSave().catch(() => undefined);
@@ -97,7 +104,7 @@ export async function startDesktop(): Promise<void> {
 export async function quitDesktop(): Promise<void> {
   await flushDesktopSave();
   const { releasePlayAccess } = await import('./playAccess');
-  await releasePlayAccess().catch(() => undefined);
+  await releasePlayAccess();
   desktopBridge()?.quit();
 }
 export async function restartDesktopUpdate(): Promise<void> {
@@ -105,7 +112,7 @@ export async function restartDesktopUpdate(): Promise<void> {
   if (battleActive()) throw new Error('Finish or leave the battle before updating.');
   await flushDesktopSave();
   const { releasePlayAccess } = await import('./playAccess');
-  await releasePlayAccess().catch(() => undefined);
+  await releasePlayAccess();
   if (battleActive()) throw new Error('A battle has started. Update after leaving it.');
   await desktopBridge()?.installUpdate();
 }

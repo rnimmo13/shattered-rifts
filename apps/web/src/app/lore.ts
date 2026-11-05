@@ -57,7 +57,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
     subtitle: 'Vorthax broke the barrier. The worlds paid the price.',
     introduction: [
       'Vorthax was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed rival powers and claimed their knowledge. His people survived by obeying. Then his experiments revealed other realms beyond the Ward: unfamiliar magic and rulers who had never heard his name.',
-      'He wanted their power and could not tolerate being kept outside. He spent years forcing a breach through his own boundary, consuming his realm\'s resources and sacrificing entire cities. When he finally broke out, he found where the Ward joined around neighboring worlds.',
+      "He wanted their power and could not tolerate being kept outside. He spent years forcing a breach through his own boundary, consuming his realm's resources and sacrificing entire cities. When he finally broke out, he found where the Ward joined around neighboring worlds.",
     ],
     panels: [
       {
@@ -81,7 +81,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch3-taken',
         title: 'The first to fall',
-        text: 'The Wardens tried to hold the broken edges. Vorthax reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds\' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.',
+        text: "The Wardens tried to hold the broken edges. Vorthax reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.",
         alt: 'The robed guardian kneels as violet tendrils corrupt its once-golden light.',
       },
     ],
@@ -139,12 +139,13 @@ export const LORE_CHAPTERS: LoreChapter[] = [
   {
     id: 'heart',
     title: 'The Heart of the Rift',
-    subtitle: 'He broke the sky because it was the last thing in his world that would not obey him.',
+    subtitle:
+      'He broke the sky because it was the last thing in his world that would not obey him.',
     panels: [
       {
         image: 'ch6-sealed',
         title: 'A moment of silence',
-        text: 'A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Vorthax\'s reach, and he tears another open, worse than before. The climb continues through twenty Rift Tiers, deeper into the territory he has taken.',
+        text: "A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Vorthax's reach, and he tears another open, worse than before. The climb continues through the realms, deeper into the territory he has taken.",
         alt: 'A Riftwalker seals one crack with a shard while new cracks open in the distance.',
       },
       {

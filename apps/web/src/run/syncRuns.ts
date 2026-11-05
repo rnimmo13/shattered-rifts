@@ -18,6 +18,7 @@ export async function syncSavedRuns(): Promise<void> {
       if (stagesInAll(run.tier, done) === 0 && run.stats.nodesCleared === 0) return [];
       return [
         reportRun({
+          shards: run.shards,
           seed: run.seed,
           hero: run.character,
           ascendancy: run.ascendancy,

@@ -89,6 +89,7 @@ const boardAscendancy = (hero: unknown, raw: unknown): string | null =>
   typeof hero === 'string' ? (ascendancyOf(storedHero(hero), raw)?.id ?? null) : null;
 
 interface RunSql extends Record<string, SqlStorageValue> {
+  shards: number | null;
   player: string;
   name: string;
   hero: string;
@@ -216,6 +217,10 @@ export class Leaderboard extends DurableObject<Env> {
         .map((c) => c.name);
     if (!columnsOf('runs').includes('ascendancy'))
       ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN ascendancy TEXT');
+    if (!columnsOf('runs').includes('shards'))
+      ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN shards INTEGER');
+    if (!columnsOf('runs').includes('shards_at'))
+      ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN shards_at INTEGER NOT NULL DEFAULT 0');
     const pvpColumns = columnsOf('pvp');
     if (!pvpColumns.includes('winner_asc'))
       ctx.storage.sql.exec('ALTER TABLE pvp ADD COLUMN winner_asc TEXT');
@@ -1091,6 +1096,19 @@ export class Leaderboard extends DurableObject<Env> {
   }
 
   private recordRun(b: Record<string, unknown>, now: number): Response {
+    const shards = b['shards'] === undefined ? null : b['shards'];
+    if (
+      shards !== null &&
+      (typeof shards !== 'number' ||
+        !Number.isSafeInteger(shards) ||
+        shards < 0 ||
+        shards > 1_000_000)
+    )
+      return json({ ok: false, error: 'bad-run' }, 400);
+    const reportedAt =
+      typeof b['reportedAt'] === 'number' && Number.isSafeInteger(b['reportedAt'])
+        ? Math.max(0, Math.min(now, b['reportedAt']))
+        : now;
     const tier = b['tier'];
     const stage = b['stage'];
     const run = b['run'];
@@ -1137,13 +1155,35 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, counted: false, ended: b['ended'] });
     }
     const old = this.ctx.storage.sql
-      .exec<{ total: number; tier: number; first_at: number; at: number }>(
-        'SELECT total, tier, first_at, at FROM runs WHERE player = ? AND run = ?',
+      .exec<{
+        total: number;
+        tier: number;
+        first_at: number;
+        at: number;
+        ended: string | null;
+        shards_at: number;
+      }>(
+        'SELECT total, tier, first_at, at, ended, shards_at FROM runs WHERE player = ? AND run = ?',
         b['player'],
         run,
       )
       .toArray()[0];
     if (old) {
+      if (
+        !old.ended &&
+        total === old.total &&
+        tier === old.tier &&
+        shards !== null &&
+        reportedAt >= old.shards_at
+      ) {
+        this.ctx.storage.sql.exec(
+          'UPDATE runs SET shards = ?, shards_at = ? WHERE player = ? AND run = ?',
+          shards,
+          reportedAt,
+          b['player'],
+          run,
+        );
+      }
       // progress only moves forward, and only as fast as a real run could
       // (a repeat of what the board already knows changes nothing, so it is not counted against the flood limits: the app repeats its
       // reports on purpose, and counting them used up a player's hour and silently dropped the real ones that followed)
@@ -1164,13 +1204,15 @@ export class Leaderboard extends DurableObject<Env> {
       if (total - old.total > RUN_STEP_ALLOWANCE + Math.floor((now - old.at) / RUN_MIN_STAGE_MS))
         return json({ ok: true, counted: false });
       this.ctx.storage.sql.exec(
-        'UPDATE runs SET name = ?, hero = ?, tier = ?, stage = ?, total = ?, at = ? WHERE player = ? AND run = ?',
+        'UPDATE runs SET name = ?, hero = ?, tier = ?, stage = ?, total = ?, at = ?, shards = COALESCE(?, shards), shards_at = ? WHERE player = ? AND run = ?',
         name,
         storedHero(b['hero']),
         tier,
         stage,
         total,
         now,
+        shards,
+        reportedAt,
         b['player'],
         run,
       );
@@ -1191,7 +1233,7 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, counted: false, limited: true });
     for (const [key, windowMs, max] of limits) this.within(key, windowMs, max, now);
     this.ctx.storage.sql.exec(
-      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at, shards, shards_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       b['player'],
       run,
       name,
@@ -1202,6 +1244,8 @@ export class Leaderboard extends DurableObject<Env> {
       total,
       now,
       now,
+      shards,
+      reportedAt,
     );
     this.prune(now);
     return json({ ok: true, counted: true });
@@ -1233,7 +1277,7 @@ export class Leaderboard extends DurableObject<Env> {
     // who made progress this week"; DECISIONS #281)
     const rows = this.ctx.storage.sql
       .exec<RunSql>(
-        'SELECT player, name, hero, ascendancy, tier, stage, at, ended FROM runs WHERE at >= ? LIMIT 20000',
+        'SELECT player, name, hero, ascendancy, tier, stage, at, ended, shards FROM runs WHERE at >= ? LIMIT 20000',
         from,
       )
       .toArray();
@@ -1245,6 +1289,7 @@ export class Leaderboard extends DurableObject<Env> {
       tier: r.tier,
       stage: r.stage,
       at: r.at,
+      shards: r.shards,
       ended: r.ended === 'fell' || r.ended === 'abandoned' ? r.ended : null,
     }));
     const all = standingsRuns(flat);

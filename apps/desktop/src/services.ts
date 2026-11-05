@@ -305,8 +305,10 @@ export function protectWindowSaves(win: BrowserWindow): void {
   let saving = false;
   const persist = async (): Promise<() => void> => {
     const raw: unknown = await Promise.race([
-      win.webContents.executeJavaScript('Object.fromEntries(Object.entries(localStorage))'),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Save timed out')), 5000)),
+      win.webContents.executeJavaScript(
+        '(async () => { await window.shatteredRiftsConfirmOnlineSave?.(); return Object.fromEntries(Object.entries(localStorage)); })()',
+      ),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Save timed out')), 15000)),
     ]);
     const local = localGame(win.webContents.getURL());
     const saved = (local ? localStore : store).save(raw);
@@ -336,7 +338,8 @@ export function protectWindowSaves(win: BrowserWindow): void {
         const answer = await dialog.showMessageBox(win, {
           type: 'error',
           title: 'Could not save the game',
-          message: 'The latest progress could not be written. Your previous save is preserved.',
+          message:
+            'The latest progress could not be written or confirmed on your account. Your local save is preserved. Reconnect before switching devices.',
           buttons: ['Keep playing', 'Quit without saving'],
           defaultId: 0,
           cancelId: 0,

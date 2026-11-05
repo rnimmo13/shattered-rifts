@@ -25,6 +25,7 @@ export interface RunRecord {
   tier: number;
   stage: number;
   end: RunEnd;
+  won?: boolean;
   deck: string[];
   boons: string[];
   ascendancy?: string;
@@ -82,6 +83,7 @@ export function recordOf(
     tier: run.tier,
     stage: run.stage,
     end,
+    ...(run.won ? { won: true } : {}),
     deck: [...run.deck],
     boons: [...run.boons, ...(run.heart ? [run.heart] : [])],
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),

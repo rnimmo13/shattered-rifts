@@ -19,7 +19,7 @@ import {
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
-import { FINAL_STAGE } from './mapgen';
+import { FINAL_STAGE, gauntletMap, shuffledWardens, WARDEN_SEQUENCE } from './mapgen';
 import { FIGHT_SHARDS, MAX_EXTRA_REWARDS, checkGhostBoss, restartAtThreshold } from './run';
 import { CAMPAIGN_GHOSTS_ENABLED, withoutCampaignGhosts } from './features';
 
@@ -403,6 +403,18 @@ export function parseRun(text: string): RunState | null {
   if (!isObj(raw)) return null;
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
+  if (r.campaignRoute !== undefined && r.campaignRoute !== 'twelve') return null;
+  if (
+    r.wardenOrder !== undefined &&
+    (!Array.isArray(r.wardenOrder) ||
+      r.wardenOrder.length !== 11 ||
+      new Set(r.wardenOrder).size !== 11 ||
+      !r.wardenOrder.every((id) =>
+        WARDEN_SEQUENCE.includes(id as (typeof WARDEN_SEQUENCE)[number]),
+      ))
+  )
+    return null;
+  if (r.won !== undefined && typeof r.won !== 'boolean') return null;
   // (a Boon held twice, after a retired one became another, is held once)
   if (isStrArray(r.boons)) r.boons = [...new Set(r.boons)];
   // a save from before the Riftwalkers were named for their class (maren -> knight): the character, and any visiting merchant
@@ -544,6 +556,22 @@ export function parseRun(text: string): RunState | null {
       activeNode?.ghost ||
       (isObj(r.context) && r.context.ghost !== undefined));
   const run = withoutCampaignGhosts(r as RunState);
+  if (!run.campaignRoute && run.phase === 'loopCleared' && run.tier >= 12) {
+    if (run.map.nodes.find((n) => n.id === run.at)?.enemyId === 'vorthax') run.won = true;
+    else {
+      run.campaignRoute = 'twelve';
+      run.tier = 12;
+      if (run.rewardRerollTier !== undefined && run.rewardRerollTier > 12)
+        run.rewardRerollTier = 12;
+      run.map = gauntletMap(1, shuffledWardens(run.rng));
+      run.cleared = [];
+      run.at = null;
+      run.context = null;
+      run.phase = 'map';
+      run.reworkNotice =
+        'Your cleared legacy tier is preserved in your earned progress. The campaign now ends with the Warden gauntlet, then Vorthax.';
+    }
+  }
   if (restartGhost) {
     const notice =
       'Campaign ghost fights are paused. This encounter is now a normal enemy fight and starts again from its checkpoint, with no Resolve spent.';

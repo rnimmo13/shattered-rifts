@@ -87,8 +87,8 @@ function TierTable() {
     <>
       <p className="learn__note">
         Every Rift Tier adds {HP_PER_TIER} percentage points of enemy HP and {DMG_PER_TIER} of enemy
-        damage, at the same rate through Tier XX, up to {enemyScale(MAX_TIER, 1).hp}% HP and{' '}
-        {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}.
+        damage, at the same rate through the final gauntlet, up to {enemyScale(MAX_TIER, 1).hp}% HP
+        and {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>
@@ -105,7 +105,7 @@ function TierTable() {
             return (
               <tr key={t}>
                 <th>{t}</th>
-                <td>{floorsOf(t) + 1}</td>
+                <td>{t === MAX_TIER ? '11 Wardens + Vorthax' : floorsOf(t) + 1}</td>
                 <td>{x.hp}%</td>
                 <td>{x.dmg}%</td>
               </tr>
@@ -171,7 +171,7 @@ const roman = (n: number): string => ROMAN[n] ?? String(n);
 function OmenList() {
   return (
     <dl>
-      {OMENS.map((o) => {
+      {OMENS.filter((o) => o.tier <= MAX_TIER).map((o) => {
         const first = o.text(o.tier);
         const last = o.text(MAX_TIER);
         return (
@@ -335,9 +335,11 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            A run is {MAX_TIER} Rift Tiers, one floor longer than the last: Tier 1 is{' '}
-            {floorsOf(1) + 1} and Tier {MAX_TIER} is {floorsOf(MAX_TIER) + 1}. Each tier is a map:
-            pick a path from the bottom up, and the Warden waits at the top.
+            Progress through the realms, facing each Warden once in a shuffled order. Maps start at{' '}
+            {floorsOf(1) + 1} stops and add one stop per tier. The final gauntlet brings back every
+            Warden in a fresh shuffled order: all eleven Wardens, then Vorthax, with normal Warden
+            healing and rewards between fights. Desktop paths run left to right; mobile paths run
+            top to bottom.
           </p>
           <h3>Places on the map</h3>
           <dl>
@@ -382,7 +384,7 @@ export function LearnScreen() {
             tier&apos;s Warden and you can stop there, or <b>Continue</b> to the next Rift Tier: you
             keep your deck and your HP, and enemies have more HP and hit harder. Fall (or give up in
             the middle of a fight) and the run&apos;s deck leaves the Arena; give up anywhere else
-            and it stays. The climb ends at Tier 20.
+            and it stays. Defeat the final gauntlet and Vorthax to seal the rifts.
           </p>
           <div className="learn__tierbox">
             <p>
@@ -393,9 +395,11 @@ export function LearnScreen() {
           </div>
           <h3>Omens</h3>
           <p>
-            From Tier II the Rift Tiers bring Omens, some two at once, and they stack: at Tier V you
-            face every Omen up to there together. Each grows with every tier after it. In a fight
-            they sit at the top right, and the run bar lists the ones in play.
+            Every Rift Tier brings a new Omen, starting with the first, and they stack: at Tier V
+            you face every Omen up to there together. Each grows with every tier after it. In a
+            fight they sit at the top right, and the run bar lists the ones in play. In the final
+            gauntlet, Fraying Ward halves automatic healing between fights; Warden recovery is 15%
+            of max HP instead of 30%. Combat healing and Resolve retries retain their usual effects.
           </p>
           <OmenList />
           <h3>Your deck</h3>

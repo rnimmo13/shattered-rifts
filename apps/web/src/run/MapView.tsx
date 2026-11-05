@@ -3,10 +3,11 @@
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { CAMPAIGN_GHOSTS_ENABLED } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
-import { useEffect, useRef, useState, type SVGProps } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type SVGProps } from 'react';
 import { HeroIcon } from '../ui/HeroIcon';
 import { Picture } from '../ui/Picture';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
+import { useHorizontalMap } from './useHorizontalMap';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -171,14 +172,15 @@ export function MapView(props: {
   inkKey?: string;
 }) {
   // Keep older horizontal/portrait drawings separate from this new layout.
-  const ink = useMapInk(props.inkKey && props.inkKey + ':vertical-5');
+  const wide = useHorizontalMap();
+  const ink = useMapInk(props.inkKey && props.inkKey + (wide ? ':horizontal-5' : ':vertical-5'));
   const holder = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(320);
+  const [bounds, setBounds] = useState({ width: 320, height: 500 });
   useEffect(() => {
     const element = holder.current;
     if (!element) return;
     const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(Math.max(240, Math.min(720, entry.contentRect.width)));
+      if (entry) setBounds({ width: entry.contentRect.width, height: entry.contentRect.height });
     });
     observer.observe(element);
     return () => observer.disconnect();
@@ -200,12 +202,21 @@ export function MapView(props: {
       cancelAnimationFrame(frame);
       window.removeEventListener('pageshow', restored);
     };
-  }, [place, width]);
+  }, [place, bounds.width, bounds.height, wide]);
   return (
     <>
       <MapInkTools ink={ink} />
       <div ref={holder} className="map__holder">
-        <TallMap {...props} ink={ink} width={width} />
+        <RouteMap
+          {...props}
+          ink={ink}
+          wide={wide}
+          cross={
+            wide
+              ? Math.max(220, Math.min(720, bounds.height - 15))
+              : Math.max(240, Math.min(720, bounds.width))
+          }
+        />
       </div>
     </>
   );
@@ -297,33 +308,36 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
   );
 }
 
-/** Floor 1 at the top, the Warden at the bottom, on every screen. */
-function TallMap(props: MapProps & { ink: MapInkState; width: number }) {
+/** The same lane positions and paths, transposed for desktop's horizontal journey. */
+function RouteMap(props: MapProps & { ink: MapInkState; wide: boolean; cross: number }) {
   const { map } = props;
-  const W = props.width;
+  const { wide, cross } = props;
   const ROW_H = 132;
   const PAD = 88;
-  const H = Math.max(1, map.floors - 1) * ROW_H + 2 * PAD;
+  const length = Math.max(1, map.floors - 1) * ROW_H + 2 * PAD;
+  const W = wide ? length : cross;
+  const H = wide ? cross : length;
   const pos = new Map<string, { x: number; y: number }>();
   for (let f = 1; f <= map.floors; f++) {
     const row = map.nodes.filter((n) => n.floor === f);
     row.forEach((n, i) => {
-      pos.set(n.id, {
-        x:
-          (((row.length === 1
-            ? 2
-            : row.length === 2
-              ? 1 + i * 2
-              : Math.round((i * 4) / (row.length - 1))) +
-            0.5) *
-            W) /
-          5,
-        y: PAD + (f - 1) * ROW_H,
-      });
+      const laneIndex =
+        row.length === 1
+          ? 2
+          : row.length === 2
+            ? 1 + i * 2
+            : Math.round((i * 4) / (row.length - 1));
+      const laneFraction = (laneIndex + 0.5) / 5;
+      const lane = wide ? 24 + laneFraction * (cross - 48) : laneFraction * cross;
+      const step = PAD + (f - 1) * ROW_H;
+      pos.set(n.id, { x: wide ? step : lane, y: wide ? lane : step });
     });
   }
   return (
-    <div className="map map--tall" style={{ width: W, height: H }}>
+    <div
+      className={`map map--route map--${wide ? 'wide' : 'tall'}`}
+      style={{ width: W, height: H, '--map-cross': `${cross}px` } as CSSProperties}
+    >
       <svg className="map__lines" width={W} height={H} aria-hidden>
         {map.nodes.flatMap((n) =>
           n.next.map((t) => {
@@ -335,7 +349,11 @@ function TallMap(props: MapProps & { ink: MapInkState; width: number }) {
             return (
               <path
                 key={`${n.id}>${t}`}
-                d={`M ${a.x} ${a.y} C ${a.x} ${a.y + 50}, ${b.x} ${b.y - 50}, ${b.x} ${b.y}`}
+                d={
+                  wide
+                    ? `M ${a.x} ${a.y} C ${a.x + 50} ${a.y}, ${b.x - 50} ${b.y}, ${b.x} ${b.y}`
+                    : `M ${a.x} ${a.y} C ${a.x} ${a.y + 50}, ${b.x} ${b.y - 50}, ${b.x} ${b.y}`
+                }
                 {...edgeProps(done, props.at === n.id)}
               />
             );
