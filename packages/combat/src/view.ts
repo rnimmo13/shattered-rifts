@@ -947,6 +947,7 @@ const WHEN_TEXT: Record<string, string> = {
   turnEnd: 'At the end of your turn',
   turnSettled: 'After your hand clears and companions act at the end of your turn',
   play: 'Whenever you play a card',
+  playStart: 'Before a card you play resolves',
   exhaust: 'Whenever a card is consumed',
   discard: 'Whenever you discard a card',
   summon: 'Whenever you summon an ally',
@@ -1176,6 +1177,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
   switch (o.op) {
     case 'discipline':
       return 'Establish your Ascendancy combat discipline.';
+    case 'oncePerTurn':
+      return `Once ${o.ownTurn ? 'on your turn' : 'per turn'} across all copies: ${joinClause(o.ops.map((x) => opText(db, x, who)))}`;
     case 'damage': {
       const a = amountText(o.amount, o.scale);
       // (a spread: "to 2 different random enemies")
@@ -1651,7 +1654,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
             : 'each turn';
       const limitText = limit === undefined ? '' : ` (first ${limit} activations ${limitPeriod})`;
       const later = o.afterLimit?.length
-        ? ` Whenever it activates again that turn: ${joinClause(o.afterLimit.map((x) => opText(db, x, inner)))}`
+        ? ` Whenever it activates again that ${o.perRoundLimit !== undefined ? 'round' : 'turn'}: ${joinClause(o.afterLimit.map((x) => opText(db, x, inner)))}`
         : '';
       const said = joinClause(o.ops.map((x) => opText(db, x, inner))) + later;
       // (a Sapped put on an enemy while an enemy is hitting you ends with that enemy turn; one from your own cards, with the coming one)

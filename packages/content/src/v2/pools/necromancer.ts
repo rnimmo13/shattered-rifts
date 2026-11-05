@@ -501,7 +501,8 @@ export const NECROMANCER: CardDef[] = [
     0,
     'none',
     [
-      mana(3),
+      mana(1),
+      manaNext(2),
       draw(2),
       on('turnStart', [
         scaled(status('doom', 0, 'self'), {
@@ -516,7 +517,8 @@ export const NECROMANCER: CardDef[] = [
     {
       up: {
         effects: [
-          mana(4),
+          mana(1),
+          manaNext(3),
           draw(2),
           on('turnStart', [
             scaled(status('doom', 0, 'self'), {

@@ -1,5 +1,7 @@
 # Balance history
 
+Current: [0.198.0 / rules81](0.198.0.md), [CSV](0.198.0.csv), [exact implementation](../LONG_FIGHT_BALANCE_2026-11-04.md). Robert authorizes the complete long-fight proposal set, including Bonelord/Deathwish buffs. All30 projected grades, ten class starts and risks are saved with zero measured matches. Earlier summaries below describe their historical assessment/release state; unapplied proposals listed there are superseded by this release.
+
 Current implemented release candidate: [0.197.0 / rules80](0.197.0.md), [CSV](0.197.0.csv), [exact Engineer changes](../ENGINEER_SCALING_2026-11-04.md). Following Robert's release authorization, only the focused Heavy Hitter/Resonant Pulse proposal P4 joins the20-minute Arena clock and approved lore. The wider review remains available below; P1–P3/P5–P7 and candidate buffs are unapplied. Prior review labels describe their assessment-time state. No measured parity is claimed.
 
 Latest assessment: [0.197.0 Arena ten-plus-turn review](0.197.0-arena-review-1.md), [CSV](0.197.0-arena-review-1.csv), and [full reasoning/proposals](../ARENA_LONG_FIGHTS_REVIEW_2026-11-04.md). This revisits all30 Ascendancies under the longer target, with corrected Golemancer HP/card analysis. Only the approved Arena clock15→20 minutes is implemented locally; balance proposals are not applied, and rules79 still match the released balance. Zero measured matches; the friend's160-HP Golemancer report is anecdotal. Earlier snapshots stay intact.

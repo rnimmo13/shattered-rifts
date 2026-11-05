@@ -245,7 +245,7 @@ describe('what makes the Blade hit harder', () => {
   it('Measured Ruin adds to the first spending Spell Attack each turn only', () => {
     const s = play(fight(['measured-ruin', 'skybolt', 'gamma-burst']), 'measured-ruin');
     const a = play(s, 'skybolt');
-    expect(lost(a)).toBe(8 + 16 + 8);
+    expect(lost(a)).toBe(8 + 16 + 4);
     const b = play(a, 'gamma-burst');
     expect(lost(b) - lost(a)).toBe(6 + 8);
   });
@@ -511,16 +511,16 @@ describe('Fracture and Shatter', () => {
     expect(next.sides.a.shatterBonus).toBe(bonus);
   });
 
-  it('Fault Lines: early Sword and Spell plays apply 2 Fracture, nothing else does', () => {
+  it('Fault Lines: early Sword and Spell plays apply 1 Fracture, nothing else does', () => {
     const s = play(fight(['fault-lines', BLADE, 'faultline-hex', 'strike']), 'fault-lines');
     const swung = play(s, BLADE);
-    expect(foe(swung).statuses.fracture).toBe(2);
-    // (a Fracture card is a Spell too: its own 7 and 2 more)
+    expect(foe(swung).statuses.fracture).toBe(1);
+    // A Fracture card is a Spell too: its own7 and1 more.
     const hexed = play(swung, 'faultline-hex');
-    expect(foe(hexed).statuses.fracture).toBe(2 + 7 + 2);
-    expect(foe(play(hexed, 'strike')).statuses.fracture).toBe(11);
+    expect(foe(hexed).statuses.fracture).toBe(1 + 7 + 1);
+    expect(foe(play(hexed, 'strike')).statuses.fracture).toBe(9);
     expect(cardText(db, db.cards['fault-lines']!)).toContain(
-      'Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 2 Fracture to its target (or the enemy with the most Fracture).',
+      'Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 1 Fracture to its target (or the enemy with the most Fracture).',
     );
   });
 
@@ -529,7 +529,7 @@ describe('Fracture and Shatter', () => {
     foe(s, 1).statuses.fracture = 3;
     const r = play(s, 'radiance');
     expect(foe(r, 0).statuses.fracture ?? 0).toBe(0);
-    expect(foe(r, 1).statuses.fracture).toBe(5);
+    expect(foe(r, 1).statuses.fracture).toBe(4);
   });
 
   it('Pillar of Glass and Fault Reader answer the first Shatter each turn', () => {

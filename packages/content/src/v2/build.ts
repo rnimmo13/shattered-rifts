@@ -614,6 +614,7 @@ export function plus(c: CardDef): CardDef {
         changed = true;
         return { ...o, amount: o.amount + 1 };
       case 'when':
+      case 'oncePerTurn':
         // the effects it guards improve like any other
         return { ...o, ops: o.ops.map(upOp) };
       case 'command':

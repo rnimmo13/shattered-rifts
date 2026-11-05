@@ -75,10 +75,10 @@ export const HUNTER: CardDef[] = [
     'skill',
     0,
     'none',
-    [lose(7), mana(2), draw(2), status('might', 1)],
+    [lose(7), mana(1), manaNext(1), draw(2), status('might', 1)],
     {
       exhaust: true,
-      up: { effects: [lose(5), mana(2), draw(2), status('might', 1)] },
+      up: { effects: [lose(5), mana(1), manaNext(1), draw(2), status('might', 1)] },
     },
   ),
   k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [
@@ -264,7 +264,10 @@ export const HUNTER: CardDef[] = [
     'foe',
     // Predator: the more cards played this turn, the harder it hits (DECISIONS #340, #507)
     [lifesteal(scaled(dmg(4, 'target', 2), per('played', 2)), 50)],
-    { exhaust: true, up: { effects: [lifesteal(scaled(dmg(6, 'target', 2), per('played', 2)), 50)] } },
+    {
+      exhaust: true,
+      up: { effects: [lifesteal(scaled(dmg(6, 'target', 2), per('played', 2)), 50)] },
+    },
   ),
   // (an Aura: its Mana lasts the rest of the fight, DECISIONS #380)
   k('rare', 'blood-pact', 'Blood Pact', 'power', 1, 'none', [lose(7), maxMana(1)]),
@@ -412,18 +415,26 @@ export const HUNTER: CardDef[] = [
   k('common', 'heart-pound', 'Pounding Heart', 'skill', 0, 'none', [mana(1), lose(2)], {
     exhaust: true,
   }),
-  k('common', 'wild-swings', 'Wild Swings', 'attack', 1, 'foe', [
-    scaled(dmg(3), per('played', 3)),
-  ]),
+  k('common', 'wild-swings', 'Wild Swings', 'attack', 1, 'foe', [scaled(dmg(3), per('played', 3))]),
   k('common', 'shake-loose', 'Shake Loose', 'skill', 1, 'none', [draw(2), barrier(3)], {
     up: { effects: [draw(2), barrier(6)] },
   }),
   k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(4)], {
     exhaust: true,
   }),
-  k('uncommon', 'adrenal-surge', 'Adrenal Surge', 'skill', 0, 'none', [mana(2), draw(1), lose(3)], {
-    exhaust: true,
-  }),
+  k(
+    'uncommon',
+    'adrenal-surge',
+    'Adrenal Surge',
+    'skill',
+    0,
+    'none',
+    [mana(1), manaNext(1), draw(1), lose(3)],
+    {
+      exhaust: true,
+      up: { effects: [mana(1), manaNext(1), draw(2), lose(2)] },
+    },
+  ),
   k('uncommon', 'blur-of-claws', 'Blur of Claws', 'attack', 1, 'foe', [
     scaled(dmg(5), per('played', 3)),
   ]),

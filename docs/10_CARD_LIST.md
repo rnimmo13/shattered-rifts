@@ -57,7 +57,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Berserker's Rage | 0 | skill | uncommon | This turn, whenever you play an Attack: Gain 3 Barrier. |
 | Charging Herd | 2 | aura | uncommon | At the end of your turn: Play a random Attack from your hand against a random enemy. |
 | Juggler's Rhythm | 1 | aura | uncommon | Whenever you play an Attack, if this is your third Attack this turn: Add a copy of that card to your hand. |
-| Scent of Weakness | 1 | aura | uncommon | Whenever you apply Exposed to an enemy: Draw 1 card. |
+| Scent of Weakness | 1 | aura | uncommon | Whenever you apply Exposed to an enemy (first 3 activations each round, until your next turn): Draw 1 card. |
 | Smoldering Blow | 1 | attack | uncommon | Deal 6 (+2 per consumed card) damage. |
 | Grim Focus | 0 | skill | uncommon | Draw 3 cards. You cannot draw more cards this turn. |
 | Numbing Rite | 1 | aura | uncommon | Whenever a card is consumed: Gain 3 Barrier. |
@@ -99,7 +99,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Unravel | X | skill | rare | Play the top X cards of your draw pile. |
 | Fan the Flames | 1 | skill | rare | Consume your hand. Add a random card from your pool to your hand for each card consumed this way. |
 | Ashen Reckoning | 0 | attack | rare | Only playable with 3 or more cards consumed. Deal 17 damage to ALL enemies. |
-| Crimson Offering | 0 | skill | rare | Lose 6 HP. Gain 2 Mana. Draw 3 cards. Consume. |
+| Crimson Offering | 0 | skill | rare | Lose 6 HP. Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 3 cards. Consume. |
 | Bloodied Plate | 1 | aura | rare | At the start of your turn: Lose 1 HP and gain 8 Barrier. |
 | Rending Fury | 2 | attack | rare | Deal 8 (+3 per time you lost HP this fight, at most +45) damage. |
 | Rally | 2 | skill | rare | Heal 10. Consume. |
@@ -278,7 +278,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Gut Trap | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to ALL enemies and heal 4. |
 | Whet the Fangs | 0 | skill | uncommon | Gain 6 Primed. |
 | Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 4 HP. Consume. |
-| Adrenal Surge | 0 | skill | uncommon | Gain 2 Mana. Draw 1 card. Lose 3 HP. Consume. |
+| Adrenal Surge | 0 | skill | uncommon | Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 1 card. Lose 3 HP. Consume. |
 | Blur of Claws | 1 | attack | uncommon | Deal 5 (+3 per card played this turn) damage. |
 | Battle Rhythm | 1 | aura | uncommon | At the start of your turn: Draw 1 card and lose 1 HP. |
 | Reckless Abandon | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. |
@@ -290,7 +290,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Baited Snare | 1 | trap | uncommon | When you or an ally is attacked: Your companions each deal 5 damage and gain 3 Barrier. |
 | Hunting Grounds | 1 | aura | uncommon | Whenever one of your Traps is triggered: Gain 1 Might. |
 | Run It Down | 1 | attack | uncommon | Deal 7 damage. If the target is Faltering: Your companions each deal 5 damage. |
-| Blood Tithe | 0 | skill | rare | Lose 7 HP. Gain 2 Mana. Draw 2 cards. Gain 1 Might. Consume. |
+| Blood Tithe | 0 | skill | rare | Lose 7 HP. Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 2 cards. Gain 1 Might. Consume. |
 | Scar Tissue | 1 | aura | rare | Whenever you lose HP to your own cards or Hangover: Gain 2 Barrier and gain 1 Might until the end of your turn. |
 | Skullcrusher | 3 | attack | rare | Deal 26 damage. All your allies act now. |
 | Scarred Warrior | 1 | aura | rare | At the start of your turn: Lose 2 HP and gain 8 Barrier. |
@@ -358,7 +358,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the We
 | Long Con | 2 | attack | uncommon | Deal 14 damage. Apply 1 Exposed. Hold. |
 | Card Fan | 1 | attack | uncommon | Deal 4 (+3 per suit played this turn) damage. |
 | Card Sharp | 1 | attack | uncommon | Deal 8 damage. If all four suits are showing: Deal 8 damage. |
-| Cut the Deck | 1 | skill | uncommon | Draw 2 cards. If you have played 3 or more suits this turn: Gain 1 Mana. |
+| Cut the Deck | 1 | skill | uncommon | Draw 2 cards. If you have played 3 or more suits this turn: Once on your turn across all copies: Gain 1 Mana. |
 | Queen of Hearts | 1 | skill | uncommon | Gain 5 (+2 per suit played this turn) Barrier. |
 | Ace of Clubs | 1 | skill | uncommon | Apply 2 Exposed. Apply 1 Faltering. If you have played 3 or more suits this turn: Draw 1 card. |
 | Wild Card | 0 | skill | uncommon | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Draw 1 card. Consume. |
@@ -531,7 +531,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Wind Wall | 1 | skill | common | Storm. Gain 5 Barrier. Apply 2 Sapped to ALL enemies until the end of their next turn. |
 | Thunderbird Call | 2 | attack | common | Storm. Deal 8 damage to ALL enemies. Plant a Thunderbird. |
 | Hawk Call | 1 | skill | common | Gain 4 Barrier. For the next 2 turns, at the start of your turn: Plant a Hawk. |
-| Spirit Offering | 0 | skill | common | Gain 2 Mana. Add a Void to your discard pile. |
+| Spirit Offering | 0 | skill | common | Gain 1 Mana. Next turn, gain 1 extra Mana. Add a Void to your discard pile. |
 | Spirit Rush | 0 | skill | common | Gain 2 Spirit until the end of your turn. Consume. |
 | Raise a Totem | 1 | skill | common | Plant a random totem. Gain 4 Barrier. |
 | Spirit Strike | 1 | attack | common | Deal 5 damage. Command your front totem. |
@@ -599,7 +599,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Thunder Beam | 2 | attack | rare | Storm. Deal 28 damage to ALL enemies. Lose 3 Spirit. |
 | Echoing Spirit | 3 | aura | rare | On play: The first card you play each turn is played an extra time. Fleeting. |
 | Hawk Banner | 1 | aura | rare | At the start of your turn: Plant a Hawk. |
-| Wellspring | 0 | skill | rare | Gain 4 Mana. Consume. |
+| Wellspring | 0 | skill | rare | Gain 2 Mana. Next turn, gain 2 extra Mana. Consume. |
 | Doubled Vow | 1 | skill | rare | Your next Aura is played an extra time. Consume. |
 | Free Hand | 1 | aura | rare | On play: Your 0-cost Attacks deal 3 more damage for the rest of the fight. |
 | Chain of Calls | X | skill | rare | Command your front totem X times. |
@@ -774,7 +774,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
 | Pillar of Glass | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Fault Reader | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
-| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 2 Fracture to its target (or the enemy with the most Fracture). Whenever it activates again that turn: Apply 1 Fracture to its target (or the enemy with the most Fracture). |
+| Fault Lines | 2 | aura | uncommon | Whenever you play a Sword or a Spell (first 6 activations on your turn): Apply 1 Fracture to its target (or the enemy with the most Fracture). |
 | Glass Armory | 1 | aura | uncommon | The first time each turn you play a Sword straight after a Spell: Gain 2 Spell Power. |
 | Warm Anvil | 2 | aura | uncommon | At the start of your turn: Gain 2 Spell Power. |
 | Sigil of Kindling | 1 | aura | uncommon | The first time each turn a card of yours grows: Gain 2 Spell Power and gain 2 (+1 per 3 Spell Power) Barrier. |
@@ -801,7 +801,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Rupture Script | 2 | skill | rare | Spell. Apply 10 Fracture. Consume. |
 | Breaking Point | 2 | skill | rare | Spell. Deal the damage of this enemy's next Shatter (this is not a Shatter). Apply 4 Fracture. Consume. |
 | Crucible Heart | 1 | aura | rare | The first time each turn a card of yours grows: That card grows 2 more. |
-| Measured Ruin | 2 | aura | rare | On play: Gain 2 Measured Ruin for the rest of the fight. |
+| Measured Ruin | 2 | aura | rare | On play: Gain 1 Measured Ruin for the rest of the fight. |
 | Obsidian Aegis | 1 | aura | rare | At the end of your turn: Gain Barrier equal to half your Spell Power. |
 | Unbreakable Crown | 2 | skill | rare | Spell. Gain 18 (+1 per 2 Spell Power) Barrier. Gain 1 Steadfast. Consume. |
 | Fated Hand | 1 | skill | rare | Choose 2 cards in your draw pile and put them on top. Draw 2 cards. Gain 1 Spell Power. Consume. |
@@ -1000,7 +1000,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Final Reckoning | 2 | attack | rare | Deal damage equal to the target's Fate. Consume. |
 | Spreading Rot | 0 | attack | rare | Deal 7 damage. Put the target's debuffs on every other enemy too. |
 | Common Grave | 0 | skill | rare | Gain 2 Sapped. Apply 2 Sapped. Consume. |
-| Soul Tithe | 0 | aura | rare | Gain 3 Mana. Draw 2 cards. At the start of your turn: Curse yourself with Fate equal to 2% of your max HP, rounded up (at least 3). |
+| Soul Tithe | 0 | aura | rare | Gain 1 Mana. Next turn, gain 2 extra Mana. Draw 2 cards. At the start of your turn: Curse yourself with Fate equal to 2% of your max HP, rounded up (at least 3). |
 | Wailing Cry | 9 | attack | rare | Costs 2 less for each Fleeting card played this fight. Deal 33 damage to ALL enemies. |
 | Whispers Beyond | 1 | aura | rare | At the start of your turn: Add a random card from your pool to your hand, Fleeting. |
 | Phylactery | 3 | aura | rare | Fleeting. At the start of your turn: Gain 1 Mana and draw 1 card. |

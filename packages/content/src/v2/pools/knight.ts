@@ -33,6 +33,7 @@ import {
   heal,
   lose,
   mana,
+  manaNext,
   manaLock,
   maxHpUp,
   maxReserves,
@@ -262,7 +263,7 @@ export const KNIGHT: CardDef[] = [
   ]),
   // (Vicious)
   m('uncommon', 'scent-of-weakness', 'Scent of Weakness', 'power', 1, 'none', [
-    on('exposeFoe', [draw(1)]),
+    on('exposeFoe', [draw(1)], { perRoundLimit: 3 }),
   ]),
   // (Demon Form)
   m('rare', 'warlords-oath', "Warlord's Oath", 'power', 3, 'none', [
@@ -479,9 +480,10 @@ export const KNIGHT: CardDef[] = [
     'skill',
     0,
     'none',
-    [lose(6), mana(2), draw(3)],
+    [lose(6), mana(1), manaNext(1), draw(3)],
     {
       exhaust: true,
+      up: { effects: [lose(5), mana(1), manaNext(1), draw(4)] },
     },
   ),
   // (Crimson Mantle)

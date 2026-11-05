@@ -157,26 +157,26 @@ describe('shared balance rules 79', () => {
     s = play(s, 'draw8');
     expect(hero(s).statuses.vigor).toBe(14);
   });
-  it('Soulreaper caps round growth and Barrier together, keeps other Consume effects and resets next own turn', () => {
+  it('Soulreaper caps round growth separately from Barrier and resets next own turn', () => {
     let s = fight('necromancer', 'soulreaper');
     for (let i = 0; i < 8; i++) s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(6);
+    expect(s.sides.a.discipline?.progress).toBe(3);
     expect(hero(s).barrier).toBe(18);
     expect(s.sides.a.exhausted).toHaveLength(8);
     s = JSON.parse(JSON.stringify(s)) as CombatState;
     s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(6);
+    expect(s.sides.a.discipline?.progress).toBe(3);
     s = end(end(s));
     s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(7);
+    expect(s.sides.a.discipline?.progress).toBe(4);
   });
-  it('Fault Lines counts a Sword/Spell only once and continues at one after six plays', () => {
+  it('Fault Lines counts a Sword/Spell only once and stops after six plays', () => {
     let s = play(fight('spellblade'), 'fault-lines');
     for (let i = 0; i < 7; i++) s = play(s, 'sword');
-    expect(hero(s, 'b').statuses.fracture).toBe(13);
+    expect(hero(s, 'b').statuses.fracture).toBe(6);
     s = end(end(s));
     s = play(s, 'sword');
-    expect(hero(s, 'b').statuses.fracture).toBe(15);
+    expect(hero(s, 'b').statuses.fracture).toBe(7);
   });
   it('retains Soulreaper round limits on the opposing turn while other Consume hooks still answer', () => {
     let s = play(fight('necromancer', 'soulreaper'), 'consumeOnHurt');
@@ -185,11 +185,11 @@ describe('shared balance rules 79', () => {
     hero(s).barrier = 0;
     const fate = hero(s, 'b').statuses.doom ?? 0;
     s = play(s, 'hit', hero(s).id);
-    expect(s.sides.a.discipline?.progress).toBe(6);
+    expect(s.sides.a.discipline?.progress).toBe(3);
     expect(hero(s).barrier).toBe(0);
     expect(hero(s, 'b').statuses.doom).toBeGreaterThan(fate);
     s = play(end(s), 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(7);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     expect(hero(s).barrier).toBe(3);
   });
   it('spends trigger counters before nested effects can reenter the same trigger', () => {

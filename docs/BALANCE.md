@@ -534,3 +534,8 @@ Ghost Wardens (`arenasim --ghost`): player deck and Boons of a level against ano
 
 ## Max-Mana cards pay from the next turn (2026-10-27, DECISIONS #302)
 Open question: with no Mana back on the turn they are played, Blood Pact (1, lose 6 HP), Attunement (2, consume), Last Call, Root Tap and The Long Memory all cost a turn's tempo now. Watch whether they still get picked. The bot puts no value on max Mana, so sims undervalue them.
+
+
+## 2026-11-04: implemented long-fight pass (0.198.0/rules81)
+
+Robert explicitly authorizes push/deploy of all proposals. [Exact ledger](LONG_FIGHT_BALANCE_2026-11-04.md) and [all30 estimates](balance-history/0.198.0.md) supersede the proposal-only state of the earlier review. Three Harvest/round, bounded Grave Chill, lower Fault Lines/Ruin/Fermentation, delayed resource Mana, bounded Cut the Deck/Scent, and Bonelord/Deathwish defense are implemented. Rules80 Engineer changes remain. No simulations or measured parity; all grades are provisional and Shatterer/Deathwish retain B+ downside risk. Hero HP, enemy scaling and clocks unchanged. Preserve separate seat/mode/tier comparisons when actual playtest reports arrive.

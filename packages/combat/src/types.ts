@@ -473,6 +473,7 @@ export type TriggerWhen =
   | 'turnEnd'
   | 'turnSettled' // after hand cleanup and companion actions, before turn-end decay
   | 'play'
+  | 'playStart' // a legal card play, after payment but before its effects (also free plays)
   | 'exhaust'
   | 'discard'
   | 'summon' // you summoned an ally
@@ -555,11 +556,20 @@ export type CombatDiscipline =
   | { kind: 'brewing'; cap: number; healPct: number; barrier: number }
   | { kind: 'harvest'; base: number; perConsumed: number; roundLimit?: number }
   | {
+      kind: 'commandGuard';
+      tag: string;
+      unit: string;
+      unitName: string;
+      perAlly: number;
+      cap: number;
+    }
+  | {
       kind: 'desperation';
       threshold: number;
       bonus: number;
       emergencyBarrierPct: number;
       rampFrom?: number;
+      attackBarrierPct?: number;
     };
 
 export interface DisciplineState {
@@ -577,10 +587,14 @@ export interface DisciplineState {
   /** Frame recovery saved for the next newly built qualifying companion (never a revival). */
   recovery?: number;
   paymentTurn?: number;
+  /** First qualifying card awaiting completion; survives choices and save restoration. */
+  guardCard?: string;
 }
 
 export type Op =
   | { op: 'discipline'; rule: CombatDiscipline }
+  /** Shared per-side allowance, including copies/replays; claimed only when this operation is reached. */
+  | { op: 'oncePerTurn'; key: string; ownTurn?: boolean; ops: Op[] }
   /** `lonePct`: Point Blank, this much more damage (percent) when it hits only one enemy */
   /** `lifesteal`: the attacker heals this percent of the HP the attack took off (Barrier it hit does not count; DECISIONS #285) */
   | {
@@ -1546,6 +1560,8 @@ export interface SideState {
   allyPct?: number;
   /** the turn number this side's latest turn began on (for an Aura that answers once a round) */
   turnBegan?: number;
+  /** Last activation turn for data-defined effect groups shared across card copies. */
+  effectTurns?: Record<string, number>;
   starsSpentTurn?: number;
   lastSpend?: number;
   lastSpell?: boolean;

@@ -50,12 +50,24 @@ export function validateDb(db: CombatDb): string[] {
       )
         errs.push(`${where}: invalid attack Aura bonus or summon step`);
       if (o.op === 'discipline') {
+        const labels = o.rule.kind === 'commandGuard' ? ['tag', 'unit', 'unitName'] : [];
         for (const [key, value] of Object.entries(o.rule))
           if (
             key !== 'kind' &&
+            !labels.includes(key) &&
             (typeof value !== 'number' || !Number.isFinite(value) || value <= 0)
           )
             errs.push(`${where}: discipline ${key} must be positive and finite`);
+        if (o.rule.kind === 'commandGuard') {
+          if (!o.rule.tag.trim() || !o.rule.unitName.trim())
+            errs.push(`${where}: command guard needs a tag and display name`);
+          if (!db.units[o.rule.unit])
+            errs.push(`${where}: command guard references an unknown unit`);
+        }
+      }
+      if (o.op === 'oncePerTurn') {
+        if (!o.key.trim()) errs.push(`${where}: shared effect limit needs a nonempty key`);
+        checkOps(`${where}.oncePerTurn`, o.ops, opts);
       }
       if (
         o.op === 'revive' &&
@@ -149,6 +161,7 @@ export function validateDb(db: CombatDb): string[] {
           // Aura, and an awakening's Aura, at each enemy the totem struck)
           aimed:
             o.when === 'play' ||
+            o.when === 'playStart' ||
             o.when === 'hitFoe' ||
             o.when === 'doomFoe' ||
             o.when === 'debuffFoe' ||
@@ -164,7 +177,7 @@ export function validateDb(db: CombatDb): string[] {
           snare: false,
           attacker: o.when === 'allyDies' || o.when === 'allyLost' || o.when === 'thorns',
           // (Crucible Heart: a 'grown' Aura grows the card that just grew)
-          played: o.when === 'play' || o.when === 'grown',
+          played: o.when === 'play' || o.when === 'playStart' || o.when === 'grown',
         });
       }
       if (o.op === 'channel' && o.rune !== '*' && !db.runes?.[o.rune])

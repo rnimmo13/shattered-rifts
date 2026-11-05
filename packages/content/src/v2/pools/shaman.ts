@@ -453,9 +453,9 @@ export const SHAMAN: CardDef[] = [
     'skill',
     0,
     'none',
-    [mana(2), wound('self', 'void-drain')],
+    [mana(1), manaNext(1), wound('self', 'void-drain')],
     {
-      up: { effects: [mana(3), wound('self', 'void-drain')] },
+      up: { effects: [mana(1), manaNext(2), wound('self', 'void-drain')] },
     },
   ),
   // (a free, one-shot Spirit boost: it wears off at the end of the turn)
@@ -911,9 +911,9 @@ export const SHAMAN: CardDef[] = [
   i('rare', 'hawk-banner', 'Hawk Banner', 'power', 1, 'none', [on('turnStart', [plant('hawk')])], {
     up: { effects: [plant('hawk'), on('turnStart', [plant('hawk')])] },
   }),
-  i('rare', 'wellspring', 'Wellspring', 'skill', 0, 'none', [mana(4)], {
+  i('rare', 'wellspring', 'Wellspring', 'skill', 0, 'none', [mana(2), manaNext(2)], {
     exhaust: true,
-    up: { effects: [mana(5)] },
+    up: { effects: [mana(2), manaNext(3)] },
   }),
   i('rare', 'doubled-vow', 'Doubled Vow', 'skill', 1, 'none', [status('boosted', 1)], {
     exhaust: true,

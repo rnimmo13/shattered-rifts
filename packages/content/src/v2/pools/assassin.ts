@@ -24,6 +24,7 @@ import {
   defer,
   extraReward,
   mana,
+  manaNext,
   on,
   onKill,
   per,
@@ -634,7 +635,7 @@ export const ASSASSIN: CardDef[] = [
   // (Adrenaline)
   q('rare', 'rush-of-blood', 'Rush of Blood', 'skill', 0, 'none', [mana(1), draw(2)], {
     exhaust: true,
-    up: { effects: [mana(2), draw(2)] },
+    up: { effects: [mana(1), manaNext(1), draw(2)] },
   }),
   // (Afterimage: the upgrade is in your opening hand)
   q('rare', 'shadow-echo', 'Shadow Echo', 'power', 1, 'none', [on('play', [barrier(1)])], {

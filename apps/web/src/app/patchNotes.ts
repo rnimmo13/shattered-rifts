@@ -29,6 +29,81 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.198.0',
+    date: '2026-11-04',
+    title: 'Room to build, room to fight back',
+    summary:
+      'Shared Campaign and Arena tuning for longer fights, with new protection for Bonelord and Deathwish.',
+    notes: [
+      {
+        kind: 'balance',
+        text: 'Necromancer — Grave Chill (Campaign and Arena): Genuine Consumes give 3 Fate each for the first 6 per owner-round, then 1 each (previously 3 without a limit). An owner-round starts on your turn and lasts until your next turn starts, including reactive Consumes on the opponent’s turn. Ally deaths still give 2 Fate.',
+      },
+      {
+        kind: 'balance',
+        text: 'Soulreaper — Harvest (Campaign and Arena): Only the first 3 genuine Consumes per owner-round add Harvest (was 6). The first 6 still grant 3 Barrier each. Reap remains 4 + 2 damage per accumulated Harvest, once at the end of your own turn if you consumed that turn; accumulated Harvest has no fight-total cap.',
+      },
+      {
+        kind: 'balance',
+        text: 'Spellblade — Fault Lines (Campaign and Arena): Base and upgraded: each Aura gives 1 Fracture on each of your first 6 own-turn Sword/Spell plays (was 2), then 0 on later plays (was 1). Copies count separately and reset each own turn; a card with both tags counts once. Costs remain 2/1 Mana. Permanent Fracture and Shatterer’s 15% bonus stay unchanged.',
+      },
+      {
+        kind: 'balance',
+        text: 'Spellblade — Measured Ruin (Campaign and Arena): Added damage on the first qualifying Spell Attack each turn drops from 2 to 1 per spent Power, or 3 to 2 upgraded, per hit. Copies still stack; the Aura still costs 2 Mana. Sword-only attacks such as Obsidian Drill do not qualify.',
+      },
+      {
+        kind: 'balance',
+        text: 'Brewmaster — Fermentation (Campaign and Arena): End-turn healing drops from 1% to 0.6% max HP per stack, rounded up once after totaling all stacks. The five-stack cap, actual Hangover-payment trigger and 2 Barrier per stack stay unchanged. At five stacks, healing is 16 instead of 27 at 528 max HP, 18 instead of 30 at 588, and 3 instead of 5 at 88.',
+      },
+      {
+        kind: 'balance',
+        text: 'Knight — Crimson Offering (Campaign and Arena): Base and upgraded change from 2 Mana immediately to 1 immediately + 1 next own turn. Draw stays 3/4 and HP payment stays 6/5.',
+      },
+      {
+        kind: 'balance',
+        text: 'Hunter — Blood Tithe (Campaign and Arena): Base and upgraded change from 2 Mana immediately to 1 immediately + 1 next own turn. Draw 2, Might 1 and HP payment 7/5 stay unchanged.',
+      },
+      {
+        kind: 'balance',
+        text: 'Hunter — Adrenal Surge (Campaign and Arena): Base and upgraded change from 2 Mana immediately to 1 immediately + 1 next own turn. Draw stays 1/2 and HP payment stays 3/2.',
+      },
+      {
+        kind: 'balance',
+        text: 'Rogue — Rush of Blood (Campaign and Arena): Upgraded changes from 2 Mana immediately to 1 immediately + 1 next own turn. Base still gives 1 immediately; both still draw 2.',
+      },
+      {
+        kind: 'balance',
+        text: 'Shaman — Wellspring (Campaign and Arena): Base changes from 4 Mana immediately to 2 immediately + 2 next own turn. Upgraded changes from 5 immediately to 2 immediately + 3 next own turn.',
+      },
+      {
+        kind: 'balance',
+        text: 'Necromancer — Soul Tithe (Campaign and Arena): Base changes from 3 Mana immediately to 1 immediately + 2 next own turn. Upgraded changes from 4 immediately to 1 immediately + 3 next own turn. Draw 2 and recurring self-Fate of the greater of 3 or 2% max HP rounded up stay unchanged.',
+      },
+      {
+        kind: 'balance',
+        text: 'Shaman — Spirit Offering (Campaign and Arena): Base changes from 2 Mana immediately to 1 immediately + 1 next own turn. Upgraded changes from 3 immediately to 1 immediately + 2 next own turn. Still adds Void to your discard and remains repeatable.',
+      },
+      {
+        kind: 'balance',
+        text: 'Trickster — Cut the Deck (Campaign and Arena): The conditional 1-Mana refund now works once on your own turn across all base/upgraded copies and replays, rather than on every qualifying play. The three-suit requirement must be met before the allowance is spent. Cost 1 and draw 2/3 stay unchanged.',
+      },
+      {
+        kind: 'balance',
+        text: 'Knight — Scent of Weakness (Campaign and Arena): Each Aura draws 1 on only the first 3 hostile Exposed applications per owner-round, instead of without a limit. Base and upgraded share this rule; each Aura counts independently, including reactive applications during the opponent’s turn. Two Auras can draw up to 6 per owner-round.',
+      },
+      {
+        kind: 'balance',
+        text: 'Bonelord (Campaign and Arena): New: after your first Command played on your own turn resolves, gain 3 Barrier per surviving Bone Thrall, capped at 9. A first Command with no surviving Thralls still uses that turn’s opportunity. Existing Raise 2 bonus and Marrow 2 remain.',
+      },
+      {
+        kind: 'balance',
+        text: 'Deathwish (Campaign and Arena): New: before your first Attack played on your own turn resolves, gain 5% max HP as Barrier, rounded up, if you are already at or below 40% HP. Playing that first Attack above 40% uses the opportunity without granting Barrier. Free plays qualify; repeating the same Attack’s effects does not grant it again. Existing damage ramp and once-per-fight rescue remain.',
+      },
+    ],
+    heads:
+      'Existing cards and decks receive these changes. Resource cards keep their total Mana, costs and Consume behavior; delayed Mana arrives once at the start of your next own turn and separate grants add together. Hero HP and enemy scaling are unchanged. Unfinished battles from older versions restart from their saved encounter checkpoint; Campaign progress and decks are kept.',
+  },
+  {
     version: '0.197.0',
     date: '2026-11-04',
     title: 'Growing machines and longer Arena games',

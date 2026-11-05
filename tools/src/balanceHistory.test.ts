@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
 import { ASCENDANCIES } from '@sr/content/v2';
 it('preserves complete versioned estimates for every Ascendancy and all class starts', () => {
-  for (const version of ['0.194.0', '0.195.0', '0.197.0']) {
+  for (const version of ['0.194.0', '0.195.0', '0.197.0', '0.198.0']) {
     const s = JSON.parse(
       readFileSync(new URL(`../../docs/balance-history/${version}.json`, import.meta.url), 'utf8'),
     ) as {

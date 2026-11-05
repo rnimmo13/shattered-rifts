@@ -88,6 +88,7 @@ function suitOfOp(o: Op, aimsAtFoe: boolean): Suit | null {
       // (an Aura's "target" is what set it off: the enemy an Attack struck or a debuff landed on)
       return o.ops.reduce<Suit | null>((s, x) => s ?? suitOfOp(x, true), null);
     case 'when':
+    case 'oncePerTurn':
       return o.ops.reduce<Suit | null>((s, x) => s ?? suitOfOp(x, aimsAtFoe), null);
     default:
       return null;

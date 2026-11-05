@@ -795,12 +795,11 @@ export const SPELLBLADE: CardDef[] = [
     2,
     'none',
     [
-      on('play', [fracture(2, 'targetOrMostFracture')], {
+      on('play', [fracture(1, 'targetOrMostFracture')], {
         tag: SWORD,
         orTag: SPELL,
         ownTurn: true,
         perTurnLimit: 6,
-        afterLimit: [fracture(1, 'targetOrMostFracture')],
       }),
     ],
     { up: { cost: 1 } },
@@ -876,8 +875,8 @@ export const SPELLBLADE: CardDef[] = [
     [on('grown', [{ ...growSelf(2), that: true } as Op], { once: true })],
     { up: { innate: true } },
   ),
-  a('rare', 'measured-ruin', 'Measured Ruin', 'power', 2, 'none', [status('ruinous', 2)], {
-    up: { effects: [status('ruinous', 3)] },
+  a('rare', 'measured-ruin', 'Measured Ruin', 'power', 2, 'none', [status('ruinous', 1)], {
+    up: { effects: [status('ruinous', 2)] },
   }),
 
   // --- defence and selection ---

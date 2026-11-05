@@ -216,10 +216,10 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(hero(s).statuses.vigor ?? 0).toBe(0);
   });
 
-  it('Spirit Offering gives 2 Mana and adds a Void to your discard pile; it is not consumed', () => {
+  it('Spirit Offering gives 1 Mana now and 1 next turn, adding a Void without being consumed', () => {
     let s = fight(['spirit-offering']);
     s = play(s, 'spirit-offering');
-    expect(s.sides.a.mana).toBe(9 + 2);
+    expect(s.sides.a.mana).toBe(9 + 1);
     expect(s.sides.a.discard.map((c) => c.card)).toContain('void-drain');
     expect(s.sides.a.exhausted.map((c) => c.card)).not.toContain('spirit-offering');
   });
@@ -386,11 +386,11 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(s.sides.a.exhausted.map((c) => c.card)).toContain('dawn-ward');
     s = play(s, 'frostbound-hide');
     expect(hero(s).barrier).toBe(10 + 6 + 6);
-    // (Wellspring: 4 Mana, consumed; Thunder Beam: 28 to all, up to 3 Spirit lost)
+    // Wellspring:2 Mana now and2 next turn, consumed; Thunder Beam remains28 to all.
     let t = fight(['wellspring', 'thunder-beam'], ['squire', 'squire']);
     hero(t).statuses.spirit = 2;
     t = play(t, 'wellspring');
-    expect(t.sides.a.mana).toBe(9 + 4);
+    expect(t.sides.a.mana).toBe(9 + 2);
     t = play(t, 'thunder-beam');
     expect(lost(t)).toEqual([28, 28]);
     expect(hero(t).statuses.spirit ?? 0).toBe(0);

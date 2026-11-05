@@ -310,9 +310,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Brewmaster',
     'Hangover',
-    'Your first actual Hangover payment on your turn builds 1 Fermentation, up to 5. At the end of your turn, each Fermentation heals 1% of your max HP and gives 2 Barrier. Fermentation lasts for the fight.',
+    'Your first actual Hangover payment on your turn builds 1 Fermentation, up to 5. At the end of your turn, each Fermentation heals 0.6% of your max HP and gives 2 Barrier. Round healing up after totaling all stacks. Fermentation lasts for the fight.',
     {
-      fightStart: [{ op: 'discipline', rule: { kind: 'brewing', cap: 5, healPct: 1, barrier: 2 } }],
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'brewing', cap: 5, healPct: 0.6, barrier: 2 } },
+      ],
     },
   ),
   // (and 2 sharper every turn: 3 once was less than a common card, DECISIONS #542)
@@ -330,7 +332,7 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Deathwish',
     'Low HP',
-    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP, on top of Clutch Genes. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
+    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP, on top of Clutch Genes. Your first Attack on your turn grants 5% of your max HP as Barrier, rounded up, before resolving if you are at 40% HP or lower. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
     {
       fightStart: [
         {
@@ -341,6 +343,7 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
             bonus: 25,
             emergencyBarrierPct: 10,
             rampFrom: 70,
+            attackBarrierPct: 5,
           },
         },
       ],
@@ -351,10 +354,23 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Bonelord',
     'Thralls',
-    'At the start of your turn, Raise 2 more. Your companions deal 2 more damage.',
+    'At the start of your turn, Raise 2 more. Your companions deal 2 more damage. After your first Command resolves on your turn, gain 3 Barrier per living Bone Thrall, up to 9.',
     {
       turnStart: [raise(2)],
-      fightStart: [status('marrow', 2)],
+      fightStart: [
+        status('marrow', 2),
+        {
+          op: 'discipline',
+          rule: {
+            kind: 'commandGuard',
+            tag: 'command',
+            unit: 'bone-thrall',
+            unitName: 'Bone Thrall',
+            perAlly: 3,
+            cap: 9,
+          },
+        },
+      ],
     },
   ),
   a(
@@ -371,10 +387,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Soulreaper',
     'Harvest of Souls',
-    'The first 6 cards consumed each round grant 3 Barrier and add 1 Harvest each. A round runs from the start of your turn to your next turn. At the end of your turn, after Fleeting cleanup and companion actions, if you consumed a card that turn, Reap the lowest-HP enemy for 4 damage plus 2 per Harvest this fight. Barrier absorbs Reap. Other Consume effects still work beyond the limit.',
+    'The first 3 cards consumed each round add 1 Harvest each. The first 6 grant 3 Barrier each. A round runs from the start of your turn to your next turn. At the end of your turn, after Fleeting cleanup and companion actions, if you consumed a card that turn, Reap the lowest-HP enemy for 4 damage plus 2 per Harvest this fight. Barrier absorbs Reap. Other Consume effects still work beyond these limits.',
     {
       fightStart: [
-        { op: 'discipline', rule: { kind: 'harvest', base: 4, perConsumed: 2, roundLimit: 6 } },
+        { op: 'discipline', rule: { kind: 'harvest', base: 4, perConsumed: 2, roundLimit: 3 } },
       ],
       triggers: [on('exhaust', [barrier(3)], { perRoundLimit: 6 })],
     },

@@ -1,8 +1,18 @@
 // Stateful, data-driven passives shared by campaign, Arena, ghosts and previews.
-import type { CardDef, CombatState, Op, SideState, Stance, TriggerWhen, Unit } from './types';
+import type {
+  CardDef,
+  CardInst,
+  CombatState,
+  Op,
+  SideState,
+  Stance,
+  TriggerWhen,
+  Unit,
+} from './types';
 
 export interface DisciplineContext {
   card?: CardDef;
+  inst?: CardInst;
   lost?: number;
   stance?: Stance;
 }
@@ -46,6 +56,31 @@ export function disciplineTrigger(
     d.progress = Math.min(r.cap, d.progress + gain);
   }
   if (!own) return [];
+  if (r.kind === 'commandGuard' && ctx.card?.tags?.includes(r.tag) && ctx.inst) {
+    if (when === 'playStart' && d.usedTurn !== state.turn) {
+      d.usedTurn = state.turn;
+      d.guardCard = ctx.inst.id;
+    }
+    if (when === 'play' && d.guardCard === ctx.inst.id) {
+      delete d.guardCard;
+      const count = side.units.filter(
+        (u) => u.kind === 'ally' && u.hp > 0 && u.def.replace(/\+$/, '') === r.unit,
+      ).length;
+      return [barrier(Math.min(r.cap, count * r.perAlly))];
+    }
+  }
+  if (
+    r.kind === 'desperation' &&
+    r.attackBarrierPct &&
+    when === 'playStart' &&
+    ctx.card?.kind === 'attack' &&
+    d.usedTurn !== state.turn
+  ) {
+    // The first Attack spends the opportunity even if its hero is above the threshold.
+    d.usedTurn = state.turn;
+    if (hero.hp * 100 <= hero.maxHp * r.threshold)
+      return [barrier(Math.ceil((hero.maxHp * r.attackBarrierPct) / 100))];
+  }
   if (
     r.kind === 'harvest' &&
     when === 'turnSettled' &&
@@ -207,6 +242,8 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
       return `Fermentation ${d.progress}/${r.cap}`;
     case 'harvest':
       return `Harvest ${d.progress} · Reap ${r.base + r.perConsumed * d.progress}${(side.exhaustedTurn ?? 0) > 0 && d.usedTurn !== state.turn ? ' ready' : ''}`;
+    case 'commandGuard':
+      return d.usedTurn === state.turn ? 'Command guard spent' : 'Command guard ready';
     case 'desperation':
       return d.used ? 'Last stand spent' : 'Last stand ready';
   }
@@ -238,10 +275,12 @@ export function disciplineText(side: SideState): string | null {
     case 'spellCycle':
       return `Spell recovery: ${side.nextStars ?? 0} Spell Power due next turn; ${d.usedTurn === side.turnBegan ? 'used this turn' : 'ready'}.`;
     case 'brewing':
-      return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${d.progress * r.healPct}% max HP and gives ${d.progress * r.barrier} Barrier.`;
+      return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${Number((d.progress * r.healPct).toFixed(2))}% max HP and gives ${d.progress * r.barrier} Barrier.`;
     case 'harvest':
       return `Harvest ${d.progress}; ${d.roundGain}/${r.roundLimit ?? '∞'} eligible consumptions this round. After hand cleanup and companion actions, consuming a card this turn enables one Reap for ${r.base + r.perConsumed * d.progress} non-attack damage against the lowest-HP enemy. Barrier can absorb it.`;
     case 'desperation':
-      return `Death-defying save: ${d.used ? 'spent this fight' : 'available once this fight'}.`;
+      return `Death-defying save: ${d.used ? 'spent this fight' : 'available once this fight'}.${r.attackBarrierPct ? ` Your first Attack on your turn grants ${r.attackBarrierPct}% max HP as Barrier (rounded up) before resolving if you are at ${r.threshold}% HP or lower.` : ''}`;
+    case 'commandGuard':
+      return `Your first Command on your turn grants ${r.perAlly} Barrier per surviving ${r.unitName}, up to ${r.cap}, after resolving.`;
   }
 }

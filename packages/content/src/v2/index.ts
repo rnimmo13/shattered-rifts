@@ -408,14 +408,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Whenever a card is consumed, curse a random enemy with 3.',
+      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each; further cards give 1 Fate each. A round runs from the start of your turn to your next turn.',
       // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit; 2, not 3, #401)
       // (no Fate at the start, #398; a death curses 3, as a consumed card does: 5 had pushed him back to the top, #403)
       turnStart: [raise(2)],
       triggers: [
         // (the one that did it; a sacrifice has no killer, so it curses a random enemy, DECISIONS #518)
         on('allyDies', [status('doom', 2, 'attackerOrRandom')]),
-        on('exhaust', [status('doom', 3, 'randomFoe')]),
+        on('exhaust', [status('doom', 3, 'randomFoe')], {
+          perRoundLimit: 6,
+          afterLimit: [status('doom', 1, 'randomFoe')],
+        }),
       ],
     },
     // (the Slay the Spire 2 Necrobinder's shape, DECISIONS #370: her 66 HP is below the
@@ -445,7 +448,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: Raise 2 at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did), and a card consumed curses a random enemy with 3.',
+      'Grave Chill: Raise 2 at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each, then 1 each until your next turn.',
     ],
   },
 };

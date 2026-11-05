@@ -339,7 +339,9 @@ export const TRICKSTER: CardDef[] = [
   ]),
   v('uncommon', 'cut-the-deck', 'Cut the Deck', 'skill', 1, 'none', [
     draw(2),
-    when('suits', { atLeast: 3 }, [mana(1)]),
+    when('suits', { atLeast: 3 }, [
+      { op: 'oncePerTurn', key: 'suit-mana-refund', ownTurn: true, ops: [mana(1)] },
+    ]),
   ]),
   v('uncommon', 'queen-of-hearts', 'Queen of Hearts', 'skill', 1, 'none', [
     scaled(barrier(5), per('suits', 2)),

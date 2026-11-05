@@ -92,7 +92,8 @@ export interface Entry {
 // (72: Blade Sweep needs no target, #561)
 // (78: Backup Core is a Consume skill granting finite revival buff charges, #593)
 // (80: Heavy Hitter HP conversion and Resonant Pulse per-turn limit, #602)
-export const RULES_VERSION = 80;
+// (81: long-fight balance, shared effect limits and before-play defense, #603)
+export const RULES_VERSION = 81;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

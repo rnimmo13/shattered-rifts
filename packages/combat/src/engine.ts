@@ -2577,6 +2577,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const c of chosen) transformCard(r, side, c, op.into);
       return;
     }
+    case 'oncePerTurn': {
+      if (op.ownTurn && r.s.active !== side.id) return;
+      if (side.effectTurns?.[op.key] === r.s.turn) return;
+      (side.effectTurns ??= {})[op.key] = r.s.turn;
+      runOps(r, a, op.ops);
+      return;
+    }
     case 'when': {
       const v = metricValue(r, a, op.by, op.of, a.target, undefined, op.rune);
       if (
@@ -3784,6 +3791,7 @@ function playFree(
     target: target?.id ?? null,
   });
   clearTurnFlags(inst);
+  fireTriggers(r, sd, 'playStart', { card: cd, target, inst, cost: 0 });
   strangle(r, sd);
   if (r.s.winner) return back();
   if (cd.kind !== 'snare') showSuit(r, sd, cd);
@@ -3902,7 +3910,7 @@ function fireTriggers(
     if (p.ownTurn && (r.s.active !== sd.id || (when === 'stance' && r.opening))) continue;
     // (a power that fired once already is gone; another trigger in this loop may have removed it)
     if (!sd.powers.includes(p)) continue;
-    if (when === 'play' && played) {
+    if ((when === 'play' || when === 'playStart') && played) {
       if (p.filter && p.filter !== played.kind) continue;
       if (p.tag && !played.tags?.includes(p.tag) && !(p.orTag && played.tags?.includes(p.orTag)))
         continue;
@@ -5324,6 +5332,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   r.ev.push({ type: 'play', side, card: inst.id, def: inst.card, target: target?.id ?? null });
   r.ev.push({ type: 'mana', side, mana: sd.mana });
   // (assassin) Strangle: every card played costs the strangled enemies HP
+  fireTriggers(r, sd, 'playStart', { card: cd, target, inst, cost: paid + xMana });
   strangle(r, sd);
   if (r.s.winner) {
     sd.discard.push(inst);
@@ -5658,13 +5667,13 @@ export function previewCardDamage(
   const sd = s.sides[s.active];
   const inst = sd.hand.find((c) => c.id === instId);
   const def = inst ? db.cards[inst.card] : undefined;
-  const hero = heroOf(sd);
+  let hero = heroOf(sd);
   if (!inst || !def || !hero) return out;
   // as the effects will see it: the card has left the hand and its cost is paid (a card that counts your hand or your Mana)
   const pool = sd.mana + sd.reserves;
   const paid = def.x ? pool : Math.min(pool, costOf(db, sd, inst));
   const fromMana = Math.min(sd.mana, paid);
-  const after: CombatState = {
+  let after: CombatState = {
     ...s,
     sides: {
       ...s.sides,
@@ -5691,14 +5700,23 @@ export function previewCardDamage(
       },
     },
   };
+  // Pre-play protection can alter scaled damage or trigger other Auras. Work on a fully
+  // private graph when previewing it, including counters and any reactive effects.
+  const beforePlay =
+    sd.discipline?.rule.kind === 'desperation' || sd.powers.some((p) => p.when === 'playStart');
+  if (beforePlay) after = clone(after);
   const r: Run = { db, s: after, ev: [], depth: 0 };
+  if (beforePlay) {
+    fireTriggers(r, after.sides[sd.id], 'playStart', { card: def, inst, cost: paid });
+    hero = heroOf(after.sides[sd.id])!;
+  }
   // (its own suit is shown before its effects, as playing it does: a card that counts your suits counts itself)
   if (def.kind !== 'snare' && traitOf(r, sd.id)?.suits) {
     const shown = sd.suitsTurn ?? [];
     const add = suitShown(def, shown);
     after.sides[sd.id].suitsTurn = SUITS.filter((x) => shown.includes(x) || x === add);
   }
-  const foes = s.sides[other(sd.id)].units.filter((u) => u.hp > 0);
+  const foes = after.sides[other(sd.id)].units.filter((u) => u.hp > 0);
   const taunters = foes.filter((u) => u.taunt);
   const chosen = targetId ? (foes.find((u) => u.id === targetId) ?? null) : null;
   // a card aimed at your own unit (Reactor Meltdown reads the ally's HP) previews with that unit as its target
