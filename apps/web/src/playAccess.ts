@@ -1,6 +1,7 @@
 import { cleanRunCopies, cleanVault, regressesRun, type RunCopy } from '@sr/pvp';
 import { serverBase, playerId } from './pvp/config';
 import { vaultKey, whoAmI } from './pvp/vaultSync';
+import { updateRequired } from './appUpdates';
 
 export const localOnly = (): boolean =>
   typeof window !== 'undefined' &&
@@ -44,7 +45,9 @@ export function pausePlay(
   if (state.phase === 'playing' || state.phase === 'saving') update('paused', message);
 }
 export async function gameplayAction(action: () => void): Promise<void> {
-  if (localOnly() || ((await ensurePlay()) && state.phase === 'playing')) action();
+  if (updateRequired()) return;
+  if ((localOnly() || ((await ensurePlay()) && state.phase === 'playing')) && !updateRequired())
+    action();
 }
 const base = (): string => serverBase().replace(/^ws/i, 'http');
 async function call(action: 'claim' | 'renew' | 'release'): Promise<Record<string, unknown>> {

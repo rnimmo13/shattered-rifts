@@ -283,7 +283,8 @@ export function ShrineView(props: {
   const [altarOpen, setAltarOpen] = useState(false);
   const [hover, setHover] = useState<CardDef | null>(null);
   // a Gambler's Shrine (Tier VI and up): one blessing of seven, or the Brass Reel's prize in its place (DECISIONS #538)
-  const g = run.context?.gambler;
+  const refinement = run.map.nodes.find((n) => n.id === run.context?.nodeId)?.refinement === true;
+  const g = refinement ? undefined : run.context?.gambler;
   const taken = new Set<ShrineKind>(g?.taken ?? []);
   const canRest = run.hp < run.maxHp;
   const ups = useMemo(() => new Set(upgradable(run.deck)), [run.deck]);
@@ -340,27 +341,36 @@ export function ShrineView(props: {
             ? cuts
             : undefined;
   return (
-    <section className="stage-panel" aria-label={g ? "Gambler's Shrine" : 'Shrine'}>
-      <h2 className="stage-panel__title">{g ? "The Gambler's Shrine" : 'A quiet shrine'}</h2>
+    <section
+      className="stage-panel"
+      aria-label={refinement ? 'Refinement Shrine' : g ? "Gambler's Shrine" : 'Shrine'}
+    >
+      <h2 className="stage-panel__title">
+        {refinement ? 'Refinement Shrine' : g ? "The Gambler's Shrine" : 'A quiet shrine'}
+      </h2>
       <p className="stage-panel__hint">
-        {g
-          ? 'Deep in the Rift the shrines deal in wagers. Take one blessing, or spin the reel and take its prize, or walk away. Only one: the shrine closes after it.'
-          : 'The rift is thin here. Take one blessing, or walk away.'}
+        {refinement
+          ? 'One last refinement: upgrade one card or remove one card for free, including a Wound. Choose one, or walk away.'
+          : g
+            ? 'Deep in the Rift the shrines deal in wagers. Take one blessing, or spin the reel and take its prize, or walk away. Only one: the shrine closes after it.'
+            : 'The rift is thin here. Take one blessing, or walk away.'}
       </p>
       {g?.note && <p className="gshrine__note">{g.note}</p>}
       {g && <h3 className="gshrine__head">Blessings</h3>}
       <div className="choices-row">
-        <button
-          className="bigchoice"
-          disabled={prizeWaiting || !canRest || taken.has('rest')}
-          onClick={() => props.onTake({ kind: 'rest' })}
-        >
-          <b>Rest</b>
-          <span>
-            Heal {heal} HP ({run.hp}/{run.maxHp})
-          </span>
-          {tag('rest', !canRest && 'You are at full health')}
-        </button>
+        {!refinement && (
+          <button
+            className="bigchoice"
+            disabled={prizeWaiting || !canRest || taken.has('rest')}
+            onClick={() => props.onTake({ kind: 'rest' })}
+          >
+            <b>Rest</b>
+            <span>
+              Heal {heal} HP ({run.hp}/{run.maxHp})
+            </span>
+            {tag('rest', !canRest && 'You are at full health')}
+          </button>
+        )}
         <button
           className="bigchoice"
           disabled={prizeWaiting || ups.size === 0 || taken.has('upgrade')}

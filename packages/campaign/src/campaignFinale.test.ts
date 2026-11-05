@@ -11,6 +11,7 @@ import {
   finishDuel,
   duelPlan,
   gauntletMap,
+  leaveShrine,
   MAX_TIER,
   newRun,
   parseRun,
@@ -37,10 +38,12 @@ describe('the twelve-tier campaign', () => {
     expect(run.phase).toBe('map');
     expect(new Set(seen).size).toBe(11);
     expect([...seen].sort()).toEqual([...WARDEN_SEQUENCE].sort());
-    expect(run.map.nodes).toHaveLength(12);
-    expect(run.map.nodes.every((n) => n.kind === 'warden')).toBe(true);
+    expect(run.map.nodes).toHaveLength(17);
+    expect(run.map.nodes.filter((n) => n.refinement)).toHaveLength(5);
+    expect(run.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(12);
     expect(
       run.map.nodes
+        .filter((n) => n.kind === 'warden')
         .slice(0, 11)
         .map((n) => n.enemyId)
         .sort(),
@@ -60,6 +63,7 @@ describe('the twelve-tier campaign', () => {
       finale.add(end.map.nodes.map((n) => n.enemyId).join(','));
       expect(
         end.map.nodes
+          .filter((n) => n.kind === 'warden')
           .slice(0, 11)
           .map((n) => n.enemyId)
           .sort(),
@@ -104,6 +108,7 @@ describe('the twelve-tier campaign', () => {
       phase: 'map',
       ascendancy: ascendanciesOf('engineer')[0]!.id,
     };
+    const fights = run.map.nodes.filter((n) => n.kind === 'warden');
     run = enterNode(run, availableNodes(run)[0]!.id);
     for (let i = 0; i < 12; i++) {
       expect(run.phase).toBe('duel');
@@ -120,8 +125,8 @@ describe('the twelve-tier campaign', () => {
         expect(run.resolve).toBe(resolve);
         expect(run.context).toBeNull();
         expect(run.eventResult).toBeUndefined();
-        expect(run.stats.nodesCleared).toBe(12);
-        expect(run.cleared).toContain(run.map.nodes[11]!.id);
+        expect(run.stats.nodesCleared).toBe(17);
+        expect(run.cleared).toContain(fights[11]!.id);
         break;
       }
       run = finishDuel(run, true, 10);
@@ -133,18 +138,22 @@ describe('the twelve-tier campaign', () => {
       const restored = parseRun(serializeRun(run));
       expect(restored).not.toBeNull();
       run = chooseCard(restored!, null);
-      expect(run.stats.nodesCleared).toBe(i + 1);
+      expect(run.stats.nodesCleared).toBe(i + 1 + Math.floor(i / 2));
       if (i < 11) {
         expect(run.phase).toBe('map');
         expect(run.context).toBeNull();
-        expect(run.at).toBe(run.map.nodes[i]!.id);
+        expect(run.at).toBe(fights[i]!.id);
         expect(run.cleared).toContain(run.at);
         expect(run.won).not.toBe(true);
         const parked = parseRun(serializeRun(run))!;
         expect(parked).toEqual(run);
-        expect(availableNodes(parked).map((n) => n.id)).toEqual([run.map.nodes[i + 1]!.id]);
         run = enterNode(parked, availableNodes(parked)[0]!.id);
-        expect(run.context!.nodeId).toBe(run.map.nodes[i + 1]!.id);
+        if (run.phase === 'shrine') {
+          expect(run.context?.gambler).toBeUndefined();
+          run = leaveShrine(run);
+          run = enterNode(run, availableNodes(run)[0]!.id);
+        }
+        expect(run.context!.nodeId).toBe(fights[i + 1]!.id);
         expect(duelPlan(parseRun(serializeRun(run))!)!.seed).toBe(duelPlan(run)!.seed);
       }
     }

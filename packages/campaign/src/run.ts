@@ -492,7 +492,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     case 'shrine':
       r.phase = 'shrine';
       // deep in the Rift a Shrine is a Gambler's Shrine: one blessing of seven, or the Brass Reel's prize instead (DECISIONS #234, #538)
-      if (r.tier >= GAMBLER_TIER) {
+      if (r.tier >= GAMBLER_TIER && !node.refinement) {
         r.context.gambler = makeGambler(r);
         const reel = buildElite(GAMBLER_REEL, r);
         r.context.event = { ...reel, options: reel.options.filter((o) => o.id === 'trial') };
@@ -1505,6 +1505,11 @@ export function upgradable(deck: readonly string[]): string[] {
 
 export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
+  const refinement = nodeOf(run, run.context.nodeId).refinement;
+  need(
+    !refinement || choice.kind === 'upgrade' || choice.kind === 'remove',
+    'This shrine only upgrades or removes one card',
+  );
   const g = run.context.gambler;
   need(!g || !g.taken.includes(choice.kind), 'You have taken that blessing here already');
   const wager: ShrineKind[] = ['sacrifice', 'dice', 'engrave', 'ledger'];

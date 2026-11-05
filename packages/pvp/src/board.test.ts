@@ -521,3 +521,51 @@ describe('the campaign board: one entry per player and Riftwalker (DECISIONS #29
     expect(board.map((r) => r.status)).toEqual(['fell', 'live', 'abandoned']);
   });
 });
+
+it('prefers confirmed completion over equal-progress deaths across account/Vault rows before shards', () => {
+  const shared = {
+    name: 'Sharkbait',
+    hero: 'engineer',
+    ascendancy: 'engineer:golemancer',
+    tier: 12,
+    stage: 3,
+  };
+  const board = rankRuns([
+    { ...shared, player: 'old-code', at: 1, shards: 275, ended: 'fell' },
+    { ...shared, player: 'account', at: 2, shards: null, ended: 'completed' },
+    { ...shared, name: 'Other', player: 'other', at: 1, shards: 999, ended: 'fell' },
+  ]);
+  expect(board[0]!.name).toBe('Sharkbait');
+  expect(board[0]!.status).toBe('completed');
+  expect(board[0]!.shards).toBeNull();
+});
+
+it('orders Campaign rows by Tier, Completed/Live/Dead/Abandoned, shards, then earlier arrival', () => {
+  const base = { hero: 'engineer', tier: 12, stage: 3, at: 100 };
+  const board = rankRuns([
+    { ...base, player: 'dead', name: 'Dead', ended: 'fell', shards: 9999 },
+    { ...base, player: 'live', name: 'Live', stage: 0, shards: 500 },
+    { ...base, player: 'abandoned', name: 'Abandoned', ended: 'abandoned', shards: 99999 },
+    { ...base, player: 'done-later', name: 'Done later', ended: 'completed', shards: 100, at: 20 },
+    { ...base, player: 'done-first', name: 'Done first', ended: 'completed', shards: 100, at: 10 },
+    { ...base, player: 'done-rich', name: 'Done rich', ended: 'completed', shards: 101, at: 30 },
+    {
+      ...base,
+      player: 'higher',
+      name: 'Higher tier',
+      tier: 13,
+      stage: 0,
+      ended: 'abandoned',
+      shards: 0,
+    },
+  ]);
+  expect(board.map((r) => r.name)).toEqual([
+    'Higher tier',
+    'Done rich',
+    'Done first',
+    'Done later',
+    'Live',
+    'Dead',
+    'Abandoned',
+  ]);
+});

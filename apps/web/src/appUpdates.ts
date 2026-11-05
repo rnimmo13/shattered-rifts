@@ -10,6 +10,8 @@ export interface AvailableUpdate {
 let available: AvailableUpdate | null = null;
 const listeners = new Set<() => void>();
 export const pendingUpdate = (): AvailableUpdate | null => available;
+/** A running battle may finish; a ready update blocks subsequent play at the safe boundary. */
+export const updateRequired = (): boolean => available !== null && !battleActive();
 export const subscribeUpdates = (listener: () => void): (() => void) => {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -91,12 +93,9 @@ export function checkAppUpdates(forceNativeCheck = false): Promise<void> {
 export function startAppUpdateChecks(): () => void {
   if (import.meta.env.DEV) return () => undefined;
   void checkAppUpdates();
-  const timer = window.setInterval(
-    () => {
-      if (!document.hidden) void checkAppUpdates();
-    },
-    desktopBridge() ? 10000 : 60000,
-  );
+  const timer = window.setInterval(() => {
+    if (!document.hidden) void checkAppUpdates();
+  }, 10000);
   const focus = (): void => {
     if (!document.hidden) void checkAppUpdates(true);
   };
@@ -116,6 +115,8 @@ export async function refreshForUpdate(): Promise<void> {
   if (battleActive()) throw new Error('Finish or leave the battle before refreshing.');
   if (desktopBridge())
     throw new Error('The desktop app must install its patch instead of refreshing.');
+  const { checkpointRunTime } = await import('./run/runClock');
+  checkpointRunTime();
   const { releasePlayAccess } = await import('./playAccess');
   await releasePlayAccess();
   if (battleActive()) throw new Error('A battle has started. Refresh after leaving it.');

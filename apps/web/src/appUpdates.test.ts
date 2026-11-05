@@ -125,3 +125,16 @@ describe('application update availability and refresh safety', () => {
     expect(mocks.check).toHaveBeenCalledOnce();
   });
 });
+
+it('requires a ready update at safe boundaries and permits the current battle to finish', async () => {
+  const app = await import('./appUpdates');
+  const { enterBattle } = await import('./battleActivity');
+  expect(app.updateRequired()).toBe(false);
+  mocks.fetch.mockResolvedValueOnce(latest());
+  await app.checkAppUpdates();
+  expect(app.updateRequired()).toBe(true);
+  const leave = enterBattle();
+  expect(app.updateRequired()).toBe(false);
+  leave();
+  expect(app.updateRequired()).toBe(true);
+});

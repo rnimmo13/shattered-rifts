@@ -13,6 +13,8 @@ export type NodeKind =
   'duel' | 'elite' | 'event' | 'shrine' | 'merchant' | 'warden' | 'echo' | 'cache';
 
 export interface MapNode {
+  /** Finale-only shrine: one free upgrade/removal, no rest or wagers. */
+  refinement?: true;
   id: string;
   /** 1-based floor within the stage; the Warden sits one floor above the last. */
   floor: number;
@@ -354,6 +356,8 @@ export interface RunStats {
 }
 
 export interface RunState {
+  /** Time spent with this particular run open, including idle map/event/battle time. */
+  elapsedMs?: number;
   campaignRoute?: 'twelve';
   /** Saved permutation: one unique Warden per tier I–XI. Finale has its own order in the saved map. */
   wardenOrder?: string[];

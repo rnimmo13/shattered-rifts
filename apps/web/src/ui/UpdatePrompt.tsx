@@ -1,4 +1,4 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { battleActive, subscribeBattle } from '../battleActivity';
 import {
   pendingUpdate,
@@ -12,21 +12,30 @@ import './updatePrompt.css';
 export function UpdatePrompt() {
   const update = useSyncExternalStore(subscribeUpdates, pendingUpdate);
   const fighting = useSyncExternalStore(subscribeBattle, battleActive);
-  const [dismissed, setDismissed] = useState('');
+  const dialog = useRef<HTMLDialogElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   useEffect(startAppUpdateChecks, []);
-  if (!update || fighting || dismissed === update.key) return null;
+  useEffect(() => {
+    if (update && !fighting && !dialog.current?.open) dialog.current?.showModal();
+  }, [update, fighting]);
+  if (!update || fighting) return null;
   return (
-    <aside className="update-prompt" role="status" aria-label="Game update available">
+    <dialog
+      ref={dialog}
+      className="update-prompt"
+      aria-modal="true"
+      aria-label="Game update required"
+      onCancel={(e) => e.preventDefault()}
+    >
       <div>
         <strong>
           {update.version ? `Version ${update.version} is ready` : 'A game update is ready'}
         </strong>
         <p>
           {update.kind === 'web'
-            ? 'Save your progress and refresh to load the new version.'
-            : 'The patch is downloaded. Save and restart to install it.'}
+            ? 'Update required to continue. Save your progress and refresh to load the new version.'
+            : 'The patch is downloaded. Save and restart to install it before continuing.'}
         </p>
       </div>
       <div className="update-prompt__actions">
@@ -44,16 +53,9 @@ export function UpdatePrompt() {
         >
           {busy ? 'Saving…' : update.kind === 'web' ? 'Save and refresh' : 'Save and restart'}
         </button>
-        <button
-          className="btn btn--small btn--ghost"
-          disabled={busy}
-          onClick={() => setDismissed(update.key)}
-        >
-          Later
-        </button>
       </div>
       {error && <p role="alert">{error}</p>}
-    </aside>
+    </dialog>
   );
 }
 

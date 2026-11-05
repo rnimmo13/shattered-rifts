@@ -20,7 +20,13 @@ import {
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
-import { FINAL_STAGE, gauntletMap, shuffledWardens, WARDEN_SEQUENCE } from './mapgen';
+import {
+  FINAL_STAGE,
+  gauntletMap,
+  shuffledWardens,
+  WARDEN_SEQUENCE,
+  withGauntletShrines,
+} from './mapgen';
 import {
   FIGHT_SHARDS,
   MAX_EXTRA_REWARDS,
@@ -84,6 +90,7 @@ function validMap(map: unknown): map is RunState['map'] {
     if (!n.kind || !KINDS.includes(n.kind) || !isInt(n.floor, 1, 60)) return false;
     if (!isStrArray(n.next) || n.next.some((t) => !ids.has(t))) return false;
     if (n.crossed !== undefined && typeof n.crossed !== 'string') return false;
+    if (n.refinement !== undefined && (n.refinement !== true || n.kind !== 'shrine')) return false;
     // (a settled ghost that no longer checks out is dropped, and the usual Warden is fought)
     if (n.ghostDeck !== undefined && checkGhostBoss(n.ghostDeck) === null) {
       delete n.ghostDeck;
@@ -442,6 +449,8 @@ export function parseRun(text: string): RunState | null {
   if ((r.phase as string) === 'kit' && Array.isArray(r.map?.nodes) && r.rng)
     restartAtThreshold(r as RunState);
   if (!isInt(r.maxHp, 1, 9999) || !isInt(r.hp, 1, r.maxHp)) return null;
+  if (r.elapsedMs !== undefined && !isInt(r.elapsedMs, 0, Number.MAX_SAFE_INTEGER))
+    delete r.elapsedMs;
   // saves from before the difficulty setting were all played on Easy
   if (r.difficulty === undefined) r.difficulty = 'easy';
   if (r.difficulty !== 'easy' && r.difficulty !== 'normal' && r.difficulty !== 'hard') return null;
@@ -565,6 +574,22 @@ export function parseRun(text: string): RunState | null {
       activeNode?.ghost ||
       (isObj(r.context) && r.context.ghost !== undefined));
   const run = withoutCampaignGhosts(r as RunState);
+  if (run.tier === 12 && run.map.gauntlet && !run.won) {
+    const expanded = withGauntletShrines(run.map);
+    if (expanded !== run.map) {
+      const current = expanded.nodes.find((n) => n.id === run.at);
+      // New stops behind a fight already entered are passed; the next unvisited stop is available.
+      for (const node of expanded.nodes)
+        if (
+          node.refinement &&
+          current &&
+          node.floor < current.floor &&
+          !run.cleared.includes(node.id)
+        )
+          run.cleared.push(node.id);
+      run.map = expanded;
+    }
+  }
   // A run saved on a page after Valerion (his old Gift, an extra reward or an Ascendancy) goes straight to victory.
   if (
     (run.phase === 'gift' || run.phase === 'reward' || run.phase === 'ascend') &&

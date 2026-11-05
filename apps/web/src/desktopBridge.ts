@@ -102,6 +102,8 @@ export async function startDesktop(): Promise<void> {
   });
 }
 export async function quitDesktop(): Promise<void> {
+  const { checkpointRunTime } = await import('./run/runClock');
+  checkpointRunTime();
   await flushDesktopSave();
   const { releasePlayAccess } = await import('./playAccess');
   await releasePlayAccess();
@@ -110,6 +112,8 @@ export async function quitDesktop(): Promise<void> {
 export async function restartDesktopUpdate(): Promise<void> {
   const { battleActive } = await import('./battleActivity');
   if (battleActive()) throw new Error('Finish or leave the battle before updating.');
+  const { checkpointRunTime } = await import('./run/runClock');
+  checkpointRunTime();
   await flushDesktopSave();
   const { releasePlayAccess } = await import('./playAccess');
   await releasePlayAccess();

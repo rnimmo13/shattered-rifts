@@ -68,8 +68,9 @@ describe('Elites by Rift Tier', () => {
     expect(looped.tier).toBe(12);
     expect(looped.map.gauntlet).toBe(true);
     expect(count(looped.map, 'duel')).toBe(0);
-    expect(looped.map.nodes).toHaveLength(12);
-    expect(looped.map.nodes.every((n) => n.kind === 'warden')).toBe(true);
+    expect(looped.map.nodes).toHaveLength(17);
+    expect(looped.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(12);
+    expect(looped.map.nodes.filter((n) => n.refinement)).toHaveLength(5);
   });
 
   it('Tier 1 uses no roll for this, and its map is pinned', () => {

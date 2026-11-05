@@ -341,3 +341,7 @@ A twelve-card classless set (rarity `ancestral`, jade frame): powerful, one copy
 ### Current Warden Hearts — local0.206
 
 Campaign only, one held at a time, selected instead of the Gift card; another replaces it. Glutton: +1 draw/turn, −5% Max HP. Blood: +25% direct card damage, opening Faltering3. Warded: +25% card Barrier, opening Brittle3. Rift (formerly Ember): ordinary foreign-card slot chance10%, fight shards−25%. Gilded (formerly Thorned): fight shards+40%, ordinary foreign chance0%; explicit foreign events/merchants retained. Resurgent: once/fight stop damage at half HP and gain25%-Max-HP Barrier, opening Exposed3. Glutton percentage tracks growth; swaps restore maximum without healing. Full rounding, scopes, legacy-save behavior and assessment: WARDEN_HEARTS_2026-11-05.md.
+
+### Tier XII Refinement Shrines (local0.207)
+
+Five guaranteed shrines follow fights2,4,6,8,10. Choose one free card upgrade or removal, or leave. Status cards such as Wound are eligible for removal; normal8-card minimum. No Rest/healing, wagers, reel or additional rewards. Twelve fights and their order remain; seventeen total stops. Saved active gauntlets gain remaining shrines without repeating passed stops or changing entered fights. Completed runs remain complete. See FINALE_REFINEMENT_2026-11-05.md.

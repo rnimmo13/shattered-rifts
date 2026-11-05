@@ -1,0 +1,11 @@
+# Release0.207.0 validation
+
+Robert explicitly approved finishing, committing, pushing and deploying the complete change set on2026-11-05 (decision637). Web/desktop0.207.0, combat rules84 unchanged.
+
+- All3,881 tests /187 files pass with two workers. This includes exact Campaign comparator order, account/Vault completion selection, cloud history-before-repair, five shrine placement/action restrictions, idempotent active-gauntlet migration, unchanged entered-fight seed, independent clock pause/resume/reload, and required-update battle/save guards. Initial failures from obsolete twelve-stop fixtures and a shrine fixture lacking its node were corrected; no gameplay assertion was relaxed.
+- Full workspace type checks pass. Full lint has zero errors and the same two existing React-refresh warnings in PileArt/MapInk. Web and desktop shell build.
+- Isolated hidden Chromium checks use actual app components, real saved fixture states and a local mocked account service:1366×768,390×844,320×740. Clock remains within the top map/event/battle header; idle time advances, Home checkpoints and pauses, another run retains its separate elapsed time. Five shrine nodes and Upgrade/Remove-only actions render. Four live companions expose separate minimum52px touch buttons; real touch selects a companion and Patch Job raises that exact target’s HP. The native update dialog has no Later button and survives Escape. Screenshots remain ignored under.wrangler/finale207-ui; fixtures are not player matches.
+- One retained real client-observed Golemancer Tier XII victory record was inspected and privately archived only to support completion correction. It does not measure new shrine strength, match win rates or Arena parity. No balance simulations.
+- Append-only0.207 assessment retains all30 Ascendancies, class starts, mixed builds and all relevant Campaign/fight bands without measured regrades. Exact ledger: FINALE_REFINEMENT_2026-11-05.md.
+
+Release packaging follows apps/desktop/UPDATES.md: commit validated source; push main for automatic Cloudflare website/server deployment; build/package Windows from the clean committed source; verify source stamp, feed, installer size and SHA-512; publish all updater assets together. Private raw game history, test profiles, screenshots, credentials and temporary scripts are not committed.

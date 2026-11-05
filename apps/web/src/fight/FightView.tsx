@@ -398,6 +398,8 @@ function sharpOf(
 const NONE_PICKED: string[] = [];
 
 export function FightView(props: {
+  /** Campaign's per-run clock; independent of Arena's turn/game clocks. */
+  runTimer?: React.ReactNode;
   db: CombatDb;
   setup: CombatSetup;
   title: string;
@@ -1907,40 +1909,35 @@ export function FightView(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- chooseInHand is new each render, and pickKey and pickedNow change with it
   }, [act, commit, endTurn, handCards, waiting, pile, watch, handPickNow, pickKey, pickedNow]);
 
-  const onStagePointerDown = (e: React.PointerEvent) => {
+  const chooseAimedUnit = (unit: string) => {
+    if (!aimSet.has(unit)) return;
     if (releasing) {
-      if (e.button !== 0) return setReleasing(null);
-      const u = unitAt(e.clientX, e.clientY, aimSet);
-      if (u && aimSet.has(u)) {
-        // a pick that completes a set plays the card; otherwise it is remembered and the next companion is asked for
-        const picked = [...releasing.picked, u];
-        const done = releaseFits.find(
-          (set) => set.length === picked.length && picked.every((p) => set.includes(p)),
-        );
-        if (done) sendRelease(done);
-        else setReleasing({ ...releasing, picked });
-      }
-      return; // a miss keeps aiming: right-click or Esc lets go
+      const picked = [...releasing.picked, unit];
+      const done = releaseFits.find(
+        (set) => set.length === picked.length && picked.every((id) => set.includes(id)),
+      );
+      if (done) sendRelease(done);
+      else setReleasing({ ...releasing, picked });
+    } else if (aimPotion !== null) {
+      act({
+        type: 'potion',
+        index: me?.potions?.indexOf(aimPotion) ?? 0,
+        potion: aimPotion,
+        target: unit,
+      });
+      setAimPotion(null);
+    } else if (selectedCard?.targets.includes(unit)) commit(selectedCard, unit);
+  };
+  const friendlyTargets = (me?.units ?? []).filter((unit) => unit.hp > 0 && aimSet.has(unit.id));
+  const onStagePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) {
+      if (releasing) setReleasing(null);
+      else if (aimPotion !== null) setAimPotion(null);
+      else if (selectedCard) setSelected(null);
+      return;
     }
-    if (aimPotion !== null) {
-      if (e.button !== 0) return setAimPotion(null);
-      const u = unitAt(e.clientX, e.clientY, aimSet);
-      if (u && aimSet.has(u)) {
-        act({
-          type: 'potion',
-          index: me?.potions?.indexOf(aimPotion) ?? 0,
-          potion: aimPotion,
-          target: u,
-        });
-        setAimPotion(null);
-      }
-      return; // (a click that misses keeps aiming: right-click or Esc lets go)
-    }
-    if (!selectedCard) return;
-    if (e.button !== 0) return setSelected(null);
-    const u = unitAt(e.clientX, e.clientY, aimSet);
-    // a click that misses every target keeps the card chosen: right-click, Esc or the card again lets go
-    if (u && selectedCard.targets.includes(u)) commit(selectedCard, u);
+    const unit = unitAt(e.clientX, e.clientY, aimSet);
+    if (unit) chooseAimedUnit(unit);
   };
 
   // --- placing the DOM plates over the fighters ---------------------------------------------------------
@@ -2348,8 +2345,41 @@ export function FightView(props: {
               </div>
             )}
             {mode !== 'portrait' && fightOpts}
+            {props.runTimer && <span className="fight__runTimer">{props.runTimer}</span>}
           </header>
 
+          {mode !== 'wide' && !watch && friendlyTargets.length > 0 && (
+            <div
+              className="fight__friendlyTargets"
+              role="group"
+              aria-label="Choose a friendly target"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <strong>Choose target</strong>
+              <div>
+                {friendlyTargets.map((unit, index) => (
+                  <button
+                    key={unit.id}
+                    type="button"
+                    className="fight__friendlyTarget"
+                    data-friendly-target={unit.id}
+                    aria-label={`Choose ${unit.name} ${index + 1}, ${unit.hp} of ${unit.maxHp} HP`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      chooseAimedUnit(unit.id);
+                    }}
+                  >
+                    <b>
+                      {unit.name} <small>#{index + 1}</small>
+                    </b>
+                    <span>
+                      {unit.hp}/{unit.maxHp} HP
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <UnitPlates
             scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
             // (an intent hangs from this: room for the top bar and the intent itself)

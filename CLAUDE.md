@@ -1,5 +1,7 @@
 # Shattered Rifts: Agent Guide
 
+**Release approval, 2026-11-05 (#637):** Robert explicitly authorizes finishing, committing, pushing and deploying the complete0.207.0/rules84 change set: Tier XII upgrade/remove shrines, Golemancer completion sync/repair, Tier > Status > Shards > arrival rankings, required safe-boundary updates, separate persistent run timers and mobile model/companion targeting improvements. Publish website/server and matching Windows updater from clean validated source; verify live versions. Future changes require new approval.
+
 **Release approval, 2026-11-05 (#633):** Robert authorizes committing, pushing and deploying everything as0.206.0/rules84: Warden Hearts, Campaign Completed/Dead statuses, final boss renamed Valerion (internal id stays `vorthax`, #631) and instant victory after Valerion (#629). Website/server plus matching desktop updater. Future changes require new approval.
 
 **Release approval, 2026-11-05 (#628):** Robert authorizes pushing the complete0.204.0/rules83 changes: map centering/navigation/dragging, companion damage calculations, card preview corrections and gauntlet breaks. This covers automatic website deployment and matching desktop update publication. Finish final validation, commit, package from clean source and verify deployed versions. Earlier local-only labels below are historical; future changes require new approval.

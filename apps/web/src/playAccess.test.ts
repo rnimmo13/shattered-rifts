@@ -195,3 +195,13 @@ describe('shared-account play gates', () => {
     expect(access.playToken()).toBe('');
   });
 });
+
+it('blocks new gameplay, including offline actions, while an update awaits reload', async () => {
+  location.protocol = 'srgame:';
+  location.hostname = 'local';
+  const { flagChangedAssets } = await import('./appUpdates');
+  flagChangedAssets();
+  const action = vi.fn();
+  await access.gameplayAction(action);
+  expect(action).not.toHaveBeenCalled();
+});

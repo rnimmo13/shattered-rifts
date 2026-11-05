@@ -316,7 +316,24 @@ export interface RunStanding {
   status: RunStatus;
 }
 
-/** Each player's furthest run with each Riftwalker in the period, furthest first (a tie goes to whoever got there first). */
+const RUN_STATUS_PRIORITY: Record<RunStatus, number> = {
+  completed: 4,
+  live: 3,
+  fell: 2,
+  abandoned: 1,
+};
+/** Displayed Tier first, then completion/liveness, unspent shards, and earlier progress. */
+function compareCampaignRuns(x: RunRow, y: RunRow): number {
+  return (
+    y.tier - x.tier ||
+    RUN_STATUS_PRIORITY[y.ended ?? 'live'] - RUN_STATUS_PRIORITY[x.ended ?? 'live'] ||
+    (y.shards ?? 0) - (x.shards ?? 0) ||
+    x.at - y.at ||
+    x.name.localeCompare(y.name)
+  );
+}
+
+/** Apply the same Tier > Status > Shards > arrival order to row selection and final standings. */
 export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player: string })[] {
   const best = new Map<string, RunRow & { total: number }>();
   for (const r of rows) {
@@ -326,34 +343,19 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
     const hero = canonicalHero(r.hero);
     const k = `${r.name.trim().toLowerCase()}|${hero}`;
     const cur = best.get(k);
-    if (
-      !cur ||
-      total > cur.total ||
-      (total === cur.total &&
-        ((r.shards ?? 0) > (cur.shards ?? 0) ||
-          ((r.shards ?? 0) === (cur.shards ?? 0) && r.at < cur.at)))
-    )
-      best.set(k, { ...r, hero, total });
+    if (!cur || compareCampaignRuns(r, cur) < 0) best.set(k, { ...r, hero, total });
   }
-  return [...best.values()]
-    .sort(
-      (x, y) =>
-        y.total - x.total ||
-        (y.shards ?? 0) - (x.shards ?? 0) ||
-        x.at - y.at ||
-        x.name.localeCompare(y.name),
-    )
-    .map((r) => ({
-      player: r.player,
-      name: r.name,
-      hero: r.hero,
-      ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
-      tier: r.tier,
-      stage: r.stage,
-      total: r.total,
-      shards: r.shards ?? null,
-      status: r.ended ?? 'live',
-    }));
+  return [...best.values()].sort(compareCampaignRuns).map((r) => ({
+    player: r.player,
+    name: r.name,
+    hero: r.hero,
+    ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
+    tier: r.tier,
+    stage: r.stage,
+    total: r.total,
+    shards: r.shards ?? null,
+    status: r.ended ?? 'live',
+  }));
 }
 
 /** The top of the campaign board: each player's furthest run, furthest first. */

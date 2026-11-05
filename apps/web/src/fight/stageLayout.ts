@@ -69,8 +69,8 @@ export const COMPACT = {
 
 /** How big the figures are drawn, against the wide layout. */
 export function figureScale(mode: StageMode, hero: boolean): number {
-  if (mode === 'portrait') return hero ? 0.62 : 0.68;
-  if (mode === 'compact') return hero ? 0.8 : 0.84;
+  if (mode === 'portrait') return hero ? 0.54 : 0.6;
+  if (mode === 'compact') return hero ? 0.72 : 0.76;
   return 1;
 }
 
@@ -91,7 +91,10 @@ export function boardReserve(
   height = window.innerHeight,
 ): { top: number; bottom: number } {
   if (mode === 'portrait')
-    return { top: PORTRAIT_TOP_BAR, bottom: portraitHandBand(height) + PORTRAIT_CONTROLS + PORTRAIT_STRIP };
+    return {
+      top: PORTRAIT_TOP_BAR,
+      bottom: portraitHandBand(height) + PORTRAIT_CONTROLS + PORTRAIT_STRIP,
+    };
   return { top: 0, bottom: handReserve(handCardWidth(width, height)) };
 }
 

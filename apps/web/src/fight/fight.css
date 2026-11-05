@@ -4196,3 +4196,92 @@ button.totem:disabled {
 .fhand__slot::before {
   transition: translate 0.12s var(--ease-out);
 }
+
+.fight--portrait:has(.fight__runTimer) .fight__title {
+  position: static;
+  left: auto;
+  top: auto;
+  translate: none;
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.08rem;
+}
+.fight--portrait:has(.fight__runTimer) .fight__title b {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+.fight--portrait:has(.fight__runTimer) .fight__title > span {
+  font-size: 0.68rem;
+}
+.fight--portrait .fight__runTimer {
+  padding-right: 0.15rem;
+}
+
+/* Separate touch targets for crowded friendly boards. */
+.fight__friendlyTargets {
+  position: absolute;
+  z-index: 65;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: calc(var(--strip-bottom) + 3.1rem);
+  padding: 0.45rem;
+  border: 1px solid var(--c-gold);
+  border-radius: 0.7rem;
+  background: rgb(8 12 28 / 0.96);
+  pointer-events: auto;
+}
+.fight__friendlyTargets > strong {
+  display: block;
+  color: var(--c-gold-light);
+  font-size: 0.72rem;
+  margin-bottom: 0.3rem;
+}
+.fight__friendlyTargets > div {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: 0.2rem;
+}
+.fight__friendlyTarget {
+  display: grid;
+  gap: 0.2rem;
+  flex: 0 0 100px;
+  min-height: 52px;
+  padding: 0.4rem;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 0.45rem;
+  background: #152343;
+  color: var(--c-ivory);
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.fight__friendlyTarget b {
+  font-size: 0.76rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fight__friendlyTarget small {
+  color: var(--c-gold-light);
+}
+.fight__friendlyTarget span {
+  font-size: 0.72rem;
+}
+.fight__friendlyTarget:focus-visible,
+.fight__friendlyTarget:hover {
+  border-color: var(--c-gold-light);
+  background: #243b64;
+}
+.fight--compact .fight__friendlyTargets {
+  top: 4rem;
+  bottom: auto;
+  left: 3rem;
+  right: 3rem;
+}

@@ -30,7 +30,7 @@ export function shuffledWardens(rng: RngState): string[] {
 }
 export function gauntletMap(stage = 1, order: readonly string[] = WARDEN_SEQUENCE): StageMap {
   const bosses = [...order, 'vorthax'];
-  return {
+  return withGauntletShrines({
     stage,
     realm: 'rift',
     gauntlet: true,
@@ -42,7 +42,31 @@ export function gauntletMap(stage = 1, order: readonly string[] = WARDEN_SEQUENC
       enemyId,
       next: i < bosses.length - 1 ? [`s${stage}-gauntlet-${i + 2}`] : [],
     })),
-  };
+  });
+}
+
+/** Keep fight IDs/order stable so existing encounter seeds and saved battles remain valid. */
+export function withGauntletShrines(map: StageMap): StageMap {
+  if (!map.gauntlet || map.nodes.some((n) => n.refinement)) return map;
+  const fights = map.nodes.filter((n) => n.kind === 'warden');
+  if (fights.length !== 12 || fights.at(-1)?.enemyId !== 'vorthax') return map;
+  const nodes: MapNode[] = [];
+  for (const [i, fight] of fights.entries()) {
+    nodes.push({ ...fight, next: [] });
+    if ((i + 1) % 2 === 0 && i < fights.length - 1)
+      nodes.push({
+        id: `${fight.id}-refinement`,
+        floor: 0,
+        kind: 'shrine',
+        refinement: true,
+        next: [],
+      });
+  }
+  for (const [i, node] of nodes.entries()) {
+    node.floor = i + 1;
+    node.next = nodes[i + 1] ? [nodes[i + 1]!.id] : [];
+  }
+  return { ...map, floors: nodes.length, nodes };
 }
 /** Which enemies a tier can bring: the trios from Tier III, the far realms from Tier VI. (Its difficulty is the tier table's.) */
 export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 : 1);

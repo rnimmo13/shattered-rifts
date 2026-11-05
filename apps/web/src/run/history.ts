@@ -26,6 +26,7 @@ export interface RunRecord {
   stage: number;
   end: RunEnd;
   won?: boolean;
+  elapsedMs?: number;
   deck: string[];
   boons: string[];
   ascendancy?: string;
@@ -102,6 +103,7 @@ export function recordOf(
     stage: run.stage,
     end,
     ...(run.won ? { won: true } : {}),
+    ...(run.elapsedMs !== undefined ? { elapsedMs: run.elapsedMs } : {}),
     deck: [...run.deck],
     boons: [...run.boons, ...(run.heart ? [run.heart] : [])],
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),

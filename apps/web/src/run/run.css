@@ -2719,3 +2719,24 @@ button.mapnode--warden {
     transform: none;
   }
 }
+
+/* Run clock stays in the header, outside the horizontally scrolling stats. */
+.runbar {
+  position: sticky;
+  top: 0.35rem;
+  z-index: 40;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: 'who stats clock actions';
+}
+@media (max-width: 78rem) {
+  .runbar {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'who clock actions' 'stats stats stats';
+  }
+}
+@media (max-width: 40rem) {
+  .runbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'who clock' 'actions actions' 'stats stats';
+  }
+}

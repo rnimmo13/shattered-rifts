@@ -99,7 +99,7 @@ async function syncList(
 }
 
 /** The run history and the Arena match history, brought together with the player's other devices (DECISIONS #318). */
-export async function syncLists(): Promise<boolean> {
+export async function syncLists(historyOnly = false): Promise<boolean> {
   if (localOnly()) return false;
   await whoAmI();
   let changed = false;
@@ -123,6 +123,7 @@ export async function syncLists(): Promise<boolean> {
     setHistoryRemoved([...gone]);
     changed ||= JSON.stringify(runHistory().map((r) => [r.id, r.at])) !== runsBefore;
   }
+  if (historyOnly) return changed;
   const matchesBefore = matchHistory().length;
   const matches = await syncList('matches', matchHistory() as unknown as ListItem[], []);
   if (matches) {

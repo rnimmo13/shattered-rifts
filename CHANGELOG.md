@@ -1,3 +1,12 @@
+## 0.207.0 / rules84 — release approved: finale refinement, run timing and mobile targeting
+
+- Per-run elapsedMs timer counts idle time in every screen of that run, pauses outside, freezes on completion/collapse and survives reload. Visible in sticky map/event header and battle top bar. Checkpoint every10seconds, on actions/leave and before update/Quit. Old runs track from update only; no leaderboard timing claim.
+- Mobile/compact models reduced: portrait hero0.62→0.54, other0.68→0.60; compact hero0.80→0.72, other0.84→0.76. Health labels unchanged. Friendly card/potion/release choices get separate100px-wide, minimum52px-high buttons with names/HP, using the existing legal target/action logic. No combat/card stat changes.
+- Campaign: add five free, one-choice upgrade/remove-only Refinement Shrines after Tier XII fights2/4/6/8/10. Wounds eligible; existing8-card minimum. No rest, healing, wagers or post-final-boss shrine. Preserve twelve encounters, saved boss order, entered fight IDs/seeds/logs, HP/rewards and passed progress; idempotently insert only still-relevant opportunities in existing gauntlets.
+- Campaign board sorts by Tier > Status (Completed, Live, Dead, Abandoned) > Shards > earlier arrival, including selection among grouped Vault/account rows. Legacy stage counts no longer override those displayed keys. Restore identity and cloud victory history before completion repair. Real retained Golemancer victory evidence archived privately; no tier-only inference or new balance grade.
+- Ready updates require save-and-refresh/restart through a non-dismissible native modal outside a battle; gameplay gate rechecks after claim. Preserve in-battle completion and failed-save/restart guards. Web polling60→10seconds; desktop readiness polling stays10seconds.
+- Exact scope, migration, real-evidence limitations and balance history: [finale ledger](docs/FINALE_REFINEMENT_2026-11-05.md), [0.207 assessment](docs/balance-history/0.207.0.md). Web/desktop0.207.0; no simulations. Robert approved committing, pushing and deploying this complete change set (decision637).
+
 # Changelog
 
 ## 0.206.0 / rules84 — release approved

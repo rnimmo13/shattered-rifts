@@ -179,7 +179,7 @@ describe('stage maps', () => {
         expect(realmOfRun(next)).toBe('rift');
         if (t === 12) expect(next.map.nodes.at(-1)?.enemyId).toBe('vorthax');
       }
-      expect(next.map.floors).toBe(t === 12 ? 12 : floorsOf(t) + 1);
+      expect(next.map.floors).toBe(t === 12 ? 17 : floorsOf(t) + 1);
       expect(parseRun(serializeRun(next))?.map.floors).toBe(next.map.floors);
       run = { ...next, phase: 'loopCleared', context: null };
     }

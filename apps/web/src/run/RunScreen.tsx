@@ -119,6 +119,9 @@ import {
 import { soonSyncRuns } from './runCloud';
 import '../play/play.css';
 import './run.css';
+import { useRunClock } from './useRunClock';
+import { RunTimer } from './RunTimer';
+import type { RunClock } from './runClock';
 
 const newSeed = (): string =>
   `${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
@@ -172,6 +175,16 @@ export default function RunScreen() {
     runRef.current = r;
     setRunState(r);
   }, []);
+  const persistTime = useCallback((seed: string, elapsedMs: number) => {
+    const current = runRef.current;
+    const slot = slotRef.current;
+    if (!current || current.seed !== seed || !slot || elapsedMs <= (current.elapsedMs ?? 0)) return;
+    const next = { ...current, elapsedMs };
+    runRef.current = next;
+    // Synchronous local checkpoint also works during route unmount/page hide.
+    if (saveRunSlot(slot, next)) soonSyncRuns();
+  }, []);
+  const runClock = useRunClock(run, persistTime);
   /** reels spun for an event's chances, played before the result is shown (the result waits in `then`) */
   const [coin, setCoin] = useState<{ flips: Flip[]; then: string | null } | null>(null);
   const nextGained = useCallback(() => setGained((g) => g.slice(1)), []);
@@ -280,7 +293,7 @@ export default function RunScreen() {
       const cur = runRef.current;
       if (!cur) return;
       try {
-        const next = fn(cur);
+        const next = fn({ ...cur, elapsedMs: runClock.elapsed() });
         runRef.current = next; // so two quick clicks never both act on the old state
         if (shouldAutoSave(cur, next)) saveToArena(next);
         // a run that has got further is told to the leaderboards (best effort; never in the way)
@@ -337,7 +350,7 @@ export default function RunScreen() {
         say(e instanceof RunError ? e.message : 'Something went wrong with that choice.');
       }
     },
-    [setRun, saveToArena],
+    [setRun, saveToArena, runClock],
   );
 
   const reportResult = useCallback(
@@ -502,6 +515,7 @@ export default function RunScreen() {
       const fightView = (link?: PvpLink) => (
         <FightView
           key={plan.seed}
+          runTimer={<RunTimer clock={runClock} />}
           {...(stakes ? { stakes } : {})}
           {...(!plan.ghost && encounter(plan.encounterId).rule
             ? { rule: encounter(plan.encounterId).rule }
@@ -716,6 +730,7 @@ export default function RunScreen() {
     >
       <RunBar
         run={run}
+        clock={runClock}
         onDeck={() => setShowDeck(true)}
         arenaLabel={arena?.seed === run.seed ? arena.label : savedArenaLabel(run)}
         arenaProblem={arenaProblem(run)}
@@ -893,6 +908,7 @@ function floorLabel(run: RunState): string {
 
 function RunBar(props: {
   run: RunState;
+  clock: RunClock;
   onDeck: () => void;
   /** where the deck stands in the Arena (null: nothing saved yet) */
   arenaLabel: string | null;
@@ -904,6 +920,7 @@ function RunBar(props: {
   const { run } = props;
   return (
     <header className="runbar">
+      <RunTimer clock={props.clock} />
       <div className="runbar__who">
         <b
           {...(run.ascendancy

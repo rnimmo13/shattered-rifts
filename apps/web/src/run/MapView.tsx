@@ -147,6 +147,7 @@ function GhostGlyph() {
 }
 
 function labelOf(n: MapNode): string {
+  if (n.refinement) return 'Refinement Shrine';
   if (n.kind === 'merchant' && n.crossed) return 'Stranger';
   if (n.kind === 'warden' && hasGhost(n)) return 'Ghost Warden';
   if (n.kind === 'echo' && !hasGhost(n)) return KIND_LABEL.duel;

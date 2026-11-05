@@ -45,7 +45,7 @@ const HOW: Record<BoardKind | 'ranks', string> = {
   ranks:
     'Every Arena match against another player moves your rating: up for a win, down for a loss, further when the other player is rated higher. Bronze, Silver, Gold and Platinum have three divisions each; Diamond is the top. A season is a month, and a new season pulls every rating halfway back to the start. Matches against ghosts never count. The board lists players with at least 3 Arena matches this season.',
   pvp: 'Arena wins against other players this week or this month. When a week or month closes, its top 100 each win a trophy: silver for a week, gold for a month (see your Trophy case). Weeks start on Monday and months on the 1st, at midnight Pacific time.',
-  runs: 'Every run that made progress this week or month, at how far it has got in all, one place per player and Riftwalker. Equal progress is ranked by unspent shards held by that run, then who reached it first. Spending lowers the total; historical balances not yet reported show —. A run counts from its first fight; you need a username to be on it.',
+  runs: 'Every run that made progress this week or month, at how far it has got in all, one place per player and Riftwalker. Runs are ranked by Tier, then status (Completed, Live, Dead, Abandoned), then unspent shards held by that run, then who reached that point first. Spending lowers the total; historical balances not yet reported show —. A run counts from its first fight; you need a username to be on it.',
   ghosts:
     'Ghosts are decks that have played in the Arena, piloted by the computer. The first table ranks the ghosts by their wins, the second the people who beat them. Ghost matches never count toward Arena ranks or the Arena board.',
 };

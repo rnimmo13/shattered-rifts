@@ -45,6 +45,59 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.207.0',
+    date: '2026-11-05',
+    title: 'One last refinement',
+    summary: 'Tune your finale deck, track each run, and select mobile companions more easily.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Per-run timer',
+        text: 'Each Campaign run now has its own timer in the map/event header and battle top bar. It counts idle time and all time spent inside that run, including battles, events, shops and shrines; leaving pauses it and completion freezes it. Time is saved per run across reloads. Existing runs begin tracking from this update; earlier play time is not reconstructed.',
+      },
+      {
+        kind: 'changed',
+        title: 'Mobile battles and companion targets',
+        text: 'Character models are slightly smaller on upright and compact screens while health labels retain their size. Cards and potions that need a friendly target now show separate, horizontally scrollable target buttons on mobile, with companion names and HP. Multi-companion release choices use the same buttons. Touch targets remain at least 52px high.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Completed Campaign standings',
+        text: 'Campaign rankings now use Tier, then status (Completed → Live → Dead → Abandoned), then unspent shards, then earlier arrival. The same order selects each player’s best run per class, including entries made under an older Vault identity. The game restores your username and cloud history before sending completion repairs. Reaching Tier XII alone still does not count as victory.',
+      },
+      {
+        kind: 'changed',
+        title: 'Required game updates',
+        text: 'A ready website update or downloaded desktop patch now requires Save and refresh or Save and restart before continuing. The prompt cannot be dismissed. An open battle may finish first; afterward further gameplay is blocked until the update is applied. Saves must be confirmed before restarting; a failed save keeps the game open. Website checks now run every 10 seconds instead of every 60 seconds.',
+      },
+      {
+        kind: 'balance',
+        title: 'Tier XII Refinement Shrines',
+        text: 'Campaign only. After fights 2, 4, 6, 8 and 10, choose one free card upgrade or one free removal, or walk away. Wounds and other removable status cards can be removed, subject to the existing 8-card minimum. These shrines offer no Rest, healing, Max HP, wagers, engraving or reel. The twelve fights, shuffled order and normal Warden rewards remain. Existing unfinished twelve-tier gauntlets gain remaining shrines without repeating passed stops or restarting an entered fight; completed runs are unchanged.',
+        changes: [
+          {
+            label: 'Deck-tuning shrines in Tier XII',
+            before: '0',
+            after: '5',
+            direction: 'buff',
+          },
+          {
+            label: 'Choices per new shrine',
+            before: 'None',
+            after: '1 upgrade or removal',
+            direction: 'buff',
+          },
+          {
+            label: 'New-shrine cost',
+            before: 'Not available',
+            after: 'Free',
+            direction: 'buff',
+          },
+        ],
+      },
+    ],
+  },
+  {
     version: '0.206.0',
     date: '2026-11-05',
     title: 'Choose your Warden’s Heart',

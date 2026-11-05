@@ -274,7 +274,13 @@ describe('sanctifying the deck', () => {
       deck: [...RIFTWALKERS.knight.starter, 'hi~strike'],
     };
     const up = takeShrine(
-      { ...shrine, map: { ...shrine.map } },
+      {
+        ...shrine,
+        map: {
+          ...shrine.map,
+          nodes: [...shrine.map.nodes, { id: 'x', kind: 'shrine', floor: 1, next: [] }],
+        },
+      },
       { kind: 'upgrade', card: 'hi~strike' },
     );
     expect(up.deck).toContain('hi~strike+');

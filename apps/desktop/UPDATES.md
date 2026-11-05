@@ -17,10 +17,10 @@ Browser local storage remains a separate profile; this does not introduce automa
 - Restart to update flushes the renderer save and releases the play claim. Main-process input is
   frozen while a final snapshot is committed. A failed save cancels installation and restores input.
   A successful snapshot permits closing before the updater starts the silent NSIS installer/relaunch.
-- A global Save and restart prompt appears once a patch is ready, only outside mounted fight screens
-  (including result/series screens). Later dismisses that version's prompt for this app session;
-  Settings still offers the update. Explicit restart is also guarded during fights.
-- The website polls an uncached version.json every minute and when focused. Save and refresh uses
+- A required Save and restart dialog appears once a patch is downloaded, outside mounted fight screens
+  (including result/series screens). It cannot be dismissed; further gameplay requires the update.
+  Explicit restart remains guarded during fights and failed saves keep the app open.
+- The website polls an uncached version.json every 10 seconds and when focused. Save and refresh uses
   the same battle guard and releases the shared play claim after saving. No automatic reload occurs
   on deployment or missing stale chunks. Browser and mobile web use the same prompt.
 - Offline errors are recoverable

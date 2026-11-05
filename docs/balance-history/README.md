@@ -1,5 +1,7 @@
 # Balance history
 
+Latest local assessment: [0.207 finale refinement](0.207.0.md), [CSV](0.207.0.csv), [JSON](0.207.0.json), [ledger](../FINALE_REFINEMENT_2026-11-05.md). All30 Ascendancies/class starts/mixed builds remain unmeasured for the new five Tier XII upgrade/remove shrines. One retained client-observed victory supports completion correction only. No simulations. Robert approved the complete0.207 release after final validation (decision637).
+
 Latest local assessment: [0.206.0 Warden Hearts](0.206.0.md), [CSV](0.206.0.csv), [JSON](0.206.0.json), [exact ledger](../WARDEN_HEARTS_2026-11-05.md). All30 Ascendancies, class starts and mixed builds retain unmeasured status. Campaign-only passive Hearts; no simulations, Arena balance changes or release approval. Earlier snapshots remain intact.
 
 Release0.203.0/rules83 is approved for commit, push and deployment (decision #623). The final [campaign review1](0.203.0-campaign-review-1.md) supersedes initial local0.203 route assumptions. Assessment-time local labels are preserved; approval and deterministic checks add no measured matches or balance simulations.

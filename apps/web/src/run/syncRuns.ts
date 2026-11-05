@@ -8,11 +8,16 @@ import { getName, hasUsername } from '../pvp/config';
 import { stagesCleared } from '../pvp/vault';
 import { listRuns } from './saves';
 import { runHistory } from './history';
+import { syncLists } from './runCloud';
+import { restoreUsername } from '../pvp/boardApi';
 
 /** Resolves once the server has answered (or a few seconds have passed): the board can be read after that. */
 export async function syncSavedRuns(): Promise<void> {
-  if (!hasUsername()) return;
   try {
+    // Account identity and cloud history may not be available during the first startup render.
+    await restoreUsername();
+    if (!hasUsername()) return;
+    await syncLists(true);
     const sent = listRuns().flatMap(({ run }) => {
       const done = stagesCleared(run);
       // (every run from its first finished stop: one that has not cleared a stage yet is on the board too)
