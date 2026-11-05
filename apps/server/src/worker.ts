@@ -26,6 +26,7 @@ export { Vault } from './vault';
 export { Identity } from './identity';
 export { Leaderboard } from './board';
 import { balanceAdmin } from './balanceAdmin';
+import { sharedReports } from './sharedReports';
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), {
@@ -211,6 +212,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         what !== 'claim' &&
         what !== 'view' &&
         what !== 'trophies' &&
+        what !== 'replays' &&
         what !== 'ghostboss')
     )
       return json({ ok: false, error: 'not found' }, 404);
@@ -299,6 +301,18 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
       );
       return json(await res.json(), res.status);
     }
+    if (what === 'replays') {
+      const res = await stub.fetch(
+        new Request('https://board.invalid/replay/recent', {
+          method: 'POST',
+          body: JSON.stringify({ player: id }),
+        }),
+      );
+      return new Response(await res.text(), {
+        status: res.status,
+        headers: { ...CORS_POST, 'content-type': 'application/json', 'cache-control': 'no-store' },
+      });
+    }
     const res = await stub.fetch(
       new Request(
         what === 'claim' ? 'https://board.invalid/name/claim' : 'https://board.invalid/run',
@@ -370,6 +384,9 @@ async function playSocketRequest(
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (url.pathname === '/pvp/reports') return sharedReports(request, env);
+    const reportId = /^\/pvp\/reports\/([a-f0-9]{32})$/.exec(url.pathname)?.[1];
+    if (reportId) return sharedReports(request, env, reportId);
     if (url.pathname === '/admin/balance') return balanceAdmin(request, env);
     if (url.pathname === '/pvp/health') return json({ ok: true, service: 'shattered-rifts-pvp' });
 

@@ -5,14 +5,19 @@
 import type { Action } from '@sr/combat';
 import { checkEntry } from './deck';
 import type { EndReason, Entry, Seat } from './protocol';
+import { RULES_VERSION } from './protocol';
+import { isArenaEvidence, type ArenaEvidence } from './arenaEvidence';
 
 /** How long a replay is kept, days, and how many at most (the oldest go first). */
 export const REPLAY_KEEP_DAYS = 30;
 export const REPLAY_MAX = 20_000;
 /** A game shorter than this many moves is not kept (nothing happened in it). */
 export const REPLAY_MIN_MOVES = 2;
+export const RECENT_REPLAYS = 10;
 
 export interface StoredReplay {
+  bot?: string;
+  evidence?: ArenaEvidence;
   id: string;
   at: number;
   /** the RULES_VERSION it was played under */
@@ -38,6 +43,38 @@ export const REPLAY_ID = /^[A-Za-z0-9]{10}$/;
 const REASONS: readonly EndReason[] = ['win', 'resign', 'timeout', 'disconnect', 'time', 'passes'];
 const ACTIONS = new Set(['play', 'potion', 'endTurn', 'pick']);
 
+/** Old deck IDs may have been retired. Historical records remain inspectable, never playable. */
+function replayEntry(raw: unknown, rules: number): Entry | null {
+  const checked = checkEntry(raw);
+  if (rules === RULES_VERSION) return checked.ok ? checked.entry : null;
+  if (!raw || typeof raw !== 'object') return null;
+  const e = raw as Record<string, unknown>;
+  const strings = (x: unknown, max: number): x is string[] =>
+    Array.isArray(x) && x.length <= max && x.every((s) => typeof s === 'string' && s.length <= 120);
+  if (
+    typeof e['hero'] !== 'string' ||
+    e['hero'].length > 80 ||
+    typeof e['name'] !== 'string' ||
+    e['name'].length > 80 ||
+    !strings(e['deck'], 250) ||
+    !strings(e['boons'], 100) ||
+    !Number.isSafeInteger(e['tier']) ||
+    Number(e['tier']) < 1 ||
+    Number(e['tier']) > 20
+  )
+    return null;
+  return {
+    hero: e['hero'],
+    name: e['name'],
+    deck: [...e['deck']],
+    boons: [...e['boons']],
+    tier: Number(e['tier']),
+    ...(typeof e['ascendancy'] === 'string' && e['ascendancy'].length <= 120
+      ? { ascendancy: e['ascendancy'] }
+      : {}),
+  };
+}
+
 /** A replay as a browser receives it, checked (null if anything in it is not what a replay holds). */
 export function cleanReplay(raw: unknown): StoredReplay | null {
   if (typeof raw !== 'object' || raw === null) return null;
@@ -49,12 +86,22 @@ export function cleanReplay(raw: unknown): StoredReplay | null {
   const winner = r['winner'];
   const reason = r['reason'];
   if (typeof id !== 'string' || !REPLAY_ID.test(id)) return null;
-  if (typeof at !== 'number' || typeof rules !== 'number' || typeof seed !== 'string') return null;
+  if (
+    typeof at !== 'number' ||
+    !Number.isFinite(at) ||
+    at < 0 ||
+    typeof rules !== 'number' ||
+    !Number.isSafeInteger(rules) ||
+    rules < 0 ||
+    typeof seed !== 'string' ||
+    seed.length > 500
+  )
+    return null;
   if (winner !== 'a' && winner !== 'b' && winner !== 'draw') return null;
   if (typeof reason !== 'string' || !REASONS.includes(reason as EndReason)) return null;
-  const a = checkEntry(r['a']);
-  const b = checkEntry(r['b']);
-  if (!a.ok || !b.ok) return null;
+  const a = replayEntry(r['a'], rules);
+  const b = replayEntry(r['b'], rules);
+  if (!a || !b) return null;
   const log = r['log'];
   if (!Array.isArray(log)) return null;
   const moves: StoredReplay['log'] = [];
@@ -75,18 +122,22 @@ export function cleanReplay(raw: unknown): StoredReplay | null {
   const ghost = r['ghost'];
   const game = r['game'];
   // (the server's own words for each deck's name and progress are kept: checkEntry cleans them as it would any deck)
-  const { who: _wa, ...ea } = a.entry;
-  const { who: _wb, ...eb } = b.entry;
+  const { who: _wa, run: _ra, ...ea } = a;
+  const { who: _wb, run: _rb, ...eb } = b;
   void _wa;
   void _wb;
+  void _ra;
+  void _rb;
   return {
     id,
     at,
     rules,
     seed,
+    ...(typeof r['bot'] === 'string' && r['bot'].length <= 80 ? { bot: r['bot'] } : {}),
     a: ea,
     b: eb,
     log: moves,
+    ...(isArenaEvidence(r['evidence']) ? { evidence: r['evidence'] } : {}),
     winner,
     reason: reason as EndReason,
     ...(ghost === 'a' || ghost === 'b' ? { ghost } : {}),

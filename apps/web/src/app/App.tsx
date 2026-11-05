@@ -161,6 +161,12 @@ function Screens({ hash }: { hash: string }) {
     );
   }
   // a shared Arena replay, or a match to watch as it is played
+  if (hash === '#/replay')
+    return (
+      <Suspense fallback={<div className="loading">Opening match record…</div>}>
+        <ReplayScreen />
+      </Suspense>
+    );
   const replay = /^#\/replay\/([A-Za-z0-9]{10})$/.exec(hash)?.[1];
   if (replay) {
     return (

@@ -1,4 +1,5 @@
 import type { Entry, Seat, EndReason } from './protocol';
+import { isArenaEvidence, type ArenaEvidence } from './arenaEvidence';
 
 export interface ArenaDeckSnapshot {
   hero: string;
@@ -11,6 +12,7 @@ export const arenaDeckSnapshot = (entry: Entry): ArenaDeckSnapshot => ({
   cards: [...entry.deck].sort(),
 });
 export interface ArenaBalanceGame {
+  evidence?: ArenaEvidence;
   schema: 1;
   id: string;
   at: number;
@@ -63,6 +65,7 @@ export function isArenaBalanceGame(raw: unknown): raw is ArenaBalanceGame {
     n(g.actions) &&
     pair(g.turns) &&
     pair(g.heroDamage) &&
-    pair(g.peakHeroDamage)
+    pair(g.peakHeroDamage) &&
+    (g.evidence === undefined || isArenaEvidence(g.evidence))
   );
 }

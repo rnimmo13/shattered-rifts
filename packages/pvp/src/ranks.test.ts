@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
 import {
   RATING_START,
+  RULES_VERSION,
   carryOver,
   cleanRank,
   cleanReplay,
@@ -85,7 +86,7 @@ describe('replays', () => {
   const good = {
     id: 'AbCdEfGh23',
     at: 1,
-    rules: 2,
+    rules: RULES_VERSION,
     seed: 'x',
     a: entry,
     b: { ...entry, name: 'Bo' },

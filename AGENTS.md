@@ -12,6 +12,8 @@ Read `CLAUDE.md` before working on the game.
 
 ## Balance history
 
+- For future balance reviews, inspect available real-player Arena exports/shared match JSON and private Campaign snapshots before relying on estimated grades. Collection, commands and retention are documented in `docs/ARENA_TESTING_2026-11-05.md`. If no real observations are available, say so; synthetic fixtures and bot games are not player data. Preserve raw exports in separate testing-phase/date folders. Cite the games/positions behind proposed fixes, distinguish inferred strategy from optional player intent notes, and treat Campaign snapshots as client-observed save positions rather than independent matches or complete reward histories.
+
 - Every future balance change must append an assessment under `docs/balance-history/`, following its README. Preserve previous snapshots and explain changed grades or corrected assumptions in the new version.
 - Track all Ascendancies and representative freely mixed builds in both modes, campaign progression bands, fight opening/extended strength, setup, recovery, rare reliance and confidence.
 - Distinguish estimated ratings, acceptance targets and measured playtests. Never present deterministic fixture checks as measured A-tier parity. Do not run balance simulations unless Robert requests them.

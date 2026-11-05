@@ -44,6 +44,34 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.201.0',
+    date: '2026-11-05',
+    title: 'Match records for real playtesting',
+    summary: 'Keep, share and save Arena games, with more evidence for balance review.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Share performance reports with a link',
+        text: 'After stopping a performance recording, choose Share report in Settings. The report is stored online and you get a short link to send through Discord or chat. Anyone with the link can read it without a login. Reports are kept for up to 90 days, subject to storage availability. Uploading is manual; raw-text copying remains optional. Replay share links also work when copied from the desktop app.',
+      },
+      {
+        kind: 'new',
+        title: 'Your last 10 Arena games',
+        text: 'History now fetches your last 10 recorded Arena games from the server, including games on your other devices. Those games stay available while they remain in your latest 10. Older shared replays can expire after 30 days. Anyone with a replay link can see both decks and hands.',
+      },
+      {
+        kind: 'new',
+        title: 'Save and reopen match records',
+        text: 'Open a replay from History to watch it, add an optional note about your plan, or save a JSON match record to share with Robert. Open downloaded records from History without uploading the file. Records include display names, exact decks, moves and captured combat evidence. Playback requires matching rules; older records can still be inspected and saved.',
+      },
+      {
+        kind: 'changed',
+        title: 'Evidence for balance review',
+        text: 'Completed online Arena games now capture move events and resources, with hands and board positions at the opening, turn boundaries and lethal moves. Capture limits are marked when later positions are missing. Online Campaign saves contribute private exact-deck, Boon and progression snapshots for developer review. Offline runs are not uploaded. No card or combat balance changes.',
+      },
+    ],
+  },
+  {
     version: '0.200.0',
     date: '2026-11-05',
     title: 'A shared Arena baseline',

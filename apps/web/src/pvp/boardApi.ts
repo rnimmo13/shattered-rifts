@@ -119,7 +119,7 @@ export async function claimName(name: string): Promise<ClaimResult> {
 }
 
 async function post(
-  what: 'id' | 'run' | 'view' | 'ghostboss' | 'trophies',
+  what: 'id' | 'run' | 'view' | 'ghostboss' | 'trophies' | 'replays',
   extra: Record<string, unknown>,
 ): Promise<Record<string, unknown> | null> {
   try {
@@ -129,6 +129,7 @@ async function post(
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(key === null ? extra : { code: key, ...extra }),
+      ...(what === 'replays' ? { signal: AbortSignal.timeout(8000) } : {}),
     });
     const data = (await res.json()) as Record<string, unknown>;
     return data['ok'] === true ? data : null;
@@ -390,4 +391,18 @@ export async function fetchReplay(id: string): Promise<StoredReplay | 'gone' | n
   } catch {
     return null;
   }
+}
+
+/** Account/Vault scoped: the server chooses the owner, never an arbitrary player ID. */
+export async function fetchRecentReplays(): Promise<
+  (StoredReplay & { viewerSeat: 'a' | 'b' })[] | null
+> {
+  const d = await post('replays', {});
+  if (!d || !Array.isArray(d['replays'])) return null;
+  return d['replays'].flatMap((r: unknown) => {
+    const replay = cleanReplay(r);
+    const viewerSeat =
+      (r as { viewerSeat?: unknown } | null)?.viewerSeat === 'b' ? ('b' as const) : ('a' as const);
+    return replay ? [{ ...replay, viewerSeat }] : [];
+  });
 }

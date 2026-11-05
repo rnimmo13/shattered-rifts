@@ -95,4 +95,20 @@ describe('shared-account play gates', () => {
     expect(access.playToken()).toBe('');
     expect(fetcher).not.toHaveBeenCalled();
   });
+  it('allows explicitly shared diagnostics from offline mode while still blocking online progress', async () => {
+    location.protocol = 'srgame:';
+    location.hostname = 'local';
+    location.href = 'srgame://local/index.html';
+    fetcher.mockResolvedValue(Response.json({ ok: true }));
+    access.installPlayAccess();
+    await window.fetch('https://shatteredrifts.app/pvp/reports', { method: 'POST', body: '{}' });
+    expect(fetcher).toHaveBeenCalledWith('https://shatteredrifts.app/pvp/reports', {
+      method: 'POST',
+      body: '{}',
+    });
+    await expect(
+      window.fetch('https://shatteredrifts.app/pvp/vault/runsave', { method: 'POST' }),
+    ).rejects.toThrow('Local-only mode');
+    expect(access.playToken()).toBe('');
+  });
 });

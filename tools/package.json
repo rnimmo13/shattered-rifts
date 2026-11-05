@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Dev tools: CLI fight, balance sim, site deploy.",
   "scripts": {
+    "balance:campaign": "tsx src/campaignReport.ts",
     "balance:arena": "tsx src/arenaReport.ts",
     "balance:report": "tsx src/balanceReport.ts",
     "balance:history": "tsx src/balanceHistory.ts",

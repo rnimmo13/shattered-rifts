@@ -3,10 +3,12 @@
 export * from './protocol';
 export * from './balanceReport';
 export * from './arenaBalance';
+export * from './arenaEvidence';
 export * from './trophies';
 export * from './ranks';
 export * from './seasons';
 export * from './replays';
+export * from './sharedReport';
 export * from './cosmetics';
 export {
   checkEntry,

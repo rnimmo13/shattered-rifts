@@ -56,8 +56,8 @@ const win=new BrowserWindow({show:false,width:1360,height:960,webPreferences:{sa
 const js=s=>win.webContents.executeJavaScript(s),pause=ms=>new Promise(r=>setTimeout(r,ms));
 const wait=async s=>{for(let i=0;i<200;i++){if(await js(s))return;await pause(100)}throw Error('Timed out: '+s)};
 const snap=async n=>{await pause(300);fs.writeFileSync(${JSON.stringify(work)}+'/'+n+'.png',(await win.webContents.capturePage()).toPNG())};
-await win.loadURL(${JSON.stringify(base + '/#/patch-notes')});await wait('!!document.querySelector(".patch__card")');
-assert.equal(await js('document.querySelector("#patch-title").textContent'),'A shared Arena baseline');
+await win.loadURL(${JSON.stringify(base + '/#/patch-notes')});await wait('!!document.querySelector("#patch-title")');
+assert.equal(await js('document.querySelector("#patch-title").textContent'),'Match records for real playtesting');
 for(const [w,h,name] of [[1360,960,'desktop'],[390,844,'mobile'],[320,740,'small-mobile']]){
 win.setSize(w,h);await pause(150);assert.equal(await js('document.documentElement.scrollWidth<=innerWidth'),true,name);await snap('patch-current-'+name);
 await js('[...document.querySelectorAll(".patch__ver")].find(b=>b.textContent.includes("0.199.0")).click()');

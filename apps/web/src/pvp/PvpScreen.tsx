@@ -323,8 +323,9 @@ export default function PvpScreen() {
           three consecutive passes without playing a card by both players end in a draw.
         </p>
         <p className="pvp__balanceNotice">
-          Completed online Arena games record both deck lists and match results for private
-          developer balance analysis. Human and ghost results are reviewed separately.
+          Completed online Arena games record both decks, moves and combat positions for private
+          developer balance analysis. Your last 10 games are available in History; anyone with a
+          replay link can see both decks and hands. Human and ghost results are reviewed separately.
         </p>
         <RankPanel rank={ranked} place={ranked?.place ?? null} />
       </header>

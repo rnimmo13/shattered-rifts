@@ -92,6 +92,26 @@ const rows = games.flatMap((g) =>
 const names = Object.fromEntries(Object.values(COMBAT_DB.cards).map((c) => [c.id, c.name]));
 mkdirSync(out, { recursive: true });
 writeFileSync(resolve(out, 'games.json'), JSON.stringify({ schema: 1, games }, null, 2));
+writeFileSync(
+  resolve(out, 'turn-evidence.json'),
+  JSON.stringify(
+    {
+      schema: 1,
+      games: games.map((g) => ({
+        id: g.id,
+        rules: g.rules,
+        bot: g.bot,
+        source: g.source,
+        ghostSeat: g.ghostSeat,
+        a: g.a,
+        b: g.b,
+        evidence: g.evidence ?? null,
+      })),
+    },
+    null,
+    2,
+  ),
+);
 writeFileSync(resolve(out, 'deck-observations.json'), JSON.stringify(rows, null, 2));
 const csv = [
   [
@@ -143,7 +163,7 @@ writeFileSync(
   `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shattered Rifts — Arena balance</title>
 <style>body{font:16px system-ui;background:#121923;color:#ecedf2;max-width:1200px;margin:32px auto;padding:0 18px}input,select{font:inherit;background:#263446;color:inherit;padding:10px;border:1px solid #64748b;border-radius:6px;max-width:100%}.filters{display:flex;gap:12px;flex-wrap:wrap}details{background:#1b2839;padding:16px;margin:12px 0;border-radius:8px}summary{cursor:pointer;font-weight:700}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:8px;text-align:left;border-bottom:1px solid #41516a}.scroll{overflow:auto}small,p{color:#c4cddd}button{font:inherit}li{margin:5px 0}</style>
 <style>*{box-sizing:border-box}.filters>label{display:grid;gap:4px;flex:1 1 240px;min-width:0;max-width:100%}.filters input,.filters select{width:100%;min-width:0}summary,p{overflow-wrap:anywhere}</style>
-<h1>Arena balance review</h1><p>Exact decks from completed server games. No player names or account credentials. Filters keep rules, HP, AI version and opponent type separate. One game has two deck observations.</p>
+<h1>Arena balance review</h1><p>Exact decks from completed server games. No player names or account credentials. Filters keep rules, HP, AI version and opponent type separate. One game has two deck observations.</p><p><a href="turn-evidence.json">Download turn evidence</a>: hands, plays, resources, board positions and events where captured. Missing evidence is unknown, not zero. Bounded captures explicitly mark omitted later positions.</p>
 <div class="filters"><label>Search <input id="q" placeholder="Class, Ascendancy or card"></label><label>Field <select id="field"></select></label><label>Results <select id="ends"><option value="normal">Combat wins and pass draws</option><option value="all">Include resignations, disconnects and time limits</option></select></label></div>
 <p id="count"></p><p>Damage is attributed opposing-hero HP loss, not theoretical output. It excludes blocked damage, self-payment and unattributed effects such as some damage-over-time/Fate. Healing, Barrier, control and matchup distribution also matter. No automated A-tier claims.</p><div id="decks"></div>
 <script>const DATA=${data};

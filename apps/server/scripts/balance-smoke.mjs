@@ -116,8 +116,197 @@ try {
   assert.equal(tail.games.length, 2);
   assert.equal(tail.more, false);
   writeFileSync(join(work, 'fixture.json'), JSON.stringify({ schema: 1, games: [game] }, null, 2));
+  // Server-owned recent replay history is independent of browser localStorage.
+  const owners = ['a'.repeat(64), 'b'.repeat(64)];
+  const replay = {
+    rules: 83,
+    seed: 'synthetic-replay',
+    a: { hero: 'knight', name: 'Fixture A', deck: Array(20).fill('strike'), boons: [], tier: 20 },
+    b: { hero: 'knight', name: 'Fixture B', deck: Array(20).fill('strike'), boons: [], tier: 20 },
+    log: [],
+    winner: 'a',
+    reason: 'resign',
+  };
+  const replayIds = [];
+  for (let i = 0; i < 11; i++) {
+    const r = await stub.fetch('https://board.invalid/replay/save', {
+      method: 'POST',
+      body: JSON.stringify({
+        key: 'synthetic:' + i,
+        owners,
+        ownerSeats: { [owners[0]]: 'a', [owners[1]]: 'b' },
+        replay,
+      }),
+    });
+    const saved = await r.json();
+    assert.equal(saved.ok, true);
+    replayIds.push(saved.id);
+    const duplicate = await stub.fetch('https://board.invalid/replay/save', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'synthetic:' + i, owners, replay }),
+    });
+    assert.equal((await duplicate.json()).id, saved.id);
+  }
+  for (const [index, player] of owners.entries()) {
+    const res = await stub.fetch('https://board.invalid/replay/recent', {
+      method: 'POST',
+      body: JSON.stringify({ player }),
+    });
+    const recent = await res.json();
+    assert.equal(recent.replays.length, 10);
+    assert.deepEqual(
+      recent.replays.map((r) => r.id),
+      replayIds.slice(1).reverse(),
+    );
+    assert.ok(recent.replays.every((r) => r.viewerSeat === (index === 0 ? 'a' : 'b')));
+  }
+  const stranger = await stub.fetch('https://board.invalid/replay/recent', {
+    method: 'POST',
+    body: JSON.stringify({ player: 'c'.repeat(64) }),
+  });
+  assert.equal((await stranger.json()).replays.length, 0);
+  const noOwner = await mf.dispatchFetch('https://game.test/pvp/board/replays', {
+    method: 'POST',
+    body: JSON.stringify({ player: owners[0] }),
+    headers: { 'content-type': 'application/json' },
+  });
+  assert.equal(noOwner.status, 401);
+  const snapshot = {
+    schema: 1,
+    id: 'd'.repeat(64),
+    run: 'e'.repeat(64),
+    rules: 83,
+    version: '0.201.0',
+    source: 'client-observed',
+    hero: 'knight',
+    ascendancy: null,
+    cards: ['strike', 'strike+'],
+    boons: [],
+    tier: 1,
+    difficulty: 'normal',
+    phase: 'map',
+    hp: 80,
+    maxHp: 80,
+    resolve: 2,
+    seed: 'must-not-export',
+    token: 'must-not-export',
+  };
+  for (let i = 0; i < 2; i++)
+    assert.equal(
+      (
+        await stub.fetch('https://board.invalid/balance/campaign/save', {
+          method: 'POST',
+          body: JSON.stringify({ snapshot }),
+        })
+      ).status,
+      200,
+    );
+  assert.equal(
+    (await mf.dispatchFetch('https://game.test/admin/balance?kind=campaign')).status,
+    401,
+  );
+  const campaignRes = await mf.dispatchFetch('https://game.test/admin/balance?kind=campaign', {
+    headers: { authorization: 'Bearer ' + token },
+  });
+  assert.equal(campaignRes.headers.get('cache-control'), 'no-store');
+  const campaign = await campaignRes.json();
+  assert.equal(campaign.snapshots.length, 1);
+  assert.deepEqual(campaign.snapshots[0].cards, snapshot.cards);
+  assert.equal(JSON.stringify(campaign).includes('must-not-export'), false);
+  // Exercise the actual accepted-save -> private collection path, not only the Board endpoint.
+  const vaultNamespace = await mf.getDurableObjectNamespace('VAULT');
+  const vault = vaultNamespace.get(vaultNamespace.idFromName('campaign-fixture-owner'));
+  const claimRes = await vault.fetch('https://vault.invalid/play/claim', {
+    method: 'POST',
+    body: JSON.stringify({ holder: 'campaign-smoke' }),
+  });
+  const claim = await claimRes.json();
+  assert.equal(claim.ok, true);
+  const savedRun = {
+    v: 2,
+    character: 'knight',
+    seed: 'never-export-this-run-seed',
+    deck: ['strike', 'defend'],
+    boons: [],
+    tier: 1,
+    difficulty: 'normal',
+    phase: 'map',
+    hp: 80,
+    maxHp: 80,
+    resolve: 2,
+    stats: { duelsWon: 2, duelsLost: 1 },
+    cleared: [],
+    accountSecret: 'never-export-this-account-field',
+  };
+  const saveBody = {
+    revision: claim.revision,
+    balanceRules: 83,
+    balanceVersion: '0.201.0',
+    runs: [{ id: 'fixture-run', updated: Date.now(), text: JSON.stringify(savedRun) }],
+    replays: {},
+  };
+  const saveRes = await vault.fetch('https://vault.invalid/runsave', {
+    method: 'POST',
+    headers: { 'x-sr-play-token': claim.token },
+    body: JSON.stringify(saveBody),
+  });
+  assert.equal(saveRes.status, 200);
+  let collected;
+  for (let i = 0; i < 40; i++) {
+    const res = await mf.dispatchFetch('https://game.test/admin/balance?kind=campaign', {
+      headers: { authorization: 'Bearer ' + token },
+    });
+    collected = await res.json();
+    if (collected.snapshots.length === 2) break;
+    await new Promise((done) => setTimeout(done, 50));
+  }
+  assert.equal(collected.snapshots.length, 2);
+  const observed = collected.snapshots.find((s) => s.id !== snapshot.id);
+  assert.deepEqual(observed.cards, ['defend', 'strike']);
+  assert.equal(observed.fightsWon, 2);
+  assert.equal(observed.fightsLost, 1);
+  assert.equal(JSON.stringify(collected).includes('never-export-this'), false);
+  assert.equal(JSON.stringify(collected).includes('fixture-run'), false);
+  assert.equal(
+    (
+      await vault.fetch('https://vault.invalid/runsave', {
+        method: 'POST',
+        headers: { 'x-sr-play-token': claim.token },
+        body: JSON.stringify(saveBody),
+      })
+    ).status,
+    409,
+  );
+  writeFileSync(join(work, 'campaign-fixture.json'), JSON.stringify(campaign, null, 2));
+  const reportText =
+    'Shattered Rifts performance report (synthetic)\n== Machine ==\nGraphics: fixture\n== Frames ==\nTypical frame 16 ms\n<script>do not execute</script>';
+  const shareReport = () =>
+    mf.dispatchFetch('https://game.test/pvp/reports', {
+      method: 'POST',
+      headers: { origin: 'https://game.test', 'content-type': 'application/json' },
+      body: JSON.stringify({ text: reportText }),
+    });
+  const shared = await shareReport();
+  assert.equal(shared.status, 200);
+  const sharedBody = await shared.json();
+  assert.match(sharedBody.id, /^[a-f0-9]{32}$/);
+  const publicReport = await mf.dispatchFetch('https://game.test/pvp/reports/' + sharedBody.id);
+  assert.equal(publicReport.status, 200);
+  const html = await publicReport.text();
+  assert.ok(html.includes('&lt;script&gt;do not execute&lt;/script&gt;'));
+  assert.equal(html.includes('<script>'), false);
+  const rawReport = await mf.dispatchFetch(
+    'https://game.test/pvp/reports/' + sharedBody.id + '?format=json',
+  );
+  assert.equal((await rawReport.json()).text, reportText);
+  assert.equal(
+    (await mf.dispatchFetch('https://game.test/pvp/reports/' + '0'.repeat(32))).status,
+    404,
+  );
+  for (let i = 1; i < 20; i++) assert.equal((await shareReport()).status, 200);
+  assert.equal((await shareReport()).status, 429);
   console.log(
-    'PASS: real SQLite exact decks, deduplication, validation, owner authentication, no-store export and pagination. Fixture is synthetic.',
+    'PASS: SQLite exact decks, private exports, last-10 replays, Campaign snapshots and database-backed diagnostic links/rate limits. Fixtures are synthetic.',
   );
 } finally {
   await mf.dispose();

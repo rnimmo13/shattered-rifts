@@ -1,9 +1,10 @@
 {
   "name": "@sr/web",
-  "version": "0.200.0",
+  "version": "0.201.0",
   "private": true,
   "type": "module",
   "scripts": {
+    "replay:smoke": "node scripts/replay-ui-smoke.mjs",
     "balance:smoke": "node scripts/balance-ui-smoke.mjs",
     "dev": "vite",
     "lore:smoke": "node scripts/lore-smoke.mjs",

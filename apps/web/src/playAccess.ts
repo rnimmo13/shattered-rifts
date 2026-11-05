@@ -145,6 +145,9 @@ export function installPlayAccess(): void {
     const backend = new URL(base());
     if (url.origin !== backend.origin || !url.pathname.startsWith('/pvp/'))
       return original(input, init);
+    // Manually shared diagnostics contain no online save/progress writes or play-lease credentials.
+    if (url.pathname === '/pvp/reports' || /^\/pvp\/reports\/[a-f0-9]{32}$/.test(url.pathname))
+      return original(input, init);
     if (localOnly()) throw new Error('Local-only mode does not use online progress');
     const headers = new Headers(
       init?.headers ?? (input instanceof Request ? input.headers : undefined),

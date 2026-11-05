@@ -8,7 +8,9 @@ import {
   type ListName,
   type RunCopy,
   cleanRunCopies,
+  RULES_VERSION,
 } from '@sr/pvp';
+import { BUILD } from '../build';
 import { matchHistory, replaceMatches, type MatchRecord } from '../pvp/matchHistory';
 import {
   historyRemoved,
@@ -41,7 +43,13 @@ async function ask(
     const res = await fetch(`${httpBase()}/pvp/vault/${action}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(key === null ? body : { code: key, ...body }),
+      body: JSON.stringify({
+        ...(key === null ? {} : { code: key }),
+        ...body,
+        ...(action === 'runsave'
+          ? { balanceRules: RULES_VERSION, balanceVersion: BUILD.version }
+          : {}),
+      }),
       signal: AbortSignal.timeout(8000),
     });
     const data = (await res.json()) as {

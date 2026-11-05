@@ -14,6 +14,7 @@ import {
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
+import { ArenaEvidenceRecorder } from './arenaEvidence';
 import {
   MAX_MISSED_TURNS,
   ARENA_START_HP,
@@ -90,6 +91,7 @@ export function setupFor(seed: string, a: Entry, b: Entry): CombatSetup {
 }
 
 export class Match {
+  readonly evidence?: ArenaEvidenceRecorder;
   state: CombatState;
   /** every accepted action, in order (seed + this list rebuilds the whole match) */
   readonly log: { seat: Seat; action: Action }[] = [];
@@ -111,8 +113,13 @@ export class Match {
     readonly a: Entry,
     readonly b: Entry,
     now: number,
+    captureEvidence = false,
   ) {
     this.state = createCombat(COMBAT_DB, setupFor(seed, a, b)).state;
+    if (captureEvidence) {
+      this.evidence = new ArenaEvidenceRecorder();
+      this.evidence.record(this.state, 0, []);
+    }
     this.deadline = now + TURN_MS;
     this.startedAt = now;
     this.finishIfOver();
@@ -174,6 +181,10 @@ export class Match {
   }
 
   private apply(seat: Seat, action: Action, now: number, auto: boolean): Accepted | Refused {
+    const card =
+      action.type === 'play'
+        ? this.state.sides[seat].hand.find((c) => c.id === action.card)?.card
+        : undefined;
     let step;
     try {
       step = applyAction(COMBAT_DB, this.state, action);
@@ -210,6 +221,18 @@ export class Match {
       this.emptyTurns[seat] = this.state.sides[seat].played === 0 ? this.emptyTurns[seat] + 1 : 0;
     this.state = step.state;
     this.log.push({ seat, action });
+    try {
+      this.evidence?.record(this.state, this.log.length, step.events, {
+        seat,
+        action,
+        ...(card ? { card } : {}),
+      });
+    } catch {
+      if (this.evidence) {
+        this.evidence.data.truncated = true;
+        this.evidence.data.totalActions = this.log.length;
+      }
+    }
     // a player who acts on their own is not away
     if (!auto) this.missed[seat] = 0;
     if (turnPassed) this.deadline = now + TURN_MS;

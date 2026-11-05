@@ -688,6 +688,13 @@ export default function RunScreen() {
         onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
       />
+      {run.phase === 'map' && (
+        <p className="pvp__balanceNotice">
+          Online Campaign saves contribute private deck and progression snapshots for developer
+          balance review. Your raw save and account details are not included. Offline runs are not
+          uploaded.
+        </p>
+      )}
       {notice && (
         <Toast tone={noticeGood ? 'good' : 'bad'} onDismiss={() => say(null)}>
           {notice}

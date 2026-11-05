@@ -4,6 +4,16 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+## [0.201.0] — 2026-11-05 / rules 83
+
+- Performance/debug recordings: explicit Share report uploads to SQLite and returns an unguessable short web link; no more requirement to paste long text into Discord or attach files. Readable server-rendered report page and JSON endpoint work without login/JavaScript, with escaped text, no-store headers/CSP, streamed size bounds, origin checks and per-address rate limits. Retention90 days/2,000 reports. UI exposes the link even if clipboard access fails and preserves the recording after upload errors. No automatic upload. Desktop replay links now use the public web origin instead of srgame://. Optional raw report text/file backups remain.
+
+- Arena: authoritative, bounded move evidence records events/resources after accepted actions and detailed opening/turn-boundary/lethal hands/board/status/Aura snapshots. Reconnect reconstructs the same evidence. Private balance exports include observations and explicit truncation/count metadata. No simulations or card/rule changes.
+- Server ownership index keeps each participant's latest 10 recorded Arena games beyond ordinary 30-day/global archival pruning. Authenticated account/Vault history preserves the participant's actual seat across devices. Older unprotected replay links can expire. Early resignations now receive records too; best-effort storage and size/rate bounds still apply.
+- Replay overview supports watching/sharing, an optional player-intent note, downloading JSON and opening saved files locally. Archives retain moves, numerical evidence and matching current content definitions. Older-rule archives retain evidence but never attach current definitions or run against current rules. Historical retired card IDs remain inspectable. Public replay/download entries omit account/run IDs; display names remain public.
+- Accepted current-version online Campaign saves contribute private whitelisted exact cards/upgrades, Boons, HP, tier/difficulty/phase and cumulative fight counters. Run-scoped opaque IDs link snapshots; identical positions deduplicate. Snapshots are client-observed, not verified battles, full reward-choice histories or complete runs. No raw saves, seeds, RNG, names, credentials or offline uploads. Owner export uses the existing admin token with `kind=campaign`, 90-day/20,000-snapshot retention. `pnpm balance:campaign` creates HTML/CSV/JSON.
+- Web/desktop versions stay aligned. Robert approved committing, pushing and deploying the complete change set (decision #609).
+
 ### 0.200.0 / rules 83 — local, not released
 
 - Arena: class base HP ×6 → fixed1,000 current/max HP for every hero/ghost. Second-seat bonus HP60 →0; opening bonus Mana1 →0. Retain its existing +1 opening card exactly once; no later draw bonus. Campaign HP unchanged.

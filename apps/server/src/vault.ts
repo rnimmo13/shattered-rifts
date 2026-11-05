@@ -31,6 +31,8 @@ import {
   type VaultDeck,
 } from '@sr/pvp';
 import type { Env } from './env';
+import { RULES_VERSION } from '@sr/pvp';
+import { campaignDeckFacts } from './campaignBalance';
 
 interface Row extends Record<string, SqlStorageValue> {
   id: string;
@@ -380,6 +382,16 @@ export class Vault extends DurableObject<Env> {
         );
         this.setLease({ ...lease, revision: lease.revision + 1 });
       });
+      if (body['balanceRules'] === RULES_VERSION && typeof body['balanceVersion'] === 'string') {
+        const stored = this.runs();
+        const copies = cleanRunCopies(body['runs']).filter(
+          (copy) =>
+            !copy.gone &&
+            stored.some((saved) => !saved.gone && saved.id === copy.id && saved.text === copy.text),
+        );
+        const version = body['balanceVersion'].slice(0, 40);
+        this.ctx.waitUntil(this.reportCampaignDecks(copies, version).catch(() => undefined));
+      }
       return json({ ok: true, runs: this.runs(), revision: lease.revision + 1, replays: clean });
     }
 
@@ -390,6 +402,37 @@ export class Vault extends DurableObject<Env> {
     }
 
     return json({ ok: false, error: 'not-found' }, 404);
+  }
+
+  private async reportCampaignDecks(copies: RunCopy[], version: string): Promise<void> {
+    const hash = async (text: string) =>
+      Array.from(
+        new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))),
+        (b) => b.toString(16).padStart(2, '0'),
+      ).join('');
+    for (const copy of copies) {
+      if (copy.gone || !copy.text) continue;
+      const facts = campaignDeckFacts(parseJson(copy.text));
+      if (!facts) continue;
+      const run = await hash(`balance-run-v1:${this.ctx.id.toString()}:${copy.id}`);
+      const id = await hash(JSON.stringify([run, RULES_VERSION, version, facts]));
+      const snapshot = {
+        schema: 1,
+        id,
+        run,
+        rules: RULES_VERSION,
+        version,
+        source: 'client-observed',
+        ...facts,
+      };
+      await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request('https://board.invalid/balance/campaign/save', {
+          method: 'POST',
+          body: JSON.stringify({ snapshot }),
+          signal: AbortSignal.timeout(3000),
+        }),
+      );
+    }
   }
 
   private lease(): PlayLease {

@@ -34,7 +34,6 @@ import {
   type RankBadge,
   cleanTrophies,
   cleanRank,
-  REPLAY_MIN_MOVES,
   ARENA_START_HP,
   arenaDeckSnapshot,
   type ArenaBalanceGame,
@@ -289,7 +288,7 @@ export class MatchRoom extends DurableObject<Env> {
       return;
     }
     try {
-      const m = new Match(d.seed, a, b, Date.now());
+      const m = new Match(d.seed, a, b, Date.now(), true);
       for (const { seat, action } of d.log) {
         const r = m.submit(seat, m.log.length + 1, action, Date.now());
         if (!r.ok) throw new Error(`replay refused move ${m.log.length + 1}: ${r.message}`);
@@ -501,7 +500,7 @@ export class MatchRoom extends DurableObject<Env> {
     d.rules = RULES_VERSION;
     d.toss = { random: order.random };
     d.seed = crypto.randomUUID();
-    this.match = new Match(d.seed, entries.a as Entry, entries.b as Entry, Date.now());
+    this.match = new Match(d.seed, entries.a as Entry, entries.b as Entry, Date.now(), true);
     d.deadline = this.match.deadline;
     d.gameStart = this.match.startedAt;
     d.missed = { a: 0, b: 0 };
@@ -809,25 +808,33 @@ export class MatchRoom extends DurableObject<Env> {
     const d = this.data;
     const a = d.entries.a;
     const b = d.entries.b;
-    if (!a || !b || d.log.length < REPLAY_MIN_MOVES || d.rules !== RULES_VERSION) return null;
+    if (!a || !b || d.rules !== RULES_VERSION) return null;
     // (only a game with a known player in it is kept, and the board limits how many each keeps: see saveReplay)
     const owners = Object.values(d.who ?? {}).filter((w): w is string => typeof w === 'string');
     if (owners.length === 0) return null;
     // (the trophies and rank on a card are of the moment: a replay keeps the decks and names only)
     const plain = (e: Entry): Entry => {
-      const { trophies: _t, rank: _r, ...rest } = e;
+      const { trophies: _t, rank: _r, who: _w, run: _run, ...rest } = e;
       void _t;
       void _r;
+      void _w;
+      void _run;
       return rest;
     };
     return {
       owners,
+      key: `${this.code}:${d.seed}`,
+      ownerSeats: Object.fromEntries(
+        (['a', 'b'] as const).flatMap((seat) => (d.who?.[seat] ? [[d.who[seat], seat]] : [])),
+      ),
       replay: {
         rules: d.rules,
+        bot: BOT_VERSION,
         seed: d.seed,
         a: plain(a),
         b: plain(b),
         log: [...d.log],
+        evidence: this.match?.evidence?.data,
         winner: outcome.winner,
         reason: outcome.reason,
         game: d.series.game,
@@ -887,6 +894,7 @@ export class MatchRoom extends DurableObject<Env> {
         turns: { ...this.match.turns },
         heroDamage: { ...this.match.heroDamage },
         peakHeroDamage: { ...this.match.peakHeroDamage },
+        ...(this.match.evidence ? { evidence: this.match.evidence.data } : {}),
       };
       this.ctx.waitUntil(
         this.env.BOARD.get(this.env.BOARD.idFromName('main'))

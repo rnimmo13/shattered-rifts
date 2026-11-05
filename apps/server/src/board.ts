@@ -54,6 +54,10 @@ import {
   REPLAY_ID,
   REPLAY_KEEP_DAYS,
   REPLAY_MAX,
+  RECENT_REPLAYS,
+  SHARED_REPORT_ID,
+  SHARED_REPORT_DAYS,
+  validPerformanceReport,
   carryOver,
   rateMatch,
   seasonOf,
@@ -64,6 +68,7 @@ import {
 import { ascendancyOf } from '@sr/content/v2';
 import type { Env } from './env';
 import { CURRENT_GHOSTS_VIEW, UNCLEARED_GHOSTS } from './ghostSql';
+import { campaignDeckFacts } from './campaignBalance';
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -280,9 +285,21 @@ export class Leaderboard extends DurableObject<Env> {
     );
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS replays_at ON replays (at)');
     ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS shared_reports (id TEXT PRIMARY KEY, at INTEGER NOT NULL, text TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS replay_owners (owner TEXT NOT NULL, id TEXT NOT NULL, at INTEGER NOT NULL, seat TEXT NOT NULL, PRIMARY KEY (owner, id))',
+    );
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS replay_keys (game TEXT PRIMARY KEY, id TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS balance_games (seq INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL, at INTEGER NOT NULL, data TEXT NOT NULL)',
     );
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS balance_games_at ON balance_games (at)');
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS balance_campaign (seq INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL, at INTEGER NOT NULL, data TEXT NOT NULL)',
+    );
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS limits (
@@ -563,6 +580,16 @@ export class Leaderboard extends DurableObject<Env> {
     const b = body['replay'];
     if (owners.length === 0 || typeof b !== 'object' || b === null)
       return json({ ok: false, error: 'bad-replay' }, 400);
+    const key = typeof body['key'] === 'string' && body['key'].length <= 200 ? body['key'] : null;
+    if (key) {
+      const prior = this.ctx.storage.sql
+        .exec<{ id: string }>(
+          'SELECT k.id FROM replay_keys k JOIN replays r ON r.id = k.id WHERE k.game = ?',
+          key,
+        )
+        .toArray()[0];
+      if (prior) return json({ ok: true, id: prior.id });
+    }
     if (!owners.every((o) => this.within(`replay:${o}`, DAY, REPLAYS_PER_DAY, now)))
       return json({ ok: false, error: 'limited' });
     const bytes = crypto.getRandomValues(new Uint8Array(10));
@@ -570,16 +597,42 @@ export class Leaderboard extends DurableObject<Env> {
     const id = Array.from(bytes, (x) => abc[x % abc.length]).join('');
     const data = JSON.stringify({ ...(b as Record<string, unknown>), id, at: now });
     // (a game is a few kilobytes; one that is not is not kept)
-    if (data.length > 120_000) return json({ ok: false, error: 'too-big' }, 413);
+    if (data.length > 400_000) return json({ ok: false, error: 'too-big' }, 413);
     this.ctx.storage.sql.exec('INSERT INTO replays (id, at, data) VALUES (?, ?, ?)', id, now, data);
+    if (key)
+      this.ctx.storage.sql.exec(
+        'INSERT OR REPLACE INTO replay_keys (game, id) VALUES (?, ?)',
+        key,
+        id,
+      );
+    for (const owner of new Set(owners)) {
+      const seats = body['ownerSeats'] as Record<string, unknown> | undefined;
+      this.ctx.storage.sql.exec(
+        'INSERT INTO replay_owners (owner, id, at, seat) VALUES (?, ?, ?, ?)',
+        owner,
+        id,
+        now,
+        seats?.[owner] === 'b' ? 'b' : 'a',
+      );
+      this.ctx.storage.sql.exec(
+        'DELETE FROM replay_owners WHERE owner = ? AND id NOT IN (SELECT id FROM replay_owners WHERE owner = ? ORDER BY at DESC, rowid DESC LIMIT ?)',
+        owner,
+        owner,
+        RECENT_REPLAYS,
+      );
+    }
     // the oldest go: past their time, or past the most kept
-    this.ctx.storage.sql.exec('DELETE FROM replays WHERE at < ?', now - REPLAY_KEEP_DAYS * DAY);
+    this.ctx.storage.sql.exec(
+      'DELETE FROM replays WHERE at < ? AND id NOT IN (SELECT id FROM replay_owners)',
+      now - REPLAY_KEEP_DAYS * DAY,
+    );
     const n = this.count('SELECT COUNT(*) AS n FROM replays');
     if (n > REPLAY_MAX)
       this.ctx.storage.sql.exec(
-        'DELETE FROM replays WHERE id IN (SELECT id FROM replays ORDER BY at ASC LIMIT ?)',
+        'DELETE FROM replays WHERE id IN (SELECT id FROM replays WHERE id NOT IN (SELECT id FROM replay_owners) ORDER BY at ASC LIMIT ?)',
         n - REPLAY_MAX,
       );
+    this.ctx.storage.sql.exec('DELETE FROM replay_keys WHERE id NOT IN (SELECT id FROM replays)');
     return json({ ok: true, id });
   }
 
@@ -1210,6 +1263,37 @@ export class Leaderboard extends DurableObject<Env> {
     // (a week or month that has ended is settled before anything is shown or recorded)
     this.settleTrophies(now);
     if (request.method === 'GET') {
+      if (url.pathname === '/reports/get') {
+        const id = url.searchParams.get('id') ?? '';
+        if (!SHARED_REPORT_ID.test(id)) return json({}, 404);
+        const row = this.ctx.storage.sql
+          .exec<{ id: string; at: number; text: string }>(
+            'SELECT id, at, text FROM shared_reports WHERE id = ? AND at >= ?',
+            id,
+            now - SHARED_REPORT_DAYS * DAY,
+          )
+          .toArray()[0];
+        return row ? json(row) : json({}, 404);
+      }
+      if (url.pathname === '/balance/campaign/export') {
+        const after = Number(url.searchParams.get('after') ?? 0);
+        if (!Number.isSafeInteger(after) || after < 0) return json({}, 400);
+        const rows = this.ctx.storage.sql
+          .exec<{ seq: number; data: string }>(
+            'SELECT seq, data FROM balance_campaign WHERE seq > ? ORDER BY seq LIMIT 251',
+            after,
+          )
+          .toArray();
+        const page = rows.slice(0, 250);
+        return json({
+          schema: 1,
+          snapshots: page.map((r) => JSON.parse(r.data) as unknown),
+          next: page.at(-1)?.seq ?? after,
+          more: rows.length > 250,
+          retentionDays: 90,
+          maxSnapshots: 20000,
+        });
+      }
       if (url.pathname === '/balance/export') {
         const after = Number(url.searchParams.get('after') ?? 0);
         if (!Number.isSafeInteger(after) || after < 0) return json({ ok: false }, 400);
@@ -1260,6 +1344,90 @@ export class Leaderboard extends DurableObject<Env> {
         'DELETE FROM balance_games WHERE seq IN (SELECT seq FROM balance_games ORDER BY seq DESC LIMIT -1 OFFSET 20000)',
       );
       return json({ ok: true });
+    }
+    if (url.pathname === '/reports/save') {
+      if (!validPerformanceReport(body['text']) || !isId(body['ip']))
+        return json({ ok: false }, 400);
+      if (!this.within(`report:${body['ip']}`, DAY, 20, now))
+        return json({ ok: false, error: 'limited' }, 429);
+      const id = Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) =>
+        b.toString(16).padStart(2, '0'),
+      ).join('');
+      this.ctx.storage.sql.exec(
+        'INSERT INTO shared_reports (id, at, text) VALUES (?, ?, ?)',
+        id,
+        now,
+        body['text'],
+      );
+      this.ctx.storage.sql.exec(
+        'DELETE FROM shared_reports WHERE at < ?',
+        now - SHARED_REPORT_DAYS * DAY,
+      );
+      this.ctx.storage.sql.exec(
+        'DELETE FROM shared_reports WHERE id IN (SELECT id FROM shared_reports ORDER BY at DESC, rowid DESC LIMIT -1 OFFSET 2000)',
+      );
+      return json({ ok: true, id, retentionDays: SHARED_REPORT_DAYS });
+    }
+    if (url.pathname === '/balance/campaign/save') {
+      const s = body['snapshot'] as Record<string, unknown> | undefined;
+      if (
+        !s ||
+        s['schema'] !== 1 ||
+        s['source'] !== 'client-observed' ||
+        typeof s['id'] !== 'string' ||
+        !/^[a-f0-9]{64}$/.test(s['id']) ||
+        typeof s['run'] !== 'string' ||
+        !/^[a-f0-9]{64}$/.test(s['run']) ||
+        !Number.isSafeInteger(s['rules']) ||
+        typeof s['version'] !== 'string' ||
+        s['version'].length > 40
+      )
+        return json({}, 400);
+      const facts = campaignDeckFacts({
+        ...s,
+        v: 2,
+        character: s['hero'],
+        deck: s['cards'],
+        stats: { duelsWon: s['fightsWon'], duelsLost: s['fightsLost'] },
+      });
+      if (!facts) return json({}, 400);
+      // Rebuild instead of persisting unexpected fields from a caller.
+      const snapshot = {
+        schema: 1,
+        id: s['id'],
+        run: s['run'],
+        rules: s['rules'],
+        version: s['version'],
+        source: 'client-observed',
+        ...facts,
+        clearedNodes: Number.isSafeInteger(s['clearedNodes']) ? s['clearedNodes'] : null,
+        at: now,
+      };
+      this.ctx.storage.sql.exec(
+        'INSERT OR IGNORE INTO balance_campaign (id, at, data) VALUES (?, ?, ?)',
+        snapshot.id,
+        now,
+        JSON.stringify(snapshot),
+      );
+      this.ctx.storage.sql.exec('DELETE FROM balance_campaign WHERE at < ?', now - 90 * DAY);
+      this.ctx.storage.sql.exec(
+        'DELETE FROM balance_campaign WHERE seq IN (SELECT seq FROM balance_campaign ORDER BY seq DESC LIMIT -1 OFFSET 20000)',
+      );
+      return json({ ok: true });
+    }
+    if (url.pathname === '/replay/recent') {
+      if (!isId(body['player'])) return json({ ok: false }, 401);
+      const rows = this.ctx.storage.sql
+        .exec<{ data: string; seat: string }>(
+          'SELECT r.data, o.seat FROM replay_owners o JOIN replays r ON r.id = o.id WHERE o.owner = ? ORDER BY o.at DESC, o.rowid DESC LIMIT ?',
+          body['player'],
+          RECENT_REPLAYS,
+        )
+        .toArray();
+      return json({
+        ok: true,
+        replays: rows.map((r) => ({ ...(JSON.parse(r.data) as object), viewerSeat: r.seat })),
+      });
     }
     if (url.pathname === '/view') {
       // a board seen by someone who is known: it also says where they stand

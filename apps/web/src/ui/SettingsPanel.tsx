@@ -20,6 +20,7 @@ import { DesktopAccount } from '../pvp/DesktopAccount';
 import { SettingsRow as Row } from './SettingsRow';
 import { WebUpdateControls } from './UpdatePrompt';
 import { BUILD } from '../build';
+import { PerformanceReportShare } from './PerformanceReportShare';
 import { downloadBalanceReport } from '../app/balanceJournal';
 import { localOnly, releasePlayAccess } from '../playAccess';
 import { battleActive, subscribeBattle } from '../battleActivity';
@@ -71,6 +72,7 @@ export function SettingsPanel() {
   const [tipsReset, setTipsReset] = useState(false);
   const [full, setFull] = useState(fullscreenOn);
   const [report, setReport] = useState<string | null>(lastReport);
+  const [sharedReport, setSharedReport] = useState<{ report: string; link: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
   const opener = useRef<Element | null>(null);
@@ -408,7 +410,7 @@ export function SettingsPanel() {
             </Row>
             <Row
               label="Record a report"
-              hint="If the game stutters, record a report: play a fight or two as usual, press Stop at the bottom left, then copy the report and send it in. It holds only timings and this computer's graphics and browser details."
+              hint="If the game stutters, record a report: play a fight or two as usual, press Stop at the bottom left, then choose Share report and send the short link. It holds timings and this computer's graphics and browser details."
             >
               <button
                 type="button"
@@ -424,6 +426,12 @@ export function SettingsPanel() {
             </Row>
             {report && (
               <div className="settings__report">
+                <PerformanceReportShare
+                  key={report}
+                  report={report}
+                  existingLink={sharedReport?.report === report ? sharedReport.link : undefined}
+                  onShared={(link) => setSharedReport({ report, link })}
+                />
                 <textarea
                   ref={reportBox}
                   readOnly
@@ -448,10 +456,11 @@ export function SettingsPanel() {
                       else oldWay();
                     }}
                   >
-                    <span>{copied ? 'Copied' : 'Copy the report'}</span>
+                    <span>{copied ? 'Copied' : 'Copy report text (optional)'}</span>
                   </button>
                   <small className="settings__hint">
-                    If copying does not work, select the text above and copy it.
+                    Sharing the link avoids pasting a long report into chat. You can still copy the
+                    raw text if needed.
                   </small>
                 </div>
               </div>
