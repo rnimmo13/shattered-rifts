@@ -36,6 +36,8 @@ function standing(seed: string): RunState {
     potions: ['healing-philtre', 'healing-philtre'],
     boons: ['iron-sigil'],
     marks: ['map'],
+    // Keep this fixture in an ordinary event; legacy maps now deliver a bonus encounter first.
+    treasureMapTier: base.tier,
     deck: [
       ...RIFTWALKERS.knight.starter,
       'bulwark-blow',

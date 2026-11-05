@@ -217,7 +217,10 @@ export function generateStageMap(
     // (a last stretch too short to be one joins the one before)
     if (floor > 1 && (floor - 1) % MERCHANT_STRETCH === 0 && FLOORS - floor >= MIN_STRETCH)
       merchants = 0;
-    const count = floor === FLOORS ? 2 : floor === 1 ? 2 + nextInt(rng, 2) : 2 + nextInt(rng, 3); // 2-4 nodes (2-3 on the first floor)
+    // Five starting lanes, a meeting point every six floors, then a fresh five-way split.
+    // The final pair of Shrines and the number of stops walked stay the same.
+    const count =
+      floor === FLOORS ? 2 : floor % 6 === 1 ? 5 : floor % 6 === 0 ? 1 : 2 + nextInt(rng, 4);
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
       const id = `s${stage}-f${floor}-${String.fromCharCode(97 + i)}`;
@@ -263,7 +266,7 @@ export function generateStageMap(
   )
     warden.ghost = true;
 
-  // edges: every node leads forward to 1-2 nodes by position; every node on the next floor is reachable
+  // Forward routes follow lane order; every node on the next floor has an incoming path.
   for (let f = 0; f < FLOORS; f++) {
     const row = byFloor[f] as MapNode[];
     const nextRow = f === FLOORS - 1 ? [warden] : (byFloor[f + 1] as MapNode[]);
@@ -275,19 +278,28 @@ export function generateStageMap(
       );
       const a = nextRow[t] as MapNode;
       n.next.push(a.id);
-      // sometimes branch to a neighbour too
-      if (nextRow.length > 1 && nextInt(rng, 100) < 55) {
-        const alt = nextRow[t + 1 < nextRow.length ? t + 1 : t - 1] as MapNode;
-        if (!n.next.includes(alt.id)) n.next.push(alt.id);
-      }
     });
     // anything on the next floor nobody leads to gets an incoming edge from the nearest node
     for (const m of nextRow) {
       if (!row.some((n) => n.next.includes(m.id))) {
-        const j = Math.min(row.length - 1, nextRow.indexOf(m));
+        const j = Math.round(
+          (nextRow.indexOf(m) * (row.length - 1)) / Math.max(1, nextRow.length - 1),
+        );
         (row[j] as MapNode).next.push(m.id);
       }
     }
+    // Add neighbour choices only where their lines do not cross another route.
+    row.forEach((n, i) => {
+      if (nextRow.length < 2 || nextInt(rng, 100) >= 55) return;
+      const t = Math.round((i * (nextRow.length - 1)) / Math.max(1, row.length - 1));
+      const alt = t + (nextInt(rng, 2) ? 1 : -1);
+      if (alt < 0 || alt >= nextRow.length) return;
+      const target = nextRow[alt] as MapNode;
+      const crosses = row.some((other, j) =>
+        other.next.some((id) => (i - j) * (alt - nextRow.findIndex((m) => m.id === id)) < 0),
+      );
+      if (!crosses && !n.next.includes(target.id)) n.next.push(target.id);
+    });
   }
 
   // never two Merchants, Shrines or Elites in a row on any path: the earlier one becomes a Duel

@@ -200,6 +200,12 @@ const SPECS: DealSpec[] = [
         'They pay in old coin.',
         'optional',
       ],
+      [
+        'Learn a foreign technique (lose 8 HP): choose 1 of 3 common Rift-Crossed cards to add',
+        [hurt(8), { k: 'crossedPick', rarity: 'common' }],
+        '',
+        'optional',
+      ],
     ],
   },
   {
@@ -215,6 +221,12 @@ const SPECS: DealSpec[] = [
       [
         'Sell a Wound (a Wound, else a basic card, goes): +55 shards',
         [remove('wound'), shards(55)],
+        '',
+        'optional',
+      ],
+      [
+        'Buy foreign stock (pay 60 shards): choose 1 of 3 uncommon Rift-Crossed cards to add',
+        [shards(-60), { k: 'crossedPick', rarity: 'uncommon' }],
         '',
         'optional',
       ],

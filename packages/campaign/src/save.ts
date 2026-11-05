@@ -110,6 +110,8 @@ function validContext(r: RunState): boolean {
   if (!needsNode.includes(r.phase)) return true;
   const c = r.context;
   if (!isObj(c) || typeof c['nodeId'] !== 'string') return false;
+  if (c['bonusEvent'] !== undefined && typeof c['bonusEvent'] !== 'boolean') return false;
+  if (c['bonusEvent'] && (r.phase !== 'event' || c.event?.scene !== 'treasure-dig')) return false;
   // a card chosen at the Threshold or a Waymark has no node behind it (nodeId is empty), like the prelude itself
   const fromPrelude = r.phase === 'reward' && c['nodeId'] === '';
   if (!fromPrelude && !ids.has(c['nodeId'])) return false;
@@ -447,6 +449,7 @@ export function parseRun(text: string): RunState | null {
   // event flags and the last event's coin tosses: kept only when well-formed
   const loose = r as { marks?: unknown; eventFlips?: unknown; ghostsMet?: unknown };
   if (loose.marks !== undefined && !isStrArray(loose.marks)) delete loose.marks;
+  if (r.treasureMapTier !== undefined && !isInt(r.treasureMapTier, 1, 20)) delete r.treasureMapTier;
   // (the ghost Wardens met: a list that only steers which ghost comes next, so a bad one is dropped, not the save)
   if (loose.ghostsMet !== undefined && !isStrArray(loose.ghostsMet)) delete loose.ghostsMet;
   // (the Gambler's Ledger's signatures: a count, or nothing)

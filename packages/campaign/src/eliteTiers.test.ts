@@ -49,7 +49,7 @@ describe('Elites by Rift Tier', () => {
     expect(rollEliteFight(rng, 1)).toBe(false);
     expect(rng).toEqual(before);
     const m = generateStageMap(seedRng('pinned-map'), 1, 'nexus', 'knight');
-    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(`"ddemdeddemededdedeeescddddssw"`);
+    expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(`"ddddddddddemmededeeddeeescdddeessw"`);
   });
 
   it('at Tier 19 no fight on any map is a plain one, on any floor of any act', () => {

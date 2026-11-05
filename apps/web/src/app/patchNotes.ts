@@ -44,6 +44,89 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.202.0',
+    date: '2026-11-05',
+    title: 'Five-lane maps and reliable treasure',
+    summary:
+      'Vertical campaign routes that split and meet, guaranteed buried treasure and more Rift-Crossed choices.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'The buried map / The X on the map',
+        text: 'Campaign only. Keeping the map promises treasure within the next 3 tiers: it appears before your first stop next tier, even on a route with no events. At Tier XX, it appears before your next stop. Existing held maps deliver before the next stop after loading. The bonus encounter preserves every route node. Dig deep still grants a choice of 3 rare Rift-Crossed cards plus 105 shards (the old label incorrectly said 80); Dig carefully still gives +8 max HP and heals 25% of max HP. Claiming either consumes the map; skipping the card keeps the shards. Banking or ending the run ends the promise.',
+        changes: [
+          {
+            label: 'Treasure delivery',
+            before: 'Random later event; no deadline',
+            after: 'Guaranteed by the next tier',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'The rift broker',
+        text: 'Campaign only. Trade one card still removes one random card. The two-card trade for a rare choice is unchanged.',
+        changes: [
+          {
+            label: 'One-card trade reward',
+            before: '1 random uncommon Rift-Crossed card',
+            after: 'Choose 1 of 3 uncommon Rift-Crossed cards',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'The torn grimoire',
+        text: 'Campaign only. Copy out one page still costs 40 shards. The gamble option is unchanged.',
+        changes: [
+          {
+            label: 'Page reward',
+            before: '1 random common Rift-Crossed card',
+            after: 'Choose 1 of 3 common Rift-Crossed cards',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: "The old soldiers' camp",
+        text: 'Campaign only. A new optional foreign-technique choice costs 8 HP; existing choices are unchanged.',
+        changes: [
+          {
+            label: 'Foreign technique',
+            before: 'Unavailable',
+            after: 'Choose 1 of 3 common Rift-Crossed cards for 8 HP',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'The ash market',
+        text: 'Campaign only. A new optional foreign-stock choice costs 60 shards; existing choices are unchanged. Previously opened events retain their saved options; new choices appear on newly opened events.',
+        changes: [
+          {
+            label: 'Foreign stock',
+            before: 'Unavailable',
+            after: 'Choose 1 of 3 uncommon Rift-Crossed cards for 60 shards',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Campaign routes',
+        text: 'Desktop and mobile now share a map that scrolls from top to bottom, with drawing tools above the path. Newly generated tiers start with 5 routes (previously 2–3); later floors have 1–5 stops (previously 2–4), meeting every 6 floors and splitting again afterward. The final 2 Shrines lead into the Warden. Routes connect without crossed lines. You still visit one stop per floor, with the same tier length, reward amounts and enemy scaling. Existing saved tiers retain their nodes and connections in the new layout. Previous map drawings are kept separately because the layout changed.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Centered the Arena rules and recording notice beneath the heading, including when opening Arena directly before visiting Campaign.',
+      },
+    ],
+  },
+  {
     version: '0.201.0',
     date: '2026-11-05',
     title: 'Match records for real playtesting',

@@ -272,6 +272,8 @@ export interface GhostBoss {
 
 export interface NodeContext {
   nodeId: string;
+  /** An extra encounter before entering this node; completing it leaves the route untouched. */
+  bonusEvent?: boolean;
   /** a Warden that is a ghost: the deck that was fetched for it (kept, so a retry or a reload meets the same one) */
   ghost?: GhostBoss;
   /** the server has been asked for this Warden's ghost (whether or not one came): do not ask again */
@@ -407,6 +409,8 @@ export interface RunState {
   eventFlips?: { pct: number; won: boolean }[];
   /** flags set by events for a later event to find (a buried map...) */
   marks?: string[];
+  /** Tier where the buried treasure map was acquired; absent on legacy saves. */
+  treasureMapTier?: number;
   /** what the last event did, in a sentence (shown once it is over) */
   eventResult?: string;
 }

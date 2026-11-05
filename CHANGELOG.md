@@ -4,6 +4,17 @@ Player-visible changes, newest first. Format loosely follows [Keep a Changelog](
 
 ## [Unreleased]
 
+## [0.202.0] — 2026-11-05 / rules 83
+
+Robert approved committing, pushing and deploying this complete release (DECISIONS #615).
+
+- Campaign treasure: keeping The buried map now records its acquisition tier and guarantees The X on the map as a bonus encounter before the first chosen stop of the next tier (stronger than the requested next-three-tier deadline). At Tier XX or for legacy held maps without an acquisition tier, deliver before the next stop. Preserve route/position/clears, bypass event/ambush/elite odds, persist pending card choices across saves and consume the map once. Existing random same-tier discovery remains possible. Banking/ending the run forfeits pending treasure. Dig deep remains choose 1 of 3 rare Rift-Crossed cards +105 shards; correct the old 80-shard label. Dig carefully remains +8 max HP and heal25% of max HP. Omit the card option if fewer than3 eligible rares remain; recovery is always available.
+- Campaign Rift-Crossed choices: The rift broker's one-card trade changes from1 random uncommon to choose1of3 uncommon, still removing1 random card. The torn grimoire's40-shard page changes from1 random common to choose1of3 common. The old soldiers' camp adds optional lose8HP for choose1of3 common; The ash market adds optional pay60shards for choose1of3 uncommon. Existing options/costs otherwise retained. Current saved event options remain frozen; newly opened events get the new options. No combat-card/Arena changes. Append-only0.202.0 balance history retains all30 combat assessments and adds mixed-build acquisition review with zero simulations/human measurements.
+
+- Campaign map (supersedes the earlier local desktop-fit approach): desktop and phones share a responsive vertical five-lane canvas, with a vertically scrolling path below the drawing controls. New maps start with5nodes instead of2–3; middle rows use1–5 instead of2–4, converging every6floors and expanding afterward. Keep the final2Shrines, one stop per floor, floor counts, reward amounts, placement caps and enemy scaling. Add neighbour branches only without crossing lines; repair incoming edges by proportional position. Existing saved maps retain nodes/edges/progress; old drawing layouts remain in separate storage keys. Battle map overlay also scrolls vertically with its Back button available. Add deterministic all-tier graph coverage/non-crossing tests and a separate0.202.0-map-review-1 balance assessment. No simulations.
+
+- Center the Arena header's paragraph blocks and provide its header grid locally. Rules and recording notice previously inherited centered text but sat at the left of the wide header until Campaign's stylesheet loaded. Direct entry checked at desktop/phone sizes; no combat changes from this alignment fix.
+
 ## [0.201.0] — 2026-11-05 / rules 83
 
 - Restore the current version at the bottom right across game screens, including combat, on web/desktop. The small fixed label respects device safe areas and does not intercept clicks/taps. Included in the approved in-progress release at Robert's request; rebuild both artifacts from the updated clean commit.

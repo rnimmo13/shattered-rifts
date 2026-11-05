@@ -38,7 +38,7 @@ export function useMapInk(inkKey: string | undefined): MapInkState {
   const [strokes, setStrokes] = useState<InkStroke[]>(() => (inkKey ? loadInk(inkKey) : []));
   const [tool, setTool] = useState<Tool>(null);
   const [color, setColorState] = useState(loadPenColor);
-  // (turning the screen shows another layout with its own drawing, and a new act its own map)
+  // A new tier or layout key has its own drawing; resizing the shared vertical map keeps it.
   const shown = useRef(inkKey);
   useEffect(() => {
     if (shown.current === inkKey) return;

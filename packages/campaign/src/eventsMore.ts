@@ -22,7 +22,6 @@ import {
 import type { EventDef } from './events';
 import type { DealStep, RunState } from './types';
 
-const crossed = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({ k: 'crossed', rarity });
 /** three Rift-crossed cards are laid out, and the player chooses one */
 const crossedPick = (rarity: 'common' | 'uncommon' | 'rare'): DealStep => ({
   k: 'crossedPick',
@@ -91,8 +90,8 @@ export const MORE_EVENTS: EventDef[] = (
       text: 'A figure with a card in every pocket, none of them from here. "Give me yours. I will give you something nobody around here knows how to play."',
       opts: [
         [
-          'Trade one card (a random card leaves your deck): a random uncommon card from another Riftwalker joins your deck',
-          [remove('any', 1), crossed('uncommon')],
+          'Trade one card (a random card leaves your deck): choose 1 of 3 uncommon Rift-Crossed cards to add',
+          [remove('any', 1), crossedPick('uncommon')],
         ],
         [
           'Trade two cards (two random cards leave your deck): choose 1 of 3 rare cards from other Riftwalkers to add',
@@ -144,8 +143,8 @@ export const MORE_EVENTS: EventDef[] = (
           [chance(45, [crossedPick('rare')], [hurt(6), junk()])],
         ],
         [
-          'Copy out one page (pay 40 shards): a random common card from another Riftwalker joins your deck',
-          [shards(-40), crossed('common')],
+          'Copy out one page (pay 40 shards): choose 1 of 3 common Rift-Crossed cards to add',
+          [shards(-40), crossedPick('common')],
         ],
       ],
     },
@@ -158,9 +157,9 @@ export const MORE_EVENTS: EventDef[] = (
       needs: (r) => !(r.marks ?? []).includes('map'),
       opts: [
         [
-          'Keep it: it may lead somewhere later',
+          'Keep it: treasure guaranteed within the next 3 tiers (by the next tier; at Tier XX, before your next stop)',
           [mark('map')],
-          'You fold the map into your coat. It is a long way to the X.',
+          'The X is close. If you continue, the treasure appears before your first stop next tier, or before your next stop at Tier XX.',
         ],
         ['Sell it: +60 shards', [shards(60)]],
       ],
@@ -174,8 +173,10 @@ export const MORE_EVENTS: EventDef[] = (
       noLeave: true,
       opts: [
         [
-          'Dig deep: choose 1 of 3 rare cards from other Riftwalkers to add to your deck, and +80 shards',
+          'Dig deep: choose 1 of 3 rare Rift-Crossed cards to add to your deck, and +105 shards',
           [mark('map', true), crossedPick('rare'), shards(105)],
+          '',
+          'optional',
         ],
         [
           'Dig carefully: +8 max HP and heal 25% of your HP',

@@ -1,0 +1,2036 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "measuredMatches": 0,
+  "target": "Arena first: distinct competitive styles at1000HP; typical10+ own turns. Vorthax optimized-deck target roughly50% or somewhat above, pending representative human/deck evidence.",
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Not retested",
+      "rationale": "Reserves and straightforward defense/attacks provide a reliable opening. Shared Crimson Offering delays one Mana; Scent now caps each Aura at three hostile Exposed draws per owner-round. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "engineer",
+      "grade": "Not retested",
+      "rationale": "Improved Drone and Pulse Pistol help; large-machine setup is still resource hungry. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A−"
+    },
+    {
+      "hero": "hunter",
+      "grade": "Not retested",
+      "rationale": "Pack damage and blood resources are productive early. Blood Tithe and Adrenal Surge each move one Mana to next turn; total Mana and HP costs are unchanged. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "trickster",
+      "grade": "Not retested",
+      "rationale": "Efficient suit/cycling pool gives broad early flexibility; pool parity unresolved. Cut the Deck refunds only once per own turn across copies, reducing self-funding cycling. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A+"
+    },
+    {
+      "hero": "assassin",
+      "grade": "Not retested",
+      "rationale": "Recurring Dagger and efficient Skills provide consistent damage. Rush of Blood+ moves one Mana to next own turn; base is unchanged. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "shaman",
+      "grade": "Not retested",
+      "rationale": "Two starting totems offer immediate value before row investment. Wellspring and Spirit Offering preserve total Mana but delay part until next own turn. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "monk",
+      "grade": "Not retested",
+      "rationale": "Stance sequencing is strong but mistakes can expose the hero. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Not retested",
+      "rationale": "Starting Spell Power supplies an early spend/rebuild rhythm. Shared Fault Lines generation and Measured Ruin amplification are lower, even when not the primary engine. Grade carried forward; reward acquisition may change early campaign tempo. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A"
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Not retested",
+      "rationale": "Small Thralls and slower Fate/Consume development need protection. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A−"
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Not retested",
+      "rationale": "Gun and drink setup can compete, but HP/Hangover management is less forgiving. Prior projection retained; no full starter/campaign acquisition simulation in this revision. 0.202: no starter changes; early event card selection improves without a measured regrade. Five initial routes and periodic forced convergence alter path selection; effect on starter survival is unmeasured.",
+      "previousGrade": "A−"
+    }
+  ],
+  "basis": "Static campaign topology review following the treasure/Rift-Crossed changes assessed in 0.202.0.json. New tiers start with five nodes instead of two or three, later floors range from one to five instead of two to four, with a meeting point every sixth floor and a five-way split afterward (or the final two Shrines when next). Shared vertical presentation does not change fight rules. More visible routes can improve reward targeting; mandatory meeting points reduce avoidance and can force an unfavourable encounter. Per-tier Elite and merchant placement caps, rewards, encounter scaling, floor counts, and one-stop-per-floor path length remain unchanged, but the new seeded graph changes placement and acquisition opportunities. Existing saved maps retain topology. All thirty Ascendancies and ten class starts retain previous unrated/unmeasured combat labels. Tier I-III access, IV-X developing setups, XI-XVI recovery and XVII-XX survival need real route-choice evidence. Opening, extended and beyond-ten-turn strength are not newly measured in either mode. No simulations or human matches were run. Mixed companion-HP/healing, Exposed/multi-hit and Consume/draw builds gain route options but face the same forced meeting points; no synergy or grade improvement is guaranteed.",
+  "version": "0.202.0",
+  "rules": 83,
+  "status": "Local 0.202.0 map follow-up; not pushed or deployed.",
+  "source": "Base fc12f2b4343ccc535e25140aa42256f0aa920ce5 plus local 0.202.0 changes in packages/campaign/src/{eventsMore,eventsTuned,events,run,deals,save,types}.ts; exact ledger in CHANGELOG.md and player patchNotes.ts. Follow-up: packages/campaign/src/mapgen.ts and apps/web/src/run/{MapView,RunScreen,run.css}; DECISIONS #614. Prior treasure assessment preserved in 0.202.0.json.",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Strong while Barrier survives",
+      "rareReliance": "Moderate for finishers",
+      "scaling": "Retention supports defense and Barrier attacks, but constant Barrier generation converges rather than growing forever. More turns help only if the deck increases its generation or converts it into a finish.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Timeout/sustain risk; piercing and direct HP loss bypass the main defense. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A",
+          "extended": "A",
+          "long": "A-"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good; resources refill",
+      "rareReliance": "Low–moderate",
+      "scaling": "Blood Oath is limited across copies; Marshal receives steady Reserves and cheaper Measured Conviction. The resource loop is removed while a sustained plan remains.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Watch damage after turn ten and resource access after consuming the initial accelerants. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A−",
+          "extended": "A",
+          "long": "A-"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; spent HP still matters",
+      "rareReliance": "Low–moderate",
+      "scaling": "Retaliation retains its bounded ramp and HP-payment trigger. Crimson Offering gives less immediate Mana, and Scent caps draw; the next-turn grant preserves total resources.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Check whether delayed Mana leaves too little defense on payment turns. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A−",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good; replacements retain Fabrication",
+      "rareReliance": "Moderate",
+      "scaling": "Successful own-turn summons provide up to nine Barrier per turn, supporting rebuilding; Fabrication and the fourth slot remain.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Removal taxes setup; compare summon count and attacks actually delivered, not four bodies assumed alive. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A−",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A−",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "High",
+      "recovery": "True death banks half earned growth, capped 30; next new large build consumes it. Revive is fresh; scrapping instead transfers half current HP through Salvage. Hero protection now follows a surviving invested machine.",
+      "rareReliance": "Uncommon growth engine; common Crankshaft; rare Heavy Hitter/Meltdown improve burst.",
+      "scaling": "Earned machine HP now supplies capped passive hero protection; Bulwark Frame protects the hero too. Full HP growth, companion damage-per-HP and recovery remain.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "High HP-conversion burst; a non-Taunt machine can be bypassed. Friend report of easy 160 HP is anecdotal, not a measured match. No automatic buff. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "B+",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "B+",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; hero retains Might",
+      "rareReliance": "Moderate",
+      "scaling": "Own-turn Might and first-Attack protection doubled. Shared setup protection is cheaper; personal-weapon identity remains.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Can race ahead with multi-hit bonuses; check survivability separately from sustained damage. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; companions inherit current share",
+      "rareReliance": "Moderate",
+      "scaling": "Steady Might feeds the existing companion-sharing identity. Pack protection is cheaper and Pack Tactics shields more.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Removal and direct hero pressure prevent equating a full board with guaranteed output. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Moderate; hero HP is the resource",
+      "rareReliance": "Low–moderate",
+      "scaling": "First self-payment grants four Barrier alongside the existing draw/Primed. Shared pack protection improved.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Do not credit the whole next-turn grant to opening tempo. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A+",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good while draw remains available",
+      "rareReliance": "Moderate",
+      "scaling": "Draw still grants Primed, but Blood Tithe and Adrenal Surge move one Mana each to the next turn. Sustained draw remains strong; immediate chain length is reduced.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Large queued Mana turns and repeated draw remain an upper-band risk. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good if traps can be reset",
+      "rareReliance": "Low–moderate",
+      "scaling": "Draw and Barrier depend on opponents triggering traps. Full Trick supplies growing damage for all Trickster Ascendancies; Trapmaster trades some proactive tempo for reactive resource recovery.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Opponent control over trap triggers and choice of attack target can reduce reliability. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A−",
+          "extended": "A",
+          "long": "A-"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good; little board investment",
+      "rareReliance": "Low–moderate",
+      "scaling": "Full Trick and Ascendancy Mana remain. Cut the Deck refunds once across all copies on the own turn, so extra cycling now costs Mana. Shared growing suit damage still rewards long fights.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "The rest of the draw pool may sustain an A+ ceiling despite the refund limit. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; target switch restarts growth",
+      "rareReliance": "Low–moderate",
+      "scaling": "Keeping the same marked target reaches +50% and Exposed adds pressure. Full Trick and suit cycling continue to develop after Seer itself caps.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Switching target resets the streak; Taunt and diversions can disrupt the preferred hero focus. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; Daggers regenerate each turn",
+      "rareReliance": "Moderate for multipliers",
+      "scaling": "Two Daggers per turn preserve reliable attack access and scaling from repeated bonuses. Rush of Blood+ delays one Mana, reducing immediate chain funding but retaining next-turn value.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Watch repeatable generated attacks and multi-hit amplification after other engines slow. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; stacks can be cleansed",
+      "rareReliance": "Low–moderate",
+      "scaling": "Bloodburst now costs two Mana, slowing repeated immediate ticks without altering the Bleed identity.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Cleanse access and damage-over-time reapplication may dominate matchups more than the Mana change. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A-",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good; preparation rebuilt from Skills",
+      "rareReliance": "Low–moderate",
+      "scaling": "Skills build up to +60% for the next Attack, with another +20% against a hero at half HP or lower. Sequencing and multi-hit payoffs remain valuable but the passive has bounded amplification.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Execute-window burst rather than unlimited passive growth. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "Starting Spirit and qualifying end-turn Spirit grow recurring totem output. The totem row cannot be attacked like companions, so ordinary minion removal is not a counter to this engine.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Automatic scaling and free recurring sustain can stall or outgrow bounded decks. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A+",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A+",
+          "opening": "A",
+          "extended": "A+",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "First ordered own-turn command earns Spirit; displacement alone does not. Command investment remains distinct from Totemist cultivation.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Repeatable Spirit Offering can stack next-turn Mana; delayed resources are not a throughput cap. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A+",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Totems are not attackable units; rebuild costs primarily follow own commands/push-outs. Hero pressure still matters.",
+      "rareReliance": "Moderate",
+      "scaling": "Each element has its own permanent count. First Flame/Frost/Storm each turn grows its payoff, with a switching bonus; mixed-element access supports damage and defense together.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "More turns improve all three tracks; grade rises from the old shorter-horizon assessment. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A+",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; no persistent board required",
+      "rareReliance": "Low–moderate",
+      "scaling": "Extra Mana on the first Serene exit combines with the base Monk Mana refund. Stance sequencing, recurring Might and Radiant windows give the whole deck scaling beyond the passive refund.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Large stance turns and 3x Radiant windows can violate the duration target. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A+",
+          "endgame": "A",
+          "openingFight": "A+",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A+",
+          "opening": "A+",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good if a safe exit is available",
+      "rareReliance": "Moderate",
+      "scaling": "First Fury entry each own turn builds toward +40%; first exit Barrier reaches 14. These bonuses cap, while the base class continues gaining Might/Fervor.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Fury incoming-damage exposure is meaningful; do not assume every turn is a safe burst turn. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A−",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "High",
+      "recovery": "Moderate; must reach another Radiant window",
+      "rareReliance": "Moderate",
+      "scaling": "More Fervor accelerates Radiant and returning up to four Fervor after Radiant improves later access. Morning Prayer copies support continued stance cycles.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Frequency and size of Radiant lethal windows, including resource acceleration. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A+",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A+",
+          "opening": "A−",
+          "extended": "A+",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; payoff requires little banking",
+      "rareReliance": "Low–moderate",
+      "scaling": "First Sword each turn gives four Barrier; existing draw and per-hit bonus remain.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Stacked extra Blade hits and Power growth, not just one Keen per hit. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Good after refund arrives",
+      "rareReliance": "Moderate",
+      "scaling": "Two additional Power each own turn supplies paid spell cycling without changing the first-spell damage/refund rule.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Large stored Power and upgraded stacked Auras can remain explosive; upper range is conditional. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "High",
+      "recovery": "Good; Fracture persists on target",
+      "rareReliance": "Moderate",
+      "scaling": "Fault Lines now gives 1 Fracture on the first six own-turn Sword/Spell plays per Aura and none later. Permanent growth and Shatterer 15% remain, but dedicated Fracture cards and survival are more important.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Highest risk of over-nerfing: test late Campaign bosses and disrupted Arena setup before calling this safely A. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A-",
+          "deep": "A",
+          "endgame": "A-",
+          "openingFight": "A-",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A-",
+          "extended": "A-",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Improved recurring Raise; vulnerable board; first-Command Barrier requires survivors and does not rebuild a cleared board",
+      "rareReliance": "Moderate",
+      "scaling": "The Drowned King+ now costs one Mana; HP conversion and companion growth remain. Requires checking throughput and the opportunity to answer commands.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "A cleared board gives no new defense. Direct hero pressure and replacement cost still threaten consistency. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A−",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium",
+      "recovery": "Moderate; Fate reduction delays execution",
+      "rareReliance": "Low–moderate",
+      "scaling": "Fate still combines percentage-based application with ordinary damage and execution pressure. Grave Chill now gives 3 on first six Consumes then 1; Soul Tithe delays Mana. Cleanse and companion diversion still matter.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Dedicated Fate decks may barely feel the Consume cap; do not assume all Necromancer paths weaken equally. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A-",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "High",
+      "recovery": "Good if Consume generation continues",
+      "rareReliance": "Moderate",
+      "scaling": "Restless Spirits has three full scaling triggers per Aura/own turn, then a reduced payoff; Harvest and Reap stay intact.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "No fight-total Harvest cap: extended Consume generation, Fate pressure and defense can still make this an upper-band build. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A−",
+          "extendedFight": "A+"
+        },
+        "arena": {
+          "overall": "A+",
+          "opening": "A-",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Medium–high",
+      "recovery": "Good once paid growth is established",
+      "rareReliance": "Moderate",
+      "scaling": "Five actual Hangover payments establish 3%-max-HP healing plus 10 Barrier each end turn instead of 5% healing plus 10 Barrier. Permanent sustain remains; guns and other damage sources must close fights.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Campaign attrition may worsen. In Arena watch both remaining stall and Fate vulnerability. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A-",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A-",
+          "extended": "A",
+          "long": "A"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "Low–medium",
+      "recovery": "Good; weapon copies grow each turn",
+      "rareReliance": "Moderate",
+      "scaling": "Starting Precision plus two each own turn continues growing all Old Twelve Gauge copies. Lone-target bonus and Clutch improve output; access to the gun still depends on drawing it after play.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Reliable damage growth but survival, gun access and Hangover costs must be counted. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A",
+          "deep": "A",
+          "endgame": "A",
+          "openingFight": "A",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A",
+          "opening": "A",
+          "extended": "A",
+          "long": "A+"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Not retested",
+        "deep": "Not retested",
+        "endgame": "Not regraded",
+        "openingFight": "Unrated",
+        "extendedFight": "Unrated"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established"
+      },
+      "setup": "High",
+      "recovery": "Limited; one rescue buys a brief window; first-Attack Barrier buys time but does not restore HP",
+      "rareReliance": "Moderate",
+      "scaling": "Low-HP damage ramp and once-fight hostile-lethal rescue remain. The first own-turn Attack grants ceil(5% max HP) Barrier before resolving only if already at 40% HP or below. A healthy first Attack spends the opportunity.",
+      "rationale": "Equal1000 starting HP changes proportional healing, HP-payment efficiency and finisher thresholds. Second seat loses60 bonus HP and one opening Mana, retains one extra opening card. Shared AI changes decision quality. No current letter grade inferred from the small policy comparison. 0.202: combat grades unchanged. Campaign selection is more consistent across all progression bands; cross-class engine pieces are easier to choose but not assured. No new measured evidence. Map follow-up: five-lane route selection may help find setup/recovery pieces, while shared meeting points reduce bypass options. No regrade in Campaign or Arena.",
+      "watch": "Barrier is not immunity or healing. Fate, self-payment and follow-up hits still punish low HP; the buff may not solve all reliability problems. Recheck revised recipes with human decisions; preserve unresolved fights and deck-quality differences. Recheck percentage sustain and first-seat advantage under equal HP/card-only compensation. Track chosen versus skipped Rift-Crossed offers, map acquisition/delivery tiers and resulting deck synergies; separate acquisition consistency from combat power. Observe selected routes and meeting-point losses by progression band; current acquisition and reward grades are estimates only.",
+      "confidence": "Low for human strength; zero human observations in this snapshot.",
+      "evidence": [
+        "Static topology review and deterministic reachability/non-crossing/save/UI checks only.",
+        "No new measured human or simulated fights; historical assessments remain separate."
+      ],
+      "pacing": "Global final-field pacing is recorded in the simulation summary. Do not infer per-build turn-ten parity from win rates.",
+      "previousProjection": {
+        "campaign": {
+          "developing": "A−",
+          "deep": "A",
+          "endgame": "A−",
+          "openingFight": "A−",
+          "extendedFight": "A"
+        },
+        "arena": {
+          "overall": "A-",
+          "opening": "A-",
+          "extended": "A",
+          "long": "A-"
+        }
+      },
+      "previousRevision": {
+        "version": "0.202.0 treasure assessment",
+        "campaign": {
+          "developing": "Not retested",
+          "deep": "Not retested",
+          "endgame": "Not regraded",
+          "openingFight": "Unrated",
+          "extendedFight": "Unrated"
+        },
+        "arena": {
+          "overall": "Awaiting 1000-HP field evidence",
+          "opening": "Unrated",
+          "extended": "Unrated",
+          "long": "Not established"
+        }
+      }
+    }
+  ],
+  "corrections": [
+    "0.202.0.json preserves the prior treasure/foreign-card assessment. This follow-up adds map-generation changes and supersedes the earlier unreleased desktop fit layout.",
+    "Deterministic topology fixtures check reachability, forward-only edges, non-crossing paths and unchanged route length. They are not balance simulations or measured win rates."
+  ],
+  "assessmentId": "five-lane-map-review-1",
+  "longFightBand": "own turns 10-15",
+  "simulatedMatches": 0,
+  "gradeMode": "review-signals",
+  "evaluationScope": "No fights were evaluated in this revision. Deterministic fixture checks establish delivery, rewards and save compatibility only. Combat labels are carried forward without new grades or parity claims. Developing = IV-X, deep = XI-XVI, endgame = XVII-XX. Opening, extended and beyond-ten-turn strength remain unmeasured.",
+  "mixedBuilds": [
+    {
+      "build": "Companion HP + foreign healing",
+      "campaign": {
+        "early": "Unrated",
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "opening": "Unrated",
+        "extended": "Unrated"
+      },
+      "arena": {
+        "opening": "Unchanged/unrated",
+        "extended": "Unchanged/unrated",
+        "beyondTen": "Unchanged/unrated"
+      },
+      "setup": "More deliberate acquisition; still depends on offers and resource costs. Five-lane branching increases visible choices, not guaranteed pieces.",
+      "recovery": "Foreign recovery cards can be selected; no sustain increase established. Meeting points can force a fight when recovery is needed; track this separately by tier.",
+      "rareReliance": "Build-dependent; treasure gives three rares, not a specific rare.",
+      "confidence": "Low; static assessment only."
+    },
+    {
+      "build": "Exposed + foreign multi-hit",
+      "campaign": {
+        "early": "Unrated",
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "opening": "Unrated",
+        "extended": "Unrated"
+      },
+      "arena": {
+        "opening": "Unchanged/unrated",
+        "extended": "Unchanged/unrated",
+        "beyondTen": "Unchanged/unrated"
+      },
+      "setup": "More deliberate acquisition; still depends on offers and resource costs. Five-lane branching increases visible choices, not guaranteed pieces.",
+      "recovery": "Foreign recovery cards can be selected; no sustain increase established. Meeting points can force a fight when recovery is needed; track this separately by tier.",
+      "rareReliance": "Build-dependent; treasure gives three rares, not a specific rare.",
+      "confidence": "Low; static assessment only."
+    },
+    {
+      "build": "Consume + foreign draw",
+      "campaign": {
+        "early": "Unrated",
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "opening": "Unrated",
+        "extended": "Unrated"
+      },
+      "arena": {
+        "opening": "Unchanged/unrated",
+        "extended": "Unchanged/unrated",
+        "beyondTen": "Unchanged/unrated"
+      },
+      "setup": "More deliberate acquisition; still depends on offers and resource costs. Five-lane branching increases visible choices, not guaranteed pieces.",
+      "recovery": "Foreign recovery cards can be selected; no sustain increase established. Meeting points can force a fight when recovery is needed; track this separately by tier.",
+      "rareReliance": "Build-dependent; treasure gives three rares, not a specific rare.",
+      "confidence": "Low; static assessment only."
+    }
+  ]
+}

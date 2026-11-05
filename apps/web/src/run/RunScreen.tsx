@@ -94,7 +94,6 @@ import { iconUrl } from '../art/gameIcons';
 import { Picture } from '../ui/Picture';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
-import { useTallMap } from './mapShape';
 import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
@@ -679,7 +678,10 @@ export default function RunScreen() {
   }
 
   return (
-    <main className="run" data-realm={run.phase === 'map' ? run.map.realm : undefined}>
+    <main
+      className={`run${run.phase === 'map' ? ' run--map' : ''}`}
+      data-realm={run.phase === 'map' ? run.map.realm : undefined}
+    >
       <RunBar
         run={run}
         onDeck={() => setShowDeck(true)}
@@ -689,7 +691,7 @@ export default function RunScreen() {
         onAbandon={() => setConfirmAbandon(true)}
       />
       {run.phase === 'map' && (
-        <p className="pvp__balanceNotice">
+        <p className="run__balanceNotice">
           Online Campaign saves contribute private deck and progression snapshots for developer
           balance review. Your raw save and account details are not included. Offline runs are not
           uploaded.
@@ -1003,18 +1005,17 @@ function Body(props: {
 }) {
   const { run, act } = props;
   const available = useMemo(() => new Set(availableNodes(run).map((n) => n.id)), [run]);
-  const tallMap = useTallMap();
 
   switch (run.phase) {
     case 'map':
       return (
-        <section className="stage-panel" aria-label="Tier map">
+        <section className="stage-panel stage-panel--map" aria-label="Tier map">
           <h2 className="stage-panel__title">
             Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
           </h2>
           <p className="stage-panel__hint">
-            Choose where to go next. Floors run {tallMap ? 'top to bottom' : 'left to right'}; the
-            Warden waits at the end.
+            Choose a glowing stop. Follow the paths down as they split and meet; the Warden waits at
+            the bottom.
           </p>
           <div className="mapwrap">
             <MapView

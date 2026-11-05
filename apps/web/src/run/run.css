@@ -14,6 +14,64 @@
     linear-gradient(180deg, var(--c-navy), var(--c-void) 75%);
 }
 
+.run__balanceNotice {
+  margin: 0;
+  max-width: none;
+  color: var(--c-text-dim);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* One vertical scrolling map on desktop and phones; controls stay above the path. */
+.run--map {
+  height: 100dvh;
+  min-height: 36rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-top: 0.6rem;
+  padding-bottom: 1.25rem;
+}
+.run--map > .runbar,
+.run--map > .run__balanceNotice {
+  flex-shrink: 0;
+}
+.run--map > .stage-panel--map {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  gap: 0.3rem;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+.run--map .stage-panel__title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+.run--map .stage-panel__hint {
+  font-size: 0.9rem;
+}
+.run--map .mapwrap {
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  justify-content: stretch;
+}
+.run--map .map__holder,
+.mapmodal .map__holder {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable both-edges;
+}
+.run--map .mapink__dock {
+  position: static;
+  justify-self: center;
+  margin: 0 0 0.3rem;
+}
+
 /* the campaign header: one line when there is room; on a narrower screen two lines (who and the buttons on top, the stats
    under them, across the full width), so nothing wraps into a ragged pile (DECISIONS #345) */
 .runbar {
@@ -347,6 +405,7 @@
 
 /* the stage map */
 .mapwrap {
+  width: 100%;
   max-width: 100%;
   overflow-x: auto;
   /* room for the hover glow and the labels under the nodes, so nothing is clipped */
@@ -540,12 +599,23 @@ img.mapnode__pic {
   padding: 1rem;
 }
 .mapmodal__panel {
+  width: min(58rem, 100%);
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
   overflow: auto;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 0.75rem;
   justify-items: center;
+}
+.mapmodal .mapwrap {
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  justify-content: stretch;
 }
 .mapnode--merchant {
   border-color: var(--c-cyan);
@@ -1961,26 +2031,34 @@ img.mapnode__pic {
   font-size: 0.92rem;
 }
 
-/* the map held upright (DECISIONS #443): smaller stops, top to bottom */
+/* The shared five-lane canvas scales its markers with the available width. */
+.map--tall {
+  container-type: inline-size;
+}
 .map--tall .mapnode {
-  width: 3.6rem;
-  height: 3.6rem;
+  width: clamp(2.75rem, 14cqw, 4.5rem);
+  height: clamp(2.75rem, 14cqw, 4.5rem);
 }
 .map--tall .mapnode svg {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 60%;
+  height: 60%;
+}
+.map--tall .mapnode img.mapnode__pic {
+  width: 70%;
+  height: 70%;
 }
 .map--tall .mapnode--warden {
-  width: 4.6rem;
-  height: 4.6rem;
+  width: clamp(3.5rem, 18cqw, 5.5rem);
+  height: clamp(3.5rem, 18cqw, 5.5rem);
 }
-.mapwrap:has(.map--tall) {
-  min-height: 0;
-  padding: 0.5rem 0 1.5rem;
+.map--tall .mapnode__label {
+  width: 19cqw;
+  font-size: clamp(0.67rem, 2.7cqw, 0.95rem);
+  white-space: normal;
 }
 
 /* ---- drawing on the map (DECISIONS #506) ---- */
-/* (the dock spans the map or the screen, whichever is narrower, and stays in view while the map scrolls sideways, with the tools centred in it) */
+/* Drawing controls stay above the scrolling route, centered within the available width. */
 .mapink__dock {
   position: sticky;
   left: 0;

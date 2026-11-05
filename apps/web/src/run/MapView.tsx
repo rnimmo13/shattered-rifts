@@ -1,14 +1,12 @@
-// The stage map: floors run left to right, the Warden at the end. Click a glowing node to go there. On a screen taller than it is wide
-// (a phone held upright) the floors run top to bottom instead (DECISIONS #443).
+// Shared vertical tier map: five lanes with routes that split and meet.
 
 import type { MapNode, NodeKind, StageMap } from '@sr/campaign';
 import { CAMPAIGN_GHOSTS_ENABLED } from '@sr/campaign';
 import { RIFTWALKERS, encounter } from '@sr/content/v2';
-import { useEffect, useRef, type SVGProps } from 'react';
+import { useEffect, useRef, useState, type SVGProps } from 'react';
 import { HeroIcon } from '../ui/HeroIcon';
 import { Picture } from '../ui/Picture';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
-import { useTallMap } from './mapShape';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -172,25 +170,42 @@ export function MapView(props: {
   /** names this map for what the player has drawn on it */
   inkKey?: string;
 }) {
-  // (the hook re-renders the map when the screen is turned; a drawing only fits the layout it was drawn on, so each has its own)
-  const tall = useTallMap();
-  const ink = useMapInk(props.inkKey && `${props.inkKey}:${tall ? 'tall' : 'wide'}`);
-  // (an act is too long for most screens: it opens on where you are, or where you can go)
+  // Keep older horizontal/portrait drawings separate from this new layout.
+  const ink = useMapInk(props.inkKey && props.inkKey + ':vertical-5');
   const holder = useRef<HTMLDivElement>(null);
-  const opened = useRef<string | null>(null);
-  const place = `${props.map.nodes[0]?.id ?? ''}:${props.map.floors}:${props.at ?? ''}:${tall ? 'tall' : 'wide'}`;
+  const [width, setWidth] = useState(320);
   useEffect(() => {
-    if (opened.current === place) return;
-    opened.current = place;
-    holder.current
-      ?.querySelector('.mapnode.is-open, .mapnode.is-here')
-      ?.scrollIntoView({ inline: 'center', block: tall ? 'center' : 'nearest' });
-  }, [place, tall]);
+    const element = holder.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) setWidth(Math.max(240, Math.min(720, entry.contentRect.width)));
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  const place = `${props.inkKey ?? ''}:${props.map.nodes[0]?.id ?? ''}:${props.map.floors}:${props.at ?? ''}`;
+  useEffect(() => {
+    // Run after layout and browser scroll restoration, including a full-page reload.
+    const center = () =>
+      holder.current
+        ?.querySelector('.mapnode.is-open, .mapnode.is-here')
+        ?.scrollIntoView({ inline: 'nearest', block: 'center' });
+    let frame = requestAnimationFrame(center);
+    const restored = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(center);
+    };
+    window.addEventListener('pageshow', restored);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('pageshow', restored);
+    };
+  }, [place, width]);
   return (
     <>
       <MapInkTools ink={ink} />
       <div ref={holder} className="map__holder">
-        {tall ? <TallMap {...props} ink={ink} /> : <WideMap {...props} ink={ink} />}
+        <TallMap {...props} ink={ink} width={width} />
       </div>
     </>
   );
@@ -201,60 +216,6 @@ const edgeProps = (done: boolean, fromHere: boolean): SVGProps<SVGPathElement> =
   done && fromHere
     ? { pathLength: 1, className: 'map__edge is-walked is-fresh' }
     : { className: done ? 'map__edge is-walked' : 'map__edge' };
-
-/** Floors left to right. */
-function WideMap(props: MapProps & { ink: MapInkState }) {
-  const { map } = props;
-  // fill the screen: the spacing grows with the window. PAD is the room left and right of the first and last floor, so the
-  // map sits dead centre and a hovered node's glow is never cut off.
-  const PAD = 90;
-  const gaps = Math.max(1, map.floors - 1);
-  const COL_W = Math.max(
-    104,
-    Math.min(290, Math.floor((window.innerWidth * 0.9 - 2 * PAD) / gaps)),
-  );
-  const ROW_H = Math.max(130, Math.min(200, Math.floor(window.innerHeight * 0.22)));
-  const rows = Math.max(
-    ...map.nodes.map((n) => map.nodes.filter((m) => m.floor === n.floor).length),
-  );
-  const W = gaps * COL_W + 2 * PAD;
-  const H = rows * ROW_H + 40;
-  const pos = new Map<string, { x: number; y: number }>();
-  for (let f = 1; f <= map.floors; f++) {
-    const col = map.nodes.filter((n) => n.floor === f);
-    col.forEach((n, i) => {
-      pos.set(n.id, { x: PAD + (f - 1) * COL_W, y: ((i + 1) / (col.length + 1)) * H });
-    });
-  }
-  return (
-    <div className="map" style={{ width: W, height: H }}>
-      <svg className="map__lines" width={W} height={H} aria-hidden>
-        {map.nodes.flatMap((n) =>
-          n.next.map((t) => {
-            const a = pos.get(n.id);
-            const b = pos.get(t);
-            if (!a || !b) return null;
-            const done =
-              props.cleared.includes(n.id) && (props.cleared.includes(t) || props.at === n.id);
-            return (
-              <path
-                key={`${n.id}>${t}`}
-                d={`M ${a.x} ${a.y} C ${a.x + COL_W * 0.45} ${a.y}, ${b.x - COL_W * 0.45} ${b.y}, ${b.x} ${b.y}`}
-                {...edgeProps(done, props.at === n.id)}
-              />
-            );
-          }),
-        )}
-      </svg>
-      {map.nodes.map((n) => {
-        const p = pos.get(n.id);
-        if (!p) return null;
-        return <MapButton key={n.id} n={n} p={p} {...props} />;
-      })}
-      <MapInkLayer ink={props.ink} w={W} h={H} />
-    </div>
-  );
-}
 
 /** What each node means. */
 export function MapLegend() {
@@ -336,18 +297,29 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
   );
 }
 
-/** Held upright: floor 1 at the top, the Warden at the bottom; each floor's stops spread across the width. */
-function TallMap(props: MapProps & { ink: MapInkState }) {
+/** Floor 1 at the top, the Warden at the bottom, on every screen. */
+function TallMap(props: MapProps & { ink: MapInkState; width: number }) {
   const { map } = props;
-  const W = Math.max(260, Math.min(520, window.innerWidth - 40));
-  const ROW_H = 118;
-  const PAD = 56;
+  const W = props.width;
+  const ROW_H = 132;
+  const PAD = 88;
   const H = Math.max(1, map.floors - 1) * ROW_H + 2 * PAD;
   const pos = new Map<string, { x: number; y: number }>();
   for (let f = 1; f <= map.floors; f++) {
     const row = map.nodes.filter((n) => n.floor === f);
     row.forEach((n, i) => {
-      pos.set(n.id, { x: ((i + 1) / (row.length + 1)) * W, y: PAD + (f - 1) * ROW_H });
+      pos.set(n.id, {
+        x:
+          (((row.length === 1
+            ? 2
+            : row.length === 2
+              ? 1 + i * 2
+              : Math.round((i * 4) / (row.length - 1))) +
+            0.5) *
+            W) /
+          5,
+        y: PAD + (f - 1) * ROW_H,
+      });
     });
   }
   return (

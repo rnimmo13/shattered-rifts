@@ -276,7 +276,11 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       const at = marks.indexOf(s.id);
       if (s.off) {
         if (at >= 0) marks.splice(at, 1);
-      } else if (at < 0) marks.push(s.id);
+        if (s.id === 'map') delete r.treasureMapTier;
+      } else if (at < 0) {
+        marks.push(s.id);
+        if (s.id === 'map') r.treasureMapTier = r.tier;
+      }
       return;
     }
     case 'choose': {

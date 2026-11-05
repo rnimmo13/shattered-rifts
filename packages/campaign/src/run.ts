@@ -41,7 +41,7 @@ import {
 
 export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
-import { rollEvent, resolveEvent } from './events';
+import { rollEvent, resolveEvent, promisedTreasure } from './events';
 import { applyChoice, applyDeal } from './deals';
 import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
 import {
@@ -375,6 +375,10 @@ const nodeOf = (run: RunState, id: string): MapNode => {
 };
 
 function clearNode(run: RunState, id: string): void {
+  if (run.context?.bonusEvent) {
+    run.context = null;
+    return;
+  }
   if (!run.cleared.includes(id)) {
     run.cleared.push(id);
     run.stats.nodesCleared++;
@@ -393,6 +397,14 @@ export function enterNode(run: RunState, nodeId: string): RunState {
   );
   const r = clone(run);
   const node = nodeOf(r, nodeId);
+  const treasure = promisedTreasure(r);
+  if (treasure) {
+    delete r.eventResult;
+    delete r.eventFlips;
+    r.context = { nodeId, bonusEvent: true, event: treasure };
+    r.phase = 'event';
+    return r;
+  }
   r.at = nodeId;
   r.context = { nodeId };
   switch (node.kind) {
