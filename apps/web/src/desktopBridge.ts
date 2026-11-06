@@ -88,10 +88,12 @@ export async function startDesktop(): Promise<void> {
   };
   await bridge.ready();
   window.shatteredRiftsConfirmOnlineSave = async () => {
-    const { localOnly, playState } = await import('./playAccess');
+    const { localOnly, playState, releasePlayAccess, releasePlayForUpdate } =
+      await import('./playAccess');
     if (localOnly() || playState().phase === 'browsing') return;
-    const { releasePlayAccess } = await import('./playAccess');
-    await releasePlayAccess();
+    // An update handoff keeps the local snapshot and must not be blocked by a lost connection.
+    if (updateHandoff) await releasePlayForUpdate();
+    else await releasePlayAccess();
   };
   await flushDesktopSave();
   window.setInterval(() => {
@@ -115,8 +117,20 @@ export async function restartDesktopUpdate(): Promise<void> {
   const { checkpointRunTime } = await import('./run/runClock');
   checkpointRunTime();
   await flushDesktopSave();
-  const { releasePlayAccess } = await import('./playAccess');
-  await releasePlayAccess();
+  const { releasePlayForUpdate } = await import('./playAccess');
+  await releasePlayForUpdate();
   if (battleActive()) throw new Error('A battle has started. Update after leaving it.');
-  await desktopBridge()?.installUpdate();
+  updateHandoff = true;
+  try {
+    await desktopBridge()?.installUpdate();
+  } catch (error) {
+    updateHandoff = false;
+    throw error;
+  }
+  // The app normally closes within seconds; if it is still open, later quits confirm saves again.
+  window.setTimeout(() => {
+    updateHandoff = false;
+  }, 60_000);
 }
+/** True while a confirmed update install is handing off to the installer. */
+let updateHandoff = false;

@@ -41,7 +41,12 @@ beforeEach(async () => {
     setItem: (key: string, value: string) => storage.set(key, value),
     removeItem: (key: string) => storage.delete(key),
   });
-  vi.stubGlobal('localStorage', { setItem: vi.fn(), removeItem: vi.fn() });
+  const local = new Map<string, string>();
+  vi.stubGlobal('localStorage', {
+    getItem: (key: string) => local.get(key) ?? null,
+    setItem: vi.fn((key: string, value: string) => local.set(key, value)),
+    removeItem: vi.fn((key: string) => local.delete(key)),
+  });
   location = {
     protocol: 'https:',
     hostname: 'shatteredrifts.app',
@@ -102,6 +107,38 @@ describe('shared-account play gates', () => {
       fetcher.mock.calls.map(([url]) => (url instanceof Request ? url.url : url.toString())),
     ).not.toContain('https://shatteredrifts.app/pvp/play/release');
     expect(sessionStorage.getItem('sr.play.token')).toBe('secret');
+  });
+  it('never blocks a required update on an unconfirmed save or a lost connection', async () => {
+    fetcher.mockResolvedValueOnce(claim());
+    await access.ensurePlay();
+    synced.flush.mockResolvedValue(false);
+    await expect(access.releasePlayForUpdate()).resolves.toBeUndefined();
+    access.pausePlay();
+    await expect(access.releasePlayForUpdate()).resolves.toBeUndefined();
+    // The proof is kept so the refreshed tab can reclaim its own lease.
+    expect(sessionStorage.getItem('sr.play.token')).toBe('secret');
+    expect(localStorage.getItem(access.UNCONFIRMED_HANDOFF)).toBe('1');
+  });
+  it('keeps local decks and history after an unconfirmed update, then clears the marker', async () => {
+    localStorage.setItem(access.UNCONFIRMED_HANDOFF, '1');
+    localStorage.setItem('sr.runHistory', '["unsent run"]');
+    fetcher.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          ...((await claim().json()) as object),
+          history: { items: [], removed: [] },
+        }),
+      ),
+    );
+    expect(await access.ensurePlay()).toBe(true);
+    expect(localStorage.getItem('sr.runHistory')).toBe('["unsent run"]');
+    expect(localStorage.getItem('sr-vault-v1')).toBeNull();
+    expect(localStorage.getItem(access.UNCONFIRMED_HANDOFF)).toBeNull();
+    // A normal later claim adopts the account copy again.
+    access.pausePlay();
+    fetcher.mockResolvedValueOnce(claim());
+    await access.ensurePlay();
+    expect(localStorage.getItem('sr-vault-v1')).toBe('[]');
   });
   it('freezes gameplay while confirming a handoff and releases only after acknowledgement', async () => {
     fetcher.mockResolvedValueOnce(claim()).mockResolvedValue(Response.json({ ok: true }));

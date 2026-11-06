@@ -48,8 +48,13 @@ export function UpdatePrompt() {
         <p>
           {update.kind === 'web'
             ? 'Update required. Saving your progress and refreshing automatically.'
-            : 'Update required. Saving your progress and restarting automatically to install the patch.'}
+            : busy
+              ? 'Saving and installing the update. Shattered Rifts will close for a moment and reopen by itself, usually within 30 seconds.'
+              : 'Update required. Saving your progress and restarting automatically to install the patch.'}
         </p>
+        {busy && (
+          <progress className="update-prompt__progress" aria-label="Installing the update" />
+        )}
       </div>
       <div className="update-prompt__actions">
         <button className="btn btn--small" disabled={busy} onClick={install}>

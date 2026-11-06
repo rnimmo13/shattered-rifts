@@ -21,6 +21,8 @@ let pending: Promise<boolean> | null = null;
 let recoveryAvailable = false;
 export const localRecoveryAvailable = (): boolean => recoveryAvailable;
 const listeners = new Set<() => void>();
+/** Set when a required update proceeded without a confirmed account save. */
+export const UNCONFIRMED_HANDOFF = 'sr.play.unconfirmedHandoff';
 export const playState = (): PlayAccess => state;
 export const subscribePlay = (listener: () => void): (() => void) => {
   listeners.add(listener);
@@ -115,6 +117,11 @@ export function ensurePlay(recoverLocal = false, takeOver = false): Promise<bool
           recoverLocal ? remote.map((r) => newerLocal.find((c) => c.id === r.id) ?? r) : remote,
         );
         if (!recoverLocal || !newerLocal.length) adoptSharedReplays(data.replays);
+      }
+      // After an update that went ahead without a confirmed save, keep this device's decks, history
+      // and pending drops: the post-claim sync merges them up instead of the account copy replacing them.
+      const unconfirmed = localStorage.getItem(UNCONFIRMED_HANDOFF) !== null;
+      if ((revision !== 0 || remote.length) && !unconfirmed) {
         localStorage.setItem('sr-vault-v1', JSON.stringify(cleanVault(data.decks)));
         for (const [name, key] of [
           ['history', 'sr.runHistory'],
@@ -127,6 +134,7 @@ export function ensurePlay(recoverLocal = false, takeOver = false): Promise<bool
         }
         localStorage.removeItem('sr.pendingDrops');
       }
+      localStorage.removeItem(UNCONFIRMED_HANDOFF);
       state = { ...state, epoch: state.epoch + 1 };
       recoveryAvailable = false;
       update('playing');
@@ -173,6 +181,24 @@ export async function releasePlayAccess(): Promise<void> {
       error instanceof Error ? error.message : 'The latest account save is not confirmed.',
     );
     throw error;
+  }
+}
+/**
+ * Before a required refresh/restart: confirm and release play when possible, but never block the
+ * update. A lost connection or unconfirmed save leaves the local copy in place; the next claim
+ * reclaims this lease or offers the existing newer-local recovery.
+ */
+export async function releasePlayForUpdate(): Promise<void> {
+  if (localOnly() || !token) return;
+  try {
+    await releasePlayAccess();
+  } catch {
+    // Local progress is preserved; the next claim merges instead of replacing local lists.
+    try {
+      localStorage.setItem(UNCONFIRMED_HANDOFF, '1');
+    } catch {
+      /* storage unavailable */
+    }
   }
 }
 export function playSocketUrl(path: string, address = serverBase()): string {

@@ -94,7 +94,8 @@ export interface Entry {
 // (80: Heavy Hitter HP conversion and Resonant Pulse per-turn limit, #602)
 // (81: long-fight balance, shared effect limits and before-play defense, #603)
 // 88: three Knight Strike rewards; Campaign HP/damage and Elite premiums.
-export const RULES_VERSION = 88;
+// 89: Breaching Strike becomes a 2-Mana Rare with 18/24 damage and 2 Exposed.
+export const RULES_VERSION = 89;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

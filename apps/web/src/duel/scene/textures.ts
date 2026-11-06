@@ -639,9 +639,8 @@ function paintFloorTextures(): FloorTextures {
       rr = lerp(rr, hr, far * 0.7);
       gg = lerp(gg, hg, far * 0.7);
       bb = lerp(bb, hb, far * 0.7);
-      // platform shape: soft far edge and angled side edges
-      const edgeX = EDGE - Math.abs(X);
-      const alpha = smoothstep(0, 0.9, edgeX) * smoothstep(floorTop, floorTop + 70, y);
+      // Continuous landscape, with a soft horizon rather than a floating platform edge.
+      const alpha = smoothstep(floorTop, floorTop + 70, y);
       const i = (py * W + pxl) * 4;
       px[i] = clampByte(rr);
       px[i + 1] = clampByte(gg);
@@ -832,13 +831,13 @@ function paintVignetteTexture(): HTMLCanvasElement {
   const g = ctx2d(c);
   const rad = g.createRadialGradient(W / 2, H * 0.52, H * 0.3, W / 2, H * 0.52, H * 1.0);
   rad.addColorStop(0, 'rgba(2,3,9,0)');
-  rad.addColorStop(0.6, 'rgba(2,3,9,0.32)');
-  rad.addColorStop(1, 'rgba(2,3,9,0.9)');
+  rad.addColorStop(0.6, 'rgba(2,3,9,0.08)');
+  rad.addColorStop(1, 'rgba(2,3,9,0.28)');
   g.fillStyle = rad;
   g.fillRect(0, 0, W, H);
   const bot = g.createLinearGradient(0, H * 0.74, 0, H);
   bot.addColorStop(0, 'rgba(2,3,9,0)');
-  bot.addColorStop(1, 'rgba(2,3,9,0.7)');
+  bot.addColorStop(1, 'rgba(2,3,9,0.4)');
   g.fillStyle = bot;
   g.fillRect(0, H * 0.74, W, H * 0.26);
   const top = g.createLinearGradient(0, 0, 0, H * 0.14);

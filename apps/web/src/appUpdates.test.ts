@@ -20,7 +20,7 @@ vi.mock('./desktopBridge', () => ({
         }
       : undefined,
 }));
-vi.mock('./playAccess', () => ({ releasePlayAccess: mocks.release }));
+vi.mock('./playAccess', () => ({ releasePlayForUpdate: mocks.release }));
 
 beforeEach(() => {
   vi.resetModules();
@@ -138,7 +138,7 @@ it('coalesces automatic and manual retry requests into one saved web refresh', a
   expect(mocks.release).toHaveBeenCalledOnce();
   expect(mocks.reload).toHaveBeenCalledOnce();
 });
-it('does not install in battle, retains a failed required update, and can retry after saving recovers', async () => {
+it('does not install in battle, retains a failed required update, and can retry', async () => {
   const app = await import('./appUpdates');
   await expect(app.applyRequiredUpdate()).rejects.toThrow('No update');
   mocks.fetch.mockResolvedValueOnce(latest());

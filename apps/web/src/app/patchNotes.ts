@@ -46,6 +46,49 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.213.0',
+    date: '2026-11-06',
+    title: 'Battlefields with a sense of place',
+    summary: 'Complete painted arenas, glowing fissures, and a Rare Strike for the Knight.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Realm and Warden arenas',
+        text: 'All 33 battle locations now have a complete painted battlefield: continuous ground, substantial scenery behind the fighters, and glowing cracks in each realm’s colors. Separate scenery cutouts are replaced by details built into the setting. Terrain fills the screen on phones and wide displays, with gentler shading at the edges. Drago’s First Ruin has its own shattered throne and immense wound in reality. Applies to Campaign, Arena and Sandbox; fighter positions and targeting stay the same.',
+      },
+      {
+        kind: 'balance', title: 'Breaching Strike', card: 'breaching-strike', hero: 'knight',
+        changes: [
+          { label: 'Rarity', before: 'Common', after: 'Rare', direction: 'neutral' },
+          { label: 'Mana · base / upgraded', before: '1 / 1', after: '2 / 2', direction: 'nerf' },
+          { label: 'Damage · base', before: '7', after: '18', direction: 'buff' },
+          { label: 'Damage · upgraded', before: '10', after: '24', direction: 'buff' },
+          { label: 'Exposed · base / upgraded', before: '1 / 1', after: '2 / 2', direction: 'buff' },
+        ],
+        text: 'Campaign and Arena. Breaching Strike becomes the heavy Rare option among the three new Strikes. It still damages one enemy before applying Exposed. Raised Hell still auto-plays it when drawn without paying Mana, and it still counts as one Strike for Mastered Strike. Existing copies use the new rarity, cost and effects. Shield Strike remains Common, and Muster Strike remains Uncommon.',
+      },
+    ],
+    heads: 'Older unfinished Campaign fights restart at their saved encounter checkpoint for the new card rules, without spending Resolve. Earned cards and run progress are retained.',
+  },
+  {
+    version: '0.212.0',
+    date: '2026-11-06',
+    title: 'Updates that finish',
+    summary: 'Required refreshes and desktop restarts no longer get stuck.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Save and refresh',
+        text: 'The required website refresh no longer fails when your play connection has dropped, for example after a server outage or a long time in a background tab. The game still saves and confirms your progress when it can; anything not yet confirmed online stays on this device, and you are offered to recover it when you continue.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Desktop restart to update',
+        text: 'Restart to update now shows that the update is installing, and Shattered Rifts reopens by itself once the installer finishes, usually within 30 seconds. A dropped play connection no longer stops the restart. This applies from the next desktop update onward; to get this version, close the app normally and open it again.',
+      },
+    ],
+  },
+  {
     version: '0.211.0',
     date: '2026-11-06',
     title: 'Account play restored',

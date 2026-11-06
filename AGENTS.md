@@ -2,6 +2,14 @@
 
 Read `CLAUDE.md` before working on the game.
 
+## Two AI assistants share this repo (Robert, 2026-11-06)
+
+- Robert uses both Claude Code and ChatGPT/Codex on this project, sometimes at the same time in the same working tree. He tries to give each a separate task (for example, one making and wiring art while the other fixes code).
+- Expect uncommitted changes you did not make. Never revert, reformat, stash, or "clean up" files outside your own task, and never include them in your commits. Stage your own files by name, not `git add -A`.
+- If someone else's in-progress edit breaks lint, typecheck, tests or a build, do not fix it yourself. Verify your own change in isolation (for example a temporary `git worktree` with only your diff applied) and tell Robert what is failing and in which files.
+- Before releasing, check `git status` for others' work. The desktop publisher needs a clean tree, so ask Robert how to handle unrelated pending changes rather than committing or discarding them.
+- Avoid editing the same file as the other assistant at the same time. If your task needs a file that is already modified by someone else, say so and ask first.
+
 ## Release approval (Robert, 2026-11-04)
 
 - Do not push, deploy, or publish a release without Robert's explicit approval for the current changes.

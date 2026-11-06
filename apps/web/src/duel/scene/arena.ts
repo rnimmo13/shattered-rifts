@@ -10,6 +10,8 @@ import { lerp, rng, smoothstep } from './noise';
 import type { VenueId } from './venue';
 
 export interface ArenaPack {
+  /** Unified painting: architecture, ground, scenery and fissures share one perspective. */
+  battlefield: HTMLImageElement | null;
   backdrop: HTMLImageElement | null;
   floor: HTMLImageElement | null;
   props: (HTMLImageElement | null)[];
@@ -285,6 +287,8 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
 /** Load a venue's arena art; null if the venue has none at all. */
 export async function loadArena(id: VenueId): Promise<ArenaPack | null> {
   const base = `${import.meta.env.BASE_URL}art/arenas/${id}/`;
+  const battlefield = await loadImage(`${base}battlefield-v2.jpg`);
+  if (battlefield) return { battlefield, backdrop: null, floor: null, props: [] };
   const look = ARENA_LOOK[id] ?? ARENA_LOOK.rift;
   const used = new Set([...look.far, ...look.ground.map((p) => p.i), ...look.hang]);
   const [backdrop, floor, ...props] = await Promise.all([
@@ -295,7 +299,7 @@ export async function loadArena(id: VenueId): Promise<ArenaPack | null> {
     ),
   ]);
   if (!backdrop && !floor && props.every((p) => p === null)) return null;
-  return { backdrop, floor, props };
+  return { battlefield: null, backdrop, floor, props };
 }
 
 /**
@@ -347,7 +351,6 @@ function buildTiledFloor(
   const data = og.createImageData(W, H);
   const px = data.data;
   const TILE = look.tile; // world units per tile
-  const EDGE = 9.4;
   const rift = camera.A / (640 - camera.vpY);
   const [tr, tg, tb] = look.tone;
   const [rr, rg, rb] = look.rift;
@@ -380,8 +383,8 @@ function buildTiledFloor(
       r = lerp(r, 40, far * 0.7);
       g = lerp(g, 36, far * 0.7);
       b = lerp(b, 60, far * 0.7);
-      const edgeX = EDGE - Math.abs(X);
-      const alpha = smoothstep(0, 0.9, edgeX) * smoothstep(floorTop, floorTop + 70, y);
+      // Terrain continues beyond the combat area; only the horizon blends into the painting.
+      const alpha = smoothstep(floorTop, floorTop + 70, y);
       const i = (py * W + pxl) * 4;
       px[i] = Math.max(0, Math.min(255, r));
       px[i + 1] = Math.max(0, Math.min(255, g));

@@ -42,11 +42,20 @@ const foeHp = (s: CombatState): number => s.sides.b.units[0]!.hp + s.sides.b.uni
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('the knight is the Ironclad shape', () => {
+  it('the Rare Breaching Strike needs 2 Mana when played manually', () => {
+    const s = fight(['breaching-strike']);
+    s.sides.a.mana = 1;
+    expect(legalActions(db, s).some((a) => a.type === 'play')).toBe(false);
+    s.sides.a.mana = 2;
+    expect(play(s, 'breaching-strike').sides.a.mana).toBe(0);
+    expect(db.cards['breaching-strike']!.rarity).toBe('rare');
+    expect(db.cards['breaching-strike+']!.rarity).toBe('rare');
+  });
   it.each([
     ['shield-strike', 5, 5, 0, 0],
     ['shield-strike+', 8, 6, 0, 0],
-    ['breaching-strike', 7, 0, 1, 0],
-    ['breaching-strike+', 10, 0, 1, 0],
+    ['breaching-strike', 18, 0, 2, 0],
+    ['breaching-strike+', 24, 0, 2, 0],
     ['muster-strike', 8, 0, 0, 1],
     ['muster-strike+', 11, 0, 0, 1],
   ] as const)(

@@ -97,6 +97,8 @@ const DEFAULT_FRAME: BoardFrame = { x0: 0, x1: stage.width, top: 150, bottom: 96
 export class BattlefieldScene {
   private readonly app: Application;
   private readonly world = new Container();
+  private readonly environment = new Container();
+  private readonly battlefield: Sprite | null;
   private profile: EffectsProfile;
   private readonly host: HTMLElement;
 
@@ -107,7 +109,6 @@ export class BattlefieldScene {
   private readonly fogMid!: TilingSprite;
   private readonly fogNear!: TilingSprite;
   private readonly riftCrack!: Sprite;
-  private readonly branchCracks!: Sprite;
   private readonly riftGlow!: Sprite;
   private readonly motes: Mote[] = [];
   private readonly moteLayer = new Container();
@@ -195,7 +196,11 @@ export class BattlefieldScene {
     app.canvas.style.display = 'block';
     app.canvas.style.width = '100%';
     app.canvas.style.height = '100%';
+    this.battlefield = arena?.battlefield ? new Sprite(Texture.from(arena.battlefield)) : null;
+    if (this.battlefield) app.stage.addChild(this.battlefield);
     app.stage.addChild(this.world);
+    this.world.addChild(this.environment);
+    this.environment.visible = !this.battlefield;
 
     // (a texture of this scene's own, never Pixi's shared one: the painted canvases are kept between fights, DECISIONS #572,
     // and a scene that closes destroys its textures, which must not take another scene's with them)
@@ -238,13 +243,13 @@ export class BattlefieldScene {
     this.shards.x = -PAD_X;
     this.ruins.x = -PAD_X;
     this.ruins.y = RUINS_Y;
-    this.world.addChild(this.sky, this.shards, this.ruins);
+    this.environment.addChild(this.sky, this.shards, this.ruins);
 
     // a wide band of slow fog behind the arena, at the horizon
     this.fogFar = this.makeFog(11, color.violetGlow, 0.34, floorTop - 170, 300);
     this.fogFar.tint = this.atmosphereColor;
     this.fogFar.alpha = /cave|swamp|stilts|tide/.test(venue) ? 0.65 : 0.3;
-    this.world.addChild(this.fogFar);
+    this.environment.addChild(this.fogFar);
 
     // --- arena floor ---
     const ft = floorTextures();
@@ -254,7 +259,7 @@ export class BattlefieldScene {
     if (arena?.floor)
       floor.texture = tex(tiledFloor(arena.floor, ft.floor.width, ft.floor.height, 2, arenaLook));
     else if (look) floor.tint = look.floorTint;
-    this.world.addChild(floor);
+    this.environment.addChild(floor);
 
     // a pool of violet light along the Rift line
     this.riftGlow = new Sprite(this.glowTex);
@@ -264,24 +269,14 @@ export class BattlefieldScene {
     this.riftGlow.position.set(stage.width / 2, rows.riftLine);
     this.riftGlow.scale.set((stage.width / 128) * 0.5, 0.9);
     this.riftGlow.alpha = 0.55;
-    this.world.addChild(this.riftGlow);
+    this.environment.addChild(this.riftGlow);
 
-    this.branchCracks = new Sprite(tex(ft.branchCracks));
-    this.branchCracks.position.set(ft.originX, ft.originY);
-    this.branchCracks.scale.set(ft.scale);
-    this.branchCracks.blendMode = 'add';
     this.riftCrack = new Sprite(tex(ft.riftCrack));
     this.riftCrack.position.set(ft.originX, ft.originY);
     this.riftCrack.scale.set(ft.scale);
     this.riftCrack.blendMode = 'add';
-    this.world.addChild(this.branchCracks, this.riftCrack);
-    // Cracked reality belongs to Rift venues, rather than appearing on every world floor.
-    const fractured = /rift|crossing|regent|vorthax/.test(venue);
-    this.branchCracks.visible = fractured;
-    this.riftCrack.visible = fractured;
-    this.riftGlow.visible = fractured || /cinder|factory|kron|static/.test(venue);
-    this.branchCracks.tint = this.atmosphereColor;
     this.riftCrack.tint = this.atmosphereColor;
+    this.environment.addChild(this.riftCrack);
 
     if (this.arenaProps) this.world.addChild(this.arenaProps.ground, this.arenaProps.hang);
 
@@ -300,12 +295,14 @@ export class BattlefieldScene {
     this.fogMid = this.makeFog(23, color.navyLight, 0.36, floorTop + 20, 600);
     this.fogMid.tint = this.atmosphereColor;
     this.fogMid.alpha = /swamp|tide|vespera/.test(venue) ? 0.45 : 0.18;
+    if (this.battlefield) this.fogMid.alpha *= 0.25;
     this.world.addChild(this.fogMid);
     this.moteLayer.blendMode = 'add';
     this.world.addChild(this.moteLayer);
     this.fogNear = this.makeFog(37, color.violetDeep, 0.3, 700, 520);
     this.fogNear.tint = this.atmosphereColor;
     this.fogNear.alpha = /swamp|tide|cave/.test(venue) ? 0.4 : 0.12;
+    if (this.battlefield) this.fogNear.alpha *= 0.25;
     this.world.addChild(this.fogNear);
 
     // the vignette lives in SCREEN space so it frames the whole window, not just the 16:9 stage
@@ -491,11 +488,10 @@ export class BattlefieldScene {
       this.fogNear.tilePosition.x += 17 * s;
     }
 
-    // pulsing cracks: the main Rift line breathes slowly, the branches desync from it
+    // The fracture's illumination breathes; the terrain itself never moves.
     const pulse = p.pulse;
     const breathe = (rate: number, phase: number) => 0.5 + 0.5 * Math.sin(t * rate + phase);
     this.riftCrack.alpha = 0.78 + pulse * 0.22 * breathe(1.3, 0);
-    this.branchCracks.alpha = 0.5 + pulse * 0.4 * breathe(0.85, 1.7);
     this.riftGlow.alpha = 0.42 + pulse * 0.24 * breathe(1.3, 0.3);
 
     // drifting shards: a slow bob so the sky is never static
@@ -606,6 +602,24 @@ export class BattlefieldScene {
           ? -top * s
           : (avail - (bottom - top) * s) / 2 - top * s);
     this.world.position.set(this.baseX, this.baseY);
+    // Scenery covers wide/short displays independently of combat framing. Fighter coordinates,
+    // silhouette spacing and hit targets keep their original, undistorted scale.
+    const landscapeScale = Math.max(1, (w / s + 80) / FULL_W);
+    this.environment.scale.x = landscapeScale;
+    this.environment.x = (stage.width / 2) * (1 - landscapeScale);
+    if (this.battlefield) {
+      // Anchor the painted floor behind the rearmost rank. Cover every viewport edge while
+      // preserving the painting's aspect ratio; portraits naturally crop the distant scenery.
+      const horizon = Math.max(
+        h * 0.2,
+        Math.min(h * 0.48, this.baseY + (x1 - x0 < 1000 ? 430 : 540) * s),
+      );
+      const aspect = this.battlefield.texture.width / this.battlefield.texture.height;
+      const height = Math.max(w / aspect, horizon / 0.52, (h - horizon) / 0.48);
+      this.battlefield.width = height * aspect;
+      this.battlefield.height = height;
+      this.battlefield.position.set((w - this.battlefield.width) / 2, horizon - height * 0.52);
+    }
     this.vignette.width = w;
     this.vignette.height = h;
     this.onFit();

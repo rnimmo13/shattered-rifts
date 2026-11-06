@@ -1,3 +1,5 @@
+Latest local assessment: [0.213.0](0.213.0.md), [CSV](0.213.0.csv), [JSON](0.213.0.json), [exact ledger and evidence](../ARENA_ART_AND_RARE_STRIKE_2026-11-06.md). Breaching Strike becomes Rare with 2 Mana, 18/24 damage and 2 Exposed. All thirty Ascendancies, class starts and freely mixed builds assessed without new measured grades or simulations. Not released; fresh approval required.
+
 Release 0.210.0 / rules 88 is approved for commit, push and deployment (decision 655). The assessment below preserves its pre-release status and unmeasured balance limits. Approval does not add player evidence or authorize simulations.
 
 Latest local assessment: [0.210.0](0.210.0.md), [CSV](0.210.0.csv), [JSON](0.210.0.json), [exact ledger/evidence](../CAMPAIGN_AND_ARENAS_2026-11-06.md). Campaign baseline/Elite pressure and three shared Knight Strike rewards; all30styles, ten starts and mixed builds remain unmeasured. No simulations or release approval.

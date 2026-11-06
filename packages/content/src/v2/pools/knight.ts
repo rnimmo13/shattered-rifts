@@ -59,14 +59,14 @@ export const KNIGHT: CardDef[] = [
     up: { effects: [dmg(8), barrier(6)] },
   }),
   m(
-    'common',
+    'rare',
     'breaching-strike',
     'Breaching Strike',
     'attack',
-    1,
+    2,
     'foe',
-    [dmg(7), status('exposed', 1, 'target')],
-    { up: { effects: [dmg(10), status('exposed', 1, 'target')] } },
+    [dmg(18), status('exposed', 2, 'target')],
+    { up: { effects: [dmg(24), status('exposed', 2, 'target')] } },
   ),
   m('uncommon', 'muster-strike', 'Muster Strike', 'attack', 1, 'foe', [dmg(8), reserves(1)], {
     up: { effects: [dmg(11), reserves(1)] },

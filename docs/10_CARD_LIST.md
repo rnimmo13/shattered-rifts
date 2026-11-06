@@ -15,7 +15,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Set Your Shield | 1 | skill | basic | Gain 6 Barrier. If your Reserves is 1 or more: Gain 3 Barrier. |
 | Heavy Swing | 2 | attack | basic | Deal 14 damage. |
 | Shield Strike | 1 | attack | common | Deal 5 damage. Gain 5 Barrier. |
-| Breaching Strike | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Bulwark Blow | 1 | attack | common | Deal damage equal to your Barrier. |
 | Oath of Iron | 1 | skill | common | Gain 6 Barrier. Gain 2 Plating. Draw 1 card. |
 | Field Repairs | 1 | skill | common | Gain 5 Barrier. Upgrade a random card in your hand for this fight. |
@@ -81,6 +80,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Hardened Scars | 1 | aura | uncommon | Whenever you lose HP to your own cards or Hangover: Gain 3 Barrier. |
 | Scarred Hide | 1 | aura | uncommon | Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn. |
 | Measured Conviction | 1 | aura | uncommon | At the end of your turn, if your Reserves is 2 or more: Gain 1 Might and gain 2 Barrier. |
+| Breaching Strike | 2 | attack | rare | Deal 18 damage. Apply 2 Exposed. |
 | Bastion Engine | 2 | aura | rare | Whenever you gain Barrier: Deal 5 damage to a random enemy. |
 | Immovable Oath | 2 | skill | rare | Gain 30 Barrier. Consume. |
 | Unbroken Wall | 3 | aura | rare | On play: Gain Fortified for the rest of the fight. |

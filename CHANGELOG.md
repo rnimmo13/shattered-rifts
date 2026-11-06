@@ -1,3 +1,15 @@
+## 0.213.0 - 2026-11-06
+
+- Replaced all 33 arena compositions with complete painted floor-and-backdrop images, including distinct secondary locations, Warden interiors and Drago’s First Ruin. Authored illuminated fissures and scenery are part of each painting; the full-art path does not load the old prop cutouts. Floor-anchored aspect-preserving cover fills portrait, landscape and ultrawide views without altering fighter geometry or selection. The legacy missing-art fallback also keeps its floor opaque at the sides and restores the main crack across venues; screen vignette is lighter.
+- Knight, Campaign and Arena: Breaching Strike Common -> Rare; base/upgraded Mana 1/1 -> 2/2; damage 7/10 -> 18/24; Exposed 1/1 -> 2/2, still applied after damage. Raised Hell draw auto-play remains free and Mastered Strike still counts one copy. Shield Strike and Muster Strike unchanged. Existing copies resolve current definitions; rules 89 uses the established unfinished-battle checkpoint migration without a Resolve charge.
+- Web/desktop 0.213.0, rules 89. Exact ledger and evidence limits: docs/ARENA_ART_AND_RARE_STRIKE_2026-11-06.md; append-only assessment docs/balance-history/0.213.0. Art prompts/provenance: docs/art-prompts/0.213-arenas.json. No simulations. Robert approves the combined release, including the updater fixes below (decision 659).
+
+## 0.212.0 - 2026-11-06
+
+- Required web refresh and desktop Restart to update no longer abort when the device holds a play token but has lost its play connection (or its online save is unconfirmed). New releasePlayForUpdate saves/confirms/releases when possible and otherwise proceeds; local progress is kept and the existing newer-local recovery runs on the next claim. An unconfirmed update sets a marker so the next claim keeps local Vault decks, run/match history and pending drops (they merge up through the normal syncs) instead of replacing them with the account copy; the marker clears after that claim. The desktop update-handoff flag resets after 60 seconds if the app is still open. Ordinary device handoff (Save and switch device) still requires confirmation.
+- Desktop: the update dialog and Settings show an installing state with an indeterminate progress bar. Before the silent NSIS handoff, the main process starts a hidden detached PowerShell watcher that waits for the app process and the downloaded installer to exit, then starts the game only if the installer's own run-after-install did not. Single-instance lock makes a duplicate start harmless. The 0.211 -> 0.212 update itself still runs 0.211's updater; the improvement applies to later updates.
+- Web/desktop 0.212.0; rules 88 unchanged. No combat, card or balance changes.
+
 ## 0.211.0 - 2026-11-06
 
 - Outage fix: all accounts saw Gameplay unavailable. Every Durable Object call (Vault, Leaderboard) returned 503 once the server's daily Durable Object request allowance was used up. Cause: since 0.207 the run clock's 10-second checkpoint triggered a full cloud sync (runs read + runsave + two listsync) per open run tab, plus the 10-second play heartbeat, about 43k requests/day per idle tab, hidden tabs included.

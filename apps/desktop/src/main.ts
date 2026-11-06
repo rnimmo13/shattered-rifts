@@ -5,6 +5,7 @@ import { initializeServices } from './services.js';
 import { configuredAppId, SteamService } from './steam.js';
 import { autoUpdater } from 'electron-updater';
 import { DesktopUpdates } from './updates.js';
+import { scheduleRelaunchAfterUpdate } from './relaunch.js';
 
 app.setName('Shattered Rifts');
 // Fixed across app versions and installer locations. Browser saves remain separate.
@@ -54,6 +55,7 @@ else {
         app.getVersion(),
         enabled ? autoUpdater : undefined,
         steam.appId !== null ? 'Steam manages updates for this edition.' : undefined,
+        enabled ? () => scheduleRelaunchAfterUpdate(process.execPath) : undefined,
       );
       initializeServices(base, steam, updates);
       await createGameWindow();

@@ -117,8 +117,8 @@ export async function refreshForUpdate(): Promise<void> {
     throw new Error('The desktop app must install its patch instead of refreshing.');
   const { checkpointRunTime } = await import('./run/runClock');
   checkpointRunTime();
-  const { releasePlayAccess } = await import('./playAccess');
-  await releasePlayAccess();
+  const { releasePlayForUpdate } = await import('./playAccess');
+  await releasePlayForUpdate();
   if (battleActive()) throw new Error('A battle has started. Refresh after leaving it.');
   window.location.reload();
 }

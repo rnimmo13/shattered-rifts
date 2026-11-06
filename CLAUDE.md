@@ -1,3 +1,7 @@
+# Release approved 0.213.0 / rules89 (2026-11-06; decision659)
+
+Robert explicitly approves pushing and deploying all current changes: the 33 complete arena paintings, Rare Breaching Strike, and Claude's pending updater/relaunch fixes. Preserve both assistants' changes. Release website/server and matching Windows updater from clean committed source; verify live versions, image assets and updater checksums. Earlier local-only labels below are historical. Future changes need fresh approval.
+
 # Release approved 0.210.0 / rules88 (2026-11-06; decisions651-655)
 
 Arena composition/atmosphere and targeting pass; Campaign100/93baseline,+40/+5pp slope,Elite x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Map-art request cancelled in favor of First Ruin UI theme. Sandbox own saved decks; explicit safe device takeover. Exact ledger docs/CAMPAIGN_AND_ARENAS_2026-11-06.md, append-only0.210.0assessment; no simulations or measured parity. Robert explicitly approves committing, pushing and deploying this complete candidate, including website/server and matching Windows updater. Verify clean source, live versions and updater files. Future changes require fresh approval.
@@ -34,6 +38,14 @@ Arena composition/atmosphere and targeting pass; Campaign100/93baseline,+40/+5pp
 
 A deep, combo-heavy, **trap-driven** card-dueling game (working title). Web campaign first (free,
 Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
+
+## Two AI assistants share this repo (Robert, 2026-11-06)
+
+- Robert uses both Claude Code and ChatGPT/Codex on this project, sometimes at the same time in the same working tree. He tries to give each a separate task (for example, one making and wiring art while the other fixes code).
+- Expect uncommitted changes you did not make. Never revert, reformat, stash, or "clean up" files outside your own task, and never include them in your commits. Stage your own files by name, not `git add -A`.
+- If someone else's in-progress edit breaks lint, typecheck, tests or a build, do not fix it yourself. Verify your own change in isolation (for example a temporary `git worktree` with only your diff applied) and tell Robert what is failing and in which files.
+- Before releasing, check `git status` for others' work. The desktop publisher needs a clean tree, so ask Robert how to handle unrelated pending changes rather than committing or discarding them.
+- Avoid editing the same file as the other assistant at the same time. If your task needs a file that is already modified by someone else, say so and ask first.
 
 ## Read before doing anything
 | Doc | What's in it |

@@ -70,6 +70,14 @@ export function DesktopUpdates({ compact = false }: { compact?: boolean }) {
       {status.phase === 'downloading' && (
         <progress max={100} value={status.percent} aria-label="Update download progress" />
       )}
+      {(status.phase === 'installing' || (busy && ready)) && (
+        <>
+          <small>
+            Installing the update. Shattered Rifts will close for a moment and reopen by itself.
+          </small>
+          <progress aria-label="Installing the update" />
+        </>
+      )}
       {status.phase !== 'unsupported' && (
         <button
           className="btn btn--small"

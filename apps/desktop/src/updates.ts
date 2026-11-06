@@ -22,6 +22,8 @@ export class DesktopUpdates {
     currentVersion: string,
     private readonly port?: UpdatePort,
     reason = 'Updates are available in the installed Windows app.',
+    /** Backup relaunch in case the installer's own run-after-install does not start the game. */
+    private readonly relaunchAfterInstall?: () => void,
   ) {
     this.value = {
       phase: port ? 'idle' : 'unsupported',
@@ -102,6 +104,11 @@ export class DesktopUpdates {
       throw new Error('No downloaded update is ready');
     this.set({ phase: 'installing', message: 'Installing the update and restarting…' });
     try {
+      try {
+        this.relaunchAfterInstall?.();
+      } catch {
+        /* the installer's own relaunch still applies */
+      }
       this.port.quitAndInstall(true, true);
       if (this.status().phase === 'error') throw new Error('Installer failed');
     } catch {
