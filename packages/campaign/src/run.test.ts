@@ -709,14 +709,16 @@ describe('the other rooms and the rules around them', () => {
     expect(offers.every((id) => COMBAT_DB.cards[id]?.rarity !== 'rare')).toBe(true);
   });
 
-  it('elites heal a little, losing an elite costs 2 Resolve', () => {
+  it('elites heal a little, losing an elite costs 1 Resolve and retries the fight', () => {
     const base = fresh('knight', 'elite');
     const el = base.map.nodes.find((n) => n.kind === 'elite');
     if (!el) return; // this seed's stage 1 has no elite
     const run: RunState = { ...base, hp: 40, phase: 'duel', at: el.id, context: { nodeId: el.id } };
     // (at least: the Boon an Elite leaves may heal or add HP too)
     expect(finishDuel(run, true, 40).hp).toBeGreaterThanOrEqual(40 + Math.ceil(base.maxHp * 0.1));
-    expect(finishDuel(run, false).resolve).toBe(0);
+    const lost = finishDuel(run, false);
+    expect(lost.resolve).toBe(run.resolve - 1);
+    expect(lost.phase).toBe(run.resolve > 1 ? 'duel' : 'collapsed');
   });
 
   it('the 5-copy cap counts a card and its upgrade together (DECISIONS #337)', () => {

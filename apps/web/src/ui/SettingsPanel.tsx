@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { getSound, setSound } from '../audio/sfx';
+import { getMusic, setMusic } from '../audio/music';
 import {
   loadEffectsMode,
   loadGraphicsQuality,
@@ -66,6 +67,7 @@ export function SettingsPanel() {
   const [quitError, setQuitError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [sound, setSoundState] = useState(getSound);
+  const [music, setMusicState] = useState(getMusic);
   const [graphics, setGraphics] = useState<GraphicsQuality>(loadGraphicsQuality);
   const [reduced, setReduced] = useState(() => loadEffectsMode() === 'reduced');
   const [tips, setTips] = useState(loadTipsOn);
@@ -157,6 +159,10 @@ export function SettingsPanel() {
   const changeSound = (next: Partial<ReturnType<typeof getSound>>): void => {
     setSound(next);
     setSoundState(getSound());
+  };
+  const changeMusic = (next: Partial<ReturnType<typeof getMusic>>): void => {
+    setMusic(next);
+    setMusicState(getMusic());
   };
 
   return (
@@ -271,9 +277,9 @@ export function SettingsPanel() {
 
           <section className="settings__group" aria-labelledby="settings-audio">
             <h3 id="settings-audio">Audio</h3>
-            <Row label="Sound">
+            <Row label="Sound effects">
               <Choice
-                label="Sound"
+                label="Sound effects"
                 value={sound.on ? 'on' : 'off'}
                 options={[
                   { value: 'on', label: 'On' },
@@ -282,7 +288,7 @@ export function SettingsPanel() {
                 onChange={(v) => changeSound({ on: v === 'on' })}
               />
             </Row>
-            <Row label="Volume">
+            <Row label="Effects volume">
               <span className="settings__range">
                 <input
                   type="range"
@@ -291,10 +297,36 @@ export function SettingsPanel() {
                   step={5}
                   value={Math.round(sound.volume * 100)}
                   disabled={!sound.on}
-                  aria-label="Volume"
+                  aria-label="Effects volume"
                   onChange={(e) => changeSound({ volume: Number(e.target.value) / 100 })}
                 />
                 <output>{Math.round(sound.volume * 100)}%</output>
+              </span>
+            </Row>
+            <Row label="Music">
+              <Choice
+                label="Music"
+                value={music.on ? 'on' : 'off'}
+                options={[
+                  { value: 'on', label: 'On' },
+                  { value: 'off', label: 'Off' },
+                ]}
+                onChange={(v) => changeMusic({ on: v === 'on' })}
+              />
+            </Row>
+            <Row label="Music volume">
+              <span className="settings__range">
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={Math.round(music.volume * 100)}
+                  disabled={!music.on}
+                  aria-label="Music volume"
+                  onChange={(e) => changeMusic({ volume: Number(e.target.value) / 100 })}
+                />
+                <output>{Math.round(music.volume * 100)}%</output>
               </span>
             </Row>
           </section>

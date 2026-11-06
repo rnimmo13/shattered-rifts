@@ -125,7 +125,7 @@ describe('the Echo', () => {
     expect(ghostToSettle(run)).toBeNull();
   });
 
-  it('is a share of a ghost Warden, adds no opening Faltering, and costs 2 Resolve', () => {
+  it('is a share of a ghost Warden, adds no opening Faltering, and costs 1 Resolve', () => {
     const { run, echo } = withEcho();
     const r = enterNode(before(run, echo.id), echo.id);
     expect(r.phase).toBe('duel');
@@ -136,7 +136,7 @@ describe('the Echo', () => {
       (omenEffects(r.tier).heroStatuses.faltering ?? 0) + ECHO_FALTERING,
     );
     expect(ECHO_FALTERING).toBe(0);
-    expect(finishDuel(r, false).resolve).toBe(r.resolve - 2);
+    expect(finishDuel(r, false).resolve).toBe(r.resolve - 1);
   });
 
   it('retains the ordinary tier Omens without adding a ghost opening penalty', () => {

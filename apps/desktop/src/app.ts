@@ -1,9 +1,13 @@
 import { app, BrowserWindow, dialog, Menu, net, protocol, session, shell } from 'electron';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { createReadStream, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
+import { extname, join } from 'node:path';
+import { Readable } from 'node:stream';
 import { pathToFileURL } from 'node:url';
 import {
   assetPath,
+  byteRange,
+  MEDIA_TYPES,
   externalLink,
   GAME_URL,
   LOCAL_GAME_URL,
@@ -32,28 +36,48 @@ export function initializeGame(): void {
     : join(__dirname, '../../web/dist-desktop');
   if (!existsSync(join(root, 'index.html')))
     throw new Error('Game assets are missing. Run pnpm desktop:build first.');
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob:",
+    "font-src 'self'",
+    "connect-src 'self' https://shatteredrifts.app wss://shatteredrifts.app",
+    "media-src 'self' data: blob:",
+    "worker-src 'self' blob:",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "frame-src 'none'",
+  ].join('; ');
   protocol.handle('srgame', async (request) => {
     const file = assetPath(root, request.url);
     if (!file) return new Response('Not found', { status: 404 });
     try {
+      // Music is served in byte ranges: without them Chromium cannot seek, so a track could not
+      // restart from the beginning or loop.
+      const media = MEDIA_TYPES[extname(file).toLowerCase()];
+      if (media) {
+        const size = (await stat(file)).size;
+        const headers = new Headers({
+          'Content-Type': media,
+          'Accept-Ranges': 'bytes',
+          'Content-Security-Policy': csp,
+        });
+        const header = request.headers.get('range');
+        const span = byteRange(header, size);
+        if (header && !span) {
+          headers.set('Content-Range', `bytes */${size}`);
+          return new Response(null, { status: 416, headers });
+        }
+        const { start, end } = span ?? { start: 0, end: size - 1 };
+        headers.set('Content-Length', String(end - start + 1));
+        if (span) headers.set('Content-Range', `bytes ${start}-${end}/${size}`);
+        const body = Readable.toWeb(createReadStream(file, { start, end })) as ReadableStream;
+        return new Response(body, { status: span ? 206 : 200, headers });
+      }
       const response = await net.fetch(pathToFileURL(file).href);
       const headers = new Headers(response.headers);
-      headers.set(
-        'Content-Security-Policy',
-        [
-          "default-src 'self'",
-          "script-src 'self'",
-          "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: blob:",
-          "font-src 'self'",
-          "connect-src 'self' https://shatteredrifts.app wss://shatteredrifts.app",
-          "media-src 'self' data: blob:",
-          "worker-src 'self' blob:",
-          "object-src 'none'",
-          "base-uri 'none'",
-          "frame-src 'none'",
-        ].join('; '),
-      );
+      headers.set('Content-Security-Policy', csp);
       return new Response(response.body, { status: response.status, headers });
     } catch {
       return new Response('Not found', { status: 404 });

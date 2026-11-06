@@ -90,8 +90,8 @@ Shrine (every node on that floor); each stage still has a Merchant somewhere bef
 
 ### 2.2 Resolve (run lives)
 Duels always start at full Essence. Run tension comes from **Resolve**:
-- A run starts with **2 Resolve** on Normal (Easy 5, Hard 1; DECISIONS #118). A lost duel or Warden costs 1, a lost Elite costs 2, so one lost Elite ends a Normal run (Wardens cost 1 since DECISIONS #274).
-- Losing a duel or a Warden costs 1 (an Elite costs 2). You **retry the same node** with a fresh shuffle, at full HP: spending Resolve heals you completely (DECISIONS #289, #355).
+- A run starts with **2 Resolve** on Normal (Easy 5, Hard 1; DECISIONS #118). Every lost fight costs 1 Resolve, Elites and Echoes included (DECISIONS #663; Elites and Echoes cost 2 before).
+- Losing any fight costs 1 Resolve. You **retry the same node** with a fresh shuffle, at full HP: spending Resolve heals you completely (DECISIONS #289, #355).
 - Clearing a loop and choosing Continue restores **+1 Resolve** (max 3). From Tier VIII on, it restores 0.
 - At 0 Resolve: **Rift Collapse**. The run deck is lost. You still keep XP, mastery progress, cosmetics found and
   cards discovered (see §6).

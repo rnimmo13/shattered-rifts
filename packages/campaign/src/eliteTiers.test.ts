@@ -340,7 +340,7 @@ describe('what an Elite pays by Rift Tier', () => {
     expect(better('elite')).toBeGreaterThan(better('duel'));
   });
 
-  it('a Warden on an Elite stop plays out as an Elite: no Gift, no Max HP, the act goes on, 2 Resolve if lost', () => {
+  it('a Warden on an Elite stop plays out as an Elite: no Gift, no Max HP, the act goes on, 1 Resolve if lost', () => {
     const run: RunState = {
       ...newRun('knight', 'warden-stop'),
       tier: ALL_WARDEN_TIER,
@@ -356,6 +356,6 @@ describe('what an Elite pays by Rift Tier', () => {
     expect(won.maxHp).toBe(before.maxHp);
     expect(won.stage).toBe(before.stage);
     const lost = finishDuel({ ...before, resolve: 3, maxResolve: 3 }, false, 0);
-    expect(lost.resolve).toBe(1);
+    expect(lost.resolve).toBe(2);
   });
 });

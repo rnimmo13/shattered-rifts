@@ -1,3 +1,10 @@
+## 0.216.0 - 2026-11-06
+
+- Campaign: every lost fight costs 1 Resolve; Elites and Echoes previously cost 2, so one lost Elite no longer ends a Normal run. Retry at full HP and collapse at 0 unchanged; current Resolve totals untouched (DECISIONS #663).
+- Music by Matthew Pablo (CC-BY 3.0, OpenGameArt; credited): Woodland Fantasy loops outside battle and resumes where it paused; Blackmoor Tides starts from the beginning in each battle and plays once; Beyond the Clouds starts on the Drago victory screen and loops there. Short fades, paused while the window is hidden, starts after the first gesture where browsers block autoplay. New Music on/off and Music volume settings; the existing controls are now labelled Sound effects and Effects volume (DECISIONS #664).
+- Desktop: the srgame:// protocol serves music in byte ranges (206/Accept-Ranges) so tracks can restart and loop; the desktop smoke test checks a range request and seeking.
+- Web/desktop 0.216.0; rules 89 unchanged. No combat or card changes.
+
 ## 0.215.0 - 2026-11-06
 
 - Cleared floors retain their original encounter, shrine, merchant or Warden illustration, with a green checkmark badge; the cleared-stop picture no longer replaces the original icon. Current-position and special merchant/ghost badges remain visible.

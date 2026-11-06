@@ -35,6 +35,32 @@ export function assetPath(root: string, raw: string): string | null {
   }
 }
 
+/** Media the protocol serves in byte ranges, so the player can seek, restart and loop it. */
+export const MEDIA_TYPES: Record<string, string> = { '.mp3': 'audio/mpeg' };
+
+/**
+ * The inclusive byte span a single-range `Range` header asks for in a file of `size` bytes, or
+ * null when the header is absent, malformed, multi-range or unsatisfiable.
+ */
+export function byteRange(
+  header: string | null,
+  size: number,
+): { start: number; end: number } | null {
+  const m = header ? /^bytes=(\d*)-(\d*)$/.exec(header.trim()) : null;
+  if (!m || size <= 0 || (m[1] === '' && m[2] === '')) return null;
+  let start: number;
+  let end: number;
+  if (m[1] === '') {
+    // a suffix: the last N bytes
+    start = Math.max(0, size - Number(m[2]));
+    end = size - 1;
+  } else {
+    start = Number(m[1]);
+    end = m[2] === '' ? size - 1 : Math.min(size - 1, Number(m[2]));
+  }
+  return start <= end && start < size ? { start, end } : null;
+}
+
 export function gameNavigation(raw: string): boolean {
   try {
     const url = new URL(raw);

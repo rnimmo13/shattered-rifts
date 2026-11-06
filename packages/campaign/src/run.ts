@@ -961,16 +961,15 @@ export function duelPlan(run: RunState): FightPlan | null {
 }
 
 /** Report the result of the fight at the current node. `hpLeft` is your hero's HP at the end of a win. */
-/**
- * The Resolve a lost fight costs: 1 for a plain fight or a Warden, 2 for an Elite (Robert, 2026-10-26: a Warden costs 1 "for now";
- * DECISIONS #274). The run collapses when Resolve reaches 0.
- */
 /** A fight lost with Resolve left is tried again with at least this share of max HP (percent): all of it (DECISIONS #355). */
 export const RETRY_HP_PCT = 100;
 
-export function resolveCost(kind: MapNode['kind']): number {
-  // (an Echo is a stop you choose to take on, as an Elite is: DECISIONS #549)
-  return kind === 'elite' || kind === 'echo' ? 2 : 1;
+/**
+ * The Resolve a lost fight costs: 1 for every fight, Elites and Echoes included (DECISIONS #663; Elites
+ * and Echoes cost 2 before). The run collapses when Resolve reaches 0.
+ */
+export function resolveCost(_kind: MapNode['kind']): number {
+  return 1;
 }
 
 /** The most max HP a card can give for good in one fight (Bloodfeast is 3 per kill): a guard against a hand-made result. */

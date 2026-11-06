@@ -76,6 +76,31 @@ void app
     );
     assert.equal(await value(win, "fetch('/art/manifest.json').then(r => r.ok)"), true);
     assert.equal(await value(win, "fetch('/missing-desktop-test-file').then(r => r.status)"), 404);
+    // Music is served in byte ranges, so a track can restart from the beginning and loop.
+    assert.match(
+      String(
+        await value(
+          win,
+          "fetch('/music/blackmoor-tides.mp3', { headers: { Range: 'bytes=0-9' } }).then(r => r.status + ' ' + r.headers.get('content-range'))",
+        ),
+      ),
+      /^206 bytes 0-9\/\d+$/,
+    );
+    assert.equal(
+      await value(
+        win,
+        `new Promise((done) => {
+          const a = new Audio('/music/blackmoor-tides.mp3');
+          a.addEventListener('error', () => done('error'));
+          a.addEventListener('loadedmetadata', () => {
+            a.addEventListener('seeked', () => done(a.seekable.length > 0 && a.currentTime > 29));
+            a.currentTime = 30;
+          });
+          a.load();
+        })`,
+      ),
+      true,
+    );
 
     if (stage === 'write') {
       await value(win, "document.querySelector('.home__play').click()");

@@ -282,10 +282,11 @@ describe('potions in a run', () => {
 });
 
 describe('what a lost fight costs in Resolve', () => {
-  it('a Warden costs 1 (a run on 2 Resolve survives it), an Elite 2', () => {
+  it('every lost fight costs 1, Wardens, Elites and Echoes included (DECISIONS #663)', () => {
     expect(resolveCost('duel')).toBe(1);
     expect(resolveCost('warden')).toBe(1);
-    expect(resolveCost('elite')).toBe(2);
+    expect(resolveCost('elite')).toBe(1);
+    expect(resolveCost('echo')).toBe(1);
     const lost = finishDuel(
       { ...inFight(fresh('knight', 'resolve-w'), 'warden'), resolve: 2 },
       false,

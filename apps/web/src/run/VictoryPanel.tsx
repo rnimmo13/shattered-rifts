@@ -1,5 +1,7 @@
+import { useLayoutEffect } from 'react';
 import { classNameOf } from '@sr/content/v2';
 import type { RunState } from '@sr/campaign';
+import { enterVictory } from '../audio/music';
 
 /** An earned, persistent ending: no automatic restart or forced navigation. */
 export function VictoryPanel({
@@ -11,6 +13,9 @@ export function VictoryPanel({
   onKeep: () => void;
   onHome: () => void;
 }) {
+  // Beyond the Clouds plays from the beginning while the ending is open (DECISIONS #664).
+  // (a layout effect, like FightView's, so leaving the last fight goes straight to this theme)
+  useLayoutEffect(enterVictory, []);
   return (
     <section className="campaign-victory" aria-labelledby="victory-title">
       <img

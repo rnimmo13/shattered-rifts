@@ -46,6 +46,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.216.0',
+    date: '2026-11-06',
+    title: 'Music, and a gentler Resolve',
+    summary: 'Background music throughout the game, and every lost fight now costs 1 Resolve.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Music',
+        text: 'The game now has music by Matthew Pablo. Woodland Fantasy plays outside battle, Blackmoor Tides opens every battle, and Beyond the Clouds plays when you defeat Drago. Settings > Audio has separate Music and Music volume controls, so you can set music and sound effects independently or turn either off. In a browser, music begins after your first click or key press.',
+      },
+      {
+        kind: 'balance',
+        title: 'Resolve',
+        text: 'Every lost fight in the Campaign now costs 1 Resolve.',
+        changes: [
+          { label: 'Lost Elite', before: '2 Resolve', after: '1 Resolve', direction: 'buff' },
+          { label: 'Lost Echo', before: '2 Resolve', after: '1 Resolve', direction: 'buff' },
+        ],
+      },
+    ],
+  },
+  {
     version: '0.215.0',
     date: '2026-11-06',
     title: 'Maps of the shattered realms',

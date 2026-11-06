@@ -7,8 +7,47 @@ interface Credit {
   note: ReactNode;
 }
 
-/** Third-party art used in the game. Keep in step with CREDITS.md. */
-const CREDITS: Credit[] = [];
+/** Third-party art and music used in the game. Keep in step with CREDITS.md. */
+const CREDITS: Credit[] = [
+  {
+    work: 'Music: “Woodland Fantasy”, “Blackmoor Tides (Epic Pirate Battle Theme)” and “Beyond The Clouds (Theme for Modern Broadcast)”',
+    author: 'Matthew Pablo',
+    url: 'https://www.matthewpablo.com',
+    note: (
+      <>
+        Licensed under{' '}
+        <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">
+          CC-BY 3.0
+        </a>
+        , from OpenGameArt (
+        <a
+          href="https://opengameart.org/content/woodland-fantasy"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Woodland Fantasy
+        </a>
+        ,{' '}
+        <a
+          href="https://opengameart.org/content/blackmoor-tides-epic-pirate-battle-theme"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Blackmoor Tides
+        </a>
+        ,{' '}
+        <a
+          href="https://opengameart.org/content/beyond-the-clouds-orchestral-theme"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Beyond The Clouds
+        </a>
+        ); used unchanged.
+      </>
+    ),
+  },
+];
 
 /** #/credits: who made the art we did not make ourselves. */
 export function CreditsScreen() {
@@ -21,7 +60,7 @@ export function CreditsScreen() {
       <p className="learn__note">
         Shattered Rifts is made by Robert.{' '}
         {CREDITS.length > 0
-          ? 'Thank you to the artists whose work is in the game:'
+          ? 'Thank you to the artists and composers whose work is in the game:'
           : 'No third-party art is used in the game.'}
       </p>
       <p className="learn__note">

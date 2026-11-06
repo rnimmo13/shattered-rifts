@@ -16,6 +16,7 @@ import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 import { markGraphicsQuality } from './duel/effects';
 import { installPlayAccess } from './playAccess';
 import { flagChangedAssets } from './appUpdates';
+import { startMusic } from './audio/music';
 
 installPlayAccess();
 
@@ -46,6 +47,7 @@ void Promise.race([preloadArt().then(wornSkins), splash.skip])
   .then(() => {
     splash.finish();
     stopProgress();
+    startMusic();
     createRoot(root).render(
       <StrictMode>
         <App />
