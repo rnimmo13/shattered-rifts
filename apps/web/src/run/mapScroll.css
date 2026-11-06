@@ -1,0 +1,216 @@
+/* Nine-slice the scroll over the entire route: corners keep their proportions while
+   the quiet paper extends to any saved tier length, in either orientation.
+   Realm-specific artwork can override --tier-map-art; generic remains the fallback. */
+.mapframe.mapframe--scroll {
+  position: relative;
+  border: 0;
+  border-radius: 0.6rem;
+  background: transparent;
+}
+
+.mapframe--scroll .map--route {
+  isolation: isolate;
+}
+
+.mapframe--scroll .map--route::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #c49a61;
+  background-image: var(--tier-map-paper, url('/art/maps/rift-cartographer-paper-v1.jpg'));
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  border-image-source: var(--tier-map-art, url('/art/maps/rift-cartographer-scroll-v1.jpg'));
+  border-image-slice: 260 320;
+  border-image-width: min(24%, 110px) min(15%, 120px);
+  border-image-repeat: stretch;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.3);
+}
+
+.mapframe--scroll .map--route .map__edge {
+  stroke: #61462f;
+  stroke-width: 2.5;
+  stroke-dasharray: 3 7;
+  opacity: 0.8;
+}
+
+.mapframe--scroll .map--route .map__edge.is-walked {
+  stroke: #562b61;
+  stroke-width: 3.5;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
+.mapframe--scroll .map--route .map__edge.is-fresh {
+  stroke-dasharray: 1;
+}
+
+.mapframe--scroll .mapnode {
+  opacity: 0.82;
+  background: radial-gradient(circle at 35% 28%, #44332e, #19131f);
+  box-shadow: 0 2px 4px rgb(50 27 14 / 0.4);
+}
+
+.mapframe--scroll .mapnode.is-open {
+  opacity: 1;
+  outline: 2px solid #5e3523;
+  outline-offset: 3px;
+  box-shadow: var(--glow-gold);
+}
+
+.mapframe--scroll .mapnode.is-done {
+  opacity: 1;
+  background: radial-gradient(circle at 35% 28%, #775137, #2d202b);
+}
+
+.mapframe--scroll .mapnode.is-here {
+  box-shadow:
+    0 0 0 4px #553d68,
+    0 0 0 6px #e8c887;
+}
+
+.mapframe--scroll .mapnode__label {
+  color: #2c1b15;
+  font-weight: 700;
+  text-shadow:
+    0 1px 2px #f2d7a4,
+    0 0 5px #e6bd7b,
+    0 0 8px #e6bd7b;
+}
+
+.mapframe--scroll .mapnode:focus-visible {
+  outline: 3px solid #35203f;
+  outline-offset: 5px;
+}
+
+/* Completion keeps the stop's original illustration visible underneath. */
+.mapnode__complete {
+  position: absolute;
+  right: -7%;
+  bottom: -3%;
+  width: 34%;
+  height: 34%;
+  min-width: 0.9rem;
+  min-height: 0.9rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid #b4f5bd;
+  border-radius: 50%;
+  background: #12371f;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+  pointer-events: none;
+}
+
+.mapnode .mapnode__complete svg {
+  width: 90%;
+  height: 90%;
+  stroke: #8df0a0;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mapframe--scroll .mapnav {
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.5rem;
+  background: rgb(28 19 29 / 0.9);
+}
+
+.mapframe--scroll .ruin-banner {
+  margin-inline: 1rem;
+  border-radius: 0.5rem;
+  background: rgb(35 19 39 / 0.94);
+}
+
+.mapframe--scroll .ruin-echo {
+  z-index: 0;
+  opacity: 0.08;
+}
+
+.mapframe--scroll.mapframe--ruin::before,
+.mapframe--scroll.mapframe--ruin::after {
+  display: none;
+}
+
+.mapframe--scroll .map__holder,
+.mapframe--scroll .ruin-banner {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapframe--scroll .map__edge.is-fresh {
+    stroke-dasharray: none;
+  }
+}
+
+:root[data-effects='reduced'] .mapframe--scroll .map__edge.is-fresh {
+  stroke-dasharray: none;
+}
+
+/* Realm identity comes from the saved tier, independently of its tier number. */
+.map--route[data-map-realm='aurelion'] {
+  --tier-map-art: url('/art/maps/aurelion-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/aurelion-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='nexus'] {
+  --tier-map-art: url('/art/maps/nexus-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/nexus-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='wyldmaw'] {
+  --tier-map-art: url('/art/maps/wyldmaw-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/wyldmaw-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='umbral'] {
+  --tier-map-art: url('/art/maps/umbral-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/umbral-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='gloomfen'] {
+  --tier-map-art: url('/art/maps/gloomfen-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/gloomfen-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='starfall'] {
+  --tier-map-art: url('/art/maps/starfall-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/starfall-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='beyond'] {
+  --tier-map-art: url('/art/maps/beyond-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/beyond-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='cinder'] {
+  --tier-map-art: url('/art/maps/cinder-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/cinder-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='tides'] {
+  --tier-map-art: url('/art/maps/tides-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/tides-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='vespera'] {
+  --tier-map-art: url('/art/maps/vespera-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/vespera-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='sands'] {
+  --tier-map-art: url('/art/maps/sands-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/sands-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='ruin'] {
+  --tier-map-art: url('/art/maps/ruin-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/ruin-paper-v1.jpg');
+}
+
+.map--route[data-map-realm='rift'] {
+  --tier-map-art: url('/art/maps/rift-scroll-v1.jpg');
+  --tier-map-paper: url('/art/maps/rift-paper-v1.jpg');
+}

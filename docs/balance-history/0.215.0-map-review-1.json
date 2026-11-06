@@ -1,0 +1,1143 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "version": "0.215.0",
+  "rules": 89,
+  "status": "Release approved by Robert, decision 662; validation pending",
+  "source": "Two retained historical client-observed Campaign histories (Assassin and Golemancer) inspected and copied under .wrangler/testing-0.215-2026-11-06/real-campaign. They predate this topology revision and do not measure route-offer selection under it. No relevant real-player Arena exports or new-topology Campaign positions available. No new matches or simulations.",
+  "basis": "Decision 661, explicitly included in release approval 662: fixed convergence every six floors becomes an independent 8% meeting chance on each middle floor. Otherwise lane width drifts -1/0/+1 within 2-5, or chooses 2-5 after a meeting. Five starts, two final shrines, stops per path and node-kind/reward definitions remain. The sequence/count of available alternative stops changes, so practical opportunities to find a merchant, optional fight or event can change even with unchanged per-node rules. Saved maps remain intact. Art/checkmarks are presentation only. Preserve all prior unmeasured combat grades; deterministic topology checks establish graph properties, not strength or player behavior.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Arena first: distinct competitive styles at1000HP; typical10+ own turns. Drago optimized-deck target roughly50% or somewhat above, pending representative human/deck evidence.",
+  "progressionBands": [
+    "IV–VII",
+    "VIII–X",
+    "XI–XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "One stronger Strike is optional. Two-Mana manual attacks compete with Aura setup; Raised Hell itself remains 2 Mana and requires later Strike draws. Rarity is not guaranteed acquisition. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "Breaching Strike grants no Barrier, healing or draw. Spending 2 Mana instead of 1 can reduce defense that turn. Shield Strike retains 5/8 damage and 5/6 Barrier; unchanged recovery cards remain necessary. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "Breaching Strike changes Common -> Rare. Raised Hell remains an optional Rare; together they raise acquisition dependence. Shield Strike remains Common and Muster Strike Uncommon; early builds still have lower-rarity support. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "A larger fixed hit plus 2 Exposed improves attack follow-up when a target survives; Exposed is applied after this hit. Existing Might/Exposed multipliers and duration rules remain. Each copy counts once for Mastered Strike. Repeated free casts need draws and the Aura; no new self-draw or resource loop.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "One stronger Strike is optional. Two-Mana manual attacks compete with Aura setup; Raised Hell itself remains 2 Mana and requires later Strike draws. Rarity is not guaranteed acquisition. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "Breaching Strike grants no Barrier, healing or draw. Spending 2 Mana instead of 1 can reduce defense that turn. Shield Strike retains 5/8 damage and 5/6 Barrier; unchanged recovery cards remain necessary. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "Breaching Strike changes Common -> Rare. Raised Hell remains an optional Rare; together they raise acquisition dependence. Shield Strike remains Common and Muster Strike Uncommon; early builds still have lower-rarity support. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "A larger fixed hit plus 2 Exposed improves attack follow-up when a target survives; Exposed is applied after this hit. Existing Might/Exposed multipliers and duration rules remain. Each copy counts once for Mastered Strike. Repeated free casts need draws and the Aura; no new self-draw or resource loop.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "One stronger Strike is optional. Two-Mana manual attacks compete with Aura setup; Raised Hell itself remains 2 Mana and requires later Strike draws. Rarity is not guaranteed acquisition. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "Breaching Strike grants no Barrier, healing or draw. Spending 2 Mana instead of 1 can reduce defense that turn. Shield Strike retains 5/8 damage and 5/6 Barrier; unchanged recovery cards remain necessary. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "Breaching Strike changes Common -> Rare. Raised Hell remains an optional Rare; together they raise acquisition dependence. Shield Strike remains Common and Muster Strike Uncommon; early builds still have lower-rarity support. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "A larger fixed hit plus 2 Exposed improves attack follow-up when a target survives; Exposed is applied after this hit. Existing Might/Exposed multipliers and duration rules remain. Each copy counts once for Mastered Strike. Repeated free casts need draws and the Aura; no new self-draw or resource loop.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native class pool, starter and Ascendancy unchanged. A freely mixed Campaign build can acquire the new Rare Breaching Strike, with higher per-copy impact but extra manual Mana cost and different reward availability; it is not assumed in a baseline recipe. Route change: access to alternative setup/reward stops may vary with irregular branch widths; no new guaranteed acquisition.",
+      "recovery": "No native recovery change. In a mixed deck the higher manual cost can displace a defensive play; no extra sustain is credited. Route change: no direct healing/rebuild effect; available alternative stops may differ before the same final pair of shrines.",
+      "rareReliance": "No new native Rare dependence. Optional cross-class Breaching/Raised Hell combinations require their actual acquisition. Rarity and reward amounts remain; the set of optional routes can change acquisition opportunities, with unmeasured benefit by style.",
+      "scaling": "Native scaling and long-fight engines unchanged. Opposing or mixed Knight Strike packages may hit harder per draw; this is not evidence of a changed matchup grade.",
+      "rationale": "Carry forward 0.213.0 unmeasured combat assessments without a grade change. Irregular route convergence can change practical acquisition and optional-stop choice in Campaign; no class-specific superiority or improvement is inferred.",
+      "watch": "Compare Campaign I-III starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation with exact chosen routes and offered rewards. Distinguish generated-map seed variation, difficulty, Boons and player intent. Arena opening, 6-10 and 11+ own turns are unaffected mechanically and remain unmeasured.",
+      "confidence": "Low for new-route acquisition effects; no player observations under this topology. Combat estimates remain unchanged and unmeasured.",
+      "pacing": "No combat, HP, seats, AI, clock or damage changes. Arena 10+ own turns and roughly 50% optimized Drago clears remain targets, not measured results.",
+      "evidence": [
+        "docs/DECISIONS.md#661",
+        "docs/DECISIONS.md#662",
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/mapLanes.test.ts",
+        "docs/balance-history/0.213.0.json"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated — no new starter evidence",
+      "rationale": "Prior class-start rating retained. I-III route acquisition may vary with irregular widths; no starter deck, class mechanic or per-fight stat change. No new-topology player results."
+    }
+  ],
+  "corrections": [
+    "Supersedes the fixed six-floor convergence assumption in 0.202.0-map-review-1; does not revise historical data or grades.",
+    "All 30 Ascendancies, ten class starts and freely mixed combinations remain unmeasured for this route change. No new balance simulations, fixtures-as-player-evidence or Arena parity claims."
+  ],
+  "mixedBuilds": [
+    {
+      "name": "Freely mixed draw/Strike and Barrier/sustain",
+      "assessment": "No card or combat coefficient changes. Route alternatives may change access to shops and upgrade opportunities; no guaranteed rare pairing or improved consistency."
+    },
+    {
+      "name": "Freely mixed small summons, large-machine investment and personal weapons",
+      "assessment": "No summon/weapon changes. Optional-stop access may affect assembly and recovery between fights; large investments still require setup and defensive support."
+    },
+    {
+      "name": "Freely mixed Consume/knives, traps, Auras and totems",
+      "assessment": "Resource loops and recovery remain unchanged. Irregular branches offer different route choices, without establishing a stronger final deck or removing rare reliance."
+    }
+  ],
+  "assessmentId": "0.215.0-map-review-1",
+  "gradeMode": "review-signals",
+  "evaluationScope": "Route-acquisition review only: Campaign I-III class starts, IV-VII setup, VIII-X consistency and XI-XII finale preparation. Arena opening, turns 6-10 and 11+ own turns retain prior unmeasured status. No new combat grades, human outcomes or simulations are reported."
+}

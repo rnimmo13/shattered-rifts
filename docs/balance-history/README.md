@@ -1,3 +1,5 @@
+Release 0.215.0 is approved, including irregular route convergence (decision 662). [Map acquisition review](0.215.0-map-review-1.md), [CSV](0.215.0-map-review-1.csv), [JSON](0.215.0-map-review-1.json): all thirty Ascendancies, ten starts and freely mixed builds retain prior unmeasured combat grades. New route-choice effects are unmeasured; no simulations. Existing saved maps remain intact. Earlier snapshot release labels are historical.
+
 Latest local assessment: [0.213.0](0.213.0.md), [CSV](0.213.0.csv), [JSON](0.213.0.json), [exact ledger and evidence](../ARENA_ART_AND_RARE_STRIKE_2026-11-06.md). Breaching Strike becomes Rare with 2 Mana, 18/24 damage and 2 Exposed. All thirty Ascendancies, class starts and freely mixed builds assessed without new measured grades or simulations. Not released; fresh approval required.
 
 Release 0.210.0 / rules 88 is approved for commit, push and deployment (decision 655). The assessment below preserves its pre-release status and unmeasured balance limits. Approval does not add player evidence or authorize simulations.

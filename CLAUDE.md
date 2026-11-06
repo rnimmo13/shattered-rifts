@@ -1,3 +1,7 @@
+# Release approved 0.215.0 / rules89 (2026-11-06; decision662)
+
+Robert explicitly approves pushing/deploying the realm-themed scroll maps and completed-floor checkmarks, and explicitly chooses to include Claude's pending irregular route-convergence changes. Preserve both assistants' work. Publish website/server and matching Windows updater from validated clean committed source; verify live version, realm assets and updater metadata. Existing saved maps and ink remain intact. No simulations or new combat grades. Future changes need fresh release approval.
+
 # Release approved 0.213.0 / rules89 (2026-11-06; decision659)
 
 Robert explicitly approves pushing and deploying all current changes: the 33 complete arena paintings, Rare Breaching Strike, and Claude's pending updater/relaunch fixes. Preserve both assistants' changes. Release website/server and matching Windows updater from clean committed source; verify live versions, image assets and updater checksums. Earlier local-only labels below are historical. Future changes need fresh approval.

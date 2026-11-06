@@ -46,6 +46,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.215.0',
+    date: '2026-11-06',
+    title: 'Maps of the shattered realms',
+    summary: 'Realm-themed parchment maps, clearer completed stops and less predictable routes.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'A scroll for every realm',
+        text: 'Campaign routes now sit on hand-inked parchment scrolls with distinct landscapes for Aurelion, Nexus-9, Wyldmaw, Umbral Veil, Gloomfen, the Hollow Crown, the Far Rifts, Cindervault, Thalassar, Vespera and the Hourglass Expanse. The First Ruin and older interrealm Rift maps have their own artwork too. Each map follows the realm assigned to that tier, spans the entire route and moves with its nodes on desktop and phones. The original generic scroll remains available as a fallback. Existing routes and your map drawings are preserved.',
+      },
+      {
+        kind: 'changed',
+        title: 'Completed stops',
+        text: 'Cleared stops keep their original floor icons with a green checkmark, instead of replacing the illustration with a cleared-stop symbol. You can still see which stops were fights, shrines, merchants or Wardens, alongside your current-position marker.',
+      },
+      {
+        kind: 'changed',
+        title: 'Routes that meet at different times',
+        text: 'Newly generated Campaign maps no longer bring every route together every six floors. Lanes now widen and narrow with occasional meeting points at irregular floors; a map may have several meetings or none before its final approach. Maps still begin with five lanes, end with two shrines before the Warden, and keep the same number of stops along a chosen path. Existing saved maps keep their routes.',
+      },
+    ],
+  },
+  {
     version: '0.214.0',
     date: '2026-11-06',
     title: 'Closing after switching devices',

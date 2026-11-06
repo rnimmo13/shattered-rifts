@@ -1,0 +1,11 @@
+# Release 0.215.0 validation
+
+2026-11-06. Rules 89 unchanged. Robert authorizes publishing the realm maps and green completion checkmarks and explicitly includes Claude's pending irregular-route changes (decision 662).
+
+- Full `pnpm check` passed: lint (zero errors, two existing React-refresh warnings in PileArt.tsx and MapInk.tsx), all workspace typechecks, 4,006 tests in 195 files, and web/desktop-shell builds. Build retains the existing large-chunk advisory.
+- Actual MapView rendered in hidden Chromium for all thirteen realms on desktop and phone: correct realm artwork selected, all 26 scroll/paper files loaded, node selection and map scrolling working. Unknown realm uses the approved generic fallback; no page overflow at 320 pixels. Completed stops retain their original icon with a green checkmark. Screenshots and assertions remain in ignored `.wrangler/map-scroll-review/`.
+- `pnpm desktop:smoke` passed offline write, exact-save restart/read and fresh-profile recovery checks. The intentionally failed updater-start branch logs its expected error and verifies recovery; the smoke then passes. It uses isolated test profiles, never player saves.
+- Thirteen new 1536x1024 scrolls and their paper exports are committed with the generic fallback, full prompts/provenance and a comparison sheet. Original generated PNGs are preserved in ignored `assets-src/maps/`. Static runtime files do not depend on those originals.
+- Route changes pass deterministic graph tests for five starts, reachable routes, no crossings or dead ends, unchanged stops per path and irregular/no-convergence cases. They do not measure balance. Append-only acquisition review tracks all thirty Ascendancies, ten class starts and freely mixed builds; no new combat grades, player outcomes or simulations.
+
+Publish the Windows installer only from the clean committed source, matching the website version and origin/main. The publisher validates the embedded source stamp, SHA-512, installer size, blockmap and fixed update feed before making a complete release discoverable. Production version/artwork and published updater metadata must be checked after publication; these live checks are not implied by the local validation above.

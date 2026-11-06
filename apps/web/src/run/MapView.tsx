@@ -8,6 +8,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { Picture } from '../ui/Picture';
 import { MapInkLayer, MapInkTools, useMapInk, type MapInkState } from './MapInk';
 import { useHorizontalMap } from './useHorizontalMap';
+import './mapScroll.css';
 
 const KIND_LABEL: Record<NodeKind, string> = {
   duel: 'Duel',
@@ -274,7 +275,7 @@ export function MapView(props: {
     <>
       <MapInkTools ink={ink} />
       <div
-        className={`mapframe${finale ? ' mapframe--ruin' : ''}${wide ? ' mapframe--wide' : ''}${wide && bounds.height < 320 ? ' mapframe--compact' : ''}`}
+        className={`mapframe mapframe--scroll${finale ? ' mapframe--ruin' : ''}${wide ? ' mapframe--wide' : ''}${wide && bounds.height < 320 ? ' mapframe--compact' : ''}`}
       >
         {finale && (
           <img
@@ -483,14 +484,19 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
     >
       <NodeIcon
         kind={shownKind(n)}
-        {...(done && !here
-          ? { pic: 'map-done' }
-          : n.crossed
-            ? { pic: 'map-crossed' }
-            : n.kind === 'warden' && hasGhost(n)
-              ? { pic: 'map-ghost' }
-              : {})}
+        {...(n.crossed
+          ? { pic: 'map-crossed' }
+          : n.kind === 'warden' && hasGhost(n)
+            ? { pic: 'map-ghost' }
+            : {})}
       />
+      {done && (
+        <span className="mapnode__complete" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="m5 12 4.5 4.5L19 7" />
+          </svg>
+        </span>
+      )}
       {here && (
         <Picture id="map-here" className="mapnode__here">
           {null}
@@ -545,6 +551,7 @@ function RouteMap(props: MapProps & { ink: MapInkState; wide: boolean; cross: nu
   return (
     <div
       className={`map map--route map--${wide ? 'wide' : 'tall'}`}
+      data-map-realm={map.realm}
       style={{ width: W, height: H, '--map-cross': `${cross}px` } as CSSProperties}
     >
       <svg className="map__lines" width={W} height={H} aria-hidden>

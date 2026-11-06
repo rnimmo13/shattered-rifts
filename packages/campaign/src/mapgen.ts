@@ -85,6 +85,10 @@ export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 
 
 /** Floors before the Warden: 10 at Tier I and 1 more each tier, 29 at Tier XX (DECISIONS #531, #556). */
 export const floorsOf = (tier: number): number => 9 + Math.max(1, tier);
+/** The most stops on one floor; the first floor always has this many. */
+export const MAP_LANES = 5;
+/** The chance (percent) that a middle floor is a meeting point where every route joins. */
+export const MEET_CHANCE = 8;
 /** A map is cut into stretches of this many floors, each with its own Merchants. */
 export const MERCHANT_STRETCH = 7;
 const MIN_STRETCH = 3;
@@ -298,14 +302,20 @@ export function generateStageMap(
   const byFloor: MapNode[][] = [];
   let elites_ = 0;
   let merchants = 0;
+  let width = MAP_LANES;
   for (let floor = 1; floor <= FLOORS; floor++) {
     // (a last stretch too short to be one joins the one before)
     if (floor > 1 && (floor - 1) % MERCHANT_STRETCH === 0 && FLOORS - floor >= MIN_STRETCH)
       merchants = 0;
-    // Five starting lanes, a meeting point every six floors, then a fresh five-way split.
+    // Five starting lanes that drift wider and narrower at random. Any middle floor may, by chance
+    // alone, be a meeting point where every route joins (DECISIONS #661).
     // The final pair of Shrines and the number of stops walked stay the same.
-    const count =
-      floor === FLOORS ? 2 : floor % 6 === 1 ? 5 : floor % 6 === 0 ? 1 : 2 + nextInt(rng, 4);
+    if (floor === 1) width = MAP_LANES;
+    else if (floor === FLOORS) width = 2;
+    else if (nextInt(rng, 100) < MEET_CHANCE) width = 1;
+    else if (width === 1) width = 2 + nextInt(rng, MAP_LANES - 1);
+    else width = Math.max(2, Math.min(MAP_LANES, width + nextInt(rng, 3) - 1));
+    const count = width;
     const row: MapNode[] = [];
     for (let i = 0; i < count; i++) {
       const id = `s${stage}-f${floor}-${String.fromCharCode(97 + i)}`;
