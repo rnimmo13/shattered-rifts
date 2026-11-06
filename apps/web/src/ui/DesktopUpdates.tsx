@@ -59,7 +59,7 @@ export function DesktopUpdates({ compact = false }: { compact?: boolean }) {
     <div className="desktop-updates" aria-live="polite">
       <p>
         {ready
-          ? `Desktop update ${status.version ?? ''} is ready.`
+          ? `Desktop update ${status.version ?? ''} is required. The app will save and restart automatically outside battle.`
           : status.phase === 'downloading'
             ? `Downloading desktop update: ${status.percent}%`
             : status.message}

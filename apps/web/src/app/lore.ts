@@ -1,4 +1,4 @@
-import type { HeroId } from '@sr/content/v2';
+import { CAMPAIGN_REALMS, type HeroId } from '@sr/content/v2';
 export interface LorePanel {
   image: string;
   title: string;
@@ -40,7 +40,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch2-ward',
         title: 'A hand against the sky',
-        text: 'Every world had a Warden, bound to keep its part of the Ward whole. Most were not cruel. The wall was their duty, and their duty was all they knew.',
+        text: 'Each world had its Wardens, bound to keep its part of the Ward whole. Most were not cruel. The wall was their duty, and their duty was all they knew.',
         alt: 'A hooded guardian rests a glowing hand against the Ward above a protected city.',
       },
       {
@@ -54,16 +54,16 @@ export const LORE_CHAPTERS: LoreChapter[] = [
   {
     id: 'shattering',
     title: 'The Shattering',
-    subtitle: 'Valerion broke the barrier. The worlds paid the price.',
+    subtitle: 'Drago broke the barrier. The worlds paid the price.',
     introduction: [
-      'Valerion was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed rival powers and claimed their knowledge. His people survived by obeying. Then his experiments revealed other realms beyond the Ward: unfamiliar magic and rulers who had never heard his name.',
+      'Drago was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed rival powers and claimed their knowledge. His people survived by obeying, until his conquests and experiments reduced his homeland to the First Ruin. Then his experiments revealed other realms beyond the Ward: unfamiliar magic and rulers who had never heard his name.',
       "He wanted their power and could not tolerate being kept outside. He spent years forcing a breach through his own boundary, consuming his realm's resources and sacrificing entire cities. When he finally broke out, he found where the Ward joined around neighboring worlds.",
     ],
     panels: [
       {
         image: 'ch3-crack',
         title: 'The first crack',
-        text: 'Valerion struck from the space between worlds. He gathered his power against one junction of the Ward and released it in a catastrophic blast. The barrier held for an instant. Then a vast section shattered, opening the neighboring worlds to his conquest. That attack was the Shattering.',
+        text: 'Drago struck from the space between worlds. He gathered his power against one junction of the Ward and released it in a catastrophic blast. The barrier held for an instant. Then a vast section shattered, opening the neighboring worlds to his conquest. That attack was the Shattering.',
         alt: 'Citizens of Aurelion look up at a violet-cyan crack in their glassy sky.',
       },
       {
@@ -81,7 +81,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch3-taken',
         title: 'The first to fall',
-        text: "The Wardens tried to hold the broken edges. Valerion reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.",
+        text: "The Wardens tried to hold the broken edges. Drago reached through the Rifts and took them. Through their bonds to their worlds, he discovered how to claim those worlds' laws. He kept them as servants, guarding their shards for the Heart and giving him powers his own realm had never held.",
         alt: 'The robed guardian kneels as violet tendrils corrupt its once-golden light.',
       },
     ],
@@ -106,7 +106,7 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch4-many',
         title: 'Lights in the dark',
-        text: 'Valerion had no equal in his own realm. Beyond it, there are powers he has not mastered. Riftwalkers carry those powers across the boundaries, combining them in ways he did not anticipate. Each has a different home to save. Together, their worlds hold the means to challenge him.',
+        text: 'Drago had no equal in his own realm. Beyond it, there are powers he has not mastered. Riftwalkers carry those powers across the boundaries, combining them in ways he did not anticipate. Each has a different home to save. Together, their worlds hold the means to challenge him.',
         alt: 'Many small travelers carry their worlds’ lights along a floating path through the Far Rifts.',
       },
     ],
@@ -145,13 +145,13 @@ export const LORE_CHAPTERS: LoreChapter[] = [
       {
         image: 'ch6-sealed',
         title: 'A moment of silence',
-        text: "A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Valerion's reach, and he tears another open, worse than before. The climb continues through the realms, deeper into the territory he has taken.",
+        text: "A shard closes a Rift. For a moment, the world is quiet. But a sealed Rift cuts off Drago's reach, and he tears another open, worse than before. The climb continues through the realms, deeper into the territory he has taken.",
         alt: 'A Riftwalker seals one crack with a shard while new cracks open in the distance.',
       },
       {
         image: 'ch6-heart',
-        title: 'Valerion',
-        text: 'At the centre of the shattered section waits Valerion, the Heart of the Rift. He fights with the rules of the Wardens he has taken. The broken worlds are his first foothold. He intends to breach more realms, seize their powers and make every world answer to him.',
+        title: 'Drago',
+        text: 'At the centre of the shattered section waits Drago, the Heart of the Rift. He fights with the rules of the Wardens he has taken. The broken worlds are his first foothold. He intends to breach more realms, seize their powers and make every world answer to him.',
         alt: 'A vast hidden presence pulses faintly beneath an immense violet-cyan chasm.',
       },
     ],
@@ -160,7 +160,8 @@ export const LORE_CHAPTERS: LoreChapter[] = [
 export interface LoreWorld {
   id: string;
   name: string;
-  image: string;
+  image?: string;
+  figure?: string;
   text: string;
   heroes: HeroId[];
   note?: string;
@@ -223,6 +224,30 @@ export const LORE_WORLDS: LoreWorld[] = [
     text: 'The space between worlds, where the Ward broke worst.',
     heroes: [],
     note: 'No Riftwalker calls this place home.',
+  },
+  ...CAMPAIGN_REALMS.filter((world) =>
+    ['cinder', 'tides', 'vespera', 'sands'].includes(world.id),
+  ).map((world) => ({
+    id: world.id,
+    name: world.name,
+    image: (
+      {
+        cinder: 'world-cindervault',
+        tides: 'world-thalassar',
+        vespera: 'world-vespera',
+        sands: 'world-hourglass',
+      } as Record<string, string>
+    )[world.id]!,
+    text: world.description,
+    heroes: [],
+  })),
+  {
+    id: 'ruin',
+    name: 'The First Ruin',
+    figure: 'vorthax',
+    text: 'Drago conquered this realm completely, then spent it breaking through the Ward. Almost nothing remains of his homeland. Its five dragon Wardens now guard the road to their conqueror.',
+    note: 'His court holds Pyrewing’s living embers, Nacreth’s mirrors, Morvane’s hollow brood, Aethrion’s forked storms and Xalvorr’s eclipse. Drago can call their incarnations to fight beside him.',
+    heroes: [],
   },
 ];
 export const loreImage = (id: string, small = false): string =>

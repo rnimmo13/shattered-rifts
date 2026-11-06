@@ -3,7 +3,7 @@
 // choices made reproduce the same run.
 
 import type { RngState } from '@sr/combat';
-import type { CardMark, HeroId } from '@sr/content/v2';
+import type { CampaignMapRealm, CampaignRealmId, CardMark, HeroId } from '@sr/content/v2';
 import type { GamblerShrine } from './gambler';
 
 export type Difficulty = 'easy' | 'normal' | 'hard';
@@ -33,10 +33,14 @@ export interface MapNode {
   bonus?: DealStep[];
 }
 
-export type StageRealm = 'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'rift';
+export type StageRealm = CampaignMapRealm;
 
 export interface StageMap {
-  /** The final consecutive Warden challenge, ending with Valerion. */
+  /** New routes keep every ordinary/event encounter in the map's realm. */
+  themed?: true;
+  /** Drago's five native dragon Wardens and the final confrontation. */
+  finale?: 'dragons';
+  /** The final consecutive Warden challenge, ending with Drago. */
   gauntlet?: true;
   stage: number;
   realm: StageRealm;
@@ -359,9 +363,12 @@ export interface RunState {
   /** Time spent with this particular run open, including idle map/event/battle time. */
   elapsedMs?: number;
   campaignRoute?: 'twelve';
+  realmRoute?: 'eleven' | 'legacy-themed';
+  /** A saved permutation of all eleven worlds, chosen once at run creation. */
+  realmOrder?: CampaignRealmId[];
   /** Saved permutation: one unique Warden per tier I–XI. Finale has its own order in the saved map. */
   wardenOrder?: string[];
-  /** Valerion has fallen; the saved run opens on the victory screen. */
+  /** Drago has fallen; the saved run opens on the victory screen. */
   won?: boolean;
   v: 2;
   /** (DECISIONS #436) its deck holds its starting weapon as a card (missing: from before, and the weapon is added once on load) */

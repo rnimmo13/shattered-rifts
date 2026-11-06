@@ -123,3 +123,13 @@ Same starter as set 1, attach the Knight plus three or four other hero images, t
 1. `key-art.png` and `key-art-clean.png` (they're also needed for Steam).
 2. Chapter 3 (the Shattering), the heart of the story, then chapters 1, 2, 4, 5, 6.
 3. The world vistas last.
+
+
+## Four additional realm vistas (0.209)
+
+These use the dedicated realm panorama as a responsive lore illustration; full prompts and packed paths are in art-prompts/0.209-arenas.json.
+
+1. **world-cindervault.png**: Ash-buried living furnaces, basalt foundries, iron chains, smoke and orange kiln light.
+2. **world-thalassar.png**: Underwater pearl citadels, shell palaces and turquoise luminous reefs.
+3. **world-vespera.png**: Sleeping violet dream courts, moth-wing arches and floating memories.
+4. **world-hourglass.png**: Twin suns, buried bronze/sandstone kingdoms and monumental hourglasses.

@@ -12,7 +12,15 @@ import {
   preludeCatalogue,
 } from '@sr/campaign';
 import type { StatusId } from '@sr/combat';
-import { ASCENDANCIES, BOONS, COMBAT_DB, HEARTS, RIFTWALKERS, heroesByRealm } from '@sr/content/v2';
+import {
+  ASCENDANCIES,
+  BOONS,
+  CAMPAIGN_REALMS,
+  COMBAT_DB,
+  HEARTS,
+  RIFTWALKERS,
+  heroesByRealm,
+} from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
 import { TIP_RULES } from '../fight/tips';
 import { STATUS_ICONS } from '../art/gameIcons';
@@ -105,7 +113,7 @@ function TierTable() {
             return (
               <tr key={t}>
                 <th>{t}</th>
-                <td>{t === MAX_TIER ? '11 Wardens + Valerion' : floorsOf(t) + 1}</td>
+                <td>{t === MAX_TIER ? '5 dragon Wardens + Drago, 3 shrines' : floorsOf(t) + 1}</td>
                 <td>{x.hp}%</td>
                 <td>{x.dmg}%</td>
               </tr>
@@ -335,11 +343,20 @@ export function LearnScreen() {
         <section>
           <h2>A run</h2>
           <p>
-            Progress through the realms, facing each Warden once in a shuffled order. Maps start at{' '}
-            {floorsOf(1) + 1} stops and add one stop per tier. The final gauntlet brings back every
-            Warden in a fresh shuffled order: all eleven Wardens, then Valerion, with normal Warden
-            healing and rewards between fights. Desktop paths run left to right; mobile paths run
-            top to bottom.
+            Visit eleven distinct realms in a shuffled order, facing one of each realm’s Wardens.
+            Maps start at {floorsOf(1) + 1} stops and add one stop per tier through XI. Tier XII
+            enters the First Ruin: five native dragon Wardens in a fresh shuffled order, then Drago,
+            with normal Warden healing and rewards between fights. Free upgrade/remove-only shrines
+            follow dragons 2, 4 and 5, giving a final cleanup before Drago. Existing saved gauntlets
+            keep their original fights. Desktop paths run left to right; mobile paths run top to
+            bottom.
+          </p>
+          <h3>Eleven realms</h3>
+          <p>
+            {CAMPAIGN_REALMS.map((world) => world.name).join(' · ')}. Each has its own battle
+            environment, five native Elite encounter formations and one of its own Wardens at the
+            end of its tier. The First Ruin remains a boss gauntlet.{' '}
+            <a href="#/lore">Explore the worlds and their Wardens.</a>
           </p>
           <h3>Places on the map</h3>
           <dl>
@@ -384,7 +401,7 @@ export function LearnScreen() {
             tier&apos;s Warden and you can stop there, or <b>Continue</b> to the next Rift Tier: you
             keep your deck and your HP, and enemies have more HP and hit harder. Fall (or give up in
             the middle of a fight) and the run&apos;s deck leaves the Arena; give up anywhere else
-            and it stays. Defeat the final gauntlet and Valerion to seal the rifts.
+            and it stays. Defeat the final gauntlet and Drago to seal the rifts.
           </p>
           <div className="learn__tierbox">
             <p>
@@ -432,8 +449,8 @@ export function LearnScreen() {
           <h3>Boons</h3>
           <p>
             Boons last for the whole run, and every tier after it. Elites often give one; the
-            merchant sells one; some events and Threshold options give one; and beating Valerion
-            leaves one {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
+            merchant sells one; some events and Threshold options give one; and beating Drago leaves
+            one {LOOP_BOON_CHANCE}% of the time. Wardens give their Gift instead.
           </p>
           <BoonList />
           <h3>Warden&rsquo;s Hearts</h3>

@@ -58,9 +58,8 @@ else {
       initializeServices(base, steam, updates);
       await createGameWindow();
       if (enabled) {
-        const initial = setTimeout(() => void updates.check(), 15000);
-        initial.unref();
-        const periodic = setInterval(() => void updates.check(), 5 * 60 * 1000);
+        void updates.check();
+        const periodic = setInterval(() => void updates.check(), 60 * 1000);
         periodic.unref();
       }
     })

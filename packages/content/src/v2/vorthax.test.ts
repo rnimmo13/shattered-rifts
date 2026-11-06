@@ -1,4 +1,4 @@
-// Valerion, the Heart of the Rift (DECISIONS #547): four quarters, each with Wardens' rules, and the Rift closing at the last.
+// Drago, the Heart of the Rift (DECISIONS #547): four quarters, each with Wardens' rules, and the Rift closing at the last.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -27,7 +27,7 @@ function finale(): CombatState {
 const vx = (s: CombatState): Unit => s.sides.b.units.find((u) => u.def === 'vorthax')!;
 const heroOf = (s: CombatState): Unit => s.sides.a.units.find((u) => u.kind === 'hero')!;
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
-/** Valerion at this share of its max HP, with this move next. */
+/** Drago at this share of its max HP, with this move next. */
 function at(pct: number, move: string): CombatState {
   const s = finale();
   const v = vx(s);
@@ -36,7 +36,21 @@ function at(pct: number, move: string): CombatState {
   return s;
 }
 
-describe('Valerion, the Heart of the Rift', () => {
+describe('Drago, the Heart of the Rift', () => {
+  it.each([
+    [80, 'nacreth'],
+    [60, 'morvane'],
+    [40, 'aethrion'],
+    [20, 'xalvorr'],
+  ] as const)('at %s percent announces and calls %s once for that health phase', (pct, id) => {
+    const pending = endTurn(at(pct, 'collapse'));
+    expect(vx(pending).intent?.move).toBe(`call-${id}`);
+    const called = endTurn(pending);
+    expect(called.sides.b.units.some((u) => u.def === `${id}-incarnation`)).toBe(true);
+    vx(called).hp = vx(called).maxHp;
+    const healed = endTurn(called);
+    expect(vx(healed).intent?.move).not.toBe(`call-${id}`);
+  });
   it('says its rule, and stands behind a Rift Ward that aimed attacks must break', () => {
     expect(encounter('vorthax').rule).toBeTruthy();
     const s = finale();
@@ -81,14 +95,17 @@ describe('Valerion, the Heart of the Rift', () => {
     expect(pull.icons).toContain('debuff');
   });
 
-  it('II: at three quarters it Shatters, two Shards rise, and it is Veiled', () => {
+  it('II: at eighty percent it calls Nacreth, then Shatters and becomes Veiled', () => {
     const s = at(74, 'collapse');
     const r = endTurn(s);
     // (its next move is the quarter's opening one)
-    expect(vx(r).intent?.move).toBe('shatter');
+    expect(vx(r).intent?.move).toBe('call-nacreth');
     const r2 = endTurn(r);
-    expect(r2.sides.b.units.filter((u) => u.def === 'rift-shard').length).toBeGreaterThanOrEqual(2);
-    expect(vx(r2).statuses.veiled ?? 0).toBeGreaterThan(0);
+    expect(r2.sides.b.units.some((u) => u.def === 'nacreth-incarnation')).toBe(true);
+    expect(vx(r2).intent?.move).toBe('shatter');
+    const r3 = endTurn(r2);
+    expect(r3.sides.b.units.filter((u) => u.def === 'rift-shard')).toHaveLength(2);
+    expect(vx(r3).statuses.veiled ?? 0).toBeGreaterThan(0);
   });
 
   it('II: it feeds on its Shards, or starves Exposed', () => {
@@ -121,15 +138,18 @@ describe('Valerion, the Heart of the Rift', () => {
 
   it('IV: the Rift closes: Fate on you every move, a share of your max HP, and it grows Slippery', () => {
     // (a Beam first; the quarter's opening move, the Prismatic Core, comes next)
-    const s = at(24, 'beam2');
+    const s = at(19, 'beam2');
     const r = endTurn(s);
     const max = heroOf(r).maxHp;
     expect(heroOf(r).statuses.doom).toBe(Math.floor(max * 0.08));
-    expect(vx(r).intent?.move).toBe('core');
+    expect(vx(r).intent?.move).toBe('call-xalvorr');
     const r2 = endTurn(r);
-    expect(heroOf(r2).statuses.doom).toBe(Math.floor(max * 0.08) + Math.floor(max * 0.1));
-    expect(vx(r2).statuses.slippery).toBe(3);
-    expect(vx(r2).statuses.shielded).toBe(2);
+    expect(vx(r2).intent?.move).toBe('core');
+    const r3 = endTurn(r2);
+    // Xalvorr also curses the wounded hero for its capped 12 Fate.
+    expect(heroOf(r3).statuses.doom).toBe(Math.floor(max * 0.08) + Math.floor(max * 0.1) + 12);
+    expect(vx(r3).statuses.slippery).toBe(3);
+    expect(vx(r3).statuses.shielded).toBe(2);
   });
 
   it('IV: Fate kills a hero that cannot finish it', () => {

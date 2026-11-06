@@ -49,6 +49,42 @@ const VIOLET = 0xb070ff;
 const GREEN = 0x90f070;
 
 export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
+  cindervault: {
+    pattern: 'flanks',
+    far: [],
+    ground: [],
+    hang: [],
+    tone: [0.9, 0.65, 0.5],
+    rift: [255, 140, 70],
+    tile: 5,
+  },
+  thalassar: {
+    pattern: 'gap',
+    far: [],
+    ground: [],
+    hang: [],
+    tone: [0.72, 0.9, 0.96],
+    rift: [80, 235, 220],
+    tile: 5,
+  },
+  vespera: {
+    pattern: 'scatter',
+    far: [],
+    ground: [],
+    hang: [],
+    tone: [0.8, 0.72, 0.95],
+    rift: [195, 130, 255],
+    tile: 5,
+  },
+  hourglass: {
+    pattern: 'left',
+    far: [],
+    ground: [],
+    hang: [],
+    tone: [0.95, 0.83, 0.65],
+    rift: [255, 215, 140],
+    tile: 5,
+  },
   castle: {
     pattern: 'flanks',
     far: [0, 1, 2],
@@ -199,10 +235,14 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
 /** Load a venue's arena art; null if the venue has none at all. */
 export async function loadArena(id: VenueId): Promise<ArenaPack | null> {
   const base = `${import.meta.env.BASE_URL}art/arenas/${id}/`;
+  const look = ARENA_LOOK[id] ?? ARENA_LOOK.rift;
+  const used = new Set([...look.far, ...look.ground.map((p) => p.i), ...look.hang]);
   const [backdrop, floor, ...props] = await Promise.all([
     loadImage(`${base}backdrop.jpg`),
     loadImage(`${base}floor.png`),
-    ...Array.from({ length: 9 }, (_, i) => loadImage(`${base}props/p${i}.png`)),
+    ...Array.from({ length: 9 }, (_, i) =>
+      used.has(i) ? loadImage(`${base}props/p${i}.png`) : Promise.resolve(null),
+    ),
   ]);
   if (!backdrop && !floor && props.every((p) => p === null)) return null;
   return { backdrop, floor, props };

@@ -391,3 +391,12 @@ Current Campaign Warden Hearts (local0.206/rules84) are passive run modifiers, n
 ### Local0.208.0 / rules85: approved knife caps
 
 Recall the Blades base/upgraded replays at most15consumed Daggers per cast (was all); upgraded still upgrades selected knives. Shadow Echo base/upgraded grants at most15actual Barrier per copy per turn (was unlimited), including automatic plays; two copies30. Costs unchanged2/1Mana; upgraded Echo retains Opening hand. Shared Campaign/Arena. [Exact ledger](ASSASSIN_KNIFE_CAPS_2026-11-05.md). No release approval.
+
+### Local0.209.0 / rules86: Recall commitment
+
+Recall the Blades base/upgraded:2→3Mana,15Daggers/cast→all eligible Daggers, Discard→Consume. Upgraded retains upgrading; Daggers still return to consumed, other copies/recovery remain possible. Shadow Echo unchanged. Shared Campaign/Arena; existing copies inherit. [Review and Aura comparison](RECALL_AND_BARRIER_REVIEW_2026-11-05.md). Not released.
+
+
+### 0.209 Warden status token
+
+Recurring Nightmare is fight-only:1Mana Skill, Consume, draw1. Left in hand at turn end or discarded by an effect, it creates1copy in the fight discard pile; normal end cleanup does not double-trigger. Dreaming Monarch creates2in hand. It is not a reward-pool card; permanent run decks are unchanged by its fight creation. Full NPC/formation ledger: WARDEN_MECHANICS_2026-11-05.md.

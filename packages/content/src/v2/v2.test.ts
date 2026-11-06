@@ -83,7 +83,7 @@ describe('Combat v2 content', () => {
     for (const realm of ['aurelion', 'nexus', 'wyldmaw', 'umbral']) {
       const here = ENCOUNTERS.filter((e) => e.realm === realm);
       expect(here.filter((e) => e.kind === 'regular').length).toBeGreaterThanOrEqual(7);
-      expect(here.filter((e) => e.kind === 'elite')).toHaveLength(4);
+      expect(here.filter((e) => e.kind === 'elite')).toHaveLength(5);
       expect(here.filter((e) => e.kind === 'warden')).toHaveLength(2);
     }
     // (the far realms: fights for the Rift, and a Warden each)
@@ -93,7 +93,7 @@ describe('Combat v2 content', () => {
       expect(
         here.filter((e) => e.kind === 'elite'),
         realm,
-      ).toHaveLength(2);
+      ).toHaveLength(5);
       expect(
         here.filter((e) => e.kind === 'warden'),
         realm,

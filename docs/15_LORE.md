@@ -10,8 +10,8 @@ It replaces the old "Prime World broke into pieces" premise of `01_GAME_DESIGN.m
 
 ## 1. The short version (for the store page, the title screen and the lore page intro)
 
-> There were many worlds, and for an age they never touched. Each was sealed inside the Ward, and each had a Warden to keep it.
-> Then Valerion shattered a vast section of the Ward. Rifts tore open between the exposed worlds, and everything that lived in them began to spill across.
+> There were many worlds, and for an age they never touched. Each was sealed inside the Ward, and each had its Wardens to keep it.
+> Then Drago shattered a vast section of the Ward. Rifts tore open between the exposed worlds, and everything that lived in them began to spill across.
 > A few can walk the Rifts and live. They are the Riftwalkers, champions of their own worlds, and the shards of the broken Ward
 > are the only thing that can seal a world again. There aren't enough shards for everyone.
 
@@ -22,12 +22,12 @@ There are many worlds, each with its own laws: in one, light is a weapon and fai
 was built; in another, the forest eats. For an age they never touched, and none of them knew the others were there.
 
 ### 2.2 The Ward and its Wardens
-What kept them apart was **the Ward**, a barrier between worlds, like glass no one could see. Every world had a **Warden**, a
-guardian bound to keep its part of the Ward whole. Most of them were not cruel. They were jailers of a wall, and the wall was all
+What kept them apart was **the Ward**, a barrier between worlds, like glass no one could see. Each world had **Wardens**,
+guardians bound to keep its part of the Ward whole. Most of them were not cruel. They were jailers of a wall, and the wall was all
 they knew.
 
 ### 2.3 The Shattering
-**Valerion** was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed
+**Drago** was the most powerful being his realm had ever produced. Over centuries, he crushed its kingdoms, destroyed
 rival powers and claimed their knowledge. Eventually, nothing could openly oppose him. His people survived by obeying.
 
 His experiments revealed other realms beyond his world's boundary: unfamiliar magic, untaken kingdoms, rulers who had
@@ -38,34 +38,32 @@ to the attempt. Once outside, he discovered where the Ward joined around neighbo
 one junction and released it in a single cataclysmic blast. A vast section shattered, tearing open the worlds along it.
 That attack is **the Shattering**: the assault on the neighboring worlds, following his earlier escape from his own.
 
-> Valerion broke the sky because it was the last thing in his world that would not obey him.
+> Drago broke the sky because it was the last thing in his world that would not obey him.
 
 The whole Ward did not fall. Distant sections remain intact, with worlds still sealed behind them. The campaign follows the
 worlds exposed by this rupture and the wreckage it left between them. The broken section is enormous, but it is only a portion
-of the barrier. The remaining Ward is something that can still be defended, and something Valerion can still threaten.
+of the barrier. The remaining Ward is something that can still be defended, and something Drago can still threaten.
 
 Cracks became **Rifts**, Rifts became doors, and through them came creatures, machines and magic that had no business being
 in each other's worlds. Cards that are **Rift-crossed** are exactly that: power that drifted in from somewhere else.
 
-The Wardens of the breached worlds tried to hold the broken edges. **Valerion reached through the Rifts and took them.** In
+The Wardens of the breached worlds tried to hold the broken edges. **Drago reached through the Rifts and took them.** In
 conquering them, he discovered that their bonds to their worlds gave him access to those worlds' laws. That is why he keeps
 the Wardens as servants: each brings power he could never have learned in his own realm. They still guard their shards of
 the Ward, but they no longer guard them for their worlds. They guard them for **the Heart**.
 
-**Canon boundary:** Valerion deliberately caused the cataclysm to conquer the sealed worlds and seize their powers. This is established fact,
+**Canon boundary:** Drago deliberately caused the cataclysm to conquer the sealed worlds and seize their powers. This is established fact,
 not a rumour or a possible explanation. The blast shattered a portion of the Ward, not the entire barrier. The Wardens were
 guardians before the attack and were taken afterward. The Hollow Crown's fallen star and the Queen of the Unmade did not
 cause the Shattering; the earlier dying-star proposal is superseded by Robert's direction in DECISIONS #597.
-His motive is conquest and control. He willingly sacrificed his own people to expand his reach. His home realm's name,
-his exact nature and the fate of its Warden remain unspecified; do not assign him to an existing class homeland without
-Robert's approval. The dying-realm survival motive discussed before #598 is not canon.
+His motive is conquest and control. He willingly sacrificed his own people to expand his reach. His conquered homeland is now the **First Ruin**, almost entirely consumed by his conquest and escape. Its five dragon Wardens serve him. His exact nature and original source of power remain open. The dying-realm survival motive discussed before #598 is not canon.
 
 ### 2.4 The Riftwalkers
 Most who step into a Rift come out wrong, or don't come out. A rare few can walk the Rifts and live. Each comes from a different
 world and walks for it: a knight of a world of light, an engineer of a world of machines, a hunter from a world that eats.
 They are the classes the player chooses.
 
-Valerion was unmatched within his own realm, but the other worlds contain powers he has not mastered. Riftwalkers carry those
+Drago was unmatched within his own realm, but the other worlds contain powers he has not mastered. Riftwalkers carry those
 powers across the boundaries and combine them in ways he did not anticipate. That gives them a chance to challenge him;
 his supremacy at home does not make him invincible everywhere.
 
@@ -79,15 +77,15 @@ each other as well as the Wardens, and why no one wins for good.
 - **The Arena** is the Crossing, a place where many Rifts meet. Riftwalkers fight there face to face (PvP).
 
 ### 2.6 The Heart of the Rift
-At the centre of the shattered section is **Valerion, the Heart of the Rift**. He fights with the rules of the Wardens he has
+At the centre of the shattered section is **Drago, the Heart of the Rift**. He fights with the rules of the Wardens he has
 taken. His goal is to break into more realms, seize their powers and make every world answer to him. The shattered region
 is his first foothold. Closing a Rift cuts off his reach, so he tears new ones open. Every time a Riftwalker seals a Rift,
-another opens, worse than before. That is the climb through the 20 **Rift Tiers**: deeper, and worse, each time.
+another opens, worse than before. That is the climb through the twelve **Rift Tiers**: deeper, and worse, each time.
 
-**Established for players:** Valerion conquered his home realm, broke out, caused the Shattering and takes Wardens to claim
+**Established for players:** Drago conquered his home realm, broke out, caused the Shattering and takes Wardens to claim
 the laws of their worlds. His ambition is domination across realms. These are no longer unanswered questions.
 
-**Kept open on purpose (for later):** his realm's identity, the source of his original power, his true nature and the full
+**Kept open on purpose (for later):** the source of his original power, his true nature and the full
 mechanism behind his stolen powers. The hint we plant everywhere: *the fighting feeds him.* Every shard torn from a rival,
 every Rift sealed, makes the Heart stronger. Do not confirm that hidden connection in player-facing text yet.
 
@@ -102,10 +100,14 @@ every Rift sealed, makes the Heart stronger. Do not confirm that hidden connecti
 | **The Hollow Crown** (`starfall`) | The ruin of a kingdom built on a fallen star, where spells are forged like blades. | Spellblade | Queen of the Unmade |
 | **Gloomfen** (`gloomfen`) | A drowned marsh where the dead don't stay down. | Necromancer | The Mourning Tide |
 | **The Midden** (`midden`) | Where the debris of every broken world washes up: the scrapheap of the multiverse. Nothing here is worth guarding, so it has no Warden. | Drunkard | none (DECISIONS: Midden has no Elites or Warden) |
-| **The Far Rifts** (`beyond`) | The space between worlds, where the Ward broke worst. No one is from here. | none | Event Horizon Regent |
+| **The Far Rifts** (`beyond`) | A distinct broken realm of folded distances and impossible gravity along the damaged Ward. | none | Event Horizon Regent |
+| **Cindervault** (`cinder`) | An ash-buried empire of living furnaces and marching armies. | none | The Ashbound Colossus |
+| **Thalassar** (`tides`) | A living ocean of pearl citadels, mirror tides and luminous reefs. | none | The Pearlbound Sovereign |
+| **Vespera** (`vespera`) | A sleeping world whose dreams become creatures and whose memories can be stolen. | none | The Dreaming Monarch |
+| **The Hourglass Expanse** (`sands`) | Twin suns, buried histories and dunes that measure ages. | none | The Sandbound Chronicler |
+| **The First Ruin** (`ruin`) | Drago’s conquered home realm; its civilizations and resources have almost ceased to exist. | none | Pyrewing, Nacreth, Morvane, Aethrion, Xalvorr; Drago waits beyond them |
 
-Where the Rifts are worst, worlds bleed into each other: that is the last stretch of a run (the Rift), and Valerion's current
-stronghold. His original home realm has not been named or assigned to the map.
+New runs visit each of the eleven Warden realms once in a saved shuffled order during Tiers I–XI. A realm can have several Wardens; the run selects one of its own Wardens as that tier’s boss. Tier XII enters the First Ruin: its five native dragon Wardens in a separate shuffled order, then Drago. The Midden is outside this eleven-realm route. More worlds exist beyond those currently represented.
 
 ## 4. Writing rules for anything with lore in it
 1. **Riftwalkers are champions, not heroes.** Each is right about their own world and in someone else's way. No pure villains
@@ -113,20 +115,20 @@ stronghold. His original home realm has not been named or assigned to the map.
 2. **Wardens were guardians first.** Their lines can show what they were before the Heart took them.
 3. **Every world has its own laws.** A card's flavour should feel like it comes from one world; a Rift-crossed card should feel
    out of place.
-4. **Make Valerion's motive clear.** He conquered his own realm and broke out to seize other worlds and their powers. He takes
+4. **Make Drago's motive clear.** He conquered his own realm and broke out to seize other worlds and their powers. He takes
    Wardens to claim their worlds' laws. Keep his exact nature and the source of his original power mysterious; hint that the
    fighting feeds him without confirming that hidden connection.
 5. **Original names only** (golden rule 6). No franchise terms.
 6. **Class names in player text**, personas never (until Robert decides to use them).
-7. **Valerion caused the Shattering.** His deliberate cataclysm broke a vast portion of the Ward, leaving other sections intact.
+7. **Drago caused the Shattering.** His deliberate cataclysm broke a vast portion of the Ward, leaving other sections intact.
    Do not replace this with an accident, a Warden's mistake or an unexplained failure. The worlds were always separate.
-8. **Valerion's supremacy has a scope.** He was unmatched in his own realm; unfamiliar powers and combinations from other
+8. **Drago's supremacy has a scope.** He was unmatched in his own realm; unfamiliar powers and combinations from other
    worlds can challenge him. His destruction is a choice made for power and control, not a necessary act to save his people.
 
 ## 5. The lore page (`#/lore`)
 
 A scrolling, comic-style page that tells §2 in six chapters, then shows the worlds. Implemented in 0.188.0 (DECISIONS #588),
-using all 26 illustrations requested in `docs/lore-prompts.md`. Riftwalkers use their current default models, with canonical
+using the original 26 illustrations plus four new realm vistas (30 total), requested in `docs/lore-prompts.md`. Riftwalkers use their current default models, with canonical
 portraits independent of the player's equipped skins. Generated concept art and final prompts are catalogued in
 `docs/lore-art-manifest.json` for Robert's review.
 

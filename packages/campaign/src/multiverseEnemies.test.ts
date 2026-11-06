@@ -8,8 +8,11 @@ import { FINAL_STAGE, generateStageMap } from './mapgen';
 import type { StageRealm } from './types';
 
 const REALMS: StageRealm[] = ['aurelion', 'nexus', 'wyldmaw', 'umbral'];
-// (the encounters before the expansion end with Valerion; everything after it is new)
-const NEW = ENCOUNTERS.slice(ENCOUNTERS.findIndex((e) => e.id === 'vorthax') + 1);
+// (the encounters before the expansion end with Drago; everything after it is new)
+const NEW = ENCOUNTERS.slice(
+  ENCOUNTERS.findIndex((e) => e.id === 'vorthax') + 1,
+  ENCOUNTERS.findIndex((e) => e.id === 'vorthax') + 49,
+);
 
 describe('the multiverse encounters on the map (DECISIONS #437)', () => {
   it('adds 48 encounters', () => {

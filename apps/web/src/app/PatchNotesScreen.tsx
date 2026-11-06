@@ -150,6 +150,13 @@ export default function PatchNotesScreen() {
                               alt=""
                               loading="lazy"
                             />
+                          ) : n.unit ? (
+                            <img
+                              className="patch__art"
+                              src={`${import.meta.env.BASE_URL}art/figures/${n.unit}.png`}
+                              alt=""
+                              loading="lazy"
+                            />
                           ) : n.boon && BOON_ICONS[n.boon] ? (
                             <GameIcon art={BOON_ICONS[n.boon]!} pic={n.boon} />
                           ) : n.hero ? (

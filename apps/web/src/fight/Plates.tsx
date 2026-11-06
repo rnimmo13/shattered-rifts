@@ -118,6 +118,8 @@ export function UnitPlates({
         return (
           <div
             key={u.id}
+            data-figure-def={u.def}
+            data-figure-height={Math.round(h * 100) / 100}
             className={`unit-group${u.kind === 'ally' ? ' is-ally' : ''}${hover === u.id ? ' is-hover' : ''}`}
           >
             {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}

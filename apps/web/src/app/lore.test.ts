@@ -26,14 +26,19 @@ describe('illustrated lore and class homes', () => {
       'key-art',
       'key-art-clean',
       ...LORE_CHAPTERS.flatMap((chapter) => chapter.panels.map((panel) => panel.image)),
-      ...LORE_WORLDS.map((world) => world.image),
+      ...LORE_WORLDS.flatMap((world) => (world.image ? [world.image] : [])),
     ];
     expect(used.toSorted()).toEqual(requested.toSorted());
-    expect(used).toHaveLength(26);
+    expect(used).toHaveLength(30);
     for (const name of used)
       for (const suffix of ['', '-small'])
         expect(existsSync(resolve(root, `apps/web/public/art/lore/${name}${suffix}.webp`))).toBe(
           true,
         );
+    for (const world of LORE_WORLDS.filter((world) => world.figure))
+      expect(
+        existsSync(resolve(root, `apps/web/public/art/figures/${world.figure}.png`)),
+        world.id,
+      ).toBe(true);
   });
 });

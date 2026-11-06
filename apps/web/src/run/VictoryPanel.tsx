@@ -22,7 +22,7 @@ export function VictoryPanel({
         <p className="campaign-victory__eyebrow">Campaign complete</p>
         <h1 id="victory-title">The Shattered Rifts are sealed</h1>
         <p>
-          Valerion has fallen. You have conquered the paths between the realms and reclaimed their
+          Drago has fallen. You have conquered the paths between the realms and reclaimed their
           stolen power. With the Ward restored, the worlds can finally breathe again.
         </p>
         <p className="campaign-victory__record">

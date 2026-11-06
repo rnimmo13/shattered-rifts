@@ -165,7 +165,7 @@ describe('simulation-led balance revision', () => {
     },
   );
 
-  it('Valerion opens with a setup intent; the smaller Ward grants Primed without permanent Might growth', () => {
+  it('Drago opens with a setup intent; the smaller Ward grants Primed without permanent Might growth', () => {
     let s = createCombat(db, {
       seed: 'revision-vorthax',
       a: { hero: 'engineer', deck: [], hp: 10000, maxHp: 10000 },
@@ -173,9 +173,11 @@ describe('simulation-led balance revision', () => {
     }).state;
     const ward = s.sides.b.units.find((u) => u.def === 'rift-ward')!;
     expect(ward.maxHp).toBe(128);
-    expect(s.sides.b.units.find((u) => u.def === 'vorthax')!.intent?.move).toBe('refract');
+    expect(s.sides.b.units.find((u) => u.def === 'vorthax')!.intent?.move).toBe('call-pyrewing');
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.b.units.find((u) => u.def === 'rift-ward')!.statuses.might ?? 0).toBe(0);
-    expect(s.sides.b.units.find((u) => u.def === 'vorthax')!.statuses.might).toBe(1);
+    expect(s.sides.b.units.some((u) => u.def === 'rift-ward')).toBe(false);
+    expect(s.sides.b.units.some((u) => u.def === 'pyrewing-incarnation')).toBe(true);
+    expect(s.sides.b.units.find((u) => u.def === 'vorthax')!.statuses.might ?? 0).toBe(0);
+    expect(s.sides.b.units.find((u) => u.def === 'vorthax')!.statuses.vigor).toBe(1);
   });
 });

@@ -81,6 +81,8 @@ export function validateDb(db: CombatDb): string[] {
         (!Number.isInteger(o.hpPct) || o.hpPct <= 0 || o.hpPct > 100)
       )
         errs.push(`${where}: revive HP percent must be an integer from 1 to 100`);
+      if (o.op === 'summon' && o.replace?.some((id) => !db.units[id]))
+        errs.push(`${where}: replacement references an unknown unit`);
       if (o.op === 'summon' && !db.units[o.unit])
         errs.push(`${where}: summons unknown unit "${o.unit}"`);
       if (o.op === 'addCard' && !db.cards[o.card])

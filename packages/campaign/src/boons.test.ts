@@ -71,7 +71,7 @@ describe('boons in a run', () => {
     const base = { ...fresh('knight', 'vial'), boons: ['healing-vial', 'coin-purse'] };
     const won = finishDuel({ ...inFight(base, 'duel'), hp: 30 }, true, 30);
     expect(won.hp).toBe(36);
-    expect(won.shards).toBe(15 + 6);
+    expect(won.shards).toBe(25 + 6);
   });
 
   it('the merchant sells one boon, once', () => {

@@ -59,7 +59,17 @@ import { play } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
 import { handCardWidth, portraitHandBand } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
-import { heroFigure, heroProp, hoverOf, prewarmCardArtV2, unitFigure, unitHeight } from './art';
+import {
+  figureId,
+  heroFigure,
+  heroProp,
+  hoverOf,
+  isWardenFigure,
+  prewarmCardArtV2,
+  unitFigure,
+  unitHeight,
+} from './art';
+import { FigureSession } from './figureSession';
 import { FightHand, type HandCard } from './FightHand';
 import { WardenRule } from './WardenRule';
 import { playAnywayHelps, scrapChoices } from './scrapChoices';
@@ -74,7 +84,7 @@ import { FormPanel } from './FormPanel';
 import { PileArt } from './PileArt';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
-import { centredLine, packLine } from './lineLayout';
+import { stableFormation } from './lineLayout';
 import {
   COMPACT,
   PORTRAIT,
@@ -93,7 +103,7 @@ import { mySkin } from '../cosmetics/cosmetics';
 import { FloatPanel } from './FloatPanel';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
-import { preloadAllArt, realSkinFigure } from '../art/assets';
+import { preloadAllArt, preloadFigure, realSkinFigure } from '../art/assets';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
 import { isHandPick, pickStep, pickVerb, premeditateIn, prompt as pickPrompt } from './handPick';
@@ -187,9 +197,9 @@ interface Float {
 const sleep = (ms: number): Promise<void> =>
   new Promise((r) => window.setTimeout(r, Math.max(0, ms)));
 
-/** In a pack, a wide creature (a raptor, a wolf) is kept to a width the line has room for, so the pack does not melt into one long beast. */
-function fitHeight(canvas: HTMLCanvasElement, height: number, crowded: boolean): number {
-  return !crowded ? height : Math.min(height, (MAX_FIGURE_W * canvas.height) / canvas.width);
+/** Ordinary figures keep the same width cap at every population size; bosses retain their full scale. */
+function fitHeight(canvas: HTMLCanvasElement, height: number, compactFigure: boolean): number {
+  return !compactFigure ? height : Math.min(height, (MAX_FIGURE_W * canvas.height) / canvas.width);
 }
 
 const MAX_FIGURE_W = 300;
@@ -243,6 +253,7 @@ function specsFrom(
   me: Side = 'a',
   skinOf?: (hero: string) => string | undefined,
   mode: StageMode = 'wide',
+  figures = new FigureSession<HTMLCanvasElement>(),
 ): FighterSpec[] {
   const out: FighterSpec[] = [];
   const pvp = s.mode === 'pvp';
@@ -251,58 +262,59 @@ function specsFrom(
     // the opponent (and their companions) stand on the right and face left
     const flip = pvp && ds === 'b';
     const units = s.sides[side].units;
-    const others = units.filter((x) => x.kind !== 'hero');
     // every figure's real size first: each side is then laid out from those widths, so nothing overlaps
-    let airSlot = 0;
     const sized = units.map((u) => {
       const hero = u.kind === 'hero';
       const flies = !hero && hoverOf(u.def) > 0;
       // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
-      const raw = hero
-        ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
-        : unitFigure(u.def, u.maxHp);
+      const raw = figures.get(u.id, hero ? u.def : figureId(u.def, u.maxHp), () =>
+        hero
+          ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
+          : unitFigure(u.def, u.maxHp),
+      );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       const k = figureScale(mode, hero);
       const height =
         fitHeight(
           canvas,
           unitHeight(db.units[u.def], u.kind, u.maxHp),
-          !hero && others.length > 1,
+          !hero && u.def !== 'vorthax' && !isWardenFigure(u.def),
         ) * k;
-      // every other flyer rides higher, so a swarm stands in two layers instead of one tangle; a big one never rises so
-      // far that its head (and the next move shown above it) leaves the screen
-      const tier = flies ? 1 + (airSlot++ % 2) : 0;
+      // Rows handle crowds; each flyer keeps its own altitude as others join or leave.
+      const tier = flies ? 1 : 0;
       const hover = flies
-        ? Math.min((hoverOf(u.def) + (tier - 1) * 75) * k, Math.max(30, MAX_TOP * k - height))
+        ? Math.min(hoverOf(u.def) * k, Math.max(30, MAX_TOP * k - height))
         : 0;
       const width = (canvas.width * height) / canvas.height;
       return {
         u,
+        boss: !hero && isWardenFigure(u.def),
         hero,
         canvas,
         height,
         hover,
         tier,
-        fw: Math.max(width * 0.78, (flies ? 140 : 170) * k),
+        fw: Math.max(width * 0.78, mode === 'portrait' ? 260 : 220),
       };
     });
-    const line = sized.filter((e) => !e.hero);
+    const bosses = sized.filter((e) => e.boss);
+    const line = sized.filter((e) => !e.hero && !e.boss);
     const upright = mode === 'portrait';
     const P = PORTRAIT;
     const fit = upright
       ? ds === 'b'
         ? pvp
-          ? packLine(line, P.foeAllyNear, P.foeAllyFar)
-          : centredLine(line, line.length >= P.foeCrowd ? P.foeNearCrowd : P.foeNear, P.foeFar)
-        : packLine(line, P.allyNear, P.allyFar)
+          ? stableFormation(line, P.foeAllyNear, P.foeAllyFar)
+          : stableFormation(line, P.foeNear, P.foeFar)
+        : stableFormation(line, P.allyNear, P.allyFar)
       : ds === 'b'
-        ? packLine(line, FOE_NEAR, pvp ? FOE_FAR_PVP : FOE_FAR)
-        : packLine(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
+        ? stableFormation(line, FOE_NEAR, pvp ? FOE_FAR_PVP : bosses.length ? 1480 : FOE_FAR)
+        : stableFormation(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
     // the enemies stand back against their own edge, as an Arena opponent does, not crowded at the middle: the group slides out
     // until its far edge meets FOE_BACK (order kept, the front one nearest you), so one enemy stands where an Arena hero would
-    if (ds === 'b' && !pvp && !upright && line.length > 0) {
+    if (ds === 'b' && !pvp && !upright && line.length > 0 && !bosses.length) {
       const last = line.length - 1;
-      const edge = (fit.xs[last] as number) + ((line[last] as { fw: number }).fw * fit.scale) / 2;
+      const edge = (fit.xs[last] as number) + (line[last] as { fw: number }).fw / 2;
       const shift = Math.max(0, FOE_BACK - edge);
       fit.xs = fit.xs.map((x) => x + shift);
     }
@@ -311,7 +323,7 @@ function specsFrom(
       const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
-      const k = e.hero ? 1 : fit.scale;
+      const row = e.hero || e.boss ? 0 : (fit.rows[n] ?? 0);
       out.push({
         id: e.u.id,
         side: ds,
@@ -326,12 +338,23 @@ function specsFrom(
               : mode === 'compact'
                 ? { x: COMPACT.heroX }
                 : {}
-          : { x: fit.xs[n++] as number }),
+          : e.boss
+            ? { x: upright ? (P.foeNear + P.foeFar) / 2 : 1450 }
+            : { x: fit.xs[n++] as number }),
         // (upright: the other side on the row behind, yours in front)
-        ...(upright ? { y: ds === 'b' ? P.foeY : portraitMyY() } : {}),
+        ...(upright
+          ? {
+              y:
+                ds === 'b'
+                  ? P.foeY + (bosses.length && !e.boss ? 140 : 0) + row * 110
+                  : portraitMyY() - row * 110,
+            }
+          : !e.hero
+            ? { y: 830 + (bosses.length && !e.boss ? 60 : 0) - row * 100 }
+            : {}),
         canvas: e.canvas,
-        height: e.height * k,
-        ...(e.hover > 0 ? { hover: e.hover * k } : {}),
+        height: e.height,
+        ...(e.hover > 0 ? { hover: e.hover } : {}),
         attack: attackFor(e.u.def, e.hero),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
@@ -434,6 +457,8 @@ export function FightView(props: {
   omens?: { name: string; text: string }[];
 }) {
   const { db, setup, onMove, onResumeFailed } = props;
+  const finalBoss = 'enemies' in setup.b && setup.b.enemies.includes('vorthax');
+  const fixedFigures = useRef(new FigureSession<HTMLCanvasElement>());
   useLayoutEffect(enterBattle, []);
   const pvp = props.pvp ?? null;
   const watch = props.watch ?? null;
@@ -705,7 +730,9 @@ export function FightView(props: {
         d.sides[side].units.find((u) => u.kind === 'hero')?.id ?? '';
       const heroId = heroOf(mySide);
       const respec = () =>
-        sc.fighters.sync(specsFrom(db, d, mySide, skinOf.current, modeRef.current));
+        sc.fighters.sync(
+          specsFrom(db, d, mySide, skinOf.current, modeRef.current, fixedFigures.current),
+        );
       const unitOf = (id: string) =>
         d.sides.a.units.concat(d.sides.b.units).find((u) => u.id === id);
       // (what is on screen, for a performance report's stalls: DECISIONS #572)
@@ -1231,9 +1258,12 @@ export function FightView(props: {
       // whatever happened, the screen ends exactly where the engine is
       try {
         g.display = clone(after);
-        sc.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current, modeRef.current), {
-          instant: true,
-        });
+        sc.fighters.sync(
+          specsFrom(db, g.display, mySide, skinOf.current, modeRef.current, fixedFigures.current),
+          {
+            instant: true,
+          },
+        );
         show(g.display);
         bump((n) => n + 1);
       } catch (err) {
@@ -1296,6 +1326,7 @@ export function FightView(props: {
     const el = host.current;
     if (!el) return;
     cancelledRef.current = false;
+    fixedFigures.current = new FigureSession<HTMLCanvasElement>();
     let cancelled = false; // this effect run only (StrictMode mounts, unmounts and mounts again)
     let created: BattlefieldScene | null = null;
     // real artwork (if any was supplied) is loaded before the first figure or card is drawn; the weapons load alongside and are
@@ -1303,7 +1334,12 @@ export function FightView(props: {
     void loadWeaponArt();
     const opened = performance.now();
     perfNote('a fight is opening');
-    preloadAllArt()
+    Promise.all([
+      preloadAllArt(),
+      ...('enemies' in setup.b && setup.b.enemies.includes('vorthax')
+        ? [preloadFigure('unit:vorthax', 'figures/vorthax.png')]
+        : []),
+    ])
       .then(() =>
         BattlefieldScene.create(
           el,
@@ -1324,7 +1360,7 @@ export function FightView(props: {
         setSceneObj(s);
         s.onSound = play;
         s.onFit = () => bump((n) => n + 1);
-        s.setFrame(frameFor(modeRef.current), boardReserve(modeRef.current));
+        s.setFrame(frameFor(modeRef.current, undefined, finalBoss), boardReserve(modeRef.current));
         setBaseSpeed(speedRef.current);
         const start = createCombat(db, setup);
         // a fight picked up again (the page was reloaded): the moves made so far are replayed silently, from the same seed, so it is
@@ -1368,7 +1404,14 @@ export function FightView(props: {
           game.current = { state: from, display: clone(from) };
           setLive(from);
           s.fighters.sync(
-            specsFrom(db, game.current.display, mySide, skinOf.current, modeRef.current),
+            specsFrom(
+              db,
+              game.current.display,
+              mySide,
+              skinOf.current,
+              modeRef.current,
+              fixedFigures.current,
+            ),
             {
               instant: true,
             },
@@ -1388,7 +1431,14 @@ export function FightView(props: {
         };
         setLive(start.state);
         s.fighters.sync(
-          specsFrom(db, game.current.display, mySide, skinOf.current, modeRef.current),
+          specsFrom(
+            db,
+            game.current.display,
+            mySide,
+            skinOf.current,
+            modeRef.current,
+            fixedFigures.current,
+          ),
           {
             instant: true,
           },
@@ -1412,7 +1462,7 @@ export function FightView(props: {
       // (the drawer and the menu exist only on a small screen and upright)
       if (!foldsSide(m)) setSideOpen(false);
       if (m !== 'portrait') setMenuOpen(false);
-      scene.current?.setFrame(frameFor(m), boardReserve(m));
+      scene.current?.setFrame(frameFor(m, undefined, finalBoss), boardReserve(m));
     });
     ro.observe(el);
     return () => {
@@ -1432,9 +1482,12 @@ export function FightView(props: {
     modeRef.current = mode;
     const g = game.current;
     if (g)
-      scene.current?.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current, mode), {
-        instant: true,
-      });
+      scene.current?.fighters.sync(
+        specsFrom(db, g.display, mySide, skinOf.current, mode, fixedFigures.current),
+        {
+          instant: true,
+        },
+      );
   }, [mode, db, mySide]);
 
   useEffect(() => {
@@ -1593,9 +1646,12 @@ export function FightView(props: {
       // the last of the history: put the screen where the engine is
       if (item.history && pvp && m.seq === pvp.replay) {
         g.display = clone(g.state);
-        sc.fighters.sync(specsFrom(db, g.display, mySide, skinOf.current, modeRef.current), {
-          instant: true,
-        });
+        sc.fighters.sync(
+          specsFrom(db, g.display, mySide, skinOf.current, modeRef.current, fixedFigures.current),
+          {
+            instant: true,
+          },
+        );
         show(g.display);
         setLocked(false);
         bump((n) => n + 1);

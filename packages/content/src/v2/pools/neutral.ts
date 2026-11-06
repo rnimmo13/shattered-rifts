@@ -294,6 +294,14 @@ export const SIGNATURES: CardDef[] = [
 ];
 
 export const JUNK: CardDef[] = [
+  card('junk', 'basic', 'nightmare', 'Recurring Nightmare', 'skill', 1, 'none', [draw(1)], {
+    exhaust: true,
+    hero: 'junk',
+    source: 'token',
+    tags: ['status'],
+    onDiscard: [{ op: 'addCard', card: 'nightmare', to: 'discard', side: 'self' }],
+    inHandAtEnd: [{ op: 'addCard', card: 'nightmare', to: 'discard', side: 'self' }],
+  }),
   // (status cards: the shaman's Smokestack-like cards count them, DECISIONS #371)
   card('junk', 'basic', 'wound', 'Wound', 'skill', 0, 'none', [], {
     unplayable: true,

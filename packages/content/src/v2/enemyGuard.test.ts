@@ -1,7 +1,14 @@
 // An enemy's own Barrier and healing grow with the tier, at half the rate its HP does (DECISIONS #548, #555).
 
 import { describe, expect, it } from 'vitest';
-import { applyAction, clone, createCombat, describeIntent, type CombatState, type Unit } from '@sr/combat';
+import {
+  applyAction,
+  clone,
+  createCombat,
+  describeIntent,
+  type CombatState,
+  type Unit,
+} from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
 /** A fight at this share of the written enemy HP, as the campaign's tier table sets it. */
@@ -70,7 +77,7 @@ describe('enemy Barrier and healing grow with the tier (DECISIONS #548)', () => 
     expect(gained.every((n) => n < 17)).toBe(true);
   });
 
-  it('a share of max HP is not grown twice (Valerion’s Refract)', () => {
+  it('a share of max HP is not grown twice (Drago’s Refract)', () => {
     const s = fight(['vorthax'], 1000);
     const v = first(s, 'vorthax');
     v.hp = Math.floor(v.maxHp * 0.9);

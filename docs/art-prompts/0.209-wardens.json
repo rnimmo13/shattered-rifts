@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-05",
+  "mode": "Built-in image_gen.imagegen",
+  "transparent_background": true,
+  "reference": "apps/web/public/art/figures/gorrmaw.png (style only)",
+  "qa": "Nine1254×1254 alpha cutouts; transparent edges and visual contact sheet checked. Existing background arenas reused.",
+  "assets": [
+    {
+      "id": "ashbound-colossus",
+      "path": "apps/web/public/art/figures/ashbound-colossus.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a colossal wingless humanoid furnace titan made of cracked black basalt and tarnished iron, glowing orange molten chest, ash crown, broad heavy arms, broken imperial chains"
+    },
+    {
+      "id": "pearlbound-sovereign",
+      "path": "apps/web/public/art/figures/pearlbound-sovereign.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a regal abyssal sea creature, pearlescent armored carapace, elegant coral crown, turquoise bioluminescence, coiled muscular lower body and powerful clawed forelimbs, clearly a sovereign monster rather than a human"
+    },
+    {
+      "id": "dreaming-monarch",
+      "path": "apps/web/public/art/figures/dreaming-monarch.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: an eerie crowned mothlike dream sovereign, four folded velvet violet wings, a masked pale face, long dark segmented body, flowing indigo dream vapors confined around its silhouette, unsettling regal fantasy creature"
+    },
+    {
+      "id": "sandbound-chronicler",
+      "path": "apps/web/public/art/figures/sandbound-chronicler.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: an ancient bronze-and-sandstone sphinx guardian, crowned jackal-like face, four powerful paws, engraved hourglass chest, sand-filled cracks, weathered golden armor and a long curved tail"
+    },
+    {
+      "id": "pyrewing",
+      "path": "apps/web/public/art/figures/pyrewing.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a huge crimson and charcoal fire dragon, glowing furnace ribs, ember crown, broad torn wings, powerful clawed feet, aggressive regal stance, incandescent orange throat"
+    },
+    {
+      "id": "nacreth",
+      "path": "apps/web/public/art/figures/nacreth.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a huge pearl white and opalescent glass dragon, angular mirrored scales, crystal horns and crystalline wings, icy cyan reflections, coiled muscular body and clearly visible claws"
+    },
+    {
+      "id": "morvane",
+      "path": "apps/web/public/art/figures/morvane.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a huge skeletal black dragon with a hollow chest and pale violet inner light, jagged bone crown, powerful ragged wings and a cavernous maw, dark imperial guardian rather than zombie gore"
+    },
+    {
+      "id": "aethrion",
+      "path": "apps/web/public/art/figures/aethrion.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a huge deep cobalt storm dragon with gold lightning-shaped crown horns, jagged sweeping wings, bright electric cyan cracks along its scales, regal upright three-quarter stance"
+    },
+    {
+      "id": "xalvorr",
+      "path": "apps/web/public/art/figures/xalvorr.png",
+      "prompt": "Create ONE production game enemy figure on a genuinely transparent alpha background. Reference image is STYLE REFERENCE ONLY, not an edit target. Match its polished hand-painted dark-fantasy card-game illustration, bold readable silhouette, warm rim light, sharp large shapes, painterly angular scales and armor, original character design. Full body, three-quarter view facing LEFT, feet near bottom, whole figure and all wing tips fully inside image with 8% transparent margin. Single isolated creature, no environment, floor, pedestal, labels, border, text, logo or checkerboard. Keep fine details readable when rendered only 150 pixels tall. Portrait square canvas. Subject: a huge obsidian eclipse dragon with an elegant black-and-gold crown, dark violet wing membranes, a restrained thin halo of dim violet eclipse light behind its horns, long armored tail and imposing muscular limbs"
+    }
+  ]
+}

@@ -1510,7 +1510,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'empower':
       return `Choose a generator in your hand: it yields ${o.amount} more for the rest of the fight.`;
     case 'summon':
-      return `${summonText(db, o.unit, 1, who)}${o.ifAbsent ? ' (if none stands)' : ''}`;
+      return `${o.replace?.length ? 'Dismiss its previous escort (not deaths). ' : ''}${summonText(db, o.unit, 1, who)}${o.ifAbsent ? ' (if none stands)' : ''}`;
     case 'devour': {
       const nm = db.units[o.unit]?.name ?? o.unit;
       const healed = [o.heal > 0 ? `${o.heal}` : '', o.healPct ? `${o.healPct}% of its max HP` : '']

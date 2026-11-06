@@ -39,6 +39,10 @@ export type VenueId =
   | 'bazaar'
   | 'cellar'
   | 'farrift'
+  | 'cindervault'
+  | 'thalassar'
+  | 'vespera'
+  | 'hourglass'
   | BossVenueId
   // the Rift-crossed arena: ghosts (a ghost Warden, an Echo) and the Arena's PvP
   | 'crossing';
@@ -96,7 +100,7 @@ const SCENE_VENUES = {
 } as const;
 
 /** Each Warden's own arena, by encounter id. */
-export const BOSS_VENUE: Record<string, BossVenueId> = {
+export const BOSS_VENUE: Record<string, VenueId> = {
   seraphine: 'boss-seraphine',
   'the-hollow-benediction': 'boss-benediction',
   kron: 'boss-kron',
@@ -109,6 +113,15 @@ export const BOSS_VENUE: Record<string, BossVenueId> = {
   'queen-of-the-unmade': 'boss-queen',
   'event-horizon-regent': 'boss-regent',
   vorthax: 'boss-vorthax',
+  'ashbound-colossus': 'cindervault',
+  'pearlbound-sovereign': 'thalassar',
+  'dreaming-monarch': 'vespera',
+  'sandbound-chronicler': 'hourglass',
+  pyrewing: 'boss-vorthax',
+  nacreth: 'boss-vorthax',
+  morvane: 'boss-vorthax',
+  aethrion: 'boss-vorthax',
+  xalvorr: 'boss-vorthax',
 };
 
 /** A realm's second site (its other fights are split between the two). */
@@ -165,6 +178,16 @@ export function venueForRealm(realm: string | undefined): VenueId {
       return 'alley';
     case 'beyond':
       return 'farrift';
+    case 'cinder':
+      return 'cindervault';
+    case 'tides':
+      return 'thalassar';
+    case 'vespera':
+      return 'vespera';
+    case 'sands':
+      return 'hourglass';
+    case 'ruin':
+      return 'boss-vorthax';
     default:
       return 'rift';
   }

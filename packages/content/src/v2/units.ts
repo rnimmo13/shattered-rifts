@@ -1,7 +1,18 @@
 // Companions (allies) and enemies for Combat v2. Enemy moves are shown as intents, so every number here is
 // something the player can read and plan around.
 
-import type { UnitDef } from '@sr/combat';
+import type { UnitDef, Op } from '@sr/combat';
+import { DRAGON_WARDENS } from './worlds';
+const callWarden = (id: string): Op => ({
+  op: 'summon',
+  unit: `${id}-incarnation`,
+  replace: [
+    ...DRAGON_WARDENS.map((id) => `${id}-incarnation`),
+    'hollow-egg',
+    'rift-shard',
+    'rift-ward',
+  ],
+});
 import {
   ally,
   barrier,
@@ -24,10 +35,11 @@ import { MULTIVERSE_UNITS } from './unitsMultiverse';
 
 /** Nyxara's rule: her intent is hidden until you hit her (DECISIONS #546) */
 const veil = () => status('veiled', 1);
-/** Barrier as a share of its own max HP, so it counts at every tier (Valerion, DECISIONS #547) */
+/** Barrier as a share of its own max HP, so it counts at every tier (Drago, DECISIONS #547) */
 const ownBarrier = (pct: number) => scaled(barrier(0), per('maxHp', pct / 100, 'each'));
-/** The Rift Closes: Fate on the hero, a share of their max HP (Valerion's last quarter, DECISIONS #547) */
-const closing = (pct: number) => scaled(status('doom', 0, 'foeHero'), per('maxHp', pct / 100, 'each'));
+/** The Rift Closes: Fate on the hero, a share of their max HP (Drago's last quarter, DECISIONS #547) */
+const closing = (pct: number) =>
+  scaled(status('doom', 0, 'foeHero'), per('maxHp', pct / 100, 'each'));
 
 // --- companions ---------------------------------------------------------------------------------------------
 
@@ -276,7 +288,12 @@ export const ENEMY_UNITS: UnitDef[] = [
     'KR-0N "Kron", Foundry Overseer',
     190,
     [
-      move('reopen', 'Reopen the Hatch', { op: 'summon', unit: 'foundry-hatch', ifAbsent: true }, status('might', 2)),
+      move(
+        'reopen',
+        'Reopen the Hatch',
+        { op: 'summon', unit: 'foundry-hatch', ifAbsent: true },
+        status('might', 2),
+      ),
       move('slam', 'Press', dmg(14)),
       move('charge', 'Charging Orbital Strike', barrier(10)),
       move('orbital', 'Orbital Strike', dmg(17, 'allFoes')),
@@ -441,7 +458,13 @@ export const ENEMY_UNITS: UnitDef[] = [
       move('web', 'Weave the Web', barrier(8), status('shielded', 1), veil()),
       move('whisper', 'She Whispers', status('exposed', 2, 'target'), wound('foe'), veil()),
       move('strike', 'Strike from the Dark', dmg(20), veil()),
-      move('ensnare', 'Ensnare', status('faltering', 2, 'target'), status('seared', 3, 'target'), veil()),
+      move(
+        'ensnare',
+        'Ensnare',
+        status('faltering', 2, 'target'),
+        status('seared', 3, 'target'),
+        veil(),
+      ),
       move('unmask', 'Unmasking', status('exposed', 2, 'target'), wound('foe'), veil()),
       move('ambush', 'Ambush', dmg(22), veil()),
       move('lash', 'Shadow Lash', dmg(7, 'target', 3), veil()),
@@ -452,7 +475,7 @@ export const ENEMY_UNITS: UnitDef[] = [
     ),
   ),
 
-  // ---- the finale: Valerion, the Heart of the Rift (DECISIONS #547) ----
+  // ---- the finale: Drago, the Heart of the Rift (DECISIONS #547) ----
   // Tier XX Normal uses 850% HP / 185% damage; its quarters replace extra Omen phase rises. Barrier and healing are
   // shares of its max HP: a flat 12 would be nothing there. Every quarter of its HP it fights with the rules of the Wardens it made,
   // and in the last it closes the Rift: Fate on you every turn, so only a deck that can finish it gets to.
@@ -468,49 +491,113 @@ export const ENEMY_UNITS: UnitDef[] = [
   ),
   foe(
     'vorthax',
-    'Valerion, Heart of the Rift',
+    'Drago, Heart of the Rift',
     300,
     [
       // I. The Heart Wakes (Kron, the Hollow Benediction)
+      ...DRAGON_WARDENS.map((id) =>
+        move(`call-${id}`, `Call ${id[0]!.toUpperCase() + id.slice(1)}`, callWarden(id)),
+      ),
       move('shards', 'Crystal Shards', dmg(6, 'target', 3)),
-      move('ward', 'Raise the Ward', { op: 'summon', unit: 'rift-ward', ifAbsent: true }, ownBarrier(1)),
+      move(
+        'ward',
+        'Raise the Ward',
+        { op: 'summon', unit: 'rift-ward', ifAbsent: true },
+        ownBarrier(1),
+      ),
       move('collapse', 'Collapse', dmg(22)),
       move('refract', 'Refract', ownBarrier(2), status('might', 1)),
       // II. The Hunger and the Veil (Gorrmaw, Nyxara): every move leaves it Veiled
-      move('shatter', 'The Shattering', dmg(12, 'allFoes'), summon('rift-shard'), summon('rift-shard'), veil()),
+      move(
+        'shatter',
+        'The Shattering',
+        dmg(12, 'allFoes'),
+        summon('rift-shard'),
+        summon('rift-shard'),
+        veil(),
+      ),
       move('shardstorm', 'Shard Storm', dmg(6, 'target', 3), veil()),
       move(
         'feed',
         'Feed on the Shards',
-        { op: 'devour', unit: 'rift-shard', heal: 0, healPct: 2, might: 1, none: [status('exposed', 2)] },
+        {
+          op: 'devour',
+          unit: 'rift-shard',
+          heal: 0,
+          healPct: 2,
+          might: 1,
+          none: [status('exposed', 2)],
+        },
         veil(),
       ),
       move('reshatter', 'Shatter Again', dmg(10, 'allFoes'), summon('rift-shard'), veil()),
       move('collapse2', 'Collapse', dmg(24), veil()),
       // III. The Unmaking (the Queen, the Regent, the Stag, Mother of Static)
-      move('pull', 'The Pull', status('gravity', 2, 'foeHero'), status('unmaking', 1, 'foeHero'), ownBarrier(6)),
+      move(
+        'pull',
+        'The Pull',
+        status('gravity', 2, 'foeHero'),
+        status('unmaking', 1, 'foeHero'),
+        ownBarrier(6),
+      ),
       move('beam', 'Prismatic Beam', dmg(12, 'target', 2), status('unmaking', 1, 'foeHero')),
       move('turnover', 'Turn the Heart', { op: 'swapBarrier' }, dmg(22)),
-      move(
-        'rupture',
-        'Rupture',
-        lose(6, 'target'),
-        dmg(12),
-        status('gravity', 1, 'foeHero'),
-        { op: 'manaNext', amount: -1, foe: true },
-      ),
+      move('rupture', 'Rupture', lose(6, 'target'), dmg(12), status('gravity', 1, 'foeHero'), {
+        op: 'manaNext',
+        amount: -1,
+        foe: true,
+      }),
       move('refract2', 'Refract', ownBarrier(6), status('might', 1)),
       // IV. The Last Light (the Applause Below, and its own): every move leaves it Slippery and curses you with Fate
-      move('core', 'Prismatic Core', status('shielded', 2), ownBarrier(8), status('slippery', 2), closing(10)),
+      move(
+        'core',
+        'Prismatic Core',
+        status('shielded', 2),
+        ownBarrier(8),
+        status('slippery', 2),
+        closing(10),
+      ),
       move('beam2', 'Prismatic Beam', dmg(12, 'target', 2), status('slippery', 1), closing(8)),
       move('rupture2', 'Rupture', lose(8, 'target'), dmg(14), status('slippery', 1), closing(8)),
       move('close', 'The Rift Closes', ownBarrier(5), status('slippery', 1), closing(12)),
     ],
     phases(
-      [100, { kind: 'cycle', order: ['refract', 'shards', 'ward', 'collapse'] }],
-      [75, { kind: 'cycle', lead: ['shatter'], order: ['shardstorm', 'feed', 'reshatter', 'collapse2'] }],
-      [50, { kind: 'cycle', lead: ['pull'], order: ['beam', 'turnover', 'rupture', 'refract2'] }],
-      [25, { kind: 'cycle', lead: ['core'], order: ['beam2', 'rupture2', 'close'] }],
+      [
+        100,
+        {
+          kind: 'cycle',
+          lead: ['call-pyrewing'],
+          order: ['refract', 'shards', 'ward', 'collapse'],
+        },
+      ],
+      [
+        80,
+        {
+          kind: 'cycle',
+          lead: ['call-nacreth', 'shatter'],
+          order: ['shardstorm', 'feed', 'reshatter', 'collapse2'],
+        },
+      ],
+      [
+        60,
+        {
+          kind: 'cycle',
+          lead: ['call-morvane', 'pull'],
+          order: ['beam', 'turnover', 'rupture', 'refract2'],
+        },
+      ],
+      [
+        40,
+        {
+          kind: 'cycle',
+          lead: ['call-aethrion'],
+          order: ['beam', 'turnover', 'rupture', 'refract2'],
+        },
+      ],
+      [
+        20,
+        { kind: 'cycle', lead: ['call-xalvorr', 'core'], order: ['beam2', 'rupture2', 'close'] },
+      ],
     ),
     // (when it falls the Ward and its Shards fall too: no fighting on under its Fate)
     { leader: true },

@@ -259,7 +259,7 @@ export function giftOffers(
   return out;
 }
 
-/** The chance (percent) that clearing a loop (beating Valerion) leaves a Boon you do not have yet. */
+/** The chance (percent) that clearing a loop (beating Drago) leaves a Boon you do not have yet. */
 export const LOOP_BOON_CHANCE = 40;
 
 /** A Boon the player does not own yet, or null if they have them all. Boons have no rarity: each is as likely as any other (DECISIONS #497). */
@@ -324,5 +324,13 @@ export const REALM_LABEL: Record<StageRealm, string> = {
   nexus: 'Nexus-9',
   wyldmaw: 'Wyldmaw',
   umbral: 'Umbral Veil',
+  gloomfen: 'Gloomfen',
+  starfall: 'The Hollow Crown',
+  beyond: 'The Far Rifts',
+  cinder: 'Cindervault',
+  tides: 'Thalassar',
+  vespera: 'Vespera',
+  sands: 'The Hourglass Expanse',
+  ruin: 'The First Ruin',
   rift: 'The Heart of the Rift',
 };

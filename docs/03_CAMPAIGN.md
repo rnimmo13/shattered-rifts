@@ -1,5 +1,7 @@
 # Shattered Rifts: Campaign, Runs & Seasons
 
+> **Local 0.209 realm update (#643–644):** eleven distinct realm tiers I–XI, with one saved realm-native Warden selected per tier; XII is the First Ruin, five native dragon Wardens then Drago. Three refinement shrines follow fights 2, 4 and 5. Existing generated maps remain intact; future maps/finales adopt the new theme. See [exact ledger](REALMS_AND_DRAGO_2026-11-05.md). Earlier route descriptions below are historical. No release approval.
+
 > **Final local follow-up (#619–622):** New runs shuffle the unique Warden roster without repeats, and shuffle it again independently for the final gauntlet. Every tier introduces an Omen fromI; all ordinary fights are Elites byXI. Finale Fraying Ward halves automatic post-victory healing (Warden30→15%maxHP), retaining normal Gifts/shards/maxHP/Resolve rewards. Active legacy tiers keep their previous Omen profile until advancing. Campaign standings use unspent shards in the ranked run after progress, then arrival time. Earlier local descriptions below are superseded where they conflict.
 
 > **Current local campaign (0.203.0, decision #618):** twelve tiers. I–XI each end with a different Warden. XII consists only of the eleven Wardens, then Valerion, with usual Warden healing and rewards between fights. Final baseline530% HP/145% damage; per-tier formula unchanged. Existing active maps/fights are preserved, with legacy endgame conversion after clearing their current tier. Victory persists and offers keeping the deck or returning home. Desktop landscape maps scroll horizontally; phone maps scroll vertically over the same saved five-lane graph. Earlier twenty-tier descriptions below are historical. Not yet released.
@@ -345,3 +347,12 @@ Campaign only, one held at a time, selected instead of the Gift card; another re
 ### Tier XII Refinement Shrines (local0.207)
 
 Five guaranteed shrines follow fights2,4,6,8,10. Choose one free card upgrade or removal, or leave. Status cards such as Wound are eligible for removal; normal8-card minimum. No Rest/healing, wagers, reel or additional rewards. Twelve fights and their order remain; seventeen total stops. Saved active gauntlets gain remaining shrines without repeating passed stops or changing entered fights. Completed runs remain complete. See FINALE_REFINEMENT_2026-11-05.md.
+
+### Local0.209: Campaign shard bases (decision642)
+
+Future fight reward bases: normal15→25,Elite36→50,Warden65→100. Existing Elite fading, Times Are Tough reductions, Rift/Gilded multipliers and rounding retained. Elite shards remain one spoil alternative; prices, starting shards and other rewards unchanged. Old balances/pending reward offers retained; legitimate Gilded Elite offers reload. Valerion still gives immediate victory without post-fight payout. [Exact ledger](CAMPAIGN_SHARDS_2026-11-05.md). Not released.
+
+
+### Final0.209 Warden/Elite follow-up
+
+All eleven normal worlds now have5distinct native Elite formations,55total. The First Ruin remains a six-boss gauntlet. Nine new Wardens have signature mechanics; Drago calls native incarnations across80/60/40/20health thresholds at40%nativebaseHP. Dedicated Cindervault/Thalassar/Vespera/Hourglass arenas replace borrowed scenery. Existing maps preserved, new encounter rules use checkpoint migration. Exact ledger: WARDEN_MECHANICS_2026-11-05.md. Robert approved release after validation (#650).

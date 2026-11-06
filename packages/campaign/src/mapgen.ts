@@ -1,8 +1,8 @@
-// Seeded realm maps lead to unique Wardens; a separate final map contains the Warden gauntlet and Valerion.
+// Seeded realm maps lead to unique Wardens; a separate final map contains the Warden gauntlet and Drago.
 // Existing saved maps retain their topology. Historical generic generation remains available for legacy fixtures.
 
 import { nextInt, shuffle, type RngState } from '@sr/combat';
-import { ENCOUNTERS, RIFTWALKERS, type Encounter } from '@sr/content/v2';
+import { ENCOUNTERS, RIFTWALKERS, DRAGON_WARDENS, type Encounter } from '@sr/content/v2';
 import type { MapNode, NodeKind, StageMap, StageRealm } from './types';
 import { CAMPAIGN_GHOSTS_ENABLED } from './features';
 
@@ -28,11 +28,16 @@ export const WARDEN_SEQUENCE = [
 export function shuffledWardens(rng: RngState): string[] {
   return shuffle(rng, [...WARDEN_SEQUENCE]);
 }
-export function gauntletMap(stage = 1, order: readonly string[] = WARDEN_SEQUENCE): StageMap {
+export function gauntletMap(
+  stage = 1,
+  order: readonly string[] = WARDEN_SEQUENCE,
+  dragons = false,
+): StageMap {
   const bosses = [...order, 'vorthax'];
   return withGauntletShrines({
     stage,
-    realm: 'rift',
+    realm: dragons ? 'ruin' : 'rift',
+    ...(dragons ? { finale: 'dragons' as const, themed: true as const } : {}),
     gauntlet: true,
     floors: bosses.length,
     nodes: bosses.map((enemyId, i) => ({
@@ -44,16 +49,23 @@ export function gauntletMap(stage = 1, order: readonly string[] = WARDEN_SEQUENC
     })),
   });
 }
+export function dragonGauntletMap(rng: RngState, stage = 1): StageMap {
+  return gauntletMap(stage, shuffle(rng, [...DRAGON_WARDENS]), true);
+}
 
 /** Keep fight IDs/order stable so existing encounter seeds and saved battles remain valid. */
 export function withGauntletShrines(map: StageMap): StageMap {
   if (!map.gauntlet || map.nodes.some((n) => n.refinement)) return map;
   const fights = map.nodes.filter((n) => n.kind === 'warden');
-  if (fights.length !== 12 || fights.at(-1)?.enemyId !== 'vorthax') return map;
+  if (fights.length !== (map.finale === 'dragons' ? 6 : 12) || fights.at(-1)?.enemyId !== 'vorthax')
+    return map;
   const nodes: MapNode[] = [];
   for (const [i, fight] of fights.entries()) {
     nodes.push({ ...fight, next: [] });
-    if ((i + 1) % 2 === 0 && i < fights.length - 1)
+    if (
+      i < fights.length - 1 &&
+      ((i + 1) % 2 === 0 || (map.finale === 'dragons' && i === fights.length - 2))
+    )
       nodes.push({
         id: `${fight.id}-refinement`,
         floor: 0,
@@ -88,6 +100,14 @@ const WARDEN_OF: Record<StageRealm, string> = {
   nexus: 'kron',
   wyldmaw: 'gorrmaw',
   umbral: 'nyxara',
+  gloomfen: 'the-mourning-tide',
+  starfall: 'queen-of-the-unmade',
+  beyond: 'event-horizon-regent',
+  cinder: 'ashbound-colossus',
+  tides: 'pearlbound-sovereign',
+  vespera: 'dreaming-monarch',
+  sands: 'sandbound-chronicler',
+  ruin: 'vorthax',
   rift: 'vorthax',
 };
 
@@ -107,7 +127,7 @@ export function wardenFor(realm: StageRealm): Encounter {
 
 /**
  * (DECISIONS #437, #531) Every Warden a tier in this realm can end with: its first Warden and the ones of the expansion; from the second depth
- * the far realms' Wardens too, and not one that waits for a deeper tier. Tier XX, the Rift, ends with Valerion.
+ * the far realms' Wardens too, and not one that waits for a deeper tier. Tier XX, the Rift, ends with Drago.
  */
 export function wardensFor(realm: StageRealm, stage: number, tier = 1): Encounter[] {
   if (realm === 'rift' || tier >= LAST_TIER) return [wardenFor('rift')];
@@ -128,8 +148,8 @@ function enemiesOf(realm: string, kind: Encounter['kind'], stage = 1): Encounter
 }
 
 /** (DECISIONS #437) where a stage's fights come from: its realm(s), and in the Rift the far realms as well */
-const fightRealms = (pool: readonly StageRealm[], stage: number): string[] =>
-  stage >= FINAL_STAGE ? [...pool, ...FAR_REALMS] : [...pool];
+const fightRealms = (pool: readonly StageRealm[], stage: number, themed = false): string[] =>
+  !themed && stage >= FINAL_STAGE ? [...pool, ...FAR_REALMS] : [...pool];
 
 function pick<T>(rng: RngState, list: readonly T[]): T {
   if (list.length === 0) throw new Error('Cannot pick from an empty list');
@@ -177,7 +197,7 @@ export const EVENT_FIGHT_ODDS = { elite: 5, duel: 10 } as const;
 export const ALL_ELITE_TIER = 11;
 /** At this Rift Tier every one of those Elites is a Warden's fight (DECISIONS #526). */
 export const ALL_WARDEN_TIER = 20;
-/** The last Rift Tier, whose Warden is Valerion. */
+/** The last Rift Tier, whose Warden is Drago. */
 const LAST_TIER = 20;
 /** The chance (percent) that a plain fight is an Elite instead: none at Tier I, then evenly up to all of them at ALL_ELITE_TIER. */
 export const eliteFightChance = (tier: number): number =>
@@ -190,7 +210,7 @@ export const rollEliteFight = (rng: RngState, tier: number): boolean => {
 
 /**
  * The Wardens an act's fights can bring at ALL_WARDEN_TIER: the ones of its realms and of the far realms, so even a first act has a few to
- * bring. Never Valerion, who is the Rift's finale.
+ * bring. Never Drago, who is the Rift's finale.
  */
 function fightWardens(pool: readonly StageRealm[], stage: number): Encounter[] {
   const realms = fightRealms(pool, stage);
@@ -210,11 +230,12 @@ export function ambushEnemy(
   taken: readonly (string | undefined)[],
   stage = 1,
   tier = 1,
+  themed = false,
 ): string | null {
   const all =
     kind === 'elite' && tier >= ALL_WARDEN_TIER
       ? fightWardens(pool, stage)
-      : fightRealms(pool, stage).flatMap((r) =>
+      : fightRealms(pool, stage, themed).flatMap((r) =>
           enemiesOf(r, kind === 'elite' ? 'elite' : 'regular', stage),
         );
   const fresh = all.filter((e) => !taken.includes(e.id));
@@ -256,10 +277,14 @@ export function generateStageMap(
   tier = 1,
   campaignRoute?: 'twelve',
   wardenOrder: readonly string[] = WARDEN_SEQUENCE,
+  themed = false,
 ): StageMap {
-  if (campaignRoute === 'twelve' && tier === 12) return gauntletMap(stage, shuffledWardens(rng));
-  const regulars = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'regular', stage));
-  const elites = fightRealms(pool, stage).flatMap((r) => enemiesOf(r, 'elite', stage));
+  if (campaignRoute === 'twelve' && tier === 12)
+    return themed
+      ? gauntletMap(stage, shuffle(rng, [...DRAGON_WARDENS]), true)
+      : gauntletMap(stage, shuffledWardens(rng));
+  const regulars = fightRealms(pool, stage, themed).flatMap((r) => enemiesOf(r, 'regular', stage));
+  const elites = fightRealms(pool, stage, themed).flatMap((r) => enemiesOf(r, 'elite', stage));
   const used = new Set<string>();
   const regular = (): string => {
     const fresh = regulars.filter((e) => !used.has(e.id));
@@ -319,7 +344,7 @@ export function generateStageMap(
   if (campaignRoute === 'twelve' && tier <= WARDEN_SEQUENCE.length)
     warden.enemyId = wardenOrder[tier - 1]!;
   // beyond the first few Rift Tiers, now and then the Warden is a ghost (decided with the map, so the map can say so)
-  // (never Valerion: the climb ends with him, DECISIONS #531)
+  // (never Drago: the climb ends with him, DECISIONS #531)
   if (
     CAMPAIGN_GHOSTS_ENABLED &&
     tier > GHOST_FROM_TIER &&
@@ -461,7 +486,13 @@ export function generateStageMap(
     }
   }
 
-  return { stage, realm, floors: FLOORS + 1, nodes: [...byFloor.flat(), warden] };
+  return {
+    stage,
+    realm,
+    ...(themed ? { themed: true as const } : {}),
+    floors: FLOORS + 1,
+    nodes: [...byFloor.flat(), warden],
+  };
 }
 
 /** Nodes you can choose next: the whole first floor at the start of a stage, else the neighbours of `at`. */

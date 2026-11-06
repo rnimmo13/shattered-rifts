@@ -2342,6 +2342,16 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'summon': {
       if (op.ifAbsent && side.units.some((x) => x.def === op.unit && x.hp > 0)) return;
+      if (op.replace) {
+        const released = side.units.filter(
+          (u) => u.id !== a.actor.id && op.replace!.includes(u.def),
+        );
+        side.units = side.units.filter((u) => !released.includes(u));
+        for (const u of released) {
+          r.ev.push({ type: 'died', unit: u.id, released: true });
+          fireTriggers(r, side, 'allyLost');
+        }
+      }
       const u = spawn(r, side, op.unit, false, a.actor);
       // (a hero who shares Might: the new companion arrives with it)
       const lead = heroOf(side);
@@ -4307,7 +4317,7 @@ function reap(r: Run): void {
   if (r.s.winner) return;
   for (const side of ['a', 'b'] as const) {
     const sd = r.s.sides[side];
-    // (a leader that falls takes the rest of its side with it: Valerion's Ward and Shards, DECISIONS #547)
+    // (a leader that falls takes the rest of its side with it: Drago's Ward and Shards, DECISIONS #547)
     if (sd.hero === null && sd.units.some((u) => u.hp <= 0 && r.db.units[u.def]?.leader))
       for (const u of sd.units) u.hp = 0;
     const dead = sd.units.filter((u) => u.hp <= 0);

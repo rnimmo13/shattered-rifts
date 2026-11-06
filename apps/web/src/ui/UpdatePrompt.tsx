@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { battleActive, subscribeBattle } from '../battleActivity';
 import {
   pendingUpdate,
   subscribeUpdates,
   startAppUpdateChecks,
-  refreshForUpdate,
+  applyRequiredUpdate,
 } from '../appUpdates';
-import { restartDesktopUpdate } from '../desktopBridge';
 import './updatePrompt.css';
 
 export function UpdatePrompt() {
@@ -15,10 +14,24 @@ export function UpdatePrompt() {
   const dialog = useRef<HTMLDialogElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const attempted = useRef('');
+  const install = useCallback(() => {
+    setBusy(true);
+    setError('');
+    void applyRequiredUpdate().catch(() => {
+      setError('Could not save and update. Your game is still open; please try again.');
+      setBusy(false);
+    });
+  }, []);
   useEffect(startAppUpdateChecks, []);
   useEffect(() => {
     if (update && !fighting && !dialog.current?.open) dialog.current?.showModal();
   }, [update, fighting]);
+  useEffect(() => {
+    if (!update || fighting || attempted.current === update.key) return;
+    attempted.current = update.key;
+    install();
+  }, [update, fighting, install]);
   if (!update || fighting) return null;
   return (
     <dialog
@@ -34,24 +47,13 @@ export function UpdatePrompt() {
         </strong>
         <p>
           {update.kind === 'web'
-            ? 'Update required to continue. Save your progress and refresh to load the new version.'
-            : 'The patch is downloaded. Save and restart to install it before continuing.'}
+            ? 'Update required. Saving your progress and refreshing automatically.'
+            : 'Update required. Saving your progress and restarting automatically to install the patch.'}
         </p>
       </div>
       <div className="update-prompt__actions">
-        <button
-          className="btn btn--small"
-          disabled={busy}
-          onClick={() => {
-            setBusy(true);
-            setError('');
-            void (update.kind === 'web' ? refreshForUpdate() : restartDesktopUpdate()).catch(() => {
-              setError('Could not save and update. Your game is still open; please try again.');
-              setBusy(false);
-            });
-          }}
-        >
-          {busy ? 'Saving…' : update.kind === 'web' ? 'Save and refresh' : 'Save and restart'}
+        <button className="btn btn--small" disabled={busy} onClick={install}>
+          {busy ? 'Saving and updating…' : 'Retry required update'}
         </button>
       </div>
       {error && <p role="alert">{error}</p>}
@@ -77,7 +79,7 @@ export function WebUpdateControls() {
           setBusy(true);
           void (
             update
-              ? refreshForUpdate()
+              ? applyRequiredUpdate()
               : import('../appUpdates').then(({ checkAppUpdates }) => checkAppUpdates())
           )
             .then(() =>

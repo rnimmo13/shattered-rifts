@@ -60,3 +60,19 @@ export function centredLine(items: LineItem[], near: number, far: number): LineF
   const shift = (near + far) / 2 - (first + end) / 2;
   return { ...fit, xs: fit.xs.map((x) => x + shift) };
 }
+
+/** Fixed-size figures use rows of two rather than shrinking when another summon joins. */
+export function stableFormation(
+  items: LineItem[],
+  near: number,
+  far: number,
+): { xs: number[]; rows: number[] } {
+  const xs: number[] = [],
+    rows: number[] = [];
+  for (let start = 0; start < items.length; start += 2) {
+    const fit = centredLine(items.slice(start, start + 2), near, far);
+    xs.push(...fit.xs);
+    rows.push(...fit.xs.map(() => Math.floor(start / 2)));
+  }
+  return { xs, rows };
+}

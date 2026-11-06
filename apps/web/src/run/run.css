@@ -778,6 +778,40 @@ img.mapnode__pic {
 .run[data-realm='rift'] {
   --tint: rgb(255 79 216 / 0.24);
 }
+.run[data-realm='gloomfen'] {
+  --tint: rgb(44 159 130 / 0.24);
+}
+.run[data-realm='starfall'] {
+  --tint: rgb(176 112 255 / 0.25);
+}
+.run[data-realm='beyond'] {
+  --tint: rgb(87 94 222 / 0.28);
+}
+.run[data-realm='cinder'] {
+  --tint: rgb(240 100 42 / 0.25);
+}
+.run[data-realm='tides'] {
+  --tint: rgb(49 192 199 / 0.25);
+}
+.run[data-realm='vespera'] {
+  --tint: rgb(183 103 219 / 0.26);
+}
+.run[data-realm='sands'] {
+  --tint: rgb(230 182 87 / 0.24);
+}
+.run[data-realm='ruin'] {
+  --tint: rgb(155 66 89 / 0.25);
+}
+.stage-panel__realm-story {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--c-muted);
+}
+.stage-panel__realm-story strong {
+  color: var(--c-gold);
+  font-weight: 600;
+}
 .run {
   background:
     radial-gradient(ellipse at 50% -5%, var(--tint, rgb(143 91 255 / 0.28)), transparent 62%),

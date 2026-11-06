@@ -2,6 +2,7 @@
 // Riftwalker, companion and enemy stands as, and a card-art adapter for the v2 card format.
 
 import type { CardDef, UnitDef } from '@sr/combat';
+import { CAMPAIGN_REALMS, DRAGON_WARDENS } from '@sr/content/v2';
 import type { Motif } from '../art/motifs';
 import { loadSkin, realCardArt, realFigure, realSkinFigure } from '../art/assets';
 import { HERO_EMBLEM } from '../art/emblems';
@@ -134,6 +135,12 @@ const unitCache = new Map<string, HTMLCanvasElement>();
 const GROWN: Record<string, { atHp: number; as: string }> = {
   'bone-thrall': { atHp: 18, as: 'grave-colossus' },
 };
+const WARDEN_FIGURES = new Set<string>([
+  ...CAMPAIGN_REALMS.flatMap((r) => [...r.wardens]),
+  ...DRAGON_WARDENS,
+  'vorthax',
+]);
+export const isWardenFigure = (id: string): boolean => WARDEN_FIGURES.has(id);
 
 /** The figure a unit stands as at this max HP (itself, or its grown form). */
 export function figureId(defId: string, maxHp?: number): string {
@@ -189,8 +196,9 @@ export function unitHeight(
   maxHp?: number,
 ): number {
   if (kind === 'hero') return 520;
+  if (d?.id === 'vorthax') return 720;
   if (kind === 'ally') {
-    const hp = maxHp ?? d?.maxHp ?? 0;
+    const hp = base(d?.id ?? '') === 'bone-thrall' ? (maxHp ?? d?.maxHp ?? 0) : (d?.maxHp ?? 0);
     // (a grown Thrall towers over the rest: the Grave Colossus)
     return hp >= 30 ? 400 : hp >= 18 ? 340 : 280;
   }

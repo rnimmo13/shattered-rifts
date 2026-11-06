@@ -290,6 +290,46 @@
       "bytes": 275060,
       "prompt": "The same scene, the same framing, WITHOUT the Riftwalkers (only the landscape and sky). Used behind the logo for the Steam library hero and the startup splash.",
       "reviewStatus": "concept; pending Robert’s review"
+    },
+    {
+      "file": "world-cindervault.png",
+      "source": "docs/art-prompts/0.209-arenas.json",
+      "web": "art/lore/world-cindervault.webp",
+      "width": 1440,
+      "height": 960,
+      "prompt": "Use case: stylized-concept. A brand-new production fantasy GAME ARENA BACKDROP for CINDERVAULT, an ash-buried industrial empire whose armies emerge from living furnaces. Extremely wide panoramic 4:1 landscape composition, environment only. Painted polished card-game art with bold readable architectural shapes, subtle cel shading and soft distant contrast. Across the skyline: immense black basalt KILNS and blocky iron foundry citadels, rows of smoking chimneys, enormous glowing furnace doors, lava channels and suspended chain bridges, ash dunes beneath deep rust-colored smoke. Make the central landmark a colossal squat industrial furnace with four tall smokestacks and one orange fire door, not a palace. Restrained charcoal/iron/rust palette with warm orange seams. All important architecture in the middle vertical band; a narrow calm flat horizon along the bottom, no large foreground fighting platform. NO floating crowns, NO crowns of any kind, NO gothic cathedral, NO royal palace, NO people or creatures, NO UI/text/logos/labels/borders. Fill the canvas, no padding or blurred strips. Distinctive heavy industrial fantasy, rather than a fallen-star kingdom.",
+      "reviewStatus": "Visually inspected in contact sheet, battle and responsive Lore; release approved in decision650",
+      "derivedFromArena": true
+    },
+    {
+      "file": "world-thalassar.png",
+      "source": "docs/art-prompts/0.209-arenas.json",
+      "web": "art/lore/world-thalassar.webp",
+      "width": 1440,
+      "height": 960,
+      "prompt": "Use case: stylized-concept. Create one production hand-painted dark fantasy card-battler arena BACKDROP. The supplied image is a STYLE REFERENCE ONLY, not an edit target. Match its polished illustrated game art, readable bold silhouettes, cel-shaded painterly architecture and softer distant contrast. Extremely wide panoramic landscape composition, ideally 4:1 aspect. Environment only: NO fighters, creatures, people, UI, text, symbols resembling letters, logos, borders or panels. A long continuous architectural skyline occupies the middle 60 percent, with atmospheric depth and subdued central contrast behind large character figures. A narrow calm flat horizon along the bottom; keep all important realm landmarks visible across the middle of the panorama. The near fighting floor is a separate engine layer, so do not paint a large foreground platform. Fill the complete canvas; no blank padding or blur bars. Scene: Thalassar: a vast magical underwater pearl citadel, iridescent shell palaces, coral buttresses and luminous turquoise reefs, pale pearl arches and distant ocean silhouettes in deep blue water. Predominantly deep navy, sea turquoise and mother-of-pearl ivory; no docks or industrial machinery.",
+      "reviewStatus": "Visually inspected in contact sheet, battle and responsive Lore; release approved in decision650",
+      "derivedFromArena": true
+    },
+    {
+      "file": "world-vespera.png",
+      "source": "docs/art-prompts/0.209-arenas.json",
+      "web": "art/lore/world-vespera.webp",
+      "width": 1440,
+      "height": 960,
+      "prompt": "Use case: stylized-concept. Create one production hand-painted dark fantasy card-battler arena BACKDROP. The supplied image is a STYLE REFERENCE ONLY, not an edit target. Match its polished illustrated game art, readable bold silhouettes, cel-shaded painterly architecture and softer distant contrast. Extremely wide panoramic landscape composition, ideally 4:1 aspect. Environment only: NO fighters, creatures, people, UI, text, symbols resembling letters, logos, borders or panels. A long continuous architectural skyline occupies the middle 60 percent, with atmospheric depth and subdued central contrast behind large character figures. A narrow calm flat horizon along the bottom; keep all important realm landmarks visible across the middle of the panorama. The near fighting floor is a separate engine layer, so do not paint a large foreground platform. Fill the complete canvas; no blank padding or blur bars. Scene: Vespera: an immense sleeping dream court, impossible lilac towers suspended above soft indigo mists, moth-wing arches, crescent moons and floating fragments of memory, dreamlike velvet architecture. Predominantly indigo, amethyst, muted rose and moonlight. No cavern or literal mushrooms.",
+      "reviewStatus": "Visually inspected in contact sheet, battle and responsive Lore; release approved in decision650",
+      "derivedFromArena": true
+    },
+    {
+      "file": "world-hourglass.png",
+      "source": "docs/art-prompts/0.209-arenas.json",
+      "web": "art/lore/world-hourglass.webp",
+      "width": 1440,
+      "height": 960,
+      "prompt": "Use case: stylized-concept. Create one production hand-painted dark fantasy card-battler arena BACKDROP. The supplied image is a STYLE REFERENCE ONLY, not an edit target. Match its polished illustrated game art, readable bold silhouettes, cel-shaded painterly architecture and softer distant contrast. Extremely wide panoramic landscape composition, ideally 4:1 aspect. Environment only: NO fighters, creatures, people, UI, text, symbols resembling letters, logos, borders or panels. A long continuous architectural skyline occupies the middle 60 percent, with atmospheric depth and subdued central contrast behind large character figures. A narrow calm flat horizon along the bottom; keep all important realm landmarks visible across the middle of the panorama. The near fighting floor is a separate engine layer, so do not paint a large foreground platform. Fill the complete canvas; no blank padding or blur bars. Scene: The Hourglass Expanse: an ancient half-buried bronze and sandstone kingdom beneath twin suns, great weathered hourglass monuments, monumental sphinx gateways, dunes flowing through empty colonnades and distant desert ridges. Predominantly warm sand, aged bronze, dusty blue and amber; no medieval European castle.",
+      "reviewStatus": "Visually inspected in contact sheet, battle and responsive Lore; release approved in decision650",
+      "derivedFromArena": true
     }
   ],
   "generation": [

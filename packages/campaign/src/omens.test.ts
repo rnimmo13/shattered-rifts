@@ -270,7 +270,7 @@ describe('an Ascendancy for beating Tier III (DECISIONS #519)', () => {
 });
 
 describe('the finale and the Omens (DECISIONS #547)', () => {
-  it("Valerion's quarters stand in for the rises: none is added, the statuses still are", () => {
+  it("Drago's quarters stand in for the rises: none is added, the statuses still are", () => {
     const e = omenEffects(MAX_TIER);
     const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
     const units = ['rift-ward', 'vorthax'];

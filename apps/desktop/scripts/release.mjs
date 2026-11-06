@@ -100,7 +100,7 @@ if (!existing) {
   const notes = resolve(root, '.wrangler/desktop-release-notes.txt');
   writeFileSync(
     notes,
-    `Windows 64-bit desktop playtest v${pkg.version}.\n\nDownload Shattered-Rifts-Setup.exe, install it, and launch Shattered Rifts. This edition downloads updates automatically and installs them when you quit, or choose Restart to update in Settings.\n\nExisting versions 0.182.0 and earlier require this installer once to enable future automatic updates. Your saved profile is preserved.\n\nThis playtest is unsigned, so Windows may show an unrecognized-app warning. Steam editions receive updates through Steam.\n\nWebsite and patch notes: https://shatteredrifts.app/#/patch-notes\nSource commit: ${commit}\n`,
+    `Windows 64-bit desktop playtest v${pkg.version}.\n\nDownload Shattered-Rifts-Setup.exe, install it, and launch Shattered Rifts. Updates download automatically. Once ready, the game saves and restarts automatically outside an active battle; a failed save keeps the game open for retry.\n\nExisting versions 0.182.0 and earlier require this installer once to enable future automatic updates. Your saved profile is preserved.\n\nThis playtest is unsigned, so Windows may show an unrecognized-app warning. Steam editions receive updates through Steam.\n\nWebsite and patch notes: https://shatteredrifts.app/#/patch-notes\nSource commit: ${commit}\n`,
   );
   console.log(
     gh(

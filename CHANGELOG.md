@@ -1,3 +1,30 @@
+## Local0.209 follow-up — Campaign shards
+
+## 0.209.0 final follow-up — rules87, 2026-11-05
+
+- Drago’s fixed720-stage-pixel figure is priority-loaded and excluded from crowd shrink; stable rows, per-fight art selection and definition-based ordinary minion sizing prevent turn-to-turn changes. Deliberate Thrall growth remains. Both modes; no stat/target changes.
+- Eleven normal realms now have5distinct Elite formations each:4→5 in four pools,2→5 in seven,30→55total. Native unit stats/rewards unchanged; existing maps kept.
+- Nine new Wardens receive distinct mechanics: furnace fuel, Barrier theft, spreading Nightmares, self-Fate wager, Burn talons, reflective facets, timed Hollow Eggs, forked lightning, missing-HP/compounding Fate. Exact old local→final changes and full numeric definitions: docs/WARDEN_MECHANICS_2026-11-05.md and docs/warden-content-0.209.json.
+- Drago retains300baseHP; phases4→5, thresholds75/50/25→80/60/40/20; opening Refract→CallPyrewing. Calls five native incarnations at40%baseHP (90/92/92/88/96), replacing prior escort via generic release-before-summon. No false leader victory, forced health gate or damage cap. Rules87 checkpoint migration applies.
+- Four dedicated painted realm panorama/floor packs replace borrowed scenes, with8responsive Lore assets (illustrations26→30), world/warden lore and Learn references. Prompts: docs/art-prompts/0.209-arenas.json.
+- Required updates now automatically save/refresh or restart outside battle; save failure blocks with retry, no Later. Native checks immediately/every60s instead of15s/every300s. Existing progress/active battle safeguards retained. Release notes wording updated.
+- All previous0.209 Recall/shard/realm changes remain. Robert authorizes commit/push/deploy after validation (#650); no balance simulations or measured new-boss parity.
+
+## Local 0.209 realm follow-up — 2026-11-05
+
+- Eleven unique themed realm tiers I–XI with a saved native boss choice; four new realm rosters, nine new Wardens, nine painted cutouts. Exact29-unit HP/move ledger: docs/REALMS_AND_DRAGO_2026-11-05.md.
+- Tier XII: five native dragons then Drago, replacing eleven captured Wardens then final boss. Shrines5→3 after2/4/5; Gifts11→5 and guaranteed finale Max HP55→25. Existing rewards/recovery/tier multipliers retained. Current maps retained; newly generated legacy maps/finale themed.
+- Valerion→Drago in current game/lore/help and archived Campaign title presentation, preserving internal IDs/raw replays and boss mechanics. Map realm/boss identity, lore cards, asset fallbacks and notes updated.
+- Deterministic checks only; no simulations, measured parity or release approval. Prior local Recall/shard work remains included.
+
+- Robert-selected bases: normal15→25,Elite36→50,Warden65→100. Keep Elite tier fading, Times Are Tough, Heart multipliers/rounding, Elite spoils choices and flat Boon income. TierXII actual9/14/40→16/22/62before Hearts. Starting shards/shop/event prices unchanged; Valerion still no payout. Future victories only; saved balances/generated offers retained.
+- Fix Gilded Heart unclaimed Elite offers failing save/load; reward claiming unchanged. Exact ledger/limitations: [Campaign shards](docs/CAMPAIGN_SHARDS_2026-11-05.md). Append-only0.209.0-shards-review-1 assessment; no simulations/measured regrades. This joins the local Recall candidate; no new release approval.
+
+## 0.209.0 / rules86 — local, not released
+
+- Campaign/Arena Recall the Blades, base/upgraded: Mana2→3, replay limit15→all eligible consumed Daggers, Discard→Consume after use. Upgraded still upgrades Daggers before replay. Daggers return to consumed; other copies or suitable recovery can provide another cast. Preserve pile order/target/Fanned. Existing copies inherit changes; rules86 uses existing incompatible-fight checkpoint migration.
+- Shadow Echo unchanged15actualBarrier/copy/turn. Static two-copy comparison against Patient Wall, Breath Between Blows, Frostbound, Hardened Scars and Obsidian Aegis in [review](docs/RECALL_AND_BARRIER_REVIEW_2026-11-05.md). This is rule arithmetic and historical client evidence, not measured PvP parity. No simulations. Fresh release approval required.
+
 ## 0.208.0 / rules85 — release approved (decision640)
 
 Robert authorizes commit, push and deployment of the complete Reserves/Heart correctness and Recall/Shadow Echo cap candidate below, including matching Windows updater. All3,916tests/188files, workspace typechecks, lint (two existing warnings) and production builds pass. Release validation: [0.208](docs/RELEASE_0.208_VALIDATION.md). Historical local assessment labels remain unchanged.

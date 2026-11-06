@@ -63,9 +63,9 @@ function play(s: CombatState, card: string): CombatState {
   expect(action).toBeTruthy();
   return applyAction(db, s, action!).state;
 }
-describe('Assassin knife and Barrier caps', () => {
+describe('Assassin Recall commitment and Shadow Echo cap', () => {
   it.each(['pve', 'pvp'] as const)(
-    'Recall base/upgraded caps its real replays and immutable preview in %s',
+    'Recall base/upgraded replays the entire pile, consumes itself and has an immutable preview in %s',
     (mode) => {
       for (const card of ['recall-the-blades', 'recall-the-blades+'])
         for (const count of [0, 14, 15, 28]) {
@@ -87,19 +87,42 @@ describe('Assassin knife and Barrier caps', () => {
           const played = result.events.filter(
             (e) => e.type === 'play' && e.card.startsWith('knife-'),
           );
-          expect(played).toHaveLength(Math.min(count, 15));
+          expect(played).toHaveLength(count);
           const actual = 100000 - result.state.sides.b.units[0]!.hp;
           expect(shown.lo).toBe(actual);
-          expect(shown.played).toBe(Math.min(count, 15));
-          expect(actual).toBe(Math.min(count, 15) * (card.includes('+') ? 6 : 4));
+          expect(shown.played).toBe(count);
+          expect(actual).toBe(count * (card.includes('+') ? 6 : 4));
+          expect(result.state.sides.a.mana).toBe(96);
+          expect(
+            result.state.sides.a.exhausted.some((c) => c.id === 'recall' && c.card === card),
+          ).toBe(true);
+          expect(result.state.sides.a.discard.some((c) => c.id === 'recall')).toBe(false);
           expect(
             result.state.sides.a.exhausted.filter((c) => c.id.startsWith('knife-')),
           ).toHaveLength(count);
           expect(result.state.sides.a.exhausted.find((c) => c.id === 'knife-15')?.card).toBe(
-            count > 15 ? 'sleeve-knife' : undefined,
+            count > 15 ? (card.includes('+') ? 'sleeve-knife+' : 'sleeve-knife') : undefined,
           );
           expect(result.state.sides.a.exhausted.find((c) => c.id === 'other')?.card).toBe('strike');
         }
+    },
+  );
+  it.each(['recall-the-blades', 'recall-the-blades+'])(
+    '%s requires 3 Mana and another copy can recall the retained Daggers',
+    (card) => {
+      let s = fight();
+      s.sides.a.hand = [{ id: 'pay', card }];
+      s.sides.a.mana = 2;
+      expect(legalActions(db, s).some((a) => a.type === 'play' && a.card === 'pay')).toBe(false);
+      s.sides.a.mana = 3;
+      s.sides.a.exhausted = [{ id: 'retained', card: 'sleeve-knife' }];
+      s = applyAction(db, s, { type: 'play', card: 'pay', target: s.sides.b.units[0]!.id }).state;
+      expect(s.sides.a.mana).toBe(0);
+      expect(s.sides.a.exhausted.find((c) => c.id === 'pay')?.card).toBe(card);
+      s.sides.a.mana = 3;
+      const result = play(s, card);
+      expect(100000 - result.sides.b.units[0]!.hp).toBe(2 * (card.endsWith('+') ? 6 : 4));
+      expect(result.sides.a.exhausted.filter((c) => c.card === card)).toHaveLength(2);
     },
   );
   it.each(['shadow-echo', 'shadow-echo+'])(
@@ -155,7 +178,7 @@ describe('Assassin knife and Barrier caps', () => {
     expect(JSON.stringify(s)).toBe(before);
     s = applyAction(db, s, { type: 'play', card: 'recall', target: s.sides.b.units[0]!.id }).state;
     expect(hero(s).barrier).toBe(30);
-    expect(s.sides.a.attacksPlayed).toBe(15);
+    expect(s.sides.a.attacksPlayed).toBe(28);
   });
   it('a fresh turn allowance also applies to automatic off-turn plays', () => {
     let s = play(fight('pvp'), 'shadow-echo');
@@ -168,7 +191,7 @@ describe('Assassin knife and Barrier caps', () => {
     expect(hero(s).barrier).toBe(16);
     expect(s.sides.a.powers[0]?.barrierUsed).toBe(1);
   });
-  it('Fanned Recall caps card replays rather than total enemy hits', () => {
+  it('Fanned Recall replays the full pile against every enemy', () => {
     const s = fight();
     hero(s).statuses.fanned = 1;
     s.sides.a.hand = [{ id: 'recall', card: 'recall-the-blades+' }];
@@ -183,13 +206,14 @@ describe('Assassin knife and Barrier caps', () => {
     const result = applyAction(db, s, action!);
     expect(
       result.events.filter((e) => e.type === 'play' && e.card.startsWith('fan-')),
-    ).toHaveLength(15);
-    expect(result.state.sides.b.units.map((u) => 100000 - u.hp)).toEqual([90, 90]);
+    ).toHaveLength(28);
+    expect(result.state.sides.b.units.map((u) => 100000 - u.hp)).toEqual([168, 168]);
   });
-  it('card text states both limits and retains the upgrade differences', () => {
-    expect(cardText(db, db.cards['recall-the-blades']!)).toContain('Play up to 15 Daggers');
+  it('card text states unlimited Recall, Consume and the unchanged Echo limit', () => {
+    expect(cardText(db, db.cards['recall-the-blades']!)).toContain('Play every Dagger');
+    expect(cardText(db, db.cards['recall-the-blades']!)).toContain('Consume.');
     expect(cardText(db, db.cards['recall-the-blades+']!)).toContain(
-      'Upgrade and play up to 15 Daggers',
+      'Upgrade and play every Dagger',
     );
     expect(cardText(db, db.cards['shadow-echo']!)).toContain(
       '15 Barrier per copy each turn, after modifiers',

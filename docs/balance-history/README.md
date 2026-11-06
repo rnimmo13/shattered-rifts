@@ -1,3 +1,11 @@
+Latest approved release assessment: [0.209 Warden review1](0.209.0-wardens-review-1.md), [CSV](0.209.0-wardens-review-1.csv), [exact ledger](../WARDEN_MECHANICS_2026-11-05.md). Nine native mechanics, Drago’s court,55Elite formations and stable model presentation; all30Ascendancies/ten starts/mixed engines considered, no new human outcomes or simulations. Robert authorizes release after validation (#650). Earlier local snapshots remain preserved.
+
+Latest local realm assessment: [0.209 realms review1](0.209.0-realms-review-1.md), [CSV](0.209.0-realms-review-1.csv), [exact ledger](../REALMS_AND_DRAGO_2026-11-05.md). Eleven themed worlds, five native dragons then Drago, three finale refinements. All30 Ascendancies/ten starters/mixed builds considered; new encounters unmeasured, no simulations or release approval. Earlier local snapshots remain intact.
+
+Latest local follow-up: [0.209 shard review1](0.209.0-shards-review-1.md), [CSV](0.209.0-shards-review-1.csv), [exact ledger](../CAMPAIGN_SHARDS_2026-11-05.md). Robert-selected25/50/100bases retain existing reductions/prices. No new measured grades/simulations or release approval.
+
+Latest local revision: [0.209.0 Recall commitment](0.209.0.md), [CSV](0.209.0.csv), [two-copy Barrier comparison](../RECALL_AND_BARRIER_REVIEW_2026-11-05.md). Recall3Mana/Consume/allDaggers; Echo unchanged. No simulations/new-rules measured grades or release approval.
+
 Release mapping: Robert approved the complete0.208.0/rules85 Reserves/provenance and knife-cap candidate for website/server and Windows publication, decision640. [Validation](../RELEASE_0.208_VALIDATION.md). Assessment-time local labels below remain historical; no new measured grades.
 
 Latest local follow-up: [0.208.0 knife review1](0.208.0-knives-review-1.md), [CSV](0.208.0-knives-review-1.csv), [ledger and real-player evidence](../ASSASSIN_KNIFE_CAPS_2026-11-05.md). Approved15Dagger/cast Recall and15actualBarrier/copy/turn Echo caps; historical saved Assassin finale only, no new-rules parity or simulations. Earlier snapshots preserved; no release approval.

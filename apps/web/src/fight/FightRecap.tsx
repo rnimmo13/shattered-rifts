@@ -4,7 +4,7 @@
 
 import { useEffect, useMemo } from 'react';
 import type { CombatDb } from '@sr/combat';
-import { replayFight, type FightReplay } from './recap';
+import { replayFight, fightTitle, type FightReplay } from './recap';
 import './recap.css';
 
 export function FightRecap(props: { db: CombatDb; replay: FightReplay; onClose: () => void }) {
@@ -47,7 +47,7 @@ export function FightRecap(props: { db: CombatDb; replay: FightReplay; onClose: 
       <div className="recap__panel" onClick={(e) => e.stopPropagation()}>
         <header className="recap__head">
           <div>
-            <h2>{replay.title}</h2>
+            <h2>{fightTitle(replay)}</h2>
             <p>
               <b>{outcome}</b> · {recap.rounds} {recap.rounds === 1 ? 'turn' : 'turns'}
             </p>

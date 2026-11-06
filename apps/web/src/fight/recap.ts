@@ -39,6 +39,14 @@ export interface FightReplay {
   progress?: Record<Side, { tier: number; stage?: number }>;
 }
 
+/** Presentation-only alias for archived Campaign titles; never alter recorded actions or names. */
+export function fightTitle(replay: FightReplay): string {
+  const enemy = replay.setup.b;
+  return 'enemies' in enemy && enemy.enemies.includes('vorthax')
+    ? replay.title.replaceAll('Valerion', 'Drago')
+    : replay.title;
+}
+
 export interface DamageSource {
   name: string;
   amount: number;
@@ -205,16 +213,16 @@ export function replayFight(
           const src = e.source;
           const name = e.fate
             ? 'Fate'
-            : trap ??
-            (src === heroId
-              ? `${cause?.side === me ? cause.label : 'Your own cards'} (your own)`
-              : src
-                ? cause &&
-                  (cause.unit === src ||
-                    (cause.side !== undefined && cause.side === namer.sideOf(src)))
-                  ? cause.label
-                  : namer.nameOf(src)
-                : (cause?.label ?? 'Statuses and other effects'));
+            : (trap ??
+              (src === heroId
+                ? `${cause?.side === me ? cause.label : 'Your own cards'} (your own)`
+                : src
+                  ? cause &&
+                    (cause.unit === src ||
+                      (cause.side !== undefined && cause.side === namer.sideOf(src)))
+                    ? cause.label
+                    : namer.nameOf(src)
+                  : (cause?.label ?? 'Statuses and other effects')));
           const s = sources.get(name) ?? { name, amount: 0, hits: 0 };
           s.amount += e.lost;
           s.hits++;

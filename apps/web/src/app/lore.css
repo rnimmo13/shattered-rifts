@@ -203,6 +203,17 @@
   padding-top: 4rem;
   scroll-margin-top: 6rem;
 }
+.lore__worldArt--figure {
+  background: radial-gradient(ellipse, #38304e, #141829);
+}
+.lore__worldArt--figure img {
+  object-fit: contain !important;
+  padding: 0.8rem;
+}
+.lore__wardenNames {
+  font-size: 0.85rem;
+  color: var(--c-gold-light);
+}
 .lore__worldGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -132,7 +132,9 @@ describe('the Echo', () => {
     expect(r.eventResult).toMatch(/^Echo!/);
     const plan = duelPlan(r)!;
     expect(plan.ghost?.hp).toBe(Math.round((ghostBossHp('knight', 5, 1) * ECHO_HP_PCT) / 100));
-    expect(plan.heroStatuses.faltering).toBe((omenEffects(r.tier).heroStatuses.faltering ?? 0) + ECHO_FALTERING);
+    expect(plan.heroStatuses.faltering).toBe(
+      (omenEffects(r.tier).heroStatuses.faltering ?? 0) + ECHO_FALTERING,
+    );
     expect(ECHO_FALTERING).toBe(0);
     expect(finishDuel(r, false).resolve).toBe(r.resolve - 2);
   });
@@ -166,7 +168,10 @@ describe('an Echo pays like an Elite', () => {
     for (let i = 0; i < 20; i++) {
       const { run, echo } = withEcho(ghost(`b${i}`));
       const r = finishDuel(
-        enterNode(before({ ...run, seed: `boon-${i}` }, echo.id), echo.id),
+        enterNode(
+          before({ ...run, seed: `boon-${i}`, rng: seedRng(`boon-${i}`) }, echo.id),
+          echo.id,
+        ),
         true,
         10,
       );
@@ -187,7 +192,9 @@ describe('a ghost Warden', () => {
         run = settleGhost(run, ghost(at.id));
       run = { ...run, phase: 'duel', context: { nodeId: w.id } };
       run = enterNode(before(run, w.id), w.id);
-      expect(duelPlan(run)!.heroStatuses.faltering).toBe((omenEffects(run.tier).heroStatuses.faltering ?? 0) + GHOST_FALTERING);
+      expect(duelPlan(run)!.heroStatuses.faltering).toBe(
+        (omenEffects(run.tier).heroStatuses.faltering ?? 0) + GHOST_FALTERING,
+      );
       expect(GHOST_FALTERING).toBe(0);
       return;
     }

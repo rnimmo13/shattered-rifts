@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ELITE_EVENTS, EVENTS } from '@sr/campaign';
-import { ENCOUNTERS } from '@sr/content/v2';
+import { ENCOUNTERS, WORLD_ENEMIES } from '@sr/content/v2';
 import { ARENA_LOOK } from '../duel/scene/arena';
-import { BOSS_VENUE, venueFor, type VenueId } from '../duel/scene/venue';
+import { BOSS_VENUE, venueFor, venueForRealm, type VenueId } from '../duel/scene/venue';
 import { arenaFor } from '../pvp/arenaVenue';
 
 const pub = resolve(__dirname, '../../public/art');
@@ -26,20 +26,43 @@ describe('event scenes', () => {
 });
 
 describe('arenas', () => {
-  it('every venue has its backdrop, floor and nine props', () => {
+  it('the four added worlds and their Wardens use four dedicated realm arenas', () => {
+    const pairs = [
+      ['cinder', 'ashbound-colossus'],
+      ['tides', 'pearlbound-sovereign'],
+      ['vespera', 'dreaming-monarch'],
+      ['sands', 'sandbound-chronicler'],
+    ] as const;
+    const venues = pairs.map(([realm]) => venueForRealm(realm));
+    expect(new Set(venues).size).toBe(4);
+    expect(venues).toEqual(['cindervault', 'thalassar', 'vespera', 'hourglass']);
+    for (const [realm, boss] of pairs)
+      expect(
+        venueFor(
+          ENCOUNTERS.find((e) => e.id === boss)!,
+          'same',
+        ),
+      ).toBe(venueForRealm(realm));
+  });
+  it('every venue has its backdrop, floor and every prop used by its layout', () => {
     const missing: string[] = [];
     for (const v of Object.keys(ARENA_LOOK)) {
-      for (const f of ['backdrop.jpg', 'floor.png', ...Array.from({ length: 9 }, (_, i) => `props/p${i}.png`)])
+      const look = ARENA_LOOK[v as VenueId];
+      const used = new Set([...look.far, ...look.ground.map((p) => p.i), ...look.hang]);
+      for (const f of ['backdrop.jpg', 'floor.png', ...[...used].map((i) => `props/p${i}.png`)])
         if (!existsSync(resolve(pub, `arenas/${v}/${f}`))) missing.push(`${v}/${f}`);
     }
     expect(missing).toEqual([]);
   });
 
-  it('every Warden and the finale have an arena of their own, and no two share one', () => {
+  it('preserves original private arenas and gives every new Warden an existing themed arena', () => {
     const wardens = ENCOUNTERS.filter((e) => e.kind === 'warden' || e.kind === 'finale');
     expect(wardens.filter((e) => !BOSS_VENUE[e.id]).map((e) => e.id)).toEqual([]);
     expect(Object.keys(BOSS_VENUE).filter((id) => !wardens.some((e) => e.id === id))).toEqual([]);
-    expect(new Set(Object.values(BOSS_VENUE)).size).toBe(Object.keys(BOSS_VENUE).length);
+    const added = new Set(WORLD_ENEMIES.map((unit) => unit.id));
+    const originals = wardens.filter((e) => !added.has(e.id));
+    expect(new Set(originals.map((e) => BOSS_VENUE[e.id])).size).toBe(originals.length);
+    for (const e of wardens) expect(ARENA_LOOK[BOSS_VENUE[e.id]!], e.id).toBeTruthy();
     for (const e of wardens) expect(venueFor(e, 'any seed')).toBe(BOSS_VENUE[e.id]);
   });
 

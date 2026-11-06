@@ -5,6 +5,7 @@
 
 import { paintEmblem } from './emblems';
 import { MULTIVERSE_UNIT_ART } from './multiverseUnits';
+import { WORLD_ENEMIES } from '@sr/content/v2';
 
 type G = CanvasRenderingContext2D;
 
@@ -595,7 +596,15 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(255,225,130,0.4)',
   },
   // ---- Nexus-9 enemies
-  'foundry-hatch': { hue: 200, light: 0.8, w: 1.2, h: 0.9, accessories: ['spikes'], badge: 'cog', trim: GOLD },
+  'foundry-hatch': {
+    hue: 200,
+    light: 0.8,
+    w: 1.2,
+    h: 0.9,
+    accessories: ['spikes'],
+    badge: 'cog',
+    trim: GOLD,
+  },
   'scrap-drone': {
     hue: 220,
     light: 0.85,
@@ -709,7 +718,14 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(255,60,80,0.35)',
   },
   // ---- Umbral Veil enemies
-  'hollow-acolyte': { hue: 40, light: 0.8, w: 0.9, accessories: ['hood'], badge: 'eye', trim: GOLD },
+  'hollow-acolyte': {
+    hue: 40,
+    light: 0.8,
+    w: 0.9,
+    accessories: ['hood'],
+    badge: 'eye',
+    trim: GOLD,
+  },
   'hooded-acolyte': { hue: 20, accessories: ['hood'], badge: 'web', trim: '#6a3fa8' },
   whisperer: {
     hue: 280,
@@ -755,7 +771,7 @@ export const LOOKS: Record<string, Look> = {
     aura: 'rgba(200,100,255,0.4)',
   },
   // ---- the Rift
-  // (Valerion's Ward, DECISIONS #547: a squat crystal wall)
+  // (Drago's Ward, DECISIONS #547: a squat crystal wall)
   'rift-ward': {
     hue: 300,
     sat: 1.3,
@@ -787,4 +803,17 @@ export const LOOKS: Record<string, Look> = {
   },
   // ---- the multiverse expansion (DECISIONS #437)
   ...Object.fromEntries(Object.entries(MULTIVERSE_UNIT_ART).map(([id, u]) => [id, u.look])),
+  // Distinct procedural fallbacks while painted figures load.
+  ...Object.fromEntries(
+    WORLD_ENEMIES.map((unit, i) => [
+      unit.id,
+      {
+        hue: (i * 47 + 13) % 360,
+        sat: 1.05 + i / 100,
+        light: 0.9,
+        accessories: ['crown'] as Accessory[],
+        trim: ['#ffb05c', '#75dce0', '#c69aff', '#e5c88c'][Math.floor(i / 6) % 4],
+      },
+    ]),
+  ),
 };

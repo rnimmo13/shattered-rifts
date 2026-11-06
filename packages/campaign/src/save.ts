@@ -6,6 +6,8 @@ import { migrateHeart } from './hearts';
 import type { EventCtx } from './deals';
 import {
   COMBAT_DB,
+  CAMPAIGN_REALMS,
+  CAMPAIGN_REALM_IDS,
   ENCOUNTERS,
   RIFTWALKERS,
   V2_DECK_RULES,
@@ -20,13 +22,7 @@ import {
 } from '@sr/content/v2';
 const hasCard = (id: unknown): boolean => isDeckCard(id);
 import type { MapNode, NodeKind, RunPhase, RunState } from './types';
-import {
-  FINAL_STAGE,
-  gauntletMap,
-  shuffledWardens,
-  WARDEN_SEQUENCE,
-  withGauntletShrines,
-} from './mapgen';
+import { FINAL_STAGE, dragonGauntletMap, WARDEN_SEQUENCE, withGauntletShrines } from './mapgen';
 import {
   FIGHT_SHARDS,
   MAX_EXTRA_REWARDS,
@@ -77,6 +73,8 @@ const isStrArray = (x: unknown): x is string[] =>
 function validMap(map: unknown): map is RunState['map'] {
   if (!isObj(map) || !isInt(map['stage'], 1, FINAL_STAGE) || !isInt(map['floors'], 1, 60))
     return false;
+  if (map['themed'] !== undefined && map['themed'] !== true) return false;
+  if (map['finale'] !== undefined && map['finale'] !== 'dragons') return false;
   const nodes = map['nodes'];
   if (!Array.isArray(nodes) || nodes.length === 0 || nodes.length > 240) return false;
   const ids = new Set<string>();
@@ -144,12 +142,16 @@ function validContext(r: RunState): boolean {
     case 'reward':
       return (
         cards(c['offers']) &&
-        // (an Elite's spoils: never more shards than an Elite pays, DECISIONS #555)
+        // Saved spoils must allow the held Heart's modifier as well as the base reward.
         (c['spoils'] === undefined ||
           (isObj(c['spoils']) &&
             Number.isInteger(c['spoils']['shards']) &&
             c['spoils']['shards'] >= 0 &&
-            c['spoils']['shards'] <= FIGHT_SHARDS.elite))
+            c['spoils']['shards'] <=
+              Math.round(
+                FIGHT_SHARDS.elite *
+                  (1 + (r.heart ? (COMBAT_DB.boons[r.heart]?.fightShardsPct ?? 0) : 0) / 100),
+              )))
       );
     case 'ascend': {
       const offered = Array.isArray(c['ascendancies'])
@@ -418,7 +420,27 @@ export function parseRun(text: string): RunState | null {
   const r = raw as Partial<RunState>;
   if (r.v !== RUN_SAVE_VERSION) return null;
   if (r.campaignRoute !== undefined && r.campaignRoute !== 'twelve') return null;
+  if (r.realmRoute !== undefined && r.realmRoute !== 'eleven' && r.realmRoute !== 'legacy-themed')
+    return null;
+  if (r.realmRoute === 'eleven') {
+    if (
+      !isStrArray(r.realmOrder) ||
+      r.realmOrder.length !== 11 ||
+      new Set(r.realmOrder).size !== 11 ||
+      !r.realmOrder.every((id) => (CAMPAIGN_REALM_IDS as readonly string[]).includes(id)) ||
+      !isStrArray(r.wardenOrder) ||
+      r.wardenOrder.length !== 11 ||
+      !r.wardenOrder.every((id, i) =>
+        (
+          CAMPAIGN_REALMS.find((world) => world.id === r.realmOrder![i])!
+            .wardens as readonly string[]
+        ).includes(id),
+      )
+    )
+      return null;
+  }
   if (
+    r.realmRoute !== 'eleven' &&
     r.wardenOrder !== undefined &&
     (!Array.isArray(r.wardenOrder) ||
       r.wardenOrder.length !== 11 ||
@@ -590,7 +612,7 @@ export function parseRun(text: string): RunState | null {
       run.map = expanded;
     }
   }
-  // A run saved on a page after Valerion (his old Gift, an extra reward or an Ascendancy) goes straight to victory.
+  // A run saved on a page after Drago (his old Gift, an extra reward or an Ascendancy) goes straight to victory.
   if (
     (run.phase === 'gift' || run.phase === 'reward' || run.phase === 'ascend') &&
     run.context &&
@@ -604,13 +626,14 @@ export function parseRun(text: string): RunState | null {
       run.tier = 12;
       if (run.rewardRerollTier !== undefined && run.rewardRerollTier > 12)
         run.rewardRerollTier = 12;
-      run.map = gauntletMap(1, shuffledWardens(run.rng));
+      run.realmRoute = 'legacy-themed';
+      run.map = dragonGauntletMap(run.rng);
       run.cleared = [];
       run.at = null;
       run.context = null;
       run.phase = 'map';
       run.reworkNotice =
-        'Your cleared legacy tier is preserved in your earned progress. The campaign now ends with the Warden gauntlet, then Valerion.';
+        'Your cleared legacy tier is preserved in your earned progress. The campaign now ends with the Warden gauntlet, then Drago.';
     }
   }
   if (restartGhost) {

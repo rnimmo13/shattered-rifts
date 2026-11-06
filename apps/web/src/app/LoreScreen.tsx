@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { RIFTWALKERS } from '@sr/content/v2';
+import { RIFTWALKERS, CAMPAIGN_REALMS, DRAGON_WARDENS, encounter } from '@sr/content/v2';
 import { LORE_CHAPTERS, LORE_WORLDS, loreImage } from './lore';
 import { loadGraphicsQuality, loadEffectsMode } from '../duel/effects';
 import { useSettingsChanged } from './settings';
@@ -11,7 +11,7 @@ const gallery = [
   ...LORE_CHAPTERS.flatMap((c) =>
     c.panels.map((p) => ({ image: p.image, title: p.title, text: p.alt })),
   ),
-  ...LORE_WORLDS.map((w) => ({ image: w.image, title: w.name, text: w.text })),
+  ...LORE_WORLDS.flatMap((w) => (w.image ? [{ image: w.image, title: w.name, text: w.text }] : [])),
 ];
 const reduceMotion = (): boolean =>
   loadGraphicsQuality() === 'low' ||
@@ -88,8 +88,8 @@ export default function LoreScreen() {
             Ward, and each had a Warden to keep it.
           </p>
           <p>
-            Then Valerion shattered a vast section of the Ward. A few can walk the Rifts and live.
-            They are the Riftwalkers—and there are not enough shards for everyone.
+            Then Drago shattered a vast section of the Ward. A few can walk the Rifts and live. They
+            are the Riftwalkers—and there are not enough shards for everyone.
           </p>
           <button
             className="btn btn--small"
@@ -183,31 +183,58 @@ export default function LoreScreen() {
       </div>
       <section className="lore__worlds" id="lore-worlds" aria-labelledby="lore-worlds-title">
         <header>
-          <p className="lore__eyebrow">Eight places in a broken universe</p>
+          <p className="lore__eyebrow">Eleven Warden realms, and worlds beyond</p>
           <h2 id="lore-worlds-title">The Worlds</h2>
-          <p>Every world has its own laws. Every Riftwalker has a home worth saving.</p>
+          <p>
+            Each tier follows one realm to one of its Wardens. Countless other worlds lie beyond
+            this road.
+          </p>
         </header>
         <div className="lore__worldGrid">
           {LORE_WORLDS.map((world) => (
             <article className="lore__world" key={world.id}>
-              <button
-                className="lore__worldArt"
-                onClick={() => show(world.image)}
-                aria-label={`Enlarge artwork: ${world.name}`}
-              >
-                <img
-                  src={loreImage(world.image)}
-                  srcSet={`${loreImage(world.image, true)} 640w, ${loreImage(world.image)} 1440w`}
-                  sizes="(max-width: 750px) 100vw, 45vw"
-                  loading="lazy"
-                  width="1440"
-                  height="960"
-                  alt={`${world.name}: ${world.text}`}
-                />
-              </button>
+              {world.image ? (
+                <button
+                  className="lore__worldArt"
+                  onClick={() => world.image && show(world.image)}
+                  aria-label={`Enlarge artwork: ${world.name}`}
+                >
+                  <img
+                    src={loreImage(world.image)}
+                    srcSet={`${loreImage(world.image, true)} 640w, ${loreImage(world.image)} 1440w`}
+                    sizes="(max-width: 750px) 100vw, 45vw"
+                    loading="lazy"
+                    width="1440"
+                    height="960"
+                    alt={`${world.name}: ${world.text}`}
+                  />
+                </button>
+              ) : (
+                <div className="lore__worldArt lore__worldArt--figure">
+                  <img
+                    src={`${import.meta.env.BASE_URL}art/figures/${world.figure}.png`}
+                    alt={`${world.name} — its Warden`}
+                    loading="lazy"
+                    width="512"
+                    height="512"
+                  />
+                </div>
+              )}
               <div className="lore__worldText">
                 <h3>{world.name}</h3>
                 <p>{world.text}</p>
+                {(CAMPAIGN_REALMS.some((realm) => realm.id === world.id) ||
+                  world.id === 'ruin') && (
+                  <p className="lore__wardenNames">
+                    <b>Wardens:</b>{' '}
+                    {(world.id === 'ruin'
+                      ? [...DRAGON_WARDENS, 'vorthax']
+                      : CAMPAIGN_REALMS.find((realm) => realm.id === world.id)!.wardens
+                    )
+                      .map((id) => encounter(id).name)
+                      .join(' · ')}
+                  </p>
+                )}
                 {world.note && <small>{world.note}</small>}
                 <div className="lore__heroes">
                   {world.heroes.map((id) => (

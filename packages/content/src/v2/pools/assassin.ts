@@ -44,7 +44,6 @@ const knifeTrap = (upgrade: boolean): Op =>
   playPile('exhaust', {
     tag: 'knife',
     all: true,
-    limit: 15,
     aim: 'target',
     ...(upgrade ? { upgrade } : {}),
   });
@@ -279,7 +278,8 @@ export const ASSASSIN: CardDef[] = [
     { up: { effects: [status('fanned', 1), addTo('sleeve-knife', 3)] } },
   ),
   // (Knife Trap)
-  q('rare', 'recall-the-blades', 'Recall the Blades', 'skill', 2, 'foe', [knifeTrap(false)], {
+  q('rare', 'recall-the-blades', 'Recall the Blades', 'skill', 3, 'foe', [knifeTrap(false)], {
+    exhaust: true,
     up: { effects: [knifeTrap(true)] },
   }),
   // (Serpent Form)

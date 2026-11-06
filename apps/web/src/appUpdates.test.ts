@@ -7,9 +7,11 @@ const mocks = vi.hoisted(() => ({
   release: vi.fn(() => Promise.resolve()),
   reload: vi.fn(),
   check: vi.fn(() => Promise.resolve({ phase: 'idle', version: null as string | null })),
+  install: vi.fn(() => Promise.resolve()),
 }));
 vi.mock('./build', () => ({ BUILD: { version: '0.184.0', commit: '1111111' } }));
 vi.mock('./desktopBridge', () => ({
+  restartDesktopUpdate: mocks.install,
   desktopBridge: () =>
     mocks.native
       ? {
@@ -29,6 +31,8 @@ beforeEach(() => {
   mocks.release.mockReset();
   mocks.release.mockImplementation(() => Promise.resolve());
   mocks.check.mockClear();
+  mocks.install.mockReset();
+  mocks.install.mockResolvedValue();
   vi.stubGlobal('fetch', mocks.fetch);
   vi.stubGlobal('window', { location: { reload: mocks.reload } });
 });
@@ -46,7 +50,7 @@ describe('application update availability and refresh safety', () => {
     expect(newerWebBuild(current, { version: 'garbage', commit: '2222222' })).toBe(false);
     expect(newerWebBuild(current, { version: '0.185.0', commit: '<script>' })).toBe(false);
   });
-  it('checks uncached without credentials and never reloads automatically', async () => {
+  it('checks uncached without credentials; availability discovery waits for the safe-boundary UI', async () => {
     mocks.fetch.mockResolvedValue(latest());
     const app = await import('./appUpdates');
     await app.checkAppUpdates();
@@ -124,6 +128,41 @@ describe('application update availability and refresh safety', () => {
     await app.checkAppUpdates(true);
     expect(mocks.check).toHaveBeenCalledOnce();
   });
+});
+
+it('coalesces automatic and manual retry requests into one saved web refresh', async () => {
+  const app = await import('./appUpdates');
+  mocks.fetch.mockResolvedValueOnce(latest());
+  await app.checkAppUpdates();
+  await Promise.all([app.applyRequiredUpdate(), app.applyRequiredUpdate()]);
+  expect(mocks.release).toHaveBeenCalledOnce();
+  expect(mocks.reload).toHaveBeenCalledOnce();
+});
+it('does not install in battle, retains a failed required update, and can retry after saving recovers', async () => {
+  const app = await import('./appUpdates');
+  await expect(app.applyRequiredUpdate()).rejects.toThrow('No update');
+  mocks.fetch.mockResolvedValueOnce(latest());
+  await app.checkAppUpdates();
+  const { enterBattle } = await import('./battleActivity');
+  const leave = enterBattle();
+  await expect(app.applyRequiredUpdate()).rejects.toThrow('battle');
+  expect(mocks.release).not.toHaveBeenCalled();
+  leave();
+  mocks.release.mockRejectedValueOnce(new Error('Save failed'));
+  await expect(app.applyRequiredUpdate()).rejects.toThrow('Save failed');
+  expect(mocks.reload).not.toHaveBeenCalled();
+  expect(app.updateRequired()).toBe(true);
+  await app.applyRequiredUpdate();
+  expect(mocks.reload).toHaveBeenCalledOnce();
+});
+it('uses the saved native installer for a required desktop patch instead of reloading the website', async () => {
+  mocks.native = true;
+  mocks.status = { phase: 'ready', version: '0.185.0' };
+  const app = await import('./appUpdates');
+  await app.checkAppUpdates();
+  await app.applyRequiredUpdate();
+  expect(mocks.install).toHaveBeenCalledOnce();
+  expect(mocks.reload).not.toHaveBeenCalled();
 });
 
 it('requires a ready update at safe boundaries and permits the current battle to finish', async () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ascendanciesOf } from '@sr/content/v2';
+import { ascendanciesOf, CAMPAIGN_REALM_IDS, DRAGON_WARDENS, encounter } from '@sr/content/v2';
 import { COMBAT_DB } from '@sr/content/v2';
 import { createCombat } from '@sr/combat';
 import {
@@ -16,7 +16,6 @@ import {
   newRun,
   parseRun,
   serializeRun,
-  WARDEN_SEQUENCE,
   type RunState,
 } from './index';
 
@@ -37,17 +36,17 @@ describe('the twelve-tier campaign', () => {
     expect(run.tier).toBe(12);
     expect(run.phase).toBe('map');
     expect(new Set(seen).size).toBe(11);
-    expect([...seen].sort()).toEqual([...WARDEN_SEQUENCE].sort());
-    expect(run.map.nodes).toHaveLength(17);
-    expect(run.map.nodes.filter((n) => n.refinement)).toHaveLength(5);
-    expect(run.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(12);
+    expect(seen.map((id) => encounter(id).realm).sort()).toEqual([...CAMPAIGN_REALM_IDS].sort());
+    expect(run.map.nodes).toHaveLength(9);
+    expect(run.map.nodes.filter((n) => n.refinement)).toHaveLength(3);
+    expect(run.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(6);
     expect(
       run.map.nodes
         .filter((n) => n.kind === 'warden')
-        .slice(0, 11)
+        .slice(0, 5)
         .map((n) => n.enemyId)
         .sort(),
-    ).toEqual([...WARDEN_SEQUENCE].sort());
+    ).toEqual([...DRAGON_WARDENS].sort());
     expect(run.map.nodes.at(-1)!.enemyId).toBe('vorthax');
     expect(parseRun(serializeRun(run))!.map).toEqual(run.map);
     expect(availableNodes(run)).toHaveLength(1);
@@ -64,10 +63,10 @@ describe('the twelve-tier campaign', () => {
       expect(
         end.map.nodes
           .filter((n) => n.kind === 'warden')
-          .slice(0, 11)
+          .slice(0, 5)
           .map((n) => n.enemyId)
           .sort(),
-      ).toEqual([...WARDEN_SEQUENCE].sort());
+      ).toEqual([...DRAGON_WARDENS].sort());
     }
     expect(first.size).toBe(4);
     expect(finale.size).toBe(4);
@@ -114,7 +113,7 @@ describe('the twelve-tier campaign', () => {
       expect(run.phase).toBe('duel');
       const before = run.maxHp;
       if (i === 11) {
-        // Valerion: no Gift, shards, potion, Boon, Max HP or healing; straight to the victory screen
+        // Drago: no Gift, shards, potion, Boon, Max HP or healing; straight to the victory screen
         const { shards, potions, boons, resolve } = run;
         run = finishDuel(run, true, 10, run.potions, 0, 2);
         expect(run.maxHp).toBe(before);
@@ -132,8 +131,12 @@ describe('the twelve-tier campaign', () => {
       run = finishDuel(run, true, 10);
       expect(run.maxHp).toBeGreaterThanOrEqual(before + 5);
       expect(run.hp).toBeGreaterThanOrEqual(15 + Math.ceil(run.maxHp * 0.15));
-      if (i === 0) expect(run.hp).toBe(15 + Math.ceil(run.maxHp * 0.15));
-      if (i === 0) expect(run.maxHp).toBe(before + 5);
+      if (i === 0) {
+        // A randomly awarded Max-HP Boon is applied after the Warden recovery.
+        const boonHp = run.boons.reduce((sum, id) => sum + (COMBAT_DB.boons[id]?.maxHp ?? 0), 0);
+        expect(run.maxHp).toBe(before + 5 + boonHp);
+        expect(run.hp).toBe(15 + Math.ceil((before + 5) * 0.15) + boonHp);
+      }
       expect(run.phase).toBe('gift');
       const restored = parseRun(serializeRun(run));
       expect(restored).not.toBeNull();
@@ -164,7 +167,7 @@ describe('the twelve-tier campaign', () => {
     expect(bank(run).phase).toBe('banked');
   });
 
-  it('sends a run saved on the old post-Valerion Gift straight to victory', () => {
+  it('sends a run saved on the old post-Drago Gift straight to victory', () => {
     const base = newRun('knight', 'vorthax-gift-save');
     const map = gauntletMap();
     const last = map.nodes.at(-1)!;

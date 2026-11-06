@@ -148,9 +148,10 @@ export function LearnOdds() {
       <p>
         Deeper in, plain fights turn into Elites, past those limits: {eliteFightChance(2)}% of them
         at Rift Tier 2, {eliteFightChance(5)}% at Tier 5, {eliteFightChance(10)}% at Tier 10, and
-        every one from Tier {ALL_ELITE_TIER}. The final gauntlet is a fresh shuffled line of Wardens
-        followed by Valerion, with normal Warden rewards and healing. Before that, ambushes and
-        fights an event starts follow the same Elite odds.
+        every one from Tier {ALL_ELITE_TIER}. New finales contain five native dragon Wardens in a
+        fresh shuffled order, followed by Drago, with normal Warden rewards and healing. Refinement
+        shrines follow dragons 2, 4 and 5. Before that, ambushes and fights an event starts use the
+        tier’s realm and follow the same Elite odds. Existing generated maps remain unchanged.
       </p>
 
       <p>

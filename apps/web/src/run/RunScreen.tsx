@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   COMBAT_DB,
+  CAMPAIGN_REALMS,
   RIFTWALKERS,
   ascendancyOf,
   classNameOf,
@@ -1077,6 +1078,24 @@ function Body(props: {
                 they split and meet; the Warden waits at the end.
               </>
             )}
+            {run.map.themed && (
+              <span className="stage-panel__realm-story">
+                {run.map.finale === 'dragons' ? (
+                  'Drago’s homeland is gone. Five dragon Wardens guard its remains; Drago waits beyond them.'
+                ) : (
+                  <>
+                    {CAMPAIGN_REALMS.find((world) => world.id === run.map.realm)?.description}{' '}
+                    <strong>
+                      Warden:{' '}
+                      {
+                        encounter(run.map.nodes.find((node) => node.kind === 'warden')!.enemyId!)
+                          .name
+                      }
+                    </strong>
+                  </>
+                )}
+              </span>
+            )}
           </p>
           <div className="mapwrap">
             <MapView
@@ -1268,7 +1287,7 @@ function Body(props: {
                 back to it later.
               </>
             ) : (
-              ' You have climbed the whole Rift, and beaten Valerion at the top of it.'
+              ' You have climbed the whole Rift, and beaten Drago at the top of it.'
             )}
           </p>
           <div className="choices-row">
@@ -1277,7 +1296,7 @@ function Body(props: {
                 <b>Continue to Tier {run.tier + 1}</b>
                 <span>
                   {run.tier + 1 === MAX_TIER
-                    ? 'Face all 11 Wardens, then Valerion. Normal Warden healing and rewards between fights.'
+                    ? 'Enter the First Ruin: five dragon Wardens, then Drago. Normal Warden rewards and recovery, with three upgrade/remove shrines.'
                     : 'Keep your deck and HP. One tier deeper, one floor longer.'}
                 </span>
                 <span className="bigchoice__omen">

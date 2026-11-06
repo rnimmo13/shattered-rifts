@@ -1,0 +1,3887 @@
+{
+  "version": "0.209.0",
+  "rules": 87,
+  "provenance": "Authored definitions, not playtest results",
+  "units": [
+    {
+      "id": "cinder-soldier",
+      "name": "Cinder Soldier",
+      "maxHp": 42,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "cut": {
+            "id": "cut",
+            "name": "Ashen Cut",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "to": "target"
+              }
+            ]
+          },
+          "brace": {
+            "id": "brace",
+            "name": "Ember Guard",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 7,
+                "to": "self"
+              },
+              {
+                "op": "damage",
+                "amount": 5,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "cut",
+            "brace"
+          ]
+        }
+      }
+    },
+    {
+      "id": "kiln-wisp",
+      "name": "Kiln Wisp",
+      "maxHp": 32,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "spark": {
+            "id": "spark",
+            "name": "Furnace Spark",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 6,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "seared",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "veil": {
+            "id": "veil",
+            "name": "Heat Veil",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 7,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "spark",
+            "veil"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ash-collector",
+      "name": "Ash Collector",
+      "maxHp": 40,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "gather": {
+            "id": "gather",
+            "name": "Gather Embers",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 1,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 5,
+                "to": "self"
+              }
+            ]
+          },
+          "scatter": {
+            "id": "scatter",
+            "name": "Scatter Ash",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 7,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "gather",
+            "scatter"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cinder-marshal",
+      "name": "Cinder Marshal",
+      "maxHp": 120,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "rally": {
+            "id": "rally",
+            "name": "Rally the Ash",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 10,
+                "to": "self"
+              }
+            ]
+          },
+          "cleave": {
+            "id": "cleave",
+            "name": "Furnace Cleave",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 18,
+                "to": "allFoes"
+              }
+            ]
+          },
+          "brand": {
+            "id": "brand",
+            "name": "Brand",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 13,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "seared",
+                "amount": 2,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "rally",
+            "cleave",
+            "brand"
+          ]
+        }
+      }
+    },
+    {
+      "id": "walking-kiln",
+      "name": "Walking Kiln",
+      "maxHp": 128,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "stoke": {
+            "id": "stoke",
+            "name": "Stoke",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 18,
+                "to": "self"
+              }
+            ]
+          },
+          "blast": {
+            "id": "blast",
+            "name": "Kiln Blast",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 9,
+                "hits": 2,
+                "to": "target"
+              }
+            ]
+          },
+          "vent": {
+            "id": "vent",
+            "name": "Vent",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 13,
+                "to": "allFoes"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "stoke",
+            "blast",
+            "vent"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ashbound-colossus",
+      "name": "The Ashbound Colossus",
+      "maxHp": 210,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "stoke": {
+            "id": "stoke",
+            "name": "Stoke the Heart",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 24,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "blur",
+                "amount": 1,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          },
+          "march": {
+            "id": "march",
+            "name": "Furnace Discharge",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 12,
+                "to": "allFoes",
+                "scale": {
+                  "by": "barrier",
+                  "mult": 0.5,
+                  "max": 24
+                }
+              },
+              {
+                "op": "strip",
+                "to": "self"
+              }
+            ]
+          },
+          "rupture": {
+            "id": "rupture",
+            "name": "Furnace Rupture",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 27,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "stoke",
+            "march",
+            "rupture"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pearl-crab",
+      "name": "Pearl Crab",
+      "maxHp": 42,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "shell": {
+            "id": "shell",
+            "name": "Pearl Shell",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 8,
+                "to": "self"
+              }
+            ]
+          },
+          "claw": {
+            "id": "claw",
+            "name": "Tidal Claw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "shell",
+            "claw"
+          ]
+        }
+      }
+    },
+    {
+      "id": "tide-sprite",
+      "name": "Tide Sprite",
+      "maxHp": 32,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "mend": {
+            "id": "mend",
+            "name": "Living Tide",
+            "effects": [
+              {
+                "op": "heal",
+                "amount": 5,
+                "to": "allFriends"
+              }
+            ]
+          },
+          "surge": {
+            "id": "surge",
+            "name": "Surge",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 6,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "surge",
+            "mend"
+          ]
+        }
+      }
+    },
+    {
+      "id": "reef-stalker",
+      "name": "Reef Stalker",
+      "maxHp": 38,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "bite": {
+            "id": "bite",
+            "name": "Reef Bite",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 4,
+                "hits": 2,
+                "to": "target"
+              }
+            ]
+          },
+          "dive": {
+            "id": "dive",
+            "name": "Dive",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 5,
+                "to": "self"
+              },
+              {
+                "op": "damage",
+                "amount": 5,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "bite",
+            "dive"
+          ]
+        }
+      }
+    },
+    {
+      "id": "mirror-ray",
+      "name": "Mirror Ray",
+      "maxHp": 116,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "mirror": {
+            "id": "mirror",
+            "name": "Mirror Tide",
+            "effects": [
+              {
+                "op": "status",
+                "status": "reflect",
+                "amount": 5,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 10,
+                "to": "self"
+              }
+            ]
+          },
+          "sweep": {
+            "id": "sweep",
+            "name": "Ray Sweep",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 16,
+                "to": "allFoes"
+              }
+            ]
+          },
+          "break": {
+            "id": "break",
+            "name": "Breaking Wave",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 20,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "mirror",
+            "sweep",
+            "break"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deep-watcher",
+      "name": "Deep Watcher",
+      "maxHp": 126,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "gaze": {
+            "id": "gaze",
+            "name": "Abyssal Gaze",
+            "effects": [
+              {
+                "op": "status",
+                "status": "faltering",
+                "amount": 1,
+                "to": "target"
+              },
+              {
+                "op": "damage",
+                "amount": 11,
+                "to": "target"
+              }
+            ]
+          },
+          "lash": {
+            "id": "lash",
+            "name": "Many Arms",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 6,
+                "hits": 3,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "gaze",
+            "lash"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pearlbound-sovereign",
+      "name": "The Pearlbound Sovereign",
+      "maxHp": 210,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "mirror": {
+            "id": "mirror",
+            "name": "Pearl Tribute",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 0,
+                "to": "self",
+                "scale": {
+                  "by": "barrier",
+                  "of": "target",
+                  "max": 20
+                }
+              },
+              {
+                "op": "strip",
+                "to": "target",
+                "amount": 20
+              },
+              {
+                "op": "barrier",
+                "amount": 24,
+                "to": "self"
+              }
+            ]
+          },
+          "surge": {
+            "id": "surge",
+            "name": "Royal Tide",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 18,
+                "to": "allFoes"
+              }
+            ]
+          },
+          "ebb": {
+            "id": "ebb",
+            "name": "The Ebb",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 23,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "mirror",
+            "surge",
+            "ebb"
+          ]
+        }
+      }
+    },
+    {
+      "id": "dream-moth",
+      "name": "Dream Moth",
+      "maxHp": 32,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "dust": {
+            "id": "dust",
+            "name": "Dream Dust",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 5,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "faltering",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "flutter": {
+            "id": "flutter",
+            "name": "Flutter",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "dust",
+            "flutter"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollow-sleeper",
+      "name": "Hollow Sleeper",
+      "maxHp": 44,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "sleep": {
+            "id": "sleep",
+            "name": "Sleepwalk",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 8,
+                "to": "self"
+              }
+            ]
+          },
+          "wake": {
+            "id": "wake",
+            "name": "Waking Blow",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 10,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "sleep",
+            "wake"
+          ]
+        }
+      }
+    },
+    {
+      "id": "memory-thief",
+      "name": "Memory Thief",
+      "maxHp": 36,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "steal": {
+            "id": "steal",
+            "name": "Borrow a Memory",
+            "effects": [
+              {
+                "op": "addCard",
+                "card": "static",
+                "times": 1,
+                "to": "discard",
+                "side": "foe"
+              }
+            ]
+          },
+          "cut": {
+            "id": "cut",
+            "name": "Forgotten Cut",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "cut",
+            "steal"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nightmare-loom",
+      "name": "Nightmare Loom",
+      "maxHp": 118,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "weave": {
+            "id": "weave",
+            "name": "Weave a Nightmare",
+            "effects": [
+              {
+                "op": "addCard",
+                "card": "static",
+                "times": 2,
+                "to": "discard",
+                "side": "foe"
+              },
+              {
+                "op": "barrier",
+                "amount": 10,
+                "to": "self"
+              }
+            ]
+          },
+          "snare": {
+            "id": "snare",
+            "name": "Dream Snare",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 17,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "faltering",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "weave",
+            "snare"
+          ]
+        }
+      }
+    },
+    {
+      "id": "dream-custodian",
+      "name": "Dream Custodian",
+      "maxHp": 124,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "hush": {
+            "id": "hush",
+            "name": "Hush",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 12,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "faltering",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "guard": {
+            "id": "guard",
+            "name": "Guard the Dream",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 15,
+                "to": "self"
+              }
+            ]
+          },
+          "wake": {
+            "id": "wake",
+            "name": "Wake",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 9,
+                "hits": 2,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "hush",
+            "guard",
+            "wake"
+          ]
+        }
+      }
+    },
+    {
+      "id": "dreaming-monarch",
+      "name": "The Dreaming Monarch",
+      "maxHp": 215,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "dream": {
+            "id": "dream",
+            "name": "The Sleeping Court",
+            "effects": [
+              {
+                "op": "addCard",
+                "card": "nightmare",
+                "times": 2,
+                "to": "hand",
+                "side": "foe"
+              },
+              {
+                "op": "barrier",
+                "amount": 18,
+                "to": "self"
+              }
+            ]
+          },
+          "hush": {
+            "id": "hush",
+            "name": "Royal Hush",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 17,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "faltering",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "wake": {
+            "id": "wake",
+            "name": "Wake the World",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 25,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "dream",
+            "hush",
+            "wake"
+          ]
+        }
+      }
+    },
+    {
+      "id": "sand-sentinel",
+      "name": "Sand Sentinel",
+      "maxHp": 46,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "guard": {
+            "id": "guard",
+            "name": "Dune Guard",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 8,
+                "to": "self"
+              }
+            ]
+          },
+          "strike": {
+            "id": "strike",
+            "name": "Sandstone Strike",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 9,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "strike",
+            "guard"
+          ]
+        }
+      }
+    },
+    {
+      "id": "glass-scorpion",
+      "name": "Glass Scorpion",
+      "maxHp": 34,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "sting": {
+            "id": "sting",
+            "name": "Glass Sting",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 5,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "seared",
+                "amount": 2,
+                "to": "target"
+              }
+            ]
+          },
+          "claw": {
+            "id": "claw",
+            "name": "Scissor Claw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "sting",
+            "claw"
+          ]
+        }
+      }
+    },
+    {
+      "id": "dune-scribe",
+      "name": "Dune Scribe",
+      "maxHp": 36,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "inscribe": {
+            "id": "inscribe",
+            "name": "Inscribe",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 1,
+                "to": "allFriends"
+              }
+            ]
+          },
+          "erase": {
+            "id": "erase",
+            "name": "Erase",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 7,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "erase",
+            "inscribe"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bronze-sphinx",
+      "name": "Bronze Sphinx",
+      "maxHp": 124,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "riddle": {
+            "id": "riddle",
+            "name": "Ancient Riddle",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 12,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "pounce": {
+            "id": "pounce",
+            "name": "Sunlit Pounce",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 7,
+                "hits": 3,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "riddle",
+            "pounce"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hourglass-giant",
+      "name": "Hourglass Giant",
+      "maxHp": 136,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "gather": {
+            "id": "gather",
+            "name": "Gather the Sands",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 10,
+                "to": "self"
+              }
+            ]
+          },
+          "fall": {
+            "id": "fall",
+            "name": "Falling Age",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 21,
+                "to": "target"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "gather",
+            "fall"
+          ]
+        }
+      }
+    },
+    {
+      "id": "sandbound-chronicler",
+      "name": "The Sandbound Chronicler",
+      "maxHp": 220,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "measure": {
+            "id": "measure",
+            "name": "Wager the Age",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 16,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": 0,
+                "to": "self",
+                "scale": {
+                  "by": "maxHp",
+                  "mult": 0.15
+                }
+              }
+            ]
+          },
+          "erode": {
+            "id": "erode",
+            "name": "Erosion",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 15,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "brittle",
+                "amount": 1,
+                "to": "target"
+              }
+            ]
+          },
+          "stroke": {
+            "id": "stroke",
+            "name": "Three Ages",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 7,
+                "hits": 3,
+                "to": "target"
+              }
+            ]
+          },
+          "turn": {
+            "id": "turn",
+            "name": "Turn the Hourglass",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 26,
+                "to": "target",
+                "scale": {
+                  "by": "doom",
+                  "mult": 0.1,
+                  "max": 12
+                }
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": -999999,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "measure",
+            "erode",
+            "stroke",
+            "turn"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pyrewing",
+      "name": "Pyrewing, the Cinder Tyrant",
+      "maxHp": 225,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "inhale": {
+            "id": "inhale",
+            "name": "Gather the Pyre",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 20,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          },
+          "breath": {
+            "id": "breath",
+            "name": "Worldfire Breath",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 19,
+                "to": "allFoes"
+              },
+              {
+                "op": "status",
+                "status": "burn",
+                "amount": 4,
+                "to": "allFoes"
+              }
+            ]
+          },
+          "talon": {
+            "id": "talon",
+            "name": "Kindling Talons",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 12,
+                "hits": 2,
+                "to": "target",
+                "scale": {
+                  "by": "burn",
+                  "of": "target",
+                  "mult": 2,
+                  "max": 8
+                }
+              },
+              {
+                "op": "status",
+                "status": "burn",
+                "amount": -999999,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "inhale",
+            "breath",
+            "talon"
+          ]
+        }
+      }
+    },
+    {
+      "id": "nacreth",
+      "name": "Nacreth, the Glassscale",
+      "maxHp": 230,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "scales": {
+            "id": "scales",
+            "name": "Three Mirror Facets",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 28,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "shielded",
+                "amount": 3,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "reflect",
+                "amount": 8,
+                "to": "self"
+              }
+            ]
+          },
+          "shards": {
+            "id": "shards",
+            "name": "Glassfall",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "hits": 3,
+                "to": "target"
+              }
+            ]
+          },
+          "fracture": {
+            "id": "fracture",
+            "name": "Fractured Breath",
+            "effects": [
+              {
+                "op": "status",
+                "status": "shielded",
+                "amount": -999999,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "reflect",
+                "amount": -999999,
+                "to": "self"
+              },
+              {
+                "op": "damage",
+                "amount": 24,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "scales",
+            "shards",
+            "fracture"
+          ]
+        }
+      }
+    },
+    {
+      "id": "morvane",
+      "name": "Morvane, the Hollow Maw",
+      "maxHp": 230,
+      "leader": true,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "brood": {
+            "id": "brood",
+            "name": "Brood of Ruin",
+            "effects": [
+              {
+                "op": "summon",
+                "unit": "hollow-egg"
+              },
+              {
+                "op": "summon",
+                "unit": "hollow-egg"
+              }
+            ]
+          },
+          "maw": {
+            "id": "maw",
+            "name": "Hollow Maw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 23,
+                "to": "target"
+              }
+            ]
+          },
+          "consume": {
+            "id": "consume",
+            "name": "The Open Maw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 26,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "brood",
+            "maw",
+            "consume"
+          ]
+        }
+      }
+    },
+    {
+      "id": "aethrion",
+      "name": "Aethrion, the Storm-Crowned",
+      "maxHp": 220,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "charge": {
+            "id": "charge",
+            "name": "Storm Crown",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 16,
+                "to": "self"
+              }
+            ]
+          },
+          "bolts": {
+            "id": "bolts",
+            "name": "Forked Crown",
+            "effects": [
+              {
+                "op": "when",
+                "by": "foes",
+                "atMost": 1,
+                "ops": [
+                  {
+                    "op": "damage",
+                    "amount": 7,
+                    "hits": 3,
+                    "to": "target"
+                  }
+                ]
+              },
+              {
+                "op": "when",
+                "by": "foes",
+                "atLeast": 2,
+                "ops": [
+                  {
+                    "op": "damage",
+                    "amount": 7,
+                    "to": "randomFoe",
+                    "hits": 4,
+                    "distinct": true
+                  }
+                ]
+              }
+            ]
+          },
+          "thunder": {
+            "id": "thunder",
+            "name": "Thunderwake",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 18,
+                "to": "allFoes"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "charge",
+            "bolts",
+            "thunder"
+          ]
+        }
+      }
+    },
+    {
+      "id": "xalvorr",
+      "name": "Xalvorr, the Last Eclipse",
+      "maxHp": 240,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "eclipse": {
+            "id": "eclipse",
+            "name": "Last Eclipse",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 20,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "brittle",
+                "amount": 1,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": 0,
+                "to": "target",
+                "scale": {
+                  "by": "missingHp",
+                  "of": "target",
+                  "mult": 0.15,
+                  "max": 12
+                }
+              }
+            ]
+          },
+          "shadow": {
+            "id": "shadow",
+            "name": "Eclipse Talons",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 11,
+                "hits": 2,
+                "to": "target"
+              }
+            ]
+          },
+          "night": {
+            "id": "night",
+            "name": "Endless Night",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 26,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": 0,
+                "to": "target",
+                "scale": {
+                  "by": "doom",
+                  "of": "target",
+                  "mult": 0.5,
+                  "max": 10
+                }
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "eclipse",
+            "shadow",
+            "night"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hollow-egg",
+      "name": "Hollow Egg",
+      "maxHp": 18,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "incubate": {
+            "id": "incubate",
+            "name": "Incubate",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 6,
+                "to": "self"
+              }
+            ]
+          },
+          "hatch": {
+            "id": "hatch",
+            "name": "Hatch into Hunger",
+            "effects": [
+              {
+                "op": "heal",
+                "amount": 0,
+                "to": "allFriends",
+                "scale": {
+                  "by": "maxHp",
+                  "of": "each",
+                  "mult": 0.02
+                }
+              },
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 1,
+                "to": "allFriends"
+              },
+              {
+                "op": "loseHp",
+                "amount": 0,
+                "to": "self",
+                "scale": {
+                  "by": "hp"
+                }
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "incubate",
+            "hatch"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pyrewing-incarnation",
+      "name": "Pyrewing, the Cinder Tyrant — Incarnation",
+      "maxHp": 90,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "inhale": {
+            "id": "inhale",
+            "name": "Gather the Pyre",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 20,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          },
+          "breath": {
+            "id": "breath",
+            "name": "Worldfire Breath",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 19,
+                "to": "allFoes"
+              },
+              {
+                "op": "status",
+                "status": "burn",
+                "amount": 4,
+                "to": "allFoes"
+              }
+            ]
+          },
+          "talon": {
+            "id": "talon",
+            "name": "Kindling Talons",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 12,
+                "hits": 2,
+                "to": "target",
+                "scale": {
+                  "by": "burn",
+                  "of": "target",
+                  "mult": 2,
+                  "max": 8
+                }
+              },
+              {
+                "op": "status",
+                "status": "burn",
+                "amount": -999999,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "inhale",
+            "breath",
+            "talon"
+          ]
+        }
+      },
+      "leader": false
+    },
+    {
+      "id": "nacreth-incarnation",
+      "name": "Nacreth, the Glassscale — Incarnation",
+      "maxHp": 92,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "scales": {
+            "id": "scales",
+            "name": "Three Mirror Facets",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 28,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "shielded",
+                "amount": 3,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "reflect",
+                "amount": 8,
+                "to": "self"
+              }
+            ]
+          },
+          "shards": {
+            "id": "shards",
+            "name": "Glassfall",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 8,
+                "hits": 3,
+                "to": "target"
+              }
+            ]
+          },
+          "fracture": {
+            "id": "fracture",
+            "name": "Fractured Breath",
+            "effects": [
+              {
+                "op": "status",
+                "status": "shielded",
+                "amount": -999999,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "reflect",
+                "amount": -999999,
+                "to": "self"
+              },
+              {
+                "op": "damage",
+                "amount": 24,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "scales",
+            "shards",
+            "fracture"
+          ]
+        }
+      },
+      "leader": false
+    },
+    {
+      "id": "morvane-incarnation",
+      "name": "Morvane, the Hollow Maw — Incarnation",
+      "maxHp": 92,
+      "leader": false,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "brood": {
+            "id": "brood",
+            "name": "Brood of Ruin",
+            "effects": [
+              {
+                "op": "summon",
+                "unit": "hollow-egg"
+              },
+              {
+                "op": "summon",
+                "unit": "hollow-egg"
+              }
+            ]
+          },
+          "maw": {
+            "id": "maw",
+            "name": "Hollow Maw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 23,
+                "to": "target"
+              }
+            ]
+          },
+          "consume": {
+            "id": "consume",
+            "name": "The Open Maw",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 26,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 2,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "brood",
+            "maw",
+            "consume"
+          ]
+        }
+      }
+    },
+    {
+      "id": "aethrion-incarnation",
+      "name": "Aethrion, the Storm-Crowned — Incarnation",
+      "maxHp": 88,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "charge": {
+            "id": "charge",
+            "name": "Storm Crown",
+            "effects": [
+              {
+                "op": "status",
+                "status": "might",
+                "amount": 2,
+                "to": "self"
+              },
+              {
+                "op": "barrier",
+                "amount": 16,
+                "to": "self"
+              }
+            ]
+          },
+          "bolts": {
+            "id": "bolts",
+            "name": "Forked Crown",
+            "effects": [
+              {
+                "op": "when",
+                "by": "foes",
+                "atMost": 1,
+                "ops": [
+                  {
+                    "op": "damage",
+                    "amount": 7,
+                    "hits": 3,
+                    "to": "target"
+                  }
+                ]
+              },
+              {
+                "op": "when",
+                "by": "foes",
+                "atLeast": 2,
+                "ops": [
+                  {
+                    "op": "damage",
+                    "amount": 7,
+                    "to": "randomFoe",
+                    "hits": 4,
+                    "distinct": true
+                  }
+                ]
+              }
+            ]
+          },
+          "thunder": {
+            "id": "thunder",
+            "name": "Thunderwake",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 18,
+                "to": "allFoes"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "charge",
+            "bolts",
+            "thunder"
+          ]
+        }
+      },
+      "leader": false
+    },
+    {
+      "id": "xalvorr-incarnation",
+      "name": "Xalvorr, the Last Eclipse — Incarnation",
+      "maxHp": 96,
+      "brain": {
+        "kind": "enemy",
+        "moves": {
+          "eclipse": {
+            "id": "eclipse",
+            "name": "Last Eclipse",
+            "effects": [
+              {
+                "op": "barrier",
+                "amount": 20,
+                "to": "self"
+              },
+              {
+                "op": "status",
+                "status": "brittle",
+                "amount": 1,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": 0,
+                "to": "target",
+                "scale": {
+                  "by": "missingHp",
+                  "of": "target",
+                  "mult": 0.15,
+                  "max": 12
+                }
+              }
+            ]
+          },
+          "shadow": {
+            "id": "shadow",
+            "name": "Eclipse Talons",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 11,
+                "hits": 2,
+                "to": "target"
+              }
+            ]
+          },
+          "night": {
+            "id": "night",
+            "name": "Endless Night",
+            "effects": [
+              {
+                "op": "damage",
+                "amount": 26,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "doom",
+                "amount": 0,
+                "to": "target",
+                "scale": {
+                  "by": "doom",
+                  "of": "target",
+                  "mult": 0.5,
+                  "max": 10
+                }
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "target"
+              },
+              {
+                "op": "status",
+                "status": "exposed",
+                "amount": 1,
+                "to": "self"
+              }
+            ]
+          }
+        },
+        "pattern": {
+          "kind": "cycle",
+          "order": [
+            "eclipse",
+            "shadow",
+            "night"
+          ]
+        }
+      },
+      "leader": false
+    }
+  ],
+  "drago": {
+    "id": "vorthax",
+    "name": "Drago, Heart of the Rift",
+    "maxHp": 300,
+    "leader": true,
+    "brain": {
+      "kind": "enemy",
+      "moves": {
+        "call-pyrewing": {
+          "id": "call-pyrewing",
+          "name": "Call Pyrewing",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "pyrewing-incarnation",
+              "replace": [
+                "pyrewing-incarnation",
+                "nacreth-incarnation",
+                "morvane-incarnation",
+                "aethrion-incarnation",
+                "xalvorr-incarnation",
+                "hollow-egg",
+                "rift-shard",
+                "rift-ward"
+              ]
+            }
+          ]
+        },
+        "call-nacreth": {
+          "id": "call-nacreth",
+          "name": "Call Nacreth",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "nacreth-incarnation",
+              "replace": [
+                "pyrewing-incarnation",
+                "nacreth-incarnation",
+                "morvane-incarnation",
+                "aethrion-incarnation",
+                "xalvorr-incarnation",
+                "hollow-egg",
+                "rift-shard",
+                "rift-ward"
+              ]
+            }
+          ]
+        },
+        "call-morvane": {
+          "id": "call-morvane",
+          "name": "Call Morvane",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "morvane-incarnation",
+              "replace": [
+                "pyrewing-incarnation",
+                "nacreth-incarnation",
+                "morvane-incarnation",
+                "aethrion-incarnation",
+                "xalvorr-incarnation",
+                "hollow-egg",
+                "rift-shard",
+                "rift-ward"
+              ]
+            }
+          ]
+        },
+        "call-aethrion": {
+          "id": "call-aethrion",
+          "name": "Call Aethrion",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "aethrion-incarnation",
+              "replace": [
+                "pyrewing-incarnation",
+                "nacreth-incarnation",
+                "morvane-incarnation",
+                "aethrion-incarnation",
+                "xalvorr-incarnation",
+                "hollow-egg",
+                "rift-shard",
+                "rift-ward"
+              ]
+            }
+          ]
+        },
+        "call-xalvorr": {
+          "id": "call-xalvorr",
+          "name": "Call Xalvorr",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "xalvorr-incarnation",
+              "replace": [
+                "pyrewing-incarnation",
+                "nacreth-incarnation",
+                "morvane-incarnation",
+                "aethrion-incarnation",
+                "xalvorr-incarnation",
+                "hollow-egg",
+                "rift-shard",
+                "rift-ward"
+              ]
+            }
+          ]
+        },
+        "shards": {
+          "id": "shards",
+          "name": "Crystal Shards",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 6,
+              "hits": 3,
+              "to": "target"
+            }
+          ]
+        },
+        "ward": {
+          "id": "ward",
+          "name": "Raise the Ward",
+          "effects": [
+            {
+              "op": "summon",
+              "unit": "rift-ward",
+              "ifAbsent": true
+            },
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.01,
+                "of": "each"
+              }
+            }
+          ]
+        },
+        "collapse": {
+          "id": "collapse",
+          "name": "Collapse",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 22,
+              "to": "target"
+            }
+          ]
+        },
+        "refract": {
+          "id": "refract",
+          "name": "Refract",
+          "effects": [
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.02,
+                "of": "each"
+              }
+            },
+            {
+              "op": "status",
+              "status": "might",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "shatter": {
+          "id": "shatter",
+          "name": "The Shattering",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 12,
+              "to": "allFoes"
+            },
+            {
+              "op": "summon",
+              "unit": "rift-shard"
+            },
+            {
+              "op": "summon",
+              "unit": "rift-shard"
+            },
+            {
+              "op": "status",
+              "status": "veiled",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "shardstorm": {
+          "id": "shardstorm",
+          "name": "Shard Storm",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 6,
+              "hits": 3,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "veiled",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "feed": {
+          "id": "feed",
+          "name": "Feed on the Shards",
+          "effects": [
+            {
+              "op": "devour",
+              "unit": "rift-shard",
+              "heal": 0,
+              "healPct": 2,
+              "might": 1,
+              "none": [
+                {
+                  "op": "status",
+                  "status": "exposed",
+                  "amount": 2,
+                  "to": "self"
+                }
+              ]
+            },
+            {
+              "op": "status",
+              "status": "veiled",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "reshatter": {
+          "id": "reshatter",
+          "name": "Shatter Again",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 10,
+              "to": "allFoes"
+            },
+            {
+              "op": "summon",
+              "unit": "rift-shard"
+            },
+            {
+              "op": "status",
+              "status": "veiled",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "collapse2": {
+          "id": "collapse2",
+          "name": "Collapse",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 24,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "veiled",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "pull": {
+          "id": "pull",
+          "name": "The Pull",
+          "effects": [
+            {
+              "op": "status",
+              "status": "gravity",
+              "amount": 2,
+              "to": "foeHero"
+            },
+            {
+              "op": "status",
+              "status": "unmaking",
+              "amount": 1,
+              "to": "foeHero"
+            },
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.06,
+                "of": "each"
+              }
+            }
+          ]
+        },
+        "beam": {
+          "id": "beam",
+          "name": "Prismatic Beam",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 12,
+              "hits": 2,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "unmaking",
+              "amount": 1,
+              "to": "foeHero"
+            }
+          ]
+        },
+        "turnover": {
+          "id": "turnover",
+          "name": "Turn the Heart",
+          "effects": [
+            {
+              "op": "swapBarrier"
+            },
+            {
+              "op": "damage",
+              "amount": 22,
+              "to": "target"
+            }
+          ]
+        },
+        "rupture": {
+          "id": "rupture",
+          "name": "Rupture",
+          "effects": [
+            {
+              "op": "loseHp",
+              "amount": 6,
+              "to": "target"
+            },
+            {
+              "op": "damage",
+              "amount": 12,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "gravity",
+              "amount": 1,
+              "to": "foeHero"
+            },
+            {
+              "op": "manaNext",
+              "amount": -1,
+              "foe": true
+            }
+          ]
+        },
+        "refract2": {
+          "id": "refract2",
+          "name": "Refract",
+          "effects": [
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.06,
+                "of": "each"
+              }
+            },
+            {
+              "op": "status",
+              "status": "might",
+              "amount": 1,
+              "to": "self"
+            }
+          ]
+        },
+        "core": {
+          "id": "core",
+          "name": "Prismatic Core",
+          "effects": [
+            {
+              "op": "status",
+              "status": "shielded",
+              "amount": 2,
+              "to": "self"
+            },
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.08,
+                "of": "each"
+              }
+            },
+            {
+              "op": "status",
+              "status": "slippery",
+              "amount": 2,
+              "to": "self"
+            },
+            {
+              "op": "status",
+              "status": "doom",
+              "amount": 0,
+              "to": "foeHero",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.1,
+                "of": "each"
+              }
+            }
+          ]
+        },
+        "beam2": {
+          "id": "beam2",
+          "name": "Prismatic Beam",
+          "effects": [
+            {
+              "op": "damage",
+              "amount": 12,
+              "hits": 2,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "slippery",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "status",
+              "status": "doom",
+              "amount": 0,
+              "to": "foeHero",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.08,
+                "of": "each"
+              }
+            }
+          ]
+        },
+        "rupture2": {
+          "id": "rupture2",
+          "name": "Rupture",
+          "effects": [
+            {
+              "op": "loseHp",
+              "amount": 8,
+              "to": "target"
+            },
+            {
+              "op": "damage",
+              "amount": 14,
+              "to": "target"
+            },
+            {
+              "op": "status",
+              "status": "slippery",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "status",
+              "status": "doom",
+              "amount": 0,
+              "to": "foeHero",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.08,
+                "of": "each"
+              }
+            }
+          ]
+        },
+        "close": {
+          "id": "close",
+          "name": "The Rift Closes",
+          "effects": [
+            {
+              "op": "barrier",
+              "amount": 0,
+              "to": "self",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.05,
+                "of": "each"
+              }
+            },
+            {
+              "op": "status",
+              "status": "slippery",
+              "amount": 1,
+              "to": "self"
+            },
+            {
+              "op": "status",
+              "status": "doom",
+              "amount": 0,
+              "to": "foeHero",
+              "scale": {
+                "by": "maxHp",
+                "mult": 0.12,
+                "of": "each"
+              }
+            }
+          ]
+        }
+      },
+      "pattern": {
+        "kind": "phases",
+        "phases": [
+          {
+            "atOrBelowPct": 100,
+            "pattern": {
+              "kind": "cycle",
+              "lead": [
+                "call-pyrewing"
+              ],
+              "order": [
+                "refract",
+                "shards",
+                "ward",
+                "collapse"
+              ]
+            }
+          },
+          {
+            "atOrBelowPct": 80,
+            "pattern": {
+              "kind": "cycle",
+              "lead": [
+                "call-nacreth",
+                "shatter"
+              ],
+              "order": [
+                "shardstorm",
+                "feed",
+                "reshatter",
+                "collapse2"
+              ]
+            }
+          },
+          {
+            "atOrBelowPct": 60,
+            "pattern": {
+              "kind": "cycle",
+              "lead": [
+                "call-morvane",
+                "pull"
+              ],
+              "order": [
+                "beam",
+                "turnover",
+                "rupture",
+                "refract2"
+              ]
+            }
+          },
+          {
+            "atOrBelowPct": 40,
+            "pattern": {
+              "kind": "cycle",
+              "lead": [
+                "call-aethrion"
+              ],
+              "order": [
+                "beam",
+                "turnover",
+                "rupture",
+                "refract2"
+              ]
+            }
+          },
+          {
+            "atOrBelowPct": 20,
+            "pattern": {
+              "kind": "cycle",
+              "lead": [
+                "call-xalvorr",
+                "core"
+              ],
+              "order": [
+                "beam2",
+                "rupture2",
+                "close"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "elites": [
+    {
+      "id": "aurelion",
+      "name": "Aurelion",
+      "encounters": [
+        {
+          "id": "aldric",
+          "name": "Templar-Commander Aldric",
+          "realm": "aurelion",
+          "kind": "elite",
+          "units": [
+            "templar-aldric"
+          ],
+          "stats": [
+            {
+              "id": "templar-aldric",
+              "name": "Templar-Commander Aldric",
+              "hp": 124
+            }
+          ]
+        },
+        {
+          "id": "maelis",
+          "name": "High Inquisitor Maelis",
+          "realm": "aurelion",
+          "kind": "elite",
+          "units": [
+            "inquisitor-maelis"
+          ],
+          "stats": [
+            {
+              "id": "inquisitor-maelis",
+              "name": "High Inquisitor Maelis",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "prism-magistrate",
+          "name": "Prism Magistrate",
+          "realm": "aurelion",
+          "kind": "elite",
+          "units": [
+            "prism-magistrate"
+          ],
+          "stats": [
+            {
+              "id": "prism-magistrate",
+              "name": "Prism Magistrate",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "procession-engine",
+          "name": "Procession Engine",
+          "realm": "aurelion",
+          "kind": "elite",
+          "units": [
+            "procession-engine"
+          ],
+          "stats": [
+            {
+              "id": "procession-engine",
+              "name": "Procession Engine",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "aurelion-elite-vanguard",
+          "name": "Aurelion Vanguard",
+          "realm": "aurelion",
+          "kind": "elite",
+          "units": [
+            "templar-aldric",
+            "squire"
+          ],
+          "stats": [
+            {
+              "id": "templar-aldric",
+              "name": "Templar-Commander Aldric",
+              "hp": 124
+            },
+            {
+              "id": "squire",
+              "name": "Gilded Squire",
+              "hp": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nexus",
+      "name": "Nexus-9",
+      "encounters": [
+        {
+          "id": "hive-7",
+          "name": "Hive-7",
+          "realm": "nexus",
+          "kind": "elite",
+          "units": [
+            "hive-7"
+          ],
+          "stats": [
+            {
+              "id": "hive-7",
+              "name": "Hive-7",
+              "hp": 110
+            }
+          ]
+        },
+        {
+          "id": "ghostwire",
+          "name": "Ghostwire",
+          "realm": "nexus",
+          "kind": "elite",
+          "units": [
+            "ghostwire"
+          ],
+          "stats": [
+            {
+              "id": "ghostwire",
+              "name": "Ghostwire",
+              "hp": 100
+            }
+          ]
+        },
+        {
+          "id": "clockwork-guillotine",
+          "name": "Clockwork Guillotine",
+          "realm": "nexus",
+          "kind": "elite",
+          "units": [
+            "clockwork-guillotine"
+          ],
+          "stats": [
+            {
+              "id": "clockwork-guillotine",
+              "name": "Clockwork Guillotine",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "scrapyard-centipede",
+          "name": "Scrapyard Centipede",
+          "realm": "nexus",
+          "kind": "elite",
+          "units": [
+            "scrapyard-centipede"
+          ],
+          "stats": [
+            {
+              "id": "scrapyard-centipede",
+              "name": "Scrapyard Centipede",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "nexus-elite-vanguard",
+          "name": "Nexus-9 Vanguard",
+          "realm": "nexus",
+          "kind": "elite",
+          "units": [
+            "hive-7",
+            "line-technician"
+          ],
+          "stats": [
+            {
+              "id": "hive-7",
+              "name": "Hive-7",
+              "hp": 110
+            },
+            {
+              "id": "line-technician",
+              "name": "Line Technician",
+              "hp": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wyldmaw",
+      "name": "Wyldmaw",
+      "encounters": [
+        {
+          "id": "packmother-ruhn",
+          "name": "Packmother Ruhn",
+          "realm": "wyldmaw",
+          "kind": "elite",
+          "units": [
+            "packmother-ruhn"
+          ],
+          "stats": [
+            {
+              "id": "packmother-ruhn",
+              "name": "Packmother Ruhn",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "bloated-one",
+          "name": "The Bloated One",
+          "realm": "wyldmaw",
+          "kind": "elite",
+          "units": [
+            "bloated-one"
+          ],
+          "stats": [
+            {
+              "id": "bloated-one",
+              "name": "The Bloated One",
+              "hp": 141
+            }
+          ]
+        },
+        {
+          "id": "hunger-orchard",
+          "name": "Hunger Orchard",
+          "realm": "wyldmaw",
+          "kind": "elite",
+          "units": [
+            "hunger-orchard"
+          ],
+          "stats": [
+            {
+              "id": "hunger-orchard",
+              "name": "Hunger Orchard",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "molting-cathedral",
+          "name": "Molting Cathedral",
+          "realm": "wyldmaw",
+          "kind": "elite",
+          "units": [
+            "molting-cathedral"
+          ],
+          "stats": [
+            {
+              "id": "molting-cathedral",
+              "name": "Molting Cathedral",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "wyldmaw-elite-vanguard",
+          "name": "Wyldmaw Vanguard",
+          "realm": "wyldmaw",
+          "kind": "elite",
+          "units": [
+            "packmother-ruhn",
+            "raptor"
+          ],
+          "stats": [
+            {
+              "id": "packmother-ruhn",
+              "name": "Packmother Ruhn",
+              "hp": 114
+            },
+            {
+              "id": "raptor",
+              "name": "Rift Raptor",
+              "hp": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "umbral",
+      "name": "Umbral Veil",
+      "encounters": [
+        {
+          "id": "lamplighter",
+          "name": "The Lamplighter",
+          "realm": "umbral",
+          "kind": "elite",
+          "units": [
+            "lamplighter"
+          ],
+          "stats": [
+            {
+              "id": "lamplighter",
+              "name": "The Lamplighter",
+              "hp": 117
+            }
+          ]
+        },
+        {
+          "id": "choir-of-silence",
+          "name": "Choir of Silence",
+          "realm": "umbral",
+          "kind": "elite",
+          "units": [
+            "choir-of-silence"
+          ],
+          "stats": [
+            {
+              "id": "choir-of-silence",
+              "name": "Choir of Silence",
+              "hp": 107
+            }
+          ]
+        },
+        {
+          "id": "the-borrowed-face",
+          "name": "The Borrowed Face",
+          "realm": "umbral",
+          "kind": "elite",
+          "units": [
+            "the-borrowed-face"
+          ],
+          "stats": [
+            {
+              "id": "the-borrowed-face",
+              "name": "The Borrowed Face",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "midnight-seamstress",
+          "name": "Midnight Seamstress",
+          "realm": "umbral",
+          "kind": "elite",
+          "units": [
+            "midnight-seamstress"
+          ],
+          "stats": [
+            {
+              "id": "midnight-seamstress",
+              "name": "Midnight Seamstress",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "umbral-elite-vanguard",
+          "name": "Umbral Veil Vanguard",
+          "realm": "umbral",
+          "kind": "elite",
+          "units": [
+            "lamplighter",
+            "hooded-acolyte"
+          ],
+          "stats": [
+            {
+              "id": "lamplighter",
+              "name": "The Lamplighter",
+              "hp": 117
+            },
+            {
+              "id": "hooded-acolyte",
+              "name": "Hooded Acolyte",
+              "hp": 55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gloomfen",
+      "name": "Gloomfen",
+      "encounters": [
+        {
+          "id": "pallbearer-swarm",
+          "name": "Pallbearer Swarm",
+          "realm": "gloomfen",
+          "kind": "elite",
+          "units": [
+            "pallbearer-swarm"
+          ],
+          "stats": [
+            {
+              "id": "pallbearer-swarm",
+              "name": "Pallbearer Swarm",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "the-unburied-hour",
+          "name": "The Unburied Hour",
+          "realm": "gloomfen",
+          "kind": "elite",
+          "units": [
+            "the-unburied-hour"
+          ],
+          "stats": [
+            {
+              "id": "the-unburied-hour",
+              "name": "The Unburied Hour",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "gloomfen-elite-vanguard",
+          "name": "Gloomfen Vanguard",
+          "realm": "gloomfen",
+          "kind": "elite",
+          "units": [
+            "pallbearer-swarm",
+            "coffin-nautilus"
+          ],
+          "stats": [
+            {
+              "id": "pallbearer-swarm",
+              "name": "Pallbearer Swarm",
+              "hp": 105
+            },
+            {
+              "id": "coffin-nautilus",
+              "name": "Coffin Nautilus",
+              "hp": 42
+            }
+          ]
+        },
+        {
+          "id": "gloomfen-elite-rearguard",
+          "name": "Gloomfen Rearguard",
+          "realm": "gloomfen",
+          "kind": "elite",
+          "units": [
+            "the-unburied-hour",
+            "bog-bell"
+          ],
+          "stats": [
+            {
+              "id": "the-unburied-hour",
+              "name": "The Unburied Hour",
+              "hp": 114
+            },
+            {
+              "id": "bog-bell",
+              "name": "Bog Bell",
+              "hp": 49
+            }
+          ]
+        },
+        {
+          "id": "gloomfen-elite-convergence",
+          "name": "Gloomfen Convergence",
+          "realm": "gloomfen",
+          "kind": "elite",
+          "units": [
+            "coffin-nautilus",
+            "bog-bell",
+            "funeral-kite"
+          ],
+          "stats": [
+            {
+              "id": "coffin-nautilus",
+              "name": "Coffin Nautilus",
+              "hp": 42
+            },
+            {
+              "id": "bog-bell",
+              "name": "Bog Bell",
+              "hp": 49
+            },
+            {
+              "id": "funeral-kite",
+              "name": "Funeral Kite",
+              "hp": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "starfall",
+      "name": "The Hollow Crown",
+      "encounters": [
+        {
+          "id": "the-cracked-heir",
+          "name": "The Cracked Heir",
+          "realm": "starfall",
+          "kind": "elite",
+          "units": [
+            "the-cracked-heir"
+          ],
+          "stats": [
+            {
+              "id": "the-cracked-heir",
+              "name": "The Cracked Heir",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "molten-reliquary",
+          "name": "Molten Reliquary",
+          "realm": "starfall",
+          "kind": "elite",
+          "units": [
+            "molten-reliquary"
+          ],
+          "stats": [
+            {
+              "id": "molten-reliquary",
+              "name": "Molten Reliquary",
+              "hp": 114
+            }
+          ]
+        },
+        {
+          "id": "starfall-elite-vanguard",
+          "name": "The Hollow Crown Vanguard",
+          "realm": "starfall",
+          "kind": "elite",
+          "units": [
+            "the-cracked-heir",
+            "glass-hermit"
+          ],
+          "stats": [
+            {
+              "id": "the-cracked-heir",
+              "name": "The Cracked Heir",
+              "hp": 105
+            },
+            {
+              "id": "glass-hermit",
+              "name": "Glass Hermit",
+              "hp": 42
+            }
+          ]
+        },
+        {
+          "id": "starfall-elite-rearguard",
+          "name": "The Hollow Crown Rearguard",
+          "realm": "starfall",
+          "kind": "elite",
+          "units": [
+            "molten-reliquary",
+            "crown-centipede"
+          ],
+          "stats": [
+            {
+              "id": "molten-reliquary",
+              "name": "Molten Reliquary",
+              "hp": 114
+            },
+            {
+              "id": "crown-centipede",
+              "name": "Crown Centipede",
+              "hp": 49
+            }
+          ]
+        },
+        {
+          "id": "starfall-elite-convergence",
+          "name": "The Hollow Crown Convergence",
+          "realm": "starfall",
+          "kind": "elite",
+          "units": [
+            "glass-hermit",
+            "crown-centipede",
+            "ember-chessman"
+          ],
+          "stats": [
+            {
+              "id": "glass-hermit",
+              "name": "Glass Hermit",
+              "hp": 42
+            },
+            {
+              "id": "crown-centipede",
+              "name": "Crown Centipede",
+              "hp": 49
+            },
+            {
+              "id": "ember-chessman",
+              "name": "Ember Chessman",
+              "hp": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beyond",
+      "name": "The Far Rifts",
+      "encounters": [
+        {
+          "id": "planet-eater",
+          "name": "Planet Eater",
+          "realm": "beyond",
+          "kind": "elite",
+          "units": [
+            "planet-eater"
+          ],
+          "stats": [
+            {
+              "id": "planet-eater",
+              "name": "Planet Eater",
+              "hp": 123
+            }
+          ]
+        },
+        {
+          "id": "the-missing-frame",
+          "name": "The Missing Frame",
+          "realm": "beyond",
+          "kind": "elite",
+          "units": [
+            "the-missing-frame"
+          ],
+          "stats": [
+            {
+              "id": "the-missing-frame",
+              "name": "The Missing Frame",
+              "hp": 105
+            }
+          ]
+        },
+        {
+          "id": "beyond-elite-vanguard",
+          "name": "The Far Rifts Vanguard",
+          "realm": "beyond",
+          "kind": "elite",
+          "units": [
+            "planet-eater",
+            "pocket-singularity"
+          ],
+          "stats": [
+            {
+              "id": "planet-eater",
+              "name": "Planet Eater",
+              "hp": 123
+            },
+            {
+              "id": "pocket-singularity",
+              "name": "Pocket Singularity",
+              "hp": 42
+            }
+          ]
+        },
+        {
+          "id": "beyond-elite-rearguard",
+          "name": "The Far Rifts Rearguard",
+          "realm": "beyond",
+          "kind": "elite",
+          "units": [
+            "the-missing-frame",
+            "origami-leviathan"
+          ],
+          "stats": [
+            {
+              "id": "the-missing-frame",
+              "name": "The Missing Frame",
+              "hp": 105
+            },
+            {
+              "id": "origami-leviathan",
+              "name": "Origami Leviathan",
+              "hp": 49
+            }
+          ]
+        },
+        {
+          "id": "beyond-elite-convergence",
+          "name": "The Far Rifts Convergence",
+          "realm": "beyond",
+          "kind": "elite",
+          "units": [
+            "pocket-singularity",
+            "origami-leviathan",
+            "astral-teacup"
+          ],
+          "stats": [
+            {
+              "id": "pocket-singularity",
+              "name": "Pocket Singularity",
+              "hp": 42
+            },
+            {
+              "id": "origami-leviathan",
+              "name": "Origami Leviathan",
+              "hp": 49
+            },
+            {
+              "id": "astral-teacup",
+              "name": "Astral Teacup",
+              "hp": 56
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cinder",
+      "name": "Cindervault",
+      "encounters": [
+        {
+          "id": "cinder-marshal",
+          "name": "Cinder Marshal",
+          "realm": "cinder",
+          "kind": "elite",
+          "units": [
+            "cinder-marshal"
+          ],
+          "stats": [
+            {
+              "id": "cinder-marshal",
+              "name": "Cinder Marshal",
+              "hp": 120
+            }
+          ]
+        },
+        {
+          "id": "walking-kiln",
+          "name": "Walking Kiln",
+          "realm": "cinder",
+          "kind": "elite",
+          "units": [
+            "walking-kiln"
+          ],
+          "stats": [
+            {
+              "id": "walking-kiln",
+              "name": "Walking Kiln",
+              "hp": 128
+            }
+          ]
+        },
+        {
+          "id": "cinder-elite-vanguard",
+          "name": "Cindervault Vanguard",
+          "realm": "cinder",
+          "kind": "elite",
+          "units": [
+            "cinder-marshal",
+            "cinder-soldier"
+          ],
+          "stats": [
+            {
+              "id": "cinder-marshal",
+              "name": "Cinder Marshal",
+              "hp": 120
+            },
+            {
+              "id": "cinder-soldier",
+              "name": "Cinder Soldier",
+              "hp": 42
+            }
+          ]
+        },
+        {
+          "id": "cinder-elite-rearguard",
+          "name": "Cindervault Rearguard",
+          "realm": "cinder",
+          "kind": "elite",
+          "units": [
+            "walking-kiln",
+            "kiln-wisp"
+          ],
+          "stats": [
+            {
+              "id": "walking-kiln",
+              "name": "Walking Kiln",
+              "hp": 128
+            },
+            {
+              "id": "kiln-wisp",
+              "name": "Kiln Wisp",
+              "hp": 32
+            }
+          ]
+        },
+        {
+          "id": "cinder-elite-convergence",
+          "name": "Cindervault Convergence",
+          "realm": "cinder",
+          "kind": "elite",
+          "units": [
+            "cinder-soldier",
+            "kiln-wisp",
+            "ash-collector"
+          ],
+          "stats": [
+            {
+              "id": "cinder-soldier",
+              "name": "Cinder Soldier",
+              "hp": 42
+            },
+            {
+              "id": "kiln-wisp",
+              "name": "Kiln Wisp",
+              "hp": 32
+            },
+            {
+              "id": "ash-collector",
+              "name": "Ash Collector",
+              "hp": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tides",
+      "name": "Thalassar",
+      "encounters": [
+        {
+          "id": "mirror-ray",
+          "name": "Mirror Ray",
+          "realm": "tides",
+          "kind": "elite",
+          "units": [
+            "mirror-ray"
+          ],
+          "stats": [
+            {
+              "id": "mirror-ray",
+              "name": "Mirror Ray",
+              "hp": 116
+            }
+          ]
+        },
+        {
+          "id": "deep-watcher",
+          "name": "Deep Watcher",
+          "realm": "tides",
+          "kind": "elite",
+          "units": [
+            "deep-watcher"
+          ],
+          "stats": [
+            {
+              "id": "deep-watcher",
+              "name": "Deep Watcher",
+              "hp": 126
+            }
+          ]
+        },
+        {
+          "id": "tides-elite-vanguard",
+          "name": "Thalassar Vanguard",
+          "realm": "tides",
+          "kind": "elite",
+          "units": [
+            "mirror-ray",
+            "pearl-crab"
+          ],
+          "stats": [
+            {
+              "id": "mirror-ray",
+              "name": "Mirror Ray",
+              "hp": 116
+            },
+            {
+              "id": "pearl-crab",
+              "name": "Pearl Crab",
+              "hp": 42
+            }
+          ]
+        },
+        {
+          "id": "tides-elite-rearguard",
+          "name": "Thalassar Rearguard",
+          "realm": "tides",
+          "kind": "elite",
+          "units": [
+            "deep-watcher",
+            "tide-sprite"
+          ],
+          "stats": [
+            {
+              "id": "deep-watcher",
+              "name": "Deep Watcher",
+              "hp": 126
+            },
+            {
+              "id": "tide-sprite",
+              "name": "Tide Sprite",
+              "hp": 32
+            }
+          ]
+        },
+        {
+          "id": "tides-elite-convergence",
+          "name": "Thalassar Convergence",
+          "realm": "tides",
+          "kind": "elite",
+          "units": [
+            "pearl-crab",
+            "tide-sprite",
+            "reef-stalker"
+          ],
+          "stats": [
+            {
+              "id": "pearl-crab",
+              "name": "Pearl Crab",
+              "hp": 42
+            },
+            {
+              "id": "tide-sprite",
+              "name": "Tide Sprite",
+              "hp": 32
+            },
+            {
+              "id": "reef-stalker",
+              "name": "Reef Stalker",
+              "hp": 38
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vespera",
+      "name": "Vespera",
+      "encounters": [
+        {
+          "id": "nightmare-loom",
+          "name": "Nightmare Loom",
+          "realm": "vespera",
+          "kind": "elite",
+          "units": [
+            "nightmare-loom"
+          ],
+          "stats": [
+            {
+              "id": "nightmare-loom",
+              "name": "Nightmare Loom",
+              "hp": 118
+            }
+          ]
+        },
+        {
+          "id": "dream-custodian",
+          "name": "Dream Custodian",
+          "realm": "vespera",
+          "kind": "elite",
+          "units": [
+            "dream-custodian"
+          ],
+          "stats": [
+            {
+              "id": "dream-custodian",
+              "name": "Dream Custodian",
+              "hp": 124
+            }
+          ]
+        },
+        {
+          "id": "vespera-elite-vanguard",
+          "name": "Vespera Vanguard",
+          "realm": "vespera",
+          "kind": "elite",
+          "units": [
+            "nightmare-loom",
+            "dream-moth"
+          ],
+          "stats": [
+            {
+              "id": "nightmare-loom",
+              "name": "Nightmare Loom",
+              "hp": 118
+            },
+            {
+              "id": "dream-moth",
+              "name": "Dream Moth",
+              "hp": 32
+            }
+          ]
+        },
+        {
+          "id": "vespera-elite-rearguard",
+          "name": "Vespera Rearguard",
+          "realm": "vespera",
+          "kind": "elite",
+          "units": [
+            "dream-custodian",
+            "hollow-sleeper"
+          ],
+          "stats": [
+            {
+              "id": "dream-custodian",
+              "name": "Dream Custodian",
+              "hp": 124
+            },
+            {
+              "id": "hollow-sleeper",
+              "name": "Hollow Sleeper",
+              "hp": 44
+            }
+          ]
+        },
+        {
+          "id": "vespera-elite-convergence",
+          "name": "Vespera Convergence",
+          "realm": "vespera",
+          "kind": "elite",
+          "units": [
+            "dream-moth",
+            "hollow-sleeper",
+            "memory-thief"
+          ],
+          "stats": [
+            {
+              "id": "dream-moth",
+              "name": "Dream Moth",
+              "hp": 32
+            },
+            {
+              "id": "hollow-sleeper",
+              "name": "Hollow Sleeper",
+              "hp": 44
+            },
+            {
+              "id": "memory-thief",
+              "name": "Memory Thief",
+              "hp": 36
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sands",
+      "name": "The Hourglass Expanse",
+      "encounters": [
+        {
+          "id": "bronze-sphinx",
+          "name": "Bronze Sphinx",
+          "realm": "sands",
+          "kind": "elite",
+          "units": [
+            "bronze-sphinx"
+          ],
+          "stats": [
+            {
+              "id": "bronze-sphinx",
+              "name": "Bronze Sphinx",
+              "hp": 124
+            }
+          ]
+        },
+        {
+          "id": "hourglass-giant",
+          "name": "Hourglass Giant",
+          "realm": "sands",
+          "kind": "elite",
+          "units": [
+            "hourglass-giant"
+          ],
+          "stats": [
+            {
+              "id": "hourglass-giant",
+              "name": "Hourglass Giant",
+              "hp": 136
+            }
+          ]
+        },
+        {
+          "id": "sands-elite-vanguard",
+          "name": "The Hourglass Expanse Vanguard",
+          "realm": "sands",
+          "kind": "elite",
+          "units": [
+            "bronze-sphinx",
+            "sand-sentinel"
+          ],
+          "stats": [
+            {
+              "id": "bronze-sphinx",
+              "name": "Bronze Sphinx",
+              "hp": 124
+            },
+            {
+              "id": "sand-sentinel",
+              "name": "Sand Sentinel",
+              "hp": 46
+            }
+          ]
+        },
+        {
+          "id": "sands-elite-rearguard",
+          "name": "The Hourglass Expanse Rearguard",
+          "realm": "sands",
+          "kind": "elite",
+          "units": [
+            "hourglass-giant",
+            "glass-scorpion"
+          ],
+          "stats": [
+            {
+              "id": "hourglass-giant",
+              "name": "Hourglass Giant",
+              "hp": 136
+            },
+            {
+              "id": "glass-scorpion",
+              "name": "Glass Scorpion",
+              "hp": 34
+            }
+          ]
+        },
+        {
+          "id": "sands-elite-convergence",
+          "name": "The Hourglass Expanse Convergence",
+          "realm": "sands",
+          "kind": "elite",
+          "units": [
+            "sand-sentinel",
+            "glass-scorpion",
+            "dune-scribe"
+          ],
+          "stats": [
+            {
+              "id": "sand-sentinel",
+              "name": "Sand Sentinel",
+              "hp": 46
+            },
+            {
+              "id": "glass-scorpion",
+              "name": "Glass Scorpion",
+              "hp": 34
+            },
+            {
+              "id": "dune-scribe",
+              "name": "Dune Scribe",
+              "hp": 36
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

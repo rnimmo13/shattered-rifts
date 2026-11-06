@@ -122,3 +122,19 @@ export async function refreshForUpdate(): Promise<void> {
   if (battleActive()) throw new Error('A battle has started. Refresh after leaving it.');
   window.location.reload();
 }
+
+let installing: Promise<void> | null = null;
+/** One saved update attempt shared by automatic UI and retry controls. */
+export function applyRequiredUpdate(): Promise<void> {
+  if (!available) return Promise.reject(new Error('No update is ready.'));
+  if (battleActive())
+    return Promise.reject(new Error('Finish or leave the battle before updating.'));
+  installing ??= (
+    available.kind === 'web'
+      ? refreshForUpdate()
+      : import('./desktopBridge').then(({ restartDesktopUpdate }) => restartDesktopUpdate())
+  ).finally(() => {
+    installing = null;
+  });
+  return installing;
+}

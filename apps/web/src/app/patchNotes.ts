@@ -15,6 +15,7 @@ export interface PatchItem {
   card?: string;
   hero?: string;
   boon?: string;
+  unit?: string;
   changes?: {
     label: string;
     before: string;
@@ -44,6 +45,465 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 };
 
 export const PATCH_NOTES: PatchNote[] = [
+  {
+    version: '0.209.0',
+    date: '2026-11-05',
+    title: 'Eleven realms and the First Ruin',
+    summary:
+      'Eleven themed realms lead to Drago’s ruined homeland. Campaign shards increase, and Recall trades repeat access for unlimited knife count.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Eleven Warden realms',
+        text: 'Campaign only. New runs visit eleven distinct realms once each in a saved shuffled order: Aurelion, Nexus-9, Wyldmaw, Umbral Veil, Gloomfen, the Hollow Crown, the Far Rifts, Cindervault, Thalassar, Vespera and the Hourglass Expanse. Ordinary encounters, Elites and event ambushes come from the tier’s realm. Aurelion can end with Seraphine or the Hollow Benediction; Nexus-9 with Kron or Mother of Static; Wyldmaw with Gorrmaw or the Upside-Down Stag; Umbral Veil with Nyxara or the Applause Below. Other realms each have one possible Warden. The selected boss is shown on the map. Existing generated maps and fight checkpoints remain; future maps in older runs adopt the selected Warden’s realm while retaining their saved boss order.',
+      },
+      {
+        kind: 'changed',
+        title: 'Tier XII: the First Ruin',
+        text: 'Campaign only. Drago completely conquered his home realm and consumed it escaping the Ward. Five native dragon Wardens now guard its remains: Pyrewing, Nacreth, Morvane, Aethrion and Xalvorr, in a separately shuffled order, then Drago. Each dragon retains normal Warden Gifts, shards, recovery and Resolve rewards. Free upgrade/remove-only shrines follow dragons 2, 4 and 5; the last is immediately before Drago. Shrines do not heal. Already-generated old gauntlets retain their fights and five shrines; only future generated finales change.',
+        changes: [
+          {
+            label: 'Finale bosses',
+            before: '11 captured Wardens + final boss (12 fights)',
+            after: '5 native dragons + Drago (6 fights)',
+            direction: 'neutral',
+          },
+          {
+            label: 'Finale refinement choices',
+            before: '5, after fights 2 / 4 / 6 / 8 / 10',
+            after: '3, after fights 2 / 4 / 5',
+            direction: 'neutral',
+          },
+          {
+            label: 'Finale Warden Gifts / guaranteed Max HP growth',
+            before: '11 Gifts / +55 Max HP',
+            after: '5 Gifts / +25 Max HP',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'changed',
+        title: 'Drago, the Heart of the Rift',
+        unit: 'vorthax',
+        text: 'The final boss is renamed Valerion → Drago in current game/lore/help and archived Campaign recap presentation. Internal IDs, saved progress, player names and raw replay records remain. His new Warden summons are described separately below.',
+      },
+      {
+        kind: 'new',
+        title: 'The Ashbound Colossus',
+        unit: 'ashbound-colossus',
+        text: 'Campaign only. Furnace Fuel: its charge retains Barrier for one turn. Discharge deals 12 damage to all foes plus half its remaining Barrier (up to +24), then spends the fuel. Break its Barrier to weaken the blast. Move order: Stoke the Heart: 24 Barrier to itself; 1 Blur to itself; 2 Might to itself. Furnace Discharge: 1 × (12 + floor(0.5 × its own Barrier), capped at +24) damage to all foes; clear Barrier and Steadfast from itself. Furnace Rupture: 1 × (27) damage to the target; 2 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '210',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Pearlbound Sovereign',
+        unit: 'pearlbound-sovereign',
+        text: 'Campaign only. Pearl Tribute steals up to 20 Barrier from its target before gaining its own 24 base Barrier. Its ebb leaves it Exposed. Spend or break through the stolen protection. Move order: Pearl Tribute: 0 + floor(1 × the target’s Barrier), capped at +20 Barrier to itself; remove up to 20 Barrier from the target; 24 Barrier to itself. Royal Tide: 1 × (18) damage to all foes. The Ebb: 1 × (23) damage to the target; 2 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '210',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Dreaming Monarch',
+        unit: 'dreaming-monarch',
+        text: 'Campaign only. Recurring Nightmares: two are placed in your hand. Each left unplayed at turn end or discarded by an effect creates another Nightmare. Pay 1 Mana to Consume one and draw a card; all are fight-only. Move order: The Sleeping Court: add 2 Recurring Nightmare to the opponent’s hand; 18 Barrier to itself. Royal Hush: 1 × (17) damage to the target; 1 Faltering to the target. Wake the World: 1 × (25) damage to the target; 1 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '215',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Sandbound Chronicler',
+        unit: 'sandbound-chronicler',
+        text: 'Campaign only. The Hourglass Wager: it curses itself with Fate equal to 15% of its Max HP. Its fourth move gains damage equal to 10% of that Fate (up to +12), then clears it. Bring its HP below its Fate before the wager ends. Move order: Wager the Age: 2 Might to itself; 16 Barrier to itself; 0 + floor(0.15 × its own Max HP) Fate to itself. Erosion: 1 × (15) damage to the target; 1 Brittle to the target. Three Ages: 3 × (7) damage to the target. Turn the Hourglass: 1 × (26 + floor(0.1 × its own Fate), capped at +12) damage to the target; clear Fate from itself; 1 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '220',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Pyrewing, the Cinder Tyrant',
+        unit: 'pyrewing',
+        text: 'Campaign only. Kindling: Worldfire applies 4 Burn to every foe. The next two talon hits gain +2 damage per remaining Burn on their target (up to +8 per hit), then clear that Burn. Block the Burn tick or cleanse it before the talons. Move order: Gather the Pyre: 20 Barrier to itself; 2 Might to itself. Worldfire Breath: 1 × (19) damage to all foes; 4 Burn to all foes. Kindling Talons: 2 × (12 + floor(2 × the target’s Burn), capped at +8) damage to the target; clear Burn from the target; 1 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '225',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Nacreth, the Glassscale',
+        unit: 'nacreth',
+        text: 'Campaign only. Three Mirror Facets: three Shielded charges and 8 Reflect punish repeated small hits. Fractured Breath removes both protections and leaves Nacreth Exposed for 2 turns: save your burst for the opening. Move order: Three Mirror Facets: 28 Barrier to itself; 3 Shielded to itself; 8 Reflect to itself. Glassfall: 3 × (8) damage to the target. Fractured Breath: clear Shielded from itself; clear Reflect from itself; 1 × (24) damage to the target; 2 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '230',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Morvane, the Hollow Maw',
+        unit: 'morvane',
+        text: 'Campaign only. Hollow Brood: two Eggs incubate once, then each heals all allies for 2% of their own Max HP and grants them 1 Might before dying. Kill the Eggs before they hatch to deny the support. The Open Maw leaves Morvane Exposed. Move order: Brood of Ruin: summon Hollow Egg; summon Hollow Egg. Hollow Maw: 1 × (23) damage to the target. The Open Maw: 1 × (26) damage to the target; 2 Exposed to itself. Hollow Eggs have 18 base HP and gain 6 base Barrier while incubating. Their next action heals each friendly unit for 2% of that unit’s Max HP, grants 1 Might, then loses all its own HP.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '230',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Aethrion, the Storm-Crowned',
+        unit: 'aethrion',
+        text: 'Campaign only. Forked Crown: a lone foe takes three 7-damage bolts; against a formation, up to four different foes take one 7-damage bolt each. Healthy companions spread the lightning. Its crown still builds Might. Move order: Storm Crown: 2 Might to itself; 16 Barrier to itself. Forked Crown: with at most 1 foes: 3 × (7) damage to the target; with at least 2 foes: 4 × (7) damage to random foes (different targets). Thunderwake: 1 × (18) damage to all foes; 1 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '220',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Xalvorr, the Last Eclipse',
+        unit: 'xalvorr',
+        text: 'Campaign only. The Last Eclipse applies Fate equal to 15% of its target’s missing HP (up to 12). Endless Night adds half that target’s existing Fate (up to 10). Healing lowers the first curse; cleansing prevents compounding Fate. Move order: Last Eclipse: 20 Barrier to itself; 1 Brittle to the target; 0 + floor(0.15 × the target’s missing HP), capped at +12 Fate to the target. Eclipse Talons: 2 × (11) damage to the target. Endless Night: 1 × (26) damage to the target; 0 + floor(0.5 × the target’s Fate), capped at +10 Fate to the target; 1 Exposed to the target; 1 Exposed to itself.',
+        changes: [
+          {
+            label: 'Base HP before Campaign scaling',
+            before: 'New Warden',
+            after: '240',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Cindervault inhabitants',
+        text: 'Campaign only. New ordinary enemies and Elites; values are bases before existing tier/Omen scaling. Cinder Soldier (42 HP): Ashen Cut: 1 × 8 damage to its target. Ember Guard: 7 Barrier to self; 1 × 5 damage to its target. Kiln Wisp (32 HP): Furnace Spark: 1 × 6 damage to its target; 1 Seared to its target. Heat Veil: 7 Barrier to self. Ash Collector (40 HP): Gather Embers: 1 Might to self; 5 Barrier to self. Scatter Ash: 1 × 7 damage to its target. Cinder Marshal (120 HP): Rally the Ash: 2 Might to self; 10 Barrier to self. Furnace Cleave: 1 × 18 damage to all opponents. Brand: 1 × 13 damage to its target; 2 Seared to its target. Walking Kiln (128 HP): Stoke: 18 Barrier to self. Kiln Blast: 2 × 9 damage to its target. Vent: 1 × 13 damage to all opponents; 1 Exposed to self.',
+      },
+      {
+        kind: 'new',
+        title: 'Thalassar inhabitants',
+        text: 'Campaign only. New ordinary enemies and Elites; values are bases before existing tier/Omen scaling. Pearl Crab (42 HP): Pearl Shell: 8 Barrier to self. Tidal Claw: 1 × 8 damage to its target. Tide Sprite (32 HP): Surge: 1 × 6 damage to its target. Living Tide: heal 5 HP to all allies. Reef Stalker (38 HP): Reef Bite: 2 × 4 damage to its target. Dive: 5 Barrier to self; 1 × 5 damage to its target. Mirror Ray (116 HP): Mirror Tide: 5 Reflect to self; 10 Barrier to self. Ray Sweep: 1 × 16 damage to all opponents. Breaking Wave: 1 × 20 damage to its target; 1 Exposed to self. Deep Watcher (126 HP): Abyssal Gaze: 1 Faltering to its target; 1 × 11 damage to its target. Many Arms: 3 × 6 damage to its target.',
+      },
+      {
+        kind: 'new',
+        title: 'Vespera inhabitants',
+        text: 'Campaign only. New ordinary enemies and Elites; values are bases before existing tier/Omen scaling. Dream Moth (32 HP): Dream Dust: 1 × 5 damage to its target; 1 Faltering to its target. Flutter: 1 × 8 damage to its target. Hollow Sleeper (44 HP): Sleepwalk: 8 Barrier to self. Waking Blow: 1 × 10 damage to its target. Memory Thief (36 HP): Forgotten Cut: 1 × 8 damage to its target. Borrow a Memory: add 1 Static to the opponent’s fight discard pile. Nightmare Loom (118 HP): Weave a Nightmare: add 2 Static to the opponent’s fight discard pile; 10 Barrier to self. Dream Snare: 1 × 17 damage to its target; 1 Faltering to its target. Dream Custodian (124 HP): Hush: 1 × 12 damage to its target; 1 Faltering to its target. Guard the Dream: 15 Barrier to self. Wake: 2 × 9 damage to its target.',
+      },
+      {
+        kind: 'new',
+        title: 'The Hourglass Expanse inhabitants',
+        text: 'Campaign only. New ordinary enemies and Elites; values are bases before existing tier/Omen scaling. Sand Sentinel (46 HP): Sandstone Strike: 1 × 9 damage to its target. Dune Guard: 8 Barrier to self. Glass Scorpion (34 HP): Glass Sting: 1 × 5 damage to its target; 2 Seared to its target. Scissor Claw: 1 × 8 damage to its target. Dune Scribe (36 HP): Erase: 1 × 7 damage to its target. Inscribe: 1 Might to all allies. Bronze Sphinx (124 HP): Ancient Riddle: 12 Barrier to self; 1 Exposed to its target. Sunlit Pounce: 3 × 7 damage to its target. Hourglass Giant (136 HP): Gather the Sands: 2 Might to self; 10 Barrier to self. Falling Age: 1 × 21 damage to its target.',
+      },
+      {
+        kind: 'balance',
+        title: 'Campaign shard rewards',
+        text: 'Campaign only. These are new base rewards, not guaranteed final payouts: existing Elite shard fading, Times Are Tough reductions and Rift/Gilded Heart multipliers still apply, with existing rounding. At Tier XII without a Heart, normal fights pay 9 → 16, Elite shard spoils 14 → 22, and Wardens 40 → 62. Elites still offer shards as an alternative to Max HP or healing. Shop/event prices, starting shards and Shard Purse’s +6 per fight are unchanged. Applies to future victory rewards in new and existing runs; balances and already-generated reward offers are retained. Drago still ends the Campaign immediately without a post-victory payout.',
+        changes: [
+          {
+            label: 'Normal fight base',
+            before: '15 shards',
+            after: '25 shards',
+            direction: 'buff',
+          },
+          {
+            label: 'Elite base, before tier fading',
+            before: '36 shards',
+            after: '50 shards',
+            direction: 'buff',
+          },
+          {
+            label: 'Warden base',
+            before: '65 shards',
+            after: '100 shards',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'fixed',
+        title: 'Gilded Heart reward saves',
+        boon: 'thorned-heart',
+        text: 'Campaign only. Unclaimed Elite shard offers boosted by Gilded Heart now survive saving and reloading correctly. This does not claim or duplicate the reward.',
+      },
+      {
+        kind: 'balance',
+        title: 'Recall the Blades',
+        card: 'recall-the-blades',
+        text: 'Campaign and Arena, including existing deck copies. Base now replays every eligible consumed Dagger in pile order; upgraded still upgrades each selected Dagger first. Daggers return to the consumed pile. Recall itself is consumed after use, so it leaves normal draw/discard cycling; another copy or a suitable card-recovery effect can still provide another cast. Fanned targeting is unchanged. Shadow Echo keeps its existing 15 actual Barrier per copy per turn cap.',
+        changes: [
+          {
+            label: 'Base Mana cost',
+            before: '2',
+            after: '3',
+            direction: 'nerf',
+          },
+          {
+            label: 'Upgraded Mana cost',
+            before: '2',
+            after: '3',
+            direction: 'nerf',
+          },
+          {
+            label: 'Base Daggers replayed per cast',
+            before: 'Up to 15',
+            after: 'All eligible Daggers',
+            direction: 'buff',
+          },
+          {
+            label: 'Upgraded Daggers upgraded and replayed per cast',
+            before: 'Up to 15',
+            after: 'All eligible Daggers',
+            direction: 'buff',
+          },
+          {
+            label: 'Base/upgraded after use',
+            before: 'Discard',
+            after: 'Consume',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Drago’s Warden court',
+        unit: 'vorthax',
+        text: 'Campaign only, including existing final encounters when they start under these rules. Drago retains 300 base HP and his existing named attacks. Each new phase announces a Call: Pyrewing initially, Nacreth at 80%, Morvane at 60%, Aethrion at 40%, Xalvorr at 20%. Incarnations retain their native signature mechanics at 40% base HP: 90 / 92 / 92 / 88 / 96 respectively, before normal tier scaling. Each call dismisses the prior incarnation, Hollow Eggs, Rift Shards and Rift Ward without deaths, then summons the next incarnation. Other living units can still act before Drago’s call in that enemy phase. Incarnations can be killed independently; killing Morvane’s incarnation never kills Drago. Defeating Drago ends his entire side. Healing does not rewind phases; burst damage can skip health phases and their calls. There is no new invulnerability or damage cap. The Nacreth phase still opens into the Shattering, Morvane into the Pull, and the final phase into Prismatic Core and existing Fate pressure.',
+        changes: [
+          {
+            label: 'Health phases',
+            before: '4',
+            after: '5',
+            direction: 'neutral',
+          },
+          {
+            label: 'Phase thresholds',
+            before: '75% / 50% / 25%',
+            after: '80% / 60% / 40% / 20%',
+            direction: 'neutral',
+          },
+          {
+            label: 'Opening intent',
+            before: 'Refract',
+            after: 'Call Pyrewing',
+            direction: 'neutral',
+          },
+          {
+            label: 'Incarnations',
+            before: 'None',
+            after: 'Five phase-specific calls; previous escort replaced',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Recurring Nightmare',
+        card: 'nightmare',
+        text: 'Campaign fight-only status card created by the Dreaming Monarch. 1 Mana, Consume, draw 1 card. Each copy left in hand at turn end creates one additional Nightmare in the fight discard pile; discarding it through an effect also creates one additional Nightmare. Normal end-of-turn cleanup does not trigger both penalties. Cards held in hand still spread at turn end. Consuming a Nightmare avoids its spread. It is not offered as a deck reward and does not enter the permanent run deck.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Stable combatant models',
+        unit: 'vorthax',
+        text: 'Campaign and Arena presentation. Drago uses his painted final-boss figure, prioritized during loading, at a fixed large height even while summons join or die. Crowds arrange into rows instead of resizing existing figures. Artwork stays fixed per combatant for the fight, preventing late downloads from changing its model on the next action. Ordinary minion HP buffs no longer cross visual size thresholds; deliberate Thrall growth into a Colossus remains. Screen rotation still fits models to the new layout. No HP, damage, target eligibility or companion-cap changes.',
+      },
+      {
+        kind: 'new',
+        title: 'Four dedicated realm arenas',
+        text: 'Cindervault’s basalt furnaces, Thalassar’s underwater pearl citadel, Vespera’s sleeping dream court and the Hourglass Expanse’s buried kingdom now have their own painted battle environments and floor materials. Their Wardens fight in those realm arenas too. The lore gallery gains four illustrated realm vistas; Learn lists all eleven worlds. The First Ruin’s five Wardens share Drago’s existing arena.',
+      },
+      {
+        kind: 'changed',
+        title: 'Required website and desktop updates',
+        text: 'Once a newer website build or a downloaded desktop patch is ready, the game automatically saves and refreshes or restarts outside battle. A current battle may finish or be left before the update begins. There is no Later or dismiss option; new play is blocked while the required update is pending at that boundary. A failed save keeps the game open on a blocking retry screen. Desktop checks begin at startup and recur every minute. Offline checks without a known ready update still allow play; Steam-managed editions remain managed by Steam.',
+      },
+      {
+        kind: 'new',
+        title: 'Aurelion Elite encounters',
+        text: 'Campaign only. Adds Aurelion Vanguard (Templar-Commander Aldric + Gilded Squire). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '4',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Nexus-9 Elite encounters',
+        text: 'Campaign only. Adds Nexus-9 Vanguard (Hive-7 + Line Technician). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '4',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Wyldmaw Elite encounters',
+        text: 'Campaign only. Adds Wyldmaw Vanguard (Packmother Ruhn + Rift Raptor). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '4',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Umbral Veil Elite encounters',
+        text: 'Campaign only. Adds Umbral Veil Vanguard (The Lamplighter + Hooded Acolyte). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '4',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Gloomfen Elite encounters',
+        text: 'Campaign only. Adds Gloomfen Vanguard (Pallbearer Swarm + Coffin Nautilus); Gloomfen Rearguard (The Unburied Hour + Bog Bell); Gloomfen Convergence (Coffin Nautilus + Bog Bell + Funeral Kite). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Hollow Crown Elite encounters',
+        text: 'Campaign only. Adds The Hollow Crown Vanguard (The Cracked Heir + Glass Hermit); The Hollow Crown Rearguard (Molten Reliquary + Crown Centipede); The Hollow Crown Convergence (Glass Hermit + Crown Centipede + Ember Chessman). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Far Rifts Elite encounters',
+        text: 'Campaign only. Adds The Far Rifts Vanguard (Planet Eater + Pocket Singularity); The Far Rifts Rearguard (The Missing Frame + Origami Leviathan); The Far Rifts Convergence (Pocket Singularity + Origami Leviathan + Astral Teacup). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Cindervault Elite encounters',
+        text: 'Campaign only. Adds Cindervault Vanguard (Cinder Marshal + Cinder Soldier); Cindervault Rearguard (Walking Kiln + Kiln Wisp); Cindervault Convergence (Cinder Soldier + Kiln Wisp + Ash Collector). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Thalassar Elite encounters',
+        text: 'Campaign only. Adds Thalassar Vanguard (Mirror Ray + Pearl Crab); Thalassar Rearguard (Deep Watcher + Tide Sprite); Thalassar Convergence (Pearl Crab + Tide Sprite + Reef Stalker). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Vespera Elite encounters',
+        text: 'Campaign only. Adds Vespera Vanguard (Nightmare Loom + Dream Moth); Vespera Rearguard (Dream Custodian + Hollow Sleeper); Vespera Convergence (Dream Moth + Hollow Sleeper + Memory Thief). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'The Hourglass Expanse Elite encounters',
+        text: 'Campaign only. Adds The Hourglass Expanse Vanguard (Bronze Sphinx + Sand Sentinel); The Hourglass Expanse Rearguard (Hourglass Giant + Glass Scorpion); The Hourglass Expanse Convergence (Sand Sentinel + Glass Scorpion + Dune Scribe). These are distinct native formations using existing enemy mechanics, not duplicate roster labels. Existing generated maps stay intact; new maps and future event ambushes can choose them. Enemy stats, reward amounts and tier multipliers are unchanged by the roster additions.',
+        changes: [
+          {
+            label: 'Distinct Elite encounters',
+            before: '2',
+            after: '5',
+            direction: 'neutral',
+          },
+        ],
+      },
+    ],
+    heads:
+      'Existing decks and upgrades remain. Unfinished battles from older rules restart at their saved checkpoint; older Arena replays require their original combat rules.',
+  },
   {
     version: '0.208.0',
     date: '2026-11-05',

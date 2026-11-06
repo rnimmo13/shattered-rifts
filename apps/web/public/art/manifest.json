@@ -1,5 +1,14 @@
 {
     "figures":  {
+                    "unit:ashbound-colossus":  "figures/ashbound-colossus.png",
+                    "unit:pearlbound-sovereign":  "figures/pearlbound-sovereign.png",
+                    "unit:dreaming-monarch":  "figures/dreaming-monarch.png",
+                    "unit:sandbound-chronicler":  "figures/sandbound-chronicler.png",
+                    "unit:pyrewing":  "figures/pyrewing.png",
+                    "unit:nacreth":  "figures/nacreth.png",
+                    "unit:morvane":  "figures/morvane.png",
+                    "unit:aethrion":  "figures/aethrion.png",
+                    "unit:xalvorr":  "figures/xalvorr.png",
                     "unit:acid-spitter":  "figures/acid-spitter.png",
                     "unit:antler-wasp":  "figures/antler-wasp.png",
                     "unit:astral-teacup":  "figures/astral-teacup.png",

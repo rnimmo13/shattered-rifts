@@ -107,7 +107,7 @@ describe('stage maps', () => {
       expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
-  it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Valerion (DECISIONS #531, #536)', () => {
+  it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Drago (DECISIONS #531, #536)', () => {
     expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([11, 12, 13, 30]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
@@ -172,14 +172,12 @@ describe('stage maps', () => {
       expect(next.tier).toBe(t);
       if (t < 12) {
         const realm = encounter(next.wardenOrder![t - 1]!).realm;
-        expect(realmOfRun(next)).toBe(
-          ['aurelion', 'nexus', 'wyldmaw', 'umbral'].includes(realm) ? realm : 'rift',
-        );
+        expect(realmOfRun(next)).toBe(realm);
       } else {
-        expect(realmOfRun(next)).toBe('rift');
+        expect(realmOfRun(next)).toBe('ruin');
         if (t === 12) expect(next.map.nodes.at(-1)?.enemyId).toBe('vorthax');
       }
-      expect(next.map.floors).toBe(t === 12 ? 17 : floorsOf(t) + 1);
+      expect(next.map.floors).toBe(t === 12 ? 9 : floorsOf(t) + 1);
       expect(parseRun(serializeRun(next))?.map.floors).toBe(next.map.floors);
       run = { ...next, phase: 'loopCleared', context: null };
     }
@@ -209,7 +207,7 @@ describe('stage maps', () => {
     expect(back?.stageRealms.slice(-2)).toEqual(['umbral', 'wyldmaw']);
   });
 
-  it('Tier XX ends with Valerion himself, never a ghost', () => {
+  it('Tier XX ends with Drago himself, never a ghost', () => {
     for (let i = 0; i < 100; i++) {
       const m = generateStageMap(
         seedRng('finale-' + i),
@@ -333,7 +331,7 @@ describe('the run', () => {
     r = finishDuel(lost, true, 51);
     expect(r.hp).toBe(51);
     expect(r.phase).toBe('reward');
-    expect(r.shards).toBe(15);
+    expect(r.shards).toBe(25);
   });
 
   it('max HP gained in a fight (Bloodfeast) is kept for good, and cannot be made up', () => {

@@ -7,7 +7,7 @@ import { COMBAT_DB } from '@sr/content/v2';
 import type { Side } from '@sr/combat';
 import { FightView, type WatchMode } from './FightView';
 import { MoveFeed, type PvpLink } from '../pvp/link';
-import type { FightReplay } from './recap';
+import { fightTitle, type FightReplay } from './recap';
 
 export default function ReplayPlayer(props: {
   replay: FightReplay;
@@ -65,7 +65,7 @@ function Replay(props: {
     <FightView
       db={COMBAT_DB}
       setup={replay.setup}
-      title={`Replay: ${replay.title}`}
+      title={`Replay: ${fightTitle(replay)}`}
       {...(replay.venue ? { venue: replay.venue } : {})}
       {...(link ? { pvp: link } : {})}
       watch={watch}

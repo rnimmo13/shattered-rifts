@@ -68,9 +68,9 @@ describe('Elites by Rift Tier', () => {
     expect(looped.tier).toBe(12);
     expect(looped.map.gauntlet).toBe(true);
     expect(count(looped.map, 'duel')).toBe(0);
-    expect(looped.map.nodes).toHaveLength(17);
-    expect(looped.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(12);
-    expect(looped.map.nodes.filter((n) => n.refinement)).toHaveLength(5);
+    expect(looped.map.nodes).toHaveLength(9);
+    expect(looped.map.nodes.filter((n) => n.kind === 'warden')).toHaveLength(6);
+    expect(looped.map.nodes.filter((n) => n.refinement)).toHaveLength(3);
   });
 
   it('Tier 1 uses no roll for this, and its map is pinned', () => {
@@ -198,7 +198,7 @@ describe('Elites by Rift Tier', () => {
     }
   });
 
-  it('an ambush at Tier 20 brings a Warden, on every act, and never Valerion', () => {
+  it('an ambush at Tier 20 brings a Warden, on every act, and never Drago', () => {
     for (let stage = 1; stage <= FINAL_STAGE; stage++) {
       const id = ambushEnemy(seedRng(`a${stage}`), ['umbral'], 'elite', [], stage, ALL_WARDEN_TIER);
       expect(encounter(id!).kind).toBe('warden');
@@ -238,7 +238,7 @@ describe('what an Elite pays by Rift Tier', () => {
       boonPct: 100,
       healPct: ELITE_HEAL_PCT,
     });
-    expect(eliteRewards(10)).toMatchObject({ shards: 26, potionPct: 58, boonPct: 55 });
+    expect(eliteRewards(10)).toMatchObject({ shards: 38, potionPct: 58, boonPct: 55 });
     for (const t of [ELITE_REWARD_FADE_TIER, ALL_WARDEN_TIER])
       expect(eliteRewards(t)).toEqual({
         shards: FIGHT_SHARDS.duel,

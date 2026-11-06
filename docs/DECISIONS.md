@@ -1114,3 +1114,41 @@ Robert explicitly requests commit, push and deploy of the complete current chang
 639. **Knife engine limits (Robert, 2026-11-05)** — Implement the agreed15-Dagger limit per Recall cast, base/upgraded; upgraded still upgrades selected knives. Shadow Echo grants at most15actual Barrier per copy per turn after modifiers (two copies30), including automatic plays, with persistent counters and fresh allowance next turn. Shared Campaign/Arena cards; preserve costs, upgraded Opening hand and other engine pieces. Real saved Assassin final fight replayed on original0.206rules84; this is one retained position/trace, not measured balance parity or complete run history. Local0.208/rules85, no simulations or release approval. Exact scope docs/ASSASSIN_KNIFE_CAPS_2026-11-05.md.
 
 640. **Release0.208 approved (Robert, 2026-11-05: commit push and deploy)** — Approval covers the complete current0.208.0/rules85 change set: Reserves/Heart-provenance correctness fixes and the agreed15Dagger Recall/15actualBarrier per Echo copy per turn limits, shared Campaign/Arena scope, previews, tests, exact notes and append-only assessments. Commit validated source, push main to trigger website/server deployment, publish matching Windows updater, verify deployed versions/assets. Earlier local assessment labels stay historical; future releases need fresh approval.
+
+641. **Recall commitment replaces count cap (Robert, 2026-11-05)** — Implement proposed3Mana+Consume Recall, base/upgraded, replaying all eligible consumed Daggers instead of15. Upgrade still upgrades knives; return-to-consumed/Fanned retained, so other copies/recovery can replay again. Preserve knife-count scaling while changing cost and ordinary repeatability. Shadow Echo remains15actualBarrier/copy/turn; compare recurring Barrier Auras, particularly Patient Wall, without imposing a universal Barrier ceiling. Shared Campaign/Arena; local0.209/rules86. Exact static comparison and one historical client trace in RECALL_AND_BARRIER_REVIEW_2026-11-05.md. No new-rules measured grades/simulations or release approval.
+
+642. **More Campaign shards (Robert, 2026-11-05)** — Use normal25,Elite50,Warden100new bases (previous15/36/65). Explicit clarification: keep existing tier reductions, including Elite fade/Times Are Tough, plus existing Heart modifiers. Preserve prices, other rewards, Elite HP/heal alternatives and Valerion’s no-payout victory. Apply future victories, retain existing balances/generated offers. Fix legitimate Gilded Elite offer save/load. Local0.209/rules86 with Recall revision; exact income ledger CAMPAIGN_SHARDS_2026-11-05.md. No simulations/measured parity or release approval.
+
+
+## 643 — Eleven realm tiers and native dragon finale (2026-11-05)
+
+Robert selects eleven distinct realms, expanding beyond the seven established Warden worlds. Realms may hold multiple Wardens; select one native boss per tier. Retain existing shared realms, add Cindervault/Thalassar/Vespera/Hourglass Expanse. Tier XII is the final boss’s conquered homeland with five native dragon Wardens, then the final boss. Preserve refinement intent with breaks after2/4/5, last immediately before boss. Preserve current maps/checkpoints; future legacy maps adopt boss’s realm, future finale becomes native dragons. Full stats, acquisition tradeoffs and unmeasured balance scope in REALMS_AND_DRAGO_2026-11-05.md and append-only0.209.0-realms-review-1. No simulations or release approval.
+
+## 644 — Drago display name (2026-11-05)
+
+Robert explicitly requests Valerion → Drago. Update current game/lore/help and presentation of archived Campaign fight titles. Preserve vorthax IDs, boss mechanics, raw action logs, player names and published historical notes. Joins local0.209 candidate; no push/deployment approval.
+
+
+## 645 — Stable final boss and minion models (2026-11-05)
+
+Robert reports Drago shrinking and minions resizing after a turn. Preserve Drago’s painted final-boss identity and large720-stage-pixel height independently of group packing; prioritize its asset. Arrange other combatants in stable rows, freeze selected artwork per combatant/form for the fight, and stop ordinary HP buffs crossing visual thresholds. Preserve deliberate Thrall→Colossus growth and responsive rotation. Presentation only in both modes; no combat stats/caps/target changes.
+
+## 646 — At least five Elite encounters per realm (2026-11-05)
+
+Robert requests five distinct Elite fights per realm. Four established pools4→5, remaining seven2→5; add25native formations,55total across eleven regular realm tiers. Keep original solo Elites and existing enemy stats; add Elite/support and three-regular formations. Existing generated maps retained; future maps/ambushes use new pools. First Ruin remains five dragon Wardens then Drago, with no ordinary Elite stops. Exact formations in WARDEN_MECHANICS_2026-11-05.md.
+
+## 647 — Unique native Warden mechanics and Drago’s court (2026-11-05)
+
+Robert requests distinct mechanics for all four new realm Wardens and five native dragons, and proposes Drago summoning his Wardens. Implement furnace Barrier fuel, limited Barrier theft, spreading Recurring Nightmares, a self-Fate hourglass wager, Burn-fuelled talons, three reflective facets/exposed opening, timed Hollow Eggs, formation-dependent forked lightning and missing-HP/compounding Fate. Drago retains300baseHP; phase thresholds75/50/25→80/60/40/20 and five calls. Incarnations keep native mechanics at40%baseHP, no leader rule; one court escort at a time via generic summon replacement releases, not deaths. Burst can skip phases; no invulnerability or damage cap. Rules87. Exact values/triggers in ledger and player notes; all30-style follow-up remains unmeasured. No balance simulations authorized/run.
+
+## 648 — Dedicated realm arenas and illustrated lore (2026-11-05)
+
+Robert approves dedicated environments for Cindervault/Thalassar/Vespera/Hourglass Expanse and references in Lore/other pages. Four new generated panorama/floor packs replace borrowed scenes, including their realm Wardens; First Ruin’s native Wardens share the existing Drago arena. Add four responsive Lore vistas26→30 and Learn realm roster. New arena packs use their own painted skyline scenery, without unrelated old prop cutouts. Built-in imagegen prompts and saved asset paths retained.
+
+## 649 — Automatic required updates after saving (2026-11-05)
+
+Robert explicitly wants website/desktop refresh/update forced rather than optional. Once a web version or downloaded desktop patch is ready, automatically save then refresh/restart outside battle. Existing battle can finish/be left; ready update blocks subsequent play. No Later/dismiss. Save failure retains game/progress on a blocking retry; concurrent requests coalesce. Native checks start immediately and every60s instead of15s initial/300s interval. Steam-managed behavior unchanged. Older shipped clients keep their existing mandatory prompt until this version loads.
+
+## 650 — Release approval for the complete0.209 candidate (2026-11-05)
+
+Robert explicitly instructs: once all current work is working, commit, push and deploy it all. Approval covers pending Recall3Mana+Consume/allDaggers,25/50/100shard bases with reductions, eleven realm route/new Wardens/Drago rename, latest model fixes,55Elite formations, native mechanics/court, dedicated arena/lore assets and forced saved updates. Website/server and matching Windows updater release0.209.0/rules87. Finish validation first, package from clean committed source, then verify public versions/feed/checksums. Future changes require fresh approval.

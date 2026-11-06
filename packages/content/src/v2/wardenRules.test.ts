@@ -50,7 +50,7 @@ function strike(s: CombatState, target: Unit): CombatState {
 describe('every rule is told', () => {
   it('every Warden says its rule (DECISIONS #528, #546)', () => {
     const wardens = ENCOUNTERS.filter((e) => e.kind === 'warden');
-    expect(wardens.length).toBe(11);
+    expect(wardens.length).toBe(20);
     for (const e of wardens) expect(e.rule, e.id).toBeTruthy();
   });
 });

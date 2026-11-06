@@ -28,7 +28,9 @@ export class DesktopUpdates {
       currentVersion,
       version: null,
       percent: 0,
-      message: port ? 'Updates download automatically and install when you quit.' : reason,
+      message: port
+        ? 'Updates download automatically; the game saves and restarts outside battle when ready.'
+        : reason,
     };
     port?.on('checking-for-update', () =>
       this.set({ phase: 'checking', message: 'Checking for updates…' }),
@@ -38,7 +40,8 @@ export class DesktopUpdates {
         phase: 'downloading',
         version: versionOf(info),
         percent: 0,
-        message: 'Downloading the update in the background. You can keep playing.',
+        message:
+          'Downloading the required update. The game will save and restart outside battle when ready.',
       }),
     );
     port?.on('download-progress', (info) => {
@@ -63,7 +66,7 @@ export class DesktopUpdates {
         phase: 'ready',
         version: versionOf(info),
         percent: 100,
-        message: 'Update ready. Restart when convenient, or it will install when you quit.',
+        message: 'Update required. The game saves and restarts automatically after leaving battle.',
       }),
     );
     port?.on('error', () =>

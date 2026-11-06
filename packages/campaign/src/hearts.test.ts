@@ -43,8 +43,8 @@ describe('percentage Hearts and campaign rewards', () => {
   });
   it('applies reward modifiers to normal victories and selectable Elite shards, excluding Boon income', () => {
     for (const [heart, normal, elite] of [
-      ['ember-heart', 11, 27],
-      ['thorned-heart', 21, 50],
+      ['ember-heart', 19, 38],
+      ['thorned-heart', 35, 70],
     ] as const) {
       for (const kind of ['duel', 'elite'] as const) {
         const r = fresh();
@@ -60,6 +60,7 @@ describe('percentage Hearts and campaign rewards', () => {
         else {
           expect(won.shards).toBe(6);
           expect(won.context?.spoils?.shards).toBe(elite);
+          expect(parseRun(serializeRun(won))?.context?.spoils?.shards).toBe(elite);
         }
       }
     }

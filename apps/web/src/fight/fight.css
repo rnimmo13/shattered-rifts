@@ -4197,7 +4197,8 @@ button.totem:disabled {
   transition: translate 0.12s var(--ease-out);
 }
 
-.fight--portrait:has(.fight__runTimer) .fight__title {
+/* Run titles share the available header width with controls and the timer. */
+.fight:has(.fight__runTimer) .fight__title {
   position: static;
   left: auto;
   top: auto;
@@ -4206,14 +4207,19 @@ button.totem:disabled {
   min-width: 0;
   max-width: none;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.08rem;
 }
-.fight--portrait:has(.fight__runTimer) .fight__title b {
+.fight:has(.fight__runTimer) .fight__title b {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.fight--portrait:has(.fight__runTimer) .fight__title {
+  align-items: flex-start;
+}
+.fight--portrait:has(.fight__runTimer) .fight__title b {
   font-size: 0.78rem;
 }
 .fight--portrait:has(.fight__runTimer) .fight__title > span {

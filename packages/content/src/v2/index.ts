@@ -37,6 +37,18 @@ import { TOTEMS } from './pools/shaman';
 import { POTIONS } from './potions';
 import { isVariant, stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
+import { WORLD_ENEMIES, WORLD_ENCOUNTERS } from './worldEnemies';
+import type { CampaignMapRealm } from './worlds';
+import { CAMPAIGN_REALMS } from './worlds';
+export {
+  CAMPAIGN_REALMS,
+  CAMPAIGN_REALM_IDS,
+  DRAGON_WARDENS,
+  RUIN_NAME,
+  worldOfWarden,
+} from './worlds';
+export type { CampaignRealmId, CampaignMapRealm } from './worlds';
+export { WORLD_UNIT_ART, WORLD_ENEMIES } from './worldEnemies';
 
 export type RealmId =
   'aurelion' | 'nexus' | 'wyldmaw' | 'umbral' | 'starfall' | 'gloomfen' | 'midden';
@@ -459,7 +471,7 @@ export interface Encounter {
   id: string;
   name: string;
   /** (DECISIONS #437) 'beyond': the Far Rifts, a realm of enemies only (no Riftwalker comes from it) */
-  realm: RealmId | 'all' | 'beyond';
+  realm: RealmId | 'all' | CampaignMapRealm;
   kind: EncounterKind;
   /** front to back */
   units: string[];
@@ -559,8 +571,8 @@ export const ENCOUNTERS: Encounter[] = [
   ),
 
   ruled(
-    enc('vorthax', 'Valerion, Heart of the Rift', 'all', 'finale', 'rift-ward', 'vorthax'),
-    'The Heart remembers every Warden: each quarter of its HP it fights with their rules, and at the last it closes the Rift on you, Fate every turn.',
+    enc('vorthax', 'Drago, Heart of the Rift', 'all', 'finale', 'rift-ward', 'vorthax'),
+    'Drago calls Pyrewing at the start, Nacreth at 80% HP, Morvane at 60%, Aethrion at 40% and Xalvorr at 20%. Each incarnation has 40% of its Warden’s base HP and keeps its signature mechanic. A new call dismisses the previous incarnation and brood without counting as deaths. Killing an incarnation does not defeat Drago. His final phase still closes the Rift with Fate; defeating Drago ends the whole fight.',
   ),
 
   // ---- the multiverse expansion (DECISIONS #437): pairs from stage 1, a trio from stage 2, two Elites and a Warden a realm; the
@@ -875,6 +887,32 @@ export const ENCOUNTERS: Encounter[] = [
   ),
 ];
 
+ENCOUNTERS.push(...WORLD_ENCOUNTERS);
+// Five genuinely different native formations per world; do not duplicate encounter rosters.
+for (const realm of CAMPAIGN_REALMS) {
+  const elites = ENCOUNTERS.filter((e) => e.realm === realm.id && e.kind === 'elite');
+  const support = [
+    ...new Set(
+      ENCOUNTERS.filter((e) => e.realm === realm.id && e.kind === 'regular').flatMap(
+        (e) => e.units,
+      ),
+    ),
+  ].slice(0, 3);
+  const formations =
+    elites.length === 4
+      ? [[elites[0]!.units[0]!, support[0]!]]
+      : [[elites[0]!.units[0]!, support[0]!], [elites[1]!.units[0]!, support[1]!], support];
+  formations.forEach((units, i) =>
+    ENCOUNTERS.push({
+      id: `${realm.id}-elite-${['vanguard', 'rearguard', 'convergence'][i]}`,
+      name: `${realm.name} ${['Vanguard', 'Rearguard', 'Convergence'][i]}`,
+      realm: realm.id,
+      kind: 'elite',
+      units,
+    }),
+  );
+}
+
 export const encounter = (id: string): Encounter => {
   const e = ENCOUNTERS.find((x) => x.id === id);
   if (!e) throw new Error(`Unknown encounter "${id}"`);
@@ -901,7 +939,7 @@ export const COMBAT_DB: CombatDb = {
   cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
   boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
-  units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS].map((u) => [u.id, u])),
+  units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS, ...WORLD_ENEMIES].map((u) => [u.id, u])),
   heroes: HERO_DEFS,
   ascended: ascendedHeroes(HERO_DEFS),
 };

@@ -75,7 +75,18 @@ export function figureScale(mode: StageMode, hero: boolean): number {
 }
 
 /** The part of the stage the camera must show. */
-export function frameFor(mode: StageMode, height = window.innerHeight): BoardFrame {
+export function frameFor(
+  mode: StageMode,
+  height = window.innerHeight,
+  finalBoss = false,
+): BoardFrame {
+  if (finalBoss) {
+    if (mode === 'portrait')
+      return { x0: PORTRAIT.x0, x1: PORTRAIT.x1, top: 40, bottom: 1120, hang: true };
+    if (mode === 'compact')
+      return { x0: height < 600 ? -110 : 0, x1: 1920, top: 200, bottom: 1000 };
+    return { x0: 0, x1: 1920, top: 0, bottom: 1000 };
+  }
   if (mode === 'portrait')
     return { x0: PORTRAIT.x0, x1: PORTRAIT.x1, top: 130, bottom: 1120, hang: true };
   // (smaller figures need less sky: the board is fitted from lower down, so it grows and sits higher; on a phone on its side the

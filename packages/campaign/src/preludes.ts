@@ -407,6 +407,14 @@ const FLAVOUR: Record<StageRealm, string> = {
   nexus: 'A maintenance hatch stands open, a console blinking: SALVAGE AVAILABLE, TAKE ONE.',
   wyldmaw: 'A ring of bones around a warm fire. Whoever made it is watching from the dark.',
   umbral: 'A masked figure sits at an empty table. Three cards are face up. A fourth is not.',
+  gloomfen: 'A lantern floats over dark water. Beneath it, the drowned have left an offering.',
+  starfall: 'A fallen-star shard shines between the roots of a broken throne.',
+  beyond: 'A road folds back through its own shadow. Something waits at the crossing.',
+  cinder: 'A furnace door opens in the ash. An imperial seal still glows on its threshold.',
+  tides: 'The tide uncovers a pearl shrine. Its offerings are dry despite the rising sea.',
+  vespera: 'You remember this place from a dream. Someone has remembered you, too.',
+  sands: 'Two suns cast opposing shadows over an hourglass half buried in the dunes.',
+  ruin: 'No kingdom remains. The broken stones still answer to Drago.',
   rift: 'The air itself offers. You are close to the Heart, and the Rift knows it.',
 };
 

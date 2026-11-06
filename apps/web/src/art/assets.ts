@@ -1,4 +1,5 @@
 import { iconUrl, paintedFiles } from './gameIcons';
+import { WORLD_UNIT_ART } from '@sr/content/v2';
 // Real artwork, when there is some. Drop PNG/WebP files into apps/web/public/art/ and list them in
 // public/art/manifest.json (see docs/09_ART_BRIEF_V2.md); anything not listed keeps its generated placeholder.
 //
@@ -152,8 +153,26 @@ export function preloadAllArt(): Promise<void> {
   return Promise.race([(staged as Stages).all.catch(() => undefined), wait(ALL_WAIT_MS)]);
 }
 
+/** Prioritize an encounter’s essential figure rather than waiting behind the whole art catalog. */
+export function preloadFigure(key: string, path: string): Promise<void> {
+  if (figures.has(key)) return Promise.resolve();
+  const loaded = loadImage(`${base()}art/${path}`).then((img) => {
+    if (!img || figures.has(key)) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext('2d')?.drawImage(img, 0, 0);
+    figures.set(key, canvas);
+  });
+  return Promise.race([loaded, wait(ALL_WAIT_MS)]);
+}
+
 /** A real figure for a hero ('hero:knight') or unit ('unit:slime'), if one was supplied. */
-export const realFigure = (key: string): HTMLCanvasElement | undefined => figures.get(key);
+export const realFigure = (key: string): HTMLCanvasElement | undefined =>
+  figures.get(key) ??
+  (key.startsWith('unit:') && WORLD_UNIT_ART[key.slice(5)]
+    ? figures.get(`unit:${WORLD_UNIT_ART[key.slice(5)]}`)
+    : undefined);
 
 /**
  * The id a card's picture is filed under: an upgrade ("strike+") and a sanctified card ("hi~strike", "lo~strike+") share the art of

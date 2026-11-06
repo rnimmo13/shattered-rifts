@@ -660,7 +660,12 @@ export type Op =
   /** choose a card in your hand with this tag: it yields this much more for the rest of the fight (The Forgemaster) */
   | { op: 'empower'; amount: number; tag: string }
   /** `ifAbsent`: nothing happens while one of that unit stands on this side */
-  | { op: 'summon'; unit: string; ifAbsent?: boolean }
+  | {
+      op: 'summon';
+      unit: string;
+      ifAbsent?: boolean;
+      /** Release matching friendly summons before making room; not deaths. */ replace?: string[];
+    }
   /** (Gorrmaw's rule, DECISIONS #546) every other unit of this kind on your side is eaten: for each, heal `heal` and gain `might`
    * Might, plus `healPct` percent of its max HP; with none to eat, `none` happens instead */
   | { op: 'devour'; unit: string; heal: number; might: number; none?: Op[]; healPct?: number }
@@ -1110,7 +1115,7 @@ export interface UnitDef {
   name: string;
   maxHp: number;
   taunt?: boolean;
-  /** when it falls, the rest of its side falls with it (Valerion, DECISIONS #547) */
+  /** when it falls, the rest of its side falls with it (Drago, DECISIONS #547) */
   leader?: boolean;
   /** how many of its side's companion slots it takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383) */
   slots?: number;

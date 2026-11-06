@@ -8,6 +8,8 @@ import { nextInt, seedRng, shuffle, type RngState } from '@sr/combat';
 import {
   CLASS_REWORKS,
   COMBAT_DB,
+  CAMPAIGN_REALMS,
+  CAMPAIGN_REALM_IDS,
   RIFTWALKERS,
   V2_DECK_RULES,
   HEARTS,
@@ -37,7 +39,7 @@ import {
   rollEliteFight,
   reachableNodes,
   WARDEN_SEQUENCE,
-  gauntletMap,
+  dragonGauntletMap,
   shuffledWardens,
 } from './mapgen';
 
@@ -140,7 +142,7 @@ export const DIFFICULTY: Record<
   },
 };
 /** Shards a won fight pays, by the kind of fight. */
-export const FIGHT_SHARDS = { duel: 15, elite: 36, warden: 65 } as const;
+export const FIGHT_SHARDS = { duel: 25, elite: 50, warden: 100 } as const;
 /** The chance (percent) that a won fight drops a potion (when the belt has room). */
 export const POTION_DROP_CHANCE = { duel: 40, elite: 75 } as const;
 /** Percent of max HP an Elite fight heals when it is won. */
@@ -190,18 +192,33 @@ function realmOfTier(
   tier: number,
   last?: StageRealm,
   wardenOrder: readonly string[] = WARDEN_SEQUENCE,
+  realmOrder?: readonly StageRealm[],
 ): { realm: StageRealm; order: StageRealm[] } {
+  if (realmOrder) {
+    const realm = realmOrder[tier - 1] ?? 'ruin';
+    return {
+      realm,
+      order: (realm === 'ruin'
+        ? [...realmOrder].slice(-4)
+        : [realm, ...realmOrder.filter((r) => r !== realm)]
+      ).slice(0, 4),
+    };
+  }
   const order = shuffledRealms(rng).filter((x) => x !== last);
   const boss = wardenOrder[tier - 1];
   const bossRealm = boss ? encounter(boss).realm : 'rift';
-  const realm: StageRealm = ['aurelion', 'nexus', 'wyldmaw', 'umbral'].includes(bossRealm)
+  const realm: StageRealm = (CAMPAIGN_REALM_IDS as readonly string[]).includes(bossRealm)
     ? (bossRealm as StageRealm)
-    : 'rift';
-  return { realm, order: realm === 'rift' ? order : [realm, ...order.filter((x) => x !== realm)] };
+    : 'ruin';
+  return {
+    realm,
+    order: (realm === 'ruin' ? order : [realm, ...order.filter((x) => x !== realm)]).slice(0, 4),
+  };
 }
 
 /** Where a tier's enemies come from: its own realm, or in the Rift the last two of its order (an old save's Rift map was built from them too). */
 function enemyRealms(run: Pick<RunState, 'stageRealms' | 'map'>): StageRealm[] {
+  if (run.map.themed) return [run.map.realm];
   if (run.map.realm !== 'rift') return [run.map.realm];
   const rest = run.stageRealms.slice(-2);
   return rest.length > 0 ? rest : ['umbral'];
@@ -214,16 +231,32 @@ function shuffledRealms(rng: RngState): StageRealm[] {
 
 export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'normal'): RunState {
   const rng = seedRng(`run:${seed}`);
-  const wardenOrder = shuffledWardens(rng);
-  const first = realmOfTier(rng, 1, undefined, wardenOrder);
+  const realmOrder = shuffle(rng, [...CAMPAIGN_REALM_IDS]);
+  const wardenOrder = realmOrder.map((id) => {
+    const world = CAMPAIGN_REALMS.find((r) => r.id === id)!;
+    return world.wardens[nextInt(rng, world.wardens.length)]!;
+  });
+  const first = realmOfTier(rng, 1, undefined, wardenOrder, realmOrder);
   const stageRealms = first.order;
-  const map = generateStageMap(rng, 1, first.realm, hero, undefined, 1, 'twelve', wardenOrder);
+  const map = generateStageMap(
+    rng,
+    1,
+    first.realm,
+    hero,
+    undefined,
+    1,
+    'twelve',
+    wardenOrder,
+    true,
+  );
   const rw = RIFTWALKERS[hero]; // throws on an unknown hero
   need(rw, `Unknown Riftwalker ${hero}`);
   const rework = CLASS_REWORKS[hero]?.version;
   const run: RunState = {
     v: 2,
     campaignRoute: 'twelve',
+    realmRoute: 'eleven',
+    realmOrder,
     wardenOrder,
     ...(rework ? { reworked: rework } : {}),
     weaponCards: true,
@@ -402,7 +435,8 @@ function afterGift(r: RunState): void {
     r.tier = MAX_TIER;
     if (r.rewardRerollTier !== undefined && r.rewardRerollTier > MAX_TIER)
       r.rewardRerollTier = MAX_TIER;
-    r.map = gauntletMap(1, shuffledWardens(r.rng));
+    r.realmRoute = 'legacy-themed';
+    r.map = dragonGauntletMap(r.rng);
     r.cleared = [];
     r.at = null;
     r.context = null;
@@ -413,7 +447,7 @@ function afterGift(r: RunState): void {
   r.context = null;
 }
 
-/** Valerion has fallen: the run is won and the next page is the victory screen, with nothing to choose first. */
+/** Drago has fallen: the run is won and the next page is the victory screen, with nothing to choose first. */
 export function finishCampaign(r: RunState, nodeId: string): void {
   clearNode(r, nodeId);
   delete r.eventResult;
@@ -608,6 +642,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
             r.map.nodes.map((n) => n.enemyId),
             depthOf(r.tier),
             r.tier,
+            !!r.map.themed,
           )
         : null;
       if (ambush && foe) {
@@ -998,7 +1033,7 @@ export function finishDuel(
       r.potions.push(id);
     }
   }
-  // Valerion ends the campaign: no Gift, shards, potion, Boon, Max HP or healing, straight to the victory screen
+  // Drago ends the campaign: no Gift, shards, potion, Boon, Max HP or healing, straight to the victory screen
   if (node.enemyId === 'vorthax') {
     finishCampaign(r, node.id);
     return r;
@@ -1805,6 +1840,7 @@ export function chooseEvent(run: RunState, option: EventOption['id']): RunState 
       r.map.nodes.map((n) => n.enemyId),
       depthOf(r.tier),
       r.tier,
+      !!r.map.themed,
     );
     need(foe, 'There is nothing here to fight');
     node.kind = kind;
@@ -1961,9 +1997,16 @@ export function continueLoop(run: RunState): RunState {
     }
   }
   r.campaignRoute = 'twelve';
+  if (!r.realmRoute) r.realmRoute = 'legacy-themed';
   r.tier += 1;
   r.stage = 1;
-  const next = realmOfTier(r.rng, r.tier, r.map.realm, r.wardenOrder);
+  const next = realmOfTier(
+    r.rng,
+    r.tier,
+    r.map.realm,
+    r.wardenOrder,
+    r.realmRoute === 'eleven' ? r.realmOrder : undefined,
+  );
   r.stageRealms = next.order;
   r.map = generateStageMap(
     r.rng,
@@ -1974,6 +2017,7 @@ export function continueLoop(run: RunState): RunState {
     r.tier,
     r.campaignRoute,
     r.wardenOrder,
+    r.realmRoute !== undefined,
   );
   r.cleared = [];
   r.at = null;

@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { MIN_SCALE, centredLine, packLine, TUCK } from './lineLayout';
+import { MIN_SCALE, centredLine, packLine, stableFormation, TUCK } from './lineLayout';
 
 describe('packLine', () => {
+  it('adds a second row without shrinking or moving the first pair when another minion joins', () => {
+    const pair = [
+      { fw: 234, tier: 0 },
+      { fw: 234, tier: 0 },
+    ];
+    const first = stableFormation(pair, 440, 910);
+    const crowd = stableFormation([...pair, ...pair], 440, 910);
+    expect(crowd.xs.slice(0, 2)).toEqual(first.xs);
+    expect(crowd.rows).toEqual([0, 0, 1, 1]);
+    expect(crowd.xs[1]! - crowd.xs[0]!).toBeGreaterThanOrEqual(234);
+    expect(crowd.xs.every((x) => x - 117 >= 440 && x + 117 <= 910)).toBe(true);
+  });
   it('stands figures left to right without touching when there is room', () => {
     const r = packLine(
       [
