@@ -29,7 +29,7 @@ it('uses Arena HP and distinguishes censored results from real outcomes reproduc
 });
 it('uses the actual Tier XX Normal Valerion plan and campaign Boon HP', () => {
   const r = fight({ id: 1, mode: 'boss', a: deck, seed: 'harness-boss', budget: 30 });
-  expect(r.maxHp).toEqual({ a: 88, b: 2550 });
+  expect(r.maxHp).toEqual({ a: 88, b: 2580 }); // 300 base HP × current 860% Tier XX.
   expect(r.tier).toBe(20);
   expect(r.bossFraction).toBeGreaterThanOrEqual(0);
   expect(r.bossFraction).toBeLessThanOrEqual(1);
@@ -46,7 +46,7 @@ it('keeps experimental card overrides isolated from the released database', () =
   expect(JSON.stringify([base, upgraded])).toBe(originals);
   expect({ ...fight(j), ms: 0 }).toEqual({ ...before, ms: 0 });
 });
-it('can replay the released boss data after local content revisions', () => {
+it('loads historical boss definitions with the current Campaign scaling', () => {
   const r = fight({
     id: 3,
     mode: 'boss',
@@ -60,6 +60,6 @@ it('can replay the released boss data after local content revisions', () => {
       ),
     ),
   });
-  expect(r.maxHp).toEqual({ a: 88, b: 3060 });
+  expect(r.maxHp).toEqual({ a: 88, b: 3096 }); // Archived 360 base HP × current 860%.
   expect(COMBAT_DB.units.vorthax!.maxHp).toBe(300);
 });

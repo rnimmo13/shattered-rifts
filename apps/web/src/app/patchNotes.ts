@@ -46,6 +46,119 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.210.0',
+    date: '2026-11-06',
+    title: 'Distinct battlefields and the First Ruin',
+    summary:
+      'Curated arenas, clearer targeting, a special finale, tougher Campaign fights and three new Knight Strikes.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'My saved decks in Sandbox',
+        text: 'Load one of your own saved Arena decks into Sandbox, copying its class, Ascendancy, card upgrades, Boons and saved Campaign Max HP. The saved tier sets the encounter scaling, with Easy mode still available; reset test stats to use the base class again. Sandbox edits and fights leave the saved deck untouched.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Continue on another device',
+        text: 'Use Save and switch device from the Campaign save status for a normal handoff. When your account is still playing elsewhere, choose Take control on this device. The new device loads the latest confirmed account save, and the previous device pauses when its connection checks in. Unsent progress remains on its original device for recovery. Connection errors no longer incorrectly say another device is playing.',
+      },
+      {
+        kind: 'changed',
+        title: 'Arenas with their own identity',
+        text: 'Campaign and Arena. Each painted venue now uses a sparse authored scenery composition instead of repeating the same prop layout. Hanging decorations are removed. Realm-colored light, fog and particles replace the common purple atmosphere; floor Rift cracks appear only in Rift venues. Heat rises faster, underwater light drifts slowly, and dream dust hangs softly.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Room to choose targets',
+        text: 'Campaign and Arena. Three models now spread across their side before forming another rank, with full-silhouette spacing and a visible gutter. Wider models scale to fit that space. Additional ranks are further apart. Name and HP plates can also select their unit, the battle log clears target space while aiming, and model targeting considers vertical position as well as horizontal distance.',
+      },
+      {
+        kind: 'new',
+        title: 'Tier XII: the First Ruin',
+        text: 'Campaign only. The final tier gains a dragon crest, a faint Drago silhouette, fractured void-and-ember framing and a conquest seal for each Warden in the saved order, ending in the larger throne seal for Drago. Defeated Warden seals turn ember-gold. The battle-map overlay retains transparency. No new map artwork or route changes.',
+      },
+      {
+        kind: 'balance',
+        title: 'Campaign enemy baseline',
+        text: 'Campaign only. All scripted enemies, including Wardens, native dragons and Drago, use the revised baseline. The tier slope remains +40 HP and +5 damage percentage points per tier. Enemy Barrier and healing continue using their existing HP-derived scaling. Arena and independent Campaign ghost curves are unchanged. Values are percentages of authored enemy stats, before existing difficulty and Omen effects.',
+        changes: [
+          {
+            label: 'Tier I enemy HP',
+            before: '90% of base',
+            after: '100% of base',
+            direction: 'buff',
+          },
+          {
+            label: 'Tier I enemy damage',
+            before: '90% of base',
+            after: '93% of base',
+            direction: 'buff',
+          },
+          {
+            label: 'Tier XII enemy HP / damage',
+            before: '530% / 145%',
+            after: '540% / 148%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Elites demand preparation',
+        text: 'Campaign only. Every Elite stop, including promoted ordinary encounters and Wardens encountered on an Elite stop, multiplies its tier-scaled enemy HP by 1.25 and damage by 1.08, rounded to whole percentages before enemy-stat rounding. Normal Warden stops receive only the shared baseline increase. Encounter moves, rewards and Resolve costs stay the same.',
+        changes: [
+          {
+            label: 'Elite-only HP multiplier',
+            before: 'x1.00',
+            after: 'x1.25',
+            direction: 'buff',
+          },
+          {
+            label: 'Elite-only damage multiplier',
+            before: 'x1.00',
+            after: 'x1.08',
+            direction: 'buff',
+          },
+          {
+            label: 'Tier I Elite HP / damage',
+            before: '90% / 90%',
+            after: '125% / 100%',
+            direction: 'buff',
+          },
+          {
+            label: 'Tier XI Elite HP / damage',
+            before: '490% / 140%',
+            after: '625% / 154%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Shield Strike',
+        card: 'shield-strike',
+        hero: 'knight',
+        text: 'Campaign and Arena. New common Knight Attack, 1 Mana. Deal 5 damage and gain 5 Barrier; upgraded: 8 damage and 6 Barrier. Eligible for Raised Hell and Mastered Strike.',
+      },
+      {
+        kind: 'new',
+        title: 'Breaching Strike',
+        card: 'breaching-strike',
+        hero: 'knight',
+        text: 'Campaign and Arena. New common Knight Attack, 1 Mana. Deal 7 damage, then apply 1 Exposed; upgraded: 10 damage, then 1 Exposed. Eligible for Raised Hell and Mastered Strike.',
+      },
+      {
+        kind: 'new',
+        title: 'Muster Strike',
+        card: 'muster-strike',
+        hero: 'knight',
+        text: 'Campaign and Arena. New uncommon Knight Attack, 1 Mana. Deal 8 damage and gain 1 Reserves, up to your Max Reserves; upgraded: 11 damage and 1 Reserves. Eligible for Raised Hell and Mastered Strike. Raised Hell itself retains its 2-Mana cost and automatic random-target Strike-on-draw effect, base and upgraded. Starting decks remain as saved.',
+      },
+    ],
+    heads:
+      'Existing decks, routes, rewards and earned progress are retained. Older unfinished battles restart from their encounter checkpoint under the updated rules; no Resolve is spent for that migration.',
+  },
+  {
     version: '0.209.0',
     date: '2026-11-05',
     title: 'Eleven realms and the First Ruin',

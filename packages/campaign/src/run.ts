@@ -904,8 +904,10 @@ export function duelPlan(run: RunState): FightPlan | null {
   const boss = node.kind === 'elite' || node.kind === 'warden';
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
-  // Encounter data already distinguishes Elites and Wardens. No hidden category multipliers
-  // or Omen-added extra attacker; the common tier curve is linear for every scripted fight.
+  // Elites have a visible, fixed premium over the common curve, including promoted encounters.
+  // Wardens retain their authored kits and the ordinary tier budget.
+  const eliteHp = node.kind === 'elite' ? 1.25 : 1;
+  const eliteDamage = node.kind === 'elite' ? 1.08 : 1;
   const echoHp = node.kind === 'echo' ? ECHO_HP_PCT / 100 : 1;
   return {
     ...(ghost
@@ -944,10 +946,14 @@ export function duelPlan(run: RunState): FightPlan | null {
     potions: [...run.potions],
     // the tier table sets how hard this stage of this tier is; the difficulty only matters for a run saved on Easy or Hard
     hpPct: Math.round(
-      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) * enemyScale(run.tier, 1).hp,
+      (DIFFICULTY[run.difficulty].hpPct / DIFFICULTY.normal.hpPct) *
+        enemyScale(run.tier, 1).hp *
+        eliteHp,
     ),
     dmgPct: Math.round(
-      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) * enemyScale(run.tier, 1).dmg,
+      (DIFFICULTY[run.difficulty].dmgPct / DIFFICULTY.normal.dmgPct) *
+        enemyScale(run.tier, 1).dmg *
+        eliteDamage,
     ),
     kind: node.kind,
     seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,

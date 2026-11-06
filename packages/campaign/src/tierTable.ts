@@ -2,7 +2,7 @@
 //
 // (Since DECISIONS #531 a run has no acts: fights use a row's first column, and the other two only keep old rows readable.)
 // Each row is one Rift Tier (row 1 = Tier I) and gives enemy HP and attack damage for each of the run's three stages, as a percent
-// of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I starts at 90% of base.
+// of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I starts at 100% base HP and 93% base damage.
 //
 // HP and damage are three numbers each, not typed row by row (DECISIONS #262): Tier I stage 1 starts at HP_START, every Tier up adds a flat
 // HP_PER_TIER, and every stage inside a tier adds HP_PER_STAGE. Keep HP_PER_TIER above twice HP_PER_STAGE, so stage 1 of a tier is
@@ -22,14 +22,14 @@ export interface TierRow {
 }
 
 /** enemy HP at Tier I stage 1, percent of the written numbers */
-export const HP_START = 90;
+export const HP_START = 100;
 /** added to enemy HP for every Rift Tier up (percentage points; 20 until DECISIONS #536, 30 until #555) */
 export const HP_PER_TIER = 40;
 /** added to enemy HP for each stage inside a tier (percentage points) */
 export const HP_PER_STAGE = 5;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
-export const DMG_START = 90;
+export const DMG_START = 93;
 /** added to enemy damage for every Rift Tier up (percentage points; 12 until DECISIONS #555) */
 export const DMG_PER_TIER = 5;
 /** added to enemy damage for each stage inside a tier (percentage points) */

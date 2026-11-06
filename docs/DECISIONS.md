@@ -1152,3 +1152,25 @@ Robert explicitly wants website/desktop refresh/update forced rather than option
 ## 650 — Release approval for the complete0.209 candidate (2026-11-05)
 
 Robert explicitly instructs: once all current work is working, commit, push and deploy it all. Approval covers pending Recall3Mana+Consume/allDaggers,25/50/100shard bases with reductions, eleven realm route/new Wardens/Drago rename, latest model fixes,55Elite formations, native mechanics/court, dedicated arena/lore assets and forced saved updates. Website/server and matching Windows updater release0.209.0/rules87. Finish validation first, package from clean committed source, then verify public versions/feed/checksums. Future changes require fresh approval.
+
+
+## 651 - Distinct arenas, selectable formations and Campaign pressure (2026-11-06)
+
+Robert requests varied arena compositions and removal of misplaced/swinging scenery; full-width selectable enemy spacing; slightly higher Campaign HP with a smaller damage increase; meaningfully tougher Elites. Implement local0.210.0/rules88:100/93% TierI (was90/90), unchanged+40/+5pp slope; Elite-only x1.25HP/x1.08damage (was1/1), rounded percentage. No simulations. Raised Hell options were presented first; Robert explicitly chooses adding2-3useful Strike rewards. Add Shield/Breaching/Muster Strike with hand-priced exact base/upgraded values in docs/CAMPAIGN_AND_ARENAS_2026-11-06.md. All30 assessment appended. No push/deployment approval.
+
+## 652 - First Ruin theme replaces cancelled map-art request (2026-11-06)
+
+After reviewing map art, Robert cancels map artwork for all tiers, includingXII, and requests theme elements making the final tier special. Use existing-route First Ruin crest, fractured void/ember frame and ordered Warden/throne completion seals, translucent over battle. No generated map concept is referenced. Preserve saved routes and Warden order.
+
+## 653 - Sandbox uses the user's own saved decks (2026-11-06)
+
+Robert clarifies -active players decks- means only his own saved decks. Add a normal Sandbox picker for current-account Vault decks, copying class/Ascendancy/cards/upgrades/Boons/saved CampaignHP and tier into an editable test setup. Do not add other-player deck access or a developer export endpoint. The saved source stays unchanged.
+
+## 654 - Explicit device takeover (2026-11-06)
+
+Robert reports false/stale other-device play blocks and requests smoother switching or a way to take control. Add explicit Take control on this device at the busy gameplay gate, using the existing authenticated account/Vault boundary. Rotate the token/generation atomically, keep confirmed save/replay revision, fence old-device writes/renewals/releases, adopt account state before enabling play and preserve newer-local recovery. Explain unsent progress stays at its source device. Distinguish network/auth errors from an actual busy lease. No automatic takeover. This work is local; no release approval.
+
+
+## 655 - Release approval for 0.210.0 (2026-11-06)
+
+Robert explicitly instructs "commit push and deploy" after reviewing the complete local v0.210.0 candidate. Approval covers the arena/targeting/First Ruin theme pass, Campaign baseline and Elite pressure, three Knight Strike rewards supporting unchanged Raised Hell, own saved-deck Sandbox picker and safe device takeover. Commit and push the validated source, deploy website/server and publish the matching Windows updater, then verify live versions and release checksums. Earlier local-only assessment labels remain historical. Future changes require fresh release approval.

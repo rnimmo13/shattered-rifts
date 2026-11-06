@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-06",
+  "reference": "apps/web/public/art/arenas/castle/backdrop.jpg",
+  "assets": [
+    {
+      "id": "shield-strike",
+      "prompt": "Use case: stylized-concept. Original Shattered Rifts card illustration, 4:3 landscape. an armored knight bashing an enemy silhouette with a blue and gold kite shield, diagonal impact sparks, protective golden ward. Match reference game's polished cartoon fantasy art, clean strong outlines, saturated ivory gold royal blue, soft cel shading, dramatic clear silhouette, painterly atmospheric medieval castle background. Frame action centrally for a small card illustration crop, premium readable art. No lettering, no numbers, no border, no UI, no watermark.",
+      "source": "assets-src/cards/0.210/shield-strike.png",
+      "published": "apps/web/public/art/cards/shield-strike.jpg",
+      "tool": "built-in image_gen",
+      "status": "generated; pending Robert review"
+    },
+    {
+      "id": "breaching-strike",
+      "prompt": "Use case: stylized-concept. Original Shattered Rifts card illustration, 4:3 landscape. an armored knight's sword thrust breaking through an enemy shield, bright exposed crack, decisive focused impact. Match reference game's polished cartoon fantasy art, clean strong outlines, saturated ivory gold royal blue, soft cel shading, dramatic clear silhouette, painterly atmospheric medieval castle background. Frame action centrally for a small card illustration crop, premium readable art. No lettering, no numbers, no border, no UI, no watermark.",
+      "source": "assets-src/cards/0.210/breaching-strike.png",
+      "published": "apps/web/public/art/cards/breaching-strike.jpg",
+      "tool": "built-in image_gen",
+      "status": "generated; pending Robert review"
+    },
+    {
+      "id": "muster-strike",
+      "prompt": "Use case: stylized-concept. Original Shattered Rifts card illustration, 4:3 landscape. an armored knight landing a controlled sword strike while a golden reserve of energy gathers around the off hand, poised disciplined stance. Match reference game's polished cartoon fantasy art, clean strong outlines, saturated ivory gold royal blue, soft cel shading, dramatic clear silhouette, painterly atmospheric medieval castle background. Frame action centrally for a small card illustration crop, premium readable art. No lettering, no numbers, no border, no UI, no watermark.",
+      "source": "assets-src/cards/0.210/muster-strike.png",
+      "published": "apps/web/public/art/cards/muster-strike.jpg",
+      "tool": "built-in image_gen",
+      "status": "generated; pending Robert review"
+    }
+  ]
+}

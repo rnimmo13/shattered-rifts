@@ -42,6 +42,45 @@ const foeHp = (s: CombatState): number => s.sides.b.units[0]!.hp + s.sides.b.uni
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('the knight is the Ironclad shape', () => {
+  it.each([
+    ['shield-strike', 5, 5, 0, 0],
+    ['shield-strike+', 8, 6, 0, 0],
+    ['breaching-strike', 7, 0, 1, 0],
+    ['breaching-strike+', 10, 0, 1, 0],
+    ['muster-strike', 8, 0, 0, 1],
+    ['muster-strike+', 11, 0, 0, 1],
+  ] as const)(
+    '%s has its authored damage and support effect',
+    (id, damage, barrier, exposed, reserves) => {
+      const s = play(fight([id]), id);
+      expect(200 - s.sides.b.units[0]!.hp).toBe(damage);
+      expect(hero(s).barrier).toBe(barrier);
+      expect(s.sides.b.units[0]!.statuses.exposed ?? 0).toBe(exposed);
+      expect(s.sides.a.reserves).toBe(reserves);
+    },
+  );
+
+  it.each([
+    'shield-strike',
+    'breaching-strike',
+    'muster-strike',
+    'shield-strike+',
+    'breaching-strike+',
+    'muster-strike+',
+  ])('Raised Hell auto-plays %s without paying its Mana cost', (id) => {
+    let s = fight(['raised-hell', 'hilt-strike']);
+    s.sides.a.draw = [
+      { id: 'new-strike', card: id },
+      { id: 'safe-card', card: 'defend' },
+    ];
+    s = play(s, 'raised-hell');
+    const mana = s.sides.a.mana;
+    s = play(s, 'hilt-strike');
+    expect(s.sides.a.mana).toBe(mana - 1);
+    expect(s.sides.a.hand.some((c) => c.card === id)).toBe(false);
+    expect(s.sides.a.discard.some((c) => c.card === id)).toBe(true);
+    expect(s.sides.b.units.reduce((n, unit) => n + 200 - unit.hp, 0)).toBeGreaterThan(9);
+  });
   it('starts with four Strikes, two Defends and four class basics; Devotion is gone', () => {
     expect(RIFTWALKERS.knight.starter).toEqual([
       ...Array<string>(4).fill('strike'),
@@ -472,7 +511,7 @@ describe('one card for each of the Ironclad’s', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );
-    expect(own).toHaveLength(82 + 12 + 3 + 1); // Measured Conviction
+    expect(own).toHaveLength(82 + 12 + 3 + 1 + 3); // Measured Conviction; three Strike rewards.
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(

@@ -26,6 +26,9 @@ interface GroundProp {
 export type Pattern = 'flanks' | 'left' | 'right' | 'scatter' | 'gap';
 
 interface ArenaLook {
+  /** Authored positions, in normalized screen width. No repeated prop-sheet cycle. */
+  farX?: number[];
+  groundX?: number[];
   /** where the scenery clusters (see Pattern) */
   pattern: Pattern;
   /** tall silhouettes standing at the horizon (they move with the pointer) */
@@ -197,6 +200,53 @@ export const ARENA_LOOK: Record<VenueId, ArenaLook> = {
   // the Crossing: ghosts and PvP; symmetric, so neither side has the better half
   crossing: look('flanks', { 3: CYAN, 6: CYAN }, [0.88, 0.86, 1], [150, 120, 255], 4),
 };
+
+// Sparse, authored compositions. Architectural cut-outs never hang from the sky;
+// bosses keep their painted focal point rather than receiving the same nine-object kit.
+const STAGING: Partial<Record<VenueId, [number[], number[], number[]]>> = {
+  castle: [[0], [3, 5], [0.19, 0.74]],
+  ramparts: [[], [0, 5], [0.18, 0.82]],
+  factory: [[0], [3, 5, 4], [0.16, 0.25, 0.83]],
+  dock: [[2], [3, 4], [0.72, 0.84]],
+  forest: [[0, 2], [5], [0.24]],
+  canopy: [[], [3, 6], [0.18, 0.79]],
+  cave: [[1], [4, 3], [0.22, 0.8]],
+  garden: [[], [3, 4, 5], [0.2, 0.36, 0.82]],
+  glass: [[0], [3, 4], [0.16, 0.25]],
+  bazaar: [[], [4, 5, 6], [0.18, 0.78, 0.86]],
+  swamp: [[], [4, 6], [0.17, 0.81]],
+  stilts: [[1], [4, 5], [0.72, 0.84]],
+  alley: [[], [4, 5, 6], [0.16, 0.25, 0.82]],
+  cellar: [[], [3, 4, 5], [0.18, 0.35, 0.8]],
+  rift: [[], [3, 6], [0.19, 0.79]],
+  farrift: [[], [4, 6], [0.2, 0.83]],
+  crossing: [[], [3, 6], [0.19, 0.81]],
+  'boss-seraphine': [[], [4, 6], [0.2, 0.82]],
+  'boss-benediction': [[], [3, 5], [0.2, 0.79]],
+  'boss-kron': [[], [4, 6], [0.18, 0.29]],
+  'boss-static': [[], [4, 6], [0.76, 0.85]],
+  'boss-gorrmaw': [[], [3, 4], [0.17, 0.28]],
+  'boss-stag': [[], [4, 6], [0.22, 0.81]],
+  'boss-nyxara': [[], [5, 3], [0.19, 0.84]],
+  'boss-applause': [[], [3, 6], [0.2, 0.79]],
+  'boss-tide': [[], [4, 5], [0.21, 0.77]],
+  'boss-queen': [[], [4, 5], [0.17, 0.29]],
+  'boss-regent': [[], [3], [0.21]],
+  'boss-vorthax': [[], [3], [0.18]],
+};
+for (const [id, staging] of Object.entries(STAGING)) {
+  const look = ARENA_LOOK[id as VenueId];
+  const [far, ground, groundX] = staging;
+  const glows = new Map(look.ground.map((prop) => [prop.i, prop.glow]));
+  look.far = far;
+  look.farX = far.map((_, index) => (far.length === 1 ? 0.3 : 0.28 + index * 0.42));
+  look.ground = ground.map((i) => {
+    const glow = glows.get(i);
+    return glow ? { i, glow } : { i };
+  });
+  look.groundX = groundX;
+  look.hang = [];
+}
 
 /**
  * The look of an arena whose sheet follows the prompt layout (docs/scene-prompts.md): 0-2 tall silhouettes far back, 3-6 props on the
@@ -414,7 +464,6 @@ export class ArenaProps {
   /** hanging items (stage coordinates) */
   readonly hang = new Container();
   private readonly halos: { s: Sprite; base: number; rate: number; phase: number }[] = [];
-  private readonly swayers: { s: Sprite; amp: number; rate: number; phase: number }[] = [];
 
   constructor(pack: ArenaPack, look: ArenaLook, glow: Texture, seed: string) {
     const r = rng(hashSeed(seed));
@@ -423,18 +472,17 @@ export class ArenaProps {
       return img ? Texture.from(img) : null;
     };
     const aspect = (t: Texture): number => t.width / t.height;
-    const cycle = <T>(list: T[], n: number): T[] => {
-      const start = Math.floor(r() * list.length);
-      return Array.from({ length: n }, (_, k) => list[(start + k) % list.length] as T);
-    };
 
     // far silhouettes: a few tall shapes at the horizon, never past the floor's far edge
     const farTex = look.far.map(tex).filter((t): t is Texture => t !== null);
     if (farTex.length > 0) {
-      const picks = cycle(farTex, 3 + (r() < 0.5 ? 1 : 0) + (r() < 0.3 ? 1 : 0));
+      const picks = farTex;
       const heights = picks.map(() => 260 + r() * 90);
       const widths = picks.map((t, k) => aspect(t) * (heights[k] as number));
-      for (const spot of place(r, look.pattern, widths, [342, 342], 0.42)) {
+      const spots = look.farX
+        ? look.farX.map((x, k) => ({ x: x * 1920, y: 342, w: widths[k] ?? 0, k }))
+        : place(r, look.pattern, widths, [342, 342], 0.42);
+      for (const spot of spots) {
         const sp = new Sprite(picks[spot.k] as Texture);
         stand(sp, heights[spot.k] as number);
         if (r() < 0.5) sp.scale.x *= -1;
@@ -450,15 +498,26 @@ export class ArenaProps {
       .map((g) => ({ g, t: tex(g.i) }))
       .filter((e): e is { g: GroundProp; t: Texture } => e.t !== null);
     if (groundTex.length > 0) {
-      const picks = cycle(groundTex, 4 + (r() < 0.5 ? 1 : 0) + (r() < 0.4 ? 1 : 0));
-      const base = picks.map(() => 125 + r() * 65);
+      const picks = groundTex;
+      const base = picks.map(() => 100 + r() * 45);
       const widths = picks.map((e, k) => aspect(e.t) * (base[k] as number));
-      const spots = place(r, look.pattern, widths, [398, 446], 0.4).sort((p, q) => p.y - q.y);
+      const spots = (
+        look.groundX
+          ? look.groundX.map((x, k) => ({
+              x: x * 1920,
+              y: 410 + (k % 2) * 28,
+              w: widths[k] ?? 0,
+              k,
+            }))
+          : place(r, look.pattern, widths, [398, 446], 0.4)
+      ).sort((p, q) => p.y - q.y);
       for (const spot of spots) {
         const e = picks[spot.k] as { g: GroundProp; t: Texture };
         const depth = (spot.y - camera.vpY) / (440 - camera.vpY);
         const sp = new Sprite(e.t);
         stand(sp, (base[spot.k] as number) * depth);
+        const room = Math.max(0, floorHalf(spot.y) - sp.width / 2);
+        spot.x = Math.max(camera.cx - room, Math.min(camera.cx + room, spot.x));
         if (r() < 0.4) sp.scale.x *= -1;
         sp.position.set(spot.x, spot.y);
         if (e.g.glow) {
@@ -494,7 +553,6 @@ export class ArenaProps {
         sp.scale.set((250 + r() * 50) / t.height);
         sp.position.set(Math.max(380, Math.min(1540, spot.x)), 100);
         this.hang.addChild(sp);
-        this.swayers.push({ s: sp, amp: 0.03, rate: 0.5 + r() * 0.3, phase: r() * 6 });
       }
     }
   }
@@ -502,6 +560,5 @@ export class ArenaProps {
   update(t: number, still: boolean): void {
     if (still) return;
     for (const h of this.halos) h.s.alpha = h.base * (0.82 + 0.18 * Math.sin(t * h.rate + h.phase));
-    for (const w of this.swayers) w.s.rotation = Math.sin(t * w.rate + w.phase) * w.amp;
   }
 }

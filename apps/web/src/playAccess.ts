@@ -50,7 +50,9 @@ export async function gameplayAction(action: () => void): Promise<void> {
     action();
 }
 const base = (): string => serverBase().replace(/^ws/i, 'http');
-async function call(action: 'claim' | 'renew' | 'release'): Promise<Record<string, unknown>> {
+async function call(
+  action: 'claim' | 'renew' | 'release' | 'takeover',
+): Promise<Record<string, unknown>> {
   await whoAmI();
   const key = vaultKey();
   const proof = token || sessionStorage.getItem('sr.play.token') || '';
@@ -64,13 +66,13 @@ async function call(action: 'claim' | 'renew' | 'release'): Promise<Record<strin
   if (!data || typeof data !== 'object') throw new Error('Gameplay server unavailable');
   return data as Record<string, unknown>;
 }
-export function ensurePlay(recoverLocal = false): Promise<boolean> {
+export function ensurePlay(recoverLocal = false, takeOver = false): Promise<boolean> {
   if (localOnly()) return Promise.resolve(true);
-  if (canPlay()) return Promise.resolve(true);
+  if (canPlay() && !takeOver) return Promise.resolve(true);
   pending ??= (async () => {
     update('claiming');
     try {
-      const data = await call('claim');
+      const data = await call(takeOver ? 'takeover' : 'claim');
       if (
         data.ok !== true ||
         typeof data.token !== 'string' ||
@@ -78,10 +80,12 @@ export function ensurePlay(recoverLocal = false): Promise<boolean> {
         typeof data.now !== 'number' ||
         typeof data.revision !== 'number'
       ) {
-        update(
-          'busy',
-          'This account is already playing on another device. Stop playing there before starting Campaign or Arena here.',
-        );
+        if (data.error === 'play-in-use')
+          update(
+            'busy',
+            'This account is playing on another device. You can take control here, or stop playing there and try again.',
+          );
+        else update('paused', 'Could not connect your account for play. Try again when connected.');
         return false;
       }
       token = data.token;
@@ -136,6 +140,7 @@ export function ensurePlay(recoverLocal = false): Promise<boolean> {
   })();
   return pending;
 }
+export const takeControlHere = (): Promise<boolean> => ensurePlay(false, true);
 export async function releasePlayAccess(): Promise<void> {
   if (localOnly() || !token) return;
   if (!canPlay())

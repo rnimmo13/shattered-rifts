@@ -76,3 +76,33 @@ export function stableFormation(
   }
   return { xs, rows };
 }
+
+/** Use the whole side for selectable silhouettes, with a real gutter even for flyers.
+ * Three figures fit across before another rank is needed. Every rank shares a scale;
+ * callers must apply it to the models as well as their positions.
+ */
+export function selectionFormation(
+  items: LineItem[],
+  near: number,
+  far: number,
+): {
+  xs: number[];
+  rows: number[];
+  scale: number;
+} {
+  if (!items.length) return { xs: [], rows: [], scale: 1 };
+  const columns = Math.min(3, items.length);
+  const pitch = Math.abs(far - near) / columns;
+  const largest = Math.max(...items.map((item) => item.fw));
+  const scale = Math.min(1, (pitch - 32) / largest);
+  const dir = far >= near ? 1 : -1;
+  const xs: number[] = [],
+    rows: number[] = [];
+  for (let i = 0; i < items.length; i++) {
+    const row = Math.floor(i / columns);
+    const count = Math.min(columns, items.length - row * columns);
+    xs.push(near + dir * (pitch * ((columns - count) / 2 + (i % columns) + 0.5)));
+    rows.push(row);
+  }
+  return { xs, rows, scale };
+}

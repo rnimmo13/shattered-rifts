@@ -163,6 +163,9 @@
                   "trickster-gender-male":  "figures/skins/trickster-gender-male.png"
               },
     "cards":  {
+                  "shield-strike":  "cards/shield-strike.jpg",
+                  "breaching-strike":  "cards/breaching-strike.jpg",
+                  "muster-strike":  "cards/muster-strike.jpg",
                   "weapon-bench":  "cards/upgrade-chip.jpg",
                   "rotary-cannon":  "cards/pulse-pistol.jpg",
                   "measured-conviction":  "cards/oath-unbroken.jpg",

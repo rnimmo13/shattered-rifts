@@ -18,6 +18,18 @@
 .play-gate .btn {
   margin: 0.5rem 0.5rem 0 0;
 }
+.play-gate__takeover {
+  margin: 1rem 0;
+  padding: 0.8rem;
+  border: 1px solid #c9aa6955;
+  border-radius: 0.5rem;
+  background: #090d1c77;
+}
+.play-gate__takeover p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
 .play-status {
   position: fixed;
   bottom: 0;

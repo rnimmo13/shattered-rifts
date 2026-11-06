@@ -72,8 +72,8 @@ describe('a linear climb through every tier (DECISIONS #576)', () => {
       expect(step(t, 'hp')).toBe(40);
       expect(step(t, 'dmg')).toBe(5);
     }
-    expect(enemyScale(10, 1)).toEqual({ hp: 450, dmg: 135 });
-    expect(enemyScale(17, 1)).toEqual({ hp: 730, dmg: 170 });
-    expect(enemyScale(20, 1)).toEqual({ hp: 850, dmg: 185 });
+    expect(enemyScale(10, 1)).toEqual({ hp: 460, dmg: 138 });
+    expect(enemyScale(17, 1)).toEqual({ hp: 740, dmg: 173 });
+    expect(enemyScale(20, 1)).toEqual({ hp: 860, dmg: 188 });
   });
 });

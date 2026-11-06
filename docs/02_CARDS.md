@@ -1,3 +1,5 @@
+> **Local0.210.0/rules88 (2026-11-06):** Campaign starts100%HP/93%damage, +40/+5pp per tier; Elites additionally x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Exact base/upgraded ledger and evidence limits: [Campaign and arenas](CAMPAIGN_AND_ARENAS_2026-11-06.md). Earlier numbers below are historical. No simulations or release approval.
+
 # Shattered Rifts: Cards
 
 Current local revision: [0.199.0 balance ledger](BALANCE_REVISION_2026-11-05.md), with exact resource limits, protection, costs and Valerion changes. Applies to Campaign/Arena as specified; not released. The generated [current card list](10_CARD_LIST.md) and `packages/content/src/v2` describe the live implementation; historical legacy material below is unchanged.

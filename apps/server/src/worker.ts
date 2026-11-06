@@ -413,7 +413,7 @@ export default {
 
     const auth = await authRoute(request, env);
     if (auth) return auth;
-    const playAction = /^\/pvp\/play\/(claim|renew|release)$/.exec(url.pathname)?.[1];
+    const playAction = /^\/pvp\/play\/(claim|renew|release|takeover)$/.exec(url.pathname)?.[1];
     if (playAction) {
       if (request.method === 'OPTIONS')
         return new Response(null, {

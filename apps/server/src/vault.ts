@@ -6,6 +6,7 @@
 import { DurableObject } from 'cloudflare:workers';
 import {
   claimPlay,
+  takeOverPlay,
   emptyPlayLease,
   ownsPlay,
   releasePlay,
@@ -289,11 +290,14 @@ export class Vault extends DurableObject<Env> {
     const now = Date.now();
     if (action.startsWith('play/')) {
       const op = action.slice(5);
-      if (op === 'claim') {
+      if (op === 'claim' || op === 'takeover') {
         const holder = body['holder'];
         if (typeof holder !== 'string' || !/^[A-Za-z0-9-]{1,80}$/.test(holder))
           return json({ ok: false, error: 'bad-holder' }, 400);
-        const next = claimPlay(lease, holder, proof, now, crypto.randomUUID());
+        const next =
+          op === 'takeover'
+            ? takeOverPlay(lease, holder, now, crypto.randomUUID())
+            : claimPlay(lease, holder, proof, now, crypto.randomUUID());
         if (!next)
           return json({ ok: false, error: 'play-in-use', expires: lease.expires, now }, 409);
         this.setLease(next);

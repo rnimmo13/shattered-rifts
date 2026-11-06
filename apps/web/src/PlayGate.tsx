@@ -7,6 +7,7 @@ import {
   playState,
   releasePlayAccess,
   subscribePlay,
+  takeControlHere,
 } from './playAccess';
 import { desktopBridge, flushDesktopSave, quitDesktop } from './desktopBridge';
 import './playGate.css';
@@ -45,7 +46,9 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
                   ? access.phase === 'saving'
                     ? 'Saving your campaign…'
                     : 'Connecting…'
-                  : 'Gameplay unavailable'}
+                  : access.phase === 'busy'
+                    ? 'Continue on this device'
+                    : 'Gameplay unavailable'}
             </h1>
             <p>
               {localOnly()
@@ -63,6 +66,25 @@ export function PlayGate({ children, arena = false }: { children: ReactNode; are
               >
                 Try again
               </button>
+            )}
+            {!localOnly() && access.phase === 'busy' && (
+              <div className="play-gate__takeover">
+                <p>
+                  Take control to load your latest account save here. Play on the other device will
+                  pause. Progress that has not reached your account stays on that device for
+                  recovery.
+                </p>
+                <button
+                  className="btn btn--primary"
+                  onClick={() => {
+                    void takeControlHere().then((ok) => {
+                      if (ok) setOpened(true);
+                    });
+                  }}
+                >
+                  Take control on this device
+                </button>
+              </div>
             )}
             {localRecoveryAvailable() && (
               <button
@@ -134,6 +156,17 @@ export function PlayStatus() {
           : sync === 'saving'
             ? 'Saving to account…'
             : 'Account save not confirmed'}
+        <button
+          onClick={() => {
+            void releasePlayAccess()
+              .then(() => {
+                window.location.hash = '#/';
+              })
+              .catch(() => undefined);
+          }}
+        >
+          Save and switch device
+        </button>
       </aside>
     );
   if (['#/arena', '#/pvp', '#/fight', '#/trials'].includes(window.location.hash)) return null;

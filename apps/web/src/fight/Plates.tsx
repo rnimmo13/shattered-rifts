@@ -44,6 +44,8 @@ export interface PlatesProps {
   scale?: number;
   /** the highest an intent may sit (CSS length): below the top bar */
   intentTop?: string;
+  /** Direct selection through a unit's name/HP plate while aiming. */
+  onTarget?: (unit: string) => void;
 }
 
 export function UnitPlates({
@@ -56,6 +58,7 @@ export function UnitPlates({
   sharp,
   scale = 1,
   intentTop = '7.8rem',
+  onTarget,
 }: PlatesProps) {
   const k = scale;
   // plates that would run into their neighbours get narrower, and a crowd staggers up and down, so no two ever overlap
@@ -120,6 +123,7 @@ export function UnitPlates({
             key={u.id}
             data-figure-def={u.def}
             data-figure-height={Math.round(h * 100) / 100}
+            data-figure-width={Math.round(w * 100) / 100}
             className={`unit-group${u.kind === 'ally' ? ' is-ally' : ''}${hover === u.id ? ' is-hover' : ''}`}
           >
             {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}
@@ -194,6 +198,9 @@ export function UnitPlates({
             )}
             <div
               data-unit={u.id}
+              onClick={() => {
+                if (targetable.has(u.id)) onTarget?.(u.id);
+              }}
               className={`plate${incoming.length ? ' is-incoming' : ''}${targetable.has(u.id) ? ' is-target' : ''}${hover === u.id ? ' is-hover' : ''}${u.kind === 'hero' ? ' plate--hero' : ''}`}
               style={style}
             >

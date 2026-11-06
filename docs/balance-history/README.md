@@ -1,3 +1,7 @@
+Release 0.210.0 / rules 88 is approved for commit, push and deployment (decision 655). The assessment below preserves its pre-release status and unmeasured balance limits. Approval does not add player evidence or authorize simulations.
+
+Latest local assessment: [0.210.0](0.210.0.md), [CSV](0.210.0.csv), [JSON](0.210.0.json), [exact ledger/evidence](../CAMPAIGN_AND_ARENAS_2026-11-06.md). Campaign baseline/Elite pressure and three shared Knight Strike rewards; all30styles, ten starts and mixed builds remain unmeasured. No simulations or release approval.
+
 Latest approved release assessment: [0.209 Warden review1](0.209.0-wardens-review-1.md), [CSV](0.209.0-wardens-review-1.csv), [exact ledger](../WARDEN_MECHANICS_2026-11-05.md). Nine native mechanics, Drago’s court,55Elite formations and stable model presentation; all30Ascendancies/ten starts/mixed engines considered, no new human outcomes or simulations. Robert authorizes release after validation (#650). Earlier local snapshots remain preserved.
 
 Latest local realm assessment: [0.209 realms review1](0.209.0-realms-review-1.md), [CSV](0.209.0-realms-review-1.csv), [exact ledger](../REALMS_AND_DRAGO_2026-11-05.md). Eleven themed worlds, five native dragons then Drago, three finale refinements. All30 Ascendancies/ten starters/mixed builds considered; new encounters unmeasured, no simulations or release approval. Earlier local snapshots remain intact.

@@ -1,3 +1,7 @@
+# Release approved 0.210.0 / rules88 (2026-11-06; decisions651-655)
+
+Arena composition/atmosphere and targeting pass; Campaign100/93baseline,+40/+5pp slope,Elite x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Map-art request cancelled in favor of First Ruin UI theme. Sandbox own saved decks; explicit safe device takeover. Exact ledger docs/CAMPAIGN_AND_ARENAS_2026-11-06.md, append-only0.210.0assessment; no simulations or measured parity. Robert explicitly approves committing, pushing and deploying this complete candidate, including website/server and matching Windows updater. Verify clean source, live versions and updater files. Future changes require fresh approval.
+
 # Shattered Rifts: Agent Guide
 
 **Release approved 0.209.0/rules87 (#645–650):** Robert authorizes finishing/committing/pushing/deploying all current Recall/shard/eleven-realm work plus stable Drago/minion models,55Elite formations, nine distinct new Warden mechanics and Drago’s five incarnations, four dedicated arenas/Lore vistas, automatic saved required updates. Exact ledger docs/WARDEN_MECHANICS_2026-11-05.md; append-only0.209.0-wardens-review-1 covers all30styles/ten starts/mixed builds, unmeasured/no simulations. Finish native/responsive checks, package clean source, verify live website/server and Windows updater. Earlier local release-state labels below are historical; future changes need fresh approval.

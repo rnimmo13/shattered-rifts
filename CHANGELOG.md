@@ -1,3 +1,15 @@
+## 0.210.0 - 2026-11-06
+
+- Arenas: sparse authored scenery instead of repeated props; removed hanging/swinging decorations. Realm-colored atmosphere, distinct particle speeds and Rift-only floor fractures.
+- Targeting: full-silhouette three-column formations with 32-stage-pixel gutters, 200/220-pixel rank spacing and boss/escort separation. Direct HP/name-plate clicks, two-dimensional model picking and battle-log clearance while aiming.
+- Tier XII: First Ruin crest, faint Drago silhouette, fractured framing, ordered Warden/throne seals and translucent battle overlay. Map-art request cancelled.
+- Campaign: Tier I enemy HP/damage 90%/90% -> 100%/93%; unchanged +40/+5 percentage points per tier. Tier XII 530%/145% -> 540%/148%; legacy XX 850%/185% -> 860%/188%. Existing difficulty, Omens and HP-derived Barrier/healing scaling remain. Elite-only multipliers 1.00 -> 1.25 HP and 1.00 -> 1.08 damage, rounded to integer percentages; includes promoted and Elite-stop Wardens. Rewards and ghost/Arena curves unchanged.
+- Knight: three new 1-Mana Strikes. Shield Strike (common): 5 damage + 5 Barrier; upgraded 8 + 6. Breaching Strike (common): 7 damage + 1 Exposed; upgraded 10 + 1. Muster Strike (uncommon): 8 damage + 1 Reserves; upgraded 11 + 1. Raised Hell unchanged; new cards also count for Mastered Strike. Art provenance: docs/art-prompts/0.210-strikes.json.
+- Sandbox: load a copy of the current account's own local/cloud Vault deck, retaining exact cards/upgrades, class, Ascendancy, Boons and saved Campaign HP/tier. Source deck remains untouched.
+- Device switching: Save and switch device confirms progress before releasing play. Explicit authenticated/Vault-owned takeover rotates the lease while retaining confirmed save/replay revisions; stale writes/renewals/releases are fenced. Newer-local recovery remains; connection errors no longer misreport another device.
+- Rules 88 restarts older unfinished combat at its checkpoint without a Resolve charge. Web/desktop versions match at 0.210.0. All 3,995 tests, workspace type checks, changed-source lint, builds and responsive UI checks passed. No balance simulations or measured parity claim.
+- Robert explicitly approves commit, push and deployment of this complete candidate, including website/server and matching Windows updater (decision 655). Exact ledger: docs/CAMPAIGN_AND_ARENAS_2026-11-06.md; append-only assessment: docs/balance-history/0.210.0.
+
 ## Local0.209 follow-up — Campaign shards
 
 ## 0.209.0 final follow-up — rules87, 2026-11-05

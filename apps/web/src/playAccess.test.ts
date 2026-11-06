@@ -76,6 +76,22 @@ const claim = () =>
     }),
   );
 describe('shared-account play gates', () => {
+  it('takes control explicitly and loads confirmed progress before allowing actions', async () => {
+    fetcher
+      .mockResolvedValueOnce(Response.json({ ok: false, error: 'play-in-use' }, { status: 409 }))
+      .mockResolvedValueOnce(claim());
+    expect(await access.ensurePlay()).toBe(false);
+    expect(await access.takeControlHere()).toBe(true);
+    expect(fetcher.mock.calls[1]![0]).toBe('https://shatteredrifts.app/pvp/play/takeover');
+    expect(adopted.runs).toHaveBeenCalledWith([{ id: 'run-a', updated: 2, text: 'latest' }]);
+    expect(access.canPlay()).toBe(true);
+  });
+  it('does not describe a failed connection as a session on another device', async () => {
+    fetcher.mockResolvedValue(Response.json({ ok: false, error: 'signin' }, { status: 401 }));
+    expect(await access.ensurePlay()).toBe(false);
+    expect(access.playState().phase).toBe('paused');
+    expect(access.playState().message).not.toContain('another device');
+  });
   it('does not release ownership when the latest save is unconfirmed', async () => {
     fetcher.mockResolvedValueOnce(claim());
     await access.ensurePlay();

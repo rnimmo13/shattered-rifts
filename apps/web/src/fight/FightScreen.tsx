@@ -2,13 +2,22 @@
 
 import { useState } from 'react';
 import { HeroShowcase } from '../app/HeroShowcase';
-import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS, encounter, type HeroId } from '@sr/content/v2';
+import {
+  COMBAT_DB,
+  ENCOUNTERS,
+  RIFTWALKERS,
+  encounter,
+  classNameOf,
+  type HeroId,
+} from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { FightView } from './FightView';
 import { venueFor } from '../duel/scene/venue';
+import { enemyScale } from '@sr/campaign';
+import { SavedDeckPicker } from './SavedDeckPicker';
 import '../play/play.css';
 import '../duel/duel.css';
 
@@ -47,6 +56,9 @@ export default function FightScreen() {
   const [boons, setBoons] = useState<string[]>([]);
   const [potions, setPotions] = useState<string[]>(['fire-flask', 'guard-draught']);
   const [easy, setEasy] = useState(true);
+  const [ascendancy, setAscendancy] = useState<string | null>(null);
+  const [testHp, setTestHp] = useState<{ hp: number; maxHp: number } | null>(null);
+  const [campaignTier, setCampaignTier] = useState<number | null>(null);
   const [enc, setEnc] = useState<string>(ENCOUNTERS[0]?.id ?? '');
   const [setup, setSetup] = useState<{ cfg: CombatSetup; title: string } | null>(null);
 
@@ -87,9 +99,24 @@ export default function FightScreen() {
           onPick={(h) => {
             setHero(h);
             setCounts(countsOf(RIFTWALKERS[h].starter));
+            setAscendancy(null);
+            setTestHp(null);
+            setCampaignTier(null);
           }}
         />
       </section>
+      <SavedDeckPicker
+        onLoad={(deck) => {
+          setHero(deck.hero as HeroId);
+          setCounts(countsOf(deck.deck));
+          setBoons([...deck.boons]);
+          setAscendancy(deck.ascendancy ?? null);
+          setPotions([]);
+          setEasy(false);
+          setCampaignTier(deck.tier);
+          setTestHp(deck.maxHp && deck.maxHp > 0 ? { hp: deck.maxHp, maxHp: deck.maxHp } : null);
+        }}
+      />
       <section className="setup__full">
         <h2 className="setup__h">Deck</h2>
         <p className="setup__lead">
@@ -162,11 +189,32 @@ export default function FightScreen() {
         <input type="checkbox" checked={easy} onChange={(e) => setEasy(e.target.checked)} /> Easy
         mode (weaker enemies)
       </label>
+      {campaignTier !== null && (
+        <div>
+          <p className="setup__lead">
+            Saved deck setup: {classNameOf(hero, ascendancy ?? undefined)} · Tier {campaignTier}
+            {testHp ? ` · ${testHp.hp} / ${testHp.maxHp} HP` : ''}. Card edits keep these test
+            stats.
+          </p>
+          <button
+            className="btn btn--small"
+            onClick={() => {
+              setAscendancy(null);
+              setTestHp(null);
+              setCampaignTier(null);
+            }}
+          >
+            <span>Reset test stats to base class</span>
+          </button>
+        </div>
+      )}
       <button
         className="btn btn--primary setup__go"
         disabled={Object.keys(counts).length === 0}
         onClick={() => {
           const e = encounter(enc);
+          const scale = campaignTier === null ? { hp: 100, dmg: 100 } : enemyScale(campaignTier, 1);
+          const elite = campaignTier !== null && e.kind === 'elite';
           setSetup({
             title: e.name,
             cfg: {
@@ -175,9 +223,15 @@ export default function FightScreen() {
                 hero,
                 deck: flatten(counts),
                 potions,
+                ...(ascendancy ? { ascendancy } : {}),
+                ...(testHp ? testHp : {}),
                 ...(boons.length ? { boons } : {}),
               },
-              b: { enemies: e.units, hpPct: easy ? 60 : 100, dmgPct: easy ? 55 : 100 },
+              b: {
+                enemies: e.units,
+                hpPct: easy ? 60 : Math.round(scale.hp * (elite ? 1.25 : 1)),
+                dmgPct: easy ? 55 : Math.round(scale.dmg * (elite ? 1.08 : 1)),
+              },
             },
           });
         }}

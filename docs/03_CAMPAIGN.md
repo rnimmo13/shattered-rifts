@@ -1,3 +1,5 @@
+> **Local0.210.0/rules88 (2026-11-06):** Campaign starts100%HP/93%damage, +40/+5pp per tier; Elites additionally x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Exact base/upgraded ledger and evidence limits: [Campaign and arenas](CAMPAIGN_AND_ARENAS_2026-11-06.md). Earlier numbers below are historical. No simulations or release approval.
+
 # Shattered Rifts: Campaign, Runs & Seasons
 
 > **Local 0.209 realm update (#643–644):** eleven distinct realm tiers I–XI, with one saved realm-native Warden selected per tier; XII is the First Ruin, five native dragon Wardens then Drago. Three refinement shrines follow fights 2, 4 and 5. Existing generated maps remain intact; future maps/finales adopt the new theme. See [exact ledger](REALMS_AND_DRAGO_2026-11-05.md). Earlier route descriptions below are historical. No release approval.

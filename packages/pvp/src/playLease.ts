@@ -36,6 +36,22 @@ export function claimPlay(
 export function renewPlay(lease: PlayLease, token: unknown, now: number): PlayLease | null {
   return ownsPlay(lease, token, now) ? { ...lease, expires: now + PLAY_LEASE_MS } : null;
 }
+
+/** The account owner explicitly moves play to this device, preserving save revision. */
+export function takeOverPlay(
+  lease: PlayLease,
+  holder: string,
+  now: number,
+  freshToken: string,
+): PlayLease {
+  return {
+    ...lease,
+    holder,
+    token: freshToken,
+    expires: now + PLAY_LEASE_MS,
+    generation: lease.generation + 1,
+  };
+}
 export function releasePlay(lease: PlayLease, token: unknown): PlayLease {
   return typeof token === 'string' && token !== '' && token === lease.token
     ? { ...lease, token: '', holder: '', expires: 0 }

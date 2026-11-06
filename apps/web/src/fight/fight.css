@@ -76,6 +76,7 @@
   z-index: 10;
 }
 .plate {
+  pointer-events: auto;
   position: absolute;
   transform: translateX(-50%);
   /* (drawn smaller on a small screen with `scale`, from the point it hangs from: DECISIONS #443) */
@@ -83,6 +84,9 @@
   display: grid;
   gap: 0.2rem;
   text-align: center;
+}
+.fight.is-aiming .fight__log {
+  visibility: hidden;
 }
 .plate__name {
   font-family: var(--font-display);

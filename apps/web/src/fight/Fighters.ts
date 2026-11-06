@@ -227,14 +227,17 @@ export class Fighters {
       const reach = roomy ? f.width * 0.55 + 40 : f.width * 0.55;
       const slack = roomy ? 40 : 0;
       const dx = Math.abs(x - f.root.x);
+      const height = f.spec.height + (f.spec.hover ?? 0);
+      const distance =
+        (dx / reach) ** 2 + ((y - (f.root.y - height / 2)) / Math.max(1, height / 2)) ** 2;
       if (
         dx <= reach &&
         y <= f.root.y + 24 + slack &&
         y >= f.root.y - f.spec.height - (f.spec.hover ?? 0) - 10 - slack &&
-        dx < bestD
+        distance < bestD
       ) {
         best = f.spec.id;
-        bestD = dx;
+        bestD = distance;
       }
     }
     return best;

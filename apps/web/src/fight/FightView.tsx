@@ -84,7 +84,7 @@ import { FormPanel } from './FormPanel';
 import { PileArt } from './PileArt';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
-import { stableFormation } from './lineLayout';
+import { selectionFormation } from './lineLayout';
 import {
   COMPACT,
   PORTRAIT,
@@ -208,10 +208,9 @@ const MAX_TOP = 640;
 /** where a side's line starts (nearest the middle) and the furthest it may reach, stage px */
 // (pulled in from the edge, Robert 2026-10-30: the column of Boons, Omens and Auras on that side must never cover them; the group is
 // a little smaller when it has to squeeze into the room that is left)
-const FOE_NEAR = 1010;
-const FOE_FAR = 1680;
+const FOE_NEAR = 990;
+const FOE_FAR = 1840;
 /** where the far edge of the enemy group stands: back toward their side, so a lone enemy stands where an Arena opponent would, but clear of that side's panel */
-const FOE_BACK = 1640;
 const ALLY_NEAR = 910;
 const ALLY_FAR = 440;
 
@@ -282,9 +281,7 @@ function specsFrom(
         ) * k;
       // Rows handle crowds; each flyer keeps its own altitude as others join or leave.
       const tier = flies ? 1 : 0;
-      const hover = flies
-        ? Math.min(hoverOf(u.def) * k, Math.max(30, MAX_TOP * k - height))
-        : 0;
+      const hover = flies ? Math.min(hoverOf(u.def) * k, Math.max(30, MAX_TOP * k - height)) : 0;
       const width = (canvas.width * height) / canvas.height;
       return {
         u,
@@ -294,30 +291,35 @@ function specsFrom(
         height,
         hover,
         tier,
-        fw: Math.max(width * 0.78, mode === 'portrait' ? 260 : 220),
+        fw: Math.max(width, mode === 'portrait' ? 180 : 200),
       };
     });
     const bosses = sized.filter((e) => e.boss);
     const line = sized.filter((e) => !e.hero && !e.boss);
     const upright = mode === 'portrait';
     const P = PORTRAIT;
+    const bossWidth = Math.max(0, ...bosses.map((e) => e.fw));
+    const bossX = upright
+      ? Math.min(1220, P.x1 - bossWidth / 2 - 20)
+      : Math.min(1690, 1880 - bossWidth / 2);
+    const escortEdge = bossX - bossWidth / 2 - 32;
     const fit = upright
       ? ds === 'b'
         ? pvp
-          ? stableFormation(line, P.foeAllyNear, P.foeAllyFar)
-          : stableFormation(line, P.foeNear, P.foeFar)
-        : stableFormation(line, P.allyNear, P.allyFar)
+          ? selectionFormation(line, P.foeAllyNear, P.foeAllyFar)
+          : selectionFormation(
+              line,
+              P.foeNearCrowd,
+              bosses.length ? Math.max(P.foeNearCrowd + 200, escortEdge) : P.foeFar,
+            )
+        : selectionFormation(line, P.allyNear, P.allyFar)
       : ds === 'b'
-        ? stableFormation(line, FOE_NEAR, pvp ? FOE_FAR_PVP : bosses.length ? 1480 : FOE_FAR)
-        : stableFormation(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
-    // the enemies stand back against their own edge, as an Arena opponent does, not crowded at the middle: the group slides out
-    // until its far edge meets FOE_BACK (order kept, the front one nearest you), so one enemy stands where an Arena hero would
-    if (ds === 'b' && !pvp && !upright && line.length > 0 && !bosses.length) {
-      const last = line.length - 1;
-      const edge = (fit.xs[last] as number) + (line[last] as { fw: number }).fw / 2;
-      const shift = Math.max(0, FOE_BACK - edge);
-      fit.xs = fit.xs.map((x) => x + shift);
-    }
+        ? selectionFormation(
+            line,
+            FOE_NEAR,
+            pvp ? FOE_FAR_PVP : bosses.length ? Math.max(FOE_NEAR + 200, escortEdge) : FOE_FAR,
+          )
+        : selectionFormation(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
     let n = 0;
     for (const e of sized) {
       const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
@@ -339,22 +341,22 @@ function specsFrom(
                 ? { x: COMPACT.heroX }
                 : {}
           : e.boss
-            ? { x: upright ? (P.foeNear + P.foeFar) / 2 : 1450 }
+            ? { x: bossX }
             : { x: fit.xs[n++] as number }),
         // (upright: the other side on the row behind, yours in front)
         ...(upright
           ? {
               y:
                 ds === 'b'
-                  ? P.foeY + (bosses.length && !e.boss ? 140 : 0) + row * 110
-                  : portraitMyY() - row * 110,
+                  ? P.foeY + (bosses.length && !e.boss ? 140 : 0) + row * 200
+                  : portraitMyY() - row * 200,
             }
           : !e.hero
-            ? { y: 830 + (bosses.length && !e.boss ? 60 : 0) - row * 100 }
+            ? { y: 830 + (bosses.length && !e.boss ? 60 : 0) - row * 220 }
             : {}),
         canvas: e.canvas,
-        height: e.height,
-        ...(e.hover > 0 ? { hover: e.hover } : {}),
+        height: e.height * (e.hero || e.boss ? 1 : fit.scale),
+        ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
         attack: attackFor(e.u.def, e.hero),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
@@ -1897,6 +1899,11 @@ export function FightView(props: {
     (cx: number, cy: number, among?: ReadonlySet<string>): string | null => {
       const sc = scene.current;
       if (!sc) return null;
+      // A health/name plate is an unambiguous alternative to a model in a crowded rank.
+      for (const element of document.elementsFromPoint(cx, cy)) {
+        const id = element.closest<HTMLElement>('[data-unit]')?.dataset['unit'];
+        if (id && (!among?.size || among.has(id))) return id;
+      }
       const p = sc.clientToStage(cx, cy);
       return sc.fighters.hitTest(p.x, p.y, among);
     },
@@ -2263,7 +2270,7 @@ export function FightView(props: {
 
   return (
     <div
-      className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}`}
+      className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
       style={
         {
           '--cw': `${cw}px`,
@@ -2437,6 +2444,7 @@ export function FightView(props: {
             </div>
           )}
           <UnitPlates
+            onTarget={chooseAimedUnit}
             scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
             // (an intent hangs from this: room for the top bar and the intent itself)
             intentTop={mode === 'wide' ? '7.8rem' : mode === 'portrait' ? '5.8rem' : '6.6rem'}

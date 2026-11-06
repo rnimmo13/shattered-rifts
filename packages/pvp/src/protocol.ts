@@ -93,7 +93,8 @@ export interface Entry {
 // (78: Backup Core is a Consume skill granting finite revival buff charges, #593)
 // (80: Heavy Hitter HP conversion and Resonant Pulse per-turn limit, #602)
 // (81: long-fight balance, shared effect limits and before-play defense, #603)
-export const RULES_VERSION = 87;
+// 88: three Knight Strike rewards; Campaign HP/damage and Elite premiums.
+export const RULES_VERSION = 88;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

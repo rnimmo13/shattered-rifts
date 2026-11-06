@@ -54,6 +54,23 @@ import {
 const m = pool('knight', 'aurelion');
 
 export const KNIGHT: CardDef[] = [
+  // Strike support: defence, vulnerability and banking; Raised Hell retains its draw trigger.
+  m('common', 'shield-strike', 'Shield Strike', 'attack', 1, 'foe', [dmg(5), barrier(5)], {
+    up: { effects: [dmg(8), barrier(6)] },
+  }),
+  m(
+    'common',
+    'breaching-strike',
+    'Breaching Strike',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), status('exposed', 1, 'target')],
+    { up: { effects: [dmg(10), status('exposed', 1, 'target')] } },
+  ),
+  m('uncommon', 'muster-strike', 'Muster Strike', 'attack', 1, 'foe', [dmg(8), reserves(1)], {
+    up: { effects: [dmg(11), reserves(1)] },
+  }),
   // --- basics ---
   // (the Bash of the deck: a 2-Mana hit that sets up Exposed)
   m('basic', 'sundering-blow', 'Sundering Blow', 'attack', 2, 'foe', [

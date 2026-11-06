@@ -1,5 +1,54 @@
 import { describe, expect, it } from 'vitest';
-import { MIN_SCALE, centredLine, packLine, stableFormation, TUCK } from './lineLayout';
+import {
+  MIN_SCALE,
+  centredLine,
+  packLine,
+  stableFormation,
+  selectionFormation,
+  TUCK,
+} from './lineLayout';
+
+describe('selectable formations', () => {
+  it('gives three differently sized enemies separate full silhouettes and a gutter', () => {
+    const items = [
+      { fw: 270, tier: 0 },
+      { fw: 420, tier: 1 },
+      { fw: 310, tier: 0 },
+    ];
+    for (const [near, far] of [
+      [990, 1840],
+      [600, 1360],
+      [790, 1350],
+      [900, 440],
+    ]) {
+      const fit = selectionFormation(items, near!, far!);
+      expect(fit.rows).toEqual([0, 0, 0]);
+      for (let i = 1; i < items.length; i++) {
+        const gap =
+          Math.abs(fit.xs[i]! - fit.xs[i - 1]!) -
+          ((items[i]!.fw + items[i - 1]!.fw) * fit.scale) / 2;
+        expect(gap).toBeGreaterThanOrEqual(32);
+      }
+      items.forEach((item, i) => {
+        expect(fit.xs[i]! - (item.fw * fit.scale) / 2).toBeGreaterThanOrEqual(
+          Math.min(near!, far!),
+        );
+        expect(fit.xs[i]! + (item.fw * fit.scale) / 2).toBeLessThanOrEqual(Math.max(near!, far!));
+      });
+    }
+  });
+  it('centers the second rank between the first rank columns and handles empty sides', () => {
+    const fit = selectionFormation(
+      Array.from({ length: 5 }, () => ({ fw: 260, tier: 0 })),
+      990,
+      1840,
+    );
+    expect(fit.rows).toEqual([0, 0, 0, 1, 1]);
+    expect(fit.xs[3]).toBeGreaterThan(fit.xs[0]!);
+    expect(fit.xs[3]).toBeLessThan(fit.xs[1]!);
+    expect(selectionFormation([], 0, 1)).toEqual({ xs: [], rows: [], scale: 1 });
+  });
+});
 
 describe('packLine', () => {
   it('adds a second row without shrinking or moving the first pair when another minion joins', () => {

@@ -114,6 +114,8 @@ export class BattlefieldScene {
   private readonly glowTex: Texture;
   private vignette!: Sprite;
   private arenaProps: ArenaProps | null = null;
+  private atmosphereColor = 0x966eff;
+  private particleRise = 1;
   /** where the backdrop's top edge sits (the cave wall starts above the stage) */
   private skyY = 0;
 
@@ -205,6 +207,16 @@ export class BattlefieldScene {
     // (a painted arena backdrop replaces all of that, and brings its own scenery)
     const painted = arena?.backdrop ? arena : null;
     const arenaLook = ARENA_LOOK[venue];
+    const [red, green, blue] = arenaLook.rift;
+    this.atmosphereColor = (red << 16) | (green << 8) | blue;
+    // Heat rises, underwater light drifts, dream dust hangs; architecture stays still.
+    this.particleRise = /cinder|kron|queen|gorrmaw/.test(venue)
+      ? 1.6
+      : /thalassar|tide|swamp|stilts/.test(venue)
+        ? 0.35
+        : /vespera|nyxara|applause|hourglass/.test(venue)
+          ? 0.55
+          : 1;
     const look = art?.id === 'scene' ? art : null;
     this.sky = new Sprite(
       painted?.backdrop
@@ -230,6 +242,8 @@ export class BattlefieldScene {
 
     // a wide band of slow fog behind the arena, at the horizon
     this.fogFar = this.makeFog(11, color.violetGlow, 0.34, floorTop - 170, 300);
+    this.fogFar.tint = this.atmosphereColor;
+    this.fogFar.alpha = /cave|swamp|stilts|tide/.test(venue) ? 0.65 : 0.3;
     this.world.addChild(this.fogFar);
 
     // --- arena floor ---
@@ -245,7 +259,7 @@ export class BattlefieldScene {
     // a pool of violet light along the Rift line
     this.riftGlow = new Sprite(this.glowTex);
     this.riftGlow.anchor.set(0.5);
-    this.riftGlow.tint = hex(color.violet);
+    this.riftGlow.tint = this.atmosphereColor;
     this.riftGlow.blendMode = 'add';
     this.riftGlow.position.set(stage.width / 2, rows.riftLine);
     this.riftGlow.scale.set((stage.width / 128) * 0.5, 0.9);
@@ -261,6 +275,13 @@ export class BattlefieldScene {
     this.riftCrack.scale.set(ft.scale);
     this.riftCrack.blendMode = 'add';
     this.world.addChild(this.branchCracks, this.riftCrack);
+    // Cracked reality belongs to Rift venues, rather than appearing on every world floor.
+    const fractured = /rift|crossing|regent|vorthax/.test(venue);
+    this.branchCracks.visible = fractured;
+    this.riftCrack.visible = fractured;
+    this.riftGlow.visible = fractured || /cinder|factory|kron|static/.test(venue);
+    this.branchCracks.tint = this.atmosphereColor;
+    this.riftCrack.tint = this.atmosphereColor;
 
     if (this.arenaProps) this.world.addChild(this.arenaProps.ground, this.arenaProps.hang);
 
@@ -277,10 +298,14 @@ export class BattlefieldScene {
 
     // --- atmosphere over the board ---
     this.fogMid = this.makeFog(23, color.navyLight, 0.36, floorTop + 20, 600);
+    this.fogMid.tint = this.atmosphereColor;
+    this.fogMid.alpha = /swamp|tide|vespera/.test(venue) ? 0.45 : 0.18;
     this.world.addChild(this.fogMid);
     this.moteLayer.blendMode = 'add';
     this.world.addChild(this.moteLayer);
     this.fogNear = this.makeFog(37, color.violetDeep, 0.3, 700, 520);
+    this.fogNear.tint = this.atmosphereColor;
+    this.fogNear.alpha = /swamp|tide|cave/.test(venue) ? 0.4 : 0.12;
     this.world.addChild(this.fogNear);
 
     // the vignette lives in SCREEN space so it frames the whole window, not just the 16:9 stage
@@ -420,13 +445,12 @@ export class BattlefieldScene {
   private respawn(m: Mote, scatter: boolean): void {
     const r = Math.random;
     const kind = r();
-    const tint = kind < 0.42 ? color.cyanGlow : kind < 0.74 ? color.violetGlow : color.emberGlow;
-    m.s.tint = hex(tint);
+    m.s.tint = kind < 0.8 ? this.atmosphereColor : 0xffe4bc;
     const fromRift = kind < 0.74;
     m.x = fromRift ? stage.width / 2 + (r() - 0.5) * 1500 : r() * stage.width;
     m.y = fromRift ? rows.riftLine + (r() - 0.5) * 40 : stage.height * (0.55 + r() * 0.5);
     m.vx = (r() - 0.5) * 12;
-    m.vy = -(14 + r() * 34);
+    m.vy = -(14 + r() * 34) * this.particleRise;
     m.age = scatter ? r() * 6 : 0;
     m.life = 5 + r() * 6;
     m.sway = r() * Math.PI * 2;

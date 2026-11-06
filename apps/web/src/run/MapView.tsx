@@ -174,6 +174,10 @@ export function MapView(props: {
 }) {
   // Keep older horizontal/portrait drawings separate from this new layout.
   const wide = useHorizontalMap();
+  const finale = !!props.map.gauntlet;
+  const wardens = props.map.nodes.filter((node) => node.kind === 'warden');
+  const dominions = wardens.filter((node) => node.enemyId !== 'vorthax');
+  const conquered = dominions.filter((node) => props.cleared.includes(node.id)).length;
   const ink = useMapInk(props.inkKey && props.inkKey + (wide ? ':horizontal-5' : ':vertical-5'));
   const holder = useRef<HTMLDivElement>(null);
   const [bounds, setBounds] = useState({ width: 320, height: 500 });
@@ -270,8 +274,42 @@ export function MapView(props: {
     <>
       <MapInkTools ink={ink} />
       <div
-        className={`mapframe${wide ? ' mapframe--wide' : ''}${wide && bounds.height < 320 ? ' mapframe--compact' : ''}`}
+        className={`mapframe${finale ? ' mapframe--ruin' : ''}${wide ? ' mapframe--wide' : ''}${wide && bounds.height < 320 ? ' mapframe--compact' : ''}`}
       >
+        {finale && (
+          <img
+            className="ruin-echo"
+            src={`${import.meta.env.BASE_URL}art/figures/vorthax.png`}
+            alt=""
+            aria-hidden="true"
+          />
+        )}
+        {finale && (
+          <div className="ruin-banner" role="region" aria-label="The First Ruin">
+            <svg className="ruin-banner__sigil" viewBox="0 0 80 80" aria-hidden="true">
+              <path d="M40 6 47 25 68 17 59 37 73 48 52 51 40 74 28 51 7 48 21 37 12 17 33 25Z" />
+              <path d="m40 18-8 19 8 22 8-22-8-19Zm-15 9 8 10-15 5m37-15-8 10 15 5" />
+            </svg>
+            <div className="ruin-banner__copy">
+              <span className="ruin-banner__eyebrow">The last conquest</span>
+              <strong>The First Ruin</strong>
+              <span>Beyond the broken dominions, Drago awaits.</span>
+            </div>
+            <div className="ruin-banner__progress">
+              <span>
+                {conquered} / {dominions.length} Wardens defeated
+              </span>
+              <div className="ruin-banner__seals" aria-hidden="true">
+                {wardens.map((node) => (
+                  <i
+                    key={node.id}
+                    className={`${props.cleared.includes(node.id) ? 'is-conquered' : ''}${node.enemyId === 'vorthax' ? ' is-throne' : ''}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
         <div
           ref={holder}
           className={`map__holder${wide && !ink.tool ? ' is-pannable' : ''}${dragging ? ' is-dragging' : ''}`}
@@ -437,7 +475,7 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
   const here = props.at === n.id;
   return (
     <button
-      className={`mapnode mapnode--${shownKind(n)}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
+      className={`mapnode mapnode--${shownKind(n)}${props.map.gauntlet && n.enemyId === 'vorthax' ? ' mapnode--throne' : ''}${open ? ' is-open' : ''}${done ? ' is-done' : ''}${here ? ' is-here' : ''}`}
       style={{ left: p.x, top: p.y }}
       disabled={!open}
       onClick={() => props.onEnter(n.id)}

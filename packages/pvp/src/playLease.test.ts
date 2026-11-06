@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   claimPlay,
+  takeOverPlay,
   emptyPlayLease,
   ownsPlay,
   PLAY_LEASE_MS,
@@ -9,6 +10,23 @@ import {
 } from './playLease';
 
 describe('account-wide gameplay ownership', () => {
+  it('explicit takeover rotates the proof immediately and preserves the confirmed save revision', () => {
+    const first = {
+      ...claimPlay(emptyPlayLease(), 'desktop', null, 100, 'old-proof')!,
+      revision: 7,
+    };
+    const next = takeOverPlay(first, 'phone', 101, 'phone-proof');
+    expect(next).toMatchObject({
+      holder: 'phone',
+      token: 'phone-proof',
+      revision: 7,
+      generation: 2,
+    });
+    expect(ownsPlay(next, 'old-proof', 102)).toBe(false);
+    expect(renewPlay(next, 'old-proof', 102)).toBeNull();
+    expect(releasePlay(next, 'old-proof')).toEqual(next);
+    expect(claimPlay(next, 'desktop', 'old-proof', 102, 'retry')).toBeNull();
+  });
   it('admits only one device, across any gameplay mode', () => {
     const first = claimPlay(emptyPlayLease(), 'desktop', null, 100, 'secret-a')!;
     expect(claimPlay(first, 'mobile', null, 101, 'secret-b')).toBeNull();

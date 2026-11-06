@@ -1,3 +1,5 @@
+> **Local0.210.0/rules88 (2026-11-06):** Campaign starts100%HP/93%damage, +40/+5pp per tier; Elites additionally x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Exact base/upgraded ledger and evidence limits: [Campaign and arenas](CAMPAIGN_AND_ARENAS_2026-11-06.md). Earlier numbers below are historical. No simulations or release approval.
+
 # Balance Notes
 
 > **Final local0.203 follow-up:** [Campaign review1](balance-history/0.203.0-campaign-review-1.md) supersedes the fixed-order/absent-late-Omens assumptions below. Shuffled Wardens, every-tier Omens, all-Elite combat atXI,50% reduced automatic finale recovery and shard-hoarding incentives require fresh real-deck evidence. Per-Elite reward fade remains unchanged. Broad difficulty tuning is a fast-follow; no simulations or measured regrades.

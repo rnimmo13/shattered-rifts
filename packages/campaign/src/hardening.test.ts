@@ -17,12 +17,14 @@ const planAt = (tier: number, kind: NodeKind) => {
 };
 
 describe('linear campaign growth', () => {
-  it('uses the same tier budget for ordinary fights, Elites and Wardens', () => {
+  it('applies the shared curve with the explicit Elite premium across all tiers', () => {
     for (let tier = 1; tier <= 20; tier++) {
       for (const kind of ['duel', 'elite', 'warden'] as const) {
         const plan = planAt(tier, kind);
-        expect(plan.hpPct).toBe(enemyScale(tier, 1).hp);
-        expect(plan.dmgPct).toBe(enemyScale(tier, 1).dmg);
+        expect(plan.hpPct).toBe(Math.round(enemyScale(tier, 1).hp * (kind === 'elite' ? 1.25 : 1)));
+        expect(plan.dmgPct).toBe(
+          Math.round(enemyScale(tier, 1).dmg * (kind === 'elite' ? 1.08 : 1)),
+        );
       }
     }
   });
@@ -41,13 +43,13 @@ describe('linear campaign growth', () => {
       expect(e.bossRise.reduce((sum, r) => sum + r.might, 0)).toBeLessThanOrEqual(3);
       expect(e.allRise.every((r) => r.might === 0)).toBe(true);
     }
-    expect(omenEffects(20,true).bossRise).toEqual([
+    expect(omenEffects(20, true).bossRise).toEqual([
       { atPct: 50, barrierPct: 24, might: 2 },
       { atPct: 25, barrierPct: 13.5, might: 1 },
     ]);
     expect(omenEffects(12).bossRise).toEqual([
-      {atPct:50,barrierPct:20,might:2},
-      {atPct:25,barrierPct:11,might:1},
+      { atPct: 50, barrierPct: 20, might: 2 },
+      { atPct: 25, barrierPct: 11, might: 1 },
     ]);
   });
 
@@ -96,7 +98,7 @@ describe('linear campaign growth', () => {
     state.sides.a.reserves = 0;
     state.sides.b.units[0]!.intent = { move: 'bell2', target: hero.id };
     const result = applyAction(COMBAT_DB, state, { type: 'endTurn' });
-    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(62);
+    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(63);
   });
 });
 describe('campaign ghost scaling', () => {

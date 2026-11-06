@@ -53,6 +53,43 @@ function create() {
   return { ask, db };
 }
 describe('actual Vault gameplay fences and save transactions', () => {
+  it('moves control to another device with current saves, while refusing old saves, renewals and releases', async () => {
+    const { ask } = create();
+    const first = await ask('play/claim', { holder: 'desktop' });
+    const oldToken = first.data.token as string;
+    await ask(
+      'runsave',
+      {
+        runs: [{ id: 'run', updated: 1, text: 'latest confirmed' }],
+        revision: 0,
+        replays: { 'sr.fightlog:run': 'confirmed moves' },
+      },
+      oldToken,
+    );
+    const next = await ask('play/takeover', { holder: 'phone' });
+    expect(next.status).toBe(200);
+    expect(next.data.token).not.toBe(oldToken);
+    expect(next.data.revision).toBe(1);
+    expect(next.data.runs).toEqual([expect.objectContaining({ text: 'latest confirmed' })]);
+    expect(next.data.replays).toEqual({ 'sr.fightlog:run': 'confirmed moves' });
+    expect((await ask('play/renew', {}, oldToken)).status).toBe(409);
+    expect(
+      (
+        await ask(
+          'runsave',
+          {
+            runs: [{ id: 'run', updated: 999, text: 'stale overwrite' }],
+            revision: 1,
+            replays: {},
+          },
+          oldToken,
+        )
+      ).status,
+    ).toBe(409);
+    await ask('play/release', {}, oldToken);
+    expect((await ask('play/renew', {}, next.data.token as string)).status).toBe(200);
+    expect((await ask('play/claim', { holder: 'desktop' }, oldToken)).status).toBe(409);
+  });
   it('allows the one-way legacy finale conversion without allowing lost earned progress', async () => {
     const { ask } = create();
     const token = (await ask('play/claim', { holder: 'browser' })).data.token as string;
