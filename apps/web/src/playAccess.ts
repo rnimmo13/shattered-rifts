@@ -54,10 +54,11 @@ export async function gameplayAction(action: () => void): Promise<void> {
 const base = (): string => serverBase().replace(/^ws/i, 'http');
 async function call(
   action: 'claim' | 'renew' | 'release' | 'takeover',
+  proofOverride?: string,
 ): Promise<Record<string, unknown>> {
   await whoAmI();
   const key = vaultKey();
-  const proof = token || sessionStorage.getItem('sr.play.token') || '';
+  const proof = proofOverride ?? (token || sessionStorage.getItem('sr.play.token') || '');
   const response = await fetch(`${base()}/pvp/play/${action}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-sr-play-token': proof },
@@ -199,6 +200,40 @@ export async function releasePlayForUpdate(): Promise<void> {
     } catch {
       /* storage unavailable */
     }
+  }
+}
+/**
+ * True only when the server confirms another device holds play now. A plain claim answers
+ * play-in-use in that case. If the lease had merely lapsed, the probe wins it, so hand it straight
+ * back and report false. A lost connection also reports false.
+ */
+async function playHeldElsewhere(): Promise<boolean> {
+  try {
+    const probe = await call('claim');
+    if (probe.error === 'play-in-use') return true;
+    if (probe.ok === true && typeof probe.token === 'string' && probe.token !== token)
+      await call('release', probe.token).catch(() => undefined);
+  } catch {
+    /* unreachable server: cannot confirm */
+  }
+  return false;
+}
+/**
+ * Before closing the game: confirm and release play as usual. If that fails because another device
+ * took control, there is nothing left to confirm (the account refuses this device's saves), so
+ * closing proceeds; the local copy stays on disk and the next claim here offers the existing
+ * newer-local recovery. Every other failure (lapsed lease, lost connection, unconfirmed save while
+ * this device still holds play) keeps blocking, as before.
+ */
+export async function releasePlayForQuit(): Promise<void> {
+  if (localOnly() || !token) return;
+  (await import('./run/runClock')).checkpointRunTime();
+  try {
+    await releasePlayAccess();
+  } catch (error) {
+    if (!(await playHeldElsewhere())) throw error;
+    token = '';
+    sessionStorage.removeItem('sr.play.token');
   }
 }
 export function playSocketUrl(path: string, address = serverBase()): string {

@@ -88,12 +88,12 @@ export async function startDesktop(): Promise<void> {
   };
   await bridge.ready();
   window.shatteredRiftsConfirmOnlineSave = async () => {
-    const { localOnly, playState, releasePlayAccess, releasePlayForUpdate } =
+    const { localOnly, playState, releasePlayForQuit, releasePlayForUpdate } =
       await import('./playAccess');
     if (localOnly() || playState().phase === 'browsing') return;
     // An update handoff keeps the local snapshot and must not be blocked by a lost connection.
     if (updateHandoff) await releasePlayForUpdate();
-    else await releasePlayAccess();
+    else await releasePlayForQuit();
   };
   await flushDesktopSave();
   window.setInterval(() => {
@@ -107,8 +107,8 @@ export async function quitDesktop(): Promise<void> {
   const { checkpointRunTime } = await import('./run/runClock');
   checkpointRunTime();
   await flushDesktopSave();
-  const { releasePlayAccess } = await import('./playAccess');
-  await releasePlayAccess();
+  const { releasePlayForQuit } = await import('./playAccess');
+  await releasePlayForQuit();
   desktopBridge()?.quit();
 }
 export async function restartDesktopUpdate(): Promise<void> {

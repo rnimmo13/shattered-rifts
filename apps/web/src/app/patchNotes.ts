@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.214.0',
+    date: '2026-11-06',
+    title: 'Closing after switching devices',
+    summary: 'The desktop app closes normally after you take control from another device.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Could not save when quitting',
+        text: 'After taking control of your account on another device, Quit to Desktop (or closing the window) could stop with Could not save. The game is still open. The desktop app now closes, keeping its progress on this computer; if it is newer than your account save, you can recover it next time you play here. If this computer still holds play and its latest progress has not reached your account, closing still asks you to reconnect first.',
+      },
+    ],
+  },
+  {
     version: '0.213.0',
     date: '2026-11-06',
     title: 'Battlefields with a sense of place',

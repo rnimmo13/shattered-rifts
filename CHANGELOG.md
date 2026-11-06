@@ -1,3 +1,8 @@
+## 0.214.0 - 2026-11-06
+
+- Desktop: Quit to Desktop and window close no longer fail with Could not save after another device took control. When the account confirmation fails on quit, a plain claim probes the lease; only play-in-use (another device holds play) lets the app close without account confirmation. The disk save is still written first and the existing newer-local recovery handles unconfirmed progress. A lapsed lease, lost connection or unconfirmed save while still holding play keeps blocking; a probe that wins a lapsed lease releases it immediately. Device handoff keeps strict confirmation.
+- Web/desktop 0.214.0; rules 89 unchanged. No combat, card or balance changes.
+
 ## 0.213.0 - 2026-11-06
 
 - Replaced all 33 arena compositions with complete painted floor-and-backdrop images, including distinct secondary locations, Warden interiors and Drago’s First Ruin. Authored illuminated fissures and scenery are part of each painting; the full-art path does not load the old prop cutouts. Floor-anchored aspect-preserving cover fills portrait, landscape and ultrawide views without altering fighter geometry or selection. The legacy missing-art fallback also keeps its floor opaque at the sides and restores the main crack across venues; screen vignette is lighter.

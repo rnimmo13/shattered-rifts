@@ -169,6 +169,44 @@ describe('shared-account play gates', () => {
     expect(access.playState().phase).toBe('paused');
     expect(sessionStorage.getItem('sr.play.token')).toBe('secret');
   });
+  const urls = () =>
+    fetcher.mock.calls.map(([url]) => (url instanceof Request ? url.url : url.toString()));
+  it('lets the game close after another device took control', async () => {
+    fetcher
+      .mockResolvedValueOnce(claim())
+      .mockImplementation(() =>
+        Promise.resolve(Response.json({ ok: false, error: 'play-in-use' }, { status: 409 })),
+      );
+    await access.ensurePlay();
+    access.pausePlay();
+    await expect(access.releasePlayForQuit()).resolves.toBeUndefined();
+    expect(sessionStorage.getItem('sr.play.token')).toBeNull();
+    expect(urls()).not.toContain('https://shatteredrifts.app/pvp/play/release');
+    // Local progress is kept for the existing recovery offer; no merge marker is set.
+    expect(localStorage.getItem(access.UNCONFIRMED_HANDOFF)).toBeNull();
+  });
+  it('keeps blocking when the lease only lapsed, handing back the probe lease', async () => {
+    fetcher
+      .mockResolvedValueOnce(claim())
+      .mockImplementationOnce(() =>
+        Promise.resolve(Response.json({ ok: true, token: 'probe', expires: 46000, now: 1000 })),
+      )
+      .mockImplementation(() => Promise.resolve(Response.json({ ok: true })));
+    await access.ensurePlay();
+    access.pausePlay();
+    await expect(access.releasePlayForQuit()).rejects.toThrow(/Reconnect/);
+    expect(urls().at(-1)).toBe('https://shatteredrifts.app/pvp/play/release');
+    const headers = fetcher.mock.calls.at(-1)![1]!.headers as Record<string, string>;
+    expect(headers['x-sr-play-token']).toBe('probe');
+    expect(sessionStorage.getItem('sr.play.token')).toBe('secret');
+  });
+  it('keeps blocking while this device holds play and the save is unconfirmed or offline', async () => {
+    fetcher.mockResolvedValueOnce(claim()).mockRejectedValue(new TypeError('offline'));
+    await access.ensurePlay();
+    synced.flush.mockResolvedValue(false);
+    await expect(access.releasePlayForQuit()).rejects.toThrow(/not reached/);
+    expect(sessionStorage.getItem('sr.play.token')).toBe('secret');
+  });
   it('offers recovery before replacing a newer local tier with an older account save', async () => {
     adopted.local = [
       { id: 'run-a', updated: 3, text: JSON.stringify({ tier: 11, stats: { nodesCleared: 210 } }) },
