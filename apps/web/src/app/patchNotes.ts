@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.211.0',
+    date: '2026-11-06',
+    title: 'Account play restored',
+    summary: 'Fixes gameplay being unavailable on every account and device.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Gameplay unavailable',
+        text: 'Campaign and Arena could refuse every account with Gameplay unavailable. The game was contacting the server far more often than needed while a run was open, even in background tabs. It now saves your run clock on this device as you play and sends it to your account with your next save, or when you leave or hide the page. If the server is briefly unavailable, the message now says so; your progress is safe.',
+      },
+    ],
+  },
+  {
     version: '0.210.0',
     date: '2026-11-06',
     title: 'Distinct battlefields and the First Ruin',

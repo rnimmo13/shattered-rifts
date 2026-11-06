@@ -85,6 +85,11 @@ export function ensurePlay(recoverLocal = false, takeOver = false): Promise<bool
             'busy',
             'This account is playing on another device. You can take control here, or stop playing there and try again.',
           );
+        else if (data.error === 'unavailable')
+          update(
+            'paused',
+            'The game server is temporarily unavailable. Your progress is safe. Please try again a little later.',
+          );
         else update('paused', 'Could not connect your account for play. Try again when connected.');
         return false;
       }
@@ -147,6 +152,8 @@ export async function releasePlayAccess(): Promise<void> {
     throw new Error('Reconnect to confirm your latest account save before switching devices.');
   update('saving', 'Confirming your latest account save before stopping play…');
   try {
+    // Record the run clock up to this moment so the handoff carries it.
+    (await import('./run/runClock')).checkpointRunTime();
     const { flushCampaignSave } = await import('./run/runCloud');
     if (!(await flushCampaignSave()))
       throw new Error(
@@ -223,7 +230,8 @@ export function installPlayAccess(): void {
           void import('./run/runCloud').then(({ syncRuns }) => syncRuns());
       })
       .catch(() => pausePlay());
-  }, 10000);
+    // 15s keeps three renewals inside the 45s lease while sending a third fewer server requests.
+  }, 15000);
   window.addEventListener('offline', () => pausePlay());
   window.addEventListener('sr-campaign-save', () => {
     if (canPlay()) void import('./run/runCloud').then(({ soonSyncRuns }) => soonSyncRuns());

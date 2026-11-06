@@ -4,7 +4,7 @@ import { RunClock, registerRunTimeCheckpoint } from './runClock';
 
 export function useRunClock(
   run: RunState | null,
-  persist: (seed: string, ms: number) => void,
+  persist: (seed: string, ms: number, upload?: boolean) => void,
 ): RunClock {
   const seed = run?.seed;
   const elapsed = run?.elapsedMs ?? 0;
@@ -26,7 +26,14 @@ export function useRunClock(
     };
     returning();
     if (stopped) leaving();
-    const timer = window.setInterval(checkpoint, 10_000);
+    // Ticks save locally every 10s but upload only once a minute: uploading every tick sent several
+    // account-server requests per open tab every 10s and exhausted the server's daily allowance.
+    // Elapsed time also reaches the account with real saves, on hide/leave and before a handoff.
+    let ticks = 0;
+    const timer = window.setInterval(() => {
+      ticks += 1;
+      persist(seed, clock.elapsed(), ticks % 6 === 0);
+    }, 10_000);
     // Hidden tabs still count while on this run; checkpoint before a browser/native handoff.
     document.addEventListener('visibilitychange', checkpoint);
     window.addEventListener('pagehide', leaving);

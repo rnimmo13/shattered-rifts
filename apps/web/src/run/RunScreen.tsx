@@ -176,14 +176,14 @@ export default function RunScreen() {
     runRef.current = r;
     setRunState(r);
   }, []);
-  const persistTime = useCallback((seed: string, elapsedMs: number) => {
+  const persistTime = useCallback((seed: string, elapsedMs: number, upload = true) => {
     const current = runRef.current;
     const slot = slotRef.current;
     if (!current || current.seed !== seed || !slot || elapsedMs <= (current.elapsedMs ?? 0)) return;
     const next = { ...current, elapsedMs };
     runRef.current = next;
     // Synchronous local checkpoint also works during route unmount/page hide.
-    if (saveRunSlot(slot, next)) soonSyncRuns();
+    if (saveRunSlot(slot, next) && upload) soonSyncRuns();
   }, []);
   const runClock = useRunClock(run, persistTime);
   /** reels spun for an event's chances, played before the result is shown (the result waits in `then`) */

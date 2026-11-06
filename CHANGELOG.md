@@ -1,3 +1,9 @@
+## 0.211.0 - 2026-11-06
+
+- Outage fix: all accounts saw Gameplay unavailable. Every Durable Object call (Vault, Leaderboard) returned 503 once the server's daily Durable Object request allowance was used up. Cause: since 0.207 the run clock's 10-second checkpoint triggered a full cloud sync (runs read + runsave + two listsync) per open run tab, plus the 10-second play heartbeat, about 43k requests/day per idle tab, hidden tabs included.
+- Run clock checkpoints every 10 seconds are local; elapsed time uploads once a minute, with the next real save, on hide/page leave/route exit, and before a handoff (Save and switch device now checkpoints the clock first). Campaign save uploads batch moves over 1.5 seconds instead of 250 ms (fixed window, never postponed; handoffs still flush). Run/match history lists sync only when their local contents change, retrying after a failed sync (title and history screens still pull them). Play heartbeat 10s -> 15s inside the unchanged 45s lease. A server 'unavailable' claim response now says the server is temporarily unavailable instead of Could not connect your account.
+- Web/desktop 0.211.0; rules 88 unchanged. No combat, card or balance changes.
+
 ## 0.210.0 - 2026-11-06
 
 - Arenas: sparse authored scenery instead of repeated props; removed hanging/swinging decorations. Realm-colored atmosphere, distinct particle speeds and Rift-only floor fractures.

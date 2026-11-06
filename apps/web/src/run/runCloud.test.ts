@@ -112,12 +112,28 @@ describe('confirmed cross-device campaign saves', () => {
     vi.useFakeTimers();
     saves.saveRunSlot(id, { ...base, tier: 11 });
     cloud.soonSyncRuns();
-    await vi.advanceTimersByTimeAsync(200);
+    await vi.advanceTimersByTimeAsync(cloud.SYNC_BATCH_MS - 50);
     cloud.soonSyncRuns();
     await vi.advanceTimersByTimeAsync(50);
     expect(requests).toHaveLength(1);
     expect(tier(server)).toBe(11);
     expect(await cloud.flushCampaignSave()).toBe(true);
+  });
+  it('does not re-send unchanged run and match history on every checkpoint', async () => {
+    vi.useFakeTimers();
+    const listCalls = (): number =>
+      fetcher.mock.calls.filter(([input]) =>
+        String(input instanceof Request ? input.url : input).endsWith('/listsync'),
+      ).length;
+    saves.saveRunSlot(id, { ...base, tier: 11 });
+    cloud.soonSyncRuns();
+    await vi.advanceTimersByTimeAsync(cloud.SYNC_BATCH_MS + 50);
+    const first = listCalls();
+    saves.saveRunSlot(id, { ...base, tier: 12 });
+    cloud.soonSyncRuns();
+    await vi.advanceTimersByTimeAsync(cloud.SYNC_BATCH_MS + 50);
+    expect(listCalls()).toBe(first);
+    expect(tier(server)).toBe(12);
   });
   it('drains a newer tier written while an earlier upload is in flight', async () => {
     let acknowledge!: () => void;

@@ -99,9 +99,12 @@ async function syncList(
 }
 
 /** The run history and the Arena match history, brought together with the player's other devices (DECISIONS #318). */
+/** Whether the latest syncLists call reached the server for every list it handled. */
+let listsReached = true;
 export async function syncLists(historyOnly = false): Promise<boolean> {
   if (localOnly()) return false;
   await whoAmI();
+  listsReached = true;
   let changed = false;
   const runsBefore = JSON.stringify(runHistory().map((r) => [r.id, r.at]));
   const history = await syncList(
@@ -109,6 +112,7 @@ export async function syncLists(historyOnly = false): Promise<boolean> {
     runHistory() as unknown as ListItem[],
     historyRemoved(),
   );
+  if (!history) listsReached = false;
   if (history) {
     // (a run forgotten here while the server was asked is still forgotten)
     const gone = new Set([...history.removed, ...historyRemoved()]);
@@ -126,6 +130,7 @@ export async function syncLists(historyOnly = false): Promise<boolean> {
   if (historyOnly) return changed;
   const matchesBefore = matchHistory().length;
   const matches = await syncList('matches', matchHistory() as unknown as ListItem[], []);
+  if (!matches) listsReached = false;
   if (matches) {
     // (a game recorded here while the server was asked is kept)
     const here = matchHistory();
@@ -235,6 +240,9 @@ export async function flushCampaignSave(): Promise<boolean> {
 }
 
 let timer: number | undefined;
+let listsSent = '';
+/** Moves within this window share one upload (a fixed batch, never postponed by further moves). */
+export const SYNC_BATCH_MS = 1500;
 
 /** A run was saved or ended here: send it up shortly (saves come one after another during a run, so they are gathered). */
 export function soonSyncRuns(): void {
@@ -244,6 +252,19 @@ export function soonSyncRuns(): void {
   timer = window.setTimeout(() => {
     timer = undefined;
     void syncRuns();
-    void syncLists();
-  }, 250);
+    // Run/match history only changes when a run or match ends; re-sending unchanged lists on every
+    // checkpoint doubled the account-server requests. The title and history screens still pull them.
+    const lists = JSON.stringify([runHistory(), historyRemoved(), matchHistory()]);
+    if (lists !== listsSent) {
+      listsSent = lists;
+      void syncLists().then(
+        () => {
+          if (!listsReached) listsSent = '';
+        },
+        () => {
+          listsSent = '';
+        },
+      );
+    }
+  }, SYNC_BATCH_MS);
 }
