@@ -1,3 +1,9 @@
+## 0.217.0 - 2026-11-06
+
+- Music: Blackmoor Tides loops for the whole battle (still from the beginning in each new battle). Tracks are downloaded once and played from memory (blob URLs), because the static site answers range requests with the whole file and browsers cannot loop or restart media served that way; a failed download falls back to streaming. Soundtracks play at half the Music volume setting (DECISIONS #666, #667).
+- Shaman totems: the numbers beside the hero are larger and easier to read (every-turn/when-it-acts ~12px -> ~17px, position badges ~10 -> ~14px, Spirit ~11 -> ~15px with a larger orb), with a darker backing; slightly smaller on an upright phone (DECISIONS #667).
+- Web/desktop 0.217.0; rules 89 unchanged. No combat or card changes.
+
 ## 0.216.0 - 2026-11-06
 
 - Campaign: every lost fight costs 1 Resolve; Elites and Echoes previously cost 2, so one lost Elite no longer ends a Normal run. Retry at full HP and collapse at 0 unchanged; current Resolve totals untouched (DECISIONS #663).

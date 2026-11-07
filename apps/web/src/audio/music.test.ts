@@ -2,15 +2,13 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 class FakeAudio {
   static made: FakeAudio[] = [];
-  src: string;
+  src = '';
   loop = false;
   preload = '';
   volume = 1;
   currentTime = 0;
   paused = true;
-  ended = false;
-  constructor(src: string) {
-    this.src = src;
+  constructor() {
     FakeAudio.made.push(this);
   }
   play(): Promise<void> {
@@ -32,6 +30,17 @@ beforeEach(() => {
     setItem: (k: string, v: string) => store.set(k, v),
   });
   vi.stubGlobal('Audio', FakeAudio);
+  fetched = [];
+  failing = false;
+  vi.stubGlobal('fetch', (url: string) => {
+    fetched.push(url);
+    return failing
+      ? Promise.reject(new Error('offline'))
+      : Promise.resolve({ ok: true, blob: () => Promise.resolve({ url }) });
+  });
+  vi.spyOn(URL, 'createObjectURL').mockImplementation(
+    (blob) => `blob:${(blob as unknown as { url: string }).url}`,
+  );
   vi.stubGlobal('document', { hidden: false, addEventListener: vi.fn() });
   vi.stubGlobal('window', {
     setInterval,
@@ -41,6 +50,7 @@ beforeEach(() => {
   });
 });
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
@@ -52,20 +62,25 @@ const setup = async () => {
   const [menu, battle, victory] = FakeAudio.made as [FakeAudio, FakeAudio, FakeAudio];
   return { music, battles, menu, battle, victory };
 };
+let fetched: string[] = [];
+let failing = false;
 const settle = async () => {
-  await Promise.resolve();
+  for (let i = 0; i < 20; i++) await Promise.resolve();
   vi.advanceTimersByTime(1000);
 };
 
 it('loops Woodland Fantasy outside battle', async () => {
-  const { menu, battle } = await setup();
-  expect(menu.src).toContain('music/woodland-fantasy.mp3');
+  const { menu, battle, victory } = await setup();
   expect(menu.loop).toBe(true);
-  expect(battle.src).toContain('music/blackmoor-tides.mp3');
-  expect(battle.loop).toBe(false);
+  expect(battle.loop).toBe(true);
   await settle();
+  // each track is downloaded once and played from memory, so it can restart and loop
+  expect(menu.src).toBe('blob:/music/woodland-fantasy.mp3');
+  expect(battle.src).toBe('blob:/music/blackmoor-tides.mp3');
+  expect(victory.src).toBe('');
+  expect(fetched.filter((u) => u.includes('woodland'))).toHaveLength(1);
   expect(menu.paused).toBe(false);
-  expect(menu.volume).toBeCloseTo(0.4);
+  expect(menu.volume).toBeCloseTo(0.4 * 0.5);
   expect(battle.paused).toBe(true);
 });
 
@@ -90,28 +105,28 @@ it('starts Blackmoor Tides from the beginning in each battle, then resumes the w
   expect(battle.currentTime).toBe(0);
 });
 
-it('does not restart a battle track that already finished', async () => {
+it('keeps the battle track going through setting changes within one battle', async () => {
   const { music, battles, battle } = await setup();
   battles.enterBattle();
   await settle();
-  battle.ended = true;
-  battle.paused = true;
   battle.currentTime = 200;
   music.setMusic({ volume: 0.6 });
   await settle();
-  expect(battle.paused).toBe(true);
+  expect(battle.paused).toBe(false);
   expect(battle.currentTime).toBe(200);
+  expect(battle.volume).toBeCloseTo(0.6 * 0.5);
 });
 
 it('plays Beyond the Clouds from the beginning on the victory screen, then resumes the woodland track', async () => {
   const { music, menu, victory } = await setup();
-  expect(victory.src).toContain('music/beyond-the-clouds.mp3');
   expect(victory.loop).toBe(true);
   await settle();
+  expect(fetched.some((u) => u.includes('beyond-the-clouds'))).toBe(false);
   menu.currentTime = 12;
   victory.currentTime = 80;
   const close = music.enterVictory();
   await settle();
+  expect(victory.src).toBe('blob:/music/beyond-the-clouds.mp3');
   expect(victory.paused).toBe(false);
   expect(victory.currentTime).toBe(0);
   expect(menu.paused).toBe(true);
@@ -120,6 +135,14 @@ it('plays Beyond the Clouds from the beginning on the victory screen, then resum
   expect(victory.paused).toBe(true);
   expect(menu.paused).toBe(false);
   expect(menu.currentTime).toBe(12);
+});
+
+it('streams the file directly when the download fails', async () => {
+  failing = true;
+  const { menu } = await setup();
+  await settle();
+  expect(menu.src).toBe('/music/woodland-fantasy.mp3');
+  expect(menu.paused).toBe(false);
 });
 
 it('Music off silences everything and is remembered', async () => {

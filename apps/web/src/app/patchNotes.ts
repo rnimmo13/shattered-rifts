@@ -46,6 +46,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.217.0',
+    date: '2026-11-06',
+    title: 'Music fixes and readable totems',
+    summary: 'Battle music now loops, music is quieter, and Shaman totem numbers are easier to read.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Battle music',
+        text: 'Blackmoor Tides now repeats for the whole battle instead of stopping after one play. Each new battle still starts it from the beginning, and all tracks now loop and restart reliably in a browser.',
+      },
+      {
+        kind: 'changed',
+        title: 'Music volume',
+        text: 'Music plays at half its previous loudness at every Music volume setting.',
+      },
+      {
+        kind: 'changed',
+        title: 'Shaman totems',
+        text: 'The numbers on your totems (what each does every turn and when it acts), their positions and your Spirit are larger and easier to read.',
+      },
+    ],
+  },
+  {
     version: '0.216.0',
     date: '2026-11-06',
     title: 'Music, and a gentler Resolve',

@@ -3347,16 +3347,16 @@ button.totem:disabled {
 }
 .totemarc__order {
   position: absolute;
-  top: -0.5rem;
+  top: -0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  min-width: 1.3rem;
-  padding: 0 0.35rem;
-  border-radius: 0.6rem;
+  min-width: 1.7rem;
+  padding: 0 0.4rem;
+  border-radius: 0.7rem;
   background: #1c2a36;
   border: 1px solid rgb(127 233 245 / 0.6);
   color: #bff4fb;
-  font-size: 0.65rem;
+  font-size: 0.88rem;
   font-weight: 700;
   text-align: center;
   z-index: 2;
@@ -3373,31 +3373,39 @@ button.totem:disabled {
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  margin-bottom: -0.9rem;
-  font-size: 0.74rem;
+  margin-bottom: -1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.15;
   white-space: nowrap;
 }
 .totemarc__each,
 .totemarc__acts {
-  padding: 0 0.3rem;
-  border-radius: 0.35rem;
-  background: rgb(8 10 20 / 0.85);
+  padding: 0.05rem 0.4rem;
+  border-radius: 0.4rem;
+  background: rgb(8 10 20 / 0.9);
   color: #e9fcff;
+  text-shadow: 0 1px 2px #000;
 }
 .totemarc__acts {
   color: #ffe08a;
+}
+/* a phone held upright has the smallest spots: the numbers step down a little so neighbours do not overlap */
+.fight--portrait .totemarc__nums {
+  font-size: 0.9rem;
+}
+.fight--portrait .totemarc__order {
+  font-size: 0.76rem;
 }
 /* more than five positions: smaller spots, with the numbers left to the hover */
 .totemarc--tight .totemarc__nums {
   display: none;
 }
 .totemarc--tight .totemarc__order {
-  top: -0.4rem;
-  min-width: 1rem;
-  padding: 0 0.2rem;
-  font-size: 0.55rem;
+  top: -0.55rem;
+  min-width: 1.3rem;
+  padding: 0 0.25rem;
+  font-size: 0.74rem;
 }
 .totemarc__spirit {
   position: absolute;
@@ -3454,15 +3462,16 @@ button.totem:disabled {
   background: rgb(20 40 52 / 0.85);
   border: 1px solid rgb(127 233 245 / 0.35);
   pointer-events: auto;
-  font-size: 0.7rem;
+  font-size: 0.92rem;
   color: #bff4fb;
 }
 .totemarc__orb {
   display: grid;
   place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #e9fcff;
   background: radial-gradient(circle at 40% 35%, #7fe9f5, #1d6f84 70%, #0d3240);

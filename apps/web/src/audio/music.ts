@@ -1,5 +1,5 @@
 // Background music (DECISIONS #664): Woodland Fantasy loops everywhere outside battle; each battle starts
-// Blackmoor Tides from the beginning and plays it once, without looping. Beating Drago opens the victory
+// Blackmoor Tides from the beginning and loops it until the battle ends. Beating Drago opens the victory
 // screen with Beyond the Clouds from the beginning, looping while it stays open. Leaving a battle or the
 // victory screen resumes the woodland track where it paused. Music has its own on/off and volume.
 
@@ -7,6 +7,8 @@ import { battleActive, battleSerial, subscribeBattle } from '../battleActivity';
 
 const KEY = 'sr.music';
 const FADE_MS = 600;
+/** The soundtracks are mixed loud: the Music volume setting plays them at half that level (Robert, DECISIONS #667). */
+export const MUSIC_GAIN = 0.5;
 const GESTURES = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'] as const;
 
 interface MusicSettings {
@@ -84,7 +86,37 @@ function fade(audio: HTMLAudioElement, to: number, pauseAtEnd: boolean): void {
   fades.set(audio, id);
 }
 
+const files = new Map<HTMLAudioElement, string>();
+const loading = new Set<HTMLAudioElement>();
+/**
+ * Download a track once and play it from memory. The website's static hosting answers byte-range
+ * requests with the whole file, and browsers cannot seek, restart or loop media served that way; a
+ * blob URL is always seekable. If the download fails, fall back to streaming the file directly.
+ */
+function download(audio: HTMLAudioElement): void {
+  const url = files.get(audio);
+  if (!url || audio.src || loading.has(audio)) return;
+  loading.add(audio);
+  void fetch(url)
+    .then((response) => {
+      if (!response.ok) throw new Error(`Music ${response.status}`);
+      return response.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch(() => url)
+    .then((src) => {
+      loading.delete(audio);
+      audio.src = src;
+      apply();
+    });
+}
+
 function play(audio: HTMLAudioElement): void {
+  if (!audio.src) {
+    // (still downloading: apply() runs again once it arrives)
+    download(audio);
+    return;
+  }
   void audio.play().catch(() => {
     // Browsers refuse sound before the first click or key press: try again on the next one.
     if (waitingForGesture) return;
@@ -107,7 +139,7 @@ function start(audio: HTMLAudioElement, fromStart: boolean): void {
   if (fromStart) audio.currentTime = 0;
   if (audio.paused) audio.volume = 0;
   play(audio);
-  fade(audio, settings.volume, false);
+  fade(audio, settings.volume * MUSIC_GAIN, false);
 }
 
 /** Only `keep` plays; every other track fades out. */
@@ -128,9 +160,9 @@ function apply(): void {
     const fresh = serial !== lastBattle;
     lastBattle = serial;
     only(battle);
-    // A new battle starts the track over; an open one that already finished stays quiet.
+    // A new battle starts the track over; an open one carries on.
     if (fresh) start(battle, true);
-    else if (!battle.ended) start(battle, false);
+    else start(battle, false);
     return;
   }
   if (victories > 0) {
@@ -145,9 +177,10 @@ function apply(): void {
 }
 
 function track(file: string, loop: boolean): HTMLAudioElement {
-  const audio = new Audio(`${import.meta.env.BASE_URL}music/${file}`);
+  const audio = new Audio();
   audio.loop = loop;
   audio.preload = 'auto';
+  files.set(audio, `${import.meta.env.BASE_URL}music/${file}`);
   return audio;
 }
 
@@ -155,10 +188,11 @@ function track(file: string, loop: boolean): HTMLAudioElement {
 export function startMusic(): void {
   if (menu || typeof Audio === 'undefined') return;
   menu = track('woodland-fantasy.mp3', true);
-  battle = track('blackmoor-tides.mp3', false);
+  battle = track('blackmoor-tides.mp3', true);
   victory = track('beyond-the-clouds.mp3', true);
-  // Only fetched if someone reaches the ending.
-  victory.preload = 'none';
+  // The battle theme downloads ahead so the first fight opens with it; the victory theme is only
+  // fetched if someone reaches the ending.
+  download(battle);
   // Battle listeners fire twice in one commit when a fight replaces another: settle once afterwards.
   let queued = false;
   subscribeBattle(() => {
