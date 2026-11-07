@@ -1,3 +1,11 @@
+# Release approved 0.219.0 / rules 90 (2026-11-07; decision 670)
+
+Robert explicitly approves pushing/deploying the Shaman starter change below together with Claude's larger centred map checkmark and faded completed-node icons. Publish website/server and matching Windows updater from clean committed source. Future changes need fresh release approval.
+
+# Local 0.219.0 / rules 90 (2026-11-06; decision 670)
+
+Robert authorizes restoring Shaman's third starting Thunderbird and basic Hawk's Dive replacing one Strike in new ten-card starters. Existing decks/offers preserved; all Shaman fights start Hawk/Bear/Thunderbird, including Arena. Hawk's Dive remains 1 Mana, 7/10 damage then plant a Hawk. Thunder Memory retains 1 + prior plants, now counting the starting Thunderbird. Player reports early chip damage; Bear remains 2 Barrier/turn, so improved kill speed is not measured sustain. Append-only assessment docs/balance-history/0.219.0-shaman-review-1.json; no simulations or release approval.
+
 # Release approved 0.215.0 / rules89 (2026-11-06; decision662)
 
 Robert explicitly approves pushing/deploying the realm-themed scroll maps and completed-floor checkmarks, and explicitly chooses to include Claude's pending irregular route-convergence changes. Preserve both assistants' work. Publish website/server and matching Windows updater from validated clean committed source; verify live version, realm assets and updater metadata. Existing saved maps and ink remain intact. No simulations or new combat grades. Future changes need fresh release approval.

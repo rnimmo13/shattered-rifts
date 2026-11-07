@@ -46,6 +46,50 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.219.0',
+    date: '2026-11-06',
+    title: 'A stronger Shaman start',
+    summary: "Shaman starts with three totems and Hawk's Dive; cleared map stops are easier to spot.",
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Cleared map stops',
+        text: 'Cleared stops now show a large green checkmark across the circle, and their floor icon fades back underneath it, so you can see at a glance which stops you have completed.',
+      },
+      {
+        kind: 'balance',
+        title: 'The Totem Cycle',
+        hero: 'shaman',
+        changes: [
+          {
+            label: 'Starting totems (Buff)',
+            before: 'Hawk, Bear',
+            after: 'Hawk, Bear, Thunderbird',
+            direction: 'buff',
+          },
+        ],
+        text: 'Campaign and Arena: every Shaman starts fights with these three totems, in order, including existing characters. The row starts full: planting another totem immediately pushes out the front one and triggers its command. Thunderbird deals 3 damage plus 1 per Spirit to two different random enemies at turn end, with 25% more against a lone enemy.',
+      },
+      {
+        kind: 'balance',
+        title: "Hawk's Dive",
+        card: 'hawks-dive',
+        changes: [
+          { label: 'Rarity', before: 'Common', after: 'Basic', direction: 'neutral' },
+          {
+            label: 'New Shaman starter (Buff)',
+            before: "4 Strikes; no Hawk's Dive",
+            after: "3 Strikes; 1 Hawk's Dive",
+            direction: 'buff',
+          },
+        ],
+        text: "Campaign and Arena: Hawk's Dive becomes a basic card and leaves normal reward offers. It still costs 1 Mana and deals 7 damage (10 upgraded), then plants a Hawk. New Campaign runs include it in the ten-card starter instead of one Strike. Existing decks and saved offers retain their cards; existing copies use Basic rarity. Thunder Memory still plants one Thunderbird plus one per Thunderbird planted this fight, now counting the restored starting Thunderbird.",
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge. Existing Campaign progress and decks are preserved.',
+  },
+  {
     version: '0.218.0',
     date: '2026-11-06',
     title: 'Quieter music',

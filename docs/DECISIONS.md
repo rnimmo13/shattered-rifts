@@ -1242,3 +1242,8 @@ Robert: "push". Approval covers committing and pushing 0.217.0 (looping battle m
 ## 669 - Soundtracks at a quarter level (2026-11-06)
 
 After 0.217.0, Robert: "music volume needs to be cut even more." Decision: MUSIC_GAIN 0.5 -> 0.25, so music plays at a quarter of the Music volume setting (the default 40% now plays at 10%); the slider and stored settings are unchanged. Robert approved release as 0.218.0 ("push"), covering the website/server deployment and the matching Windows updater.
+
+
+## 670 - Restore the Shaman's early engine (2026-11-06)
+
+Robert reports Shaman feels weak early in Campaign, then authorizes restoring Thunderbird as the third starting totem and making Hawk's Dive a basic starter card after the proposed one-Strike replacement. He also reports substantial chip damage. Implement Hawk/Bear/Thunderbird in order for all Shaman fights (Campaign/Arena), and replace one of four Strikes with Hawk's Dive in new ten-card starters. Hawk's Dive Common -> Basic, base/upgraded; keep1Mana,7/10damage then plantHawk. Basic removes it from normal reward offers. Existing decks/offers remain, no retroactive Strike conversion. Full row immediately pushes front Hawk out when planting; restored starting Thunderbird also counts in unchanged Thunder Memory1+planted formula. Bear remains2Barrier/turn: this is an opening-pressure change, not direct sustain; track early HP loss. No further defensive buff authorized. Rules90 migrates old unfinished battles through existing checkpoint policy without Resolve loss. Web/desktop0.219.0 local; no release approval, simulations or measured grades. Append-only assessment0.219.0-shaman-review-1.

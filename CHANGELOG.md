@@ -1,3 +1,10 @@
+## 0.219.0 - 2026-11-06 (local)
+
+- Shaman, Campaign/Arena: fight-start row Hawk/Bear -> Hawk/Bear/Thunderbird, in that order, including existing characters. Slots stay 3, so the next plant triggers an immediate front-totem push-out. Totem values and Spirit coefficients unchanged.
+- Hawk's Dive Common -> Basic (base/upgraded). New ten-card Shaman starters replace one Strike: 4 -> 3 Strikes, 0 -> 1 Hawk's Dive. Mana remains 1/1, damage 7/10, then plant a Hawk. Basic rarity removes it from future normal reward offers; existing decks/offers are preserved. No retroactive Strike conversion. Thunder Memory's unchanged 1 + planted-count formula now counts the restored starting Thunderbird, so an immediate cast plants 2 instead of 1.
+- Map: cleared stops show a large green checkmark centred over the node circle, with the floor icon faded and partly desaturated underneath, so completed stops stand out.
+- Web/desktop 0.219.0; rules 90 uses existing checkpoint migration for older unfinished battles, without charging Resolve. Decision 670; append-only assessment docs/balance-history/0.219.0-shaman-review-1.json. No simulations or measured parity claims. Release approved by Robert on 2026-11-07 together with the map checkmark change.
+
 ## 0.218.0 - 2026-11-06
 
 - Music plays at a quarter of the Music volume setting (was half in 0.217.0); the default 40% now plays at 10%. Slider and saved settings unchanged (DECISIONS #669).

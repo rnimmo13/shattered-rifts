@@ -18,7 +18,7 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, rewardPool } from './index';
 
-/** a fight on his turn with the given hand, a full row of totems (the Hawk and Bear he starts with, and a Thunderbird planted), and one enemy (or the ones named) at 200 HP */
+/** a fight on his turn with the given hand, his full starting row, and enemies at 200 HP */
 function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
   const deck = RIFTWALKERS.shaman.starter;
   const { state } = createCombat(db, {
@@ -29,7 +29,7 @@ function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
   const s = clone(state);
   s.sides.a.hand = hand.map((card, i) => ({ id: `T${i}`, card }));
   s.sides.a.mana = 9;
-  // (the rules of the row are tested on a full one: since DECISIONS #560 he starts with two)
+  // Keep the row explicit for the individual card scenarios.
   s.sides.a.totems = ['hawk', 'bear', 'thunderbird'];
   s.sides.a.channeledBy = { ...s.sides.a.channeledBy, thunderbird: 1 };
   s.sides.a.draw = Array.from({ length: 8 }, (_, i) => ({ id: `D${i}`, card: 'strike' }));
@@ -67,13 +67,13 @@ const endTurn = (s: CombatState): CombatState => {
 const row = (s: CombatState): (string | null)[] => s.sides.a.totems ?? [];
 
 describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
-  it('starts with a Hawk and a Bear in that order (and a Thunderbird until DECISIONS #560); no Trinity, no help on spells', () => {
+  it('starts with a Hawk, Bear and Thunderbird in order; no Trinity, no help on spells', () => {
     const { state } = createCombat(db, {
       seed: 'sh',
       a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
       b: { enemies: ['squire'] },
     });
-    expect((state.sides.a.totems ?? []).filter(Boolean)).toEqual(['hawk', 'bear']);
+    expect(state.sides.a.totems).toEqual(['hawk', 'bear', 'thunderbird']);
     expect(RIFTWALKERS.shaman.trait.trinity).toBeFalsy();
     for (const t of Object.values(db.totems ?? {})) {
       expect(t.boost, t.id).toBeUndefined();
@@ -493,7 +493,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     ];
     f = play(f, 'fresh-start');
     expect(f.sides.a.hand).toHaveLength(4);
-    // (Thunder Memory: a Thunderbird, plus one for each planted this fight; the base 1 stands in for the starting Thunderbird, #560)
+    // Thunder Memory: one Thunderbird plus one for each already planted this fight.
     let v = fight(['thunder-memory']);
     v.sides.a.channeledBy = { thunderbird: 2 };
     v.sides.a.totems = [null, null, null];
@@ -573,7 +573,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(l.sides.a.hand.every((c) => c.card === 'spark-strike')).toBe(true);
   });
 
-  it('from the real start of two totems (DECISIONS #560): a plant fills the empty place, and Thunder Memory still plants one', () => {
+  it('from the real full starting row: planting commands the front, and Thunder Memory counts the starting Thunderbird', () => {
     const { state } = createCombat(db, {
       seed: 'sh-two',
       a: { hero: 'shaman', deck: RIFTWALKERS.shaman.starter },
@@ -586,13 +586,37 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       for (const u of s.sides.b.units) u.hp = u.maxHp = 200;
       return s;
     };
-    // (no push-out: nothing acts, the row just fills)
+    // The full starting row pushes out the Hawk for 7 damage.
     const raised = play(start(['raise-the-hawk']), 'raise-the-hawk');
-    expect(row(raised)).toEqual(['hawk', 'bear', 'hawk']);
-    expect(foe(raised).hp).toBe(200);
-    // (no Thunderbird planted yet this fight: Thunder Memory plants its one)
+    expect(row(raised)).toEqual(['bear', 'thunderbird', 'hawk']);
+    expect(foe(raised).hp).toBe(193);
+    // Unchanged Thunder Memory plants one plus the one already planted at fight start.
     const memory = play(start(['thunder-memory']), 'thunder-memory');
-    expect(row(memory)).toEqual(['hawk', 'bear', 'thunderbird']);
+    expect(row(memory)).toEqual(['thunderbird', 'thunderbird', 'thunderbird']);
+    expect(foe(memory).hp).toBe(193);
+    expect(hero(memory).barrier).toBe(6);
+  });
+
+  it("starts with ten cards including basic Hawk's Dive instead of a fourth Strike", () => {
+    const deck = RIFTWALKERS.shaman.starter;
+    expect(deck).toHaveLength(10);
+    expect(deck.filter((id) => id === 'strike')).toHaveLength(3);
+    expect(deck.filter((id) => id === 'hawks-dive')).toHaveLength(1);
+    for (const id of ['hawks-dive', 'hawks-dive+']) {
+      expect(db.cards[id]!.rarity).toBe('basic');
+      expect(db.cards[id]!.cost).toBe(1);
+    }
+    expect(rewardPool('shaman')).not.toContain('hawks-dive');
+    for (const [id, damage] of [
+      ['hawks-dive', 7],
+      ['hawks-dive+', 10],
+    ] as const) {
+      const s = fight([id]);
+      const result = play(s, id, foe(s).id);
+      expect(lost(result)).toEqual([damage + 7]);
+      expect(row(result)).toEqual(['bear', 'thunderbird', 'hawk']);
+      expect(result.sides.a.mana).toBe(8);
+    }
   });
 
   it('the rare totems are planted by their own cards, for 3 and 2 Mana', () => {
@@ -681,9 +705,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     });
     let s = clone(state);
     s = applyAction(db, s, { type: 'endTurn' }).state; // seat b's turn
-    expect(s.sides.b.totems).toEqual(['hawk', 'bear', null]);
-    // (he starts with two since DECISIONS #560: a Thunderbird is planted for the Fork)
-    s.sides.b.totems = ['hawk', 'bear', 'thunderbird'];
+    expect(s.sides.b.totems).toEqual(['hawk', 'bear', 'thunderbird']);
     const knight = s.sides.a.units.find((u) => u.kind === 'hero')!;
     const before = knight.hp + knight.barrier;
     s.sides.b.hand = [{ id: 'B0', card: 'spirit-call' }];

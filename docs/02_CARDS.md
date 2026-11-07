@@ -2,6 +2,8 @@
 
 > **Local 0.213.0 / rules 89:** Breaching Strike Common -> Rare; base/upgraded Mana 1/1 -> 2/2, damage 7/10 -> 18/24, Exposed 1/1 -> 2/2 after damage. Raised Hell still auto-plays it for free. [Exact ledger and assessment](ARENA_ART_AND_RARE_STRIKE_2026-11-06.md). No simulations or release approval.
 
+> **Local 0.219.0 / rules 90:** Shaman starts Hawk/Bear/Thunderbird instead of Hawk/Bear. Hawk's Dive Common -> Basic, replacing one Strike in new ten-card starters (3 Strikes + 1 Hawk's Dive). Cost 1/1 and damage 7/10 plus plant a Hawk unchanged. Applies to Campaign/Arena; existing decks/offers preserved. See [assessment](balance-history/0.219.0-shaman-review-1.md). No simulations or release approval.
+
 # Shattered Rifts: Cards
 
 Current local revision: [0.199.0 balance ledger](BALANCE_REVISION_2026-11-05.md), with exact resource limits, protection, costs and Valerion changes. Applies to Campaign/Arena as specified; not released. The generated [current card list](10_CARD_LIST.md) and `packages/content/src/v2` describe the live implementation; historical legacy material below is unchanged.

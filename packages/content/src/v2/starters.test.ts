@@ -1,4 +1,4 @@
-// Starting decks (Robert, 2026-10-30, DECISIONS #458): ten cards, three or four class basics, none twice, then Strikes and Defends.
+// Starting decks: ten cards; Shaman has five class basics since decision 670, others three or four.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -43,17 +43,17 @@ const lost = (s: CombatState): number => 500 - s.sides.b.units[0]!.hp;
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('starting decks', () => {
-  it('have ten cards, and 3 or 4 different class basics', () => {
+  it('have ten cards, and 3 or 4 different class basics (5 for Shaman)', () => {
     for (const [id, r] of Object.entries(RIFTWALKERS)) {
       expect(r.starter, id).toHaveLength(10);
       const basics = [...new Set(r.starter.filter((c) => c !== 'strike' && c !== 'defend'))];
       expect(basics.length, id).toBeGreaterThanOrEqual(3);
-      expect(basics.length, id).toBeLessThanOrEqual(4);
+      expect(basics.length, id).toBeLessThanOrEqual(id === 'shaman' ? 5 : 4);
     }
   });
 
-  it('the Knight, Trickster, Assassin, Shaman, Monk and Drunkard have no class basic twice, and four or three of them', () => {
-    const want: Record<string, number> = { knight: 4, trickster: 4, assassin: 4, shaman: 4, monk: 3, drunkard: 4 };
+  it('the Knight, Trickster, Assassin, Shaman, Monk and Drunkard have distinct class basics in their expected counts', () => {
+    const want: Record<string, number> = { knight: 4, trickster: 4, assassin: 4, shaman: 5, monk: 3, drunkard: 4 };
     for (const [id, n] of Object.entries(want)) {
       const basics = RIFTWALKERS[id as keyof typeof RIFTWALKERS].starter.filter((c) => c !== 'strike' && c !== 'defend');
       expect(new Set(basics).size, id).toBe(basics.length);

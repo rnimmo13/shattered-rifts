@@ -529,7 +529,7 @@ export const SHAMAN: CardDef[] = [
     },
   ),
   // (a dive that brings a Hawk)
-  i('common', 'hawks-dive', "Hawk's Dive", 'attack', 1, 'foe', [dmg(7), plant('hawk')], {
+  i('basic', 'hawks-dive', "Hawk's Dive", 'attack', 1, 'foe', [dmg(7), plant('hawk')], {
     up: { effects: [dmg(10), plant('hawk')] },
   }),
 
@@ -1025,7 +1025,7 @@ export const SHAMAN: CardDef[] = [
     exhaust: true,
     up: { effects: [reshuffle, draw(6)] },
   }),
-  // (1 more than it counts since DECISIONS #560: the Shaman's starting Thunderbird made that 1, and it is gone)
+  // One plus prior Thunderbird plants; includes the starting Thunderbird restored in decision 670.
   i(
     'rare',
     'thunder-memory',

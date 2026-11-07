@@ -85,31 +85,39 @@
   outline-offset: 5px;
 }
 
-/* Completion keeps the stop's original illustration visible underneath. */
+/* Completion: the stop's illustration fades back and a large check sits across the
+   circle, so cleared stops read at a glance while the original icon stays visible. */
+.mapnode.is-done > img.mapnode__pic,
+.mapnode.is-done > svg {
+  opacity: 0.38;
+  filter: grayscale(0.5) drop-shadow(0 2px 3px rgb(0 0 0 / 0.5));
+}
+
 .mapnode__complete {
   position: absolute;
-  right: -7%;
-  bottom: -3%;
-  width: 34%;
-  height: 34%;
-  min-width: 0.9rem;
-  min-height: 0.9rem;
+  left: 50%;
+  top: 50%;
+  width: 78%;
+  height: 78%;
+  translate: -50% -50%;
   display: grid;
   place-items: center;
-  border: 1px solid #b4f5bd;
   border-radius: 50%;
-  background: #12371f;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+  background: radial-gradient(circle, rgb(18 55 31 / 0.55) 0 55%, transparent 72%);
   pointer-events: none;
+  z-index: 1;
 }
 
 .mapnode .mapnode__complete svg {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   stroke: #8df0a0;
-  stroke-width: 3.5;
+  stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 0 1.5px #0b2414) drop-shadow(0 0 4px rgb(80 230 120 / 0.7))
+    drop-shadow(0 1px 2px rgb(0 0 0 / 0.8));
 }
 
 .mapframe--scroll .mapnav {

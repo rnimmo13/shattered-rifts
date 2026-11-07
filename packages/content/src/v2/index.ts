@@ -259,9 +259,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (rebuilt a third time 2026-10-29 to Robert's direction, DECISIONS #430: the totem cycle; Trinity and the totems' help are gone)
     trait: {
       name: 'The Totem Cycle',
-      text: 'You start with a Hawk and a Bear totem, in that order. Each does something every turn while it stands. A command makes your front totem act and consumes it; planting into a full row pushes the front one out, and it acts as it goes. Spirit never goes down: each point adds 1 to every totem number (not the Elder Tree or the Moon Owl).',
+      text: 'You start with a Hawk, a Bear and a Thunderbird totem, in that order. Each does something every turn while it stands. A command makes your front totem act and consumes it; planting into a full row pushes the front one out, and it acts as it goes. Spirit never goes down: each point adds 1 to every totem number (not the Elder Tree or the Moon Owl).',
       totems: 3,
-      fightStart: [plant('hawk'), plant('bear')], // (and a Thunderbird until DECISIONS #560)
+      fightStart: [plant('hawk'), plant('bear'), plant('thunderbird')],
     },
     hero: {
       id: 'shaman',
@@ -271,8 +271,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
     },
     starter: [
-      ...rep('strike', 4),
+      ...rep('strike', 3),
       ...rep('defend', 2),
+      'hawks-dive',
       'spirit-call',
       'raise-the-hawk',
       'frost-ward',

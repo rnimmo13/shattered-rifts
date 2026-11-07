@@ -514,7 +514,7 @@ Tokens (made by other cards):
 
 An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the Hawk, Frost Ward, Forked Lightning
+Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Raise the Hawk, Frost Ward, Forked Lightning
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
@@ -522,6 +522,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Frost Ward | 1 | skill | basic | Frost. Gain 5 Barrier. Apply 1 Faltering to a random enemy. |
 | Forked Lightning | 1 | attack | basic | Storm. Deal 5 damage to 2 different random enemies (25% more when only one enemy stands). |
 | Spirit Call | 1 | skill | basic | Command your front totem twice. |
+| Hawk's Dive | 1 | attack | basic | Deal 7 damage. Plant a Hawk. |
 | Twin Cinders | 1 | attack | common | Flame. Deal 4 damage 2 times. Apply 2 Burn. |
 | Flame Spear | 2 | attack | common | Flame. Deal 16 damage. Apply 3 Burn. |
 | Frost Needle | 0 | attack | common | Frost. Deal 3 damage. Apply 1 Faltering. |
@@ -539,7 +540,6 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Spirit Call, Raise the 
 | Raise a Totem | 1 | skill | common | Plant a random totem. Gain 4 Barrier. |
 | Spirit Strike | 1 | attack | common | Deal 5 damage. Command your front totem. |
 | Spirit Ward | 1 | skill | common | Gain 2 Barrier. Command your front totem. |
-| Hawk's Dive | 1 | attack | common | Deal 7 damage. Plant a Hawk. |
 | Stone Skin | 1 | skill | common | Gain 9 Barrier. |
 | Tidecaller | 1 | skill | common | Gain 7 Barrier. Next turn, gain 1 extra Mana. |
 | Read the Winds | 0 | skill | common | Foresee 3. Consume. |
