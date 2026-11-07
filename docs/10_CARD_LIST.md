@@ -836,7 +836,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Aim | 0 | skill | common | Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). Hold. |
 | Birdshot | 0 | attack | common | Deal 6 damage to ALL enemies. Consume. |
 | Buttstroke | 1 | attack | common | Deal 5 damage. Apply 1 Faltering. Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). |
-| Gun Oil | 1 | aura | common | Whenever you play a gun: Gain 3 Barrier. |
+| Gun Oil | 1 | aura | common | Whenever you play a gun: Gain 2 Barrier. |
 | Broken Bottle | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Chaser | 0 | skill | common | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
 | Rummage the Bin | 0 | skill | common | Foresee 3. |
@@ -875,7 +875,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Window Pane | 1 | skill | uncommon | Gain 7 (+1 per 8% HP missing) Barrier. |
 | Mean Drunk | 2 | aura | uncommon | Whenever you lose HP to your own cards or Hangover: Gain Might equal to half of the HP you lost (at most 3) until the end of your turn and gain 2 Barrier. |
 | Double Tap | 1 | skill | uncommon | Add an Old Twelve Gauge to your hand. |
-| Bandolier | 1 | aura | uncommon | Whenever you play a shell: Gain 2 Barrier. |
+| Bandolier | 1 | aura | uncommon | Whenever you play a shell: Gain 3 Barrier. |
 | Take It on the Chin | 1 | skill | uncommon | Lose 3 HP. Gain 10 Barrier. Draw 1 card. |
 | Swig | 0 | skill | uncommon | Gain 4 Might until the end of your turn. Gain 2 Hangover. Consume. |
 | Barroom Brawl | 2 | attack | uncommon | Deal 16 damage to ALL enemies. Gain 2 Hangover. |

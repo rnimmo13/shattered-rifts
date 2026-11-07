@@ -1,3 +1,7 @@
+# Release approved 0.222.0 / rules 92 (2026-11-07; decisions 680-681)
+
+Robert explicitly approves pushing/deploying: the animated 2D Rogue as his default look, one Hero2D runtime for both rigs (knight effects slightly redrawn), sync-hero-rigs copying assets-src runtimes before local dev/build, animated models on home/picker/Vault/Models/lore; every Drunkard card that fires counts as a gun with a top-right badge, Gun Oil 2 / Bandolier 3 Barrier. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.221.0 / rules 91 (2026-11-07; decisions 671-679)
 
 Robert explicitly approves pushing/deploying: main enemy behind its minions; graded, tier-scaled Threshold/Waymark offerings; Shaman early power (Raise the Hawk out, Frost Ward and Spirit Call plant, Ember Toss starter, buffed commons); Necromancer second Off the Leash and "Summon a Bone Thrall" wording; the animated 2D Sun Knight as the Knight's default look (skins stay still pictures); Monk Still Guard 5 Barrier and two of each stance card; Dire Wolf strikes twice; library Summons filter. Website/server and matching Windows updater. Future changes need fresh release approval.

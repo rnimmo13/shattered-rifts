@@ -11,6 +11,7 @@ import { wornSkin } from '@sr/pvp';
 import { useCosmetics } from '../cosmetics/cosmetics';
 import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
+import { HeroModel } from '../art/HeroModel';
 import './run.css';
 
 export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) => void }) {
@@ -70,7 +71,10 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
           ))}
         </div>
         <figure className="picker__figure">
-          <img src={figureUrl} alt={c.hero.name} />
+          {/* (animated where their own look has a model, DECISIONS #680) */}
+          <HeroModel hero={props.value} skin={skin} className="picker__model" key={props.value}>
+            <img src={figureUrl} alt={c.hero.name} />
+          </HeroModel>
         </figure>
       </div>
 

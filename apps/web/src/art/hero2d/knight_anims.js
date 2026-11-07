@@ -1,5 +1,6 @@
 /* eslint-disable */
-// Vendored from assets-src/heroes/sun-knight-2d/runtime/knight_anims.js, wrapped as an ES module (see knight2d.js). Logic unchanged.
+// Copied from assets-src/heroes/sun-knight-2d/runtime/knight_anims.js by apps/web/scripts/sync-hero-rigs.mjs (do not edit here: edit the source and run it).
+// The original attaches KNIGHT_CLIPS to window; this copy runs the same code against a private scope object and exports them.
 const scope = {};
 /* Sun Knight 2D — animation clips. Times in seconds; distances in illustration pixels (knight ~1320 px tall).
  * Arms are authored as WORLD angles of each segment (deg, 0 = pointing right, 90 = down) so a pose reads directly:

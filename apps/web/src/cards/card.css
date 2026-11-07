@@ -958,6 +958,13 @@
   --el-lo: #4a0f5c;
   color: #ffffff;
 }
+/* the Drunkard's guns (DECISIONS #681): a shell's red and brass */
+.card__element--gun {
+  --el-hi: #ffd29a;
+  --el: #c0392b;
+  --el-lo: #3a1208;
+  color: #fff3dc;
+}
 .card__element--storm {
   --el-hi: #f1e3ff;
   --el: #9b6bff;

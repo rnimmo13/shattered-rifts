@@ -1,8 +1,9 @@
 /* eslint-disable */
-// Vendored from assets-src/heroes/sun-knight-2d/runtime/knight2d.js, wrapped as an ES module: the original attached Knight2D
-// to window; here the same code runs against a private scope object and the class is exported. Its logic is unchanged.
+// Copied from assets-src/heroes/rogue-2d/runtime/hero2d.js by apps/web/scripts/sync-hero-rigs.mjs (do not edit here: edit the source and run it).
+// The original attaches Hero2D to window; this copy runs the same code against a private scope object and exports them.
 const scope = {};
-/* Sun Knight 2D — lightweight skeletal cut-out runtime (WebGL2, no dependencies).
+/* Hero2D — lightweight skeletal cut-out runtime for Shattered Rifts heroes (WebGL2, no dependencies).
+ * Generalised from the Sun Knight runtime: per-hero settings live in rig.json 'profile'.
  *
  *   const k = new Knight2D(gl, rigJson, atlasImage, KNIGHT_CLIPS);
  *   k.play('strike', {onEvent: e => ...});   // idle | strike | aura | hit | death
@@ -55,6 +56,7 @@ const scope = {};
         f: { hip: 'f_hip', knee: 'f_knee', ankle: 'f_ankle', L1: len('f_hip', 'f_knee'), L2: len('f_knee', 'f_ankle'),
           a1: ang(...P('f_hip'), ...P('f_knee')), a2: ang(...P('f_knee'), ...P('f_ankle')) },
       };
+      this.hang = (rig.profile && rig.profile.hang) || null;
       this.world = this.bones.map(() => [1, 0, 0, 1, 0, 0]);
       this.wrot = this.bones.map(() => 0);
     }
@@ -72,12 +74,23 @@ const scope = {};
         const q = B[b.name] || {};
         let r = q.r || 0;
         if (q.w !== undefined) r = q.w - prot;           // world-locked angle (delta from rest orientation)
+        const hk = this.hang && this.hang[b.name];      // loose pieces (a flared cuff) that keep hanging down
+        if (hk) r += -hk * prot;
         if (b.name === 'pauldron') r += clamp(0.26 * (this.wrot[this.idx.n_shoulder] - prot), -32, 22);
         if (b.name === 'fauld') r += clamp(0.4 * (this.wrot[this.idx.n_hip] - prot), -28, 22);
         let ox = q.x || 0, oy = q.y || 0;
         if (b.name === 'fauld') { const nh = B.n_hip || {}; ox += (nh.x || 0); oy += (nh.y || 0); }
         this.wrot[b.i] = prot + r;
         this.world[b.i] = mul(pw, local(b.pivot[0], b.pivot[1], r, ox, oy, q.sx ?? 1, q.sy ?? 1));
+        if (q.abs !== undefined || q.wa !== undefined) {
+          // detachable bone (thrown weapon): position blends from attached (abs 0) to a world-space point
+          // pivot+(ax,ay) (abs 1); wa, when given, is its world rotation (deg from the art's rest orientation)
+          const pv = b.pivot, pa = ap(this.world[b.i], pv[0], pv[1]), k = clamp(q.abs || 0, 0, 1);
+          const px = pa[0] * (1 - k) + (pv[0] + (q.ax || 0)) * k, py = pa[1] * (1 - k) + (pv[1] + (q.ay || 0)) * k;
+          const rr = q.wa !== undefined ? q.wa : this.wrot[b.i];
+          this.world[b.i] = local(pv[0], pv[1], rr, px - pv[0], py - pv[1], q.sx ?? 1, q.sy ?? 1);
+          this.wrot[b.i] = rr;
+        }
         done[b.i] = true;
         if (legBone[b.name]) {                          // two-bone IK for the leg rooted at this hip
           const k = legBone[b.name], L = this.legs[k], F = (pose.feet || {})[k] || {};
@@ -193,9 +206,16 @@ const scope = {};
   }
 
   // ------------------------------------------------------------------------------------------------ knight
-  class Knight2D {
+  const KNIGHT_PROFILE = {
+    ground: [540, 1385], springs: [{ bones: ['tabard', 'tabard2'], gain: 1, hang: 0.85 }], springAnchor: ['hips', 556, 726],
+    weapon: { bone: 'n_wrist', base: [478, 610], tip: [998, 172], mid: [740, 390] }, hitPoint: ['f_hand', 980, 590],
+    chest: ['chest', 530, 480], feet: [['n_ankle', 150, 1360], ['f_ankle', 900, 1330]], emberBox: [380, 300, 400, 1050],
+    color: [1, 0.78, 0.35], shadowW: 520,
+  };
+  class Hero2D {
     constructor(gl, rig, atlasImg, clips) {
       this.gl = gl; this.rig = rig; this.clips = clips; this.sk = new Skeleton(rig);
+      this.pf = Object.assign({}, KNIGHT_PROFILE, rig.profile || {});
       this.layers = rig.layers.map(L => {
         const n = L.pos.length / 2;
         return { name: L.name, n, pos: new Float32Array(L.pos), out: new Float32Array(L.pos.length), uv: new Float32Array(L.uv),
@@ -232,12 +252,12 @@ const scope = {};
       this.play('idle');
     }
     reset() {
-      this.spr = { tab: 0, tabv: 0, tab2: 0, tab2v: 0, px: null, pvx: 0 };
-      this.particles = []; this.trail = []; this.shake = 0; this.shakeT = 0; this.flash = 0; this.time = 0;
+      this.spr = { chains: this.pf.springs.map(() => ({ a: 0, av: 0, b: 0, bv: 0 })), px: null, pvx: 0 };
+      this.particles = []; this.trail = []; this.trail2 = []; this.shake = 0; this.shakeT = 0; this.flash = 0; this.time = 0;
     }
     play(name, opts = {}) {
       const c = this.clips[name]; if (!c) throw new Error('no clip ' + name);
-      this.clip = c; this.clipName = name; this.t = 0; this.opts = opts; this.firedEv = new Set(); this.trail = [];
+      this.clip = c; this.clipName = name; this.t = 0; this.opts = opts; this.firedEv = new Set(); this.trail = []; this.trail2 = [];
       this.onEvent = opts.onEvent || null; this.onEnd = opts.onEnd || null;
     }
     get done() { return !this.clip.loop && this.t >= this.clip.duration; }
@@ -263,18 +283,20 @@ const scope = {};
       // secondary motion: tabard pendulum driven by pelvis acceleration
       const S = this.spr;
       const W = this.sk.solve(this._withSprings(pose));
-      const hp = this.sk.pt('hips', 556, 726);
+      const sa = this.pf.springAnchor, hp = this.sk.pt(sa[0], sa[1], sa[2]);
       if (S.px === null) { S.px = hp[0]; S.py = hp[1]; S.pvx = 0; S.pvy = 0; }
       const vx = (hp[0] - S.px) / h, vy = (hp[1] - S.py) / h;
       const ax = clamp((vx - S.pvx) / h, -60000, 60000), ay = clamp((vy - S.pvy) / h, -60000, 60000);
       S.px = hp[0]; S.py = hp[1]; S.pvx = vx; S.pvy = vy;
       const hipRot = this.sk.wrot[this.sk.idx.hips];
-      const target = -hipRot * 0.85 * (pose.fx.tabHang ?? 1);
-      const K = 140, Dm = 9;
-      const acc = -K * (S.tab - target) - Dm * S.tabv + ax * 0.0021 + (pose.fx.flutter || 0) * Math.sin(this.time * 23) * 40;
-      S.tabv += acc * h; S.tab += S.tabv * h; S.tab = clamp(S.tab, -55, 55);
-      const acc2 = -170 * (S.tab2 - S.tab * 0.45) - 8 * S.tab2v + ax * 0.0012 + (pose.fx.flutter || 0) * Math.sin(this.time * 29 + 1) * 50;
-      S.tab2v += acc2 * h; S.tab2 += S.tab2v * h; S.tab2 = clamp(S.tab2, -45, 45);
+      this.pf.springs.forEach((sp, ci) => {
+        const C = S.chains[ci], g = sp.gain ?? 1, fl = (pose.fx.flutter || 0);
+        const target = -hipRot * (sp.hang ?? 0.85) * (pose.fx.tabHang ?? 1);
+        const acc = -140 * (C.a - target) - 9 * C.av + ax * 0.0021 * g + fl * Math.sin(this.time * 23 + ci) * 40;
+        C.av += acc * h; C.a += C.av * h; C.a = clamp(C.a, -55, 55);
+        const acc2 = -170 * (C.b - C.a * 0.45) - 8 * C.bv + ax * 0.0012 * g + fl * Math.sin(this.time * 29 + 1 + ci) * 50;
+        C.bv += acc2 * h; C.b += C.bv * h; C.b = clamp(C.b, -45, 45);
+      });
       // events
       for (const e of c.events || []) if (!this.firedEv.has(e) && t >= e.t) { this.firedEv.add(e); this._event(e); }
       // continuous fx
@@ -285,44 +307,52 @@ const scope = {};
         p.x += p.vx * h; p.y += p.vy * h; if (p.grow) p.size += p.grow * h;
       }
       this.particles = this.particles.filter(p => p.life > 0);
-      this.flash = Math.max(0, this.flash - h / 0.16);
+      this.flash = Math.max(0, this.flash - h / 0.1);
       this.shake = Math.max(0, this.shake - h * this.shake / 0.25 - h * 2);
     }
     _withSprings(pose) {
       const p = { bones: { ...pose.bones }, feet: pose.feet, fx: pose.fx };
-      const tb = p.bones.tabard || {}, t2 = p.bones.tabard2 || {};
-      p.bones.tabard = { ...tb, r: (tb.r || 0) + this.spr.tab };
-      p.bones.tabard2 = { ...t2, r: (t2.r || 0) + this.spr.tab2 };
+      this.pf.springs.forEach((sp, ci) => {
+        const C = this.spr.chains[ci], [b1, b2] = sp.bones, q1 = p.bones[b1] || {}, q2 = p.bones[b2] || {};
+        p.bones[b1] = { ...q1, r: (q1.r || 0) + C.a }; p.bones[b2] = { ...q2, r: (q2.r || 0) + C.b };
+      });
       return p;
     }
     // sword geometry in world space
-    swordPts() {
-      const W = this.sk.world[this.sk.idx.n_wrist];
-      return { base: ap(W, 478, 610), tip: ap(W, 998, 172), mid: ap(W, 740, 390), grip: ap(W, 385, 705) };
+    swordPts(which) {
+      const s = (which && this.pf['weapon' + which]) || this.pf.weapon, W = this.sk.world[this.sk.idx[s.bone]];
+      return { base: ap(W, ...s.base), tip: ap(W, ...s.tip), mid: ap(W, ...s.mid) };
     }
+    get col() { return this.pf.color; }
     _emit(n, f) { for (let i = 0; i < n; i++) this.particles.push(f(i)); }
     _event(e) {
       if (this.onEvent) this.onEvent(e);
-      const R = Math.random, sw = this.swordPts();
+      const R = Math.random, sw = this.swordPts(e.weapon), C = this.col;
       if (e.fx === 'impact') {           // sword thrust connects
         this.shake = Math.max(this.shake, 14);
         const [x, y] = sw.tip;
         this._emit(26, () => { const a = (R() - 0.5) * 1.9, v = 900 + R() * 1500;
-          return { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.18 + R() * 0.22, max: 0.4, size: 7 + R() * 9, col: [1, 0.85, 0.45, 1], add: 1, drag: 6, streak: 1 }; });
-        this._emit(1, () => ({ x, y, vx: 0, vy: 0, life: 0.16, max: 0.16, size: 170, grow: 900, col: [1, 0.95, 0.75, 0.9], add: 1, mode: 1 }));
+          return { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.18 + R() * 0.22, max: 0.4, size: 7 + R() * 9, col: [C[0], C[1], C[2], 1], add: 1, drag: 6, streak: 1 }; });
+        this._emit(1, () => ({ x, y, vx: 0, vy: 0, life: 0.16, max: 0.16, size: 170, grow: 900, col: [0.5 + C[0] * 0.5, 0.5 + C[1] * 0.5, 0.5 + C[2] * 0.5, 0.9], add: 1, mode: 1 }));
       }
       if (e.fx === 'aura') {
         this.shake = Math.max(this.shake, 9);
         const [x, y] = sw.tip;
-        this._emit(1, () => ({ x, y, vx: 0, vy: 0, life: 0.35, max: 0.35, size: 120, grow: 1600, col: [1, 0.9, 0.55, 0.95], add: 1, mode: 1 }));
+        this._emit(1, () => ({ x, y, vx: 0, vy: 0, life: 0.35, max: 0.35, size: 120, grow: 1600, col: [C[0], C[1], C[2], 0.95], add: 1, mode: 1 }));
         this._emit(40, () => { const a = R() * Math.PI * 2, v = 500 + R() * 1300;
-          return { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.3 + R() * 0.4, max: 0.7, size: 6 + R() * 8, col: [1, 0.85, 0.4, 1], add: 1, drag: 4, streak: 1 }; });
-        const g = this.sk.pt('root', 540, 1385);
-        this._emit(1, () => ({ x: g[0], y: g[1], vx: 0, vy: 0, life: 0.55, max: 0.55, size: 80, grow: 1500, col: [1, 0.8, 0.35, 0.8], add: 1, mode: 2, flat: 0.22 }));
+          return { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.3 + R() * 0.4, max: 0.7, size: 6 + R() * 8, col: [C[0], C[1], C[2], 1], add: 1, drag: 4, streak: 1 }; });
+        const g = this.sk.pt('root', ...this.pf.ground);
+        this._emit(1, () => ({ x: g[0], y: g[1], vx: 0, vy: 0, life: 0.55, max: 0.55, size: 80, grow: 1500, col: [C[0], C[1], C[2], 0.8], add: 1, mode: 2, flat: 0.22 }));
+      }
+      if (e.fx === 'puff') {            // weapon (re)materialises
+        const [x, y] = sw.mid;
+        this._emit(1, () => ({ x, y, vx: 0, vy: 0, life: 0.2, max: 0.2, size: 90, grow: 500, col: [C[0], C[1], C[2], 0.55], add: 1, mode: 1 }));
+        this._emit(18, () => { const a = R() * Math.PI * 2, v = 200 + R() * 500;
+          return { x: x + Math.cos(a) * 60, y: y + Math.sin(a) * 60, vx: -Math.sin(a) * v, vy: Math.cos(a) * v, life: 0.25 + R() * 0.3, max: 0.55, size: 5 + R() * 6, col: [C[0], C[1], C[2], 1], add: 1, drag: 5, streak: 1 }; });
       }
       if (e.fx === 'hit') {             // incoming blow on the shield
         this.flash = 1; this.shake = Math.max(this.shake, 16);
-        const p = this.sk.pt('f_hand', 860, 590);
+        const hpnt = this.pf.hitPoint, p0 = this.sk.pt(hpnt[0], hpnt[1], hpnt[2]), p = [p0[0] - 120, p0[1]];
         this._emit(22, () => { const a = Math.PI + (R() - 0.5) * 2.4, v = 700 + R() * 1300;
           return { x: p[0] + 120, y: p[1], vx: -Math.cos(a) * v, vy: Math.sin(a) * v, life: 0.15 + R() * 0.25, max: 0.4, size: 6 + R() * 7, col: [1, 0.9, 0.6, 1], add: 1, drag: 5, g: 2500, streak: 1 }; });
         this._emit(1, () => ({ x: p[0] + 100, y: p[1], vx: 0, vy: 0, life: 0.14, max: 0.14, size: 150, grow: 1200, col: [1, 1, 0.9, 0.9], add: 1, mode: 1 }));
@@ -331,8 +361,8 @@ const scope = {};
         this.shake = Math.max(this.shake, e.k || 18);
         const pts = (e.at || [[0, 0]]).map(([bx, by, bone]) => this.sk.pt(bone || 'root', bx, by));
         for (const q of pts) this._emit(14, () => { const dir = R() < 0.5 ? -1 : 1, v = 150 + R() * 420;
-          return { x: q[0] + (R() - 0.5) * 120, y: q[1] - R() * 20, vx: dir * v, vy: -R() * 160, life: 0.6 + R() * 0.6, max: 1.2, size: 40 + R() * 50, grow: 90,
-            col: [0.55, 0.5, 0.45, 0.35], add: 0, drag: 3, g: -60, mode: 1 }; });
+          return { x: q[0] + (R() - 0.5) * 120, y: q[1] - R() * 20, vx: dir * v, vy: -R() * 160, life: 0.35 + R() * 0.35, max: 0.7, size: 35 + R() * 40, grow: 110,
+            col: [0.55, 0.5, 0.45, 0.28], add: 0, drag: 3, g: -60, mode: 1 }; });
       }
       if (e.fx === 'flash') this.flash = e.k || 1;
       if (e.fx === 'shake') this.shake = Math.max(this.shake, e.k || 10);
@@ -342,24 +372,30 @@ const scope = {};
       // sword trail sampling
       if ((fx.trail || 0) > 0.01) {
         const s = this.swordPts();
-        this.trail.push({ a: s.mid, b: s.tip, t: this.time, k: fx.trail });
+        this.trail.push({ a: s.base, b: s.tip, t: this.time, k: fx.trail });
       }
+      const tn = [2, 3, 4].find(n => (fx['trail' + n] || 0) > 0.01);
+      if (tn) {
+        const s = this.swordPts(tn);
+        (this.trail2 = this.trail2 || []).push({ a: s.base, b: s.tip, t: this.time, k: fx['trail' + tn] });
+      }
+      if (this.trail2) this.trail2 = this.trail2.filter(p => this.time - p.t < 0.12);
       this.trail = this.trail.filter(p => this.time - p.t < 0.12);
       // aura embers
       if ((fx.aura || 0) > 0.05) {
         const n = fx.aura * 260 * h; let k = Math.floor(n) + (R() < n % 1 ? 1 : 0);
         while (k--) {
-          const b = this.sk.pt('hips', 380 + R() * 400, 300 + R() * 1050);
+          const E = this.pf.emberBox, C = this.col, b = this.sk.pt('hips', E[0] + R() * E[2], E[1] + R() * E[3]);
           this.particles.push({ x: b[0], y: b[1], vx: (R() - 0.5) * 60, vy: -200 - R() * 380, life: 0.6 + R() * 0.8, max: 1.4, size: 5 + R() * 7,
-            col: [1, 0.78 + R() * 0.2, 0.35, 1], add: 1, drag: 0.6, twinkle: 1 });
+            col: [C[0], Math.min(1, C[1] + R() * 0.15), C[2], 1], add: 1, drag: 0.6, twinkle: 1 });
         }
       }
     }
     // ---------------------------------------------------------------- rendering
-    static viewFor(w, h, scale, ax, ay, shx = 0, shy = 0) {
-      // illustration px -> clip. anchor (ax,ay) in canvas px is where illustration point (540,1385) lands.
+    static viewFor(w, h, scale, ax, ay, shx = 0, shy = 0, ground = [540, 1385]) {
+      // illustration px -> clip. anchor (ax,ay) in canvas px is where the hero's ground point lands.
       const sx = 2 * scale / w, sy = -2 * scale / h;
-      const tx = (ax + shx - 540 * scale) * 2 / w - 1, ty = 1 - (ay + shy - 1385 * scale) * 2 / h;
+      const tx = (ax + shx - ground[0] * scale) * 2 / w - 1, ty = 1 - (ay + shy - ground[1] * scale) * 2 / h;
       return new Float32Array([sx, 0, 0, 0, sy, 0, tx, ty, 1]);
     }
     shakeOffset() { const s = this.shake, t = this.time * 60; return [Math.sin(t * 1.7) * s * 0.6, Math.cos(t * 2.3) * s * 0.5]; }
@@ -367,18 +403,18 @@ const scope = {};
       const gl = this.gl, sk = this.sk, W = sk.world, fx = (this.pose && this.pose.fx) || {};
       gl.enable(gl.BLEND);
       // shadow
-      const hipsP = sk.pt('hips', 550, 745);
-      const feetX = (sk.pt('n_ankle', 170, 1226)[0] + sk.pt('f_ankle', 792, 1228)[0]) / 2;
-      const lift = clamp((1385 - Math.max(sk.pt('n_ankle', 150, 1360)[1], sk.pt('f_ankle', 900, 1330)[1])) / 400, 0, 1);
-      const sw = 520 + (fx.shadowW || 0);
-      this._quads(view, [{ x: (hipsP[0] * 0.5 + feetX * 0.5) + 20, y: 1378 + (fx.shadowY || 0), size: sw * (1 - lift * 0.3), flat: 0.13, col: [0, 0, 0, 0.42 * (1 - lift * 0.5) * (opts.alpha ?? 1)], mode: 1 }], false);
+      const G = this.pf.ground, hipsP = sk.pt('hips', ...sk.pivot('hips'));
+      const f1 = sk.pt(...this.pf.feet[0]), f2 = sk.pt(...this.pf.feet[1]), feetX = (f1[0] + f2[0]) / 2;
+      const lift = clamp((G[1] - Math.max(f1[1], f2[1])) / 400, 0, 1);
+      const sw = this.pf.shadowW + (fx.shadowW || 0);
+      this._quads(view, [{ x: (hipsP[0] * 0.5 + feetX * 0.5) + 20, y: G[1] - 7 + (fx.shadowY || 0), size: sw * (1 - lift * 0.3), flat: 0.13, col: [0, 0, 0, 0.42 * (1 - lift * 0.5) * (opts.alpha ?? 1)], mode: 1 }], false);
       // aura back glow
       if ((fx.aura || 0) > 0.01 || (fx.glow || 0) > 0.01) {
-        const c = sk.pt('chest', 530, 480), a = Math.max(fx.aura || 0, fx.glow || 0);
+        const c = sk.pt(...this.pf.chest), a = Math.max(fx.aura || 0, fx.glow || 0), C = this.col;
         const sp = this.swordPts();
         this._quads(view, [
-          { x: c[0], y: c[1] + 150, size: 900, col: [1, 0.72, 0.28, 0.33 * a], mode: 1 },
-          { x: sp.tip[0], y: sp.tip[1], size: 330 * (0.8 + 0.2 * Math.sin(this.time * 30)), col: [1, 0.9, 0.6, 0.7 * a], mode: 1 },
+          { x: c[0], y: c[1] + 150, size: 900, col: [C[0], C[1] * 0.9, C[2] * 0.8, 0.33 * a], mode: 1 },
+          { x: sp.mid[0], y: sp.mid[1], size: 330 * (0.8 + 0.2 * Math.sin(this.time * 30)), col: [0.5 + C[0] / 2, 0.5 + C[1] / 2, 0.5 + C[2] / 2, 0.7 * a], mode: 1 },
         ], true);
         // light pillar from the tip upward
         if ((fx.pillar || 0) > 0.01) this._pillar(view, sp.tip, fx.pillar);
@@ -389,8 +425,8 @@ const scope = {};
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.tex);
       gl.uniform1i(this.u.uTex.get(this.pSprite), 0);
       const fl = Math.max(this.flash, fx.white || 0);
-      gl.uniform4f(this.u.uTint.get(this.pSprite), 1, 1, 1, Math.min(1, fl) * 0.62);
-      gl.uniform4f(this.u.uAdd.get(this.pSprite), 1.0, 0.72, 0.25, (fx.rim || 0) * 0.55);
+      gl.uniform4f(this.u.uTint.get(this.pSprite), 1, 1, 1, Math.pow(Math.min(1, fl), 2) * 0.9);
+      gl.uniform4f(this.u.uAdd.get(this.pSprite), this.col[0], this.col[1] * 0.92, this.col[2] * 0.8, (fx.rim || 0) * 0.55);
       gl.uniform1f(this.u.uAlpha.get(this.pSprite), opts.alpha ?? 1);
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       let order = this.layers;
@@ -402,7 +438,11 @@ const scope = {};
       }
       // right leg attachment swap: profile art (toe forward) while the leg is stepped out in front
       const fwd = clamp(fx.nfwd || 0, 0, 1) > 0.5;
+      const swapHide = new Set();
+      for (const sw of this.pf.swap || []) for (const n of ((fx[sw.fx] || 0) > 0.5 ? sw.hide : sw.show)) swapHide.add(n);
       for (const L of order) {
+        if (opts.hide && opts.hide.includes(L.name)) continue;
+        if (swapHide.has(L.name)) continue;
         if (L.name === 'near_leg' && fwd) continue;
         if (L.name === 'near_leg_fwd' && !fwd) continue;
         const o = L.out, p = L.pos, bi = L.bi, bw = L.bw, bp = L.bpos;
@@ -423,7 +463,8 @@ const scope = {};
       }
       gl.bindVertexArray(null);
       // sword trail + particles (additive)
-      if (this.trail.length > 1) this._trail(view);
+      if (this.trail.length > 1) this._trail(view, this.trail);
+      if (this.trail2 && this.trail2.length > 1) this._trail(view, this.trail2);
       const add = [], norm = [];
       for (const p of this.particles) {
         const k = clamp(p.life / p.max, 0, 1);
@@ -459,11 +500,11 @@ const scope = {};
       }
       for (const m in byMode) this._draw(view, new Float32Array(byMode[m]), +m, additive);
     }
-    _trail(view) {
-      const T = this.trail, n = T.length, data = [];
+    _trail(view, T) {
+      const n = T.length, data = [];
       for (let i = 1; i < n; i++) {
         const A = T[i - 1], B = T[i], ka = (1 - (this.time - A.t) / 0.12) * A.k, kb = (1 - (this.time - B.t) / 0.12) * B.k;
-        const col = (k, edge) => [1 * k, 0.86 * k, 0.55 * k, 0];
+        const C = this.col, col = (k, edge) => [(0.4 + C[0] * 0.6) * k, (0.4 + C[1] * 0.6) * k, (0.4 + C[2] * 0.6) * k, 0];
         // two-sided soft ribbon between mid->tip lines of consecutive samples
         const mA = A.a, tA = A.b, mB = B.a, tB = B.b;
         const v = (p, s, t, k) => [p[0], p[1], s, t, ...col(Math.max(0, k))];
@@ -476,15 +517,15 @@ const scope = {};
     }
     _pillar(view, tip, k) {
       const w = 70 * k, top = tip[1] - 2600;
-      const c = [1 * k * 0.55, 0.85 * k * 0.55, 0.5 * k * 0.55, 0];
+      const C = this.col, c = [C[0] * k * 0.55, C[1] * k * 0.55, C[2] * k * 0.55, 0];
       const v = (x, y, s, t) => [x, y, s, t, ...c];
       const d = [v(tip[0] - w, top, 1, -1), v(tip[0] + w, top, 1, 1), v(tip[0] + w, tip[1], 1, 1),
         v(tip[0] - w, top, 1, -1), v(tip[0] + w, tip[1], 1, 1), v(tip[0] - w, tip[1], 1, -1)].flat();
       this._draw(view, new Float32Array(d), 0, true);
     }
   }
-  Knight2D.EASE = EASE;
-  global.Knight2D = Knight2D;
+  Hero2D.EASE = EASE;
+  global.Hero2D = Hero2D;
 })(scope);
 
-export const Knight2D = scope.Knight2D;
+export const Hero2D = scope.Hero2D;

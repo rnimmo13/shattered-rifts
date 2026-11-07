@@ -62,6 +62,7 @@ export function CosmeticsScreen() {
             <LookTile
               key={h}
               src={(worn ? art.get(worn) : undefined) ?? own.get(h) ?? ''}
+              hero={worn ? undefined : h}
               name={name(h)}
               sub={worn ? skinName({ id: worn, hero: h }) : 'Own look'}
               tag={count > 0 ? `${count + 1} looks` : undefined}
@@ -101,6 +102,7 @@ export function CosmeticsScreen() {
               <LookTile
                 key={l.id ?? 'own'}
                 src={l.src}
+                hero={l.id === null ? h : undefined}
                 name={l.label}
                 sub={name(h)}
                 tag={on ? 'Wearing' : undefined}

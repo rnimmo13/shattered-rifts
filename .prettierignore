@@ -7,3 +7,5 @@ docs
 *.md
 # Frozen balance-baseline archives: never reformat (their hashes are recorded)
 reviews/balance-baselines
+# 2D hero runtimes copied from assets-src by apps/web/scripts/sync-hero-rigs.mjs: kept as delivered
+apps/web/src/art/hero2d/*.js

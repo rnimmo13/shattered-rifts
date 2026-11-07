@@ -46,6 +46,60 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.222.0',
+    date: '2026-11-07',
+    title: 'The animated Rogue, and guns you can see',
+    summary:
+      'The Rogue animates in battle, the animated Knight and Rogue appear across the game, and every Drunkard card that fires is a gun.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'The animated Rogue',
+        hero: 'assassin',
+        text: "The Rogue's default look is now an animated 2D model in battle: he flings his floating dagger on an Attack, raises his aura on a Skill or Aura, flinches when hit and falls when beaten. Damage appears as the dagger lands. A skin you wear still shows as its picture.",
+      },
+      {
+        kind: 'new',
+        title: 'Animated models everywhere',
+        text: 'The animated Knight and Rogue now also appear on the home screen, the character picker, the Cosmetics Vault, the Models page and the lore page. Hover one to see its aura. With a skin worn, reduced motion or Low graphics they show their still picture.',
+      },
+      {
+        kind: 'balance',
+        title: 'Drunkard guns',
+        hero: 'drunkard',
+        changes: [
+          {
+            label: 'Cards that count as guns (Buff)',
+            before: 'Old Twelve Gauge only',
+            after: 'Every card that fires, shells included (11 cards)',
+            direction: 'buff',
+          },
+          {
+            label: 'Gun Oil',
+            before: '3 Barrier per gun (4)',
+            after: '2 Barrier per gun (3)',
+            direction: 'nerf',
+          },
+          {
+            label: 'Bandolier (Buff)',
+            before: '2 Barrier per shell (3)',
+            after: '3 Barrier per shell (4)',
+            direction: 'buff',
+          },
+        ],
+        text: 'Old Twelve Gauge, Buckshot Shell, Birdshot, Slug Round, Shotgun Wedding, Sawn-Off, Boomstick, The Last Shell, Spray and Pray, Shell Shock and Tin Can Alley count as guns and show a red gun badge in the top right of the card. The Twelve-Gauge Opera and Gun Oil answer every one of them. Pistol Whip and Buttstroke hit with the gun, so they are not shots.',
+      },
+      {
+        kind: 'changed',
+        title: 'The Knight',
+        hero: 'knight',
+        text: 'The animated Knight now runs on the same animation engine as the Rogue; a few of his effects (the sword trail, sparks and hit flash) look slightly different.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.221.0',
     date: '2026-11-07',
     title: 'An animated Knight and a stronger start',

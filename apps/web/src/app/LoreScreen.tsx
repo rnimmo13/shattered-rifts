@@ -5,6 +5,7 @@ import { loadGraphicsQuality, loadEffectsMode } from '../duel/effects';
 import { useSettingsChanged } from './settings';
 import { SettingsButton } from '../ui/SettingsButton';
 import { setActiveRun } from '../run/saves';
+import { HeroModel } from '../art/HeroModel';
 import './lore.css';
 
 const gallery = [
@@ -239,13 +240,16 @@ export default function LoreScreen() {
                 <div className="lore__heroes">
                   {world.heroes.map((id) => (
                     <figure key={id}>
-                      <img
-                        src={`${import.meta.env.BASE_URL}art/figures/hero-${id}.png`}
-                        loading="lazy"
-                        width="56"
-                        height="80"
-                        alt={`Default ${RIFTWALKERS[id].hero.name}`}
-                      />
+                      {/* (the default look, animated where it has a model: DECISIONS #680) */}
+                      <HeroModel hero={id} className="lore__model">
+                        <img
+                          src={`${import.meta.env.BASE_URL}art/figures/hero-${id}.png`}
+                          loading="lazy"
+                          width="56"
+                          height="80"
+                          alt={`Default ${RIFTWALKERS[id].hero.name}`}
+                        />
+                      </HeroModel>
                       <figcaption>{RIFTWALKERS[id].hero.name}</figcaption>
                     </figure>
                   ))}

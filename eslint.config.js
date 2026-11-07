@@ -50,7 +50,7 @@ export default tseslint.config(
       'reviews/balance-baselines/**',
       // (art sources, git-ignored, and the vendored 2D rig runtime: kept as delivered, typed by their .d.ts files)
       'assets-src/**',
-      'apps/web/src/art/knight2d/*.js',
+      'apps/web/src/art/hero2d/*.js',
     ],
   },
   js.configs.recommended,

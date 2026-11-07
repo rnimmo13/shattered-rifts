@@ -409,7 +409,7 @@ export class Fighters {
   private resize(f: Fighter): void {
     const spec = f.spec;
     const k = spec.height / spec.canvas.height;
-    const w = f.rig ? HeroSprite.widthFor(spec.height) : spec.canvas.width * k;
+    const w = f.rig ? f.rig.widthFor(spec.height) : spec.canvas.width * k;
     if (f.rig) this.fitRig(f, f.rig);
     else {
       f.sprite.scale.set(k);
@@ -482,7 +482,7 @@ export class Fighters {
       // (not once the fight is over: a beaten hero's picture has already slumped)
       if (!assets || this.destroyed || this.ended || this.all.get(f.spec.id) !== f || f.dying)
         return;
-      const rig = HeroSprite.create(assets, facing);
+      const rig = HeroSprite.create(id, assets, facing);
       if (!rig) return;
       f.rig = rig;
       f.sprite.texture = rig.texture;
@@ -1251,7 +1251,7 @@ export class Fighters {
     });
   }
 
-  /** A rigged hero's death: the clip plays and holds its last frame; resolves at the 'land' moment (0.98s), with a thud. */
+  /** A rigged hero's death: the clip plays and holds its last frame; resolves at its 'land' moment (~1s), with a thud. */
   private rigFall(f: Fighter, rig: HeroSprite): Promise<void> {
     if (f.dying) return Promise.resolve();
     f.dying = true;

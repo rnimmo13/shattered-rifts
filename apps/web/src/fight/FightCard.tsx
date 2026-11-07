@@ -88,24 +88,42 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
   return text.replace(KEYWORDS, '**$1**');
 }
 
-/** The Spellblade's Swords and Spells, as a badge like the Shaman's elements (DECISIONS #481): a blade, a four-point star. */
-type Kind = 'sword' | 'spell';
+/**
+ * A card's kind as a badge like the Shaman's elements: the Spellblade's Swords and Spells (DECISIONS #481), a blade and a four-point
+ * star, and the Drunkard's guns (DECISIONS #681), a shotgun shell.
+ */
+type Kind = 'sword' | 'spell' | 'gun';
 const kindOf = (c: Pick<CardDef, 'tags'>): Kind | null =>
-  c.tags?.includes('sword') ? 'sword' : c.tags?.includes('spell') ? 'spell' : null;
-const KIND_NAME: Record<Kind, string> = { sword: 'Sword', spell: 'Spell' };
+  c.tags?.includes('sword')
+    ? 'sword'
+    : c.tags?.includes('spell')
+      ? 'spell'
+      : c.tags?.includes('gun')
+        ? 'gun'
+        : null;
+const KIND_NAME: Record<Kind, string> = { sword: 'Sword', spell: 'Spell', gun: 'Gun' };
+const KIND_OWNER: Record<Kind, string> = {
+  sword: 'Spellblade',
+  spell: 'Spellblade',
+  gun: 'Drunkard',
+};
 const KIND_TEXT: Record<Kind, string> = {
   sword:
     'A sword strike. Most strike more times the more Spell Power you hold, and swinging spends none. Might and Primed add to every hit.',
   spell:
     'A magic card. Some Swords and Auras pay off when you play a Spell first: earlier this turn, or straight before them.',
+  gun: 'A gun shot: the Old Twelve Gauge, every shell, and the other cards that fire. Cards that answer "whenever you play a gun" (The Twelve-Gauge Opera, Gun Oil) answer this one.',
 };
 function KindIcon({ kind }: { kind: Kind }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden>
       {kind === 'sword' ? (
         <path d="M20.5 2 21.9 3.4 21 8l-9.6 9.6 1.5 1.5-1.4 1.4-2.1-2.1-3.3 3.3-1.8.3-1-1 .3-1.8 3.3-3.3-2.1-2.1 1.4-1.4 1.5 1.5L16 3l4.5-1Z" />
-      ) : (
+      ) : kind === 'spell' ? (
         <path d="M12 2c.8 5.6 3.4 8.6 10 10-6.6 1.4-9.2 4.4-10 10-.8-5.6-3.4-8.6-10-10 6.6-1.4 9.2-4.4 10-10Z" />
+      ) : (
+        // (a shotgun shell standing on its brass)
+        <path d="M8.5 3.5C8.5 2.7 9.2 2 10 2h4c.8 0 1.5.7 1.5 1.5V15h-7V3.5ZM7 16.5h10v3c0 1.4-1.1 2.5-2.5 2.5h-5A2.5 2.5 0 0 1 7 19.5v-3Zm3-11h4v2h-4v-2Zm0 4h4v2h-4v-2Z" />
       )}
     </svg>
   );
@@ -251,7 +269,7 @@ export const FightCard = memo(
               className={`card__element card__element--${kind}`}
               aria-label={KIND_NAME[kind]}
               {...tipAttrs({
-                kicker: 'Spellblade',
+                kicker: KIND_OWNER[kind],
                 title: KIND_NAME[kind],
                 text: KIND_TEXT[kind],
               })}

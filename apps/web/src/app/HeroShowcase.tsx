@@ -12,6 +12,7 @@ import { useCosmetics } from '../cosmetics/cosmetics';
 import { HeroIcon } from '../ui/HeroIcon';
 import { HERO_COLOR } from '../art/emblems';
 import { tipAttrs } from '../ui/tip';
+import { HeroModel } from '../art/HeroModel';
 import './home.css';
 
 function HeroStage(props: { hero: HeroId }) {
@@ -37,7 +38,12 @@ function HeroStage(props: { hero: HeroId }) {
     g.clearRect(0, 0, w, h);
     g.drawImage(src, 0, 0, w, h);
   }, [props.hero, skin, art]);
-  return <canvas ref={ref} className="home__figure" aria-hidden />;
+  // (the animated model over it, where the hero's own look has one: DECISIONS #680)
+  return (
+    <HeroModel hero={props.hero} skin={skin} className="home__figure">
+      <canvas ref={ref} aria-hidden />
+    </HeroModel>
+  );
 }
 
 export function HeroShowcase(props: {

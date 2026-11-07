@@ -1,3 +1,9 @@
+## 0.222.0 - 2026-11-07
+
+- Drunkard: every card that fires now counts as a gun, shells included (Old Twelve Gauge, Buckshot Shell, Birdshot, Slug Round, Shotgun Wedding, Sawn-Off, Boomstick, The Last Shell, Spray and Pray, Shell Shock, Tin Can Alley), and shows a gun badge in its top right. The Twelve-Gauge Opera and Gun Oil answer all of them. Gun Oil gives 2 Barrier per gun (3 upgraded; was 3/4); Bandolier gives 3 per shell (4 upgraded; was 2/3) (DECISIONS #681).
+- Rogue: his default look is now an animated 2D model in battle: he flings his floating dagger, raises his aura, flinches and falls. A skin you wear stays a still picture (DECISIONS #680).
+- The animated Knight and Rogue also show on the home screen, the character picker, the Cosmetics Vault, the Models page and the lore page; hover one to see its aura.
+
 ## 0.221.0 - 2026-11-07
 
 - Knight: his default look is now the animated 2D Sun Knight in battle. He strikes, raises his aura for Skills and Auras, flinches behind his shield when hit and falls when beaten; damage shows as his blow lands. A skin you wear shows as a still picture, as before. Needs WebGL2; otherwise the still figure (DECISIONS #676).

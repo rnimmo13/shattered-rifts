@@ -1,0 +1,48 @@
+/* A Riftwalker's model outside battle (HeroModel.tsx): the still picture, and the animated rig over it once it has loaded. */
+.hero-model {
+  position: relative;
+  display: inline-block;
+}
+/* the still picture fills the box it held before (a screen's own rule for its picture wins: :where adds no weight) */
+.hero-model > :where(:not(.hero-model__rig)) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+/* (kept in place for the layout, unseen while the rig draws) */
+.hero-model.is-live > :not(.hero-model__rig) {
+  visibility: hidden;
+}
+.hero-model__rig {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 16px rgb(0 0 0 / 0.55));
+}
+
+/* where each screen puts one: the box the picture filled */
+.look__model {
+  width: 100%;
+  height: 100%;
+}
+/* (the picker's picture keeps its own size: the box is as big as the picture) */
+.picker__model {
+  line-height: 0;
+}
+.bestiary__model {
+  width: 200px;
+  height: 260px;
+}
+.lore__model {
+  display: block;
+  width: 56px;
+  height: 80px;
+  margin: auto;
+}
+/* the home stage already casts a shadow and breathes: the rig brings its own breathing */
+.home__figure .hero-model__rig {
+  filter: none;
+}
+.home__figure.is-live {
+  animation: none;
+}

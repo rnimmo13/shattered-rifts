@@ -35,6 +35,8 @@ const hurtMight = (cap: number): Op =>
   ({ ...status('might', 0, 'self', true), scale: { by: 'hpLostNow', mult: 0.5, max: cap } }) as Op;
 
 const p = pool('drunkard', 'midden');
+/** a card that fires the gun (DECISIONS #681): The Twelve-Gauge Opera and Gun Oil answer it, and it shows a gun badge */
+const GUN = { tags: ['gun'] };
 /** a drink's price: 1% of Max HP per stack at the start of your next turn (DECISIONS #354, #502) */
 const hangover = (n: number): Op => status('hangover', n);
 /** clear your Hangover */
@@ -68,7 +70,8 @@ export const DRUNKARD: CardDef[] = [
   // the token every shell card makes
   p('common', 'buckshot-shell', 'Buckshot Shell', 'attack', 0, 'none', [dmg(4, 'allFoes')], {
     exhaust: true,
-    tags: ['shell'],
+    // (a shell is fired from the gun: it counts as both, DECISIONS #681)
+    tags: ['shell', 'gun'],
     source: 'token',
     // (+2, not the usual +3: six of them from an Ammo Dump+ would otherwise be 42 to every enemy for 2 Mana)
     up: { effects: [dmg(6, 'allFoes')] },
@@ -94,7 +97,7 @@ export const DRUNKARD: CardDef[] = [
   // --- Shells: the 12 gauge ---
   // (two, not three: a Shell is a free card that hits every enemy, DECISIONS #393)
   p('common', 'load-shells', 'Load Shells', 'skill', 1, 'none', [addTo('buckshot-shell', 2)]),
-  p('common', 'slug-round', 'Slug Round', 'attack', 2, 'foe', [dmg(16)]),
+  p('common', 'slug-round', 'Slug Round', 'attack', 2, 'foe', [dmg(16)], GUN),
   p(
     'uncommon',
     'pump-action',
@@ -105,7 +108,16 @@ export const DRUNKARD: CardDef[] = [
     [addTo('buckshot-shell', 2), draw(1)],
     { up: { effects: [addTo('buckshot-shell', 3), draw(1)] } },
   ),
-  p('uncommon', 'shotgun-wedding', 'Shotgun Wedding', 'attack', 2, 'none', [dmg(7, 'allFoes', 2)]),
+  p(
+    'uncommon',
+    'shotgun-wedding',
+    'Shotgun Wedding',
+    'attack',
+    2,
+    'none',
+    [dmg(7, 'allFoes', 2)],
+    GUN,
+  ),
   p(
     'uncommon',
     'shell-game',
@@ -116,9 +128,16 @@ export const DRUNKARD: CardDef[] = [
     [on('turnStart', [addTo('buckshot-shell')])],
     { up: { innate: true } },
   ),
-  p('rare', 'boomstick', 'Boomstick', 'attack', 3, 'none', [
-    scaled(dmg(14, 'allFoes'), per('exhausted', 2)),
-  ]),
+  p(
+    'rare',
+    'boomstick',
+    'Boomstick',
+    'attack',
+    3,
+    'none',
+    [scaled(dmg(14, 'allFoes'), per('exhausted', 2))],
+    GUN,
+  ),
   p(
     'rare',
     'last-shell',
@@ -127,7 +146,7 @@ export const DRUNKARD: CardDef[] = [
     2,
     'foe',
     [dmg(24), status('exposed', 1, 'target')],
-    { exhaust: true, retain: true },
+    { exhaust: true, retain: true, ...GUN },
   ),
 
   // --- liquid courage ---
@@ -247,10 +266,16 @@ export const DRUNKARD: CardDef[] = [
     [on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' })],
     { up: { innate: true } },
   ),
-  p('common', 'shell-shock', 'Shell Shock', 'attack', 1, 'none', [
-    dmg(3, 'allFoes'),
-    addTo('buckshot-shell'),
-  ]),
+  p(
+    'common',
+    'shell-shock',
+    'Shell Shock',
+    'attack',
+    1,
+    'none',
+    [dmg(3, 'allFoes'), addTo('buckshot-shell')],
+    GUN,
+  ),
 
   // (more Shells)
   p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(5, 'target', 4)]),
@@ -356,8 +381,8 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // --- Shells (more) ---
-  p('uncommon', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(9, 'allFoes'), lose(1)]),
-  p('uncommon', 'tin-can-alley', 'Tin Can Alley', 'attack', 1, 'none', [dmg(3, 'allFoes', 3)]),
+  p('uncommon', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(9, 'allFoes'), lose(1)], GUN),
+  p('uncommon', 'tin-can-alley', 'Tin Can Alley', 'attack', 1, 'none', [dmg(3, 'allFoes', 3)], GUN),
   p('uncommon', 'pick-up-the-brass', 'Pick Up the Brass', 'skill', 1, 'none', [reclaim(2)], {
     exhaust: true,
   }),
@@ -371,12 +396,22 @@ export const DRUNKARD: CardDef[] = [
     [on('exhaust', [barrier(1), forge('old-twelve-gauge', 1)])],
     { up: { effects: [on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)])] } },
   ),
-  p('uncommon', 'spray-and-pray', 'Spray and Pray', 'attack', 2, 'none', [
-    scaled(dmg(10, 'allFoes'), per('created', 0.5)),
-  ]),
+  p(
+    'uncommon',
+    'spray-and-pray',
+    'Spray and Pray',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(10, 'allFoes'), per('created', 0.5))],
+    GUN,
+  ),
 
   // --- brought back (DECISIONS #337) ---
-  p('common', 'birdshot', 'Birdshot', 'attack', 0, 'none', [dmg(6, 'allFoes')], { exhaust: true }),
+  p('common', 'birdshot', 'Birdshot', 'attack', 0, 'none', [dmg(6, 'allFoes')], {
+    exhaust: true,
+    ...GUN,
+  }),
 
   // --- Gun, filled to its minimum (DECISIONS #337) ---
   p(
@@ -404,9 +439,10 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [barrier(3)], { tag: 'gun' })],
+    // (2, DECISIONS #681: every shell is a gun now, and Bandolier is the shell specialist)
+    [on('play', [barrier(2)], { tag: 'gun' })],
     {
-      up: { effects: [on('play', [barrier(4)], { tag: 'gun' })] },
+      up: { effects: [on('play', [barrier(3)], { tag: 'gun' })] },
     },
   ),
   p(
@@ -510,8 +546,9 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [barrier(2)], { tag: 'shell' })],
-    { up: { effects: [on('play', [barrier(3)], { tag: 'shell' })] } },
+    // (3, DECISIONS #681: more than Gun Oil's 2, which every gun sets off)
+    [on('play', [barrier(3)], { tag: 'shell' })],
+    { up: { effects: [on('play', [barrier(4)], { tag: 'shell' })] } },
   ),
   p(
     'rare',

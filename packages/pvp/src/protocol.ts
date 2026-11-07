@@ -97,7 +97,8 @@ export interface Entry {
 // 89: Breaching Strike becomes a 2-Mana Rare with 18/24 damage and 2 Exposed.
 // 90: Shaman starts with a third Thunderbird; basic Hawk's Dive replaces one starting Strike.
 // 91: a main enemy (1.5x every other starting enemy's Max HP) starts at the back, behind its minions.
-export const RULES_VERSION = 91;
+// 92: every Drunkard card that fires is a gun (shells included); Gun Oil 2 Barrier, Bandolier 3 (#681).
+export const RULES_VERSION = 92;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

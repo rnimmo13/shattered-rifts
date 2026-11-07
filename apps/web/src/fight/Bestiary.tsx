@@ -3,9 +3,10 @@
 import { useEffect, useRef } from 'react';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import { heroFigure, unitFigure } from './art';
+import { HeroModel } from '../art/HeroModel';
 import '../play/play.css';
 
-function Figure(props: { src: HTMLCanvasElement; name: string; note: string }) {
+function Figure(props: { src: HTMLCanvasElement; name: string; note: string; hero?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = ref.current;
@@ -20,7 +21,14 @@ function Figure(props: { src: HTMLCanvasElement; name: string; note: string }) {
   }, [props.src]);
   return (
     <figure className="bestiary__fig">
-      <canvas ref={ref} width={200} height={260} />
+      {props.hero ? (
+        // (a Riftwalker's own look, animated where it has a model: DECISIONS #680)
+        <HeroModel hero={props.hero} className="bestiary__model">
+          <canvas ref={ref} width={200} height={260} />
+        </HeroModel>
+      ) : (
+        <canvas ref={ref} width={200} height={260} />
+      )}
       <figcaption>
         <b>{props.name}</b>
         <small>{props.note}</small>
@@ -43,6 +51,7 @@ export function Bestiary() {
           <Figure
             key={r.hero.id}
             src={heroFigure(r.hero.id)}
+            hero={r.hero.id}
             name={r.hero.name}
             note={`${r.hero.maxHp} HP`}
           />

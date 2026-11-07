@@ -1,0 +1,126 @@
+// A Riftwalker's model outside battle (the home stage, the character picker, the Vault, the Models page, the lore page): the
+// animated 2D rig when the hero's default look has one (DECISIONS #680), over the still picture it replaces. The picture stays in
+// place underneath, so the layout and anything that reads it are unchanged, and it is what shows with a skin worn, without WebGL2,
+// with reduced motion or on Low graphics, if the browser takes the rig's GL context away, or until the rig has loaded. Hovering
+// the model raises its aura. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
+
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { HERO_RIGS } from './heroRigs';
+// (a type only: the rig code itself is loaded on demand below)
+import type { HeroSprite } from '../fight/heroSprite';
+import './heroModel.css';
+
+const still = (): boolean =>
+  (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+  document.documentElement.dataset['graphics'] === 'low';
+
+export function HeroModel(props: {
+  hero: string;
+  /** the skin worn, if any: a skin is a still picture */
+  skin?: string | undefined;
+  /** the wrapper's own classes (it takes the place, and the layout class, of the picture it holds) */
+  className?: string;
+  /** how much of the box's height the body fills, feet on its bottom edge */
+  fill?: number;
+  /** the still picture */
+  children: ReactNode;
+}) {
+  const box = useRef<HTMLSpanElement>(null);
+  const [live, setLive] = useState(false);
+  const rigId = !props.skin ? HERO_RIGS[props.hero] : undefined;
+  const fill = props.fill ?? 0.94;
+
+  useEffect(() => {
+    const el = box.current;
+    if (!rigId || !el || still()) return;
+    let sprite: HeroSprite | null = null;
+    let raf = 0;
+    let gone = false;
+    let last = performance.now();
+    let size = { w: 0, h: 0 };
+
+    // (the canvas: the body `fill` of the box tall, feet on the bottom edge in the middle; a wider stance may reach past the sides)
+    const place = (): void => {
+      if (!sprite) return;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const height = Math.max(8, size.h * fill);
+      const changed = sprite.resize(height, dpr);
+      const c = sprite.canvas;
+      const w = c.width * sprite.stageScale;
+      const h = c.height * sprite.stageScale;
+      const a = sprite.anchor;
+      c.style.width = `${w}px`;
+      c.style.height = `${h}px`;
+      c.style.left = `${size.w / 2 - a.x * w}px`;
+      c.style.top = `${size.h - a.y * h}px`;
+      if (changed) sprite.render();
+    };
+    const frame = (now: number): void => {
+      raf = requestAnimationFrame(frame);
+      if (!sprite || document.hidden) {
+        last = now;
+        return;
+      }
+      // (switched to Low graphics or reduced motion meanwhile: the picture again)
+      if (still()) {
+        stop();
+        return;
+      }
+      sprite.update(Math.min(0.1, (now - last) / 1000));
+      last = now;
+      place();
+      sprite.render();
+    };
+    const resize = new ResizeObserver(([e]) => {
+      if (!e) return;
+      size = { w: e.contentRect.width, h: e.contentRect.height };
+      place();
+    });
+    const aura = (): void => {
+      if (sprite && sprite.clip === 'idle') sprite.play('aura');
+    };
+    // (everything the rig holds let go, and the picture shown again: on unmount, a lost context, or a switch to Low graphics)
+    const stop = (): void => {
+      cancelAnimationFrame(raf);
+      resize.disconnect();
+      el.removeEventListener('pointerenter', aura);
+      const s = sprite;
+      sprite = null;
+      if (s) {
+        s.canvas.remove();
+        s.dispose();
+      }
+      if (!gone) setLive(false);
+    };
+
+    void import('../fight/heroSprite').then(async (rigs) => {
+      const assets = await rigs.loadRig(rigId);
+      if (gone || !assets || still()) return;
+      sprite = rigs.HeroSprite.create(rigId, assets, 'right');
+      if (!sprite) return;
+      sprite.onLost(stop);
+      sprite.canvas.className = 'hero-model__rig';
+      sprite.canvas.setAttribute('aria-hidden', 'true');
+      el.appendChild(sprite.canvas);
+      const r = el.getBoundingClientRect();
+      size = { w: r.width, h: r.height };
+      place();
+      sprite.render();
+      resize.observe(el);
+      el.addEventListener('pointerenter', aura);
+      setLive(true);
+      raf = requestAnimationFrame(frame);
+    });
+
+    return () => {
+      gone = true;
+      stop();
+    };
+  }, [rigId, fill]);
+
+  return (
+    <span ref={box} className={`hero-model${live ? ' is-live' : ''} ${props.className ?? ''}`}>
+      {props.children}
+    </span>
+  );
+}

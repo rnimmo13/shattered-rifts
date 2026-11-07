@@ -7,6 +7,7 @@ import { RIFTWALKERS } from '@sr/content/v2';
 import { HEROES, SHOP_TABS, type ShopTab } from './shopTabs';
 import { HeroIcon } from '../ui/HeroIcon';
 import { StoreIcon } from './StoreIcon';
+import { HeroModel } from '../art/HeroModel';
 import './store.css';
 
 /** The page around a shop: header, the sticky bar, then what the chosen tab shows. */
@@ -117,11 +118,19 @@ export function LookTile(props: {
   onOpen?: (() => void) | undefined;
   /** what clicking the stage does, read out for it (the stage is a plain picture when it does nothing) */
   openLabel?: string | undefined;
+  /** this tile shows a Riftwalker's own look: their animated model, where they have one (DECISIONS #680) */
+  hero?: string | undefined;
 }) {
   const inner = (
     <>
       {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
-      <LookPicture src={props.src} />
+      {props.hero ? (
+        <HeroModel hero={props.hero} className="look__model">
+          <LookPicture src={props.src} />
+        </HeroModel>
+      ) : (
+        <LookPicture src={props.src} />
+      )}
       {props.tag && <i className="look__tag">{props.tag}</i>}
     </>
   );
