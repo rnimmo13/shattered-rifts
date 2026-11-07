@@ -46,6 +46,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.220.0',
+    date: '2026-11-07',
+    title: 'Shatter damage on cards',
+    summary: 'Fracture cards in your hand show the Shatter damage they would set off.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Shatter preview',
+        hero: 'spellblade',
+        text: 'A card in your hand that applies Fracture now shows the damage of any Shatter it would set off, such as "Apply 7 Fracture (Shatter 38)." Aim it at an enemy for the exact number; otherwise it shows the range across the enemies it could hit, with 0 for an enemy it would not Shatter. Fracture on every enemy says "each", and crossing two thresholds at once shows both Shatters and their total. The number includes Spell Power, Deepening, Shatterer, difficulty and Fault Lines. Hover the card for the breakdown. Barrier is not subtracted, as with other damage previews. Nothing is shown when no Shatter is in reach.',
+      },
+    ],
+  },
+  {
     version: '0.219.0',
     date: '2026-11-06',
     title: 'A stronger Shaman start',

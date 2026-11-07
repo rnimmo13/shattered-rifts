@@ -1,3 +1,7 @@
+## 0.220.0 - 2026-11-07
+
+- Spellblade: a card in hand that applies Fracture shows the damage of the Shatter(s) it would set off, e.g. "Apply 7 Fracture (Shatter 38)." Without a chosen target it shows the range over the enemies it could hit (0 where none would Shatter), "each" for every-enemy Fracture, and "2 Shatters, 50 total" when it crosses two thresholds. Counts Spell Power, Deepening, the Shatterer's percent, difficulty, Shielded/Ghostly and Fault Lines' extra Fracture after the card. Nothing is shown when no Shatter is reachable. Display only; no rules change.
+
 ## 0.219.0 - 2026-11-06 (local)
 
 - Shaman, Campaign/Arena: fight-start row Hawk/Bear -> Hawk/Bear/Thunderbird, in that order, including existing characters. Slots stay 3, so the next plant triggers an immediate front-totem push-out. Totem values and Spirit coefficients unchanged.

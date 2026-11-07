@@ -2154,6 +2154,15 @@ function liveDamageText(
   l: LiveDamage,
 ): string {
   const num = l.lo === l.hi ? String(l.lo) : `${l.lo}-${l.hi}`;
+  // (Fracture: what the Shatters it sets off would deal, "Apply 4 Fracture (Shatter 20)." or "(Shatter 0-30 each)" when it depends on the enemy)
+  if (l.shatter) {
+    const mark =
+      (l.hits ?? 1) > 1
+        ? ` (${l.variableHits ? 'up to ' : ''}${l.hits} Shatters, [[live:calc:${num}]] total${l.each ? ' each' : ''})`
+        : ` (Shatter [[live:calc:${num}]]${l.each ? ' each' : ''})`;
+    const dot = text.lastIndexOf('.');
+    return dot < 0 ? `${text}${mark}` : `${text.slice(0, dot)}${mark}${text.slice(dot)}`;
+  }
   if (l.conditional) {
     const total = l.total ?? { lo: l.lo, hi: l.hi };
     const sum = total.lo === total.hi ? String(total.lo) : `${total.lo}-${total.hi}`;
@@ -2226,17 +2235,23 @@ function liveDamageText(
  */
 export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
   if (c.text) {
-    const known = [...(live?.values() ?? [])].filter((l) => !l.barrier && !l.uncertain);
+    const all = [...(live?.values() ?? [])].filter((l) => !l.barrier && !l.uncertain);
+    const known = all.filter((l) => !l.shatter);
+    const shatters = all.filter((l) => l.shatter);
+    const sumText = (l: LiveDamage): string => {
+      const sum = l.total ?? { lo: l.lo, hi: l.hi };
+      return `[[live:calc:${sum.lo === sum.hi ? sum.lo : `${sum.lo}-${sum.hi}`}]]`;
+    };
     return (
       c.text +
       (known.length
         ? ' Damage now: ' +
-          known
-            .map((l) => {
-              const sum = l.total ?? { lo: l.lo, hi: l.hi };
-              return `[[live:calc:${sum.lo === sum.hi ? sum.lo : `${sum.lo}-${sum.hi}`}]] total${l.each ? ' per enemy' : ''}`;
-            })
-            .join('; ') +
+          known.map((l) => `${sumText(l)} total${l.each ? ' per enemy' : ''}`).join('; ') +
+          '.'
+        : '') +
+      (shatters.length
+        ? ' Shatter now: ' +
+          shatters.map((l) => `${sumText(l)}${l.each ? ' per enemy' : ''}`).join('; ') +
           '.'
         : '') +
       (live?.get(-1)?.uncertain

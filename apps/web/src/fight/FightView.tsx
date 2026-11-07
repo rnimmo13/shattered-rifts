@@ -2212,7 +2212,7 @@ export function FightView(props: {
     ? [...hoverLive.values()]
         .filter((l) => l.how && l.how.length > 1)
         .map((l) => ({
-          name: l.lo === l.hi ? 'Damage' : 'Damage (the highest)',
+          name: `${l.shatter ? 'Shatter' : 'Damage'}${l.lo === l.hi ? '' : ' (the highest)'}`,
           text: l.how!.join(' → '),
         }))
     : [];

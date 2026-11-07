@@ -1,3 +1,7 @@
+# Release approved 0.220.0 / rules 90 (2026-11-07)
+
+Robert explicitly approves pushing/deploying the Shatter damage preview: Fracture cards in hand show the Shatter(s) they would set off (range over reachable enemies, Fault Lines counted). Display only; rules unchanged. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.219.0 / rules 90 (2026-11-07; decision 670)
 
 Robert explicitly approves pushing/deploying the Shaman starter change below together with Claude's larger centred map checkmark and faded completed-node icons. Publish website/server and matching Windows updater from clean committed source. Future changes need fresh release approval.

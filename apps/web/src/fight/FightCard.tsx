@@ -170,7 +170,7 @@ export const FightCard = memo(
       // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
       () =>
         rulesFor(db, def, live) +
-        (bonus && !(live && [...live.values()].some((l) => !l.barrier))
+        (bonus && !(live && [...live.values()].some((l) => !l.barrier && !l.shatter))
           ? ` ${forgeLabel(def.forgeWord ?? 'Sharpen')}: +${bonus}.`
           : '') +
         (note ? ` ${note.replace(KEYWORDS, '**$1**')}` : ''),

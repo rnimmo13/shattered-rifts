@@ -287,6 +287,68 @@ describe('Fracture and Shatter', () => {
     expect(at(27).sides.a.stars).toBe(27);
   });
 
+  it('a Fracture card in hand shows the Shatter it would set off, and what playing it really deals', () => {
+    const s = fight(['faultline-hex']);
+    // (no Shatter reachable: nothing is shown)
+    expect(previewCardDamage(db, s, 'T0').get(0)).toBeUndefined();
+    expect(cardText(db, db.cards['faultline-hex']!, previewCardDamage(db, s, 'T0'))).not.toContain(
+      'Shatter',
+    );
+    foe(s).statuses.fracture = 15;
+    const live = previewCardDamage(db, s, 'T0');
+    // (the second Shatter, 30, + Spell Power 8), as playing it deals
+    expect(live.get(0)).toMatchObject({ lo: 38, hi: 38, shatter: true });
+    expect(live.get(0)!.how).toEqual(['Shatter 2: 30', '+8 Spell Power = 38']);
+    expect(lost(play(s, 'faultline-hex'))).toBe(38);
+    expect(cardText(db, db.cards['faultline-hex']!, live)).toContain(
+      'Apply 7 Fracture (Shatter [[live:calc:38]]).',
+    );
+  });
+
+  it('the Shatter preview is a range over the enemies it could hit, 0 for one it would not Shatter', () => {
+    const s = fight(['faultline-hex', 'spreading-fault'], { foes: 2 });
+    foe(s, 1).statuses.fracture = 5;
+    expect(previewCardDamage(db, s, 'T0').get(0)).toMatchObject({ lo: 0, hi: 28 });
+    expect(previewCardDamage(db, s, 'T0', foe(s, 0).id).get(0)).toBeUndefined();
+    expect(previewCardDamage(db, s, 'T0', foe(s, 1).id).get(0)).toMatchObject({ lo: 28, hi: 28 });
+    const all = previewCardDamage(db, s, 'T1').get(0);
+    expect(all).toMatchObject({ lo: 0, hi: 28, each: true, shatter: true });
+    expect(cardText(db, db.cards['spreading-fault']!, previewCardDamage(db, s, 'T1'))).toContain(
+      '(Shatter [[live:calc:0-28]] each)',
+    );
+  });
+
+  it("the Shatter preview counts Fault Lines' Fracture after the card, as playing it does", () => {
+    const s = play(fight(['fault-lines', 'faultline-hex'], { stars: 0 }), 'fault-lines');
+    s.sides.a.mana = 9;
+    // (12 + 7 = 19: no Shatter from the Hex itself; Fault Lines' 1 makes it 20, the second Shatter, 30)
+    foe(s).statuses.fracture = 12;
+    const hex = s.sides.a.hand.find((c) => c.card === 'faultline-hex')!.id;
+    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 30, hi: 30, shatter: true });
+    expect(lost(play(s, 'faultline-hex'))).toBe(30);
+  });
+
+  it('Fault Reader answering the Shatter does not hide it', () => {
+    const s = play(fight(['fault-reader', 'faultline-hex'], { stars: 0 }), 'fault-reader');
+    s.sides.a.mana = 9;
+    foe(s).statuses.fracture = 15;
+    const hex = s.sides.a.hand.find((c) => c.card === 'faultline-hex')!.id;
+    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 30, hi: 30, shatter: true });
+    expect(lost(play(s, 'faultline-hex'))).toBe(30);
+  });
+
+  it('several Shatters at once are counted together', () => {
+    // (upgraded Rupture Script applies 11: from 9 it crosses 10 and 20, so 20 + 30)
+    const s = fight(['rupture-script+'], { stars: 0 });
+    foe(s).statuses.fracture = 9;
+    const live = previewCardDamage(db, s, 'T0');
+    expect(live.get(0)).toMatchObject({ lo: 50, hi: 50, hits: 2, shatter: true });
+    expect(cardText(db, db.cards['rupture-script+']!, live)).toContain(
+      '(2 Shatters, [[live:calc:50]] total)',
+    );
+    expect(lost(play(s, 'rupture-script+'))).toBe(50);
+  });
+
   it('it keeps scaling past 100', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 106;

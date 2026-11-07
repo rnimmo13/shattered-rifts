@@ -115,10 +115,13 @@ interface DamageProjection {
   root?: Act;
   path: number[];
   hits: Map<number, ProjectedHit[]>;
+  /** Shatters the previewed card's own Fracture would set off, by top-level effect index (AFTER_PLAY: set off once its effects are done) */
+  shatters?: Map<number, ProjectedHit[]>;
   completed: Set<number>;
   blocked?: number | undefined;
 }
 class ProjectionUnknown extends Error {}
+const AFTER_PLAY = -2;
 const PROJECTABLE = new Set<Op['op']>([
   'damage',
   'loseHp',
@@ -3671,6 +3674,44 @@ function shatterDamage(sd: SideState, k: number): number {
   return sd.shatterPct ? Math.floor((n * (100 + sd.shatterPct)) / 100) : n;
 }
 
+/** While a card is previewed: note the Shatter its Fracture would set off on an enemy, with how the number is made. */
+function projectShatter(
+  r: Run,
+  a: Act,
+  owner: SideState,
+  t: Unit,
+  k: number,
+  dmg: number,
+  final: number,
+): void {
+  const projection = r.projection;
+  if (!projection || owner.id !== r.s.active || t.side === owner.id) return;
+  // (mid-effect, only the card's own Fracture counts: not an Aura or a companion acting meanwhile)
+  if (projection.path.length && a !== projection.root) return;
+  // (during one of the card's effects, it is that effect's; once its effects are done, it is what answers the play, such as
+  // Fault Lines' extra Fracture: kept apart under AFTER_PLAY, and counted with the card's last Fracture effect)
+  const index = projection.path[0] ?? AFTER_PLAY;
+  let n = SHATTER_BASE + SHATTER_STEP * k;
+  const how = [`Shatter ${k}: ${n}`];
+  if (owner.stars) how.push(`+${owner.stars} Spell Power = ${(n += owner.stars)}`);
+  if (owner.shatterBonus) how.push(`+${owner.shatterBonus} Deepening = ${n + owner.shatterBonus}`);
+  if (owner.shatterPct) how.push(`+${owner.shatterPct}% = ${dmg}`);
+  if (final !== dmg) how.push(`Difficulty = ${final}`);
+  // (Shielded cancels it and Ghostly holds it to 1; a Shatter goes through Slippery)
+  let shown = final;
+  if (stacks(t, 'shielded') > 0 && final > 0) {
+    shown = 0;
+    how.push('Shielded = 0');
+  } else if (stacks(t, 'ghostly') > 0 && final > 1) {
+    shown = 1;
+    how.push('Ghostly = 1');
+  }
+  const shatters = (projection.shatters ??= new Map());
+  const list = shatters.get(index) ?? [];
+  list.push({ amount: shown, how, target: t.id, limited: shown !== final });
+  shatters.set(index, list);
+}
+
 /** Fracture on a unit, and a Shatter from the side that applied it for every SHATTER_AT it crosses. Fracture is never removed. A Shatter is
  * not an attack (no Might, Primed, Exposed or Thorns); Barrier stops it; it never applies Fracture or sets off another Shatter.
  * Steadfast stops the application. */
@@ -3683,15 +3724,9 @@ function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boo
   for (let k = Math.floor(before / SHATTER_AT) + 1; k <= reached && t.hp > 0 && !r.s.winner; k++) {
     const dmg = shatterDamage(owner, k);
     // (like an Aura's damage: Barrier, Ghostly and Shielded answer it, and the difficulty's damage percent applies)
-    applyDamage(
-      r,
-      hero,
-      t,
-      hero ? modifiedDamage(dmg, hero, t, false) : dmg,
-      'attack',
-      false,
-      true,
-    );
+    const final = hero ? modifiedDamage(dmg, hero, t, false) : dmg;
+    projectShatter(r, a, owner, t, k, dmg, final);
+    applyDamage(r, hero, t, final, 'attack', false, true);
     a.shattered++;
     reap(r);
     if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
@@ -5920,6 +5955,8 @@ export interface LiveDamage {
   played?: number;
   /** (DECISIONS #486) this is the Barrier a scaled Barrier effect would give you, not damage */
   barrier?: boolean;
+  /** this is what the Shatters set off by the effect's Fracture would deal (0 where it sets none off); `hits` is Shatters on one enemy */
+  shatter?: boolean;
 }
 
 const containsDamage = (op: Op): boolean =>
@@ -5931,6 +5968,13 @@ const containsDamage = (op: Op): boolean =>
   op.op === 'plant' ||
   op.op === 'uproot' ||
   ('ops' in op && op.op !== 'power' && op.ops.some(containsDamage));
+
+const containsFracture = (op: Op): boolean =>
+  op.op === 'fracture' || ('ops' in op && op.op !== 'power' && op.ops.some(containsFracture));
+/** The effect puts Fracture on every enemy (so the preview is "each", and an enemy it does not Shatter counts as 0). */
+const fractureSpread = (op: Op): boolean =>
+  (op.op === 'fracture' && op.to === 'allFoes') ||
+  ('ops' in op && op.op !== 'power' && op.ops.some(fractureSpread));
 
 /** Execute only public, deterministic effects on a private copy; stop before draws/random choices. */
 function resolvedDamage(
@@ -5956,6 +6000,7 @@ function resolvedDamage(
     const copy = clone(s);
     // Face-down traps must not be used to disclose an opponent's hidden response.
     copy.sides[other(side.id)].snares = [];
+    const foesAtStart = copy.sides[other(side.id)].units.filter((u) => u.hp > 0).map((u) => u.id);
     const projection: DamageProjection = {
       remaining: 512,
       inst: instId,
@@ -6017,6 +6062,56 @@ function resolvedDamage(
         ...(op.op !== 'damage' || !!op.onKill?.some(containsDamage) ? { conditional: true } : {}),
       });
     }
+    // (an effect that applies Fracture: what the Shatters it sets off would deal, against each enemy it can reach, none counting as 0)
+    // (an effect stopped by what answers its Shatter, such as Fault Reader's draw, still shows the Shatters it had set off)
+    const shattered = [...projection.completed];
+    if (projection.blocked !== undefined && projection.shatters?.get(projection.blocked)?.length)
+      shattered.push(projection.blocked);
+    const lastFracture = Math.max(
+      -1,
+      ...shattered.filter((i) => containsFracture(card.effects[i]!)),
+    );
+    for (const i of shattered) {
+      const op = card.effects[i]!;
+      if (preview.has(i) || !containsFracture(op)) continue;
+      const hits = [
+        ...(projection.shatters?.get(i) ?? []),
+        ...(i === lastFracture ? (projection.shatters?.get(AFTER_PLAY) ?? []) : []),
+      ];
+      const reach = new Set([...hits.map((h) => h.target), ...(target ? [target] : [])]);
+      const spread = fractureSpread(op);
+      if (spread) for (const u of foesAtStart) reach.add(u);
+      const totals = [...reach].map((t) =>
+        hits.filter((h) => h.target === t).reduce((n, h) => n + h.amount, 0),
+      );
+      if (!totals.length) totals.push(0);
+      const count = Math.max(
+        0,
+        ...[...reach].map((t) => hits.filter((h) => h.target === t).length),
+      );
+      const best = [...hits].sort((x, y) => y.amount - x.amount)[0];
+      const own = best ? hits.filter((h) => h.target === best.target) : [];
+      const how = best
+        ? [
+            ...best.how,
+            ...(own.length > 1
+              ? [
+                  `${own.map((h) => h.amount).join(' + ')} = ${own.reduce((n, h) => n + h.amount, 0)} total`,
+                ]
+              : []),
+          ]
+        : [];
+      preview.set(i, {
+        lo: Math.min(...totals),
+        hi: Math.max(...totals),
+        printed: 0,
+        calc: true,
+        shatter: true,
+        ...(count > 1 ? { hits: count } : {}),
+        ...(how.length ? { how } : {}),
+        ...(spread ? { each: true } : {}),
+      });
+    }
     if (
       stoppedBeforePlay ||
       (projection.blocked !== undefined &&
@@ -6045,6 +6140,8 @@ function resolvedDamage(
       },
     });
   }
+  // (Fracture that can Shatter no enemy it could reach says nothing)
+  for (const [i, value] of result) if (value.shatter && value.hi <= 0) result.delete(i);
   if (variants.some((v) => v.get(-1)?.uncertain))
     result.set(-1, { lo: 0, hi: 0, printed: 0, calc: true, uncertain: true });
   return result;
