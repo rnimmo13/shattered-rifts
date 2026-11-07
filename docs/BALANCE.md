@@ -327,6 +327,21 @@ shards or a rare Boon.
 | a Wound (dead card) | -40 (the removal it costs) |
 | 10 HP (healable) | -20 to -40 at the start of a run |
 
+**Grades (2026-11-07, DECISIONS #672).** Every offering is Modest (about 70-100 shards' worth at Tier I), Rich (about 150) or Grand (about 250);
+an "at a price" offering pays clearly more than a blessing of its grade. Each option drawn rolls its grade from the tier's odds, then takes an
+offering of that grade whose family (shards, card, upgrade, remove, trade, max HP, Boon, potion, Resolve) the offer does not show yet.
+Shards grow 8% of their Tier I amount a tier (in step with the merchants' rising prices), max HP gained and HP lost 5%; max HP given up as a price stays fixed. Tier I draws only Modest options unless the deck has no room for any (then the next grade fills in). A random Boon is valued at ~120 (above the merchant's 70: the merchant's is one Boon among few, priced to sell).
+
+| Tier | I | II | III | IV | V | VI | VII | VIII | IX | X | XI | XII |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Modest % | 100 | 75 | 60 | 45 | 35 | 25 | 20 | 15 | 10 | 5 | 0 | 0 |
+| Rich % | 0 | 25 | 35 | 45 | 50 | 55 | 55 | 55 | 55 | 55 | 55 | 50 |
+| Grand % | 0 | 0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 |
+
+Card picks follow the grades: modest offers commons (upgraded) and uncommons, rich offers upgraded uncommons and rares, grand offers upgraded
+rares and ancestral cards, so later tiers see far more rare cards and, from Tier XI, no commons. The full list, with Tier I amounts, is on
+the How to play page (it reads packages/campaign/src/preludes.ts).
+
 ---
 
 *Measured 2026-10-22 on the M2 build, heuristic AI (balanced) unless noted.*

@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { cardText, type CardDef } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import { Grimoire } from './Grimoire';
-import { catalog, type PoolKey } from './deckCatalog';
+import { bringsCompanion, catalog, type PoolKey } from './deckCatalog';
 import '../play/play.css';
 
 const KINDS: { id: CardDef['kind'] | 'all'; label: string }[] = [
@@ -17,7 +17,6 @@ const KINDS: { id: CardDef['kind'] | 'all'; label: string }[] = [
   { id: 'snare', label: 'Traps' },
 ];
 const RARITIES = ['all', 'basic', 'common', 'uncommon', 'rare', 'legendary', 'ancestral'] as const;
-
 const POOL_LABEL = (p: PoolKey): string =>
   p === 'all'
     ? 'Every character'
@@ -46,7 +45,9 @@ export function CardLibrary() {
         if (show === 'base' && c.upgraded) return false;
         if (show === 'upgraded' && !c.upgraded) return false;
         if (pool !== 'all' && c.pool !== pool) return false;
-        if (kind !== 'all' && c.def.kind !== kind) return false;
+        // ("Summons" lists every card that brings a companion, whatever its type)
+        if (kind === 'summon' ? !bringsCompanion(c.def) : kind !== 'all' && c.def.kind !== kind)
+          return false;
         if (rarity !== 'all' && (c.def.rarity ?? 'common') !== rarity) return false;
         if (q && !`${c.def.name} ${cardText(COMBAT_DB, c.def)}`.toLowerCase().includes(q))
           return false;
@@ -98,10 +99,7 @@ export function CardLibrary() {
         </label>
         <label>
           <span>Character</span>
-          <select
-            value={pool}
-            onChange={(e) => setPool(e.target.value)}
-          >
+          <select value={pool} onChange={(e) => setPool(e.target.value)}>
             {pools.map((p) => (
               <option key={p} value={p}>
                 {POOL_LABEL(p)}

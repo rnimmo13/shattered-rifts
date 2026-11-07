@@ -128,24 +128,59 @@ function TierTable() {
 /** Every Threshold / Waymark option, read from the same data the game offers (packages/campaign/src/preludes.ts). */
 function PreludeList() {
   const c = preludeCatalogue(1);
-  const row = (o: { id: string; name: string; text: string }) => (
+  const row = (o: { id: string; name: string; text: string; risky?: boolean }) => (
     <div key={o.id} className="learn__row">
-      <dt>{o.name}</dt>
+      <dt>
+        {o.name}
+        {o.risky ? ' (at a price)' : ''}
+      </dt>
       <dd>{o.text}</dd>
     </div>
   );
   return (
     <>
-      <h4>Blessings</h4>
-      <dl>{[c.rest, ...c.blessings].map(row)}</dl>
-      <h4>At a price</h4>
-      <dl>{c.bargains.map(row)}</dl>
-      <h4>From Tier IV, once you have beaten Tier III</h4>
       <p>
-        The rest heals more, these join the offers, and the small blessings and common cards stop
-        coming.
+        Every offering is Modest, Rich or Grand. Tier I offers only Modest ones; each later tier
+        offers the richer grades more often, and the shards, max HP gained and HP lost in an
+        offering grow with the tier (shards by 8% of their Tier I amount a tier, max HP and HP by
+        5%; max HP given up stays the same). No offer shows two options of the same kind. Amounts
+        below are at Tier I.
       </p>
-      <dl>{[c.ascended.rest, ...c.ascended.blessings, ...c.ascended.bargains].map(row)}</dl>
+      <table className="learn__table">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Modest</th>
+            <th>Rich</th>
+            <th>Grand</th>
+          </tr>
+        </thead>
+        <tbody>
+          {c.odds.map((o, i) => (
+            <tr key={i}>
+              <td>{roman(i + 1)}</td>
+              {o.map((p, j) => (
+                <td key={j}>{p}%</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <h4>Rest</h4>
+      <dl>
+        {row(c.rest)}
+        {row({
+          ...c.ascendedRest,
+          id: 'rest-ascended',
+          name: `${c.ascendedRest.name} (Tier IV on)`,
+        })}
+      </dl>
+      {c.grades.map((g) => (
+        <div key={g.grade}>
+          <h4>{g.name}</h4>
+          <dl>{[...g.blessings, ...g.bargains].map(row)}</dl>
+        </div>
+      ))}
     </>
   );
 }

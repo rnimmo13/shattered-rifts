@@ -6,6 +6,19 @@ import { REALMS, RIFTWALKERS } from '@sr/content/v2';
 
 export type PoolKey = 'all' | 'neutral' | 'wardens' | 'tokens' | 'other' | string; // or a Riftwalker id
 
+/** A card that brings a companion: a Summon, or another card that summons one (the Necromancer's Thrall Skills, DECISIONS #679). */
+export function bringsCompanion(def: Pick<CardDef, 'kind' | 'effects'>): boolean {
+  if (def.kind === 'summon') return true;
+  const walk = (ops: readonly { op: string; ops?: readonly unknown[] }[]): boolean =>
+    ops.some(
+      (o) =>
+        o.op === 'summon' ||
+        o.op === 'raise' ||
+        (o.op !== 'power' && Array.isArray(o.ops) && walk(o.ops as typeof ops)),
+    );
+  return walk(def.effects);
+}
+
 export interface CatalogCard {
   def: CardDef;
   /** which pool filter it belongs to */

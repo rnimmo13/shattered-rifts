@@ -1489,7 +1489,7 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
     case 'potion': {
       if (r.potions.length >= MAX_POTIONS)
         return 'Your belt is full, so the potion is left behind.';
-      const id = offerPotion(r.rng);
+      const id = offerPotion(r.rng, e.rarity);
       r.potions.push(id);
       return `You take ${COMBAT_DB.potions[id]?.name ?? 'a potion'}.`;
     }

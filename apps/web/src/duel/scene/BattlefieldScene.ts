@@ -289,6 +289,8 @@ export class BattlefieldScene {
       profile: () => this.profile,
       sound: (n) => this.onSound(n as SoundName),
       wake: (ms) => this.wake(ms),
+      // (a rigged hero draws at the board's density: its scale times its resolution, at most 2 device px a CSS px)
+      pixelScale: () => this.world.scale.x * Math.min(this.app.renderer.resolution, 2),
     });
 
     // --- atmosphere over the board ---

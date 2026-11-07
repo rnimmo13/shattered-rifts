@@ -21,8 +21,8 @@ describe('runs saved before a class rework', () => {
     run.deck = [...run.deck, 'twin-evocation', 'glyph-lattice+', 'harmonic-wave'];
     const back = parseRun(serializeRun(run));
     expect(back!.reworked).toBe(CLASS_REWORKS.shaman?.version);
-    // (through the first rework's ids to the second's, DECISIONS #420: twin-evocation > guided-talon > ember-bolt)
-    expect(back!.deck).toContain('raise-the-hawk');
+    // (through the first rework's ids to the second's, DECISIONS #420: twin-evocation > guided-talon > ember-bolt, now Ember Toss, #673)
+    expect(back!.deck).toContain('flame-toss');
     expect(back!.deck).toContain('hail-chant+');
     // (and on through the totem cycle's, DECISIONS #430: harmonic-wave > prism-spell > totem-strike)
     expect(back!.deck).toContain('spirit-strike');
@@ -90,10 +90,9 @@ describe('runs saved before a class rework', () => {
 describe('Rift-crossed offers (DECISIONS #418)', () => {
   it('never offer a card that only the Shaman can use to anyone else', async () => {
     const { deadElsewhere } = await import('./rewards');
-    for (const id of ['storm-sovereign', 'thunder-chant', 'spirit-surge', 'raise-the-hawk'])
+    for (const id of ['storm-sovereign', 'thunder-chant', 'spirit-surge', 'spirit-call'])
       expect(deadElsewhere(id), id).toBe(true);
-    for (const id of ['stone-skin', 'iron-shirt'])
-      expect(deadElsewhere(id), id).toBe(false);
+    for (const id of ['stone-skin', 'iron-shirt']) expect(deadElsewhere(id), id).toBe(false);
   });
 });
 
@@ -130,8 +129,10 @@ describe('a Spellblade run saved before Spell Power and Fracture (DECISIONS #480
     expect(back).not.toBeNull();
     expect(back!.reworked).toBe(CLASS_REWORKS.spellblade?.version);
     expect(back!.reworkNotice).toMatch(/Spell Power and Fracture/);
-    for (const gone of ['spoils', 'seven-shards+', 'retainer-strike']) expect(back!.deck).not.toContain(gone);
-    for (const id of back!.deck) expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    for (const gone of ['spoils', 'seven-shards+', 'retainer-strike'])
+      expect(back!.deck).not.toContain(gone);
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
   });
 
   it('one saved under the reverted rework follows the chain to live cards', () => {
@@ -141,7 +142,7 @@ describe('a Spellblade run saved before Spell Power and Fracture (DECISIONS #480
     const back = parseRun(serializeRun(run));
     expect(back).not.toBeNull();
     expect(back!.deck).not.toContain('fracture-script');
-    for (const id of back!.deck) expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
+    for (const id of back!.deck)
+      expect(COMBAT_DB.cards[id.replace(/^(hi|lo)~/, '')], id).toBeDefined();
   });
 });
-

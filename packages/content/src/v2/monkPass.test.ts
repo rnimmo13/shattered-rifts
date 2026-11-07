@@ -113,8 +113,8 @@ describe('the Monk costing pass', () => {
     expect(500 - s.sides.b.units[0]!.hp).toBe((5 + 2) * 4);
   });
 
-  it('Still Guard: 3 Barrier and Serene', () => {
-    expect(cardText(db, db.cards['still-guard']!)).toBe('Gain 3 Barrier. Enter Serene.');
+  it('Still Guard: 5 Barrier and Serene (DECISIONS #677)', () => {
+    expect(cardText(db, db.cards['still-guard']!)).toBe('Gain 5 Barrier. Enter Serene.');
   });
 
   it('Surge of Ire answers only the first Fury each turn, and says so', () => {

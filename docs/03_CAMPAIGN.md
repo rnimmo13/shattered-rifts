@@ -51,7 +51,7 @@ and a **Sigil**: a starting passive that gives every run an identity from turn 1
 
 > **Update (DECISIONS #108):** a run now opens by choosing one of two starting decks (a kit), then meets The Threshold.
 >
-> **Update (DECISIONS #106):** every run opens on **The Threshold** (3 blessings and 1 bargain), and every stage and new loop opens on a **Waymark** (a rest, two blessings, sometimes a bargain), before the map appears.
+> **Update (DECISIONS #106):** every run opens on **The Threshold** (3 blessings and 1 bargain), and every stage and new loop opens on a **Waymark** (a rest, two blessings, sometimes a bargain), before the map appears. **Update (DECISIONS #672):** every offering is Modest, Rich or Grand; Tier I offers only Modest ones and later tiers draw the richer grades more often, amounts grow with the tier, and an offer never shows two options of the same kind (see docs/BALANCE.md, Threshold and Waymarks).
 
 ```
 Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve on Normal: see DIFFICULTY)

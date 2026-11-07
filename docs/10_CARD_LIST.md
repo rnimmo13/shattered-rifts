@@ -299,7 +299,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Scarred Warrior | 1 | aura | rare | At the start of your turn: Lose 2 HP and gain 8 Barrier. |
 | Alpha Call | 2 | summon | rare | Summon Pack Alpha (12 HP; at the end of your turn it will deal 6 damage). |
 | Den Mother | 2 | aura | rare | Whenever one of your allies dies: Deal 15 damage to the attacker. |
-| Dire Wolf | 3 | summon | rare | Summon Dire Wolf (18 HP; at the end of your turn it will deal 9 damage). |
+| Dire Wolf | 3 | summon | rare | Summon Dire Wolf (18 HP; at the end of your turn it will deal 9 damage 2 times). |
 | Pack Frenzy | 2 | skill | rare | Gain 2 Might. All your allies act now. Consume. |
 | Wild Hunt | 3 | aura | rare | At the start of your turn: All your allies act now. |
 | The Hunger Unleashed | 2 | aura | rare | On play: Lose 6 HP. Gain 2 Might. Gain 1 Cadence. These last the rest of the fight. |
@@ -514,14 +514,14 @@ Tokens (made by other cards):
 
 An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.
 
-Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Raise the Hawk, Frost Ward, Forked Lightning
+Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost Ward, Forked Lightning, Ember Toss
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Raise the Hawk | 1 | skill | basic | Plant a Hawk. |
-| Frost Ward | 1 | skill | basic | Frost. Gain 5 Barrier. Apply 1 Faltering to a random enemy. |
+| Frost Ward | 1 | skill | basic | Frost. Gain 4 Barrier. Apply 1 Faltering to a random enemy. Plant a Bear. |
 | Forked Lightning | 1 | attack | basic | Storm. Deal 5 damage to 2 different random enemies (25% more when only one enemy stands). |
-| Spirit Call | 1 | skill | basic | Command your front totem twice. |
+| Spirit Call | 1 | skill | basic | Command your front totem twice. Plant a random totem. |
+| Ember Toss | 1 | attack | basic | Flame. Deal 7 damage. Apply 2 Burn. |
 | Hawk's Dive | 1 | attack | basic | Deal 7 damage. Plant a Hawk. |
 | Twin Cinders | 1 | attack | common | Flame. Deal 4 damage 2 times. Apply 2 Burn. |
 | Flame Spear | 2 | attack | common | Flame. Deal 16 damage. Apply 3 Burn. |
@@ -529,7 +529,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Raise
 | Chill Touch | 1 | attack | common | Frost. Deal 6 damage. Apply 1 Faltering. |
 | Hoarfrost | 1 | skill | common | Frost. Gain 5 Barrier. Apply 1 Faltering to ALL enemies. |
 | Hasty Ward | 0 | skill | common | Frost. Gain 6 Barrier. Add a Void to your discard pile. |
-| Bear Call | 1 | skill | common | Frost. Plant a Bear. Gain 4 Barrier. |
+| Bear Call | 1 | skill | common | Frost. Plant a Bear. Gain 6 Barrier. |
 | Gathering Storm | 0 | attack | common | Storm. Deal 4 damage to 2 different random enemies (25% more when only one enemy stands). Every copy of this card gains 3 damage for the rest of the fight. |
 | Gale Call | 1 | attack | common | Storm. Deal 6 damage to ALL enemies. Draw 1 card. |
 | Wind Wall | 1 | skill | common | Storm. Gain 5 Barrier. Apply 2 Sapped to ALL enemies until the end of their next turn. |
@@ -537,9 +537,9 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Raise
 | Hawk Call | 1 | skill | common | Gain 4 Barrier. For the next 2 turns, at the start of your turn: Plant a Hawk. |
 | Spirit Offering | 0 | skill | common | Gain 1 Mana. Next turn, gain 1 extra Mana. Add a Void to your discard pile. |
 | Spirit Rush | 0 | skill | common | Gain 2 Spirit until the end of your turn. Consume. |
-| Raise a Totem | 1 | skill | common | Plant a random totem. Gain 4 Barrier. |
+| Raise a Totem | 1 | skill | common | Plant a random totem. Gain 6 Barrier. |
 | Spirit Strike | 1 | attack | common | Deal 5 damage. Command your front totem. |
-| Spirit Ward | 1 | skill | common | Gain 2 Barrier. Command your front totem. |
+| Spirit Ward | 1 | skill | common | Gain 5 Barrier. Command your front totem. |
 | Stone Skin | 1 | skill | common | Gain 9 Barrier. |
 | Tidecaller | 1 | skill | common | Gain 7 Barrier. Next turn, gain 1 extra Mana. |
 | Read the Winds | 0 | skill | common | Foresee 3. Consume. |
@@ -622,12 +622,12 @@ Tokens (made by other cards):
 
 A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Kindle Fury, Still Guard, Mindful Palm
+Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still Guard, Still Guard, Mindful Palm
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Kindle Fury | 2 | attack | basic | Deal 9 damage. Enter Fury. |
-| Still Guard | 1 | skill | basic | Gain 3 Barrier. Enter Serene. |
+| Still Guard | 1 | skill | basic | Gain 5 Barrier. Enter Serene. |
 | Mindful Palm | 1 | attack | basic | Deal 5 damage. Gain 2 Fervor. |
 | Angry Palm | 1 | attack | common | Deal 7 (+6 per Fury) damage. |
 | Ashen Fist | 2 | attack | common | Deal 14 damage. Enter Fury. |
@@ -928,18 +928,18 @@ Tokens (made by other cards):
 
 A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.
 
-Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the Leash, Marked for the Grave
+Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the Leash, Off the Leash, Marked for the Grave
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Raise Thrall | 1 | skill | basic | Raise 5. |
+| Raise Thrall | 1 | skill | basic | Summon a Bone Thrall with 5 HP. |
 | Marked for the Grave | 1 | attack | basic | Deal 6 damage. Curse the target with 4 Fate. |
 | Off the Leash | 1 | attack | basic | Your companions each deal 6 damage, plus their own HP. |
-| After the End | 1 | skill | common | Raise 6. Consume. |
+| After the End | 1 | skill | common | Summon a Bone Thrall with 6 HP. Consume. |
 | Bone Crush | 2 | attack | common | Costs 0 if your companions have struck this turn. Your companions each deal 12 damage. |
-| Call at Dusk | 1 | skill | common | Next turn: Raise 2 and gain 2 Mana. |
+| Call at Dusk | 1 | skill | common | Next turn: Summon a Bone Thrall with 2 HP and gain 2 Mana. |
 | Knucklebone | 0 | attack | common | Your companions each deal 6 damage. |
-| Bone Bulwark | 2 | skill | common | Raise 5. Gain 8 Barrier. |
+| Bone Bulwark | 2 | skill | common | Summon a Bone Thrall with 5 HP. Gain 8 Barrier. |
 | Bone Snap | 1 | attack | common | Your companions each deal 7 damage. A random card in your hand gains Hold. |
 | Rot Strike | 1 | attack | common | Deal 8 damage. Curse the target with Fate equal to the damage dealt. |
 | Creeping End | 1 | skill | common | Gain 5 Barrier. Curse ALL enemies with 7 Fate. |
@@ -957,14 +957,14 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Scatter Ashes | 1 | attack | common | Deal 8 damage to ALL enemies. Hold. |
 | Bone Rain | 1 | attack | uncommon | Gain Barrier equal to 9 times the number of your allies. Your companions each deal 9 damage to ALL enemies. Then they die. |
 | Ossify | 1 | aura | uncommon | On play: Your companions’ attacks deal 4 more damage for the rest of the fight. |
-| Bone Sift | 1 | skill | uncommon | Raise 5. Consume the top card of your draw pile. |
+| Bone Sift | 1 | skill | uncommon | Summon a Bone Thrall with 5 HP. Consume the top card of your draw pile. |
 | Bone Toss | 0 | attack | uncommon | Your companions each deal 3 damage. If this is the first time you play it this turn: Draw 1 card. |
 | Grasping Hands | 2 | attack | uncommon | Your companions each deal 11 damage to ALL enemies. Apply 2 Exposed to ALL enemies. |
-| Army of the Drowned | 2 | skill | uncommon | Raise 6 twice. Consume. |
+| Army of the Drowned | 2 | skill | uncommon | Summon 2 Bone Thralls with 6 HP each. Consume. |
 | Rattle the Bones | 1 | attack | uncommon | Your companions each deal 7 (+3 per time your companions have struck this turn) damage. |
 | Helping Hand | 0 | attack | uncommon | Whenever you play a card that costs 2 or more, this returns from your discard pile to your hand. Your companions each deal 4 damage. |
 | Seize Them | 1 | attack | uncommon | Your companions each deal 5 damage. Apply 3 Quarry until the end of your turn. |
-| Goad | 1 | skill | uncommon | Raise 3. Your companions gain 5 max HP. Hold. |
+| Goad | 1 | skill | uncommon | Summon a Bone Thrall with 3 HP. Your companions gain 5 max HP. Hold. |
 | Inevitable | 1 | aura | uncommon | At the start of your turn: Curse a random enemy with 6 Fate. |
 | At the Threshold | 1 | skill | uncommon | Gain 6 Barrier. If you have cursed an enemy with Fate this turn: Gain 6 Barrier twice. |
 | The Final Hour | 2 | skill | uncommon | Curse ALL enemies with 21 Fate. Apply 1 Faltering to ALL enemies. |
@@ -975,7 +975,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Wither | 1 | attack | uncommon | Deal 10 damage. Apply 2 Debilitated. |
 | Fester | 1 | skill | uncommon | Apply 2 Faltering. Apply 2 Exposed. Consume. |
 | Bottled Soul | 1 | skill | uncommon | The target loses 3 HP. Add 3 Gravesouls to your draw pile. |
-| Lament | X | skill | uncommon | Raise 3 X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume. |
+| Lament | X | skill | uncommon | Summon X Bone Thralls with 3 HP each. Add Gravesouls to your draw pile equal to the Mana spent. Consume. |
 | Restless Spirits | 1 | aura | uncommon | Whenever you play a Gravesoul (first 3 activations on your turn): A random enemy loses 4 (+1 per 3 previously consumed Gravesoul) HP. Whenever it activates again that turn: A random enemy loses 1 HP. |
 | Killing Chill | 1 | aura | uncommon | On play: For the rest of the fight, your first Attack each turn deals 50% more damage. Fleeting. |
 | Grimoire Gale | 1 | aura | uncommon | Whenever you draw a Fleeting card: Draw 1 card. |
@@ -991,8 +991,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Mourning | 3 | skill | uncommon | Costs 1 less for each death this fight. Gain 13 Barrier. |
 | Entomb | 4 | attack | uncommon | Deal 52 damage. |
 | Bonded Dead | 1 | aura | uncommon | Gain 2 Sapped. At the start of your turn: Gain 1 Mana. |
-| Shared Agony | 2 | aura | rare | Raise 5. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost. |
-| Grave Colossus | 3 | skill | rare | Raise 20. Consume. |
+| Shared Agony | 2 | aura | rare | Summon a Bone Thrall with 5 HP. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost. |
+| Grave Colossus | 3 | skill | rare | Summon a Bone Thrall with 20 HP. Consume. |
 | Fen Offering | 1 | skill | rare | Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Hold. |
 | Ever Watchful | 2 | aura | rare | At the start of your turn: Add a Baleful Glance to your hand. |
 | Death Grip | 3 | attack | rare | Your companions each deal 20 (+5 per Command card in your deck) damage. |
@@ -1007,7 +1007,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, O
 | Wailing Cry | 9 | attack | rare | Costs 2 less for each Fleeting card played this fight. Deal 33 damage to ALL enemies. |
 | Whispers Beyond | 1 | aura | rare | At the start of your turn: Add a random card from your pool to your hand, Fleeting. |
 | Phylactery | 3 | aura | rare | Fleeting. At the start of your turn: Gain 1 Mana and draw 1 card. |
-| Soul Harvest | 1 | aura | rare | Whenever you play a Gravesoul: Raise 1. |
+| Soul Harvest | 1 | aura | rare | Whenever you play a Gravesoul: Summon a Bone Thrall with 1 HP. |
 | Spirit Walk | 2 | skill | rare | Consume your hand. If 6 or more cards were consumed this way: Gain 2 Ghostly. |
 | Unmaking | X | attack | rare | Deal 11 damage X times. Hold. |
 | Gather Souls | 1 | skill | rare | Add 3 Gravesouls to your draw pile. Consume. |

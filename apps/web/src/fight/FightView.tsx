@@ -118,6 +118,7 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
+import { HERO_RIGS } from './heroSprite';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
 import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
@@ -360,6 +361,15 @@ function specsFrom(
         attack: attackFor(e.u.def, e.hero),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
+        // (the default look of a rigged hero animates; a skin you wear is a still picture, DECISIONS #676)
+        ...(e.hero && HERO_RIGS[e.u.def] && !(side === me && skinOf?.(e.u.def))
+          ? {
+              rig: {
+                id: HERO_RIGS[e.u.def]!,
+                facing: flip ? ('left' as const) : ('right' as const),
+              },
+            }
+          : {}),
       });
     }
   }
@@ -951,9 +961,10 @@ export function FightView(props: {
             } else {
               castBy.current = null;
               ownFx?.();
-              sc.fighters.act(hero);
+              // (a rigged hero raises its aura first: what the card gives shows as the aura flares, DECISIONS #676)
+              const raised = sc.fighters.cast(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
-              await wait(160);
+              await Promise.all([raised, wait(160)]);
             }
           }
           return;

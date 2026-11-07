@@ -48,6 +48,9 @@ export default tseslint.config(
       '.claude/**',
       // (frozen balance archives are never linted or reformatted: their hashes are recorded)
       'reviews/balance-baselines/**',
+      // (art sources, git-ignored, and the vendored 2D rig runtime: kept as delivered, typed by their .d.ts files)
+      'assets-src/**',
+      'apps/web/src/art/knight2d/*.js',
     ],
   },
   js.configs.recommended,

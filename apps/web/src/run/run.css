@@ -1325,6 +1325,11 @@ button.mapnode--warden {
   color: #ffd0da;
   border: 1px solid #ff8aa8;
 }
+/* a Rich or Grand offering (DECISIONS #672) */
+.prelude__tag--grade {
+  color: var(--c-gold-light);
+  border-color: var(--c-gold);
+}
 
 /* ---- events: a readable column of text and option cards ---- */
 .stage-panel__hint--event {

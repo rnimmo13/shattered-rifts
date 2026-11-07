@@ -1,3 +1,15 @@
+## 0.221.0 - 2026-11-07
+
+- Knight: his default look is now the animated 2D Sun Knight in battle. He strikes, raises his aura for Skills and Auras, flinches behind his shield when hit and falls when beaten; damage shows as his blow lands. A skin you wear shows as a still picture, as before. Needs WebGL2; otherwise the still figure (DECISIONS #676).
+- Monk: Still Guard gives 5 Barrier (was 3); the starter swaps a Strike and a Defend for a second Kindle Fury and a second Still Guard (DECISIONS #677).
+- Hunter: the Dire Wolf strikes twice each turn (9 and 9; upgraded 11 and 11) (DECISIONS #678).
+- Card library: the Summons filter now includes the Necromancer's Thrall cards and every other card that brings a companion (DECISIONS #679).
+- Shaman: Raise the Hawk is gone; old decks get Raise a Totem instead (and old Ember Bolts become Ember Toss). Frost Ward is now 4 Barrier, 1 Faltering and plants a Bear (upgraded 7 Barrier). Spirit Call commands your front totem twice and then plants a random basic totem; upgraded it adds 4 Barrier instead of costing 0. New basic Flame Attack Ember Toss (1 Mana: 7 damage and 2 Burn; upgraded 9 and 3) joins the starter, which now casts Flame, Frost and Storm. Bear Call and Raise a Totem give 6 Barrier (9 upgraded), Spirit Ward 5 (8) (DECISIONS #673).
+- Necromancer: the starter swaps one Strike for a second Off the Leash (DECISIONS #675).
+- Necromancer: "Raise N" now reads "Summon a Bone Thrall with N HP"; the hover word is Bone Thrall. Wording only (DECISIONS #674).
+- Threshold and Waymark offerings now come in three grades, Modest, Rich and Grand. Tier I offers only Modest ones; each later tier offers Rich and Grand ones more often (no Modest ones from Tier XI). Shards, max HP gained and HP lost in an offering grow with the tier, and an offer never shows two options of the same kind (no more two piles of shards side by side). Card choices follow the grade: commons only early, rares and ancestral cards late. Eight new offerings, several "at a price" offers revised, A Haunted Gift and Heavy Heart removed. Rich and Grand options carry a tag. Saved offers are unchanged (DECISIONS #672).
+- Fights with a main enemy and minions (an enemy with at least 1.5x every other starting enemy's Max HP) now start with the main enemy at the back, behind its minions; the others keep their order. Today this affects the vanguard and rearguard Elite fights. Companions, totems and other front-targeted effects meet the minions first. Rules 91; older unfinished battles restart from their checkpoint without a Resolve charge (DECISIONS #671).
+
 ## 0.220.0 - 2026-11-07
 
 - Spellblade: a card in hand that applies Fracture shows the damage of the Shatter(s) it would set off, e.g. "Apply 7 Fracture (Shatter 38)." Without a chosen target it shows the range over the enemies it could hit (0 where none would Shatter), "each" for every-enemy Fracture, and "2 Shatters, 50 total" when it crosses two thresholds. Counts Spell Power, Deepening, the Shatterer's percent, difficulty, Shielded/Ghostly and Fault Lines' extra Fracture after the card. Nothing is shown when no Shatter is reachable. Display only; no rules change.

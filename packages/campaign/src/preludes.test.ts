@@ -14,7 +14,14 @@ import {
   type PreludeOption,
   type RunState,
 } from './index';
-import { ASCENDED_TIER, describeEffect, type PreludeRoom } from './preludes';
+import {
+  ASCENDED_TIER,
+  GRADE_ODDS,
+  describeEffect,
+  gradeOdds,
+  preludeCatalogue,
+  type PreludeRoom,
+} from './preludes';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
@@ -248,8 +255,35 @@ describe('the Threshold draws from a wide pool', () => {
       expect(o.filter((x) => x.risky)).toHaveLength(1);
       for (const x of o) (x.risky ? risky : seen).add(x.id);
     }
-    expect(seen.size).toBeGreaterThanOrEqual(15);
-    expect(risky.size).toBeGreaterThanOrEqual(13); // (14 until "A Legend's Price" went with Legendary, DECISIONS #363)
+    // (Tier I draws only modest offerings, DECISIONS #672: ten blessings without Resolve, five bargains)
+    expect(seen.size).toBeGreaterThanOrEqual(9);
+    expect(risky.size).toBe(5);
+  });
+
+  it('never shows two options of the same kind (no two piles of shards side by side)', () => {
+    // (what an option gives, leaving out what it costs: only shards makes it a purse)
+    const gains = (o: PreludeOption) =>
+      o.effects.filter((e) => e.k !== 'hp' && e.k !== 'wound' && !(e.k === 'maxHp' && e.n < 0));
+    const purse = (o: PreludeOption) => gains(o).every((e) => e.k === 'shards');
+    const cardOnly = (o: PreludeOption) =>
+      gains(o).some((e) => e.k === 'pick') && !gains(o).some((e) => e.k === 'remove');
+    for (let i = 0; i < 300; i++)
+      for (const tier of [1, 6, 12]) {
+        const o = makePrelude(
+          seedRng(`fam-${i}`),
+          'threshold',
+          1,
+          'aurelion',
+          true,
+          Infinity,
+          undefined,
+          tier,
+        ).options;
+        const ids = o.map((x) => x.id).join();
+        expect(o.filter(purse).length, ids).toBeLessThanOrEqual(1);
+        expect(o.filter(cardOnly).length, ids).toBeLessThanOrEqual(1);
+        expect(new Set(o.map((x) => x.id)).size, ids).toBe(o.length);
+      }
   });
 });
 
@@ -456,44 +490,71 @@ describe('offers that fit the run (DECISIONS #517)', () => {
   });
 });
 
-describe('an ascended run (Tier IV on, DECISIONS #517)', () => {
-  const offers = (tier: number) =>
+describe('grades by Rift Tier (DECISIONS #672)', () => {
+  const offers = (tier: number, n = 400) =>
     Array.from(
-      { length: 400 },
+      { length: n },
       (_, i) =>
         makePrelude(seedRng(`asc-${i}`), 'stage', 2, 'nexus', false, Infinity, undefined, tier)
           .options,
-    ).flat();
+    )
+      .flat()
+      .filter((o) => o.id !== 'rest');
 
-  it('is offered better things that earlier tiers never see', () => {
-    const ids = (tier: number) => new Set(offers(tier).map((o) => o.id));
-    for (const id of [
-      'rift-forged',
-      'hoard',
-      'masterwork',
-      'rare-find',
-      'ancestor-gift',
-      'twin-trinkets',
-      'ironblood',
-      'ascendant-due',
-      'rift-bounty',
-      'blood-crown',
-    ]) {
-      expect(ids(ASCENDED_TIER).has(id), id).toBe(true);
-      expect(ids(ASCENDED_TIER - 1).has(id), id).toBe(false);
-    }
+  it('Tier I (the Threshold included) offers only modest options', () => {
+    expect(offers(1).every((o) => o.grade === 1)).toBe(true);
+    for (let i = 0; i < 100; i++)
+      for (const o of makePrelude(seedRng(`thr-g-${i}`), 'threshold', 1, 'aurelion').options)
+        expect(o.grade, o.id).toBe(1);
   });
 
-  it('is offered no common cards and none of the small blessings', () => {
-    const list = offers(ASCENDED_TIER);
-    expect(
-      list.flatMap((o) => o.effects).some((e) => e.k === 'pick' && e.rarity === 'common'),
-    ).toBe(false);
-    for (const id of ['hardened', 'purse', 'honed'])
-      expect(
-        list.some((o) => o.id === id),
-        id,
-      ).toBe(false);
+  it('each tier offers the richer grades more often, and Tier XI on no modest ones', () => {
+    const share = (tier: number, grade: number) => {
+      const list = offers(tier);
+      return list.filter((o) => o.grade === grade).length / list.length;
+    };
+    const grand = [1, 3, 6, 9, 12].map((t) => share(t, 3));
+    for (let i = 1; i < grand.length; i++) expect(grand[i]!).toBeGreaterThan(grand[i - 1]!);
+    expect(share(11, 1)).toBe(0);
+    expect(share(12, 1)).toBe(0);
+    expect(gradeOdds(1)).toEqual([100, 0, 0]);
+    for (const row of GRADE_ODDS) expect(row[0] + row[1] + row[2]).toBe(100);
+  });
+
+  it('later tiers offer rare and better cards, and common ones only early', () => {
+    const rarities = (tier: number) =>
+      offers(tier).flatMap((o) => o.effects.flatMap((e) => (e.k === 'pick' ? [e.rarity] : [])));
+    expect(rarities(1)).toContain('common');
+    expect(rarities(1)).not.toContain('ancestral');
+    expect(rarities(12)).not.toContain('common');
+    const rare = (tier: number) =>
+      rarities(tier).filter((r) => r !== 'common' && r !== 'uncommon').length /
+      rarities(tier).length;
+    expect(rare(12)).toBeGreaterThan(rare(1));
+  });
+
+  it('the same offering pays more at a later tier', () => {
+    const at = (tier: number, id: string) =>
+      preludeCatalogue(tier)
+        .grades.flatMap((g) => [...g.blessings, ...g.bargains])
+        .find((o) => o.id === id)!;
+    const shardsOf = (o: PreludeOption) =>
+      o.effects.reduce((n, e) => n + (e.k === 'shards' ? e.n : 0), 0);
+    expect(shardsOf(at(1, 'purse'))).toBe(75);
+    expect(shardsOf(at(10, 'purse'))).toBeGreaterThan(shardsOf(at(1, 'purse')));
+    expect(shardsOf(at(10, 'hoard'))).toBeGreaterThan(shardsOf(at(1, 'hoard')));
+    expect(at(10, 'rift-forged').effects[0]).toMatchObject({ k: 'maxHp' });
+    expect((at(10, 'rift-forged').effects[0] as { n: number }).n).toBeGreaterThan(18);
+  });
+
+  it('every offering has a grade and a family, and a bargain pays at least as much as a blessing of its grade', () => {
+    const c = preludeCatalogue(1);
+    for (const g of c.grades) {
+      expect(g.blessings.length, g.name).toBeGreaterThanOrEqual(5);
+      expect(g.bargains.length, g.name).toBeGreaterThanOrEqual(4);
+      for (const o of [...g.blessings, ...g.bargains]) expect(o.grade, o.id).toBe(g.grade);
+      for (const o of g.bargains) expect(o.risky, o.id).toBe(true);
+    }
   });
 
   it('rests better', () => {

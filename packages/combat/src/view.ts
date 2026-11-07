@@ -1934,16 +1934,16 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Add a copy of a random ${o.neutral ? 'Neutral ' : ''}card in your hand to your hand.`;
     // --- the Necrobinder copy
     case 'raise': {
-      const times = o.scale
-        ? o.scale.by === 'x'
-          ? ' X times'
-          : ` once per ${METRIC_WORDS[o.scale.by].per}`
-        : o.times === 2
-          ? ' twice'
-          : (o.times ?? 1) > 1
-            ? ` ${o.times} times`
-            : '';
-      return `Raise ${o.amount}${times}.`;
+      // ("Summon a Bone Thrall with 6 HP": what was "Raise 6"; with every slot taken the weakest gains the HP instead, which the
+      // Bone Thrall keyword explains)
+      const name = db.units[o.unit]?.name ?? 'Bone Thrall';
+      if (o.scale?.by === 'x') return `Summon X ${name}s with ${o.amount} HP each.`;
+      if (o.scale)
+        return `Summon a ${name} with ${o.amount} HP for each ${METRIC_WORDS[o.scale.by].per}.`;
+      const n = o.times ?? 1;
+      return n > 1
+        ? `Summon ${n} ${name}s with ${o.amount} HP each.`
+        : `Summon a ${name} with ${o.amount} HP.`;
     }
     case 'command': {
       // "Your companions each deal 6 damage." (what they read of themselves is theirs: "equal to its HP")

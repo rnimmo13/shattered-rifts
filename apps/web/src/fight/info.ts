@@ -758,8 +758,8 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
   raise: {
-    name: 'Raise',
-    text: 'A Bone Thrall rises with that much HP (up to three companions). With every slot taken, your weakest companion gains that much max HP instead. Thralls take hits meant for you but never act on their own.',
+    name: 'Bone Thrall',
+    text: 'Summoning one brings a new Bone Thrall with that much HP (up to three companions). With every slot taken, your weakest companion gains that much max HP instead. Thralls take hits meant for you but never act on their own: your Commands make them strike.',
   },
   replay: { name: 'Replay', text: 'The card is played one more time each time you play it.' },
 };

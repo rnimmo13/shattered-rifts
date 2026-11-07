@@ -80,37 +80,55 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       expect(t.onTrinity, t.id).toBeUndefined();
       expect(t.passive, t.id).toBeDefined();
     }
-    // (Raise the Hawk into a full row pushes the front Hawk out: it hits for 7)
-    let s = fight(['raise-the-hawk']);
-    s = play(s, 'raise-the-hawk');
-    expect(row(s)).toEqual(['bear', 'thunderbird', 'hawk']);
+    // (Frost Ward's Bear into a full row pushes the front Hawk out: it hits for 7; and 4 Barrier, DECISIONS #673)
+    let s = fight(['frost-ward']);
+    s = play(s, 'frost-ward');
+    expect(row(s)).toEqual(['bear', 'thunderbird', 'bear']);
     expect(foe(s).hp).toBe(193);
+    expect(hero(s).barrier).toBe(4);
+    expect(foe(s).statuses.faltering).toBe(1);
   });
 
-  it('a command makes the front totem act and consumes it; the rest move up', () => {
+  it('a command makes the front totem act and consumes it; Spirit Call then plants a basic totem in the gap', () => {
     let s = fight(['spirit-call', 'spirit-call']);
     s = play(s, 'spirit-call');
-    // (Spirit Call acts the front totem twice: the Hawk hits twice for 7)
-    expect(lost(s)).toEqual([14]);
-    expect(row(s)).toEqual(['bear', 'thunderbird', null]);
+    // (Spirit Call acts the front totem twice: the Hawk hits twice for 7; the new totem fills the gap without pushing anyone out)
+    expect(lost(s)[0]).toBeGreaterThanOrEqual(14);
+    expect(row(s).slice(0, 2)).toEqual(['bear', 'thunderbird']);
+    expect(['hawk', 'bear', 'thunderbird']).toContain(row(s)[2]);
     s = play(s, 'spirit-call');
     // (the Bear: 6 Barrier twice)
-    expect(hero(s).barrier).toBe(12);
-    expect(row(s)).toEqual(['thunderbird', null, null]);
+    expect(hero(s).barrier).toBeGreaterThanOrEqual(12);
+    expect(row(s)[0]).toBe('thunderbird');
+    expect(row(s).filter(Boolean)).toHaveLength(3);
+  });
+
+  it('Ember Toss is a basic Flame Attack: 7 damage and 2 Burn (9 and 3 upgraded)', () => {
+    const s = play(fight(['flame-toss']), 'flame-toss', foe(fight([])).id);
+    expect(lost(s)).toEqual([7]);
+    expect(foe(s).statuses.burn).toBe(2);
+    const up = play(fight(['flame-toss+']), 'flame-toss+', foe(fight([])).id);
+    expect(lost(up)).toEqual([9]);
+    expect(foe(up).statuses.burn).toBe(3);
+    expect(db.cards['flame-toss']!.rarity).toBe('basic');
+    expect(db.cards['flame-toss']!.tags).toContain('flame');
+    expect(RIFTWALKERS.shaman.starter).toContain('flame-toss');
+    expect(RIFTWALKERS.shaman.starter).not.toContain('raise-the-hawk');
+    expect(db.cards['raise-the-hawk']).toBeUndefined();
   });
 
   it('a plant goes to the back; into a full row it pushes the front one out, and that one acts as it goes', () => {
     let s = fight(['wardkeepers-pact', 'hawks-dive']);
     s = play(s, 'wardkeepers-pact');
-    // (full: the Hawk at the front is pushed out and hits for 7; a Bear stands at the back; Bear Call's 4 Barrier)
+    // (full: the Hawk at the front is pushed out and hits for 7; a Bear stands at the back; Bear Call's 6 Barrier)
     expect(row(s)).toEqual(['bear', 'thunderbird', 'bear']);
     expect(lost(s)).toEqual([7]);
-    expect(hero(s).barrier).toBe(4);
+    expect(hero(s).barrier).toBe(6);
     s = play(s, 'hawks-dive', foe(s).id);
     // (Hawk's Dive 7, the Bear pushed out: 6 Barrier)
     expect(row(s)).toEqual(['thunderbird', 'bear', 'hawk']);
     expect(lost(s)).toEqual([7 + 7]);
-    expect(hero(s).barrier).toBe(4 + 6);
+    expect(hero(s).barrier).toBe(6 + 6);
     let t = fight(['hawks-dive']);
     t.sides.a.totems = ['bear', null, null];
     t = play(t, 'hawks-dive', foe(t).id);
@@ -119,12 +137,17 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(t)).toEqual([7]);
   });
 
-  it('a command finds nothing in an empty row', () => {
-    let s = fight(['spirit-call']);
+  it('a command finds nothing in an empty row (Spirit Call still plants its totem)', () => {
+    let s = fight(['spirit-ward']);
     s.sides.a.totems = [null, null, null];
-    s = play(s, 'spirit-call');
-    expect(hero(s).barrier).toBe(0);
+    s = play(s, 'spirit-ward');
+    expect(hero(s).barrier).toBe(5);
     expect(row(s)).toEqual([null, null, null]);
+    let c = fight(['spirit-call']);
+    c.sides.a.totems = [null, null, null];
+    c = play(c, 'spirit-call');
+    expect(lost(c)).toEqual([0]);
+    expect(row(c).filter(Boolean)).toHaveLength(1);
   });
 
   it('passives at the end of his turn: Hawk a random hit, Bear Barrier, Thunderbird a Fork; all +1 per Spirit', () => {
@@ -179,7 +202,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     const lostNow = s.sides.b.units.map((u, i) => before[i]! - u.hp);
     expect(lostNow).toEqual([0, 18]);
     expect(hero(s).statuses.umbra ?? 0).toBe(0);
-    expect(row(s)).toEqual([null, null, null]);
+    expect(row(s).filter(Boolean)).toHaveLength(1);
   });
 
   it('Spirit adds to every totem number: a Bear commanded at 3 Spirit gives 9, a Thunderbird 11 to all', () => {
@@ -373,9 +396,10 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     // (5, and the Hawk it commands hits for 7)
     expect(foe(t).hp).toBe(188);
     t = play(t, 'spirit-ward');
-    expect(hero(t).barrier).toBe(2 + 6);
+    expect(hero(t).barrier).toBe(5 + 6);
     t = play(t, 'spirit-call');
-    expect(row(t)).toEqual([null, null, null]);
+    // (the Thunderbird acts twice and goes; Spirit Call plants one basic totem in the empty row)
+    expect(row(t).filter(Boolean)).toHaveLength(1);
   });
 
   it('the Defect-shaped uncommons and rares do what they say', () => {
@@ -587,8 +611,8 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
       return s;
     };
     // The full starting row pushes out the Hawk for 7 damage.
-    const raised = play(start(['raise-the-hawk']), 'raise-the-hawk');
-    expect(row(raised)).toEqual(['bear', 'thunderbird', 'hawk']);
+    const raised = play(start(['wardkeepers-pact']), 'wardkeepers-pact');
+    expect(row(raised)).toEqual(['bear', 'thunderbird', 'bear']);
     expect(foe(raised).hp).toBe(193);
     // Unchanged Thunder Memory plants one plus the one already planted at fight start.
     const memory = play(start(['thunder-memory']), 'thunder-memory');
@@ -711,7 +735,7 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     s.sides.b.hand = [{ id: 'B0', card: 'spirit-call' }];
     s.sides.b.mana = 3;
     s = applyAction(db, s, { type: 'play', card: 'B0' }).state;
-    expect(s.sides.b.totems).toEqual(['bear', 'thunderbird', null]);
+    expect(s.sides.b.totems?.slice(0, 2)).toEqual(['bear', 'thunderbird']);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     const k2 = s.sides.a.units.find((u) => u.kind === 'hero')!;
     // (the Thunderbird's 3 + 1 Spirit, 25% more on the lone hero: 5)

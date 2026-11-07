@@ -92,6 +92,13 @@ describe('the summons, by cost', () => {
     expect([hp('pack-alpha'), hit('pack-alpha')]).toEqual([12, 6]);
     expect(hp('dire-wolf')).toBeGreaterThan(hp('pack-alpha'));
     expect(hit('dire-wolf')).toBeGreaterThan(hit('pack-alpha'));
+    // (the Dire Wolf strikes twice, and so does the Dire Wolf+, DECISIONS #678)
+    for (const id of ['dire-wolf', 'dire-wolf+']) {
+      const b = db.units[id]!.brain;
+      const o = b.kind === 'ally' ? b.act[0] : undefined;
+      expect(o?.op === 'damage' ? o.hits : 0, id).toBe(2);
+    }
+    expect(hit('dire-wolf+')).toBe(11);
     expect(hp('pup')).toBeLessThan(hp('hound'));
     // the Pup never outgrows the Hound, even upgraded
     expect(hp('pup+')).toBeLessThanOrEqual(hp('hound'));

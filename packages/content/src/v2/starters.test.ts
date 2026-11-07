@@ -1,13 +1,7 @@
 // Starting decks: ten cards; Shaman has five class basics since decision 670, others three or four.
 
 import { describe, expect, it } from 'vitest';
-import {
-  applyAction,
-  clone,
-  createCombat,
-  legalActions,
-  type CombatState,
-} from '@sr/combat';
+import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, canonicalCard } from './index';
 
 type Hero = 'knight' | 'assassin' | 'monk' | 'engineer' | 'necromancer';
@@ -53,12 +47,30 @@ describe('starting decks', () => {
   });
 
   it('the Knight, Trickster, Assassin, Shaman, Monk and Drunkard have distinct class basics in their expected counts', () => {
-    const want: Record<string, number> = { knight: 4, trickster: 4, assassin: 4, shaman: 5, monk: 3, drunkard: 4 };
+    // (the Monk carries two of each stance card, DECISIONS #677: his are checked below)
+    const want: Record<string, number> = {
+      knight: 4,
+      trickster: 4,
+      assassin: 4,
+      shaman: 5,
+      drunkard: 4,
+    };
     for (const [id, n] of Object.entries(want)) {
-      const basics = RIFTWALKERS[id as keyof typeof RIFTWALKERS].starter.filter((c) => c !== 'strike' && c !== 'defend');
+      const basics = RIFTWALKERS[id as keyof typeof RIFTWALKERS].starter.filter(
+        (c) => c !== 'strike' && c !== 'defend',
+      );
       expect(new Set(basics).size, id).toBe(basics.length);
       expect(basics.length, id).toBe(n);
     }
+  });
+
+  it('the Monk starts with two Kindle Fury and two Still Guard, to change stances sooner (DECISIONS #677)', () => {
+    const deck = RIFTWALKERS.monk.starter;
+    expect(deck).toHaveLength(10);
+    expect(deck.filter((c) => c === 'kindle-fury')).toHaveLength(2);
+    expect(deck.filter((c) => c === 'still-guard')).toHaveLength(2);
+    expect(deck.filter((c) => c === 'strike')).toHaveLength(3);
+    expect(deck.filter((c) => c === 'defend')).toHaveLength(2);
   });
 });
 
@@ -124,7 +136,16 @@ describe('the new class basics', () => {
   });
 
   it('they are basics, never offered as rewards', () => {
-    for (const id of ['set-your-shield', 'heavy-swing', 'fang-and-claw', 'pocket-blades', 'mindful-palm', 'spot-weld', 'pinprick-trap', 'marked-for-the-grave'])
+    for (const id of [
+      'set-your-shield',
+      'heavy-swing',
+      'fang-and-claw',
+      'pocket-blades',
+      'mindful-palm',
+      'spot-weld',
+      'pinprick-trap',
+      'marked-for-the-grave',
+    ])
       expect(db.cards[id]!.rarity).toBe('basic');
   });
 });

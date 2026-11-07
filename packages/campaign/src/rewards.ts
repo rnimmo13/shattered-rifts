@@ -272,18 +272,19 @@ export function offerBoon(rng: RngState, owned: readonly string[]): string | nul
 /** The chance of each potion rarity. */
 export const POTION_WEIGHTS = { common: 60, uncommon: 30, rare: 10 } as const;
 
-/** A random Potion, weighted toward common ones. */
-export function offerPotion(rng: RngState): string {
+/** A random Potion, weighted toward common ones (or of the rarity asked for). */
+export function offerPotion(rng: RngState, rarity?: keyof typeof POTION_WEIGHTS): string {
   const weights = POTION_WEIGHTS;
-  const total = 100;
-  let r = nextInt(rng, total);
-  let want: keyof typeof weights = 'common';
-  for (const k of Object.keys(weights) as (keyof typeof weights)[]) {
-    if (r < weights[k]) {
-      want = k;
-      break;
+  let want: keyof typeof weights = rarity ?? 'common';
+  if (!rarity) {
+    let r = nextInt(rng, 100);
+    for (const k of Object.keys(weights) as (keyof typeof weights)[]) {
+      if (r < weights[k]) {
+        want = k;
+        break;
+      }
+      r -= weights[k];
     }
-    r -= weights[k];
   }
   const pool = POTIONS.filter((p) => p.rarity === want);
   const from = pool.length > 0 ? pool : POTIONS;

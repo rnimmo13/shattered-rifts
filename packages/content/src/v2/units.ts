@@ -73,7 +73,8 @@ const RAW_ALLIES: UnitDef[] = [
   ally('pup', 'Pup', 5, [dmg(3)]),
   ally('hound', 'Hound', 8, [dmg(4)]),
   ally('pack-alpha', 'Pack Alpha', 12, [dmg(6)]),
-  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9)]),
+  // (it strikes twice, DECISIONS #678: a 3-Mana rare companion that dies easily has to hit hard while it stands)
+  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9, 'target', 2)]),
   // Gloomfen: Dorian's dead. The Bone Thrall is his copy of the Necrobinder's Osty, several at once: it does not act on its own, a
   // Raise brings one with the HP the card says (5 here is only the one he starts with), and his Command cards make each one strike.
   // (Grave Colossus and The Drowned King are no longer summoned by any card; they are kept for their looks and for later.)

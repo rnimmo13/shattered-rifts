@@ -138,10 +138,7 @@ const gatheringStorm = (n: number, grow: number): Op[] => [
 
 export const SHAMAN: CardDef[] = [
   // --- basics ---
-  // (the starting Hawk: it works every turn it stands)
-  i('basic', 'raise-the-hawk', 'Raise the Hawk', 'skill', 1, 'none', [plant('hawk')], {
-    up: { cost: 0 },
-  }),
+  // (Raise the Hawk left the starter and the pool, DECISIONS #673: Frost Ward and Spirit Call plant instead)
   i(
     'basic',
     'frost-ward',
@@ -149,18 +146,40 @@ export const SHAMAN: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(5), status('faltering', 1, 'randomFoe')],
-    { ...FROST, up: { effects: [barrier(8), status('faltering', 1, 'randomFoe')] } },
+    [barrier(4), status('faltering', 1, 'randomFoe'), plant('bear')],
+    {
+      ...FROST,
+      up: { effects: [barrier(7), status('faltering', 1, 'randomFoe'), plant('bear')] },
+    },
   ),
   // (his starting Storm spell, DECISIONS #427: a Fork, two enemies, or one harder)
   i('basic', 'forked-lightning', 'Forked Lightning', 'attack', 1, 'none', [fork(5, 2)], {
     ...STORM,
     up: { effects: [fork(7, 2)] },
   }),
-  // (the starter command: the front totem acts and goes)
-  i('basic', 'spirit-call', 'Spirit Call', 'skill', 1, 'none', [commandTotem('front', 2)], {
-    up: { cost: 0 },
-  }),
+  // (the starter command: the front totem acts twice and goes, and a new one takes a place in the row, DECISIONS #673)
+  i(
+    'basic',
+    'spirit-call',
+    'Spirit Call',
+    'skill',
+    1,
+    'none',
+    [commandTotem('front', 2), plant('*')],
+    { up: { effects: [commandTotem('front', 2), plant('*'), barrier(4)] } },
+  ),
+
+  // (his starting Flame spell, DECISIONS #673: the starter casts all three elements; the id is new, as `ember-toss` is a retired card's)
+  i(
+    'basic',
+    'flame-toss',
+    'Ember Toss',
+    'attack',
+    1,
+    'foe',
+    [dmg(7), status('burn', 2, 'target')],
+    { ...FLAME, up: { effects: [dmg(9), status('burn', 3, 'target')] } },
+  ),
 
   // --- Flame: big single-target bursts and Burn ---
   i(
@@ -315,9 +334,9 @@ export const SHAMAN: CardDef[] = [
     },
   ),
   // (a Frost ward that brings a Bear)
-  i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(4)], {
+  i('common', 'wardkeepers-pact', 'Bear Call', 'skill', 1, 'none', [plant('bear'), barrier(6)], {
     ...FROST,
-    up: { effects: [plant('bear'), barrier(7)] },
+    up: { effects: [plant('bear'), barrier(9)] },
   }),
   i(
     'uncommon',
@@ -472,8 +491,8 @@ export const SHAMAN: CardDef[] = [
       up: { effects: [status('spirit', 3, 'self', true)] },
     },
   ),
-  i('common', 'raise-a-totem', 'Raise a Totem', 'skill', 1, 'none', [plant('*'), barrier(4)], {
-    up: { effects: [plant('*'), barrier(7)] },
+  i('common', 'raise-a-totem', 'Raise a Totem', 'skill', 1, 'none', [plant('*'), barrier(6)], {
+    up: { effects: [plant('*'), barrier(9)] },
   }),
   i(
     'uncommon',
@@ -523,9 +542,9 @@ export const SHAMAN: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(2), commandTotem('front')],
+    [barrier(5), commandTotem('front')],
     {
-      up: { effects: [barrier(5), commandTotem('front')] },
+      up: { effects: [barrier(8), commandTotem('front')] },
     },
   ),
   // (a dive that brings a Hawk)

@@ -915,7 +915,9 @@ export const TRIMMED_CARDS: Readonly<Record<string, string>> = {
   'call-again': 'spirit-ward',
   'spark-fork': 'stone-sling',
   'chain-lightning': 'stone-sling',
-  'ember-bolt': 'raise-the-hawk',
+  'ember-bolt': 'flame-toss',
+  // (DECISIONS #673: Raise the Hawk left the Shaman's starter and pool; an old deck's copy becomes the common that plants)
+  'raise-the-hawk': 'raise-a-totem',
   'turn-the-wheel': 'wind-whisper',
   'bears-guard': 'wardkeepers-pact',
   'thunderbirds-cry': 'thunderbird-call',

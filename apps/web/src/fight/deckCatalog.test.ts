@@ -3,6 +3,7 @@ import { applyAction, cardText, chooseAction, createCombat } from '@sr/combat';
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 import {
   TABS,
+  bringsCompanion,
   catalog,
   countsOf,
   filterCatalog,
@@ -17,6 +18,19 @@ import {
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 const describe_ = (c: Parameters<typeof cardText>[1]) => cardText(db, c);
+
+describe('the library Summons filter (DECISIONS #679)', () => {
+  it("lists every card that brings a companion: Summons, and the Necromancer's Thrall Skills", () => {
+    expect(bringsCompanion(db.cards['dire-wolf']!)).toBe(true);
+    expect(bringsCompanion(db.cards['raise-thrall']!)).toBe(true);
+    expect(bringsCompanion(db.cards['army-of-the-drowned']!)).toBe(true);
+    expect(bringsCompanion(db.cards['strike']!)).toBe(false);
+    const necro = Object.values(db.cards).filter(
+      (c) => c.hero === 'necromancer' && bringsCompanion(c),
+    );
+    expect(necro.length).toBeGreaterThan(5);
+  });
+});
 
 describe('the practice deck builder', () => {
   it('lists every card in the game exactly once, each under one pool (a switched-off card not at all)', () => {

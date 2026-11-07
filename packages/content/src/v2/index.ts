@@ -275,16 +275,16 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       ...rep('defend', 2),
       'hawks-dive',
       'spirit-call',
-      'raise-the-hawk',
       'frost-ward',
       'forked-lightning',
+      'flame-toss',
     ],
     blurb:
       'An elder shaman who casts Flame, Frost and Storm and keeps a row of totems. Each totem works every turn while it stands; when he commands it, its spirit acts once more and is gone, and a new one takes its place at the back of the row.',
     mechanics: ['Elements', 'Totems', 'Commands', 'Spirit', 'Primed', 'Burn'],
     howTo: [
       'Your totems stand in a row (the Totems panel), oldest at the front. Each works every turn while it stands: the Hawk hits a random enemy for 3, the Bear gives Barrier, the Thunderbird hits two random enemies.',
-      'A command (Spirit Call) makes your front totem act once more and consumes it: the Hawk hits a random enemy for 7, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
+      'A command makes your front totem act and consumes it (Spirit Call: twice, then it plants a new totem in the gap): the Hawk hits a random enemy for 7, the Bear 6 Barrier, the Thunderbird hits every enemy for 8. Planting a totem puts it at the back; in a full row the front one is pushed out and acts as it goes.',
       'Spirit never goes down. Each point adds 1 to every totem number, so Spirit cards make every totem stronger. His spells are Flame (big hits on one enemy), Frost (Barrier and Faltering) and Storm (every enemy, or Forks).',
     ],
   },
@@ -315,9 +315,12 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [stance('calm')],
     },
     starter: [
-      ...rep('strike', 4),
-      ...rep('defend', 3),
+      // (two of each stance card in place of a Strike and a Defend: through his stances sooner, DECISIONS #677)
+      ...rep('strike', 3),
+      ...rep('defend', 2),
       'kindle-fury',
+      'kindle-fury',
+      'still-guard',
       'still-guard',
       'mindful-palm',
     ],
@@ -421,7 +424,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, Raise 2. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each; further cards give 1 Fate each. A round runs from the start of your turn to your next turn.',
+      text: 'At the start of your turn, summon a Bone Thrall with 2 HP. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each; further cards give 1 Fate each. A round runs from the start of your turn to your next turn.',
       // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit; 2, not 3, #401)
       // (no Fate at the start, #398; a death curses 3, as a consumed card does: 5 had pushed him back to the top, #403)
       turnStart: [raise(2)],
@@ -446,9 +449,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       // began with two, DECISIONS #431)
     },
     starter: [
-      ...rep('strike', 4),
+      ...rep('strike', 3),
       ...rep('defend', 3),
       'raise-thrall',
+      // (a second Off the Leash in place of a fourth Strike, DECISIONS #675)
+      'off-the-leash',
       'off-the-leash',
       'marked-for-the-grave',
     ],
@@ -457,11 +462,11 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],
     howTo: [
       'You start with a Bone Thrall. Thralls stand in front of you and take the hits meant for you, but they never act on their own.',
-      'Raise N brings a new Bone Thrall with N HP (up to three). With three already standing, your weakest Thrall gains N max HP instead.',
+      'Summon a Bone Thrall with N HP brings a new Thrall (up to three). With three already standing, your weakest Thrall gains N max HP instead.',
       'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: Raise 2 at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each, then 1 each until your next turn.',
+      'Grave Chill: summon a Bone Thrall with 2 HP at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each, then 1 each until your next turn.',
     ],
   },
 };
@@ -474,7 +479,7 @@ export interface Encounter {
   /** (DECISIONS #437) 'beyond': the Far Rifts, a realm of enemies only (no Riftwalker comes from it) */
   realm: RealmId | 'all' | CampaignMapRealm;
   kind: EncounterKind;
-  /** front to back */
+  /** front to back (a main enemy, at 1.5x the others' Max HP, is moved to the back when the fight starts) */
   units: string[];
   /** a Warden that waits for this Rift Tier before it can end one (missing: 1; DECISIONS #531) */
   fromTier?: number;

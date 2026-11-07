@@ -33,8 +33,10 @@ import {
   type FxCtx,
   type Pt,
 } from './attackFx';
+import { HeroSprite, loadRig, type Facing } from './heroSprite';
 
 export type FighterSide = 'a' | 'b';
+export type { Facing } from './heroSprite';
 
 /** Stage coordinates (1920x1080 reference). Slot 0 is the one nearest the centre. */
 export const LINE_Y = 830;
@@ -91,6 +93,8 @@ export interface FighterSpec {
   hero?: string;
   /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
   prop?: { canvas: HTMLCanvasElement; x: number; y: number; on: boolean };
+  /** a hero drawn by a 2D rig (heroSprite.ts) once it has loaded; `canvas` is shown until then, and stays if it cannot load */
+  rig?: { id: string; facing: Facing };
 }
 
 interface Fighter {
@@ -116,6 +120,8 @@ interface Fighter {
   dying: boolean;
   targetable: boolean;
   busy: number;
+  /** the animated rig drawing this figure, once loaded (DECISIONS #676) */
+  rig: HeroSprite | null;
 }
 
 export interface FighterHost {
@@ -127,6 +133,8 @@ export interface FighterHost {
   sound: (name: string) => void;
   /** something changed at once, not by a tween: on Low graphics the board is drawn again for this long (DECISIONS #570) */
   wake?: (ms: number) => void;
+  /** canvas pixels per stage pixel (the board's scale times its resolution): a rig draws at this density, at most 2 per CSS px */
+  pixelScale?: () => number;
 }
 
 /**
@@ -262,7 +270,8 @@ export class Fighters {
           restyled ||
           Math.abs(f.spec.height - spec.height) > 0.5 ||
           (f.spec.hover ?? 0) !== (spec.hover ?? 0);
-        if (restyled) {
+        // (a rig draws its own frames: the picture behind it is only its stand-in)
+        if (restyled && !f.rig) {
           const tex = Texture.from(spec.canvas);
           f.sprite.texture = tex;
           f.flash.texture = tex;
@@ -377,8 +386,10 @@ export class Fighters {
       dying: false,
       targetable: false,
       busy: 0,
+      rig: null,
     };
     this.all.set(spec.id, f);
+    if (spec.rig) this.loadRigFor(f, spec.rig.id, spec.rig.facing);
     if (animate && !this.h.profile().still) {
       root.alpha = 0;
       this.track(gsap.to(root, { alpha: 1, duration: 0.25 }));
@@ -398,9 +409,12 @@ export class Fighters {
   private resize(f: Fighter): void {
     const spec = f.spec;
     const k = spec.height / spec.canvas.height;
-    const w = spec.canvas.width * k;
-    f.sprite.scale.set(k);
-    f.flash.scale.set(k);
+    const w = f.rig ? HeroSprite.widthFor(spec.height) : spec.canvas.width * k;
+    if (f.rig) this.fitRig(f, f.rig);
+    else {
+      f.sprite.scale.set(k);
+      f.flash.scale.set(k);
+    }
     f.shadow.scale.set((w * 1.15) / 128, (w * 1.15 * 0.24) / 128);
     f.contact.scale.set((w * 0.8) / 128, (w * 0.8 * 0.2) / 128);
     f.aura.scale.set((w * 1.1) / 128, (w * 1.1 * 0.34) / 128);
@@ -450,7 +464,83 @@ export class Fighters {
       ...(f.prop ? [f.prop] : []),
     ]);
     f.root.destroy({ children: true });
+    f.rig?.dispose();
+    f.rig = null;
     this.all.delete(id);
+  }
+
+  // --- rigged heroes (DECISIONS #676) ---------------------------------------------------------------------
+
+  /** canvas px per stage px for a rig: the board's own density, never past 2 device px a CSS px */
+  private rigDensity(): number {
+    return Math.max(0.25, this.h.pixelScale?.() ?? 1);
+  }
+
+  /** Load the rig; once it is in (and the figure is still on the stage), it draws the figure instead of its picture. */
+  private loadRigFor(f: Fighter, id: string, facing: Facing): void {
+    void loadRig(id).then((assets) => {
+      // (not once the fight is over: a beaten hero's picture has already slumped)
+      if (!assets || this.destroyed || this.ended || this.all.get(f.spec.id) !== f || f.dying)
+        return;
+      const rig = HeroSprite.create(assets, facing);
+      if (!rig) return;
+      f.rig = rig;
+      f.sprite.texture = rig.texture;
+      f.flash.texture = rig.texture;
+      f.flash.alpha = 0;
+      // (its canvas, its feet on the spot, and the shadows sized to its wider stance)
+      this.resize(f);
+      rig.render();
+      this.h.wake?.(200);
+    });
+  }
+
+  /**
+   * Size a rig's canvas to the figure's height, the board's density and the current clip's frame, with its feet on the figure's
+   * spot. A resized canvas is blank, so it is drawn again at once (or a still board would show nothing until the next clip).
+   */
+  private fitRig(f: Fighter, rig: HeroSprite): void {
+    const changed = rig.resize(f.spec.height, this.rigDensity());
+    const a = rig.anchor;
+    for (const s of [f.sprite, f.flash]) {
+      s.anchor.set(a.x, a.y);
+      s.scale.set(rig.stageScale);
+    }
+    if (changed) {
+      rig.render();
+      this.h.wake?.(100);
+    }
+  }
+
+  /** Resolves when a strike or aura already under way has finished, so the next clip never snaps from mid-lunge to rest. */
+  private afterClip(rig: HeroSprite): Promise<void> {
+    const left = rig.clip === 'strike' || rig.clip === 'aura' ? rig.remaining : 0;
+    if (left <= 0.02) return Promise.resolve();
+    return new Promise((resolve) => void this.track(gsap.delayedCall(left, resolve)));
+  }
+
+  /** Play a rig's clip, keep the board drawing through it (Low graphics), and say when its named moment comes. */
+  private rigPlay(
+    rig: HeroSprite,
+    clip: 'strike' | 'aura' | 'hit' | 'death',
+    moment?: { name: string; at: () => void; within: number },
+    onEnd?: () => void,
+  ): void {
+    let done = false;
+    const fire = (): void => {
+      if (done) return;
+      done = true;
+      moment?.at();
+    };
+    rig.play(clip, {
+      onEvent: (e) => {
+        if (moment && e.name === moment.name) fire();
+      },
+      ...(onEnd ? { onEnd } : {}),
+    });
+    this.h.wake?.(clip === 'death' ? 2400 : 1600);
+    // (the moment always comes, even if the rig is not drawn to it; gsap keeps the same game speed the rig does)
+    if (moment) this.track(gsap.delayedCall(moment.within, fire));
   }
 
   // --- animation -------------------------------------------------------------------------------------------
@@ -484,6 +574,8 @@ export class Fighters {
           ? all[0]
           : undefined;
     const dir = f.spec.side === 'a' ? 1 : -1;
+    // a rigged hero strikes with its own animation: the blow (and the damage after it) lands on the clip's impact
+    if (f.rig) return this.rigStrike(f, f.rig, t, dir, onHit, spread);
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
     const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
     const tex = wid ? weaponTexture(wid) : undefined;
@@ -651,6 +743,61 @@ export class Fighters {
       tl.to(f.body.scale, { x: 1, y: 1, duration: 0.4, ease: ease.pop.gsap }, '<');
       if (m.tilt) tl.to(f.body, { rotation: 0, y: 0, duration: 0.4, ease: ease.pop.gsap }, '<');
     });
+  }
+
+  /**
+   * A rigged hero's attack: the strike clip plays where it stands (it steps into the thrust itself), and at its impact (0.41s) the blow
+   * appears on the target and `onHit` runs, so the damage shows then and not when the card was played. Resolves at the impact.
+   */
+  private rigStrike(
+    f: Fighter,
+    rig: HeroSprite,
+    t: Fighter | undefined,
+    dir: number,
+    onHit?: () => void,
+    spread: Fighter[] | null = null,
+  ): Promise<void> {
+    // (a strike or aura still under way finishes first)
+    return this.afterClip(rig).then(
+      () =>
+        new Promise((resolve) => {
+          f.busy++;
+          f.root.zIndex = 5000;
+          let ended = false;
+          const end = (): void => {
+            if (ended) return;
+            ended = true;
+            f.busy--;
+            if (!f.root.destroyed) f.root.zIndex = f.y + (f.spec.hover ? 1 : 0);
+          };
+          this.h.sound('attackWindup');
+          const spec: AttackSpec = { ...f.spec.attack, kind: 'stab' };
+          this.rigPlay(
+            rig,
+            'strike',
+            {
+              name: 'hit',
+              within: 0.6,
+              at: () => {
+                this.h.sound('attackHit');
+                try {
+                  // (a figure taken off the stage meanwhile has nothing left to draw on)
+                  if (!f.root.destroyed && this.all.get(f.spec.id) === f) {
+                    if (spread) this.sweepFx(f, spread, dir, spec, true);
+                    else if (!this.meleeFrames(f, t, dir, spec)) this.meleeFx(f, t, dir, spec);
+                  }
+                } finally {
+                  onHit?.();
+                  resolve();
+                }
+              },
+            },
+            end,
+          );
+          // (the clip ends on its own; this only frees the figure if it never gets drawn to its end)
+          this.track(gsap.delayedCall(1.4, end));
+        }),
+    );
   }
 
   /** The painted effect where a weapon blow lands: a burst of dust at the feet for a slam, sparks at the chest for a blade. */
@@ -1009,6 +1156,33 @@ export class Fighters {
     this.pulse(id, tintColor);
   }
 
+  /**
+   * A hero plays a card that is not an Attack (an Aura, a Skill, a Trap). A rigged hero raises its aura and this resolves at the
+   * flare (0.29s), so what the card gives shows then; any other figure does `act` and it resolves at once.
+   */
+  cast(id: string, tintColor: string = color.goldLight): Promise<void> {
+    const f = this.all.get(id);
+    const rig = f?.rig;
+    if (!f || !rig || f.dying || this.h.profile().still || rig.clip === 'death') {
+      this.act(id, tintColor);
+      return Promise.resolve();
+    }
+    // (a strike or aura still under way finishes first, so he never snaps from mid-lunge to rest)
+    return this.afterClip(rig).then(
+      () =>
+        new Promise<void>((resolve) => {
+          this.rigPlay(rig, 'aura', {
+            name: 'aura',
+            within: 0.45,
+            at: () => {
+              this.pulse(id, tintColor);
+              resolve();
+            },
+          });
+        }),
+    );
+  }
+
   /** A soft coloured flash over a figure: buffs, heals, debuffs. */
   pulse(id: string, tintColor: string): void {
     const f = this.all.get(id);
@@ -1024,6 +1198,12 @@ export class Fighters {
   hit(id: string, amount: number): void {
     const f = this.all.get(id);
     if (!f || f.dying) return;
+    if (f.rig) {
+      // (it flinches behind its shield, flash and shake drawn by the rig; a strike or aura under way is not cut short)
+      if (!this.h.profile().still && (f.rig.clip === 'idle' || f.rig.clip === 'hit'))
+        this.rigPlay(f.rig, 'hit');
+      return;
+    }
     f.flash.tint = 0xffffff;
     gsap.killTweensOf(f.flash);
     this.track(
@@ -1043,6 +1223,8 @@ export class Fighters {
   die(id: string): Promise<void> {
     const f = this.all.get(id);
     if (!f) return Promise.resolve();
+    // a rigged hero falls and stays down (its last frame held), and this resolves as it lands
+    if (f.rig && f.spec.isHero) return this.rigFall(f, f.rig);
     f.dying = true;
     if (this.h.profile().still) {
       this.remove(id);
@@ -1066,6 +1248,33 @@ export class Fighters {
         ease: ease.in.gsap,
       });
       tl.to(f.root, { alpha: 0, duration: 0.35 }, '<0.1');
+    });
+  }
+
+  /** A rigged hero's death: the clip plays and holds its last frame; resolves at the 'land' moment (0.98s), with a thud. */
+  private rigFall(f: Fighter, rig: HeroSprite): Promise<void> {
+    if (f.dying) return Promise.resolve();
+    f.dying = true;
+    gsap.killTweensOf([f.body, f.body.position, f.body.scale, f.root]);
+    if (this.h.profile().still) {
+      // (no motion: the last frame at once)
+      rig.play('death');
+      // (the runtime takes at most 1/20 s a step)
+      for (let i = 0; i < 50; i++) rig.update(0.05);
+      rig.render();
+      this.h.wake?.(100);
+      return Promise.resolve();
+    }
+    this.h.sound('death');
+    return new Promise((resolve) => {
+      this.rigPlay(rig, 'death', {
+        name: 'land',
+        within: 1.3,
+        at: () => {
+          this.h.sound('attackHit');
+          resolve();
+        },
+      });
     });
   }
 
@@ -1096,7 +1305,10 @@ export class Fighters {
     // (on becoming still, every figure settles back to rest once instead of freezing mid-breath)
     if (still && !this.wasStill) this.settle();
     this.wasStill = still;
+    const dt = this.lastT === null ? 0 : Math.max(0, Math.min(0.1, t - this.lastT));
+    this.lastT = t;
     for (const f of this.all.values()) {
+      if (f.rig) this.tickRig(f, f.rig, dt, still);
       if (f.targetable) {
         const lit = f.spec.id === this.locked;
         // (steady when nothing may move: reduced motion, or Low graphics, which draws the board only now and then)
@@ -1115,7 +1327,8 @@ export class Fighters {
         f.contact.alpha = 0.32 - 0.06 * b;
         f.shadow.alpha = 0.3 - 0.05 * b;
       }
-      f.sprite.scale.y = (f.spec.height / f.spec.canvas.height) * (1 + 0.014 * w);
+      // (a rig breathes in its own idle clip)
+      if (!f.rig) f.sprite.scale.y = (f.spec.height / f.spec.canvas.height) * (1 + 0.014 * w);
       f.aura.alpha = (f.spec.isHero ? 0.2 : 0.1) + 0.06 * Math.sin(t * 1.9 + f.phase);
       if (f.prop?.visible && f.spec.prop) {
         const k = f.spec.height / f.spec.canvas.height;
@@ -1126,6 +1339,25 @@ export class Fighters {
   }
 
   private wasStill = false;
+  private lastT: number | null = null;
+  /** the fight is over (finish was called): a rig that arrives late is not put on */
+  private ended = false;
+
+  /**
+   * One frame of a rig: it moves at the game's own pace (the speed setting and its hit-stop holds are gsap's time scale, which the
+   * fallbacks in rigPlay follow too), its canvas follows the board's density and the current clip's frame, and it is drawn. Nothing
+   * moves while the tab is hidden; when the board must hold still (reduced motion, Low graphics) only a clip a card started plays
+   * on, and the idle pose holds.
+   */
+  private tickRig(f: Fighter, rig: HeroSprite, dt: number, still: boolean): void {
+    if (typeof document !== 'undefined' && document.hidden) return;
+    const moving = !still || (rig.clip !== 'idle' && !rig.finished);
+    if (moving) rig.update(dt * gsap.globalTimeline.timeScale());
+    // (after the update: a clip that just began or ended gets its own frame before it is drawn; a new canvas is drawn by fitRig)
+    this.fitRig(f, rig);
+    if (moving) rig.render();
+  }
+
   /** Every figure at rest: the idle breathing and a flyer's bob at their middle. */
   private settle(): void {
     for (const f of this.all.values()) {
@@ -1136,7 +1368,7 @@ export class Fighters {
         f.contact.alpha = 0.32;
         f.shadow.alpha = 0.3;
       }
-      f.sprite.scale.y = f.spec.height / f.spec.canvas.height;
+      if (!f.rig) f.sprite.scale.y = f.spec.height / f.spec.canvas.height;
       f.aura.alpha = f.spec.isHero ? 0.2 : 0.1;
       if (f.prop && f.spec.prop) {
         const k = f.spec.height / f.spec.canvas.height;
@@ -1149,8 +1381,14 @@ export class Fighters {
 
   /** The fight ended: the loser crumples, the winner stands tall. */
   finish(winner: FighterSide | 'draw' | null): void {
+    if (winner !== null) this.ended = true;
     for (const f of this.all.values()) {
       if (winner === null || f.dying) continue;
+      if (f.spec.isHero && winner !== 'draw' && f.spec.side !== winner && f.rig) {
+        // (a rigged hero falls in its death clip and stays down)
+        void this.rigFall(f, f.rig);
+        continue;
+      }
       if (f.spec.isHero && winner !== 'draw' && f.spec.side !== winner) {
         gsap.killTweensOf([f.body, f.sprite]);
         this.track(
@@ -1182,6 +1420,8 @@ export class Fighters {
         f.ring,
         ...(f.prop ? [f.prop] : []),
       ]);
+    // (each rig's own GL context is let go)
+    for (const f of this.all.values()) f.rig?.dispose();
     this.all.clear();
   }
 }

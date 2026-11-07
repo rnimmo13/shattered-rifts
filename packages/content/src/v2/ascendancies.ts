@@ -376,7 +376,7 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'necromancer',
     'Bonelord',
     'Thralls',
-    'At the start of your turn, Raise 2 more. Your companions deal 2 more damage. After your first Command resolves on your turn, gain 3 Barrier per living Bone Thrall, up to 9.',
+    'At the start of your turn, summon another Bone Thrall with 2 HP. Your companions deal 2 more damage. After your first Command resolves on your turn, gain 3 Barrier per living Bone Thrall, up to 9.',
     {
       turnStart: [raise(2)],
       fightStart: [

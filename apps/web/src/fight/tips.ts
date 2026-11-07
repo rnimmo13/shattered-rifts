@@ -54,7 +54,7 @@ export const TIP_RULES: TipRule[] = [
     // (the Shaman's, DECISIONS #418)
     id: 'totems',
     title: 'The totem cycle',
-    text: 'Your totems (the Totems panel: you start with a Hawk and a Bear) work every turn while they stand. Spirit Call commands the front one ("Next"): it acts once more and is gone. A new totem goes to the back; in a full row it pushes the front one out, and that one acts. Spirit adds 1 to every totem number.',
+    text: 'Your totems (the Totems panel: you start with a Hawk, a Bear and a Thunderbird) work every turn while they stand. Spirit Call commands the front one ("Next"): it acts twice and is gone, and a new totem takes its place. A new totem goes to the back; in a full row it pushes the front one out, and that one acts. Spirit adds 1 to every totem number.',
     when: (v) => !!v.sides.a.totems,
   },
   {

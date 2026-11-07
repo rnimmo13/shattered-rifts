@@ -242,9 +242,9 @@ describe('approved campaign balance pass', () => {
   });
 
   it('Spirit Pact pays once after a real ordered command, not planting push-outs or empty commands', () => {
-    let s = fight('shaman', ['spirit-pact', 'raise-the-hawk', 'spirit-call', 'spirit-call']);
+    let s = fight('shaman', ['spirit-pact', 'wardkeepers-pact', 'spirit-call', 'spirit-call']);
     s.sides.a.totems = ['hawk', 'bear', 'thunderbird'];
-    s = play(play(s, 'spirit-pact'), 'raise-the-hawk');
+    s = play(play(s, 'spirit-pact'), 'wardkeepers-pact');
     expect(hero(s).statuses.spirit ?? 0).toBe(0);
     s = play(s, 'spirit-call');
     expect(hero(s).statuses.spirit).toBe(1);
@@ -254,7 +254,7 @@ describe('approved campaign balance pass', () => {
     s.sides.a.totems = [null, null, null];
     s = play(hand(s, ['spirit-call']), 'spirit-call');
     expect(hero(s).statuses.spirit).toBe(1);
-    s = play(hand(s, ['raise-the-hawk', 'spirit-call']), 'raise-the-hawk');
+    s = play(hand(s, ['wardkeepers-pact', 'spirit-call']), 'wardkeepers-pact');
     s = play(s, 'spirit-call');
     expect(hero(s).statuses.spirit).toBe(2);
   });

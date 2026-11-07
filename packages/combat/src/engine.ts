@@ -5200,12 +5200,29 @@ export function createCombat(db: CombatDb, setup: CombatSetup): StepResult {
             (x, y) => y.atPct - x.atPct,
           );
       }
+    // a main enemy with minions stands at the back, behind them (the others keep their order)
+    const main = mainEnemy(made);
+    if (main) {
+      const units = s.sides.b.units;
+      units.splice(units.indexOf(main), 1);
+      units.push(main);
+    }
   } else {
     buildHeroSide(r, 'b', setup.b);
   }
   reap(r);
   if (!s.winner) beginHeroTurn(r, 'a');
   return { state: s, events: r.ev };
+}
+
+/** At least this many times every other starting enemy's Max HP makes an enemy the fight's main enemy. */
+const MAIN_ENEMY_RATIO = 1.5;
+
+/** The enemy a fight is built around, when there is one: with company, and at least MAIN_ENEMY_RATIO times each other's Max HP. */
+function mainEnemy(units: readonly Unit[]): Unit | null {
+  if (units.length < 2) return null;
+  const top = units.reduce((best, u) => (u.maxHp > best.maxHp ? u : best));
+  return units.every((u) => u === top || top.maxHp >= u.maxHp * MAIN_ENEMY_RATIO) ? top : null;
 }
 
 // --- actions ---------------------------------------------------------------------------------------------------------

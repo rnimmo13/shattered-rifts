@@ -46,6 +46,126 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.221.0',
+    date: '2026-11-07',
+    title: 'An animated Knight and a stronger start',
+    summary:
+      'The Knight animates in battle, Threshold and Waymark offers scale with the tier, and the Shaman, Necromancer, Monk and Hunter get help early.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'The animated Sun Knight',
+        hero: 'knight',
+        text: "The Knight's default look is now an animated 2D Sun Knight in battle: he thrusts with his sword on an Attack, raises a golden aura on a Skill or Aura, flinches behind his shield when hit and falls when beaten. Damage appears as his blow lands. A skin you wear still shows as its picture. Devices without WebGL2 keep the still figure.",
+      },
+      {
+        kind: 'changed',
+        title: 'Threshold and Waymark offers',
+        text: 'Every offer is now Modest, Rich or Grand. Tier I offers only Modest ones; each later tier offers Rich and Grand ones more often (no Modest from Tier XI), and shards, max HP and HP lost in an offer grow with the tier. An offer never shows two of the same kind, so no more two piles of shards side by side. Card choices follow the grade: commons early, rares and ancestral cards later. Eight new offers; several "at a price" offers reworked so they are worth taking; A Haunted Gift and Heavy Heart removed.',
+      },
+      {
+        kind: 'changed',
+        title: 'Main enemies stand at the back',
+        text: 'In a fight with a main enemy and its minions (an enemy with at least 1.5 times the max HP of every other), the main enemy starts behind its minions. Companions, totems and other effects that hit the front enemy meet the minions first. This affects the vanguard and rearguard Elite fights.',
+      },
+      {
+        kind: 'balance',
+        title: 'Shaman',
+        hero: 'shaman',
+        changes: [
+          {
+            label: 'Raise the Hawk',
+            before: 'Starter card',
+            after: 'Removed (old decks get Raise a Totem)',
+            direction: 'neutral',
+          },
+          {
+            label: 'Frost Ward (Buff)',
+            before: '5 Barrier, 1 Faltering',
+            after: '4 Barrier, 1 Faltering, plant a Bear',
+            direction: 'buff',
+          },
+          {
+            label: 'Spirit Call (Buff)',
+            before: 'Front totem acts twice; 0 Mana upgraded',
+            after: 'Front totem acts twice, then plant a random totem; upgraded +4 Barrier',
+            direction: 'buff',
+          },
+          {
+            label: 'Ember Toss (New)',
+            before: '-',
+            after: 'Basic Flame Attack: 7 damage, 2 Burn (9 and 3 upgraded), in the starter',
+            direction: 'buff',
+          },
+          {
+            label: 'Bear Call, Raise a Totem (Buff)',
+            before: '4 Barrier (7)',
+            after: '6 Barrier (9)',
+            direction: 'buff',
+          },
+          {
+            label: 'Spirit Ward (Buff)',
+            before: '2 Barrier (5)',
+            after: '5 Barrier (8)',
+            direction: 'buff',
+          },
+        ],
+        text: 'The starter now casts Flame, Frost and Storm, and plants more totems early.',
+      },
+      {
+        kind: 'balance',
+        title: 'Necromancer',
+        hero: 'necromancer',
+        changes: [
+          {
+            label: 'Starter (Buff)',
+            before: '4 Strikes, 1 Off the Leash',
+            after: '3 Strikes, 2 Off the Leash',
+            direction: 'buff',
+          },
+        ],
+        text: '"Raise N" now reads "Summon a Bone Thrall with N HP"; the rules are the same. The card library\'s Summons filter now lists his Thrall cards.',
+      },
+      {
+        kind: 'balance',
+        title: 'Monk',
+        hero: 'monk',
+        changes: [
+          {
+            label: 'Still Guard (Buff)',
+            before: '3 Barrier',
+            after: '5 Barrier',
+            direction: 'buff',
+          },
+          {
+            label: 'Starter (Buff)',
+            before: '4 Strikes, 3 Defends, 1 Kindle Fury, 1 Still Guard',
+            after: '3 Strikes, 2 Defends, 2 Kindle Fury, 2 Still Guard',
+            direction: 'buff',
+          },
+        ],
+        text: 'Through his stances sooner.',
+      },
+      {
+        kind: 'balance',
+        title: 'Dire Wolf',
+        card: 'dire-wolf',
+        hero: 'hunter',
+        changes: [
+          {
+            label: 'Attack (Buff)',
+            before: '9 damage',
+            after: '9 damage twice (11 twice upgraded)',
+            direction: 'buff',
+          },
+        ],
+        text: 'The Dire Wolf strikes twice at the end of each turn.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge. Saved Threshold and Waymark offers keep their options. Existing decks keep their cards; Raise the Hawk becomes Raise a Totem.',
+  },
+  {
     version: '0.220.0',
     date: '2026-11-07',
     title: 'Shatter damage on cards',
@@ -63,7 +183,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.219.0',
     date: '2026-11-06',
     title: 'A stronger Shaman start',
-    summary: "Shaman starts with three totems and Hawk's Dive; cleared map stops are easier to spot.",
+    summary:
+      "Shaman starts with three totems and Hawk's Dive; cleared map stops are easier to spot.",
     notes: [
       {
         kind: 'changed',
@@ -120,7 +241,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.217.0',
     date: '2026-11-06',
     title: 'Music fixes and readable totems',
-    summary: 'Battle music now loops, music is quieter, and Shaman totem numbers are easier to read.',
+    summary:
+      'Battle music now loops, music is quieter, and Shaman totem numbers are easier to read.',
     notes: [
       {
         kind: 'fixed',
@@ -209,18 +331,27 @@ export const PATCH_NOTES: PatchNote[] = [
         text: 'All 33 battle locations now have a complete painted battlefield: continuous ground, substantial scenery behind the fighters, and glowing cracks in each realm’s colors. Separate scenery cutouts are replaced by details built into the setting. Terrain fills the screen on phones and wide displays, with gentler shading at the edges. Drago’s First Ruin has its own shattered throne and immense wound in reality. Applies to Campaign, Arena and Sandbox; fighter positions and targeting stay the same.',
       },
       {
-        kind: 'balance', title: 'Breaching Strike', card: 'breaching-strike', hero: 'knight',
+        kind: 'balance',
+        title: 'Breaching Strike',
+        card: 'breaching-strike',
+        hero: 'knight',
         changes: [
           { label: 'Rarity', before: 'Common', after: 'Rare', direction: 'neutral' },
           { label: 'Mana · base / upgraded', before: '1 / 1', after: '2 / 2', direction: 'nerf' },
           { label: 'Damage · base', before: '7', after: '18', direction: 'buff' },
           { label: 'Damage · upgraded', before: '10', after: '24', direction: 'buff' },
-          { label: 'Exposed · base / upgraded', before: '1 / 1', after: '2 / 2', direction: 'buff' },
+          {
+            label: 'Exposed · base / upgraded',
+            before: '1 / 1',
+            after: '2 / 2',
+            direction: 'buff',
+          },
         ],
         text: 'Campaign and Arena. Breaching Strike becomes the heavy Rare option among the three new Strikes. It still damages one enemy before applying Exposed. Raised Hell still auto-plays it when drawn without paying Mana, and it still counts as one Strike for Mastered Strike. Existing copies use the new rarity, cost and effects. Shield Strike remains Common, and Muster Strike remains Uncommon.',
       },
     ],
-    heads: 'Older unfinished Campaign fights restart at their saved encounter checkpoint for the new card rules, without spending Resolve. Earned cards and run progress are retained.',
+    heads:
+      'Older unfinished Campaign fights restart at their saved encounter checkpoint for the new card rules, without spending Resolve. Earned cards and run progress are retained.',
   },
   {
     version: '0.212.0',

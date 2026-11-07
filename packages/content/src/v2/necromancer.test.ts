@@ -65,7 +65,7 @@ function addThrall(s: CombatState, hp: number, id = `B${s.sides.a.units.length}`
 }
 
 describe('Dorian, the Necrobinder copy', () => {
-  it('starts as hers: 4 Strike, 3 Defend, Raise Thrall, Off the Leash and Marked for the Grave, 70 HP, and a Bone Thrall that does not act', () => {
+  it('starts as hers: 3 Strike, 3 Defend, Raise Thrall, 2 Off the Leash (DECISIONS #675) and Marked for the Grave, 70 HP, and a Bone Thrall that does not act', () => {
     const r = RIFTWALKERS.necromancer;
     expect([...r.starter].sort()).toEqual(
       [
@@ -74,8 +74,8 @@ describe('Dorian, the Necrobinder copy', () => {
         'defend',
         'marked-for-the-grave',
         'off-the-leash',
+        'off-the-leash',
         'raise-thrall',
-        'strike',
         'strike',
         'strike',
         'strike',
@@ -411,9 +411,9 @@ describe('the other new rules', () => {
 
   it('the cards read as the generated text says', () => {
     const t = (id: string) => cardText(db, db.cards[id]!);
-    expect(t('raise-thrall')).toBe('Raise 5.');
+    expect(t('raise-thrall')).toBe('Summon a Bone Thrall with 5 HP.');
     expect(t('knucklebone')).toBe('Your companions each deal 6 damage.');
-    expect(t('call-at-dusk')).toBe('Next turn: Raise 2 and gain 2 Mana.');
+    expect(t('call-at-dusk')).toBe('Next turn: Summon a Bone Thrall with 2 HP and gain 2 Mana.');
     expect(t('bone-crush')).toMatch(/^Costs 0 if your companions have struck this turn\./);
   });
 });
@@ -428,8 +428,10 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
 
   it('turn 1: one Thrall with 2 HP, from Grave Chill (no second starting one, DECISIONS #431)', () => {
     expect(thralls(start()).map((u) => u.maxHp)).toEqual([2]);
-    expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise 5.');
-    expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise 2./);
+    expect(cardText(db, db.cards['raise-thrall']!)).toBe('Summon a Bone Thrall with 5 HP.');
+    expect(RIFTWALKERS.necromancer.trait.text).toMatch(
+      /^At the start of your turn, summon a Bone Thrall with 2 HP./,
+    );
   });
 
   it('a Thrall is standing at the start of every turn, even after the enemy kills them', () => {
@@ -445,8 +447,8 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
 describe('the small card fixes (DECISIONS #397)', () => {
   it('Bone Bulwark, Bone Sift, Grave Robbery and Spirit Walk read as reviewed', () => {
     const text = (id: string) => cardText(db, db.cards[id]!);
-    expect(text('bone-bulwark')).toBe('Raise 5. Gain 8 Barrier.');
-    expect(text('bone-sift')).toMatch(/^Raise 5./);
+    expect(text('bone-bulwark')).toBe('Summon a Bone Thrall with 5 HP. Gain 8 Barrier.');
+    expect(text('bone-sift')).toMatch(/^Summon a Bone Thrall with 5 HP./);
     expect(text('grave-robbery')).toMatch(/^Deal 6 damage./);
     expect(text('ghostform')).toMatch(/6 or more/);
   });

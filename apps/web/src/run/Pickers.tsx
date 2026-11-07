@@ -1366,6 +1366,11 @@ export function PreludeView(props: { run: RunState; onChoose: (id: string) => vo
           >
             <b className="prelude__name">{o.name}</b>
             <span className="prelude__text">{o.text}</span>
+            {(o.grade ?? 1) > 1 && (
+              <span className="prelude__tag prelude__tag--grade">
+                {o.grade === 3 ? 'Grand' : 'Rich'}
+              </span>
+            )}
             {o.risky && <span className="prelude__tag">At a price</span>}
           </button>
         ))}

@@ -34,7 +34,8 @@ export const MONK: CardDef[] = [
   // --- basics ---
   s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 2, 'foe', [dmg(9), stance('wrath')]),
   // (7 Barrier and Serene for 1 Mana was the Watcher's 2-cost Vigilance at half price: DECISIONS #390)
-  s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(3), stance('calm')]),
+  // (5 Barrier, DECISIONS #677: a class basic does more than a Defend)
+  s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(5), stance('calm')]),
   // (a third basic: a hit that builds Fervor, Robert 2026-10-30)
   s('basic', 'mindful-palm', 'Mindful Palm', 'attack', 1, 'foe', [dmg(5), status('mantra', 2)]),
 

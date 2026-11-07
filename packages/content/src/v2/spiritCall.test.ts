@@ -1,4 +1,4 @@
-// Spirit Call commands the front totem twice (Robert, 2026-10-30: a friend was not sure it works): every kind of totem acts two times
+// Spirit Call commands the front totem twice, then plants a random basic totem (DECISIONS #673) (Robert, 2026-10-30: a friend was not sure it works): every kind of totem acts two times
 // and then leaves, each act answers "a totem acts", and the Heavy Hitter never counts a companion that is already dead.
 
 import { describe, expect, it } from 'vitest';
@@ -44,9 +44,14 @@ const lost = (s: CombatState): number => 500 - s.sides.b.units[0]!.hp;
 const acts = (events: CombatEvent[]): number => events.filter((e) => e.type === 'command').length;
 
 describe('Spirit Call', () => {
-  it('says it commands the front totem twice, and costs 0 when upgraded', () => {
-    expect(cardText(db, db.cards['spirit-call']!)).toBe('Command your front totem twice.');
-    expect(db.cards['spirit-call+']!.cost).toBe(0);
+  it('says it commands the front totem twice and plants a totem; upgraded it also gives 4 Barrier (DECISIONS #673)', () => {
+    expect(cardText(db, db.cards['spirit-call']!)).toBe(
+      'Command your front totem twice. Plant a random totem.',
+    );
+    expect(cardText(db, db.cards['spirit-call+']!)).toBe(
+      'Command your front totem twice. Plant a random totem. Gain 4 Barrier.',
+    );
+    expect(db.cards['spirit-call+']!.cost).toBe(1);
   });
 
   it('makes a Hawk act twice (7 + 7), once for each act, and the Hawk is gone', () => {
@@ -55,7 +60,10 @@ describe('Spirit Call', () => {
     const { s, events } = play(s0, 'spirit-call');
     expect(acts(events)).toBe(2);
     expect(lost(s)).toBe(14);
-    expect(s.sides.a.totems).toEqual([null, null, null]);
+    // (the Hawk is gone; the totem Spirit Call plants afterwards is a basic one, and it does not act now)
+    const left = (s.sides.a.totems ?? []).filter(Boolean);
+    expect(left).toHaveLength(1);
+    expect(['hawk', 'bear', 'thunderbird']).toContain(left[0]);
   });
 
   it('makes a Bear give 6 Barrier twice', () => {
@@ -88,7 +96,8 @@ describe('Spirit Call', () => {
     s0.sides.a.totems = ['hawk', 'bear', null];
     const { s, events } = play(s0, 'spirit-call');
     expect(acts(events)).toBe(2);
-    expect(s.sides.a.totems).toEqual(['bear', null, null]);
+    expect(s.sides.a.totems?.[0]).toBe('bear');
+    expect((s.sides.a.totems ?? []).filter(Boolean)).toHaveLength(2);
     expect(hero(s).barrier).toBe(0);
   });
 

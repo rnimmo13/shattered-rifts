@@ -226,7 +226,8 @@ export type PreludeEffect =
   /** Attack / Defend only; `only`: just Strikes, or just Defends */
   | { k: 'remove'; n: number; only?: 'strike' | 'defend' }
   | { k: 'boon' }
-  | { k: 'potion' }
+  /** a random Potion (`rarity`: of that rarity, otherwise weighted toward common ones) */
+  | { k: 'potion'; rarity?: 'common' | 'uncommon' | 'rare' }
   | { k: 'resolve'; n: number }
   | { k: 'wound'; n: number }
   /** Attack / Defend into random cards (`better`: uncommon or rare instead of common or uncommon) */
@@ -248,6 +249,8 @@ export interface PreludeOption {
   effects: PreludeEffect[];
   /** has a price: shown in a warning colour */
   risky?: boolean;
+  /** how big a reward it is (DECISIONS #672): 1 modest, 2 rich, 3 grand; later Rift Tiers draw the bigger ones more often. Missing on older saves. */
+  grade?: 1 | 2 | 3;
 }
 
 export type PreludeKind = 'threshold' | 'stage';
