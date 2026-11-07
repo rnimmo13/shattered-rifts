@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.218.0',
+    date: '2026-11-06',
+    title: 'Quieter music',
+    summary: 'Music is quieter again at every volume setting.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Music volume',
+        text: 'Music now plays at half the loudness of the previous update at every Music volume setting. Sound effects are unchanged.',
+      },
+    ],
+  },
+  {
     version: '0.217.0',
     date: '2026-11-06',
     title: 'Music fixes and readable totems',

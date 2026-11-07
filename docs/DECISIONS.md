@@ -1237,3 +1237,8 @@ Robert: "can we bring down the base volume on the soundtracks by half." Decision
 ## 668 - Release approval for 0.217.0 (2026-11-06)
 
 Robert: "push". Approval covers committing and pushing 0.217.0 (looping battle music and tracks played from memory, #666; soundtracks at half level and larger Shaman totem numbers, #667), the automatic website/server deployment and the matching Windows updater. Rules 89 unchanged. Future changes require fresh approval.
+
+
+## 669 - Soundtracks at a quarter level (2026-11-06)
+
+After 0.217.0, Robert: "music volume needs to be cut even more." Decision: MUSIC_GAIN 0.5 -> 0.25, so music plays at a quarter of the Music volume setting (the default 40% now plays at 10%); the slider and stored settings are unchanged. Robert approved release as 0.218.0 ("push"), covering the website/server deployment and the matching Windows updater.

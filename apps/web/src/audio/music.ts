@@ -7,8 +7,8 @@ import { battleActive, battleSerial, subscribeBattle } from '../battleActivity';
 
 const KEY = 'sr.music';
 const FADE_MS = 600;
-/** The soundtracks are mixed loud: the Music volume setting plays them at half that level (Robert, DECISIONS #667). */
-export const MUSIC_GAIN = 0.5;
+/** The soundtracks are mixed loud: the Music volume setting plays them at a quarter of that level (Robert, DECISIONS #667, #669). */
+export const MUSIC_GAIN = 0.25;
 const GESTURES = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'] as const;
 
 interface MusicSettings {

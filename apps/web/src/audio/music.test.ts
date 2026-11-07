@@ -80,7 +80,7 @@ it('loops Woodland Fantasy outside battle', async () => {
   expect(victory.src).toBe('');
   expect(fetched.filter((u) => u.includes('woodland'))).toHaveLength(1);
   expect(menu.paused).toBe(false);
-  expect(menu.volume).toBeCloseTo(0.4 * 0.5);
+  expect(menu.volume).toBeCloseTo(0.4 * 0.25);
   expect(battle.paused).toBe(true);
 });
 
@@ -114,7 +114,7 @@ it('keeps the battle track going through setting changes within one battle', asy
   await settle();
   expect(battle.paused).toBe(false);
   expect(battle.currentTime).toBe(200);
-  expect(battle.volume).toBeCloseTo(0.6 * 0.5);
+  expect(battle.volume).toBeCloseTo(0.6 * 0.25);
 });
 
 it('plays Beyond the Clouds from the beginning on the victory screen, then resumes the woodland track', async () => {

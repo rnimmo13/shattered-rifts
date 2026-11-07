@@ -1,3 +1,8 @@
+## 0.218.0 - 2026-11-06
+
+- Music plays at a quarter of the Music volume setting (was half in 0.217.0); the default 40% now plays at 10%. Slider and saved settings unchanged (DECISIONS #669).
+- Web/desktop 0.218.0; rules 89 unchanged.
+
 ## 0.217.0 - 2026-11-06
 
 - Music: Blackmoor Tides loops for the whole battle (still from the beginning in each new battle). Tracks are downloaded once and played from memory (blob URLs), because the static site answers range requests with the whole file and browsers cannot loop or restart media served that way; a failed download falls back to streaming. Soundtracks play at half the Music volume setting (DECISIONS #666, #667).
