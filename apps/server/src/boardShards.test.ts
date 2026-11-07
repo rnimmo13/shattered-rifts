@@ -133,3 +133,64 @@ it('records and repairs completed runs without letting late death reports overwr
   expect((await ask({ ended: 'completed', tier: 11 })).status).toBe(400);
   expect((await ask({ ended: 'completed', stage: 0 })).status).toBe(400);
 });
+
+it('keeps the play time a run took to beat the campaign and shows it only once completed', async () => {
+  const db = (database = new DatabaseSync(':memory:'));
+  const kv = new Map<string, unknown>();
+  const board = new Leaderboard(
+    {
+      storage: {
+        kv: {
+          get: (key: string) => kv.get(key),
+          put: (key: string, value: unknown) => kv.set(key, value),
+        },
+        sql: {
+          exec: (q: string, ...args: SQLInputValue[]) => {
+            const rows = db.prepare(q).all(...args);
+            return { toArray: () => rows };
+          },
+        },
+      },
+    } as unknown as ConstructorParameters<typeof Leaderboard>[0],
+    {} as ConstructorParameters<typeof Leaderboard>[1],
+  );
+  const player = 'c'.repeat(64);
+  db.prepare('INSERT INTO names (player,key,name,at) VALUES (?,?,?,?)').run(
+    player,
+    'cat',
+    'Cat',
+    Date.now(),
+  );
+  const ask = (body: object) =>
+    board.fetch(
+      new Request('https://board.invalid/run', {
+        method: 'POST',
+        body: JSON.stringify({ player, run: 'timed', hero: 'knight', tier: 12, stage: 2, ...body }),
+      }),
+    );
+  const shown = async () =>
+    (
+      await (
+        await board.fetch(
+          new Request('https://board.invalid/view', {
+            method: 'POST',
+            body: JSON.stringify({ kind: 'runs', period: 'week', player }),
+          }),
+        )
+      ).json<{ board: { playMs?: number }[] }>()
+    ).board[0]!.playMs;
+  const stored = () => (db.prepare('SELECT play_ms FROM runs').get() as { play_ms: number }).play_ms;
+  await ask({ playMs: 3_000_000 });
+  // (a live run's clock is kept but not shown; it never runs backwards, and nonsense is ignored)
+  expect(await shown()).toBeUndefined();
+  await ask({ playMs: 1_000 });
+  await ask({ playMs: -5 });
+  await ask({ playMs: 'soon' });
+  expect(stored()).toBe(3_000_000);
+  await ask({ stage: 3, ended: 'completed', playMs: 4_000_000 });
+  expect(await shown()).toBe(4_000_000);
+  // (once beaten, the time is final)
+  await ask({ stage: 3, ended: 'completed', playMs: 9_000_000 });
+  await ask({ stage: 3, playMs: 9_000_000 });
+  expect(stored()).toBe(4_000_000);
+});

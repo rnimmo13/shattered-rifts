@@ -315,7 +315,12 @@ export function UnitPlates({
                       text: `Your sharpest ${sharp.weapon} has gained this much damage this fight. Every ${sharp.word} adds more to the copies you have; a copy made later starts fresh.`,
                     })}
                   >
-                    <GameIcon art={STATUS_ICONS.keen} pic="keen" />
+                    {/* (the gun's Precision is a target, not a blade) */}
+                    {sharp.word === 'Precision' ? (
+                      <GameIcon art={STATUS_ICONS.quarry} pic="quarry" />
+                    ) : (
+                      <GameIcon art={STATUS_ICONS.keen} pic="keen" />
+                    )}
                     <b>{sharp.amount}</b>
                   </span>
                 )}

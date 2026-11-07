@@ -20,6 +20,7 @@ import { RankedBoard } from './RankedBoard';
 import { seasonLeft } from './seasonText';
 import { NameClaim } from './NameClaim';
 import { syncSavedRuns } from '../run/syncRuns';
+import { formatRunTime } from '../run/runClock';
 import '../play/play.css';
 import { Notice } from '../ui/Toast';
 import './board.css';
@@ -329,8 +330,9 @@ export function LeaderboardScreen() {
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
                 // (the class and the Ascendancy it took, each in its own column; no Tiers cleared, DECISIONS #566)
-                head={['Player', 'Class', 'Ascendancy', 'Tier', 'Shards', 'Status']}
-                numeric={[3, 4]}
+                // (Time: how long a completed run took to beat the campaign, by its own play clock)
+                head={['Player', 'Class', 'Ascendancy', 'Tier', 'Shards', 'Status', 'Time']}
+                numeric={[3, 4, 6]}
                 rows={view.board as RunStanding[]}
                 you={view.you as (RunStanding & { rank: number }) | null}
                 empty={`No runs yet this ${period}. Be the first.`}
@@ -367,6 +369,16 @@ export function LeaderboardScreen() {
                           ? 'Abandoned'
                           : 'Live'}
                   </span>,
+                  s.status === 'completed' && s.playMs ? (
+                    <span key="time" title="Play time to beat the campaign">
+                      {formatRunTime(s.playMs)}
+                    </span>
+                  ) : (
+                    <span key="time" className="board__none" title="Shown once a run beats the campaign">
+                      <span aria-hidden>&mdash;</span>
+                      <span className="sr-only">No time</span>
+                    </span>
+                  ),
                 ]}
               />
             </>

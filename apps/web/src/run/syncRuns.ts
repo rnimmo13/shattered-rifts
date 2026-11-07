@@ -32,6 +32,7 @@ export async function syncSavedRuns(): Promise<void> {
           tier: run.tier,
           stage: done,
           name: getName(),
+          playMs: run.elapsedMs,
         }),
       ];
     });
@@ -46,6 +47,7 @@ export async function syncSavedRuns(): Promise<void> {
           stage: 3,
           name: getName(),
           completed: true,
+          playMs: run.elapsedMs,
         }),
       );
     }

@@ -297,6 +297,8 @@ export interface RunRow {
   at: number;
   /** how the run ended, if it has: it fell (Resolve ran out, or it was given up mid-fight) or it was abandoned (DECISIONS #292) */
   ended?: RunEnd | null;
+  /** the run's play time (ms) as its own clock counted it; for a completed run, the time it took to beat the campaign */
+  playMs?: number | null;
 }
 
 /** How a run on the board stands: still going, fallen, or abandoned. */
@@ -314,6 +316,8 @@ export interface RunStanding {
   total: number;
   /** the furthest run's state: still going, or how it ended */
   status: RunStatus;
+  /** how long a completed run took to beat the campaign (ms); only on completed runs whose clock was reported */
+  playMs?: number;
 }
 
 const RUN_STATUS_PRIORITY: Record<RunStatus, number> = {
@@ -355,6 +359,12 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
     total: r.total,
     shards: r.shards ?? null,
     status: r.ended ?? 'live',
+    // (a time faster than the board's own pace limit allows, one stage a minute through all twelve Tiers, is not shown)
+    ...(r.ended === 'completed' &&
+    typeof r.playMs === 'number' &&
+    r.playMs >= stagesInAll(12, 3) * RUN_MIN_STAGE_MS
+      ? { playMs: r.playMs }
+      : {}),
   }));
 }
 

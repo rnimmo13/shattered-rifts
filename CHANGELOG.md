@@ -1,3 +1,9 @@
+## 0.223.0 - 2026-11-07
+
+- Campaign leaderboard: a Time column shows how long each completed run took to beat the campaign, by its run clock (the server stores the clock with run reports; earlier victories have no time).
+- Fixed: an event chance that starts a fight when lost now spins its reel before the fight (the fight screen used to hide it until afterwards); picking a card a chance won no longer spins the reel a second time.
+- The Drunkard's Precision buff shows a target icon instead of a sword.
+
 ## 0.222.0 - 2026-11-07
 
 - Drunkard: every card that fires now counts as a gun, shells included (Old Twelve Gauge, Buckshot Shell, Birdshot, Slug Round, Shotgun Wedding, Sawn-Off, Boomstick, The Last Shell, Spray and Pray, Shell Shock, Tin Can Alley), and shows a gun badge in its top right. The Twelve-Gauge Opera and Gun Oil answer all of them. Gun Oil gives 2 Barrier per gun (3 upgraded; was 3/4); Bandolier gives 3 per shell (4 upgraded; was 2/3) (DECISIONS #681).

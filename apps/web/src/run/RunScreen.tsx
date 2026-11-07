@@ -271,6 +271,7 @@ export default function RunScreen() {
       tier: r.tier,
       stage: done,
       name: getName() || 'Riftwalker',
+      playMs: r.elapsedMs,
     });
   }, [resumedSeed]);
 
@@ -320,6 +321,7 @@ export default function RunScreen() {
             tier: next.tier,
             stage: stagesCleared(next),
             name: getName() || 'Riftwalker',
+            playMs: next.elapsedMs,
           });
         // what an event just did is worth reading: show it once
         const eventTold =
@@ -342,7 +344,14 @@ export default function RunScreen() {
             .filter((x): x is string => x !== null)
             .join(' ') || null;
         // a chance in the event is shown on the reel first, and the result waits for it
-        if (cur.phase === 'event' && !cur.context?.event?.trial && next.eventFlips?.length) {
+        // (only when an option was just taken: picking the card a chance won leaves its flips on the run, and must not spin it again)
+        if (
+          cur.phase === 'event' &&
+          !cur.context?.event?.trial &&
+          !cur.context?.event?.choose &&
+          !cur.context?.event?.chooseDeck &&
+          next.eventFlips?.length
+        ) {
           setCoin({ flips: next.eventFlips, then: told });
           say(null);
         } else say(told, true);
@@ -491,6 +500,20 @@ export default function RunScreen() {
                 : 'The Warden here is a ghost: a deck that has fought in the Arena. Summoning it…'}
             </p>
           </section>
+        </main>
+      );
+    // a chance that was lost into a fight is shown on its reel first: the fight waits for it (it replaces the whole screen, so the
+    // reel drawn over the other pages would never be seen, and would turn up after the fight instead)
+    if (coin)
+      return (
+        <main className="run">
+          <ChanceReel
+            flips={coin.flips}
+            onDone={() => {
+              say(coin.then, true);
+              setCoin(null);
+            }}
+          />
         </main>
       );
     const plan = duelPlan(run);

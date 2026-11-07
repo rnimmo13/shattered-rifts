@@ -1,3 +1,7 @@
+# Release approved 0.223.0 / rules 92 (2026-11-07)
+
+Robert explicitly approves pushing/deploying: chance reels shown before a fight they lead into (and not replayed after a won card pick), Campaign leaderboard Time column for completed runs (server play_ms column, client sends the run clock), and a target icon for Precision. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.222.0 / rules 92 (2026-11-07; decisions 680-681)
 
 Robert explicitly approves pushing/deploying: the animated 2D Rogue as his default look, one Hero2D runtime for both rigs (knight effects slightly redrawn), sync-hero-rigs copying assets-src runtimes before local dev/build, animated models on home/picker/Vault/Models/lore; every Drunkard card that fires counts as a gun with a top-right badge, Gun Oil 2 / Bandolier 3 Barrier. Website/server and matching Windows updater. Future changes need fresh release approval.

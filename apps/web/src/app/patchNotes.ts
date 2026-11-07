@@ -46,6 +46,36 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.223.0',
+    date: '2026-11-07',
+    title: 'Clear times and a fair spin',
+    summary:
+      'The Campaign board shows how long each beaten campaign took, a chance that leads into a fight spins first, and Precision has its own icon.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Clear times',
+        text: 'The Campaign leaderboard has a Time column: how long a run took to beat the campaign, by its run clock. Runs still going show a dash. Victories from before this update have no time saved.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Chances that lead to a fight',
+        text: 'An event chance that, lost, starts a fight now spins its reel before the fight, instead of going straight into battle and showing the reel afterwards.',
+      },
+      {
+        kind: 'fixed',
+        title: 'No second spin',
+        text: 'When a chance won you a card to choose, the reel no longer spins again after you pick it.',
+      },
+      {
+        kind: 'changed',
+        title: 'Precision icon',
+        hero: 'drunkard',
+        text: "The Old Twelve Gauge's Precision buff shows a target instead of a sword.",
+      },
+    ],
+  },
+  {
     version: '0.222.0',
     date: '2026-11-07',
     title: 'The animated Rogue, and guns you can see',

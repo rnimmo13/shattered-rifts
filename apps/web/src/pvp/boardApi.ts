@@ -305,9 +305,13 @@ export async function reportRun(run: {
   tier: number;
   stage: number;
   name: string;
+  /** the run's play clock (ms): a completed run's is shown as the time it took to beat the campaign */
+  playMs?: number | undefined;
 }): Promise<unknown> {
+  const playMs = Math.floor(run.playMs ?? 0);
   const body: Record<string, unknown> = {
     ...(run.completed ? { ended: 'completed' } : {}),
+    ...(playMs > 0 ? { playMs } : {}),
     ...(run.shards !== undefined ? { shards: run.shards, reportedAt: Date.now() } : {}),
     run: run.seed.slice(0, 64),
     hero: run.hero,

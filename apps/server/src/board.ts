@@ -98,6 +98,7 @@ interface RunSql extends Record<string, SqlStorageValue> {
   stage: number;
   at: number;
   ended: string | null;
+  play_ms: number | null;
 }
 
 interface GhostSql extends Record<string, SqlStorageValue> {
@@ -221,6 +222,9 @@ export class Leaderboard extends DurableObject<Env> {
       ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN shards INTEGER');
     if (!columnsOf('runs').includes('shards_at'))
       ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN shards_at INTEGER NOT NULL DEFAULT 0');
+    // the run's own play clock, shown as the time a completed run took
+    if (!columnsOf('runs').includes('play_ms'))
+      ctx.storage.sql.exec('ALTER TABLE runs ADD COLUMN play_ms INTEGER');
     const pvpColumns = columnsOf('pvp');
     if (!pvpColumns.includes('winner_asc'))
       ctx.storage.sql.exec('ALTER TABLE pvp ADD COLUMN winner_asc TEXT');
@@ -1131,6 +1135,14 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: false, error: 'bad-run' }, 400);
     const total = stagesInAll(tier, stage);
     const completed = b['ended'] === 'completed';
+    // the run's play clock (optional: older clients do not send it), in whole ms up to a thousand hours
+    const playMs =
+      typeof b['playMs'] === 'number' &&
+      Number.isSafeInteger(b['playMs']) &&
+      b['playMs'] > 0 &&
+      b['playMs'] <= 1000 * 3_600_000
+        ? b['playMs']
+        : null;
     if (completed && (tier < 12 || stage !== 3)) return json({ ok: false, error: 'bad-run' }, 400);
     // a run counts under the player's username (one is needed to be on the campaign board)
     const name = this.claimedName(b['player']);
@@ -1145,6 +1157,17 @@ export class Leaderboard extends DurableObject<Env> {
         ascendancy,
         b['player'],
         run,
+      );
+    // the clock only moves forward and stops once the run has ended: a victory keeps the time its completing report carried
+    // (a completing report may still set it on a run an older client wrongly marked as fallen)
+    if (playMs !== null)
+      this.ctx.storage.sql.exec(
+        "UPDATE runs SET play_ms = ? WHERE player = ? AND run = ? AND (play_ms IS NULL OR play_ms < ?) AND (ended IS NULL OR (? = 1 AND ended <> 'completed'))",
+        playMs,
+        b['player'],
+        run,
+        playMs,
+        completed ? 1 : 0,
       );
     // the run has ended (it fell, or was abandoned): only a run the board knows is marked, and only once
     if (b['ended'] === 'fell' || b['ended'] === 'abandoned') {
@@ -1243,7 +1266,7 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: true, counted: false, limited: true });
     for (const [key, windowMs, max] of limits) this.within(key, windowMs, max, now);
     this.ctx.storage.sql.exec(
-      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at, shards, shards_at, ended) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO runs (player, run, name, hero, ascendancy, tier, stage, total, first_at, at, shards, shards_at, ended, play_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       b['player'],
       run,
       name,
@@ -1257,6 +1280,7 @@ export class Leaderboard extends DurableObject<Env> {
       shards,
       reportedAt,
       completed ? 'completed' : null,
+      playMs,
     );
     this.prune(now);
     return json({ ok: true, counted: true });
@@ -1288,7 +1312,7 @@ export class Leaderboard extends DurableObject<Env> {
     // who made progress this week"; DECISIONS #281)
     const rows = this.ctx.storage.sql
       .exec<RunSql>(
-        'SELECT player, name, hero, ascendancy, tier, stage, at, ended, shards FROM runs WHERE at >= ? LIMIT 20000',
+        'SELECT player, name, hero, ascendancy, tier, stage, at, ended, shards, play_ms FROM runs WHERE at >= ? LIMIT 20000',
         from,
       )
       .toArray();
@@ -1303,6 +1327,7 @@ export class Leaderboard extends DurableObject<Env> {
       shards: r.shards,
       ended:
         r.ended === 'fell' || r.ended === 'abandoned' || r.ended === 'completed' ? r.ended : null,
+      playMs: r.play_ms,
     }));
     const all = standingsRuns(flat);
     return {
