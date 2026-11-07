@@ -1,3 +1,7 @@
+# Release approved 0.224.0 / rules 93 (2026-11-07; decision 682)
+
+Robert explicitly approves pushing/deploying: Totemist 2 extra totem positions and a second Hawk and Bear at fight start, per-totem glow colours, the Sanctification odds section on How to Play, and the hero-model fix when switching away from an animated hero. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.223.0 / rules 92 (2026-11-07)
 
 Robert explicitly approves pushing/deploying: chance reels shown before a fight they lead into (and not replayed after a won card pick), Campaign leaderboard Time column for completed runs (server play_ms column, client sends the run clock), and a target icon for Precision. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

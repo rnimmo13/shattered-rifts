@@ -46,6 +46,39 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.224.0',
+    date: '2026-11-07',
+    title: 'A row of five, and totems you can tell apart',
+    summary:
+      'The Totemist keeps five totems, each totem glows its own colour, the odds page explains sanctification, and models show again after switching heroes.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Totemist',
+        hero: 'shaman',
+        text: 'The Totemist has 2 more totem positions and starts each fight with a second Hawk and Bear behind the Shaman’s Hawk, Bear and Thunderbird: a row of five.',
+      },
+      {
+        kind: 'changed',
+        title: 'Totem colours',
+        hero: 'shaman',
+        text: 'Each totem glows its own colour in battle so they are easy to tell apart: the Hawk red, the Bear cyan, the Thunderbird yellow, the Elder Tree green and the Moon Owl violet.',
+      },
+      {
+        kind: 'new',
+        title: 'Sanctification odds',
+        text: 'How to Play > Odds & numbers now shows the chances for sanctifying: the white-fire basin and the Gambler’s Shrine’s Loaded Dice, tier by tier.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Hero models',
+        text: 'Switching from the Knight or Rogue to another hero no longer leaves the hero’s picture blank.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.223.0',
     date: '2026-11-07',
     title: 'Clear times and a fair spin',

@@ -2914,9 +2914,10 @@ img.intent__pic {
   border-style: dashed;
   opacity: 0.6;
 }
+/* (each totem's colour matches the glow of its picture: Hawk red, Bear cyan, Elder green, Thunderbird yellow, Owl violet) */
 .totem--hawk {
-  color: #ffd08a;
-  border-color: #c98a2c;
+  color: #ffb0a8;
+  border-color: #d2423a;
 }
 .totem--bear {
   color: #cfe9e2;

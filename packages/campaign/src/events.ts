@@ -43,6 +43,10 @@ const bonfireHeal = (id: string): number => {
   return rarity === 'rare' || rarity === 'legendary' ? 20 : rarity === 'uncommon' ? 12 : 6;
 };
 
+/** The white-fire basin (sanctify): the share of cards left as they were, and of the rest, the share that rise 25% (the others fall). */
+export const SANCTIFY_SAME_PCT = 20;
+export const SANCTIFY_UP_PCT = 55;
+
 export const EVENTS: EventDef[] = [
   {
     id: 'cache',
@@ -500,11 +504,11 @@ export function resolveEvent(
         if (!base || !canRoll(base)) return id;
         // a fifth of the cards are untouched; of the rest, slightly kind to the player: 55% go up
         // (only numbers change: a card's cost is never rolled)
-        if (nextInt(r.rng, 100) < 20) {
+        if (nextInt(r.rng, 100) < SANCTIFY_SAME_PCT) {
           same++;
           return id;
         }
-        const dir = nextInt(r.rng, 100) < 55 ? 1 : -1;
+        const dir = nextInt(r.rng, 100) < SANCTIFY_UP_PCT ? 1 : -1;
         if (dir > 0) up++;
         else down++;
         return rolledId(id, dir);

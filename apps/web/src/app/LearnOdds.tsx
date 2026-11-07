@@ -42,6 +42,11 @@ import {
   PRICE,
   REMOVE_PRICE,
   eventOffers,
+  diceOdds,
+  GAMBLER_TIER,
+  MAX_TIER,
+  SANCTIFY_SAME_PCT,
+  SANCTIFY_UP_PCT,
 } from '@sr/campaign';
 import { PRIZE_MARK } from '../trials/prizes';
 import { WithArrows } from '../ui/Arrow';
@@ -221,6 +226,47 @@ export function LearnOdds() {
         A few events only come up in the right state (a buried map you kept, low HP, a lot of
         shards, a Boon to give up), so the real share you meet can differ a little.
       </p>
+
+      <h3>Sanctification</h3>
+      <p>
+        A sanctified card has its numbers (damage, Barrier and the like) 25% stronger or 25% weaker,
+        for good. Its cost never changes. A sanctified card cannot be rolled again or engraved, but
+        it can still be removed. There are two ways to sanctify:
+      </p>
+      <ul>
+        <li>
+          <b>The white-fire basin</b> (an event; once per run, and only for a deck with no sanctified
+          card yet) rolls every card with numbers on its own: {SANCTIFY_SAME_PCT}% are left as they
+          were, {Math.round(((100 - SANCTIFY_SAME_PCT) * SANCTIFY_UP_PCT) / 100)}% become 25%
+          stronger and {Math.round(((100 - SANCTIFY_SAME_PCT) * (100 - SANCTIFY_UP_PCT)) / 100)}%
+          become 25% weaker. You do not choose which cards.
+        </li>
+        <li>
+          <b>Loaded Dice</b> (a Gambler&apos;s Shrine blessing, from Tier {GAMBLER_TIER}) roll one
+          card you choose: always up or down, never unchanged. The chance it goes up rises with the
+          tier:
+        </li>
+      </ul>
+      <table className="learn__table">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>25% stronger</th>
+            <th>25% weaker</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: MAX_TIER - GAMBLER_TIER + 1 }, (_, i) => GAMBLER_TIER + i).map(
+            (t) => (
+              <tr key={t}>
+                <th scope="row">{t}</th>
+                <td>{diceOdds(t)}%</td>
+                <td>{100 - diceOdds(t)}%</td>
+              </tr>
+            ),
+          )}
+        </tbody>
+      </table>
 
       <h3>Elite Event: Spin To Win</h3>
       <p>

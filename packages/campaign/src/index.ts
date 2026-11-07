@@ -93,7 +93,7 @@ export {
   type ShrineChoice,
 } from './run';
 export { makePrelude, describeEffect, preludeCatalogue } from './preludes';
-export { EVENTS } from './events';
+export { EVENTS, SANCTIFY_SAME_PCT, SANCTIFY_UP_PCT } from './events';
 export { RUN_SAVE_VERSION, parseRun, serializeRun } from './save';
 export {
   ELITE_EVENTS,

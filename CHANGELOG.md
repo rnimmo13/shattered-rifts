@@ -1,3 +1,10 @@
+## 0.224.0 - 2026-11-07
+
+- Totemist: 2 more totem positions and a second Hawk and Bear planted at the start of each fight, a row of five (DECISIONS #682; rules 93).
+- Totems glow their own colour in battle: Hawk red, Bear cyan, Thunderbird yellow, Elder Tree green, Moon Owl violet.
+- How to Play > Odds & numbers: a Sanctification section (the white-fire basin's odds, and Loaded Dice by tier).
+- Fixed: switching from a hero with an animated model to one without left the hero picture blank.
+
 ## 0.223.0 - 2026-11-07
 
 - Campaign leaderboard: a Time column shows how long each completed run took to beat the campaign, by its run clock (the server stores the clock with run reports; earlier victories have no time).

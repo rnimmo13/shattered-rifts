@@ -211,6 +211,12 @@ describe('distinct late-game Ascendancy disciplines', () => {
     expect(pick.type).toBe('pick');
     expect(damage(applyAction(db, s, pick))).toEqual([13]);
   });
+  it('Totemist starts with five totem positions, all planted: Hawk, Bear, Thunderbird, Hawk, Bear', () => {
+    const s = fight('shaman', 'totemist');
+    expect(s.sides.a.totems).toEqual(['hawk', 'bear', 'thunderbird', 'hawk', 'bear']);
+    // (the plain Shaman keeps three)
+    expect(fight('shaman', 'shaman').sides.a.totems).toEqual(['hawk', 'bear', 'thunderbird']);
+  });
   it('Totemist grows Spirit when preserving the row, but not after a command', () => {
     let s = fight('shaman', 'totemist');
     const initial = hero(s).statuses.spirit ?? 0;

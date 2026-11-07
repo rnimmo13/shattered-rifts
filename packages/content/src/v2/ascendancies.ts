@@ -10,6 +10,7 @@ import {
   mana,
   on,
   per,
+  plant,
   raise,
   scaled,
   status,
@@ -237,9 +238,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'shaman',
     'Totemist',
     'Cultivating totems',
-    'Start each fight with 1 Spirit and 8 Barrier. End your turn with at least two totems standing, without commanding or pushing any out that turn, to gain 1 Spirit.',
+    // (two more totem positions, and a second Hawk and Bear planted behind the class's three: a row of five, Robert 2026-11-07)
+    'You have 2 more totem positions, and start each fight with a second Hawk and Bear behind your other totems. Start each fight with 1 Spirit and 8 Barrier. End your turn with at least two totems standing, without commanding or pushing any out that turn, to gain 1 Spirit.',
     {
       fightStart: [
+        { op: 'totemSlot', amount: 2 },
+        plant('hawk'),
+        plant('bear'),
         status('spirit', 1),
         barrier(8),
         { op: 'discipline', rule: { kind: 'cultivation', minimum: 2, spirit: 1 } },

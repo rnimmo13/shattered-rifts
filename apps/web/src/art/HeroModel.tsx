@@ -90,7 +90,8 @@ export function HeroModel(props: {
         s.canvas.remove();
         s.dispose();
       }
-      if (!gone) setLive(false);
+      // (always, the cleanup included: switching to a hero with no rig keeps this component, and its picture must show again)
+      setLive(false);
     };
 
     void import('../fight/heroSprite').then(async (rigs) => {
