@@ -10,6 +10,14 @@ import type {
   Unit,
 } from './types';
 
+/** (the Spiritwalker) how much more the hero's card damage deals for the Spirit held: perSpirit% each, up to the cap; 0 without it */
+export function attunementPct(side: SideState): number {
+  const r = side.discipline?.rule;
+  if (r?.kind !== 'attunement') return 0;
+  const spirit = side.units.find((u) => u.kind === 'hero')?.statuses['spirit'] ?? 0;
+  return Math.min(r.cap, Math.max(0, spirit) * r.perSpirit);
+}
+
 export interface DisciplineContext {
   card?: CardDef;
   inst?: CardInst;
@@ -230,6 +238,8 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
       return `Prepared +${d.progress}%`;
     case 'cultivation':
       return side.commanded ? 'Cultivation interrupted' : 'Cultivation ready';
+    case 'attunement':
+      return `Attuned +${attunementPct(side)}%`;
     case 'elements':
       return `Flame ${d.counts?.flame ?? 0} · Frost ${d.counts?.frost ?? 0} · Storm ${d.counts?.storm ?? 0}`;
     case 'fury':
@@ -266,6 +276,8 @@ export function disciplineText(side: SideState): string | null {
       return `Preparation: next Attack +${d.progress}%; +${r.bonus}% against enemies at ${r.woundedPct}% HP or less.`;
     case 'cultivation':
       return `Cultivation: ${side.commanded ? 'interrupted this turn' : 'keep at least two totems standing without commanding or pushing them out'}.`;
+    case 'attunement':
+      return `Attunement: your cards deal ${attunementPct(side)}% more damage (+${r.perSpirit}% per Spirit, up to +${r.cap}%). Totems are not included: Spirit already adds to their numbers.`;
     case 'elements':
       return `Element growth: Flame ${d.counts?.flame ?? 0}, Frost ${d.counts?.frost ?? 0}, Storm ${d.counts?.storm ?? 0}. Last: ${d.lastElement ?? 'none'}.`;
     case 'fury':

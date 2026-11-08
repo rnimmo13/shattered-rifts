@@ -291,7 +291,7 @@ export const on = (
 ): Extract<Op, { op: 'power' }> => ({ op: 'power', when, ops, ...narrow });
 
 // --- ops for the Necrobinder copy (Dorian: his minions stand in for Osty, several at once) ----------------------------------
-/** Raise N (Summon N): a companion of `unit` rises with N HP, or with every slot taken the weakest gains N max HP (Dorian's Bone Thrall by default) */
+/** Raise Dead N: a companion of `unit` rises with N HP, or with every slot taken the healthiest gains N max HP (Dorian's Bone Thrall by default; #684) */
 export const raise = (amount: number, unit = 'bone-thrall', times?: number, scale?: Scale): Op => ({
   op: 'raise',
   unit,
@@ -299,6 +299,18 @@ export const raise = (amount: number, unit = 'bone-thrall', times?: number, scal
   ...(times !== undefined ? { times } : {}),
   ...(scale ? { scale } : {}),
 });
+/**
+ * (an 'allyDies' trigger's ops, DECISIONS #684) a companion an enemy killed bursts: `share` of its max HP to that enemy, if it still
+ * stands. A sacrifice, or a killer that fell too, sets nothing off.
+ */
+export const deathBurst = (share: number, roundUp = false): Op =>
+  when('fallenMaxHp', { atLeast: 1 }, [
+    scaled(dmg(0, 'attacker'), {
+      ...per('fallenMaxHp', share),
+      // (the Bonelord's second half rounds up, so the two halves make the whole of an odd max HP)
+      ...(roundUp ? { round: 'ceil' as const } : {}),
+    }),
+  ]);
 /** each of your companions does these ("Osty deals 6") */
 export const command = (...ops: Op[]): Op => ({ op: 'command', ops });
 export const doomNow = (to: Sel = 'allFoes'): Op => ({ op: 'doomNow', to });

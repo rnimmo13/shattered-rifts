@@ -211,6 +211,35 @@ describe('distinct late-game Ascendancy disciplines', () => {
     expect(pick.type).toBe('pick');
     expect(damage(applyAction(db, s, pick))).toEqual([13]);
   });
+  it('Spiritwalker cards deal 5% more per Spirit, up to 50%, Attacks and spells alike', () => {
+    let s = fight('shaman', 'spiritwalker');
+    hero(s).statuses.spirit = 4;
+    expect(damage(play(s, 'probe-hit'))).toEqual([12]);
+    s = fight('shaman', 'spiritwalker');
+    hero(s).statuses.spirit = 4;
+    expect(damage(play(s, 'probe-skill-damage'))).toEqual([12]);
+    // (capped at +50%, however much Spirit)
+    s = fight('shaman', 'spiritwalker');
+    hero(s).statuses.spirit = 30;
+    expect(damage(play(s, 'probe-hit'))).toEqual([15]);
+    // (a plain Shaman's cards do not grow with Spirit)
+    s = fight('shaman', 'totemist');
+    hero(s).statuses.spirit = 4;
+    expect(damage(play(s, 'probe-hit'))).toEqual([10]);
+  });
+  it('Spiritwalker draws 1 and gains 1 Spirit on the first ordered command of the turn only', () => {
+    let s = fight('shaman', 'spiritwalker');
+    s.sides.a.mana = 9;
+    const spirit = hero(s).statuses.spirit ?? 0;
+    const hand = s.sides.a.hand.length;
+    s = play(s, 'spirit-call').state;
+    expect(hero(s).statuses.spirit).toBe(spirit + 1);
+    // (the card played left the hand; one card was drawn)
+    expect(s.sides.a.hand.length).toBe(hand + 1);
+    s = play(s, 'spirit-call').state;
+    expect(hero(s).statuses.spirit).toBe(spirit + 1);
+    expect(s.sides.a.hand.length).toBe(hand + 1);
+  });
   it('Totemist starts with five totem positions, all planted: Hawk, Bear, Thunderbird, Hawk, Bear', () => {
     const s = fight('shaman', 'totemist');
     expect(s.sides.a.totems).toEqual(['hawk', 'bear', 'thunderbird', 'hawk', 'bear']);

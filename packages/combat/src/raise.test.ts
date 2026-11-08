@@ -239,7 +239,7 @@ describe('the Raise / Command ruleset is sound', () => {
 });
 
 describe('Raise and Command', () => {
-  it('Raise brings a companion with the HP it says; with every slot taken the weakest grows instead', () => {
+  it('Raise brings a companion with the HP it says; with every slot taken the healthiest grows instead (#684)', () => {
     let s = start(['raise5', 'raise5', 'raise5']);
     s = play(s, 'h0');
     s = play(s, 'h1');
@@ -251,7 +251,7 @@ describe('Raise and Command', () => {
       crew(s)
         .map((u) => u.maxHp)
         .sort((a, b) => a - b),
-    ).toEqual([5, 8, 10]);
+    ).toEqual([5, 5, 13]);
   });
 
   it('a companion with nothing to do does not act; a Command makes each one strike, reading its own HP', () => {

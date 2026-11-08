@@ -1,6 +1,6 @@
 // Dorian is the Slay the Spire 2 Necrobinder's card list (DECISIONS #370). Her one Osty is his Bone Thralls,
-// several at once: Raise N brings a Thrall with N HP (or grows the weakest when all three slots are taken), and Command cards make
-// each Thrall strike. These are the scenario tests for the new rules and the trickier cards.
+// several at once: Raise Dead N brings a Thrall with N HP (or grows the healthiest when every slot is taken, #684), and Command cards
+// make each companion strike; since #684 they strike on their own too. These are the scenario tests for the new rules and the trickier cards.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -65,7 +65,7 @@ function addThrall(s: CombatState, hp: number, id = `B${s.sides.a.units.length}`
 }
 
 describe('Dorian, the Necrobinder copy', () => {
-  it('starts as hers: 3 Strike, 3 Defend, Raise Thrall, 2 Off the Leash (DECISIONS #675) and Marked for the Grave, 70 HP, and a Bone Thrall that does not act', () => {
+  it('starts as hers: 3 Strike, 3 Defend, Raise Thrall, 2 Off the Leash (DECISIONS #675) and Marked for the Grave, 70 HP, and a Bone Thrall that strikes on its own (#684)', () => {
     const r = RIFTWALKERS.necromancer;
     expect([...r.starter].sort()).toEqual(
       [
@@ -84,23 +84,19 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(r.hero.maxHp).toBe(70);
     const s = fight([]);
     expect(thralls(s)).toHaveLength(1);
-    expect(thralls(s)[0]!.hp).toBe(2); // (DECISIONS #411)
-    const hp0 = foe(s).hp;
+    expect(thralls(s)[0]!.hp).toBe(3); // (Raise Dead 3, #684)
     const out = applyAction(db, s, { type: 'endTurn' });
-    // the Thrall never strikes on its own
-    expect(out.events.some((e) => e.type === 'act' && e.unit === thralls(s)[0]!.id)).toBe(false);
-    expect(out.events.some((e) => e.type === 'damage' && e.source === thralls(s)[0]!.id)).toBe(
-      false,
-    );
-    expect(foe(out.state).hp).toBeLessThanOrEqual(hp0);
+    // since #684 it strikes at the end of his turn: 2, plus 1 for every 4 max HP (none at 3)
+    const blow = out.events.find((e) => e.type === 'damage' && e.source === thralls(s)[0]!.id);
+    expect(blow && blow.type === 'damage' ? blow.lost + blow.blocked : 0).toBe(2);
   });
 
-  it('Raise brings a new Thrall with that much HP, and with three standing grows the weakest instead', () => {
+  it('Raise Dead brings a new Thrall with that much HP, and with three standing grows the healthiest instead (#684)', () => {
     let s = play(fight(['raise-thrall', 'raise-thrall', 'raise-thrall']), 'T0');
-    expect(thralls(s).map((u) => u.maxHp)).toEqual([2, 5]);
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([3, 5]);
     s = play(s, 'T1');
     expect(thralls(s)).toHaveLength(3);
-    // a fourth: no room, so the weakest gains 5 max HP (and no release is asked for)
+    // a fourth: no room, so the healthiest gains 5 max HP (and no release is asked for)
     s.sides.a.units[0]!.maxHp = s.sides.a.units[0]!.hp = 9;
     s = play(s, 'T2');
     expect(thralls(s)).toHaveLength(3);
@@ -108,7 +104,7 @@ describe('Dorian, the Necrobinder copy', () => {
       thralls(s)
         .map((u) => u.maxHp)
         .sort((a, b) => a - b),
-    ).toEqual([5, 9, 10]);
+    ).toEqual([5, 5, 14]);
   });
 
   it('a Command card makes each Thrall strike, and does nothing with none', () => {
@@ -124,11 +120,11 @@ describe('Dorian, the Necrobinder copy', () => {
   it('Off the Leash adds each Thrall’s own HP; The Drowned King its max HP', () => {
     const s = fight(['off-the-leash', 'the-drowned-king']);
     addThrall(s, 10);
-    thralls(s)[0]!.hp = 1; // a hurt 2-HP Thrall
+    thralls(s)[0]!.hp = 1; // a hurt 3-HP Thrall
     let after = play(s, 'T0', foe(s).id);
     expect(foe(after).hp).toBe(300 - (6 + 1) - (6 + 10));
     after = play(after, 'T1', foe(after).id);
-    expect(foe(after).hp).toBe(300 - 23 - (10 + 2) - (10 + 10));
+    expect(foe(after).hp).toBe(300 - 23 - (10 + 3) - (10 + 10));
   });
 
   it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits harder for every earlier command', () => {
@@ -213,12 +209,12 @@ describe('Dorian, the Necrobinder copy', () => {
     s = play(s, 'T0');
     expect(thralls(s)).toHaveLength(1);
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    // Call at Dusk's 2, beside Grave Chill's 2 for the turn
+    // Call at Dusk's 2, beside Grave Chill's 3 for the turn
     expect(
       thralls(s)
         .map((u) => u.maxHp)
         .sort((x, y) => x - y),
-    ).toEqual([2, 2, 80]);
+    ).toEqual([2, 3, 80]);
     expect(s.sides.a.mana).toBe(5);
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.sides.a.mana).toBe(3);
@@ -411,9 +407,9 @@ describe('the other new rules', () => {
 
   it('the cards read as the generated text says', () => {
     const t = (id: string) => cardText(db, db.cards[id]!);
-    expect(t('raise-thrall')).toBe('Summon a Bone Thrall with 5 HP.');
+    expect(t('raise-thrall')).toBe('Raise Dead 5.');
     expect(t('knucklebone')).toBe('Your companions each deal 6 damage.');
-    expect(t('call-at-dusk')).toBe('Next turn: Summon a Bone Thrall with 2 HP and gain 2 Mana.');
+    expect(t('call-at-dusk')).toBe('Next turn: Raise Dead 2 and gain 2 Mana.');
     expect(t('bone-crush')).toMatch(/^Costs 0 if your companions have struck this turn\./);
   });
 });
@@ -426,12 +422,10 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
       b: { enemies: ['squire'] },
     }).state;
 
-  it('turn 1: one Thrall with 2 HP, from Grave Chill (no second starting one, DECISIONS #431)', () => {
-    expect(thralls(start()).map((u) => u.maxHp)).toEqual([2]);
-    expect(cardText(db, db.cards['raise-thrall']!)).toBe('Summon a Bone Thrall with 5 HP.');
-    expect(RIFTWALKERS.necromancer.trait.text).toMatch(
-      /^At the start of your turn, summon a Bone Thrall with 2 HP./,
-    );
+  it('turn 1: one Thrall with 3 HP, from Grave Chill (no second starting one, DECISIONS #431, #684)', () => {
+    expect(thralls(start()).map((u) => u.maxHp)).toEqual([3]);
+    expect(cardText(db, db.cards['raise-thrall']!)).toBe('Raise Dead 5.');
+    expect(RIFTWALKERS.necromancer.trait.text).toMatch(/^At the start of your turn, Raise Dead 3/);
   });
 
   it('a Thrall is standing at the start of every turn, even after the enemy kills them', () => {
@@ -447,32 +441,165 @@ describe('Grave Chill raises a Thrall every turn (DECISIONS #397)', () => {
 describe('the small card fixes (DECISIONS #397)', () => {
   it('Bone Bulwark, Bone Sift, Grave Robbery and Spirit Walk read as reviewed', () => {
     const text = (id: string) => cardText(db, db.cards[id]!);
-    expect(text('bone-bulwark')).toBe('Summon a Bone Thrall with 5 HP. Gain 8 Barrier.');
-    expect(text('bone-sift')).toMatch(/^Summon a Bone Thrall with 5 HP./);
+    expect(text('bone-bulwark')).toBe('Raise Dead 5. Gain 8 Barrier.');
+    expect(text('bone-sift')).toMatch(/^Raise Dead 5./);
     expect(text('grave-robbery')).toMatch(/^Deal 6 damage./);
     expect(text('ghostform')).toMatch(/6 or more/);
   });
 });
 
-describe('Grave Chill: 2 Fate on the enemy that kills an ally, none at the start (DECISIONS #398, #403, #413, #518)', () => {
-  it('starts with no Fate, and a Thrall that gives itself up curses a random enemy', () => {
-    const s = fight(['bone-rain']);
+describe('the dead grow and strike back (DECISIONS #684)', () => {
+  /** what each damage event from `source` took off (HP and Barrier) */
+  const dealtBy = (events: { type: string }[], source: string): number[] =>
+    events.flatMap((e) =>
+      e.type === 'damage' && (e as { source?: string }).source === source
+        ? [(e as unknown as { lost: number; blocked: number }).lost + (e as unknown as { blocked: number }).blocked]
+        : [],
+    );
+  /** play a card, then answer a choice it asks for with the first option */
+  const playPick = (s: CombatState, id: string, target?: string): CombatState => {
+    let out = play(s, id, target);
+    while (out.pending) {
+      const pick = legalActions(db, out).find((a) => a.type === 'pick');
+      expect(pick, 'a choice to answer').toBeTruthy();
+      out = applyAction(db, out, pick!).state;
+    }
+    return out;
+  };
+
+  it('a companion an enemy kills bursts for half its max HP at that enemy; a sacrifice sets nothing off', () => {
+    const s = fight([], ['squire', 'squire']);
+    const thrall = thralls(s)[0]!;
+    thrall.maxHp = 10;
+    thrall.hp = 1;
+    const { events } = applyAction(db, s, { type: 'endTurn' });
+    const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as
+      | { source: string }
+      | undefined;
+    expect(hit, 'an enemy strikes the Thrall').toBeDefined();
+    const burst = events.filter(
+      (e) => e.type === 'damage' && e.source === hero(s).id && e.target === hit!.source,
+    );
+    expect(burst.map((e) => (e.type === 'damage' ? e.lost + e.blocked : 0))).toEqual([5]);
+    // (no Fate for a death any more: the burst took its place)
     for (const u of s.sides.b.units) expect(u.statuses.doom ?? 0).toBe(0);
-    // Bone Rain: the Thrall strikes and dies
-    const out = play(s, 'T0');
-    expect(out.sides.b.units.reduce((n, u) => n + (u.statuses.doom ?? 0), 0)).toBe(2);
+
+    const rain = fight(['bone-rain']);
+    const out = applyAction(
+      db,
+      rain,
+      legalActions(db, rain).find((a) => a.type === 'play' && a.card === 'T0')!,
+    );
+    expect(thralls(out.state)).toHaveLength(0);
+    expect(dealtBy(out.events, hero(rain).id)).toEqual([]);
   });
 
-  it('the enemy that kills a Thrall takes the 2 Fate, and no other enemy does', () => {
-    const s = fight([], ['squire', 'squire']);
-    const thrall = s.sides.a.units.find((u) => u.kind === 'ally')!;
-    thrall.hp = 1;
+  it('the Grave Colossus takes 2 slots, has Taunt, strikes for 2 + 1 per 4 max HP and takes half of a Command', () => {
+    expect(db.units['grave-colossus']).toMatchObject({ maxHp: 18, taunt: true, slots: 2, commandPct: 50 });
+    expect(db.units['grave-colossus+']?.maxHp).toBe(22);
+    let s = fight(['grave-colossus', 'knucklebone']);
+    s = play(s, 'T0');
+    const colossus = s.sides.a.units.find((u) => u.def === 'grave-colossus')!;
+    expect(colossus.maxHp).toBe(18);
+    // a 6-damage Command: the Thrall deals 6, the Colossus 3
+    s = play(s, 'T1', foe(s).id);
+    expect(foe(s).hp).toBe(300 - 6 - 3);
+    const { events } = applyAction(db, s, { type: 'endTurn' });
+    expect(dealtBy(events, colossus.id)).toEqual([6]);
+  });
+
+  it('with no slot free, Raise Dead grows the healthiest companion, the Colossus', () => {
+    let s = fight(['grave-colossus', 'raise-thrall']);
+    s = play(s, 'T0');
+    s = play(s, 'T1');
+    expect(s.sides.a.units.find((u) => u.def === 'grave-colossus')!.maxHp).toBe(23);
+    expect(thralls(s).filter((u) => u.def === 'bone-thrall')).toHaveLength(1);
+  });
+
+  it('Bone Rain gives up the Thralls only, never a Colossus', () => {
+    let s = fight(['grave-colossus', 'bone-rain']);
+    s = play(s, 'T0');
+    s = play(s, 'T1');
+    expect(thralls(s).map((u) => u.def)).toEqual(['grave-colossus']);
+  });
+
+  it('Blood Offering: lose 5 HP and Raise Dead 10; the first HP lost on your turn grows every companion by 2', () => {
+    let s = fight(['blood-offering', 'blood-offering']);
+    const hp = hero(s).hp;
+    s = play(s, 'T0');
+    expect(hero(s).hp).toBe(hp - 5);
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([5, 10]);
+    // (once a turn)
+    s = play(s, 'T1');
+    expect(hero(s).hp).toBe(hp - 10);
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([5, 10, 10]);
+  });
+
+  it('Bone Feast consumes a card from your hand, and each companion gains 3 max HP for it', () => {
+    let s = fight(['bone-feast', 'strike']);
+    s = playPick(s, 'T0');
+    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('strike');
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([6]);
+    // nothing to consume, nothing grows
+    let bare = fight(['bone-feast']);
+    bare = playPick(bare, 'T0');
+    expect(thralls(bare).map((u) => u.maxHp)).toEqual([3]);
+  });
+
+  it('Grave Tithe: at the start of each turn, lose 3 HP and Raise Dead 5', () => {
+    let s = fight(['grave-tithe']);
+    // (a Thrall that lives through the enemy's turn, so the new ones are easy to read)
+    thralls(s)[0]!.hp = thralls(s)[0]!.maxHp = 80;
+    s = play(s, 'T0');
+    const hp = hero(s).hp;
     const { state, events } = applyAction(db, s, { type: 'endTurn' });
-    const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as
-      { source: string } | undefined;
+    const lost = events.some(
+      (e) => e.type === 'damage' && e.target === hero(s).id && e.source === hero(s).id,
+    );
+    expect(lost || hero(state).hp <= hp - 3).toBe(true);
+    // Grave Chill's 3 and Grave Tithe's 5 both rise; Grave Tithe's HP loss then gives every companion 2 (the 3 becomes 5)
+    const hps = thralls(state)
+      .map((u) => u.maxHp)
+      .sort((x, y) => x - y);
+    expect(hps).toHaveLength(3);
+    expect(hps.slice(0, 2)).toEqual([5, 5]);
+  });
+
+  it('Bonelord has 4 companion slots, and a companion an enemy kills bursts for its full max HP', () => {
+    const { state } = createCombat(db, {
+      seed: 'bonelord',
+      a: {
+        hero: 'necromancer',
+        ascendancy: 'necromancer:bonelord',
+        deck: [...RIFTWALKERS.necromancer.starter],
+      },
+      b: { enemies: ['squire'] },
+    });
+    let s = clone(state);
+    s.sides.a.hand = ['raise-thrall', 'raise-thrall', 'raise-thrall', 'raise-thrall'].map((card, i) => ({
+      id: `T${i}`,
+      card,
+    }));
+    s.sides.a.mana = 9;
+    for (const id of ['T0', 'T1', 'T2']) s = play(s, id);
+    expect(thralls(s)).toHaveLength(4);
+    for (const u of s.sides.b.units) {
+      u.hp = u.maxHp = 300;
+      u.statuses = {};
+    }
+    // (the others too sturdy for a blow's overflow to fell: one death to read)
+    for (const u of thralls(s)) u.hp = u.maxHp = 200;
+    const first = thralls(s)[0]!;
+    first.maxHp = 10;
+    first.hp = 1;
+    const { events } = applyAction(db, s, { type: 'endTurn' });
+    const hit = events.find((e) => e.type === 'damage' && e.target === first.id) as
+      | { source: string }
+      | undefined;
     expect(hit, 'an enemy strikes the Thrall').toBeDefined();
-    const cursed = state.sides.b.units.filter((u) => (u.statuses.doom ?? 0) > 0);
-    expect(cursed.map((u) => u.id)).toEqual([hit!.source]);
-    expect(cursed[0]!.statuses.doom).toBe(2);
+    const burst = events.filter(
+      (e) => e.type === 'damage' && e.source === hero(s).id && e.target === hit!.source,
+    );
+    expect(burst.reduce((n, e) => n + (e.type === 'damage' ? e.lost + e.blocked : 0), 0)).toBe(10);
   });
 });

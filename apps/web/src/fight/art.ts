@@ -132,9 +132,9 @@ const unitCache = new Map<string, HTMLCanvasElement>();
  * the card that raised it, so a Grave Colossus (20 HP) or a Thrall fed to 18 stands as the Grave Colossus, not the small skeleton.
  * Presentation only.
  */
-const GROWN: Record<string, { atHp: number; as: string }> = {
-  'bone-thrall': { atHp: 18, as: 'grave-colossus' },
-};
+// (a grown Thrall no longer stands as the Grave Colossus: since #684 that is a real companion with Taunt and half a Command, and a
+// big Thrall drawn as one would mislead)
+const GROWN: Record<string, { atHp: number; as: string }> = {};
 const WARDEN_FIGURES = new Set<string>([
   ...CAMPAIGN_REALMS.flatMap((r) => [...r.wardens]),
   ...DRAGON_WARDENS,

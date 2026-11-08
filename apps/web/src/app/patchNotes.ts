@@ -46,6 +46,53 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.225.0',
+    date: '2026-11-07',
+    title: 'The dead rise and fight',
+    summary:
+      'The Necromancer pays in blood and bone to grow his dead, and they strike on their own; the Grave Colossus walks; the Spiritwalker turns Spirit into damage.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Raise Dead',
+        hero: 'necromancer',
+        text: 'Raise now reads Raise Dead. Grave Chill raises a 3 HP Bone Thrall each turn (was 2), and with no slot free your healthiest companion gains the HP (was the weakest), so one can grow big.',
+      },
+      {
+        kind: 'changed',
+        title: 'The dead fight back',
+        hero: 'necromancer',
+        text: 'Your companions strike on their own at the end of your turn, for 2 plus 1 for every 4 max HP. A companion an enemy kills bursts for half its max HP at that enemy (this replaces the 2 Fate a death used to curse). The first time you lose HP on your turn, every companion gains 2 max HP.',
+      },
+      {
+        kind: 'new',
+        title: 'Grave Colossus',
+        hero: 'necromancer',
+        text: 'The rare Grave Colossus now summons a Grave Colossus: 18 HP (22 upgraded), Taunt, takes 2 companion slots, strikes for 2 plus 1 for every 4 max HP, and deals half of a Command’s damage.',
+      },
+      {
+        kind: 'new',
+        title: 'Blood and bone',
+        hero: 'necromancer',
+        text: 'New uncommons: Blood Offering (1: lose 5 HP, Raise Dead 10), Bone Feast (0: consume a card from your hand, each companion gains 3 max HP) and Grave Tithe (2, Aura: each turn lose 3 HP and Raise Dead 5). Bone Rain now gives up only your Bone Thralls, and its Barrier comes from each one.',
+      },
+      {
+        kind: 'balance',
+        title: 'Bonelord',
+        hero: 'necromancer',
+        text: 'The Bonelord now has 4 companion slots (two Grave Colossi fit), keeps +2 companion damage, and a companion an enemy kills bursts for its full max HP. The extra Thrall each turn and the Barrier for each Thrall after a Command are gone.',
+      },
+      {
+        kind: 'balance',
+        title: 'Spiritwalker',
+        hero: 'shaman',
+        text: 'Your first ordered totem command each turn draws 1 card and gives 1 Spirit. Your cards deal 5% more damage for each Spirit, up to 50% more. The 4 Barrier on the first totem act is gone.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.224.0',
     date: '2026-11-07',
     title: 'A row of five, and totems you can tell apart',

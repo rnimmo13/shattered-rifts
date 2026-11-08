@@ -3,7 +3,7 @@
 
 import { nextInt, seedRng, shuffle } from './rng';
 import { SUITS, suitShown } from './suits';
-import { disciplineAttack, disciplineTarget, disciplineTrigger } from './disciplines';
+import { attunementPct, disciplineAttack, disciplineTarget, disciplineTrigger } from './disciplines';
 import { attackAuraBonus } from './attackAuras';
 import {
   DEBUFFS,
@@ -181,6 +181,10 @@ interface Act {
   /** Latched once for the whole Attack, including hits after a choice. */
   disciplineBonus?: number;
   spellBonus?: number;
+  /** a commanded companion's share of the Command's damage (UnitDef.commandPct) */
+  commandPct?: number;
+  /** in an 'allyDies' trigger: the fallen companion's max HP when a standing enemy killed it, else 0 (metric 'fallenMaxHp') */
+  fallenMaxHp?: number;
   actor: Unit;
   target: Unit | null;
   attacker: Unit | null;
@@ -701,6 +705,12 @@ function cardBoonBonus(r: Run, a: Act, field: 'cardDamagePct' | 'cardBarrierPct'
   return r.s.sides[a.actor.side].boons.reduce((n, id) => n + (r.db.boons[id]?.[field] ?? 0), 0);
 }
 
+/** (the Spiritwalker's Attunement) the hero's card damage grows with his Spirit; a totem's act carries no card, so it is left out */
+function cardSpiritBonus(r: Run, a: Act): number {
+  if ((!a.card && !a.sourceCard) || a.actor.kind !== 'hero') return 0;
+  return attunementPct(r.s.sides[a.actor.side]);
+}
+
 function attackHit(
   r: Run,
   a: Act,
@@ -723,11 +733,16 @@ function attackHit(
     }
   }
   const heartBonus = cardBoonBonus(r, a, 'cardDamagePct');
+  const spiritBonus = cardSpiritBonus(r, a);
   const modify = (): number => {
     let n = modifiedDamage(base, a.actor, t, attacked, steps);
     if (heartBonus && t.side !== a.actor.side) {
       n = Math.floor((n * (100 + heartBonus)) / 100);
       steps?.push(`Card damage +${heartBonus}% = ${n}`);
+    }
+    if (spiritBonus && t.side !== a.actor.side) {
+      n = Math.floor((n * (100 + spiritBonus)) / 100);
+      steps?.push(`Spirit +${spiritBonus}% = ${n}`);
     }
     return n;
   };
@@ -761,6 +776,11 @@ function attackHit(
     amount = Math.floor((amount * (100 + a.disciplineBonus + extra)) / 100);
     if (steps && a.disciplineBonus + extra)
       steps.push(`Ascendancy +${a.disciplineBonus + extra}% = ${amount}`);
+  }
+  // (a companion that takes only part of a Command: the Grave Colossus strikes at half)
+  if (a.commandPct !== undefined && t.side !== a.actor.side && amount > 0) {
+    amount = Math.floor((amount * a.commandPct) / 100);
+    steps?.push(`Commanded ${a.commandPct}% = ${amount}`);
   }
   // (a hit Shielded cancels does not land; one Barrier soaks does)
   if (!(attacked && amount > 0 && stacks(t, 'shielded') > 0)) a.struck.set(t.id, true);
@@ -1632,6 +1652,8 @@ function metricValue(
     // --- the Necrobinder copy
     case 'maxHp':
       return u?.maxHp ?? 0;
+    case 'fallenMaxHp':
+      return a.fallenMaxHp ?? 0;
     case 'dealt':
       return a.dealt;
     case 'lost':
@@ -3212,13 +3234,17 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'command': {
       // each companion strikes in turn, at the card's target (or, if it has fallen, the front enemy)
-      const crew = side.units.filter((u) => u.kind === 'ally' && u.hp > 0);
+      // (only companions of op.unit, when the Command names one: Bone Rain gives up its Thralls, never a Colossus)
+      const crew = side.units.filter(
+        (u) => u.kind === 'ally' && u.hp > 0 && (!op.unit || u.def.replace(/\+$/, '') === op.unit),
+      );
       if (!crew.length) return;
       for (const u of crew) {
         if (r.s.winner) break;
         if (u.hp <= 0) continue;
         const front = r.s.sides[other(u.side)].units.find((x) => x.hp > 0) ?? null;
         const at = a.target && a.target.hp > 0 && a.target.side !== u.side ? a.target : front;
+        const share = r.db.units[u.def]?.commandPct;
         r.ev.push({ type: 'act', unit: u.id, move: null });
         runOps(
           r,
@@ -3229,6 +3255,7 @@ function execOp(r: Run, a: Act, op: Op): void {
             barrierPower: a.barrierPower,
             inst: a.inst,
             x: a.x,
+            ...(share !== undefined && share !== 100 ? { commandPct: share } : {}),
           }),
           op.ops,
         );
@@ -3538,10 +3565,12 @@ function raiseAlly(r: Run, sd: SideState, unit: string, hp: number, actor: Unit)
   }
   const alive = crew.filter((u) => u.hp > 0);
   if (!alive.length) return;
-  const weak = alive.reduce((m, u) => (u.maxHp < m.maxHp ? u : m));
-  weak.maxHp += hp;
-  weak.hp += hp;
-  r.ev.push({ type: 'heal', target: weak.id, amount: hp, hp: weak.hp, maxHp: weak.maxHp });
+  // (with no slot free, the healthiest companion grows: the most max HP, the first on the board on a tie; Robert 2026-11-07, #684.
+  // It was the weakest, when Thralls were only bodies: now one big companion is the late-game engine)
+  const big = alive.reduce((m, u) => (u.maxHp > m.maxHp ? u : m));
+  big.maxHp += hp;
+  big.hp += hp;
+  r.ev.push({ type: 'heal', target: big.id, amount: hp, hp: big.hp, maxHp: big.maxHp });
 }
 
 // --- runes -----------------------------------------------------------------------------------------------------------
@@ -4181,6 +4210,8 @@ function fireTriggers(
     spent?: number;
     /** in an 'allyHurt' trigger: the HP lost */
     lost?: number;
+    /** in an 'allyDies' trigger: the fallen companion's max HP, when a standing enemy killed it */
+    fallenMaxHp?: number;
     /** in a 'play' trigger: what the card cost */
     cost?: number;
     /** 'evoke': the totem that awakened */
@@ -4287,6 +4318,7 @@ function fireTriggers(
         drawn: ctx.drawn ?? null,
         spent: ctx.spent ?? 0,
         lost: ctx.lost ?? 0,
+        ...(ctx.fallenMaxHp ? { fallenMaxHp: ctx.fallenMaxHp } : {}),
       }),
       ops,
     );
@@ -4394,7 +4426,11 @@ function reap(r: Run): void {
       }
       // (the one that killed it, if it is still standing)
       const killer = u.killedBy ? findUnit(r.s, u.killedBy) : null;
-      fireTriggers(r, sd, 'allyDies', { attacker: killer && killer.hp > 0 ? killer : null });
+      const standing = killer && killer.hp > 0 && killer.side !== sd.id ? killer : null;
+      fireTriggers(r, sd, 'allyDies', {
+        attacker: killer && killer.hp > 0 ? killer : null,
+        ...(standing ? { fallenMaxHp: u.maxHp } : {}),
+      });
       fireTriggers(r, sd, 'allyLost', { attacker: killer && killer.hp > 0 ? killer : null });
     }
   }
@@ -6583,6 +6619,11 @@ export function previewCardDamage(
       if (heartBonus) {
         n = Math.floor((n * (100 + heartBonus)) / 100);
         how.push(`Card damage +${heartBonus}% = ${n}`);
+      }
+      const spiritBonus = cardSpiritBonus(r, a);
+      if (spiritBonus) {
+        n = Math.floor((n * (100 + spiritBonus)) / 100);
+        how.push(`Spirit +${spiritBonus}% = ${n}`);
       }
       if (styleBonus) {
         n = Math.floor((n * (100 + styleBonus)) / 100);

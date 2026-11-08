@@ -7,8 +7,9 @@
 // Sweeping Gaze) are hers too.
 //
 // Her one companion, Osty, is his Thralls, several at once ("lets keep our ability to summon multiple minions"):
-//   - Summon N is Raise N: a Bone Thrall rises with N HP; with all three companion slots taken, the weakest gains N max HP instead.
-//   - Thralls do not act on their own (Osty does not): the cards that make Osty attack make EACH Thrall strike ("Your companions
+//   - Summon N is Raise Dead N: a Bone Thrall rises with N HP; with every companion slot taken, the healthiest gains N max HP
+//     instead (#684).
+//   - Since #684 Thralls also strike on their own (Osty does not): the cards that make Osty attack make EACH companion strike ("Your companions
 //     each deal 6 damage"), and what reads Osty's HP reads each Thrall's own.
 //   - "Osty heals" grows every Thrall (a heal on a companion grows it anyway, DECISIONS #356); "Osty dies" sacrifices each one.
 // Her Doom is his Fate (id doom), Ethereal is Fleeting, Retain is Hold, Exhaust is Consume, Strength is Might (a loss of it is Sapped,
@@ -46,6 +47,7 @@ import {
   raise,
   scaled,
   spreadDebuffs,
+  summon,
   status,
   statusTheirs,
   when,
@@ -57,6 +59,8 @@ const g = pool('necromancer', 'gloomfen');
 const CMD = { tags: ['command'] };
 /** a companion gives itself up (Bone Shards: "Osty dies") */
 const DIES: Op = { op: 'sacrifice', self: true };
+/** a Command for the Bone Thralls alone (#684) */
+const thralls = (...ops: Op[]): Op => ({ op: 'command', ops, unit: 'bone-thrall' });
 
 export const NECROMANCER: CardDef[] = [
   // --- basics and tokens ---
@@ -136,10 +140,11 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'none',
-    [scaled(barrier(0), per('allies', 9)), command(dmg(9, 'allFoes'), DIES)],
+    // (its Thralls only, #684: a Grave Colossus is never given up to it, and only a Thrall given up pays the Barrier)
+    [thralls(barrier(9, 'hero'), dmg(9, 'allFoes'), DIES)],
     {
       ...CMD,
-      up: { effects: [scaled(barrier(0), per('allies', 12)), command(dmg(12, 'allFoes'), DIES)] },
+      up: { effects: [thralls(barrier(12, 'hero'), dmg(12, 'allFoes'), DIES)] },
     },
   ),
   // (Calcify)
@@ -231,10 +236,11 @@ export const NECROMANCER: CardDef[] = [
     [raise(5), on('allyHurt', [loseHpScaled(per('lost'), 'allFoes')])],
     { up: { effects: [raise(8), on('allyHurt', [loseHpScaled(per('lost'), 'allFoes')])] } },
   ),
-  // (Reanimate)
-  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raise(20)], {
-    exhaust: true,
-    up: { effects: [raise(25)] },
+  // (was Reanimate, Raise 20 and Consume. Since #684 it summons the Grave Colossus: 18 HP (22 upgraded), Taunt, 2 slots, strikes for
+  // 2 + 1 per 4 max HP and takes half of a Command. ~40 points (21.6 HP + 3 body + 6 x ~2.5 acts) less ~5 for its second slot: a
+  // 3-Mana rare's 35)
+  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [summon('grave-colossus')], {
+    up: { effects: [summon('grave-colossus+')] },
   }),
   // (Sacrifice: the chosen Thrall dies, and you gain twice its max HP as Barrier)
   g(
@@ -283,6 +289,36 @@ export const NECROMANCER: CardDef[] = [
     'foe',
     [command(scaled(dmg(10), per('maxHp')))],
     { ...CMD, up: { effects: [command(scaled(dmg(15), per('maxHp')))] } },
+  ),
+  // --- blood and bone: HP and consumed cards grow the dead (#684) ---
+  // (lose 5 HP (-7.5), Raise Dead 10 (12, +3 when it brings a new Thrall), and Grave Chill's first-HP-lost growth (~4.8): ~9.3 into a
+  // full board, ~12.3 with a slot free: ~11, a 1-Mana uncommon. 12 priced at ~14.7, over budget: review of #684)
+  g('uncommon', 'blood-offering', 'Blood Offering', 'skill', 1, 'none', [lose(5), raise(10)], {
+    up: { effects: [lose(5), raise(13)] },
+  }),
+  // (each companion +3 max HP for the card consumed (~7 at two companions), Grave Chill's 3 Fate for it, and a weak card gone: a 0-Mana
+  // uncommon. Nothing consumed, nothing grows)
+  g(
+    'uncommon',
+    'bone-feast',
+    'Bone Feast',
+    'skill',
+    0,
+    'none',
+    [exhaustN(1), scaled(growHp(0), per('exhaustedNow', 3))],
+    { up: { effects: [exhaustN(1), scaled(growHp(0), per('exhaustedNow', 4))] } },
+  ),
+  // (an Aura: each turn lose 3 HP (-4.5), Raise Dead 5 (6, +3 when it brings a Thrall) and Grave Chill's growth (~4.8): ~6.3 a turn,
+  // ~25 over four turns against a 2-Mana uncommon Aura's ~28)
+  g(
+    'uncommon',
+    'grave-tithe',
+    'Grave Tithe',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [lose(3), raise(5)])],
+    { up: { effects: [on('turnStart', [lose(3), raise(7)])] } },
   ),
 
   // --- Fate ---

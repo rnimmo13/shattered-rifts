@@ -716,6 +716,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   bonus: { per: 'point of sharpening', equal: 'its sharpening' },
   // --- the Necrobinder copy
   maxHp: { per: 'max HP', equal: 'max HP' },
+  fallenMaxHp: { per: "of the fallen companion's max HP", equal: "the fallen companion's max HP" },
   dealt: { per: 'damage dealt', equal: 'the damage dealt' },
   lost: { per: 'HP lost', equal: 'the HP it lost' },
   hpLostNow: { per: 'HP you lost', equal: 'the HP you lost' },
@@ -1934,16 +1935,15 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Add a copy of a random ${o.neutral ? 'Neutral ' : ''}card in your hand to your hand.`;
     // --- the Necrobinder copy
     case 'raise': {
-      // ("Summon a Bone Thrall with 6 HP": what was "Raise 6"; with every slot taken the weakest gains the HP instead, which the
-      // Bone Thrall keyword explains)
-      const name = db.units[o.unit]?.name ?? 'Bone Thrall';
-      if (o.scale?.by === 'x') return `Summon X ${name}s with ${o.amount} HP each.`;
-      if (o.scale)
-        return `Summon a ${name} with ${o.amount} HP for each ${METRIC_WORDS[o.scale.by].per}.`;
+      // ("Raise Dead 6" since #684, Robert 2026-11-07: a Bone Thrall with 6 HP, or with every slot taken the healthiest companion
+      // gains 6 max HP; the Raise Dead keyword explains it. Another unit is named.)
+      const what = o.unit === 'bone-thrall' ? 'Raise Dead' : `Raise Dead (${db.units[o.unit]?.name ?? o.unit})`;
+      if (o.scale?.by === 'x') return `${what} ${o.amount}, X times.`;
+      if (o.scale) return `${what} ${o.amount} for each ${METRIC_WORDS[o.scale.by].per}.`;
       const n = o.times ?? 1;
       return n > 1
-        ? `Summon ${n} ${name}s with ${o.amount} HP each.`
-        : `Summon a ${name} with ${o.amount} HP.`;
+        ? `${what} ${o.amount} ${n === 2 ? 'twice' : `${n} times`}.`
+        : `${what} ${o.amount}.`;
     }
     case 'command': {
       // "Your companions each deal 6 damage." (what they read of themselves is theirs: "equal to its HP")

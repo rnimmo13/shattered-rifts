@@ -97,7 +97,6 @@ const db: CombatDb = {
 };
 const hero = (s: CombatState, side: Side = 'a') =>
   s.sides[side].units.find((u) => u.kind === 'hero')!;
-const allies = (s: CombatState) => s.sides.a.units.filter((u) => u.kind === 'ally' && u.hp > 0);
 let serial = 0;
 function fight(h = 'engineer', asc?: string, hp?: number) {
   const s = createCombat(db, {
@@ -142,6 +141,8 @@ describe('long-fight balance rules81', () => {
     expect(hero(s).barrier).toBe(18);
     expect(hero(s, 'b').statuses.doom).toBe(20);
     const before = hero(s, 'b').hp;
+    // (the Reap alone: Grave Chill's Thrall strikes on its own since #684)
+    s.sides.a.units = s.sides.a.units.filter((u) => u.kind === 'hero');
     s = end(s);
     expect(before - hero(s, 'b').hp).toBe(10); // Reap4 + 2*3
     hero(s).barrier = 0;
@@ -262,44 +263,7 @@ describe('long-fight balance rules81', () => {
     s = play(end(s), 'sharedA');
     expect(s.sides.a.mana).toBe(21);
   });
-  it('Bonelord excludes other companions and caps protection even with four living Thralls', () => {
-    let s = play(fight('necromancer', 'bonelord'), 'raise');
-    allies(s)[0]!.def = 'drone';
-    s = play(s, 'innerCommand');
-    expect(hero(s).barrier).toBe(6);
-    s = round(s);
-    allies(s)[0]!.def = 'bone-thrall';
-    s.sides.a.units.push({ ...allies(s)[0]!, id: 'fourth-thrall', statuses: {} });
-    s = play(s, 'innerCommand');
-    expect(hero(s).barrier).toBe(9);
-  });
-  it('Bonelord counts surviving Thralls after a Command and limits the reward to the first card', () => {
-    let s = play(fight('necromancer', 'bonelord'), 'raise');
-    expect(allies(s)).toHaveLength(3);
-    s = play(s, 'off-the-leash');
-    expect(hero(s).barrier).toBe(9);
-    s = play(s, 'off-the-leash');
-    expect(hero(s).barrier).toBe(9);
-    s = round(s);
-    s = play(s, 'outerCommand'); // free inner Command finishes first; outer kills Thralls
-    expect(allies(s)).toHaveLength(0);
-    expect(hero(s).barrier).toBe(0);
-  });
-  it('Bonelord reserves the first played Command through a nested Command and save-restored choice', () => {
-    let s = fight('necromancer', 'bonelord');
-    s.sides.a.draw.unshift({ id: 'nested', card: 'innerCommand' });
-    s = play(s, 'outerCommand');
-    expect(hero(s).barrier).toBe(0);
-    s = round(s);
-    s = play(s, 'choiceCommand');
-    expect(s.pending).toBeTruthy();
-    expect(hero(s).barrier).toBe(0);
-    s = restored(s);
-    const pick = legalActions(db, s).find((a) => a.type === 'pick');
-    expect(pick).toBeDefined();
-    s = applyAction(db, s, pick!).state;
-    expect(hero(s).barrier).toBe(3 * allies(s).length);
-  });
+  // (the Bonelord's Barrier for each Thrall after a Command went in #684: its tests moved to necromancer.test.ts)
   it.each([
     [88, 35, 5],
     [528, 211, 27],

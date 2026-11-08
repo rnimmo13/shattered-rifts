@@ -85,6 +85,8 @@ export function validateDb(db: CombatDb): string[] {
         errs.push(`${where}: replacement references an unknown unit`);
       if (o.op === 'summon' && !db.units[o.unit])
         errs.push(`${where}: summons unknown unit "${o.unit}"`);
+      if (o.op === 'command' && o.unit !== undefined && !db.units[o.unit])
+        errs.push(`${where}: commands unknown unit "${o.unit}"`);
       if (o.op === 'addCard' && !db.cards[o.card])
         errs.push(`${where}: adds unknown card "${o.card}"`);
       if (o.op === 'prevent' && !opts.snare) errs.push(`${where}: "prevent" only works in a Trap`);
@@ -323,6 +325,11 @@ export function validateDb(db: CombatDb): string[] {
   for (const [id, u] of Object.entries(db.units)) {
     if (u.id !== id) errs.push(`unit key "${id}" does not match its id "${u.id}"`);
     if (!(u.maxHp > 0)) errs.push(`${id}: bad HP`);
+    if (
+      u.commandPct !== undefined &&
+      (!Number.isInteger(u.commandPct) || u.commandPct < 0 || u.commandPct > 100)
+    )
+      errs.push(`${id}: commandPct must be an integer from 0 to 100`);
     if (u.brain.kind === 'ally') {
       checkOps(id, u.brain.act, { aimed: true, snare: false });
       if (u.brain.act.some((o) => o.op === 'actAllies'))

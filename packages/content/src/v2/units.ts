@@ -75,11 +75,17 @@ const RAW_ALLIES: UnitDef[] = [
   ally('pack-alpha', 'Pack Alpha', 12, [dmg(6)]),
   // (it strikes twice, DECISIONS #678: a 3-Mana rare companion that dies easily has to hit hard while it stands)
   ally('dire-wolf', 'Dire Wolf', 18, [dmg(9, 'target', 2)]),
-  // Gloomfen: Dorian's dead. The Bone Thrall is his copy of the Necrobinder's Osty, several at once: it does not act on its own, a
-  // Raise brings one with the HP the card says (5 here is only the one he starts with), and his Command cards make each one strike.
-  // (Grave Colossus and The Drowned King are no longer summoned by any card; they are kept for their looks and for later.)
-  ally('bone-thrall', 'Bone Thrall', 5, []),
-  ally('grave-colossus', 'Grave Colossus', 22, [dmg(9)]),
+  // Gloomfen: Dorian's dead. A Raise Dead brings a Bone Thrall with the HP the card says (5 here is only a default), and his Command
+  // cards make each companion strike. Since #684 (Robert 2026-11-07) they also strike on their own, at the end of his turn, for 2 plus
+  // 1 for every 4 max HP: growing them pays. (They did not act at all from #370, as the Necrobinder's Osty did not.)
+  // The Grave Colossus (#684) is the big one: 2 slots, Taunt, the same strike on its larger max HP, and half a Command's damage.
+  // (The Drowned King is no longer summoned by any card; it is kept for its looks and for later.)
+  ally('bone-thrall', 'Bone Thrall', 5, [scaled(dmg(2), per('maxHp', 0.25))]),
+  ally('grave-colossus', 'Grave Colossus', 18, [scaled(dmg(2), per('maxHp', 0.25))], {
+    taunt: true,
+    slots: 2,
+    commandPct: 50,
+  }),
   ally('drowned-king', 'The Drowned King', 22, [dmg(10), barrier(4, 'hero')]),
   ally('gnashling', 'Gnashling', 4, [dmg(3)]),
 ];
@@ -95,6 +101,8 @@ const PLUS_STATS: Record<string, { hp: number; hit: number }> = {
   'war-engine': { hp: 26, hit: 5 },
   'scrap-golem': { hp: 16, hit: 4 },
   dreadnought: { hp: 26, hit: 5 },
+  // (its hit grows with its max HP already: the "+" is only 4 more HP)
+  'grave-colossus': { hp: 22, hit: 2 },
 };
 
 /** The "+" companion a "+" summon card brings: tougher and hits or guards harder. */

@@ -5,13 +5,13 @@
 import type { CombatDb, HeroDef, HeroTrait, Op } from '@sr/combat';
 import {
   barrier,
+  deathBurst,
   draw,
   growHp,
   mana,
   on,
   per,
   plant,
-  raise,
   scaled,
   status,
   stars,
@@ -254,13 +254,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
   a(
     'shaman',
     'Spiritwalker',
-    'Commands',
-    // (4 Barrier, was 2, DECISIONS #545)
-    'The first time a totem acts each turn on your order or as it leaves the row, draw 1 card and gain 4 Barrier. Your first ordered totem command on your turn also gives 1 Spirit.',
+    'Spirit',
+    // (Robert 2026-11-07, DECISIONS #683: a reason to stack Spirit; the 4 Barrier on the first totem act went)
+    'Your first ordered totem command on your turn draws 1 card and gives 1 Spirit. Your cards deal 5% more damage for each Spirit you have, up to 50% more (totems already grow with Spirit).',
     {
+      fightStart: [{ op: 'discipline', rule: { kind: 'attunement', perSpirit: 5, cap: 50 } }],
       triggers: [
-        on('command', [draw(1), barrier(4)], { once: true }),
-        on('orderedCommand', [status('spirit', 1)], { once: true, ownTurn: true }),
+        on('orderedCommand', [draw(1), status('spirit', 1)], { once: true, ownTurn: true }),
       ],
     },
   ),
@@ -380,24 +380,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
   a(
     'necromancer',
     'Bonelord',
-    'Thralls',
-    'At the start of your turn, summon another Bone Thrall with 2 HP. Your companions deal 2 more damage. After your first Command resolves on your turn, gain 3 Barrier per living Bone Thrall, up to 9.',
+    'Companions',
+    // (an army, not a wall: Robert 2026-11-07, DECISIONS #684; the extra Raise a turn and the Barrier for each Thrall went)
+    'You have 4 companion slots (two Grave Colossi fit). Your companions deal 2 more damage. A companion an enemy kills bursts for its full max HP at that enemy, not half.',
     {
-      turnStart: [raise(2)],
-      fightStart: [
-        status('marrow', 2),
-        {
-          op: 'discipline',
-          rule: {
-            kind: 'commandGuard',
-            tag: 'command',
-            unit: 'bone-thrall',
-            unitName: 'Bone Thrall',
-            perAlly: 3,
-            cap: 9,
-          },
-        },
-      ],
+      maxAllies: 4,
+      fightStart: [status('marrow', 2)],
+      // (the other half of the burst: Grave Chill gives the first)
+      triggers: [on('allyDies', [deathBurst(0.5, true)])],
     },
   ),
   a(

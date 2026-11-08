@@ -757,9 +757,10 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     text: 'A 0-cost Attack that hits every enemy and is consumed.',
   },
   power: { name: 'Aura', text: 'Played once: its effect lasts for the rest of the fight.' },
+  // (Raise Dead, DECISIONS #684)
   raise: {
-    name: 'Bone Thrall',
-    text: 'Summoning one brings a new Bone Thrall with that much HP (up to three companions). With every slot taken, your weakest companion gains that much max HP instead. Thralls take hits meant for you but never act on their own: your Commands make them strike.',
+    name: 'Raise Dead',
+    text: 'A new Bone Thrall rises with that much HP. With no companion slot free, your healthiest companion gains that much max HP instead. Your companions take hits meant for you and strike at the end of your turn for 2, plus 1 for every 4 max HP; your Commands make them strike too.',
   },
   replay: { name: 'Replay', text: 'The card is played one more time each time you play it.' },
 };

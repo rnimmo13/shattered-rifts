@@ -1,3 +1,10 @@
+## 0.225.0 - 2026-11-07
+
+- Necromancer rework (DECISIONS #684; rules 94): Raise Dead 3 a turn, extra HP to the healthiest companion; companions strike on their own (2 + 1 per 4 max HP); an enemy kill makes a companion burst for half its max HP at the killer (replaces the death's 2 Fate); the first HP lost on your turn gives every companion 2 max HP.
+- Grave Colossus card summons the Grave Colossus (18 HP, Taunt, 2 slots, half of a Command). New uncommons Blood Offering, Bone Feast and Grave Tithe. Bone Rain gives up only Bone Thralls.
+- Bonelord: 4 companion slots, +2 companion damage, full-strength death bursts; the extra Raise and Command Barrier are gone.
+- Spiritwalker (DECISIONS #683): the first command each turn draws 1 and gives 1 Spirit; card damage +5% per Spirit, up to +50%; the 4 Barrier is gone.
+
 ## 0.224.0 - 2026-11-07
 
 - Totemist: 2 more totem positions and a second Hawk and Bear planted at the start of each fight, a row of five (DECISIONS #682; rules 93).

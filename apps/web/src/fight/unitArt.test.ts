@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { COMBAT_DB } from '@sr/content/v2';
 import { figureId, isWardenFigure, unitHeight } from './art';
 
-describe('a Thrall grown big stands as the Grave Colossus (DECISIONS #445)', () => {
-  it('small Thralls are the skeleton, 18 HP and up the Colossus (its upgrade too)', () => {
+describe('a Thrall grows taller, but stays a Thrall (DECISIONS #445, #684)', () => {
+  it('a Thrall is the skeleton at any size: the Grave Colossus is its own companion since #684', () => {
     expect(figureId('bone-thrall', 5)).toBe('bone-thrall');
-    expect(figureId('bone-thrall', 17)).toBe('bone-thrall');
-    expect(figureId('bone-thrall', 20)).toBe('grave-colossus');
-    expect(figureId('bone-thrall+', 25)).toBe('grave-colossus');
+    expect(figureId('bone-thrall', 20)).toBe('bone-thrall');
+    expect(figureId('bone-thrall+', 25)).toBe('bone-thrall');
+    expect(figureId('grave-colossus', 18)).toBe('grave-colossus');
     expect(figureId('bone-thrall')).toBe('bone-thrall');
   });
   it('other units keep their own figure at any size', () => {

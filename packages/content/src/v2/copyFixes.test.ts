@@ -143,7 +143,7 @@ describe('Army of the Drowned (Legion of Bone)', () => {
     expect(after.slice(n).every((u) => u.maxHp === 6)).toBe(true);
     expect(s.sides.a.exhausted.map((c) => c.card)).toContain('army-of-the-drowned');
     expect(cardText(db, db.cards['army-of-the-drowned']!)).toBe(
-      'Summon 2 Bone Thralls with 6 HP each. Consume.',
+      'Raise Dead 6 twice. Consume.',
     );
   });
 });

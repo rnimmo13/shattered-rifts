@@ -341,6 +341,7 @@ export type Metric =
   | 'discarded' // cards discarded by effects this turn
   | 'hpLostTurn' // times your hero lost HP this turn
   | 'hpLostFight' // times your hero lost HP this fight
+  | 'fallenMaxHp' // in an 'allyDies' trigger: the fallen companion's max HP, when an enemy that is still standing killed it (else 0)
   | 'exhaustedTurn' // cards consumed this turn
   | 'attacksInHand'
   | 'nonAttacksInHand'
@@ -549,6 +550,8 @@ export type CombatDiscipline =
   | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
   | { kind: 'execution'; perSkill: number; cap: number; woundedPct: number; bonus: number }
   | { kind: 'cultivation'; minimum: number; spirit: number }
+  /** the hero's card damage (Attacks and spells, not totems) +perSpirit% for each Spirit, up to cap% */
+  | { kind: 'attunement'; perSpirit: number; cap: number }
   | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number }
   | { kind: 'fury'; perEntry: number; cap: number; barrier: number; perExit: number }
   | { kind: 'radiance'; first: number; step: number; cap: number }
@@ -907,7 +910,8 @@ export type Op =
    */
   | { op: 'raise'; unit: string; amount: number; times?: number; scale?: Scale }
   /** each of your living companions does these, as the actor ("Osty deals 6"); nothing happens with none. It counts as a strike */
-  | { op: 'command'; ops: Op[] }
+  /** each living companion strikes with `ops` (only companions of `unit`, when it is given); a companion's `commandPct` scales its damage */
+  | { op: 'command'; ops: Op[]; unit?: string }
   /** every target whose HP is at or below its Fate dies now */
   | { op: 'doomNow'; to: Sel }
   /** the debuffs on the target are put on every other enemy too (Misery) */
@@ -1119,6 +1123,8 @@ export interface UnitDef {
   leader?: boolean;
   /** how many of its side's companion slots it takes: 1 Light (the default), 2 Heavy, 3 Colossal (DECISIONS #383) */
   slots?: number;
+  /** the share (percent) of a Command's damage it deals when commanded (the Grave Colossus: half); 100 when absent */
+  commandPct?: number;
   /** statuses it starts the fight with */
   statuses?: Partial<Record<StatusId, number>>;
   brain: Brain;

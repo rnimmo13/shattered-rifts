@@ -43,12 +43,16 @@ const db = {
     },
   },
 };
-const create = (): CombatState =>
-  createCombat(db, {
+const create = (): CombatState => {
+  const s = createCombat(db, {
     seed: 'harvest-of-souls',
     a: { hero: 'necromancer', ascendancy: 'necromancer:soulreaper', deck: ['harvest-consume'] },
     b: { enemies: ['harvest-wall', 'harvest-wall'] },
   }).state;
+  // (the Reap alone: Grave Chill's Thrall strikes on its own since #684, and its blow or its death burst would muddle the count)
+  s.sides.a.units = s.sides.a.units.filter((u) => u.kind === 'hero');
+  return s;
+};
 const hero = (s: CombatState, side: Side = 'a') =>
   s.sides[side].units.find((u) => u.kind === 'hero')!;
 const end = (s: CombatState) => applyAction(db, s, { type: 'endTurn' });

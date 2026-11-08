@@ -12,8 +12,10 @@ import {
   plant,
   barrier,
   reserves,
+  deathBurst,
   dmg,
   draw,
+  growHp,
   heal,
   mana,
   on,
@@ -424,13 +426,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Necromancer',
     trait: {
       name: 'Grave Chill',
-      text: 'At the start of your turn, summon a Bone Thrall with 2 HP. Whenever one of your allies dies, curse the enemy that killed it with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each; further cards give 1 Fate each. A round runs from the start of your turn to your next turn.',
-      // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn, and the one he starts with died to the first hit; 2, not 3, #401)
-      // (no Fate at the start, #398; a death curses 3, as a consumed card does: 5 had pushed him back to the top, #403)
-      turnStart: [raise(2)],
+      text: 'At the start of your turn, Raise Dead 3: a Bone Thrall rises with 3 HP, or with no companion slot free your healthiest companion gains 3 max HP. The first time you lose HP on your turn, your companions each gain 2 max HP. A companion an enemy kills bursts for half its max HP at that enemy. Your first 6 cards consumed each round curse a random enemy with 3 Fate each; further cards give 1 Fate each. A round runs from the start of your turn to your next turn.',
+      // (Raise a turn, DECISIONS #397: his Commands need a Thrall standing on his turn; 2 since #401, 3 since #684 as Raise Dead)
+      // (the class that spends HP and consumes cards to grow its dead, Robert 2026-11-07, #684: HP he loses to his own cards grows them;
+      // a death bursts back at its killer, in place of the 2 Fate a death used to curse (#518))
+      turnStart: [raise(3)],
       triggers: [
-        // (the one that did it; a sacrifice has no killer, so it curses a random enemy, DECISIONS #518)
-        on('allyDies', [status('doom', 2, 'attackerOrRandom')]),
+        on('loseHp', [growHp(2)], { once: true, ownTurn: true }),
+        on('allyDies', [deathBurst(0.5)]),
         on('exhaust', [status('doom', 3, 'randomFoe')], {
           perRoundLimit: 6,
           afterLimit: [status('doom', 1, 'randomFoe')],
@@ -458,15 +461,17 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'marked-for-the-grave',
     ],
     blurb:
-      'A warden of the drowned dead. His Bone Thralls stand between him and harm and strike when he commands; his enemies are cursed with Fate.',
+      'A warden of the drowned dead who pays in blood and spent cards to grow them. His Bone Thralls and Grave Colossi stand between him and harm, strike on their own and when he commands; his enemies are cursed with Fate.',
     mechanics: ['Thralls', 'Fate', 'Souls', 'Fleeting'],
     howTo: [
-      'You start with a Bone Thrall. Thralls stand in front of you and take the hits meant for you, but they never act on their own.',
-      'Summon a Bone Thrall with N HP brings a new Thrall (up to three). With three already standing, your weakest Thrall gains N max HP instead.',
-      'Command cards (Knucklebone, Off the Leash...) make each of your Thralls strike. Off the Leash adds each Thrall’s own HP to its blow.',
+      'You start with a Bone Thrall. Your companions stand in front of you and take the hits meant for you, and each strikes at the end of your turn for 2 plus 1 for every 4 max HP it has.',
+      'Raise Dead N brings a new Bone Thrall with N HP (up to three companion slots). With no slot free, your healthiest companion gains N max HP instead, so one can grow big.',
+      'The Grave Colossus (a rare card) is a big companion: it takes 2 slots, has Taunt, and hits harder as its max HP grows.',
+      'Command cards (Knucklebone, Off the Leash...) make each of your companions strike as well. A Grave Colossus deals half of a Command’s damage. Off the Leash adds each one’s own HP to its blow.',
+      'Losing HP to your own cards and consuming cards feed your dead: the first HP you lose on your turn gives every companion 2 max HP.',
+      'A companion an enemy kills bursts for half its max HP at that enemy.',
       'Cursed with Fate, an enemy dies at the end of its turn if its HP is at or below its Fate.',
       'Gravesouls are free cards that draw 2 and are consumed; Fleeting cards are consumed if you still hold them when your turn ends, and some of your cards grow with every one you play.',
-      'Grave Chill: summon a Bone Thrall with 2 HP at the start of every turn; an enemy that kills one of your allies is cursed with 2 Fate (a random enemy if none did). Your first 6 cards consumed each round curse a random enemy with 3 Fate each, then 1 each until your next turn.',
     ],
   },
 };

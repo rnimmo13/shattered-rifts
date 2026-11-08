@@ -258,8 +258,15 @@ into another class)
 
 ## 10. Companions (summons)
 
-No baseline class summons a companion that acts on its own (the Necromancer's Thralls never act; DECISIONS #370), so this rate is
+When this rate was set no baseline class summoned a companion that acts on its own (the Necromancer's Thralls never acted, DECISIONS
+#370; since #684 they strike, see the Necromancer note below), so this rate is
 built from pieces the baselines already price: a companion is **sticky Barrier** (Raise, §3) plus **a body** plus **its hits**.
+
+**The Necromancer since #684.** Raise Dead N is still 1.2 per HP (+3 for a new Thrall), but each new Thrall now also strikes for 2
+(+1 per 4 max HP) at the end of each turn it stands (~2.5 points a turn while it lives, one or two turns for a small one). With no slot
+free the HP goes to the healthiest companion, so it buys a bigger hit (+1 per 4 HP) as well as sticky Barrier. A death an enemy causes
+bursts back for half the companion's max HP (the Bonelord, all of it): ~0.5 x max HP per enemy kill, ~2 kills a fight. The Grave
+Colossus (18 HP, Taunt, 2 slots, 6 a hit at 18 HP, half of a Command) is ~40 points less ~5 for its second slot: a 3-Mana rare.
 
 **Companion value = 1.2 x HP + 3 + its hit x expected acts**
 
