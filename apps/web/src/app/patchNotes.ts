@@ -46,6 +46,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.231.0',
+    date: '2026-11-08',
+    title: 'The Knight and Rogue as painted',
+    summary:
+      'The Knight and Rogue are shown in their painted portraits again, not the animated models.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Knight and Rogue portraits',
+        text: 'The Knight and Rogue use their painted pictures again everywhere, in battle too. The animated models are off until they look right.',
+      },
+    ],
+  },
+  {
     version: '0.230.0',
     date: '2026-11-08',
     title: 'Necromancer payoffs evened out',

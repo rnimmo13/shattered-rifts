@@ -1402,3 +1402,7 @@ Robert: Death Grip "seems useless now especially compared to the drowned king", 
 - **The Drowned King:** 2 Mana; only your healthiest companion strikes (most max HP, first on a tie) for 10 + its max HP (15 + upgraded). New generic `healthiest` option on the `command` op. A 20-HP Thrall hits for 30, a 40-HP one for 50, a Colossus at half as from every Command. ~30 for 2 Mana, near a 2-Mana rare's budget, and it no longer multiplies by board size.
 - **Death Grip:** 2 Mana (was 3), 10 + 6 per Command card played earlier this fight (upgraded 14 + 7). About 22 / 58 / 100 on turns 2 / 6 / 10 at 1-2 Commands a turn: weak early, a finisher once Commands add up.
 - No simulations; tests in necromancer.test.ts and balanceRevision.test.ts.
+
+## 690 - The Knight and Rogue go back to their still paintings (2026-11-08)
+
+Robert: the animated 2D Knight and Rogue (#671, #680) look bad enough that his friends laugh at them. Their default look goes back to the still paintings (figures/hero-knight.png, hero-assassin.png) everywhere: home, picker, Vault, Models, lore and battle. `HERO_RIGS` is empty; the Hero2D runtime, the rig assets in art/heroes2d/ and the sync script stay, so a better rig can be switched back on by adding its entry. Skins were always still pictures and are unchanged.

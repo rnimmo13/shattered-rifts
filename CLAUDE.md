@@ -1,3 +1,7 @@
+# Release approved 0.231.0 / rules 98 (2026-11-08; decision 690)
+
+Robert explicitly approves pushing/deploying the Knight and Rogue going back to their still paintings (animated rigs switched off). No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.230.0 / rules 98 (2026-11-08; decisions 688-689)
 
 Robert explicitly approves pushing/deploying: Death Grip at 2 Mana scaling 10 + 6 per Command played, The Drowned King at 2 Mana striking with only the healthiest companion, and Grave Debt cut to a quarter of the fallen's max HP as Fate to all, 3 times a turn. Website/server and matching Windows updater. Future changes need fresh release approval.

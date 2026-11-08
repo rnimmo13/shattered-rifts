@@ -1,3 +1,7 @@
+## 0.231.0 - 2026-11-08
+
+- The Knight and Rogue show their still paintings again everywhere (DECISIONS #690); the animated rigs are switched off, their files kept.
+
 ## 0.230.0 - 2026-11-08
 
 - Death Grip (DECISIONS #689; rules 98): 2 Mana, 10 + 6 per Command played this fight (14 + 7 upgraded).
