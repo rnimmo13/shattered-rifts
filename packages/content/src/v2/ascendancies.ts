@@ -96,10 +96,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Artillerist',
     'Personal weapons',
-    'At the start of your turn, gain 2 Might. The first Attack you play on your turn gives you 6 Barrier.',
+    // (up to 12 Might from it, the first 6 turns: uncapped it ran away in long Arena fights, DECISIONS #685)
+    'At the start of your first 6 turns, gain 2 Might (up to 12). The first Attack you play on your turn gives you 6 Barrier.',
     {
-      turnStart: [status('might', 2)],
-      triggers: [on('play', [barrier(6)], { filter: 'attack', once: true, ownTurn: true })],
+      triggers: [
+        on('turnStart', [status('might', 2)], { times: 6 }),
+        on('play', [barrier(6)], { filter: 'attack', once: true, ownTurn: true }),
+      ],
     },
   ),
   a(
@@ -152,9 +155,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Reaver',
     'Paying blood',
     // (and 2 Primed, DECISIONS #545)
-    'The first time each turn one of your own effects costs you HP, draw 1 card, gain 2 Primed and gain 4 Barrier.',
+    // (and 1 Might, DECISIONS #685: something that grows; a more distinct Reaver is still wanted)
+    'The first time each turn one of your own effects costs you HP, draw 1 card, gain 2 Primed, 1 Might and 4 Barrier.',
     {
-      triggers: [on('loseHp', [draw(1), status('vigor', 2), barrier(4)], { once: true })],
+      triggers: [
+        on('loseHp', [draw(1), status('vigor', 2), status('might', 1), barrier(4)], { once: true }),
+      ],
     },
   ),
   a(
@@ -178,14 +184,19 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'trickster',
     'Trapmaster',
     'Traps',
-    // (2 Barrier, was 3, DECISIONS #545)
-    'Whenever one of your Traps springs, draw 1 card and gain 2 Barrier.',
+    // (2 Barrier, was 3, DECISIONS #545; two more Traps and Trap damage that grows, DECISIONS #685)
+    'You can have 2 more Traps set. Whenever one of your Traps springs, draw 1 card and gain 2 Barrier. Your Traps deal 5% more damage for each of your Traps sprung before it this fight, up to 50% more.',
     {
+      fightStart: [
+        { op: 'snareSlot', amount: 2 },
+        { op: 'discipline', rule: { kind: 'snarecraft', perSprung: 5, cap: 50 } },
+      ],
       triggers: [on('snare', [draw(1), barrier(2)])],
     },
   ),
-  a('trickster', 'Cardsharp', 'Suits', 'A Full Trick also gives you 1 Mana.', {
-    triggers: [on('allSuits', [mana(1)])],
+  // (and 1 Might, DECISIONS #685)
+  a('trickster', 'Cardsharp', 'Suits', 'A Full Trick also gives you 1 Mana and 1 Might.', {
+    triggers: [on('allSuits', [mana(1), status('might', 1)])],
   }),
   a(
     'trickster',
@@ -218,9 +229,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'assassin',
     'Bladedancer',
     'A hand of knives',
-    'At the start of your turn, add a second Dagger to your hand.',
+    // (and a Volley that ramps within the turn, DECISIONS #685)
+    'At the start of your turn, add a second Dagger to your hand. Each Dagger deals 10% more damage for each Dagger played before it this turn, up to 50% more.',
     {
       turnStart: [{ op: 'addCard', card: 'sleeve-knife', to: 'hand', side: 'self' }],
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'volley', tag: 'knife', perCard: 10, cap: 50 } },
+      ],
     },
   ),
   a(
@@ -239,15 +254,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Totemist',
     'Cultivating totems',
     // (two more totem positions, and a second Hawk and Bear planted behind the class's three: a row of five, Robert 2026-11-07)
-    'You have 2 more totem positions, and start each fight with a second Hawk and Bear behind your other totems. Start each fight with 1 Spirit and 8 Barrier. End your turn with at least two totems standing, without commanding or pushing any out that turn, to gain 1 Spirit.',
+    // (no opening Spirit or Barrier, and Cultivation stops at 5 Spirit: it grew without end, DECISIONS #685)
+    'You have 2 more totem positions, and start each fight with a second Hawk and Bear behind your other totems. End your turn with at least two totems standing, without commanding or pushing any out that turn, to gain 1 Spirit (up to 5 Spirit this way each fight).',
     {
       fightStart: [
         { op: 'totemSlot', amount: 2 },
         plant('hawk'),
         plant('bear'),
-        status('spirit', 1),
-        barrier(8),
-        { op: 'discipline', rule: { kind: 'cultivation', minimum: 2, spirit: 1 } },
+        { op: 'discipline', rule: { kind: 'cultivation', minimum: 2, spirit: 1, cap: 5 } },
       ],
     },
   ),
@@ -277,9 +291,20 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     },
   ),
 
-  a('monk', 'Sage', 'Serene', 'The first time each turn you leave Serene, gain 1 more Mana.', {
-    triggers: [on('stanceLeft', [mana(1)], { stance: 'calm', once: true })],
-  }),
+  // (and a card, and Enlightenment that grows over the fight, DECISIONS #686)
+  a(
+    'monk',
+    'Sage',
+    'Serene',
+    'The first time each turn you leave Serene, gain 1 more Mana and draw 1 card. Enlightenment: the first 5 times you do, also gain 1 Might; the first 3 times, also 1 Bracing (+1 to every Barrier you gain).',
+    {
+      triggers: [
+        on('stanceLeft', [mana(1), draw(1)], { stance: 'calm', once: true }),
+        on('stanceLeft', [status('might', 1)], { stance: 'calm', once: true, times: 5 }),
+        on('stanceLeft', [status('bracing', 1)], { stance: 'calm', once: true, times: 3 }),
+      ],
+    },
+  ),
   // (the first time each turn: Fury loops made 14-22 Barrier a turn, DECISIONS #542)
   a(
     'monk',
@@ -297,9 +322,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'monk',
     'Sunwalker',
     'Radiant',
-    'The first time each turn you enter a stance, gain 1 more Fervor. Your first Radiant exit on your turn returns 2 Fervor; each later qualifying exit this fight returns 1 more, up to 4.',
+    // (Dawn: what Radiant gives partly stays, rather than Radiant more often, DECISIONS #686)
+    'The first time each turn you enter a stance, gain 1 more Fervor. Your first Radiant exit on your turn returns 2 Fervor; each later qualifying exit this fight returns 1 more, up to 4. Dawn: the first 5 times you enter Radiant, gain 2 Might.',
     {
-      triggers: [on('stance', [status('mantra', 1)], { once: true })],
+      triggers: [
+        on('stance', [status('mantra', 1)], { once: true }),
+        on('stance', [status('might', 2)], { stance: 'radiant', times: 5 }),
+      ],
       fightStart: [{ op: 'discipline', rule: { kind: 'radiance', first: 2, step: 1, cap: 4 } }],
     },
   ),
@@ -309,10 +338,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'spellblade',
     'Blademaster',
     'Swords',
-    'Every hit of your Swords deals 1 more damage, and the first Sword you play each turn draws 1 card and gives 4 Barrier.',
+    // (and Keen that stacks to 5, DECISIONS #685)
+    'Start each fight with 1 Keen (every hit of your Swords deals 1 more damage per Keen). The first Sword you play each turn draws 1 card, gives 4 Barrier and, after it resolves, 1 more Keen (4 more Keen at most this fight).',
     {
       fightStart: [status('keen', 1)],
-      triggers: [on('play', [draw(1), barrier(4)], { tag: 'sword', once: true })],
+      triggers: [
+        on('play', [draw(1), barrier(4)], { tag: 'sword', once: true }),
+        on('play', [status('keen', 1)], { tag: 'sword', once: true, times: 4 }),
+      ],
     },
   ),
   a(
@@ -359,7 +392,8 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Deathwish',
     'Low HP',
-    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP, on top of Clutch Genes. Your first Attack on your turn grants 5% of your max HP as Barrier, rounded up, before resolving if you are at 40% HP or lower. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
+    // (and on to +40% at 10% HP, DECISIONS #685)
+    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP and on to +40% at 10% HP, on top of Clutch Genes. Your first Attack on your turn grants 5% of your max HP as Barrier, rounded up, before resolving if you are at 40% HP or lower. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
     {
       fightStart: [
         {
@@ -371,6 +405,8 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
             emergencyBarrierPct: 10,
             rampFrom: 70,
             attackBarrierPct: 5,
+            deepBonus: 40,
+            deepAt: 10,
           },
         },
       ],

@@ -1,3 +1,9 @@
+## 0.228.0 - 2026-11-08
+
+- Ascendancy pass (DECISIONS #685-686; rules 96): Totemist loses the opening 1 Spirit and 8 Barrier, and Cultivation stops at 5 Spirit; Artillerist's +2 Might lasts 6 turns (12). Trapmaster sets 5 Traps and its Traps grow +5% per Trap sprung (up to +50%); Bladedancer's Volley ramps Daggers 0-50% within a turn; Blademaster's first Sword each turn adds Keen up to 5; Reaver and Cardsharp gain 1 Might on their triggers; Deathwish grows to +40% at 10% HP; Sage draws on leaving Serene and grows Enlightenment (5 Might, 3 Bracing); Sunwalker's Dawn gives 2 Might per Radiant entry (up to 10).
+- Death Grip (DECISIONS #687): the hero's Attack, 15 + 4 per Command card played this fight (20 + 5 upgraded), no longer every companion striking for the deck's Command count. Command cards show a badge.
+- Raise Colossus always brings the Colossus: with no room you choose which Thralls make way, and it takes their HP.
+
 ## 0.227.0 - 2026-11-07
 
 - Fixed: saved decks did not follow the account across devices (a desktop app kept its old list). The online list now leads: a device sends up only decks it saved itself and drops decks removed elsewhere; the Saved decks page refreshes on focus and shows how it stands; an ended desktop Google session asks to reconnect instead of switching to a device-only Vault.

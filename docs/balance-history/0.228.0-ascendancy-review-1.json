@@ -1,0 +1,1071 @@
+{
+  "schema": 1,
+  "date": "2026-11-08",
+  "version": "0.228.0",
+  "rules": 96,
+  "status": "Local implementation authorized; no release approval",
+  "source": "Robert's direction (2026-11-08) after Claude's hand-priced late-game/Arena review of all 30 Ascendancies flagged Totemist and Artillerist as runaway scalers and Trapmaster, Reaver, Bladedancer, Blademaster, Cardsharp and Deathwish as flat or weak. No player decks, fights or exports; no simulations.",
+  "basis": "Decision 685. Totemist: no opening 1 Spirit / 8 Barrier; Cultivation gives at most 5 Spirit a fight. Artillerist: +2 Might on its first 6 turns only (12 total), 6 Barrier on first Attack unchanged. Trapmaster: 2 more Trap slots (5), draw 1 + 2 Barrier per Trap kept, Traps +5% damage per own Trap sprung before it this fight, up to +50%. Reaver: also +1 Might on the first own HP payment each turn (a more distinctive design is still wanted). Bladedancer: Daggers +10% per Dagger played before it this turn, up to +50%, resets each turn. Blademaster: first Sword each turn also gives +1 Keen after resolving, from 1 up to 5. Cardsharp: Full Trick also gives 1 Might. Deathwish: bonus keeps growing below 40% HP to +40% at 10% (was flat +25%). Hand-priced with docs/14_CARD_COSTING.md; grades below are review signals, not measured results. Rules 96 restarts unfinished battle checkpoints. Decision 686: Sage also draws 1 on its first Serene exit each turn, and Enlightenment gives 1 Might on its first 5 such exits and 1 Bracing on the first 3. Sunwalker Dawn: 2 Might on each of its first 5 Radiant entries (10 total); Radiant frequency and the Fervor return cap of 4 unchanged.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Arena first: distinct competitive styles at1000HP; typical10+ own turns. Drago optimized-deck target roughly50% or somewhat above, pending representative human/deck evidence.",
+  "progressionBands": [
+    "IV–VII",
+    "VIII–X",
+    "XI–XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Might +2 on each of the first 6 turns, 12 total, then flat. Multi-hit weapons still benefit per hit.",
+      "rationale": "Hand review signal: was A/A+ (uncapped +2 Might per hit per turn); now about A-/A-. Early turns identical; full strength by turn 6, no long-fight runaway.",
+      "watch": "Whether 12 Might still dominates multi-hit decks in Arena 10+ turns.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Adds 1 Might per turn that pays HP (once a turn), uncapped like Beastmaster.",
+      "rationale": "Hand review signal: was B-/C+; now about B+. Interim fix by Robert; a more creative Reaver design is still wanted.",
+      "watch": "HP payment frequency in real decks; self-damage sustainability over long fights.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Five Traps set at once; each Trap +5% per own Trap sprung before it this fight, to +50% after 10. Draw 1 and 2 Barrier per spring unchanged.",
+      "rationale": "Hand review signal: was C+ (flat value only); now about B+. More Traps per enemy turn and damage that grows over the fight.",
+      "watch": "Five-Trap enemy turns in Arena: card draw volume and whether +50% Trap damage outpaces counterplay.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Full Trick adds 1 Might (once a turn), so suit-complete turns grow attack damage.",
+      "rationale": "Hand review signal: was B-; now about B. Small growth layered on Mana.",
+      "watch": "How often real decks complete a Full Trick per turn.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Volley: each Dagger +10% per Dagger played before it this turn, to +50% from the sixth. Resets each turn, so no fight-long growth; multiplies Edge/Keen/Might per Dagger.",
+      "rationale": "Hand review signal: was B-/C+; now about B+. Typical 4-6 Dagger turns average +15-25%. Recall the Blades (15 Daggers) averages about +40% on its cast: strong but Consume and capped at 15; watch.",
+      "watch": "Recall the Blades turns and Fanned Daggers (all enemies) with the Volley bonus.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Guaranteed third Thunderbird fills the row at fight start, with no Mana/card investment; first plant commands the front Hawk immediately. New runs replace one Strike with basic Hawk's Dive. Existing decks do not receive it retroactively.",
+      "recovery": "Bear remains2 Barrier/turn, with no new healing or direct mitigation. Player reports substantial chip damage. Faster removal may prevent some enemy attacks but is unmeasured; commanding/pushing Bear still spends its recurring defense.",
+      "rareReliance": "Opening Thunderbird and new starter Hawk's Dive need no rewards or rares. Permanent Spirit outside Ascendancy and specialized Aura engines still need acquisition. Basic Hawk's Dive no longer appears in normal rewards.",
+      "scaling": "Cultivation stops at +5 Spirit (about turn 6 when undisturbed). Five-totem row passives still grow with Spirit from Hawks/cards, uncapped. Turn-1 lost: 1 Spirit and 8 Barrier.",
+      "rationale": "Hand review signal: was A+/A+ (runaway uncapped Spirit across five totems); now about A-/A. Keeps the self-playing row identity, removes endless growth and the strongest opening defense.",
+      "watch": "Arena turns 6-12 vs Spiritwalker/Elementalist; early chip damage now that the 8 opening Barrier is gone.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Guaranteed third Thunderbird fills the row at fight start, with no Mana/card investment; first plant commands the front Hawk immediately. New runs replace one Strike with basic Hawk's Dive. Existing decks do not receive it retroactively.",
+      "recovery": "Bear remains2 Barrier/turn, with no new healing or direct mitigation. Player reports substantial chip damage. Faster removal may prevent some enemy attacks but is unmeasured; commanding/pushing Bear still spends its recurring defense.",
+      "rareReliance": "Opening Thunderbird and new starter Hawk's Dive need no rewards or rares. Permanent Spirit outside Ascendancy and specialized Aura engines still need acquisition. Basic Hawk's Dive no longer appears in normal rewards.",
+      "scaling": "Totem damage and Spirit rates unchanged; one additional starting body benefits from Spirit. Thunder Memory now begins with one counted Thunderbird and plants2 immediately. At zero Spirit Thunderbird passively Forks3 to two targets with25% lone-target bonus; long-fight strength depends on row management and acquired growth.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Guaranteed third Thunderbird fills the row at fight start, with no Mana/card investment; first plant commands the front Hawk immediately. New runs replace one Strike with basic Hawk's Dive. Existing decks do not receive it retroactively.",
+      "recovery": "Bear remains2 Barrier/turn, with no new healing or direct mitigation. Player reports substantial chip damage. Faster removal may prevent some enemy attacks but is unmeasured; commanding/pushing Bear still spends its recurring defense.",
+      "rareReliance": "Opening Thunderbird and new starter Hawk's Dive need no rewards or rares. Permanent Spirit outside Ascendancy and specialized Aura engines still need acquisition. Basic Hawk's Dive no longer appears in normal rewards.",
+      "scaling": "Totem damage and Spirit rates unchanged; one additional starting body benefits from Spirit. Thunder Memory now begins with one counted Thunderbird and plants2 immediately. At zero Spirit Thunderbird passively Forks3 to two targets with25% lone-target bonus; long-fight strength depends on row management and acquired growth.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Up to +5 Might (all Attack hits) and +3 Bracing (every Barrier gain) over the first 5 / 3 turns that leave Serene; draw 1 and +1 Mana every such turn.",
+      "rationale": "Hand review signal: was B+/B (flat Mana); now about A-/B+. Draw and Mana make every turn smoother; Enlightenment caps by about turn 5.",
+      "watch": "Bracing with many small Barrier sources; Serene-exit consistency in real decks.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#686",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Dawn: +2 Might per Radiant entry, first 5 (10 total), tripled while Radiant. Radiant still roughly every ~3 turns.",
+      "rationale": "Hand review signal: was B+/B+; now about A-/A-. What Radiant gives partly stays, without reaching Radiant more often (Robert did not want Radiant every turn).",
+      "watch": "Radiant turns with 10 Might tripled: burst size in Arena.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#686",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Keen 1 at start, +1 after the first Sword each turn, to 5 by turn 5. Every Sword hit gains it.",
+      "rationale": "Hand review signal: was B-/C+; now about B+. Multi-hit Swords scale best.",
+      "watch": "Multi-hit Sword decks at Keen 5 in Arena.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "Native coefficients and growth unchanged. Opponent Shaman begins with more passive pressure; matchup consequences remain unmeasured.",
+      "rationale": "Ascendancy unchanged by decision 685. Arena opponents: Totemist and Artillerist grow less in long fights; Trapmaster, Bladedancer, Blademaster, Reaver, Cardsharp and Deathwish grow more. No measured regrade.",
+      "watch": "Check exact opening enemy intents, HP lost per fight, totem commands/push-outs and offered rewards in I-III; retain difficulty/Boons/decks. Compare IV-VII setup, VIII-X consistency and XI-XII survival. Arena check both seats and turns11+; no parity claim.",
+      "confidence": "Low; no representative Shaman player positions or measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "docs/balance-history/0.219.0-shaman-review-1.json"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "Awaiting 1000-HP field evidence",
+      "campaign": {
+        "developing": "Unrated — IV–VII acquisition/setup",
+        "deep": "Unrated — VIII–X consistency/attrition",
+        "endgame": "Unrated — XI–XII boss pressure",
+        "openingFight": "Unrated — turns 1–3",
+        "extendedFight": "Unrated — turns 6–10"
+      },
+      "arena": {
+        "overall": "Awaiting 1000-HP field evidence",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Not established beyond ten own turns"
+      },
+      "setup": "Native starter, card pool and Ascendancy unchanged. Shared Campaign builds may retain acquired Hawk's Dive; future normal rewards exclude this Basic card. No guaranteed Shaman starting totems for other classes.",
+      "recovery": "Native recovery unchanged; no extra mitigation or healing credited. Opposing Shaman opening pressure may increase Arena survival demands.",
+      "rareReliance": "No native rarity change or new rare requirement. Hawk's Dive leaves shared normal reward acquisition; existing mixed copies remain usable.",
+      "scaling": "+25% at 40% HP, rising to +40% at 10% HP. Rescue and low-HP Barrier unchanged.",
+      "rationale": "Hand review signal: was B-; now about B. Rewards riskier play modestly; nothing at high HP.",
+      "watch": "Survival at 10-20% HP against burst; whether the rescue plus +40% is too swingy in Arena.",
+      "confidence": "Low; hand-priced only, no measured current-rules matches.",
+      "pacing": "No HP, damage coefficients, clock or AI change. Additional Shaman opening damage may shorten fights; 10+ own turns and roughly50% optimized Drago clears remain unmeasured targets.",
+      "evidence": [
+        "docs/DECISIONS.md#685",
+        "packages/content/src/v2/ascendancies.ts",
+        "packages/combat/src/disciplines.ts",
+        "packages/content/src/v2/ascendancyScaling.test.ts"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated — no measured current-rules starter results",
+      "rationale": "Class start unchanged; decision 685 changes Ascendancies only."
+    }
+  ],
+  "corrections": [
+    "The A+/C+ letters used in the 2026-11-08 chat review were hand estimates. This snapshot records them as review signals only.",
+    "Preserve all earlier assessments; no simulations, measured win rates or parity certification."
+  ],
+  "mixedBuilds": [
+    {
+      "name": "Freely mixed totems, Spirit, Auras and commands",
+      "assessment": "Shaman bases gain a third starting totem; other classes need acquired plants. Existing Hawk's Dive remains playable, but future normal offers omit it. Growth depends on draw, setup and row management; no guaranteed rare combinations."
+    },
+    {
+      "name": "Freely mixed Barrier, sustain, traps and Consume",
+      "assessment": "No native sustain changes. On Shaman, faster kills may reduce HP loss; prioritizing plants can still displace defense. Opening and turns11+ recovery remain unmeasured."
+    },
+    {
+      "name": "Freely mixed elemental attacks, summons and weapons",
+      "assessment": "Shaman gains passive starting damage without increasing Mana or changing Attack coefficients. Other class engines unchanged; no free starting Thunderbird from merely acquiring a Shaman card."
+    }
+  ],
+  "assessmentId": "0.228.0-ascendancy-review-1",
+  "gradeMode": "review-signals",
+  "evaluationScope": "Campaign I-III starter survival, IV-VII setup, VIII-X consistency, XI-XII finale; fight turns1-3,6-10 and11+. Arena1000HP equal seats; improved Shaman starting pressure without measured parity. Chip reduction from faster kills is an inference, not a measured result."
+}

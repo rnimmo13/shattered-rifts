@@ -392,6 +392,7 @@ export type Metric =
   | 'deaths' // units (either side) that have died this fight
   | 'tagExhausted' // consumed cards with the scale's `tag`
   | 'tagDeck' // cards with the scale's `tag` anywhere in your deck (the card being played included)
+  | 'tagPlayed' // cards with the scale's `tag` you played earlier this fight (Death Grip's Commands, Robert 2026-11-08)
   // (the Knight's Guard, DECISIONS #415)
   | 'opening' // (about a unit) 1 while it is Open
   | 'foesOpen' // enemies that are Open
@@ -549,7 +550,12 @@ export type CombatDiscipline =
     }
   | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
   | { kind: 'execution'; perSkill: number; cap: number; woundedPct: number; bonus: number }
-  | { kind: 'cultivation'; minimum: number; spirit: number }
+  /** `cap`: the most Spirit cultivation gives in a fight (progress counts it) */
+  | { kind: 'cultivation'; minimum: number; spirit: number; cap?: number }
+  /** (the Trapmaster) Trap damage +perSprung% for each of your Traps already sprung this fight, up to cap% */
+  | { kind: 'snarecraft'; perSprung: number; cap: number }
+  /** (the Bladedancer) cards with `tag` deal +perCard% for each one played before it this turn, up to cap%; resets each turn */
+  | { kind: 'volley'; tag: string; perCard: number; cap: number }
   /** the hero's card damage (Attacks and spells, not totems) +perSpirit% for each Spirit, up to cap% */
   | { kind: 'attunement'; perSpirit: number; cap: number }
   | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number }
@@ -573,6 +579,9 @@ export type CombatDiscipline =
       emergencyBarrierPct: number;
       rampFrom?: number;
       attackBarrierPct?: number;
+      /** below the threshold the bonus keeps growing, to `deepBonus` at `deepAt`% HP */
+      deepBonus?: number;
+      deepAt?: number;
     };
 
 export interface DisciplineState {
@@ -972,6 +981,8 @@ export type Op =
   | { op: 'uproot' }
   /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
   | { op: 'totemSlot'; amount?: number }
+  /** this many more Traps can be set at once for the rest of the fight */
+  | { op: 'snareSlot'; amount: number }
   /** (the Defect's Loop) the oldest totem's passive fires now, `times` times, whatever its timing */
   | { op: 'totemPulse'; times?: number }
   /** for the rest of the fight, a commanded (or pushed-out) totem of this kind does `amount` more in each of its damage and Barrier numbers (its end-of-turn effect is not changed) */
@@ -1558,6 +1569,8 @@ export interface SideState {
   fullTricks?: number;
   summonedFight?: number;
   snaresSprung?: number;
+  /** Trap slots above MAX_SNARES (the Trapmaster's two) */
+  snareSlots?: number;
   fervorGained?: number;
   discarded: number;
   /** times your hero lost HP this turn / this fight, cards consumed this turn */
@@ -1624,6 +1637,8 @@ export interface SideState {
   /** base card ids played this turn */
   playedTurn?: string[];
   etherealPlayed?: number;
+  /** cards played this fight, by tag (the `tagPlayed` metric) */
+  tagsPlayed?: Record<string, number>;
   deaths?: number;
   /** cards cost this much more this turn (Borrowed Time) */
   costTax?: number;
@@ -1683,6 +1698,9 @@ export const MAX_ENEMIES = 4;
 /** How many a fight may START with (a swarm), though summons stop at MAX_ENEMIES. */
 export const MAX_START_ENEMIES = 7;
 export const MAX_SNARES = 3;
+/** how many Traps this side can have set at once */
+export const snareCap = (sd: { snareSlots?: number }): number =>
+  MAX_SNARES + Math.max(0, sd.snareSlots ?? 0);
 export const MAX_HAND = 10;
 export const MAX_RUNES = 10;
 /**

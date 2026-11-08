@@ -100,13 +100,24 @@ export function disciplineTrigger(
   }
   if (r.kind === 'execution' && when === 'play' && ctx.card?.kind === 'skill')
     d.progress = Math.min(r.cap, d.progress + r.perSkill);
+  if (r.kind === 'volley' && when === 'play' && ctx.card?.tags?.includes(r.tag)) {
+    if (d.usedTurn !== state.turn) {
+      d.usedTurn = state.turn;
+      d.progress = 0;
+    }
+    d.progress++;
+  }
   if (
     r.kind === 'cultivation' &&
     when === 'turnEnd' &&
     !side.commanded &&
     (side.totems?.filter(Boolean).length ?? 0) >= r.minimum
-  )
-    return [{ op: 'status', status: 'spirit', amount: r.spirit, to: 'self' }];
+  ) {
+    const amount = Math.min(r.spirit, (r.cap ?? Infinity) - d.progress);
+    if (amount <= 0) return [];
+    d.progress += amount;
+    return [{ op: 'status', status: 'spirit', amount, to: 'self' }];
+  }
   if (r.kind === 'elements' && when === 'play') {
     const ops: Op[] = [];
     for (const element of ['flame', 'frost', 'storm'] as const) {
@@ -199,7 +210,18 @@ export function disciplineAttack(
   if (r.kind === 'fury' && (actor.statuses.wrath ?? 0) > 0) return d.progress;
   if (r.kind === 'desperation') {
     const hpPct = (actor.hp * 100) / actor.maxHp;
-    if (hpPct <= r.threshold + 1e-9) return r.bonus;
+    if (hpPct <= r.threshold + 1e-9) {
+      // (and on below it, to the deep bonus: DECISIONS #685)
+      if (r.deepBonus === undefined || r.deepAt === undefined || r.deepAt >= r.threshold)
+        return r.bonus;
+      if (hpPct <= r.deepAt + 1e-9) return r.deepBonus;
+      return (
+        r.bonus +
+        Math.floor(
+          ((r.deepBonus - r.bonus) * (r.threshold - hpPct)) / (r.threshold - r.deepAt) + 1e-9,
+        )
+      );
+    }
     if (r.rampFrom && r.rampFrom > r.threshold)
       return Math.max(
         0,
@@ -237,9 +259,17 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
     case 'execution':
       return `Prepared +${d.progress}%`;
     case 'cultivation':
-      return side.commanded ? 'Cultivation interrupted' : 'Cultivation ready';
+      return r.cap !== undefined && d.progress >= r.cap
+        ? `Cultivated ${d.progress}/${r.cap}`
+        : side.commanded
+          ? 'Cultivation interrupted'
+          : `Cultivation ready${r.cap !== undefined ? ` ${d.progress}/${r.cap}` : ''}`;
     case 'attunement':
       return `Attuned +${attunementPct(side)}%`;
+    case 'snarecraft':
+      return `Traps +${Math.min(r.cap, (side.snaresSprung ?? 0) * r.perSprung)}%`;
+    case 'volley':
+      return `Volley +${d.usedTurn === side.turnBegan ? Math.min(r.cap, d.progress * r.perCard) : 0}%`;
     case 'elements':
       return `Flame ${d.counts?.flame ?? 0} · Frost ${d.counts?.frost ?? 0} · Storm ${d.counts?.storm ?? 0}`;
     case 'fury':
@@ -275,7 +305,13 @@ export function disciplineText(side: SideState): string | null {
     case 'execution':
       return `Preparation: next Attack +${d.progress}%; +${r.bonus}% against enemies at ${r.woundedPct}% HP or less.`;
     case 'cultivation':
-      return `Cultivation: ${side.commanded ? 'interrupted this turn' : 'keep at least two totems standing without commanding or pushing them out'}.`;
+      return r.cap !== undefined && d.progress >= r.cap
+        ? `Cultivation: complete, ${d.progress}/${r.cap} Spirit gained this fight.`
+        : `Cultivation: ${side.commanded ? 'interrupted this turn' : `keep at least ${r.minimum} totems standing without commanding or pushing them out`}.${r.cap !== undefined ? ` ${d.progress}/${r.cap} Spirit gained this fight.` : ''}`;
+    case 'snarecraft':
+      return `Trapcraft: your Traps deal ${Math.min(r.cap, (side.snaresSprung ?? 0) * r.perSprung)}% more damage (+${r.perSprung}% per Trap sprung this fight, up to +${r.cap}%).`;
+    case 'volley':
+      return `Volley: your Daggers deal ${d.usedTurn === side.turnBegan ? Math.min(r.cap, d.progress * r.perCard) : 0}% more damage this turn (+${r.perCard}% for each one played before, up to +${r.cap}%; resets each turn).`;
     case 'attunement':
       return `Attunement: your cards deal ${attunementPct(side)}% more damage (+${r.perSpirit}% per Spirit, up to +${r.cap}%). Totems are not included: Spirit already adds to their numbers.`;
     case 'elements':

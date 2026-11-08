@@ -207,7 +207,8 @@ describe('shared balance rules 79', () => {
       hero(s).hp = (hero(s).maxHp * pct) / 100;
       return disciplineAttack(s, s.sides.a, hero(s), db.cards.hit!, hero(s, 'b'), 0);
     };
-    expect([100, 70, 60, 55, 40, 10].map(bonus)).toEqual([0, 0, 8, 12, 25, 25]);
+    // (and on below 40%, to +40% at 10%: DECISIONS #685)
+    expect([100, 70, 60, 55, 40, 25, 10, 5].map(bonus)).toEqual([0, 0, 8, 12, 25, 32, 40, 40]);
   });
   it('Storm Sovereign limits Barrier without limiting command damage or counting passives', () => {
     let s = play(fight('shaman'), 'storm-sovereign');

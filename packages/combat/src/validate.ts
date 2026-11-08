@@ -56,7 +56,14 @@ export function validateDb(db: CombatDb): string[] {
       )
         errs.push(`${where}: invalid attack Aura bonus or summon step`);
       if (o.op === 'discipline') {
-        const labels = o.rule.kind === 'commandGuard' ? ['tag', 'unit', 'unitName'] : [];
+        const labels =
+          o.rule.kind === 'commandGuard'
+            ? ['tag', 'unit', 'unitName']
+            : o.rule.kind === 'volley'
+              ? ['tag']
+              : [];
+        if (o.rule.kind === 'volley' && !o.rule.tag.trim())
+          errs.push(`${where}: a volley needs a tag`);
         for (const [key, value] of Object.entries(o.rule))
           if (
             key !== 'kind' &&

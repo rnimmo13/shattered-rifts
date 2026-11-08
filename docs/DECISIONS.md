@@ -1348,4 +1348,38 @@ Decision (rules version raised at release):
 - **Bonelord:** 4 companion slots, +2 companion damage (Marrow 2, kept), and the death burst at full max HP (a second half-burst trigger). The extra Raise each turn and the Barrier per Thrall after a Command (#603) are gone.
 - **Prices** (docs/14_CARD_COSTING.md, §10's new Necromancer note): Blood Offering ~11 (9.3 into a full board, 12.3 with a slot free; 12 was ~14.7, over, cut after review) against a 1-Mana uncommon's ~11; Bone Feast ~7 plus the consume Fate and a weak card gone, a 0-Mana uncommon; Grave Tithe ~25 over four turns against a 2-Mana uncommon Aura's ~28; Grave Colossus ~40 less ~5 for its second slot against a 3-Mana rare's 35. A Thrall strike is ~2.5 a turn while it stands. The class as a whole is clearly stronger (every Thrall now hits, the HP growth, the bursts); the Fateweaver loses the death curse's Fate.
 - Four Thralls stay a build: Commands hit at full strength on every Thrall and half on a Colossus, and Bone Feast and Grave Chill's HP growth reach every companion.
+- **Raise Colossus** (Robert, same day, 0.227 and after): the Grave Colossus card reads "Raise Colossus 18" (22 upgraded), and a new uncommon Raise Colossus (2 Mana, 14, 18 upgraded, Consume) does the same smaller. The `raise` op's `same` option: the Colossus always comes to the battlefield, the weakest smaller companions (Thralls) released to make room, as a scrap is (no death, no burst, no revive); only if they cannot free enough room (the slots hold Colossi) does the healthiest Colossus standing gain the HP, HP only (no Might, unlike the Engineer's Salvage). Reaping Scythe lost Consume (16, +5 a play; upgraded 20, +6): a growing card must come round.
+- **Choosing who makes way** (Robert, 2026-11-08: "let me select what thralls are removed, add their hp to the colossus"): a Raise Colossus card that does not fit offers the same release choice as an Engineer's summon (the play action's `release`), limited to companions smaller than the Colossus, so a Colossus is never given up for another. There is no "play anyway": the Colossus always comes. The released companions' current HP is added to the new Colossus (it is also added when the engine picks the weakest, for a replayed copy or a bot). Price: up to ~+15 HP from three grown Thralls, but their strikes and bodies are given up for it; it does not change the card's cost.
 - No simulations; scenario tests in necromancer.test.ts and raise.test.ts.
+
+## 685 - Totemist and Artillerist stop growing; the flat Ascendancies get something that grows (2026-11-08)
+
+After a hand-priced review of all 30 Ascendancies for late-game and Arena play, Totemist and Artillerist grew without end, while Trapmaster, Reaver, Bladedancer, Blademaster, Cardsharp and Deathwish gave flat value that fell behind in long fights. Robert chose each change:
+
+- **Totemist:** no opening 1 Spirit and 8 Barrier. Cultivation gives at most 5 Spirit a fight (new `cap` on the cultivation discipline; progress counts it). The two extra positions and the second Hawk and Bear stay.
+- **Artillerist:** +2 Might at the start of each of its first 6 turns only, 12 in all (a `turnStart` trigger with `times: 6`). 6 Barrier on the first Attack each turn is unchanged.
+- **Trapmaster:** 2 more Traps can be set (5; new `snareSlot` op, per-side `snareSlots`, `snareCap()`, shown on the Traps label). Draw 1 and 2 Barrier per Trap sprung, kept. Trapcraft (new `snarecraft` discipline): a Trap's damage is +5% for each of your Traps sprung before it this fight, up to +50%.
+- **Reaver:** the first own HP payment each turn also gives 1 Might. Robert wants a more creative Reaver later; this is the interim.
+- **Bladedancer:** Volley (new `volley` discipline): each Dagger deals +10% for each Dagger played before it this turn, up to +50% (0/10/20/30/40/50%); it starts over each turn, so it never grows across the fight. Recall the Blades' 15 Daggers average about +40% on the cast. That is strong but stays Consume and capped at 15; it is a watch item, not limited yet.
+- **Blademaster:** starts with Keen 1 as before; the first Sword each turn also gives 1 Keen after it resolves, up to 5 (a `times: 4` trigger).
+- **Cardsharp:** a Full Trick gives 1 Might as well as 1 Mana.
+- **Deathwish:** below 40% HP the bonus keeps growing, to +40% at 10% HP (was flat +25% below 40%; new `deepBonus`/`deepAt`). Rescue and low-HP Barrier unchanged.
+- The Trap and Volley bonuses are percentages on the card's damage, applied after Heart and Spirit bonuses, and appear in damage previews.
+- Hand-priced only (docs/balance-history/0.228.0-ascendancy-review-1); no simulations. Scenario tests in ascendancyScaling.test.ts. Rules version raised at release.
+
+## 686 - The Sage grows Enlightenment; the Sunwalker keeps some of the dawn (2026-11-08)
+
+The two Monk Ascendancies were flat (B+): only the base Monk's Might grew. Robert approved Enlightenment for the Sage, with a card drawn as well, and wanted the Sunwalker's Radiant bonus to partly stay after Radiant ends rather than reach Radiant more often (a Fervor return of 6 looked too easy, and #544 already stopped Radiant every turn).
+
+- **Sage:** the first time each turn you leave Serene, gain 1 more Mana (as before) and draw 1 card. Enlightenment: the first 5 times that happens, also gain 1 Might; the first 3 times, also 1 Bracing (+1 to every Barrier you gain). Bracing stops at 3 because it lifts every Barrier source, not only cards.
+- **Sunwalker:** Dawn: the first 5 times you enter Radiant, gain 2 Might (10 in all). Fervor gains and the Radiant-exit return (2, up to 4) are unchanged.
+- Both are plain trait triggers with `times` limits; no new engine rules. Hand-priced about A-/B+ (Sage) and A-/A- (Sunwalker) in docs/balance-history/0.228.0-ascendancy-review-1. No simulations; tests in ascendancyScaling.test.ts.
+
+## 687 - Death Grip grows with the Commands played; Command cards get a badge (2026-11-08)
+
+Robert: Death Grip dealt 300+ on turn 2 "just by having some amount of cards in my deck". It was a Command (every companion strikes) for 20 + 5 per Command card in the deck (Squeeze, #370). With one Osty that was a rare's payoff; since #684 every Thrall acts and there are three or four, so the deck count was multiplied by the companions and their Marrow. He wants it to scale with Commands already used, growing through the fight, with a big payoff after setup, and a visible sign of which cards are Commands.
+
+- **Death Grip** (rare, 3 Mana): now the hero's own Attack, 15 damage plus 4 per Command card played earlier this fight (upgraded 20 + 5). It is no longer a Command itself, so it never counts itself and the companion count no longer multiplies it. New generic metric `tagPlayed` (cards with a tag played this fight, counted as each card finishes; `SideState.tagsPlayed`).
+- Price (docs/14_CARD_COSTING.md): a Necromancer plays about 1-2 Commands a turn, so ~23 on turn 2, ~47 by turn 6 (a 3-Mana rare's ~35 budget by turn 4-5), ~75 by turn 10 and ~100 by turn 15: a growing payoff for a Command deck, in line with other scaling rares. Might and the hero's Attack bonuses apply; Marrow does not.
+- **Command badge:** cards tagged `command` show a green open-hand badge in the top right, like Swords, Spells and guns (#481, #681), with a tip naming it a Command.
+- No simulations; scenario test in necromancer.test.ts.

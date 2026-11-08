@@ -15,11 +15,12 @@ import {
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS } from './index';
 
-function fight(hand: string[], enemies: string[] = ['squire']): CombatState {
+function fight(hand: string[], enemies: string[] = ['squire'], ascendancy?: string): CombatState {
   const { state } = createCombat(db, {
     seed: 'dorian-test',
     a: {
       hero: 'necromancer',
+      ...(ascendancy ? { ascendancy } : {}),
       deck: [...RIFTWALKERS.necromancer.starter, ...RIFTWALKERS.necromancer.starter],
     },
     b: { enemies },
@@ -386,16 +387,22 @@ describe('the other new rules', () => {
     expect(foe(s).hp).toBe(300 - 12);
   });
 
-  it('Death Grip (Squeeze) counts every Command card in the deck', () => {
-    const s = fight(['death-grip']);
-    const sd = s.sides.a;
-    // the Off the Leash copies left in the deck, and Death Grip itself: 20 + 5 each
-    const n = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted].filter((c) =>
-      db.cards[c.card]?.tags?.includes('command'),
-    ).length;
-    expect(n).toBeGreaterThanOrEqual(2);
-    const after = play(s, 'T0', foe(s).id);
-    expect(foe(after).hp).toBe(300 - (20 + 5 * n));
+  it('Death Grip is your own blow, 15 + 4 per Command card played earlier this fight (Robert 2026-11-08)', () => {
+    expect(cardText(db, db.cards['death-grip']!)).toBe(
+      'Deal 15 (+4 per Command card you played earlier this fight) damage.',
+    );
+    // (with none played, the deck's Commands do not count, and the companions do not strike)
+    let s = fight(['death-grip']);
+    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(300 - 15);
+    s = fight(['off-the-leash', 'off-the-leash', 'death-grip']);
+    s = play(s, 'T0', foe(s).id);
+    s = play(s, 'T1', foe(s).id);
+    expect(s.sides.a.tagsPlayed?.command).toBe(2);
+    const before = foe(s).hp;
+    s = play(s, 'T2', foe(s).id);
+    expect(before - foe(s).hp).toBe(15 + 4 * 2);
+    // (it is not a Command itself, so it never counts itself)
+    expect(s.sides.a.tagsPlayed?.command).toBe(2);
   });
 
   it('Mourning (Melancholy) costs 1 less for every death this fight', () => {
@@ -629,6 +636,59 @@ describe('Raise Colossus (2026-11-07)', () => {
     expect(thralls(s).find((u) => u.def === 'bone-thrall')!.maxHp).toBe(40);
     // (HP only: no Might)
     expect(colossi[0]!.statuses.might ?? 0).toBe(0);
+  });
+
+  const fullBoard = (): CombatState => {
+    let s = fight(['raise-thrall', 'raise-thrall', 'grave-colossus'], ['squire']);
+    s = play(s, 'T0');
+    s = play(s, 'T1');
+    // three Thralls fill the slots: 3, 5 and a bigger one
+    thralls(s)[2]!.maxHp = thralls(s)[2]!.hp = 9;
+    expect(thralls(s)).toHaveLength(3);
+    return s;
+  };
+  it('always brings the Colossus: played as it is, the weakest Thralls make way, released (no burst), and it takes their HP', () => {
+    let s = fullBoard();
+    const before = foe(s).hp;
+    const asIs = legalActions(db, s).find(
+      (a) => a.type === 'play' && a.card === 'T2' && a.release === undefined,
+    );
+    s = applyAction(db, s, asIs!).state;
+    expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
+      ['bone-thrall', 9],
+      ['grave-colossus', 18 + 3 + 5],
+    ]);
+    // (released, not killed: nothing burst at an enemy)
+    expect(foe(s).hp).toBe(before);
+  });
+  it('lets the player choose which Thralls make way for the Colossus, and it takes their HP (Robert 2026-11-08)', () => {
+    let s = fullBoard();
+    const [small, , big] = thralls(s);
+    const sets = legalActions(db, s).flatMap((a) =>
+      a.type === 'play' && a.card === 'T2' && a.release !== undefined
+        ? [[a.release].flat().sort().join(',')]
+        : [],
+    );
+    // (every pair of the three: two slots are needed)
+    expect(sets).toHaveLength(3);
+    s = applyAction(db, s, { type: 'play', card: 'T2', release: [small!.id, big!.id] }).state;
+    expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
+      ['bone-thrall', 5],
+      ['grave-colossus', 18 + 3 + 9],
+    ]);
+  });
+  it('never offers to release a Colossus for another', () => {
+    let s = fight(['grave-colossus', 'raise-colossus'], ['squire'], 'necromancer:bonelord');
+    s.sides.a.mana = 9;
+    // (an empty board: the Colossus first, then two Thralls fill the other two of the Bonelord's four slots)
+    s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
+    s = play(s, 'T0');
+    addThrall(s, 4, 'B-a');
+    addThrall(s, 6, 'B-b');
+    const sets = legalActions(db, s).flatMap((a) =>
+      a.type === 'play' && a.card === 'T1' && a.release !== undefined ? [[a.release].flat()] : [],
+    );
+    expect(sets).toEqual([['B-a', 'B-b']]);
   });
 });
 

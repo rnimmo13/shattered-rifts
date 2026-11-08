@@ -27,7 +27,7 @@ import {
   SUDDEN_DEATH_AFTER,
   SUDDEN_DEATH_STEP,
   TRAIT_POWER,
-  MAX_SNARES,
+  snareCap,
   KNIFE_MAX,
   PREP_MAX,
   ENCHANTS,
@@ -102,6 +102,8 @@ interface Run {
   endAfter?: boolean;
   /** Salvage (DECISIONS #383): what the companions scrapped to make room for this card left behind, for the first companion it summons */
   salvage?: { inst: string; might: number; vigor: number; hp: number };
+  /** (Raise Colossus) the HP of the companions released to make room for this card's Colossus, which it takes (Robert 2026-11-08) */
+  fed?: { inst: string; hp: number };
 }
 interface ProjectedHit {
   limited?: boolean;
@@ -525,6 +527,7 @@ const SCALE_WORDS: Partial<Record<string, string>> = {
   stars: 'Spell Power',
   played: 'cards played',
   tagDeck: 'Status cards',
+  tagPlayed: 'Commands played',
   hpLostFight: 'times you lost HP',
   skillsInHand: 'Skills in hand',
   snares: 'Traps',
@@ -711,6 +714,19 @@ function cardSpiritBonus(r: Run, a: Act): number {
   return attunementPct(r.s.sides[a.actor.side]);
 }
 
+/** (the Trapmaster's and Bladedancer's ramps) the percentage a Trap's or a tagged card's damage grows by, and what to call it */
+function cardRampBonus(r: Run, a: Act): { pct: number; word: string } {
+  const sd = r.s.sides[a.actor.side];
+  const d = sd.discipline;
+  if (!d || a.actor.kind !== 'hero') return { pct: 0, word: '' };
+  const rule = d.rule;
+  if (rule.kind === 'snarecraft' && !a.card && a.sourceCard?.kind === 'snare')
+    return { pct: Math.min(rule.cap, (sd.snaresSprung ?? 0) * rule.perSprung), word: 'Traps' };
+  if (rule.kind === 'volley' && a.card?.tags?.includes(rule.tag) && d.usedTurn === r.s.turn)
+    return { pct: Math.min(rule.cap, d.progress * rule.perCard), word: 'Volley' };
+  return { pct: 0, word: '' };
+}
+
 function attackHit(
   r: Run,
   a: Act,
@@ -734,6 +750,7 @@ function attackHit(
   }
   const heartBonus = cardBoonBonus(r, a, 'cardDamagePct');
   const spiritBonus = cardSpiritBonus(r, a);
+  const ramp = cardRampBonus(r, a);
   const modify = (): number => {
     let n = modifiedDamage(base, a.actor, t, attacked, steps);
     if (heartBonus && t.side !== a.actor.side) {
@@ -743,6 +760,10 @@ function attackHit(
     if (spiritBonus && t.side !== a.actor.side) {
       n = Math.floor((n * (100 + spiritBonus)) / 100);
       steps?.push(`Spirit +${spiritBonus}% = ${n}`);
+    }
+    if (ramp.pct && t.side !== a.actor.side) {
+      n = Math.floor((n * (100 + ramp.pct)) / 100);
+      steps?.push(`${ramp.word} +${ramp.pct}% = ${n}`);
     }
     return n;
   };
@@ -1677,6 +1698,8 @@ function metricValue(
       return sd.fervorGained ?? 0;
     case 'fullTrickTurn':
       return sd.fullTrickTurn ? 1 : 0;
+    case 'tagPlayed':
+      return tag ? (sd.tagsPlayed?.[tag] ?? 0) : 0;
     case 'tagDeck': {
       const seen = new Set<string>();
       let n = 0;
@@ -3229,8 +3252,12 @@ function execOp(r: Run, a: Act, op: Op): void {
     // --- the Necrobinder copy (Dorian: his minions stand in for Osty, several at once) ---------------------------------
     case 'raise': {
       const n = amountOf(r, a, op.times ?? 1, op.scale, null);
-      for (let k = 0; k < n && !r.s.winner; k++)
-        raiseAlly(r, side, op.unit, op.amount, a.actor, op.same === true);
+      for (let k = 0; k < n && !r.s.winner; k++) {
+        // (the companions the player chose to release for it: the first Colossus takes their HP)
+        const fed = op.same && r.fed && a.inst?.id === r.fed.inst ? r.fed.hp : 0;
+        if (fed) delete r.fed;
+        raiseAlly(r, side, op.unit, op.amount + fed, a.actor, op.same === true);
+      }
       return;
     }
     case 'command': {
@@ -3439,6 +3466,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       r.ev.push({ type: 'pending', side: side.id, kind: 'form' });
       return;
     }
+    case 'snareSlot':
+      side.snareSlots = Math.max(0, (side.snareSlots ?? 0) + op.amount);
+      return;
     case 'totemSlot': {
       const list = side.totems;
       if (!list) return;
@@ -3555,8 +3585,28 @@ function raiseAlly(
   same = false,
 ): void {
   if (hp <= 0 || sd.hero === null) return;
+  const need = slotsOf(r.db, unit);
+  const fits = (): boolean => slotsUsed(r.db, sd) + need <= allyCap(r.db, sd);
+  // (Raise Colossus always brings its unit: with no room, smaller companions make way, released as a scrap is (not a death: nothing
+  // bursts or is revived), and it takes their HP. A player chooses which when playing the card (releaseSets); left to the engine (a
+  // replayed copy, a bot) the weakest go. Only if they cannot free enough room does the HP go to one standing. Robert 2026-11-07/08)
+  if (same && !fits()) {
+    const smaller = sd.units
+      .filter((u) => u.kind === 'ally' && u.hp > 0 && slotsOf(r.db, u.def) < need)
+      .sort((x, y) => x.maxHp - y.maxHp);
+    const freeable = smaller.reduce((n, u) => n + slotsOf(r.db, u.def), 0);
+    if (slotsUsed(r.db, sd) - freeable + need <= allyCap(r.db, sd)) {
+      for (const u of smaller) {
+        if (fits()) break;
+        hp += Math.max(0, u.hp);
+        sd.units = sd.units.filter((x) => x !== u);
+        r.ev.push({ type: 'died', unit: u.id, released: true });
+        fireTriggers(r, sd, 'allyLost');
+      }
+    }
+  }
   const crew = sd.units.filter((u) => u.kind !== 'hero');
-  if (slotsUsed(r.db, sd) + slotsOf(r.db, unit) <= allyCap(r.db, sd)) {
+  if (fits()) {
     const u = spawn(r, sd, unit, false);
     if (!u) return;
     u.maxHp = u.hp = hp;
@@ -4127,7 +4177,7 @@ function playFree(
   if (cd.kind !== 'snare') showSuit(r, sd, cd);
   if (r.s.winner) return back();
   if (cd.kind === 'snare') {
-    if (sd.snares.length < MAX_SNARES) {
+    if (sd.snares.length < snareCap(sd)) {
       showSuit(r, sd, cd);
       sd.snares.push({ id: inst.id, card: inst.card });
       r.ev.push({ type: 'snareSet', side: sd.id, snare: inst.id });
@@ -5339,7 +5389,7 @@ export function canPlay(r: { db: CombatDb; s: CombatState }, side: Side, c: Card
     const hero = sd.units.find((u) => u.kind === 'hero');
     if (!hero || stacks(hero, cd.statusCost.status) < cd.statusCost.amount) return false;
   }
-  if (cd.kind === 'snare' && sd.snares.length >= MAX_SNARES) return false;
+  if (cd.kind === 'snare' && sd.snares.length >= snareCap(sd)) return false;
   if (
     cd.needsExhausted &&
     sd.exhausted.filter((x) => r.db.cards[x.card]?.kind !== 'power').length < cd.needsExhausted
@@ -5389,8 +5439,20 @@ export function slotsUsed(db: CombatDb, sd: SideState): number {
 
 /** The slots a card's summons need (all of them must fit), at most the side's cap. */
 function roomNeeded(db: CombatDb, sd: SideState, cd: CardDef): number {
-  const need = cd.effects.reduce((n, o) => (o.op === 'summon' ? n + slotsOf(db, o.unit) : n), 0);
+  const need = cd.effects.reduce(
+    (n, o) =>
+      o.op === 'summon' || (o.op === 'raise' && o.same) ? n + slotsOf(db, o.unit) : n,
+    0,
+  );
   return Math.min(need, allyCap(db, sd));
+}
+
+/** (Raise Colossus) the slots of the unit a card always brings, so only smaller companions are released for it; 0 for other cards */
+function raisedSlots(db: CombatDb, cd: CardDef): number {
+  return cd.effects.reduce(
+    (n, o) => (o.op === 'raise' && o.same ? Math.max(n, slotsOf(db, o.unit)) : n),
+    0,
+  );
 }
 
 /** A card whose summons do not fit in the free companion slots: companions have to be released (scrapped) to make room. */
@@ -5402,7 +5464,11 @@ function needsRelease(db: CombatDb, sd: SideState, cd: CardDef): boolean {
 
 /** Every smallest set of companions whose release makes room for the card: no companion in a set could be kept. */
 function releaseSets(db: CombatDb, sd: SideState, cd: CardDef): UnitId[][] {
-  const crew = sd.units.filter((u) => u.kind === 'ally' && u.hp > 0);
+  // (a Raise Colossus card makes way only with smaller companions: a Colossus is never given up for another)
+  const raised = raisedSlots(db, cd);
+  const crew = sd.units.filter(
+    (u) => u.kind === 'ally' && u.hp > 0 && (!raised || slotsOf(db, u.def) < raised),
+  );
   const short = roomNeeded(db, sd, cd) - (allyCap(db, sd) - slotsUsed(db, sd));
   const out: UnitId[][] = [];
   for (let mask = 1; mask < 1 << crew.length; mask++) {
@@ -5561,6 +5627,7 @@ function finishCard(
 function countPlayed(sd: SideState, cd: CardDef, inst: CardInst): void {
   (sd.playedTurn ??= []).push(cd.id.replace(/\+$/, ''));
   if (isEthereal(cd, inst)) sd.etherealPlayed = (sd.etherealPlayed ?? 0) + 1;
+  for (const t of cd.tags ?? []) (sd.tagsPlayed ??= {})[t] = (sd.tagsPlayed[t] ?? 0) + 1;
 }
 
 /** (the Necrobinder copy) Right Hand Hand: cards that come back from the discard pile when a card of at least their cost is played */
@@ -5620,6 +5687,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     }
     // Salvage: the companion this card builds takes what they leave behind
     if (traitOf(r, side)?.salvage) r.salvage = { inst: inst.id, might, vigor, hp };
+    // (Raise Colossus: the Colossus takes the HP of the companions released for it)
+    if (raisedSlots(r.db, cd) > 0) r.fed = { inst: inst.id, hp };
     scrapped = ids.length;
   }
   sd.hand.splice(i, 1);
@@ -6635,6 +6704,11 @@ export function previewCardDamage(
       if (spiritBonus) {
         n = Math.floor((n * (100 + spiritBonus)) / 100);
         how.push(`Spirit +${spiritBonus}% = ${n}`);
+      }
+      const ramp = cardRampBonus(r, a);
+      if (ramp.pct) {
+        n = Math.floor((n * (100 + ramp.pct)) / 100);
+        how.push(`${ramp.word} +${ramp.pct}% = ${n}`);
       }
       if (styleBonus) {
         n = Math.floor((n * (100 + styleBonus)) / 100);

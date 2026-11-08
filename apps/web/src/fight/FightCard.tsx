@@ -92,7 +92,7 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
  * A card's kind as a badge like the Shaman's elements: the Spellblade's Swords and Spells (DECISIONS #481), a blade and a four-point
  * star, and the Drunkard's guns (DECISIONS #681), a shotgun shell.
  */
-type Kind = 'sword' | 'spell' | 'gun';
+type Kind = 'sword' | 'spell' | 'gun' | 'command';
 const kindOf = (c: Pick<CardDef, 'tags'>): Kind | null =>
   c.tags?.includes('sword')
     ? 'sword'
@@ -100,12 +100,20 @@ const kindOf = (c: Pick<CardDef, 'tags'>): Kind | null =>
       ? 'spell'
       : c.tags?.includes('gun')
         ? 'gun'
-        : null;
-const KIND_NAME: Record<Kind, string> = { sword: 'Sword', spell: 'Spell', gun: 'Gun' };
+        : c.tags?.includes('command')
+          ? 'command'
+          : null;
+const KIND_NAME: Record<Kind, string> = {
+  sword: 'Sword',
+  spell: 'Spell',
+  gun: 'Gun',
+  command: 'Command',
+};
 const KIND_OWNER: Record<Kind, string> = {
   sword: 'Spellblade',
   spell: 'Spellblade',
   gun: 'Drunkard',
+  command: 'Necromancer',
 };
 const KIND_TEXT: Record<Kind, string> = {
   sword:
@@ -113,12 +121,17 @@ const KIND_TEXT: Record<Kind, string> = {
   spell:
     'A magic card. Some Swords and Auras pay off when you play a Spell first: earlier this turn, or straight before them.',
   gun: 'A gun shot: the Old Twelve Gauge, every shell, and the other cards that fire. Cards that answer "whenever you play a gun" (The Twelve-Gauge Opera, Gun Oil) answer this one.',
+  command:
+    'A Command: your companions strike when you play it. Cards that count Commands (Death Grip) count this one.',
 };
 function KindIcon({ kind }: { kind: Kind }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden>
       {kind === 'sword' ? (
         <path d="M20.5 2 21.9 3.4 21 8l-9.6 9.6 1.5 1.5-1.4 1.4-2.1-2.1-3.3 3.3-1.8.3-1-1 .3-1.8 3.3-3.3-2.1-2.1 1.4-1.4 1.5 1.5L16 3l4.5-1Z" />
+      ) : kind === 'command' ? (
+        // (an open hand, raised to order the dead: Robert 2026-11-08)
+        <path d="M6 11V5.5a1.5 1.5 0 0 1 3 0V10h.5V3.5a1.5 1.5 0 0 1 3 0V10h.5V4.5a1.5 1.5 0 0 1 3 0V11h.5V7.5a1.5 1.5 0 0 1 3 0V14c0 4.4-3.1 8-7 8s-7-2.6-7-6.5V11Z" />
       ) : kind === 'spell' ? (
         <path d="M12 2c.8 5.6 3.4 8.6 10 10-6.6 1.4-9.2 4.4-10 10-.8-5.6-3.4-8.6-10-10 6.6-1.4 9.2-4.4 10-10Z" />
       ) : (

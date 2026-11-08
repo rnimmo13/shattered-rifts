@@ -311,7 +311,10 @@ export const deathBurst = (share: number, roundUp = false): Op =>
       ...(roundUp ? { round: 'ceil' as const } : {}),
     }),
   ]);
-/** Raise Colossus N (#684): a Grave Colossus rises with N HP, or with no room one standing gains N max HP (HP only, no Might) */
+/**
+ * Raise Colossus N (#684): a Grave Colossus rises with N HP, the weakest smaller companions (Thralls) released to make room; only when
+ * they cannot free enough does a Colossus standing gain N max HP instead (HP only, no Might)
+ */
 export const raiseColossus = (amount: number): Op => ({
   op: 'raise',
   unit: 'grave-colossus',

@@ -272,8 +272,8 @@ export const NECROMANCER: CardDef[] = [
     [on('turnStart', [addTo('baleful-glance')])],
     { up: { cost: 1 } },
   ),
-  // (Squeeze: 25, and 5 more for every other Command card in your deck; the count includes this one, so the base is 20, and the
-  // upgrade's 30 +6 each is 24 +6)
+  // (Squeeze was every companion striking for 20 + 5 per Command card in the deck: with Thralls that strike, four of them dealt 300 on
+  // turn 2. Now the hero's own blow, growing with the Commands played this fight: Robert 2026-11-08, DECISIONS #687)
   g(
     'rare',
     'death-grip',
@@ -281,10 +281,9 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     3,
     'foe',
-    [command(scaled(dmg(20), { by: 'tagDeck', tag: 'command', mult: 5 }))],
+    [scaled(dmg(15), { by: 'tagPlayed', tag: 'command', mult: 4 })],
     {
-      ...CMD,
-      up: { effects: [command(scaled(dmg(24), { by: 'tagDeck', tag: 'command', mult: 6 }))] },
+      up: { effects: [scaled(dmg(20), { by: 'tagPlayed', tag: 'command', mult: 5 })] },
     },
   ),
   // (Protector, an Ancient card in her game: here a Rare)

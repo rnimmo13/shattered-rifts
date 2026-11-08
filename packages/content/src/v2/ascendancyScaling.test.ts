@@ -13,6 +13,7 @@ import {
   type Unit,
 } from '@sr/combat';
 import { COMBAT_DB as base, RIFTWALKERS } from './index';
+import { ASCENDANCIES } from './ascendancies';
 
 const card = (id: string, effects: Op[], more: Partial<CardDef> = {}): CardDef => ({
   id,
@@ -55,6 +56,12 @@ const db = {
     'probe-choice': card('probe-choice', [hit(), { op: 'scry', amount: 1 }, hit()], {
       kind: 'attack',
       target: 'foe',
+    }),
+    'probe-knife': card('probe-knife', [hit()], { kind: 'attack', target: 'foe', tags: ['knife'] }),
+    'probe-sword': card('probe-sword', [hit()], { kind: 'attack', target: 'foe', tags: ['sword'] }),
+    'probe-trap': card('probe-trap', [{ op: 'damage', amount: 10, to: 'allFoes' }], {
+      kind: 'snare',
+      trigger: { on: 'foeTurn' },
     }),
   },
   units: {
@@ -364,7 +371,8 @@ describe('distinct late-game Ascendancy disciplines', () => {
   });
   it('Deathwish multiplies ordinary Clutch only in the low-HP band and does not stop self-damage', () => {
     let s = fight('drunkard', 'deathwish');
-    hero(s).hp = Math.floor(hero(s).maxHp * 0.4);
+    // (paying 8 lands it on 40%: below that the bonus grows on, DECISIONS #685)
+    hero(s).hp = Math.floor(hero(s).maxHp * 0.4) + 8;
     // Recompute ordinary Clutch through a real small HP payment.
     s = play(s, 'probe-blood').state;
     const clutch = hero(s).statuses.clutch ?? 0;
@@ -430,5 +438,151 @@ describe('distinct late-game Ascendancy disciplines', () => {
       const snapshot = JSON.parse(JSON.stringify(s)) as CombatState;
       expect(applyAction(db, s, action)).toEqual(applyAction(db, snapshot, action));
     }
+  });
+});
+
+describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
+  it('Totemist starts with no extra Spirit or Barrier, and Cultivation stops after 5 Spirit', () => {
+    let s = fight('shaman', 'totemist');
+    const start = fight('shaman', 'shaman');
+    expect(hero(s).statuses.spirit ?? 0).toBe(hero(start).statuses.spirit ?? 0);
+    expect(hero(s).barrier).toBe(hero(start).barrier);
+    const initial = hero(s).statuses.spirit ?? 0;
+    for (let k = 0; k < 8; k++) s = end(end(s));
+    expect(s.sides.a.discipline?.progress).toBe(5);
+    // (Spirit from Cultivation only: the Hawks' and the trait's own gains are separate)
+    expect(hero(s).statuses.spirit ?? 0).toBeGreaterThanOrEqual(initial + 5);
+    const at = hero(s).statuses.spirit ?? 0;
+    s = end(end(s));
+    expect(s.sides.a.discipline?.progress).toBe(5);
+    expect(hero(s).statuses.spirit ?? 0).toBeLessThanOrEqual(at);
+  });
+  it('Artillerist gains 2 Might on each of its first 6 turns, 12 in all', () => {
+    let s = fight('engineer', 'artillerist');
+    expect(hero(s).statuses.might).toBe(2);
+    for (let k = 0; k < 9; k++) s = end(end(s));
+    expect(hero(s).statuses.might).toBe(12);
+  });
+  it('Trapmaster sets up to 5 Traps, and its Traps deal 5% more per Trap sprung before, up to 50%', () => {
+    const s = fight('trickster', 'trapmaster');
+    const can = (n: number, st: CombatState): boolean => {
+      const t = clone(st);
+      t.sides.a.mana = 9;
+      t.sides.a.snares = Array.from({ length: n }, (_, k) => ({ id: `set-${k}`, card: 'probe-trap' }));
+      t.sides.a.hand.push({ id: 'next-trap', card: 'probe-trap' });
+      return legalActions(db, t).some((x) => x.type === 'play' && x.card === 'next-trap');
+    };
+    expect(can(4, s)).toBe(true);
+    expect(can(5, s)).toBe(false);
+    expect(viewFor(db, s, 'a').sides.a.snareCap).toBe(5);
+    // (the plain Trickster keeps three)
+    expect(can(3, fight('trickster', 'cardsharp'))).toBe(false);
+    const spring = (sprung: number): number => {
+      const t = clone(s);
+      t.sides.a.snaresSprung = sprung;
+      t.sides.a.snares = [{ id: 'live-trap', card: 'probe-trap' }];
+      const hp = foe(t).hp;
+      return hp - foe(end(t)).hp;
+    };
+    expect(spring(0)).toBe(10);
+    expect(spring(4)).toBe(12);
+    expect(spring(30)).toBe(15);
+  });
+  it('Bladedancer Daggers ramp 0/10/20/30/40/50% within a turn and start over next turn', () => {
+    let s = fight('assassin', 'bladedancer');
+    s.sides.a.mana = 9;
+    const got: number[] = [];
+    for (let k = 0; k < 7; k++) {
+      const r = play(s, 'probe-knife');
+      got.push(...damage(r));
+      s = r.state;
+    }
+    expect(got).toEqual([10, 11, 12, 13, 14, 15, 15]);
+    s.sides.a.hand = [{ id: 'preview-knife', card: 'probe-knife' }];
+    expect([...previewCardDamage(db, s, 'preview-knife', foe(s).id).values()][0]?.lo).toBe(15);
+    // (other Attacks do not ramp or gain)
+    expect(damage(play(s, 'probe-hit'))).toEqual([10]);
+    s = end(end(s));
+    expect(damage(play(s, 'probe-knife'))).toEqual([10]);
+  });
+  it('Blademaster gains 1 Keen from its first Sword each turn, up to 5 Keen', () => {
+    let s = fight('spellblade', 'blademaster');
+    expect(hero(s).statuses.keen).toBe(1);
+    s = play(s, 'probe-sword').state;
+    s = play(s, 'probe-sword').state;
+    expect(hero(s).statuses.keen).toBe(2);
+    for (let k = 0; k < 6; k++) s = play(end(end(s)), 'probe-sword').state;
+    expect(hero(s).statuses.keen).toBe(5);
+  });
+  it('Cardsharp Full Tricks give 1 Mana and 1 Might', () => {
+    const trick = ASCENDANCIES.find((x) => x.id === 'trickster:cardsharp')?.triggers?.[0];
+    expect(trick?.when).toBe('allSuits');
+    expect(trick?.ops).toEqual([
+      { op: 'mana', amount: 1 },
+      { op: 'status', status: 'might', amount: 1, to: 'self' },
+    ]);
+  });
+  it('Reaver also gains 1 Might from its first HP payment each turn', () => {
+    let s = fight('hunter', 'reaver');
+    const might = hero(s).statuses.might ?? 0;
+    s = play(s, 'probe-blood').state;
+    s = play(s, 'probe-blood').state;
+    expect(hero(s).statuses.might ?? 0).toBe(might + 1);
+  });
+  let uniq = 0;
+  // (an id no other card has, so a later turn never plays an older copy)
+  const playOne = (s: CombatState, id: string): CombatState => {
+    const inst = { id: `monk-${uniq++}`, card: id };
+    s.sides.a.hand.push(inst);
+    return applyAction(db, s, { type: 'play', card: inst.id }).state;
+  };
+  it('Sage draws on leaving Serene and grows Enlightenment: Might for 5 exits, Bracing for 3', () => {
+    const run = (asc: string, turns: number) => {
+      let s = fight('monk', asc);
+      let drawn = 0;
+      for (let k = 0; k < turns; k++) {
+        s.sides.a.mana = 9;
+        // (room in hand, and cards to draw; no Fervor, so Radiant never takes it out of Serene first)
+        delete hero(s).statuses.mantra;
+        s.sides.a.discard.push(...s.sides.a.hand);
+        s.sides.a.hand = [];
+        if (k > 0) s = playOne(s, 'probe-calm');
+        const hand = s.sides.a.hand.length;
+        s = playOne(s, 'probe-fury');
+        drawn += s.sides.a.hand.length - hand;
+        s = end(end(s));
+      }
+      return { s, drawn };
+    };
+    const sage = run('sage', 7);
+    const zealot = run('zealot', 7);
+    expect((hero(sage.s).statuses.might ?? 0) - (hero(zealot.s).statuses.might ?? 0)).toBe(5);
+    expect(hero(sage.s).statuses.bracing).toBe(3);
+    expect(hero(zealot.s).statuses.bracing ?? 0).toBe(0);
+    // (the card played left the hand; Sage drew one each turn, Zealot none)
+    expect(sage.drawn - zealot.drawn).toBe(7);
+  });
+  it('Sunwalker Dawn: the first 5 Radiant entries each give 2 Might', () => {
+    const run = (asc: string) => {
+      let s = fight('monk', asc);
+      for (let k = 0; k < 7; k++) {
+        s.sides.a.mana = 9;
+        s = end(end(playOne(s, 'probe-radiant')));
+      }
+      return hero(s).statuses.might ?? 0;
+    };
+    expect(run('sunwalker') - run('zealot')).toBe(10);
+  });
+  it('Deathwish keeps growing below 40% HP, to +40% at 10% HP', () => {
+    const at = (pct: number): number => {
+      const s = fight('drunkard', 'deathwish');
+      hero(s).hp = Math.floor((hero(s).maxHp * pct) / 100);
+      hero(s).statuses.clutch = 0;
+      return damage(play(s, 'probe-double'))[0] ?? 0;
+    };
+    expect(at(40)).toBe(12);
+    expect(at(25)).toBe(13);
+    expect(at(10)).toBe(14);
+    expect(at(5)).toBe(14);
   });
 });

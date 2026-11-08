@@ -765,7 +765,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   // (Raise Colossus, #684)
   raiseColossus: {
     name: 'Raise Colossus',
-    text: 'A Grave Colossus rises with that much HP: it takes 2 companion slots, has Taunt, strikes for 2 plus 1 for every 4 max HP, and deals half of a Command’s damage. With no room for one, your healthiest Grave Colossus gains that much max HP instead (or, with none, your healthiest companion).',
+    text: 'A Grave Colossus rises with that much HP: it takes 2 companion slots, has Taunt, strikes for 2 plus 1 for every 4 max HP, and deals half of a Command’s damage. With no room, you choose which Bone Thralls make way (released, not killed), and the Colossus adds their HP to its own. Only if they cannot free enough room does your healthiest Grave Colossus gain that much max HP instead (or, with none, your healthiest companion).',
   },
   replay: { name: 'Replay', text: 'The card is played one more time each time you play it.' },
 };

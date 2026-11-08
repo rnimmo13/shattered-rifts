@@ -958,6 +958,13 @@
   --el-lo: #4a0f5c;
   color: #ffffff;
 }
+/* the Necromancer's Commands: grave green and bone (Robert 2026-11-08) */
+.card__element--command {
+  --el-hi: #e3f5d3;
+  --el: #4f8f5a;
+  --el-lo: #142a1c;
+  color: #f4ffe9;
+}
 /* the Drunkard's guns (DECISIONS #681): a shell's red and brass */
 .card__element--gun {
   --el-hi: #ffd29a;

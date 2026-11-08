@@ -4,7 +4,7 @@
 
 import { cardArtV2 } from './art';
 import { emblemSvg } from '../art/emblems';
-import { MAX_SNARES, cardText, type CombatDb, type SideView } from '@sr/combat';
+import { cardText, type CombatDb, type SideView } from '@sr/combat';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { RUNE_GLYPH, UI_TIPS } from './info';
 import { FloatPanel } from './FloatPanel';
@@ -177,7 +177,7 @@ export function SnareRow(props: {
         className="snarerow__label"
         style={{ left: props.foe ? x0 - me.snares.length * gap : x0, top: props.top - 22 }}
       >
-        {props.foe ? "Opponent's Traps" : 'Traps'} {me.snares.length}/{MAX_SNARES}
+        {props.foe ? "Opponent's Traps" : 'Traps'} {me.snares.length}/{me.snareCap}
       </span>
       {me.snares.map((s, i) => {
         const def = s.card ? db.cards[s.card] : undefined;

@@ -13,6 +13,7 @@ import {
   other,
   clone,
   enemyGuardFactor,
+  snareCap,
   TRAIT_POWER,
   DEFENSIVE_TAG,
   STRIKING_TAG,
@@ -79,6 +80,8 @@ export interface SideView {
   maxMana: number;
   /** a Trap's card is only known to its owner */
   snares: { id: string; card: CardId | null }[];
+  /** how many Traps this side can have set at once */
+  snareCap: number;
   hero: string | null;
   /** Potion ids (your own side only) and how many each side holds */
   potions: string[] | null;
@@ -378,6 +381,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       mana: sd.mana,
       maxMana: sd.maxMana,
       snares: sd.snares.map((sn) => ({ id: sn.id, card: own ? sn.card : null })),
+      snareCap: snareCap(sd),
       hero: sd.hero,
       potions: own ? [...sd.potions] : null,
       potionCount: sd.potions.length,
@@ -749,6 +753,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   tagExhausted: { per: 'consumed card of that kind', equal: 'the consumed cards of that kind' },
   tagDeck: { per: 'card of that kind in your deck', equal: 'the cards of that kind in your deck' },
+  tagPlayed: {
+    per: 'card of that kind played this fight',
+    equal: 'the cards of that kind played this fight',
+  },
   // (the Defect copy, shaman)
   runeKinds: { per: 'different totem you have', equal: 'the number of different totems you have' },
   runesOf: { per: 'such totem you have', equal: 'the number of such totems you have' },
@@ -857,22 +865,30 @@ function amountText(
         }
       : tagged && sc.by === 'tagDeck'
         ? { per: `${tagged} in your deck`, equal: `the number of ${plural(tagged)} in your deck` }
-        : sc.by === 'totemsOf' && sc.rune
+        : tagged && sc.by === 'tagPlayed'
           ? {
-              per: `${TOTEM_WORDS[sc.rune] ?? cap(sc.rune)} you have`,
-              equal: `the number of ${plural(TOTEM_WORDS[sc.rune] ?? cap(sc.rune))} you have`,
+              per: `${tagged} you played earlier this fight`,
+              equal: `the number of ${plural(tagged)} you played earlier this fight`,
             }
-          : sc.by === 'hitsTaken'
-            ? // (who was hit is part of the phrase: "per time the target was hit this turn")
-              sc.of === 'target'
-              ? {
-                  per: 'time the target was hit this turn',
-                  equal: 'the times the target was hit this turn',
-                }
-              : sc.of === 'each'
-                ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
-                : { per: 'time you were hit this turn', equal: 'the times you were hit this turn' }
-            : METRIC_WORDS[sc.by];
+          : sc.by === 'totemsOf' && sc.rune
+            ? {
+                per: `${TOTEM_WORDS[sc.rune] ?? cap(sc.rune)} you have`,
+                equal: `the number of ${plural(TOTEM_WORDS[sc.rune] ?? cap(sc.rune))} you have`,
+              }
+            : sc.by === 'hitsTaken'
+              ? // (who was hit is part of the phrase: "per time the target was hit this turn")
+                sc.of === 'target'
+                ? {
+                    per: 'time the target was hit this turn',
+                    equal: 'the times the target was hit this turn',
+                  }
+                : sc.of === 'each'
+                  ? { per: 'time it was hit this turn', equal: 'the times it was hit this turn' }
+                  : {
+                      per: 'time you were hit this turn',
+                      equal: 'the times you were hit this turn',
+                    }
+              : METRIC_WORDS[sc.by];
   const named = sc.by === 'hitsTaken';
   // (half of a number, rounded down: "equal to half your Spell Power")
   if (sc.step === 2 && n === 0 && (sc.mult ?? 1) === 1 && !sc.of)
@@ -2085,6 +2101,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     }
     case 'uproot':
       return 'Uproot all your totems.';
+    case 'snareSlot':
+      return o.amount === 1
+        ? 'You can have 1 more Trap set.'
+        : `You can have ${o.amount} more Traps set.`;
     case 'totemSlot':
       return (o.amount ?? 1) > 1
         ? `Gain ${o.amount} totem positions.`

@@ -72,7 +72,7 @@ import {
 import { FigureSession } from './figureSession';
 import { FightHand, type HandCard } from './FightHand';
 import { WardenRule } from './WardenRule';
-import { playAnywayHelps, scrapChoices } from './scrapChoices';
+import { playAnywayHelps, raisesColossus, scrapChoices } from './scrapChoices';
 import { FightCard } from './FightCard';
 import { needsAim } from './targeting';
 import { GrimoireModal } from './Grimoire';
@@ -1820,11 +1820,15 @@ export function FightView(props: {
   // a button for each way to make room, as well as clicking the companion itself (Robert, 2026-10-30: "i thought i would be able to scrap one")
   const scrapButtons = useMemo(() => {
     const crew = live?.sides[mySide].units ?? [];
-    return scrapChoices(releaseFits, (id) => {
-      const u = crew.find((x) => x.id === id);
-      return u ? `${db.units[u.def]?.name ?? 'companion'} (${u.hp} HP)` : 'companion';
-    });
-  }, [releaseFits, live, mySide, db]);
+    return scrapChoices(
+      releaseFits,
+      (id) => {
+        const u = crew.find((x) => x.id === id);
+        return u ? `${db.units[u.def]?.name ?? 'companion'} (${u.hp} HP)` : 'companion';
+      },
+      releaseCard && raisesColossus(releaseCard.def) ? 'Release' : 'Scrap',
+    );
+  }, [releaseFits, live, mySide, db, releaseCard]);
   const sendRelease = useCallback(
     (set: string[]) => {
       if (!releasing) return;
@@ -2556,9 +2560,13 @@ export function FightView(props: {
           {releasing && (
             <div className="fight__banner fight__banner--info" role="status">
               <span>
-                {releasing.picked.length > 0
-                  ? 'Still not enough room. Scrap another companion.'
-                  : 'Not enough room. Scrap a companion to make room.'}{' '}
+                {releaseCard && raisesColossus(releaseCard.def)
+                  ? releasing.picked.length > 0
+                    ? 'Still not enough room. Choose another to make way.'
+                    : 'Choose which companions make way for the Colossus. It takes their HP.'
+                  : releasing.picked.length > 0
+                    ? 'Still not enough room. Scrap another companion.'
+                    : 'Not enough room. Scrap a companion to make room.'}{' '}
                 {releaseFit &&
                   releaseCard &&
                   playAnywayHelps(releaseCard.def, releaseFit.fit) &&

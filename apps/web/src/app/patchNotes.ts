@@ -46,6 +46,134 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.228.0',
+    date: '2026-11-08',
+    title: 'Ascendancies that keep growing',
+    summary:
+      'The runaway Totemist and Artillerist now level off, the flat Ascendancies grow over a fight, Death Grip is rebuilt and a Colossus takes the Thralls you give it.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Totemist',
+        hero: 'shaman',
+        text: 'Cultivation now stops after 5 Spirit in a fight, and the opening Spirit and Barrier are gone. The row of five stays.',
+        changes: [
+          {
+            label: 'Opening Spirit / Barrier',
+            before: '1 / 8',
+            after: 'none',
+            direction: 'nerf',
+          },
+          {
+            label: 'Spirit from Cultivation',
+            before: 'no limit',
+            after: 'up to 5 a fight',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Artillerist',
+        hero: 'engineer',
+        text: 'The 2 Might a turn now comes on your first 6 turns only, 12 in all.',
+        changes: [
+          {
+            label: 'Might from the trait',
+            before: '+2 every turn',
+            after: '+2 for 6 turns (12)',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Trapmaster',
+        hero: 'trickster',
+        text: 'You can set 5 Traps, and your Traps deal 5% more for each of your Traps sprung earlier in the fight, up to 50% more. Still draw 1 and gain 2 Barrier per Trap.',
+        changes: [
+          {
+            label: 'Traps set at once',
+            before: '3',
+            after: '5',
+            direction: 'buff',
+          },
+          {
+            label: 'Trap damage',
+            before: 'flat',
+            after: '+5% per Trap sprung, up to +50%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Bladedancer',
+        hero: 'assassin',
+        text: 'Volley: each Dagger deals 10% more for each Dagger played before it this turn, up to 50% more. It starts over every turn.',
+        changes: [
+          {
+            label: 'Dagger damage in a turn',
+            before: 'flat',
+            after: '+0/10/20/30/40/50%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Blademaster',
+        hero: 'spellblade',
+        text: 'The first Sword each turn also gives 1 Keen, up to 4 more this fight (Keen 1 to 5).',
+        changes: [
+          {
+            label: 'Keen',
+            before: '1',
+            after: '1, growing to 5',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Reaver, Cardsharp and Deathwish',
+        text: 'Reaver: the first HP payment each turn also gives 1 Might. Cardsharp: a Full Trick also gives 1 Might. Deathwish: below 40% HP the bonus keeps growing, to +40% at 10% HP.',
+      },
+      {
+        kind: 'balance',
+        title: 'Sage',
+        hero: 'monk',
+        text: 'The first time each turn you leave Serene you also draw a card. Enlightenment: the first 5 times, gain 1 Might; the first 3 times, 1 Bracing.',
+      },
+      {
+        kind: 'balance',
+        title: 'Sunwalker',
+        hero: 'monk',
+        text: 'Dawn: the first 5 times you enter Radiant, gain 2 Might, so some of its power stays after it ends.',
+      },
+      {
+        kind: 'balance',
+        title: 'Death Grip',
+        hero: 'necromancer',
+        card: 'death-grip',
+        text: 'Now your own blow: 15 damage, plus 4 for each Command card you played earlier this fight (upgraded 20, +5). It was every companion striking for 20 + 5 per Command card in your deck.',
+      },
+      {
+        kind: 'changed',
+        title: 'Raise Colossus makes room',
+        hero: 'necromancer',
+        text: 'With no room for the Colossus, you choose which Bone Thralls make way, and the Colossus adds their HP to its own. It always comes to the battlefield.',
+      },
+      {
+        kind: 'new',
+        title: 'Command badge',
+        text: 'Command cards show a green hand in their top right corner.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.227.0',
     date: '2026-11-07',
     title: 'Decks in step, and a Colossus that grows',
