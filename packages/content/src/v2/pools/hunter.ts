@@ -128,7 +128,10 @@ export const HUNTER: CardDef[] = [
     status('faltering', 2, 'target'),
     barrier(3, 'allAllies'),
   ]),
-  k('rare', 'skullcrusher', 'Skullcrusher', 'attack', 3, 'foe', [dmg(26), ACT]),
+  // (Commands, like the Necromancer's and the Engineer's: Robert 2026-11-08, #688)
+  k('rare', 'skullcrusher', 'Skullcrusher', 'attack', 3, 'foe', [dmg(26), ACT], {
+    tags: ['command'],
+  }),
   k(
     'rare',
     'scarred-warrior',
@@ -153,7 +156,9 @@ export const HUNTER: CardDef[] = [
   ),
   // (a companion that grows instead of only being shielded: DECISIONS #285)
   k('common', 'thick-hide', 'Thick Hide', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
-  k('uncommon', 'savage-command', 'Savage Command', 'skill', 1, 'none', [ACT, status('might', 1)]),
+  k('uncommon', 'savage-command', 'Savage Command', 'skill', 1, 'none', [ACT, status('might', 1)], {
+    tags: ['command'],
+  }),
   k(
     'uncommon',
     'pack-bond',
@@ -214,6 +219,7 @@ export const HUNTER: CardDef[] = [
   ),
   k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT], {
     exhaust: true,
+    tags: ['command'],
   }),
   k('rare', 'wild-hunt', 'Wild Hunt', 'power', 3, 'none', [on('turnStart', [ACT])]),
 
@@ -570,6 +576,7 @@ export const HUNTER: CardDef[] = [
   // (the pack springs on whatever attacked: each companion strikes it)
   k('uncommon', 'baited-snare', 'Baited Snare', 'snare', 1, 'none', [command(dmg(5)), barrier(3)], {
     trigger: { on: 'attacked' },
+    tags: ['command'],
     up: { effects: [command(dmg(7)), barrier(3)] },
   }),
   k('uncommon', 'hunting-grounds', 'Hunting Grounds', 'power', 1, 'none', [
@@ -594,6 +601,7 @@ export const HUNTER: CardDef[] = [
     'foe',
     [dmg(7), when('faltering', { atLeast: 1, of: 'target' }, [command(dmg(5))])],
     {
+      tags: ['command'],
       up: {
         effects: [dmg(10), when('faltering', { atLeast: 1, of: 'target' }, [command(dmg(5))])],
       },

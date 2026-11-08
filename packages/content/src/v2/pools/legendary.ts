@@ -22,7 +22,8 @@ export const LEGENDARIES: CardDef[] = [
     2,
     'none',
     [summon('hound'), status('might', 2, 'allAllies'), ACT],
-    { exhaust: true, up: { cost: 1 } },
+    // (a Command, like the Hunter's other "act now" cards: #688)
+    { exhaust: true, tags: ['command'], up: { cost: 1 } },
   ),
   // Exposed: it marks every enemy as it springs
   v(

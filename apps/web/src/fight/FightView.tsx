@@ -2563,7 +2563,7 @@ export function FightView(props: {
                 {releaseCard && raisesColossus(releaseCard.def)
                   ? releasing.picked.length > 0
                     ? 'Still not enough room. Choose another to make way.'
-                    : 'Choose which companions make way for the Colossus. It takes their HP.'
+                    : 'Choose which companions make way for the Colossus. It takes half their HP.'
                   : releasing.picked.length > 0
                     ? 'Still not enough room. Scrap another companion.'
                     : 'Not enough room. Scrap a companion to make room.'}{' '}

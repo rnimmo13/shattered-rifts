@@ -1,3 +1,9 @@
+## 0.229.0 - 2026-11-08
+
+- New Necromancer rare Aura Grave Debt (DECISIONS #688; rules 97): a companion's death curses ALL enemies with 3 Fate + half its max HP (5 + half upgraded).
+- The Engineer's and Hunter's "act now" cards and their Command strikes are Command cards with the badge; behaviour unchanged.
+- Raise Colossus: the Colossus takes half the HP of the Thralls that make way (was all of it).
+
 ## 0.228.0 - 2026-11-08
 
 - Ascendancy pass (DECISIONS #685-686; rules 96): Totemist loses the opening 1 Spirit and 8 Barrier, and Cultivation stops at 5 Spirit; Artillerist's +2 Might lasts 6 turns (12). Trapmaster sets 5 Traps and its Traps grow +5% per Trap sprung (up to +50%); Bladedancer's Volley ramps Daggers 0-50% within a turn; Blademaster's first Sword each turn adds Keen up to 5; Reaver and Cardsharp gain 1 Might on their triggers; Deathwish grows to +40% at 10% HP; Sage draws on leaving Serene and grows Enlightenment (5 Might, 3 Bracing); Sunwalker's Dawn gives 2 Might per Radiant entry (up to 10).

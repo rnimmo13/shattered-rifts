@@ -113,7 +113,7 @@ const KIND_OWNER: Record<Kind, string> = {
   sword: 'Spellblade',
   spell: 'Spellblade',
   gun: 'Drunkard',
-  command: 'Necromancer',
+  command: 'Necromancer, Engineer, Hunter',
 };
 const KIND_TEXT: Record<Kind, string> = {
   sword:
@@ -122,7 +122,7 @@ const KIND_TEXT: Record<Kind, string> = {
     'A magic card. Some Swords and Auras pay off when you play a Spell first: earlier this turn, or straight before them.',
   gun: 'A gun shot: the Old Twelve Gauge, every shell, and the other cards that fire. Cards that answer "whenever you play a gun" (The Twelve-Gauge Opera, Gun Oil) answer this one.',
   command:
-    'A Command: your companions strike when you play it. Cards that count Commands (Death Grip) count this one.',
+    'A Command: it orders your companions to strike or act. Cards that count Commands (Death Grip) count this one.',
 };
 function KindIcon({ kind }: { kind: Kind }) {
   return (

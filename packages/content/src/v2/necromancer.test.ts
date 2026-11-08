@@ -647,7 +647,7 @@ describe('Raise Colossus (2026-11-07)', () => {
     expect(thralls(s)).toHaveLength(3);
     return s;
   };
-  it('always brings the Colossus: played as it is, the weakest Thralls make way, released (no burst), and it takes their HP', () => {
+  it('always brings the Colossus: played as it is, the weakest Thralls make way, released (no burst), and it takes half their HP', () => {
     let s = fullBoard();
     const before = foe(s).hp;
     const asIs = legalActions(db, s).find(
@@ -656,12 +656,12 @@ describe('Raise Colossus (2026-11-07)', () => {
     s = applyAction(db, s, asIs!).state;
     expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
       ['bone-thrall', 9],
-      ['grave-colossus', 18 + 3 + 5],
+      ['grave-colossus', 18 + Math.floor((3 + 5) / 2)],
     ]);
     // (released, not killed: nothing burst at an enemy)
     expect(foe(s).hp).toBe(before);
   });
-  it('lets the player choose which Thralls make way for the Colossus, and it takes their HP (Robert 2026-11-08)', () => {
+  it('lets the player choose which Thralls make way for the Colossus, and it takes half their HP (Robert 2026-11-08)', () => {
     let s = fullBoard();
     const [small, , big] = thralls(s);
     const sets = legalActions(db, s).flatMap((a) =>
@@ -674,7 +674,7 @@ describe('Raise Colossus (2026-11-07)', () => {
     s = applyAction(db, s, { type: 'play', card: 'T2', release: [small!.id, big!.id] }).state;
     expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
       ['bone-thrall', 5],
-      ['grave-colossus', 18 + 3 + 9],
+      ['grave-colossus', 18 + Math.floor((3 + 9) / 2)],
     ]);
   });
   it('never offers to release a Colossus for another', () => {
@@ -701,5 +701,31 @@ describe('Raise Colossus, the uncommon (2026-11-07)', () => {
     s = play(s, 'T0');
     expect(thralls(s).find((u) => u.def === 'grave-colossus')?.maxHp).toBe(14);
     expect(s.sides.a.exhausted.map((c) => c.card)).toContain('raise-colossus');
+  });
+});
+
+describe('Grave Debt (Robert 2026-11-08, #688)', () => {
+  it('a companion that dies curses every enemy with 3 Fate plus half its max HP; one released for a Colossus does not', () => {
+    expect(db.cards['grave-debt']).toMatchObject({ rarity: 'rare', cost: 2, kind: 'power' });
+    let s = fight(['grave-debt', 'bone-rain'], ['squire', 'squire']);
+    s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
+    addThrall(s, 10, 'B-a');
+    addThrall(s, 14, 'B-b');
+    s = play(s, 'T0');
+    // (Bone Rain: both Thralls strike and give themselves up: 3 + 5 and 3 + 7)
+    s = play(s, 'T1');
+    for (const u of s.sides.b.units.filter((x) => x.hp > 0)) expect(u.statuses.doom).toBe(8 + 10);
+    // (the same release with and without it: the trait's own Fate for consuming the card is the same either way)
+    const released = (debt: boolean): number => {
+      let t = fight([debt ? 'grave-debt' : 'strike', 'raise-colossus'], ['squire']);
+      t.sides.a.units = t.sides.a.units.filter((u) => u.kind !== 'ally');
+      addThrall(t, 10, 'B-a');
+      addThrall(t, 10, 'B-b');
+      addThrall(t, 10, 'B-c');
+      if (debt) t = play(t, 'T0');
+      t = applyAction(db, t, { type: 'play', card: 'T1', release: ['B-a', 'B-b'] }).state;
+      return foe(t).statuses.doom ?? 0;
+    };
+    expect(released(true)).toBe(released(false));
   });
 });

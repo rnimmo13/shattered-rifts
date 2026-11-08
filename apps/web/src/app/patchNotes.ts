@@ -46,6 +46,43 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.229.0',
+    date: '2026-11-08',
+    title: 'Grave Debt, and Commands for every pack',
+    summary:
+      'A new Necromancer rare turns every death into Fate, the Engineer and Hunter get Command cards, and the Colossus keeps half of what makes way for it.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Grave Debt',
+        hero: 'necromancer',
+        card: 'grave-debt',
+        text: 'A new rare Aura for 2 Mana: whenever one of your companions dies, curse ALL enemies with 3 Fate plus half its max HP (5 plus half upgraded). Sacrifices count; Thralls released for a Colossus do not.',
+      },
+      {
+        kind: 'changed',
+        title: 'Commands for the Engineer and Hunter',
+        text: 'Assemble, Relay Strike, Full Salvo, Full Throttle, Skullcrusher, Savage Command, Pack Frenzy, Bloodmoon Hunt, Baited Snare and Run It Down are now Command cards, with the green hand badge. What they do is unchanged.',
+      },
+      {
+        kind: 'balance',
+        title: 'Raise Colossus',
+        hero: 'necromancer',
+        text: 'The Colossus still always comes, but now keeps half the HP of the Thralls that make way for it, not all of it.',
+        changes: [
+          {
+            label: 'HP from Thralls that make way',
+            before: 'all of it',
+            after: 'half',
+            direction: 'nerf',
+          },
+        ],
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.228.0',
     date: '2026-11-08',
     title: 'Ascendancies that keep growing',

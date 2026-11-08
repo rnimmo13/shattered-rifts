@@ -721,6 +721,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   // --- the Necrobinder copy
   maxHp: { per: 'max HP', equal: 'max HP' },
   fallenMaxHp: { per: "of the fallen companion's max HP", equal: "the fallen companion's max HP" },
+  diedMaxHp: { per: "of the fallen companion's max HP", equal: "the fallen companion's max HP" },
   dealt: { per: 'damage dealt', equal: 'the damage dealt' },
   lost: { per: 'HP lost', equal: 'the HP it lost' },
   hpLostNow: { per: 'HP you lost', equal: 'the HP you lost' },
@@ -1564,7 +1565,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Add ${n > 1 ? `${n} ${plural(nm)}` : `${article(nm)} ${nm}`} to ${dest}.`;
     }
     case 'actAllies':
-      return 'All your allies act now.';
+      return 'Command your companions to act now.';
     case 'prevent':
       // (it stops the one hit that sprang it, like Shielded; a move's other hits still land)
       return 'Cancel that hit.';

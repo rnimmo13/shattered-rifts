@@ -187,6 +187,8 @@ interface Act {
   commandPct?: number;
   /** in an 'allyDies' trigger: the fallen companion's max HP when a standing enemy killed it, else 0 (metric 'fallenMaxHp') */
   fallenMaxHp?: number;
+  /** in an 'allyDies' trigger: the fallen companion's max HP, however it died (metric 'diedMaxHp') */
+  diedMaxHp?: number;
   actor: Unit;
   target: Unit | null;
   attacker: Unit | null;
@@ -1675,6 +1677,8 @@ function metricValue(
       return u?.maxHp ?? 0;
     case 'fallenMaxHp':
       return a.fallenMaxHp ?? 0;
+    case 'diedMaxHp':
+      return a.diedMaxHp ?? 0;
     case 'dealt':
       return a.dealt;
     case 'lost':
@@ -3253,9 +3257,10 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'raise': {
       const n = amountOf(r, a, op.times ?? 1, op.scale, null);
       for (let k = 0; k < n && !r.s.winner; k++) {
-        // (the companions the player chose to release for it: the first Colossus takes their HP)
-        const fed = op.same && r.fed && a.inst?.id === r.fed.inst ? r.fed.hp : 0;
-        if (fed) delete r.fed;
+        // (the companions the player chose to release for it: the first Colossus takes half their HP, already halved)
+        const mine = op.same && r.fed && a.inst?.id === r.fed.inst;
+        const fed = mine ? (r.fed?.hp ?? 0) : 0;
+        if (mine) delete r.fed;
         raiseAlly(r, side, op.unit, op.amount + fed, a.actor, op.same === true);
       }
       return;
@@ -3588,7 +3593,7 @@ function raiseAlly(
   const need = slotsOf(r.db, unit);
   const fits = (): boolean => slotsUsed(r.db, sd) + need <= allyCap(r.db, sd);
   // (Raise Colossus always brings its unit: with no room, smaller companions make way, released as a scrap is (not a death: nothing
-  // bursts or is revived), and it takes their HP. A player chooses which when playing the card (releaseSets); left to the engine (a
+  // bursts or is revived), and it takes half their HP. A player chooses which when playing the card (releaseSets); left to the engine (a
   // replayed copy, a bot) the weakest go. Only if they cannot free enough room does the HP go to one standing. Robert 2026-11-07/08)
   if (same && !fits()) {
     const smaller = sd.units
@@ -3596,13 +3601,16 @@ function raiseAlly(
       .sort((x, y) => x.maxHp - y.maxHp);
     const freeable = smaller.reduce((n, u) => n + slotsOf(r.db, u.def), 0);
     if (slotsUsed(r.db, sd) - freeable + need <= allyCap(r.db, sd)) {
+      let given = 0;
       for (const u of smaller) {
         if (fits()) break;
-        hp += Math.max(0, u.hp);
+        given += Math.max(0, u.hp);
         sd.units = sd.units.filter((x) => x !== u);
         r.ev.push({ type: 'died', unit: u.id, released: true });
         fireTriggers(r, sd, 'allyLost');
       }
+      // (half their HP, as when the player chooses them)
+      hp += Math.floor(given / 2);
     }
   }
   const crew = sd.units.filter((u) => u.kind !== 'hero');
@@ -4273,6 +4281,8 @@ function fireTriggers(
     lost?: number;
     /** in an 'allyDies' trigger: the fallen companion's max HP, when a standing enemy killed it */
     fallenMaxHp?: number;
+    /** in an 'allyDies' trigger: the fallen companion's max HP, however it died */
+    diedMaxHp?: number;
     /** in a 'play' trigger: what the card cost */
     cost?: number;
     /** 'evoke': the totem that awakened */
@@ -4380,6 +4390,7 @@ function fireTriggers(
         spent: ctx.spent ?? 0,
         lost: ctx.lost ?? 0,
         ...(ctx.fallenMaxHp ? { fallenMaxHp: ctx.fallenMaxHp } : {}),
+        ...(ctx.diedMaxHp ? { diedMaxHp: ctx.diedMaxHp } : {}),
       }),
       ops,
     );
@@ -4491,6 +4502,7 @@ function reap(r: Run): void {
       fireTriggers(r, sd, 'allyDies', {
         attacker: killer && killer.hp > 0 ? killer : null,
         ...(standing ? { fallenMaxHp: u.maxHp } : {}),
+        diedMaxHp: u.maxHp,
       });
       fireTriggers(r, sd, 'allyLost', { attacker: killer && killer.hp > 0 ? killer : null });
     }
@@ -5687,8 +5699,8 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     }
     // Salvage: the companion this card builds takes what they leave behind
     if (traitOf(r, side)?.salvage) r.salvage = { inst: inst.id, might, vigor, hp };
-    // (Raise Colossus: the Colossus takes the HP of the companions released for it)
-    if (raisedSlots(r.db, cd) > 0) r.fed = { inst: inst.id, hp };
+    // (Raise Colossus: the Colossus takes half the HP of the companions released for it; all of it grew out of hand, Robert 2026-11-08)
+    if (raisedSlots(r.db, cd) > 0) r.fed = { inst: inst.id, hp: Math.floor(hp / 2) };
     scrapped = ids.length;
   }
   sd.hand.splice(i, 1);

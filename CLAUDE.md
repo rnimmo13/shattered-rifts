@@ -1,3 +1,7 @@
+# Release approved 0.229.0 / rules 97 (2026-11-08; decision 688)
+
+Robert explicitly approves pushing/deploying: the Grave Debt rare Necromancer Aura (a companion's death curses all enemies with Fate), Command tags and badge for the Engineer's and Hunter's companion cards, and Raise Colossus keeping half the HP of the Thralls that make way. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.228.0 / rules 96 (2026-11-08; decisions 684-687)
 
 Robert explicitly approves pushing/deploying: the Ascendancy pass (Totemist and Artillerist capped; Trapmaster, Reaver, Bladedancer, Blademaster, Cardsharp, Deathwish, Sage and Sunwalker grow), Raise Colossus always summoning with a choice of Thralls released and their HP added, Death Grip as the hero's Attack scaling with Commands played this fight, and the Command badge. Website/server and matching Windows updater. Future changes need fresh release approval.

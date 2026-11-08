@@ -1383,3 +1383,13 @@ Robert: Death Grip dealt 300+ on turn 2 "just by having some amount of cards in 
 - Price (docs/14_CARD_COSTING.md): a Necromancer plays about 1-2 Commands a turn, so ~23 on turn 2, ~47 by turn 6 (a 3-Mana rare's ~35 budget by turn 4-5), ~75 by turn 10 and ~100 by turn 15: a growing payoff for a Command deck, in line with other scaling rares. Might and the hero's Attack bonuses apply; Marrow does not.
 - **Command badge:** cards tagged `command` show a green open-hand badge in the top right, like Swords, Spells and guns (#481, #681), with a tip naming it a Command.
 - No simulations; scenario test in necromancer.test.ts.
+
+## 688 - Grave Debt, and the Engineer and Hunter have Commands too (2026-11-08)
+
+Robert asked for a rare Necromancer card that makes companion deaths put Fate on enemies, and for the Engineer's and Hunter's "your companions act now" cards to be Commands, so all three companion classes have them.
+
+- **Grave Debt** (rare Aura, 2 Mana): whenever one of your companions dies, curse ALL enemies with 3 Fate plus half its max HP (upgraded 5 + half). New generic metric `diedMaxHp` (the fallen companion's max HP however it died; `fallenMaxHp` stays the enemy-kill-only one used by the death burst). Sacrifices count (Bone Rain, Bone Shards); companions released to make way for a Colossus or scrapped do not die, so they do not.
+- Price (docs/14_CARD_COSTING.md, Fate to ALL 0.9 a stack): about 3 Thrall deaths of ~10 HP over four turns is ~24 Fate to all, ~22 points against a 2-Mana rare Aura's ~33; it rises with grown companions and sacrifice (Bone Rain giving up four 15-HP Thralls: ~42 Fate on every enemy; a 40-HP Colossus falling: 23). Like all Fate, strong against ordinary fights, weaker against bosses.
+- **Commands for the Engineer and Hunter:** Assemble, Relay Strike, Full Salvo, Full Throttle (Engineer), Skullcrusher, Savage Command, Pack Frenzy, Baited Snare, Run It Down and the shelved Bloodmoon Hunt (Hunter) carry the Command tag and badge (its tip names all three classes). What they do is unchanged: "act now" cards read "Command your companions to act now." and each companion takes its own action, as before. The Auras that trigger it (Command Chip, Wild Hunt) are not Commands you play, so they carry no badge. No card's numbers change; Death Grip, which counts Commands, is a Necromancer card.
+- No simulations; tests in necromancer.test.ts.
+- **Half the HP** (Robert, same day, after 0.228: "the raise colossus hp is getting too out of hand"): the Colossus that Thralls make way for now takes half their current HP (rounded down, summed first), chosen or not. It still always comes to the battlefield. Three 15-HP Thralls given up add 22, not 45.

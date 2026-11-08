@@ -342,6 +342,7 @@ export type Metric =
   | 'hpLostTurn' // times your hero lost HP this turn
   | 'hpLostFight' // times your hero lost HP this fight
   | 'fallenMaxHp' // in an 'allyDies' trigger: the fallen companion's max HP, when an enemy that is still standing killed it (else 0)
+  | 'diedMaxHp' // in an 'allyDies' trigger: the fallen companion's max HP, however it died (Grave Debt, #688)
   | 'exhaustedTurn' // cards consumed this turn
   | 'attacksInHand'
   | 'nonAttacksInHand'

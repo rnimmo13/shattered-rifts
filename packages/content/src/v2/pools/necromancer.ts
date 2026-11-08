@@ -244,6 +244,23 @@ export const NECROMANCER: CardDef[] = [
   g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raiseColossus(18)], {
     up: { effects: [raiseColossus(22)] },
   }),
+  // (Robert 2026-11-08, DECISIONS #688: a death curses every enemy. 3 + half the fallen's max HP to ALL at 0.9 a stack: ~3 Thrall deaths
+  // of ~10 HP over four turns is ~22 against a 2-Mana rare Aura's ~33, rising with grown companions and sacrifices: Bone Rain giving up
+  // four 15-HP Thralls is ~42 Fate on every enemy. Released companions (making way for a Colossus) do not die, so do not count.)
+  g(
+    'rare',
+    'grave-debt',
+    'Grave Debt',
+    'power',
+    2,
+    'none',
+    [on('allyDies', [scaled(status('doom', 3, 'allFoes'), per('diedMaxHp', 0.5))])],
+    {
+      up: {
+        effects: [on('allyDies', [scaled(status('doom', 5, 'allFoes'), per('diedMaxHp', 0.5))])],
+      },
+    },
+  ),
   // (a smaller Colossus that is consumed, Robert 2026-11-07: 14 HP (16.8) + 3 body + its ~5 hit over two or three turns, less ~5 for
   // its second slot, ~26 against a 2-Mana uncommon's ~21 with Consume's +25%, ~27; upgraded 18)
   g('uncommon', 'raise-colossus', 'Raise Colossus', 'skill', 2, 'none', [raiseColossus(14)], {

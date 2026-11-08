@@ -182,7 +182,8 @@ export const ENGINEER: CardDef[] = [
     [dmg(5, 'attacker'), barrier(5)],
     { trigger: { on: 'attacked' }, up: { effects: [dmg(8, 'attacker'), barrier(5)] } },
   ),
-  r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)]),
+  // (Commands, like the Necromancer's and the Hunter's: Robert 2026-11-08, #688)
+  r('uncommon', 'assemble', 'Assemble', 'skill', 1, 'none', [ACT, draw(1)], { tags: ['command'] }),
   r('rare', 'double-time', 'Double Time', 'skill', 1, 'none', [primeAll(6)]),
   r(
     'uncommon',
@@ -208,7 +209,9 @@ export const ENGINEER: CardDef[] = [
     { up: { effects: [on('turnStart', [primeAll(3)])] } },
   ),
 
-  r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT]),
+  r('common', 'relay-strike', 'Relay Strike', 'attack', 1, 'foe', [dmg(6), ACT], {
+    tags: ['command'],
+  }),
   r('uncommon', 'overwatch', 'Overwatch', 'snare', 1, 'none', [prime(4), dmg(7, 'attacker')], {
     trigger: { on: 'attacked' },
   }),
@@ -263,7 +266,9 @@ export const ENGINEER: CardDef[] = [
     [on('play', [prime(2)], { filter: 'attack' })],
     { up: { innate: true } },
   ),
-  r('rare', 'full-salvo', 'Full Salvo', 'skill', 2, 'none', [primeAll(5), ACT]),
+  r('rare', 'full-salvo', 'Full Salvo', 'skill', 2, 'none', [primeAll(5), ACT], {
+    tags: ['command'],
+  }),
 
   // Ceiling cards (Robert, 2026-10-30: "he is just steady sustained damage, nothing game breaking"). Both are spent after one use and
   // read the board the deck builds, so a built-up crew or a pile of Might is worth far more than the sticker price (guard rails,
@@ -273,6 +278,7 @@ export const ENGINEER: CardDef[] = [
   // and it is spent after one use.
   r('rare', 'full-throttle', 'Full Throttle', 'skill', 2, 'none', [prime(3), ACT, ACT], {
     exhaust: true,
+    tags: ['command'],
   }),
   // Final Volley: 3 Mana rare = ~35. 6 + 10 per companion (the 3 slots are the cap): 3 companions = 36, 2 = 26, 1 = 16, so it only
   // pays for a crew that is still standing. (Not an "act now" card: those each act once, DECISIONS #361.)
