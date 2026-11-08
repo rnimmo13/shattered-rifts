@@ -23,6 +23,16 @@ const db: CombatDb = {
       target: 'none',
       effects: [],
     },
+    // (#692: Shadow Echo answers only cards that cost 1 or more)
+    'cap-probe1': {
+      id: 'cap-probe1',
+      name: 'Paid probe',
+      kind: 'skill',
+      rarity: 'common',
+      cost: 1,
+      target: 'none',
+      effects: [],
+    },
     'cap-trap': {
       id: 'cap-trap',
       name: 'Off-turn replay',
@@ -129,15 +139,16 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
     '%s caps each copy independently and keeps the cap across JSON restore and Barrier loss',
     (card) => {
       let s = play(play(fight(), card), card);
-      for (let i = 0; i < 25; i++) s = play(s, 'cap-probe');
+      for (let i = 0; i < 25; i++) s = play(s, 'cap-probe1');
       expect(hero(s).barrier).toBe(30);
       s = JSON.parse(JSON.stringify(s)) as CombatState;
       hero(s).barrier = 0;
-      s = play(s, 'cap-probe');
+      s = play(s, 'cap-probe1');
       expect(hero(s).barrier).toBe(0);
       s = applyAction(db, s, { type: 'endTurn' }).state;
-      s = play(s, 'cap-probe');
-      expect(hero(s).barrier).toBe(2);
+      s = play(s, 'cap-probe1');
+      // (2 Barrier from each copy, #692)
+      expect(hero(s).barrier).toBe(4);
     },
   );
   it.each([false, true])(
@@ -148,7 +159,7 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
       hero(s).statuses.bracing = 4;
       if (brittle) hero(s).statuses.brittle = 1;
       s = play(s, 'shadow-echo');
-      for (let i = 0; i < 7; i++) s = play(s, 'cap-probe');
+      for (let i = 0; i < 7; i++) s = play(s, 'cap-probe1');
       expect(hero(s).barrier).toBe(15);
       expect(s.sides.a.powers[0]?.barrierUsed).toBe(15);
       s = play(s, 'defend');
@@ -156,17 +167,16 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
       expect(hero(s).barrier).toBeGreaterThan(15);
     },
   );
-  it('zero-Barrier activations do not spend the actual Barrier budget', () => {
+  it('free cards give nothing and do not spend the Barrier budget (#692)', () => {
     let s = fight();
-    hero(s).statuses.brittle = 1;
+    // (Shadow Echo costs 1, so it answers its own play: 2)
     s = play(s, 'shadow-echo');
     for (let i = 0; i < 20; i++) s = play(s, 'cap-probe');
-    expect(hero(s).barrier).toBe(0);
-    delete hero(s).statuses.brittle;
-    for (let i = 0; i < 20; i++) s = play(s, 'cap-probe');
+    expect(hero(s).barrier).toBe(2);
+    for (let i = 0; i < 20; i++) s = play(s, 'cap-probe1');
     expect(hero(s).barrier).toBe(15);
   });
-  it('automatic Recall plays share each Echo budget and preserve preview state', () => {
+  it('automatic Recall plays are free Daggers: no Echo Barrier, and the preview leaves the state alone (#692)', () => {
     let s = play(play(fight(), 'shadow-echo'), 'shadow-echo+');
     s.sides.a.exhausted = Array.from({ length: 28 }, (_, i) => ({
       id: `auto-${i}`,
@@ -177,19 +187,20 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
     previewCardDamage(db, s, 'recall', s.sides.b.units[0]!.id);
     expect(JSON.stringify(s)).toBe(before);
     s = applyAction(db, s, { type: 'play', card: 'recall', target: s.sides.b.units[0]!.id }).state;
-    expect(hero(s).barrier).toBe(30);
+    // (the two Echoes' own plays, 2 + 4, and Recall itself, 3 Mana, 2 from each copy: 10; nothing from the 28 Daggers)
+    expect(hero(s).barrier).toBe(10);
     expect(s.sides.a.attacksPlayed).toBe(28);
   });
   it('a fresh turn allowance also applies to automatic off-turn plays', () => {
     let s = play(fight('pvp'), 'shadow-echo');
-    for (let i = 0; i < 20; i++) s = play(s, 'cap-probe');
+    for (let i = 0; i < 20; i++) s = play(s, 'cap-probe1');
     expect(hero(s).barrier).toBe(15);
     s.sides.a.snares.push({ id: 'off-turn-trap', card: 'cap-trap' });
     s.sides.a.exhausted = [{ id: 'off-turn-knife', card: 'sleeve-knife' }];
     s = applyAction(db, s, { type: 'endTurn' }).state;
     expect(s.active).toBe('b');
-    expect(hero(s).barrier).toBe(16);
-    expect(s.sides.a.powers[0]?.barrierUsed).toBe(1);
+    // (a Dagger played off-turn is free, so it gives nothing since #692)
+    expect(hero(s).barrier).toBe(15);
   });
   it('Fanned Recall replays the full pile against every enemy', () => {
     const s = fight();

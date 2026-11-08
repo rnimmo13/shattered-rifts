@@ -49,6 +49,11 @@ A Neutral card is never better than the class card it resembles: equal at most, 
 | Uncommon | ~112% |
 | Rare | ~125%, or an effect that is not on this scale at all (an Aura that changes how you play, an engine piece) |
 
+**Grade targets (Robert, 2026-11-08).** A card's grade is its points as a share of its budget for its cost and rarity, as in the tables
+above (Auras: the four-turn total in §7): **S** over 160%, **A** 125-160%, **B** 90-124%, **C** 70-89%, **D**
+under 70%. **Every Rare should be in A.** **Most Uncommons should be in B**, unless we decide that one should be A (say why when
+proposing it). S, C and D are things to fix.
+
 ### The quick conversions (memorise these)
 
 On a 1-cost common (10 points) the following are all fair trades for **3 damage**:
@@ -350,7 +355,12 @@ and how soon it springs. A Trap returns to the discard pile after springing, lik
 From the base and "+" versions of every card of the five baseline classes (most of theirs are hand-written in their game):
 
 **An upgrade is worth about +30% of the card's points**, at least 3: about **+3** on a 0- or 1-cost card, **+5-6** on a 2-cost card,
-**+8-10** on a 3-cost card. Up to +50% is fine; past that, the upgrade is too big.
+**+8-10** on a 3-cost card.
+
+**The target is +30% for every rarity (Robert, 2026-11-08).** Commons, Uncommons and Rares alike. A Rare's upgrade is already
+bigger in points because its base is bigger, so it needs no separate rule. Going above or below 30% is allowed only as a stated
+exception for a specific card (for example an Aura costing 1 less, Opening hand or losing Consume, which cannot land exactly on 30%):
+say why when proposing it. Grades (§1) are read from the base card; an upgrade is judged by its gain.
 
 | The baselines' upgrades | Gain | Examples |
 |---|---|---|

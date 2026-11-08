@@ -26,7 +26,7 @@ export type StatusId =
   | 'wrath' // stance: you deal double attack damage and take 50% more
   | 'radiant' // stance: you deal triple attack damage; it ends with your turn
   | 'mantra' // builds towards Radiant: at MANTRA_GOAL you enter it
-  | 'edge' // +1 damage per stack to your attacks tagged "knife" (permanent)
+  | 'edge' // +1 damage per stack to the first EDGE_LIMIT (4) attacks tagged "knife" you play each turn (permanent; #692)
   | 'bracing' // +1 Barrier from every Barrier you gain, per stack (permanent)
   | 'brittle' // Barrier it gains is 25% smaller (turns)
   | 'ghostly' // each hit it takes is capped at 1 damage (turns)
@@ -291,7 +291,11 @@ export type Sel =
   /** (DECISIONS #437 review) the other side's hero, past any companion in front of it (an enemy's Fate) */
   | 'foeHero'
   /** the card's target if it still stands, or else the living enemy with the most Fracture (the first of them on a tie; DECISIONS #564) */
-  | 'targetOrMostFracture';
+  | 'targetOrMostFracture'
+  /** (Serrated Edges, #692) the card's target if it still stands, or else a random enemy */
+  | 'targetOrRandom'
+  /** (Blood Scent, #692) the living enemy with the most Bleed (the first of them on a tie) */
+  | 'mostBledFoe';
 
 /**
  * A number that depends on the board: `amount + floor(mult * metric)`. Unit metrics read `of` (default: the actor; "target" is the
@@ -334,6 +338,8 @@ export type Metric =
   | 'mana'
   | 'played' // cards played this turn (before this one)
   | 'attacksPlayed'
+  /** (Final Flourish, #692) Attacks played this turn that cost 1 or more Mana when played (before this one) */
+  | 'paidAttacksPlayed'
   | 'skillsPlayed' // Skills played this turn (before this one)
   | 'strikes' // cards with "Strike" in their name anywhere in your deck (hand, piles, consumed, and the card being played)
   | 'drawn' // cards drawn this fight
@@ -791,6 +797,8 @@ export type Op =
       turn?: boolean;
       /** the cards it makes are Fleeting */
       ethereal?: boolean;
+      /** (Whispers Beyond+, #691) the cards it makes cost this much less until played */
+      cheaper?: number;
     }
   /** replace cards in your hand with their "+" versions for the rest of the fight */
   /** `discard`: `amount` random cards of your discard pile (default 1) */
@@ -932,7 +940,8 @@ export type Op =
   /** the debuffs on the target are put on every other enemy too (Misery) */
   | { op: 'spreadDebuffs' }
   /** a random card in your hand (not one that has it already) gains Fleeting, Hold or Replay; `costUp` makes it cost more for the fight */
-  | { op: 'mark'; flag: 'ethereal' | 'retain' | 'replay'; costUp?: number }
+  /** `pick`: the player chooses the card (Echo of the Dead, #691); otherwise a random one */
+  | { op: 'mark'; flag: 'ethereal' | 'retain' | 'replay'; costUp?: number; pick?: boolean }
   /** cards cost this much more for the rest of the turn */
   | { op: 'costTax'; amount: number }
   // --- the Defect copy (shaman)
@@ -1400,6 +1409,8 @@ export interface CardInst {
   replay?: number;
   /** a lasting cost change (a rise, or with the recost op a drop): unlike costMod it is not spent when played */
   costUp?: number;
+  /** (#691) the turn this copy last came back by recallOnCost: it returns once a turn */
+  recalledTurn?: number;
 }
 
 /** A rune on the board. */
@@ -1473,7 +1484,9 @@ export interface Pending {
     | 'form'
     | 'commandPick'
     | 'defer'
-    | 'empower';
+    | 'empower'
+    /** (Echo of the Dead, #691) the chosen card is played one more time */
+    | 'replay';
   /** (the Shaman's: 'plantKind' which spirit to plant, pool the totem ids; 'plantAt' which position, pool 't0'-'t7', none = keep) */
   spirit?: string;
   /** (the Shaman) the totem boost the card's first play got, carried over the choice */
@@ -1489,6 +1502,8 @@ export interface Pending {
   charges?: Enchant[];
   /** 'copy': how many copies come next turn */
   times?: number;
+  /** 'replay': how much more the chosen card costs for the fight (Echo of the Dead, #691) */
+  costUp?: number;
   /** for 'transform': what the chosen cards become */
   into?: CardId;
   /** the cards to choose among (your hand, or the top of your draw pile for scry) */
@@ -1561,6 +1576,8 @@ export interface SideState {
   /** counters for this turn, reset when it starts */
   played: number;
   attacksPlayed: number;
+  /** (#692) Attacks this turn that cost 1 or more Mana when played */
+  paidAttacksTurn?: number;
   skillsPlayed: number;
   /** (the Trickster's Suits) the suits showing this turn, and whether the Full Trick has gone off */
   suitsTurn?: Suit[];

@@ -153,7 +153,7 @@ describe('Marked for Death (The Hunt)', () => {
     const miss = fight('assassin', ['marked-for-death']);
     const s1 = applyAction(db, miss, playAct(miss, 'marked-for-death')).state;
     expect(s1.sides.a.extraRewards ?? 0).toBe(0);
-    expect(s1.sides.b.units[0]!.hp).toBe(290);
+    expect(s1.sides.b.units[0]!.hp).toBe(286); // (14 since #692)
 
     const kill = fight('assassin', ['marked-for-death']);
     kill.sides.b.units[0]!.hp = 8;

@@ -30,6 +30,8 @@ export interface Ascendancy {
   leans: string;
   fightStart?: Op[];
   turnStart?: Op[];
+  /** (#692) what the class trait's own turn-start does instead (the Rogue's Hidden Blades gives the Ascendancy's own token) */
+  traitTurnStart?: Op[];
   triggers?: NonNullable<HeroTrait['triggers']>;
   /** fields of the base trait it replaces */
   set?: Partial<Pick<HeroTrait, 'maxReserves' | 'shareMight' | 'clutch' | 'keepBarrier'>>;
@@ -215,8 +217,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'assassin',
     'Assassin',
     'Preparation and execution',
-    'Each Skill you finish on your turn prepares +15% damage for your next Attack, up to +60%. Your Attacks also deal 20% more damage against enemies at half HP or less. These bonuses add together.',
+    // (clearer wording, and Hidden Blades gives a Shadow Feint, a free Skill, instead of a Dagger: Robert 2026-11-08, #692)
+    // (plainer still at Robert's request, same day: Skills build Preparation, the next Attack spends it)
+    'Every Skill you play builds up 15% Preparation (up to 60%). Your next Attack deals that much more damage, then your Preparation is spent (a Dagger spends it too). It waits for you across turns. Your Attacks also deal 20% more to an enemy at half HP or less. Hidden Blades gives you a Shadow Feint (a free Skill: gain 3 Barrier) instead of a Dagger.',
     {
+      traitTurnStart: [{ op: 'addCard', card: 'shadow-feint', to: 'hand', side: 'self' }],
       fightStart: [
         {
           op: 'discipline',
@@ -242,8 +247,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'assassin',
     'Bloodletter',
     'Bleed',
-    'Bleed and Burn on your enemies deal their damage one more time each turn, losing 1 for it.',
+    // (Hidden Blades gives a Barbed Dagger instead of a Dagger: Robert 2026-11-08, #692)
+    'Hidden Blades gives a Barbed Dagger (1 damage and 3 Bleed) instead of a Dagger. Bleed and Burn on your enemies deal their damage one more time each turn, losing 1 for it.',
     {
+      traitTurnStart: [{ op: 'addCard', card: 'barbed-dagger', to: 'hand', side: 'self' }],
       fightStart: [status('virulent', 1)],
     },
   ),
@@ -484,8 +491,10 @@ export function ascendedHero(base: HeroDef, x: Ascendancy): HeroDef {
       ...(x.fightStart || trait?.fightStart
         ? { fightStart: [...(trait?.fightStart ?? []), ...(x.fightStart ?? [])] }
         : {}),
-      ...(x.turnStart || trait?.turnStart
-        ? { turnStart: [...(trait?.turnStart ?? []), ...(x.turnStart ?? [])] }
+      ...(x.turnStart || trait?.turnStart || x.traitTurnStart
+        ? {
+            turnStart: [...(x.traitTurnStart ?? trait?.turnStart ?? []), ...(x.turnStart ?? [])],
+          }
         : {}),
       ...(x.triggers || trait?.triggers
         ? { triggers: [...(trait?.triggers ?? []), ...(x.triggers ?? [])] }

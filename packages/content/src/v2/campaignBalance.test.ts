@@ -221,8 +221,9 @@ describe('approved campaign balance pass', () => {
   });
 
   it.each([
-    ['slow-murder', 21],
-    ['slow-murder+', 28],
+    // (8 / 16 + 1 per card drawn since #692)
+    ['slow-murder', 28],
+    ['slow-murder+', 36],
   ] as const)('%s is a two-Mana draw payoff', (card, expected) => {
     let s = fight('assassin', [card]);
     s.sides.a.drawn = 20;
@@ -366,7 +367,7 @@ describe('approved campaign balance pass', () => {
 
   it.each([
     ['requiem', 19],
-    ['requiem+', 22],
+    ['requiem+', 26], // (11 + 3 a Soul since #691)
   ] as const)('%s pays off souls and replaces the played card', (card, expected) => {
     let s = fight('necromancer', [card]);
     s.sides.a.exhausted = Array.from({ length: 5 }, (_, i) => ({

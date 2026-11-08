@@ -27,10 +27,10 @@ import {
   barrier,
   command,
   copySelf,
-  costTax,
   dmg,
   doomNow,
   draw,
+  drawNext,
   exhaustN,
   exhaustTop,
   fetchCards,
@@ -71,7 +71,8 @@ export const NECROMANCER: CardDef[] = [
     dmg(6),
     status('doom', 4, 'target'),
   ]),
-  // (Unleash: each Thrall strikes for 6 plus its own HP)
+  // (Unleash: each Thrall strikes for 6 plus its own HP. 4 plus half its HP since #691: with Thralls that strike and grow, two copies
+  // in the starter came to ~2.2x a basic's budget; now (4 + ~2.5) x 1.6 companions ≈ 10.4, 130%; upgraded 6 + half, +31%)
   g(
     'basic',
     'off-the-leash',
@@ -79,8 +80,8 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [command(scaled(dmg(6), per('hp')))],
-    CMD,
+    [command(scaled(dmg(4), per('hp', 0.5)))],
+    { ...CMD, up: { effects: [command(scaled(dmg(6), per('hp', 0.5)))] } },
   ),
   // (Soul: the token most of the Souls cards make)
   g('common', 'gravesoul', 'Gravesoul', 'skill', 0, 'none', [draw(2)], {
@@ -97,7 +98,8 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     0,
     'none',
-    [command(dmg(10, 'randomFoe'))],
+    // (11 since #691, to bring Ever Watchful to A: ~18 a Glance over three turns, 54 against a 2-Mana rare Aura's 38)
+    [command(dmg(11, 'randomFoe'))],
     { exhaust: true, ethereal: true, source: 'token', ...CMD },
   ),
 
@@ -138,18 +140,21 @@ export const NECROMANCER: CardDef[] = [
     'bone-rain',
     'Bone Rain',
     'attack',
-    1,
+    // (2 Mana since #691: fresh 3-HP Thralls cost almost nothing to give up, so at 1 it came to ~195%; ~21.6 with ~1.6 Thralls, 101%;
+    // upgraded 10 Barrier and 11 to all, +28%)
+    2,
     'none',
     // (its Thralls only, #684: a Grave Colossus is never given up to it, and only a Thrall given up pays the Barrier)
     [thralls(barrier(9, 'hero'), dmg(9, 'allFoes'), DIES)],
     {
       ...CMD,
-      up: { effects: [thralls(barrier(12, 'hero'), dmg(12, 'allFoes'), DIES)] },
+      up: { effects: [thralls(barrier(10, 'hero'), dmg(11, 'allFoes'), DIES)] },
     },
   ),
-  // (Calcify)
-  g('uncommon', 'calcify', 'Ossify', 'power', 1, 'none', [status('marrow', 4)], {
-    up: { effects: [status('marrow', 6)] },
+  // (Calcify. Marrow reaches every companion hit, the end-of-turn strikes too: Marrow 4 for 1 was ~48 over four turns, ~320%. Since
+  // #691 2 Mana, Marrow 2 and Raise 5: ~32 against a 2-Mana uncommon Aura's 28.5, 112%; upgraded it costs 1, ~+28%)
+  g('uncommon', 'calcify', 'Ossify', 'power', 2, 'none', [status('marrow', 2), raise(5)], {
+    up: { cost: 1 },
   }),
   // (Cleanse: the top card of your draw pile is consumed, as there is no choosing from the draw pile)
   g('uncommon', 'bone-sift', 'Bone Sift', 'skill', 1, 'none', [raise(5), exhaustTop(1)]),
@@ -172,8 +177,9 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'none',
-    [command(dmg(11, 'allFoes')), status('exposed', 2, 'allFoes')],
-    { ...CMD, up: { effects: [command(dmg(13, 'allFoes')), status('exposed', 3, 'allFoes')] } },
+    // (9 since #691: ~24 a cast, 113%; upgraded 11 and 3 Exposed, +30%)
+    [command(dmg(9, 'allFoes')), status('exposed', 2, 'allFoes')],
+    { ...CMD, up: { effects: [command(dmg(11, 'allFoes')), status('exposed', 3, 'allFoes')] } },
   ),
   // (Legion of Bone: "ALL players Summon 6". Alone, "all players" was only you, a 2-Mana After the End; it raises two Thralls
   // instead, as it would for a pair of players: 2 x Raise 6 is ~20 points against a 2-cost uncommon's ~26 with Consume, docs/14)
@@ -197,17 +203,19 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [command(scaled(dmg(7), per('allyStrikes', 3)))],
+    // (6 + 2 a strike since #691: ~12 a cast, 109%; upgraded 8 + 2, +26%)
+    [command(scaled(dmg(6), per('allyStrikes', 2)))],
     {
       ...CMD,
-      up: { effects: [command(scaled(dmg(9), per('allyStrikes', 4)))] },
+      up: { effects: [command(scaled(dmg(8), per('allyStrikes', 2)))] },
     },
   ),
   // (Right Hand Hand)
-  g('uncommon', 'helping-hand', 'Helping Hand', 'attack', 0, 'foe', [command(dmg(4))], {
+  // (3 since #691, and it comes back once a turn: 4.8 + ~3 for the return, 116%; upgraded 4, +21%, the nearest whole number)
+  g('uncommon', 'helping-hand', 'Helping Hand', 'attack', 0, 'foe', [command(dmg(3))], {
     ...CMD,
     recallOnCost: 2,
-    up: { effects: [command(dmg(6))] },
+    up: { effects: [command(dmg(4))] },
   }),
   // (Sic 'Em: whenever a Thrall hits it this turn, another rises)
   g(
@@ -217,13 +225,15 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [command(dmg(5)), status('quarry', 3, 'target', true)],
-    { ...CMD, up: { effects: [command(dmg(6)), status('quarry', 4, 'target', true)] } },
+    // (Command 4 and Quarry 2 since #691: the end-of-turn strikes hit the quarry too, so 5 and Quarry 3 came to ~150-195%; now
+    // ~110-137%; upgraded Quarry 3, ~+30%)
+    [command(dmg(4)), status('quarry', 2, 'target', true)],
+    { ...CMD, up: { effects: [command(dmg(4)), status('quarry', 3, 'target', true)] } },
   ),
-  // (Spur)
-  g('uncommon', 'goad', 'Goad', 'skill', 1, 'none', [raise(3), growHp(5, 'allAllies')], {
+  // (Spur. Raise 3 and +3 max HP to all since #691: 12.7, 113%; upgraded Raise 4 and +4, +31%)
+  g('uncommon', 'goad', 'Goad', 'skill', 1, 'none', [raise(3), growHp(3, 'allAllies')], {
     retain: true,
-    up: { effects: [raise(5), growHp(7, 'allAllies')] },
+    up: { effects: [raise(4), growHp(4, 'allAllies')] },
   }),
   // (Necro Mastery)
   g(
@@ -234,34 +244,46 @@ export const NECROMANCER: CardDef[] = [
     2,
     'none',
     [raise(5), on('allyHurt', [loseHpScaled(per('lost'), 'allFoes')])],
-    { up: { effects: [raise(8), on('allyHurt', [loseHpScaled(per('lost'), 'allFoes')])] } },
+    // (upgraded it costs 1 since #691, ~+35% on an engine Aura: Raise 8 was only +7%)
+    { up: { cost: 1 } },
   ),
   // (was Reanimate, Raise 20 and Consume. Since #684 it summons the Grave Colossus: 18 HP (22 upgraded), Taunt, 2 slots, strikes for
   // 2 + 1 per 4 max HP and takes half of a Command. ~40 points (21.6 HP + 3 body + 6 x ~2.5 acts) less ~5 for its second slot: a
   // 3-Mana rare's 35)
   // (Raise Colossus, Robert 2026-11-07: with no room for another, the Colossus standing gains the HP instead: HP only, no Might, unlike
   // the Engineer's Salvage. Grown, it is ~22 points (18 sticky HP and +4.5 a hit), under the summon's ~35, never a dead draw)
-  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raiseColossus(18)], {
-    up: { effects: [raiseColossus(22)] },
+  // (22 since #691, a rare in A: 26.4 HP + 3 + ~7.5 a hit x 3 less 5 ≈ 47, 134%; upgraded 29, +29%)
+  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raiseColossus(22)], {
+    up: { effects: [raiseColossus(29)] },
   }),
   // (Robert 2026-11-08, DECISIONS #688: a death curses every enemy. Cut the same day after 0.229: 3 + half its max HP to ALL fed on the
   // Thrall raised every turn and hit whole packs, Fleshcraft once per enemy per death. Now a quarter of its max HP, no flat part, at most 3
   // times a turn: a fresh 3-HP Thrall gives nothing, a grown 20-HP one 5 Fate to all, a 40-HP Colossus 10. ~3 deaths of ~16 HP over four
   // turns is ~12 Fate to all, ~11 points against a 2-Mana rare Aura's ~33 on one enemy, ~2-3x that against a group; upgraded it costs 1.
   // Released companions (making way for a Colossus) do not die, so do not count.)
+  // (#691: a quarter at 2 Mana came to ~29%. Now 1 Mana and half, still 3 a turn: ~5 deaths of ~12 HP over four turns is 30 Fate to
+  // all, ~27 against a 1-Mana rare Aura's 20, 135%; upgraded two thirds, +33%)
   g(
     'rare',
     'grave-debt',
     'Grave Debt',
     'power',
-    2,
+    1,
     'none',
     [
-      on('allyDies', [scaled(status('doom', 0, 'allFoes'), per('diedMaxHp', 0.25))], {
+      on('allyDies', [scaled(status('doom', 0, 'allFoes'), per('diedMaxHp', 0.5))], {
         perTurnLimit: 3,
       }),
     ],
-    { up: { cost: 1 } },
+    {
+      up: {
+        effects: [
+          on('allyDies', [scaled(status('doom', 0, 'allFoes'), per('diedMaxHp', 2 / 3))], {
+            perTurnLimit: 3,
+          }),
+        ],
+      },
+    },
   ),
   // (a smaller Colossus that is consumed, Robert 2026-11-07: 14 HP (16.8) + 3 body + its ~5 hit over two or three turns, less ~5 for
   // its second slot, ~26 against a 2-Mana uncommon's ~21 with Consume's +25%, ~27; upgraded 18)
@@ -277,8 +299,13 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'ally',
-    [scaled(barrier(0), per('maxHp', 2, 'target')), { op: 'sacrifice' }],
-    { retain: true, up: { cost: 0 } },
+    // (draw 1 since #691: ~17, 136%; upgraded 4 more Barrier, +28%, in place of costing 0)
+    [scaled(barrier(0), per('maxHp', 2, 'target')), { op: 'sacrifice' }, draw(1)],
+    {
+      retain: true,
+      // (one op, so the preview shows no number until a companion is aimed at)
+      up: { effects: [scaled(barrier(4), per('maxHp', 2, 'target')), { op: 'sacrifice' }, draw(1)] },
+    },
   ),
   // (Sentry Mode)
   g(
@@ -303,7 +330,8 @@ export const NECROMANCER: CardDef[] = [
     'foe',
     [scaled(dmg(10), { by: 'tagPlayed', tag: 'command', mult: 6 })],
     {
-      up: { effects: [scaled(dmg(14), { by: 'tagPlayed', tag: 'command', mult: 7 })] },
+      // (12 + 8 since #691: +29% at ~4 Commands; 14 + 7 was +24%)
+      up: { effects: [scaled(dmg(12), { by: 'tagPlayed', tag: 'command', mult: 8 })] },
     },
   ),
   // (Protector, an Ancient card in her game: here a Rare)
@@ -317,10 +345,13 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [{ op: 'command', ops: [scaled(dmg(10), per('maxHp'))], healthiest: true }],
+    // (15 + max HP since #691, a rare in A: ~31 from a 16-HP Thrall, 131%; upgraded 16 + 1.5x max HP, +29%)
+    [{ op: 'command', ops: [scaled(dmg(15), per('maxHp'))], healthiest: true }],
     {
       ...CMD,
-      up: { effects: [{ op: 'command', ops: [scaled(dmg(15), per('maxHp'))], healthiest: true }] },
+      up: {
+        effects: [{ op: 'command', ops: [scaled(dmg(16), per('maxHp', 1.5))], healthiest: true }],
+      },
     },
   ),
   // --- blood and bone: HP and consumed cards grow the dead (#684) ---
@@ -350,8 +381,9 @@ export const NECROMANCER: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnStart', [lose(3), raise(5)])],
-    { up: { effects: [on('turnStart', [lose(3), raise(7)])] } },
+    // (lose 2 since #691: ~7.8 a turn, ~31, 109%; upgraded Raise 7, +31%)
+    [on('turnStart', [lose(2), raise(5)])],
+    { up: { effects: [on('turnStart', [lose(2), raise(7)])] } },
   ),
 
   // --- Fate ---
@@ -407,8 +439,10 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'none',
-    [barrier(6), when('doomedTurn', { atLeast: 1 }, [barrier(6), barrier(6)])],
-    { up: { effects: [barrier(7), when('doomedTurn', { atLeast: 1 }, [barrier(7), barrier(7)])] } },
+    // (5, and 5 + 5 more if you cursed this turn, since #691: Grave Chill's Fate makes the "if" true most turns, ~13.8, 123%;
+    // upgraded 7 and 6 + 6, +29%)
+    [barrier(5), when('doomedTurn', { atLeast: 1 }, [barrier(5), barrier(5)])],
+    { up: { effects: [barrier(7), when('doomedTurn', { atLeast: 1 }, [barrier(6), barrier(6)])] } },
   ),
   // (Deathbringer)
   g(
@@ -460,12 +494,15 @@ export const NECROMANCER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('doomFoe', [barrier(2)])],
+    // (the first 2 curses each turn since #691: Grave Chill's Fate on every consumed card made it ~160%; ~17, 115%; upgraded the
+    // first 3, ~+25%)
+    [on('doomFoe', [barrier(2)], { perTurnLimit: 2 })],
     {
-      up: { effects: [on('doomFoe', [barrier(3)])] },
+      up: { effects: [on('doomFoe', [barrier(2)], { perTurnLimit: 3 })] },
     },
   ),
-  // (Sleight of Flesh)
+  // (Sleight of Flesh. Once a turn since #691: Grave Chill curses on every consumed card, once per enemy, so 9 a debuff with no limit
+  // was ~108 over four turns, ~380%. 8 once a turn, 32, 112%; upgraded 10, +25%)
   g(
     'uncommon',
     'fleshcraft',
@@ -473,15 +510,26 @@ export const NECROMANCER: CardDef[] = [
     'power',
     2,
     'none',
-    [on('debuffFoe', [dmg(9, 'target')])],
+    [on('debuffFoe', [dmg(8, 'target')], { perTurnLimit: 1 })],
     {
-      up: { effects: [on('debuffFoe', [dmg(13, 'target')])] },
+      up: { effects: [on('debuffFoe', [dmg(10, 'target')], { perTurnLimit: 1 })] },
     },
   ),
-  // (Borrowed Time; 5 Mana, not 4: with every card 1 dearer, 4 came to about nothing, DECISIONS #397)
-  g('uncommon', 'toll-in-advance', 'Toll in Advance', 'skill', 1, 'none', [mana(5), costTax(1)], {
-    up: { effects: [mana(7), costTax(1)] },
-  }),
+  // (Borrowed Time; 5 Mana, not 4: with every card 1 dearer, 4 came to about nothing, DECISIONS #397. Since #691 the debt is paid next
+  // turn instead: +4 Mana now, 2 less next turn, Consume: ~11.6, 104%; upgraded 1 less next turn, +34%. A turn never starts below 0)
+  g(
+    'uncommon',
+    'toll-in-advance',
+    'Toll in Advance',
+    'skill',
+    1,
+    'none',
+    [mana(4), manaNext(-2)],
+    {
+      exhaust: true,
+      up: { effects: [mana(4), manaNext(-1)] },
+    },
+  ),
   // (Debilitate)
   g(
     'uncommon',
@@ -503,8 +551,12 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'foe',
-    [status('faltering', 2, 'target'), status('exposed', 2, 'target')],
-    { exhaust: true },
+    // (1 Faltering since #691: 11.1, 99%; upgraded back to 2, +33%)
+    [status('faltering', 1, 'target'), status('exposed', 2, 'target')],
+    {
+      exhaust: true,
+      up: { effects: [status('faltering', 2, 'target'), status('exposed', 2, 'target')] },
+    },
   ),
   // (End of Days)
   g(
@@ -512,12 +564,13 @@ export const NECROMANCER: CardDef[] = [
     'the-last-toll',
     'The Last Toll',
     'skill',
-    3,
+    // (2 Mana and 32 since #691: 31.8 against a 2-Mana rare's 23.75, 134%; upgraded 43, +30%)
+    2,
     'none',
-    [status('doom', 29, 'allFoes'), doomNow('allFoes')],
-    { up: { effects: [status('doom', 37, 'allFoes'), doomNow('allFoes')] } },
+    [status('doom', 32, 'allFoes'), doomNow('allFoes')],
+    { up: { effects: [status('doom', 43, 'allFoes'), doomNow('allFoes')] } },
   ),
-  // (Oblivion: this turn every card you play curses that enemy)
+  // (Oblivion: this turn every card you play curses that enemy. 4 since #691: ~3.5 cards x 4 x 0.7 ≈ 9.8, 131%; upgraded 5, +25%)
   g(
     'rare',
     'mark-of-ending',
@@ -525,14 +578,14 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     0,
     'foe',
-    [on('play', [status('doom', 3, 'target')], { temp: true, pin: true })],
-    { up: { effects: [on('play', [status('doom', 4, 'target')], { temp: true, pin: true })] } },
+    [on('play', [status('doom', 4, 'target')], { temp: true, pin: true })],
+    { up: { effects: [on('play', [status('doom', 5, 'target')], { temp: true, pin: true })] } },
   ),
-  // (Reaper Form)
-  g('rare', 'reapers-mantle', "Reaper's Mantle", 'power', 3, 'none', [status('reaping', 1)], {
-    up: { retain: true },
+  // (Reaper Form. 2 Mana since #691: Commands count as Attacks, ~60 over four turns against 38, ~158%; upgraded Opening hand, ~+35%)
+  g('rare', 'reapers-mantle', "Reaper's Mantle", 'power', 2, 'none', [status('reaping', 1)], {
+    up: { innate: true },
   }),
-  // (Time's Up)
+  // (Time's Up. Fate + 5 since #691: ~32 mid-fight, 135%; upgraded Fate + 15, +31%)
   g(
     'rare',
     'final-reckoning',
@@ -540,14 +593,16 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(0), per('doom', 1, 'target'))],
-    { exhaust: true, up: { retain: true } },
+    [scaled(dmg(5), per('doom', 1, 'target'))],
+    { exhaust: true, up: { effects: [scaled(dmg(15), per('doom', 1, 'target'))] } },
   ),
-  // (Misery)
+  // (Misery; upgraded 8 and Hold since #691: 9 and Hold was +40%)
   g('rare', 'spreading-rot', 'Spreading Rot', 'attack', 0, 'foe', [dmg(7), spreadDebuffs], {
-    up: { retain: true, effects: [dmg(9), spreadDebuffs] },
+    up: { retain: true, effects: [dmg(8), spreadDebuffs] },
   }),
-  // (Shared Fate: you lose 2 Might's worth and so does the enemy, for the fight)
+  // (Shared Fate. You lose 2 HP since #691, not 2 Sapped: a Command deck never felt its own Sapped, an attack deck lost more than it
+  // gained (40-173%). 2 Sapped on the enemy for the fight (10.8) - 3 + 2.1 ≈ 9.9, 132%, and the HP lost feeds Grave Chill; upgraded no
+  // HP loss, +30%)
   g(
     'rare',
     'common-grave',
@@ -555,10 +610,10 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     0,
     'foe',
-    [status('sapped', 2, 'self'), status('sapped', 2, 'target')],
+    [lose(2), status('sapped', 2, 'target')],
     {
       exhaust: true,
-      up: { effects: [status('sapped', 2, 'self'), status('sapped', 3, 'target')] },
+      up: { effects: [status('sapped', 2, 'target')] },
     },
   ),
   // (Neurosurge)
@@ -584,6 +639,7 @@ export const NECROMANCER: CardDef[] = [
       ]),
     ],
     {
+      // (upgraded since #691: its Fate on you is at least 2 a turn, not 3, besides the third Mana next turn: +31%)
       up: {
         effects: [
           mana(1),
@@ -594,7 +650,7 @@ export const NECROMANCER: CardDef[] = [
               by: 'maxHp',
               of: 'self',
               mult: 0.02,
-              min: 3,
+              min: 2,
               round: 'ceil',
             }),
           ]),
@@ -664,8 +720,9 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'foe',
-    [lose(3, 'target'), addTo('gravesoul', 3, 'draw')],
-    { up: { effects: [lose(4, 'target'), addTo('gravesoul', 4, 'draw')] } },
+    // (2 Gravesouls since #691: 11.9, 106%; upgraded 3, +35%)
+    [lose(3, 'target'), addTo('gravesoul', 2, 'draw')],
+    { up: { effects: [lose(3, 'target'), addTo('gravesoul', 3, 'draw')] } },
   ),
   // (Dirge: an X card's "+" is one more X here, DECISIONS: every X card upgrades that way)
   g(
@@ -706,9 +763,10 @@ export const NECROMANCER: CardDef[] = [
     },
   ),
   // (Lethality)
-  g('uncommon', 'killing-chill', 'Killing Chill', 'power', 1, 'none', [status('lethality', 50)], {
+  // (30% since #691: a Command's every companion hit takes the bonus, so 50% was ~180%; ~16, 108%; upgraded 40%, +33%)
+  g('uncommon', 'killing-chill', 'Killing Chill', 'power', 1, 'none', [status('lethality', 30)], {
     ethereal: true,
-    up: { effects: [status('lethality', 75)] },
+    up: { effects: [status('lethality', 40)] },
   }),
   // (Pagestorm)
   g(
@@ -744,8 +802,9 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
+    // (11 since #691: 25.4, 119%; upgraded 18 unchanged, +28%)
     [
-      dmg(13),
+      dmg(11),
       addTo('gravesoul', 1, 'draw'),
       addTo('gravesoul', 1, 'hand'),
       addTo('gravesoul', 1, 'discard'),
@@ -796,10 +855,11 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [scaled(dmg(8), per('drawnTurn', 4))],
+    // (7 since #691: ~13, 116%; upgraded 8 + 6, +31%)
+    [scaled(dmg(7), per('drawnTurn', 4))],
     { up: { effects: [scaled(dmg(8), per('drawnTurn', 6))] } },
   ),
-  // (Delay)
+  // (Delay. 14 Barrier since #691: 20.8, 98%; upgraded 16 and 2 Mana next turn, +31%)
   g(
     'uncommon',
     'stay-of-execution',
@@ -807,9 +867,9 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     2,
     'none',
-    [barrier(11), manaNext(1)],
+    [barrier(14), manaNext(1)],
     {
-      up: { effects: [barrier(13), manaNext(2)] },
+      up: { effects: [barrier(16), manaNext(2)] },
     },
   ),
   // (Dredge: random cards, as there is no choosing from the discard pile)
@@ -823,11 +883,13 @@ export const NECROMANCER: CardDef[] = [
     up: { effects: [barrier(17)] },
   }),
   // (Banshee's Cry)
-  g('rare', 'wailing-cry', 'Wailing Cry', 'attack', 9, 'none', [dmg(33, 'allFoes')], {
+  // (36 since #691: ~47 at ~3 Mana mid-fight, 134%; upgraded 47 at the same cost, +31%, in place of costing 7)
+  g('rare', 'wailing-cry', 'Wailing Cry', 'attack', 9, 'none', [dmg(36, 'allFoes')], {
     cheaperPer: { by: 'etherealPlayed', mult: 2 },
-    up: { cost: 7 },
+    up: { effects: [dmg(47, 'allFoes')] },
   }),
-  // (Call of the Void)
+  // (Call of the Void. Opening hand since #691, so it has a fifth turn: ~30, 150%; upgraded the card found costs 1 less that turn,
+  // ~+33%)
   g(
     'rare',
     'whispers-beyond',
@@ -836,14 +898,23 @@ export const NECROMANCER: CardDef[] = [
     1,
     'none',
     [on('turnStart', [{ op: 'discover', ethereal: true }])],
-    { up: { innate: true } },
+    {
+      innate: true,
+      up: { effects: [on('turnStart', [{ op: 'discover', ethereal: true, cheaper: 1 }])] },
+    },
   ),
-  // (Demesne)
-  g('rare', 'phylactery', 'Phylactery', 'power', 3, 'none', [on('turnStart', [mana(1), draw(1)])], {
-    ethereal: true,
-    up: { cost: 2 },
-  }),
-  // (Devour Life)
+  // (Demesne. 2 Mana, not Fleeting, and draw 1 when played since #691: ~49, 129%; upgraded it costs 1, ~+30%)
+  g(
+    'rare',
+    'phylactery',
+    'Phylactery',
+    'power',
+    2,
+    'none',
+    [draw(1), on('turnStart', [mana(1), draw(1)])],
+    { up: { cost: 1 } },
+  ),
+  // (Devour Life. Raise 3 a Soul since #691: ~27, 135%; upgraded Raise 4, +29%)
   g(
     'rare',
     'soul-harvest',
@@ -851,19 +922,29 @@ export const NECROMANCER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [raise(1)], { tag: 'soul' })],
-    { up: { effects: [on('play', [raise(2)], { tag: 'soul' })] } },
+    [on('play', [raise(3)], { tag: 'soul' })],
+    { up: { effects: [on('play', [raise(4)], { tag: 'soul' })] } },
   ),
-  // (Eidolon: Ghostly 2 lasts through the enemy's turn, as her Intangible 1 does; 6 cards, not 9: a hand of 9 almost never happened, DECISIONS #397)
+  // (Eidolon: Ghostly 2 lasts through the enemy's turn, as her Intangible 1 does; 6 cards, not 9: a hand of 9 almost never happened, DECISIONS #397.
+  // Since #691 1 Mana, 3 cards are enough and you draw 1 next turn: the hand left after paying is ~4, so 6 almost never happened either.
+  // Ghostly ~13 + Grave Chill 8.4 - the cards ~6 + 3.5 ≈ 19, 151%; upgraded Ghostly 3, +32%)
   g(
     'rare',
     'ghostform',
     'Spirit Walk',
     'skill',
-    2,
+    1,
     'none',
-    [exhaustN(99), when('exhaustedNow', { atLeast: 6 }, [status('ghostly', 2)])],
-    { up: { cost: 1 } },
+    [exhaustN(99), when('exhaustedNow', { atLeast: 3 }, [status('ghostly', 2)]), drawNext(1)],
+    {
+      up: {
+        effects: [
+          exhaustN(99),
+          when('exhaustedNow', { atLeast: 3 }, [status('ghostly', 3)]),
+          drawNext(1),
+        ],
+      },
+    },
   ),
   // (Eradicate)
   g(
@@ -877,9 +958,20 @@ export const NECROMANCER: CardDef[] = [
     { x: true, retain: true },
   ),
   // (Glimpse Beyond: "ALL players add 3 Souls"; alone, it is you)
-  g('rare', 'gather-souls', 'Gather Souls', 'skill', 1, 'none', [addTo('gravesoul', 3, 'draw')], {
-    exhaust: true,
-  }),
+  // (draw 1 since #691: 17.7, 142%; upgraded 4 Gravesouls and Hold, +32%)
+  g(
+    'rare',
+    'gather-souls',
+    'Gather Souls',
+    'skill',
+    1,
+    'none',
+    [addTo('gravesoul', 3, 'draw'), draw(1)],
+    {
+      exhaust: true,
+      up: { retain: true, effects: [addTo('gravesoul', 4, 'draw'), draw(1)] },
+    },
+  ),
   // (Hang: every Gallows deals double to an enemy for each Gallows already played on it)
   g(
     'rare',
@@ -901,8 +993,10 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'none',
-    [{ op: 'transform', into: 'gravesoul', from: 'draw', amount: 1 }],
-    { ethereal: true, up: { cost: 0 } },
+    // (since #691 two Gravesouls to your hand and one to your draw pile: turning a random card of the draw pile into one was ~24%.
+    // ~16.2, 130%; upgraded it costs 0 and is consumed, ~+30%)
+    [addTo('gravesoul', 2, 'hand'), addTo('gravesoul', 1, 'draw')],
+    { ethereal: true, up: { cost: 0, exhaust: true } },
   ),
   // (Soul Storm)
   g(
@@ -914,7 +1008,8 @@ export const NECROMANCER: CardDef[] = [
     'foe',
     [scaled(dmg(9), { by: 'tagExhausted', tag: 'soul', mult: 2 }), draw(1)],
     {
-      up: { effects: [scaled(dmg(12), { by: 'tagExhausted', tag: 'soul', mult: 2 }), draw(1)] },
+      // (11 + 3 a Soul since #691: 12 + 2 was +17%; +28%)
+      up: { effects: [scaled(dmg(11), { by: 'tagExhausted', tag: 'soul', mult: 3 }), draw(1)] },
     },
   ),
   // (Spirit of Ash)
@@ -925,9 +1020,10 @@ export const NECROMANCER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [barrier(4)], { ethereal: true })],
+    // (6 since #691: ~29, 144%; upgraded 8, +33%)
+    [on('play', [barrier(6)], { ethereal: true })],
     {
-      up: { effects: [on('play', [barrier(5)], { ethereal: true })] },
+      up: { effects: [on('play', [barrier(8)], { ethereal: true })] },
     },
   ),
   // (The Scythe: hers grows for the rest of the run; ours for the rest of the fight, as the campaign has no piece to keep it)
@@ -940,14 +1036,24 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(16), per('bonus')), forge('reaping-scythe', 5)],
-    { up: { effects: [scaled(dmg(20), per('bonus')), forge('reaping-scythe', 6)] } },
+    // (22, grows 7 since #691: 22 + 8.4 ≈ 30, 128%; upgraded 28, grows 9, +28%)
+    [scaled(dmg(22), per('bonus')), forge('reaping-scythe', 7)],
+    { up: { effects: [scaled(dmg(28), per('bonus')), forge('reaping-scythe', 9)] } },
   ),
-  // (Transfigure: a random card in your hand)
-  g('rare', 'echo-of-the-dead', 'Echo of the Dead', 'skill', 1, 'none', [mark('replay', 1)], {
-    exhaust: true,
-    up: { exhaust: false },
-  }),
+  // (Transfigure. Since #691 you choose the card in your hand: a random one was ~96%; ~16, 129%; upgraded no Consume and Hold, ~+35%)
+  g(
+    'rare',
+    'echo-of-the-dead',
+    'Echo of the Dead',
+    'skill',
+    1,
+    'none',
+    [{ op: 'mark', flag: 'replay', costUp: 1, pick: true }],
+    {
+      exhaust: true,
+      up: { exhaust: false, retain: true },
+    },
+  ),
   // (Undeath)
   g('rare', 'unquiet-rest', 'Unquiet Rest', 'skill', 0, 'none', [barrier(7), copySelf('discard')], {
     up: { effects: [barrier(9), copySelf('discard')] },
@@ -980,8 +1086,11 @@ export const NECROMANCER: CardDef[] = [
     retain: true,
   }),
   // (Bury)
-  g('uncommon', 'entomb', 'Entomb', 'attack', 4, 'foe', [dmg(52)], { up: { effects: [dmg(63)] } }),
-  // (Friendship: Might cannot go below 0, so the 2 Might lost is 2 Sapped)
+  // (48 since #691: 116%; upgraded 62, +29%)
+  g('uncommon', 'entomb', 'Entomb', 'attack', 4, 'foe', [dmg(48)], { up: { effects: [dmg(62)] } }),
+  // (Friendship: Might cannot go below 0, so the 2 Might lost was 2 Sapped. Since #691 your healthiest companion loses 3 HP each turn
+  // instead: a Command deck never felt its own Sapped (~187%). 28 for the Mana less ~14.4 of companion HP ≈ 13.6, 91%; upgraded 2 HP,
+  // +35%)
   g(
     'uncommon',
     'bonded-dead',
@@ -989,7 +1098,7 @@ export const NECROMANCER: CardDef[] = [
     'power',
     1,
     'none',
-    [status('sapped', 2, 'self'), on('turnStart', [mana(1)])],
-    { up: { effects: [status('sapped', 1, 'self'), on('turnStart', [mana(1)])] } },
+    [on('turnStart', [mana(1), lose(3, 'biggestAlly')])],
+    { up: { effects: [on('turnStart', [mana(1), lose(2, 'biggestAlly')])] } },
   ),
 ];

@@ -257,7 +257,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
           .find((u) => u.id === d.target)?.name ?? 'No mark'
       } +${d.progress}%`;
     case 'execution':
-      return `Prepared +${d.progress}%`;
+      return `Preparation +${d.progress}%`;
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivated ${d.progress}/${r.cap}`
@@ -303,7 +303,7 @@ export function disciplineText(side: SideState): string | null {
     case 'pursuit':
       return `Attacks against your marked enemy deal ${d.progress}% more damage.`;
     case 'execution':
-      return `Preparation: next Attack +${d.progress}%; +${r.bonus}% against enemies at ${r.woundedPct}% HP or less.`;
+      return `Preparation +${d.progress}%: your next Attack deals that much more and uses it all up (even a Dagger). Every Skill you play adds +${r.perSkill}% (up to +${r.cap}%). Attacks also deal +${r.bonus}% to enemies at ${r.woundedPct}% HP or less.`;
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivation: complete, ${d.progress}/${r.cap} Spirit gained this fight.`

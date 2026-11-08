@@ -235,6 +235,6 @@ describe('Engineer support and continuous attack Auras', () => {
     const unit = allies(s).find((u) => u.def === 'patrol-drone')!;
     expect(
       viewFor(db, s, 'a').sides.a.units.find((u) => u.id === unit.id)?.intentView?.damage,
-    ).toBe(7);
+    ).toBe(5); // (Marrow 2 since #691)
   });
 });

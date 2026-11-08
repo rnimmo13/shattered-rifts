@@ -116,7 +116,7 @@ describe('simulation-led balance revision', () => {
     expect(heroOf(s.sides.a)!.statuses.spirit).toBe(before + 1);
   });
 
-  // (2 Mana since #689: only the healthiest companion strikes)
+  // (2 Mana since #689: only the healthiest companion strikes; 16 + 1.5x its max HP upgraded since #691)
   it('The Drowned King+ spends two Mana while preserving its complete max-HP command payoff', () => {
     let s = setup('necromancer');
     const ally = s.sides.a.units.find((u) => u.kind === 'ally')!;
@@ -125,7 +125,7 @@ describe('simulation-led balance revision', () => {
     const before = heroOf(s.sides.b)!.hp;
     s = play(s, 'the-drowned-king+', heroOf(s.sides.b)!.id);
     expect(s.sides.a.mana).toBe(0);
-    expect(before - heroOf(s.sides.b)!.hp).toBe(35);
+    expect(before - heroOf(s.sides.b)!.hp).toBe(46); // (16 + 1.5 x its max HP since #691)
   });
 
   it.each([

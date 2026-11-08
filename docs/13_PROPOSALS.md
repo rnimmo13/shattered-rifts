@@ -7,6 +7,12 @@ approved it moves into the real doc (`08_COMBAT_V2.md`, `03_CAMPAIGN.md`) and ge
 
 ## For review
 
+### Rogue cost pass (2026-11-08; approved and built, DECISIONS #692; awaiting release)
+
+Full chart in [ROGUE_COST_PASS_PROPOSAL_2026-11-08.md](ROGUE_COST_PASS_PROPOSAL_2026-11-08.md): cap the per-Dagger multipliers,
+Bleed and Sleight Rares to A with payoffs that only count cards costing 1 or more, defence commons to B, upgrades to +30%, and the
+trait's one Dagger follows the Ascendancy (Dagger / Barbed Dagger / Shadow Feint). Serrated Edges' change is approved.
+
 ### 1. Enemies that set Traps (approved in principle 2026-10-27; details to review)
 
 **Why:** the game is trap-driven, but in the campaign only the player sets Traps. Enemies with Traps make you play

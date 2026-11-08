@@ -1,3 +1,7 @@
+# Release approved 0.232.0 / rules 99 (2026-11-08; decisions 691-692)
+
+Robert explicitly approves pushing/deploying the Necromancer and Rogue cost passes (Rares in A, most Uncommons in B, upgrades about +30%; the Rogue's trait card follows the Ascendancy, Daggers capped, "costs 1 or more" payoffs). Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.231.0 / rules 98 (2026-11-08; decision 690)
 
 Robert explicitly approves pushing/deploying the Knight and Rogue going back to their still paintings (animated rigs switched off). No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

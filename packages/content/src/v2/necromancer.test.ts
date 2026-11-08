@@ -118,17 +118,24 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(foe(play(none, 'T0', foe(none).id)).hp).toBe(300);
   });
 
-  it('Off the Leash adds each Thrall’s own HP; The Drowned King has only the healthiest strike, for its max HP (#689)', () => {
+  it('Off the Leash adds half each Thrall’s own HP (#691); The Drowned King has only the healthiest strike, for its max HP (#689)', () => {
     const s = fight(['off-the-leash', 'the-drowned-king']);
     addThrall(s, 10);
     thralls(s)[0]!.hp = 1; // a hurt 3-HP Thrall
     let after = play(s, 'T0', foe(s).id);
-    expect(foe(after).hp).toBe(300 - (6 + 1) - (6 + 10));
+    // (4 + half its HP, rounded down: 4 + 0 for the hurt one, 4 + 5 for the 10-HP one)
+    expect(foe(after).hp).toBe(300 - (4 + 0) - (4 + 5));
+    expect(cardText(db, db.cards['off-the-leash']!)).toBe(
+      'Your companions each deal 4 damage, plus half their own HP.',
+    );
     after = play(after, 'T1', foe(after).id);
     // (the 10-HP Thrall alone, not the 3-HP one too)
-    expect(foe(after).hp).toBe(300 - 23 - (10 + 10));
+    expect(foe(after).hp).toBe(300 - 13 - (15 + 10));
     expect(cardText(db, db.cards['the-drowned-king']!)).toBe(
-      'Your healthiest companion deals 10 damage, plus its own max HP.',
+      'Your healthiest companion deals 15 damage, plus its own max HP.',
+    );
+    expect(cardText(db, db.cards['the-drowned-king+']!)).toBe(
+      'Your healthiest companion deals 16 damage, plus 1.5 times its own max HP.',
     );
     expect(db.cards['the-drowned-king']?.cost).toBe(2);
   });
@@ -136,11 +143,14 @@ describe('Dorian, the Necrobinder copy', () => {
   it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits harder for every earlier command', () => {
     let s = fight(['calcify', 'knucklebone', 'rattle-the-bones']);
     s = play(s, 'T0');
+    // (#691: it raises a 5-HP Thrall beside the 3-HP one)
+    expect(thralls(s).map((u) => u.maxHp)).toEqual([3, 5]);
     s = play(s, 'T1', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 10);
+    // two Thralls, each 6 + Marrow 2
+    expect(foe(s).hp).toBe(300 - 16);
     s = play(s, 'T2', foe(s).id);
-    // one earlier command this turn: one hit of 7 + 3 + 4
-    expect(foe(s).hp).toBe(300 - 10 - 14);
+    // one earlier Command this turn: each Thrall hits for 6 + 2 + Marrow 2
+    expect(foe(s).hp).toBe(300 - 16 - 20);
   });
 
   it('Bone Crush costs 0 once the Thralls have struck this turn', () => {
@@ -205,7 +215,7 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(thralls(s)).toHaveLength(1);
     s = play(s, 'T1', foe(s).id);
     expect(thralls(s)).toHaveLength(2);
-    expect(thralls(s)[1]!.maxHp).toBe(3);
+    expect(thralls(s)[1]!.maxHp).toBe(2);
   });
 
   it('Call at Dusk (Invoke): next turn, Raise 2 and 2 Mana, once', () => {
@@ -251,7 +261,7 @@ describe('Fate (her Doom)', () => {
     foe(s, 1).hp = 200;
     const after = play(s, 'T0');
     expect(after.sides.b.units).toHaveLength(1);
-    expect(foe(after).statuses.doom).toBe(29);
+    expect(foe(after).statuses.doom).toBe(32);
   });
 
   it('Mark of Ending (Oblivion): every card played this turn curses that enemy, not the card itself', () => {
@@ -260,7 +270,7 @@ describe('Fate (her Doom)', () => {
     expect(foe(s).statuses.doom ?? 0).toBe(0);
     s = play(s, 'T1');
     s = play(s, 'T2');
-    expect(foe(s).statuses.doom).toBe(6);
+    expect(foe(s).statuses.doom).toBe(8);
   });
 
   it("Reaper's Mantle (Reaper Form): what an Attack takes off is cursed on as Fate", () => {
@@ -277,7 +287,19 @@ describe('Fate (her Doom)', () => {
     const b0 = hero(s).barrier;
     s = play(s, 'T2', foe(s).id);
     expect(hero(s).barrier).toBe(b0 + 2);
-    expect(foe(s).hp).toBe(300 - 9);
+    expect(foe(s).hp).toBe(300 - 8);
+  });
+
+  it('Fleshcraft answers once a turn, and Burial Shroud the first 2 curses a turn (#691)', () => {
+    expect(cardText(db, db.cards.fleshcraft!)).toMatch(/\(once each turn\)/);
+    expect(cardText(db, db.cards['grave-debt+']!)).toMatch(/two thirds of/);
+    let s = fight(['burial-shroud', 'fleshcraft', 'tolling-bell', 'tolling-bell', 'tolling-bell']);
+    s = play(s, 'T0');
+    s = play(s, 'T1');
+    const b0 = hero(s).barrier;
+    for (const id of ['T2', 'T3', 'T4']) s = play(s, id, foe(s).id);
+    expect(hero(s).barrier).toBe(b0 + 4);
+    expect(foe(s).hp).toBe(300 - 8);
   });
 
   it('Wither (Debilitate) doubles Exposed on its target', () => {
@@ -364,14 +386,26 @@ describe('the other new rules', () => {
     expect(foe(s).hp).toBe(300 - 10 - 16 - 22);
   });
 
-  it('Toll in Advance (Borrowed Time): 5 Mana, and every card costs 1 more this turn', () => {
+  it('Toll in Advance (Borrowed Time, #691): 4 Mana now and 2 less next turn, consumed', () => {
     let s = fight(['toll-in-advance', 'strike']);
     s.sides.a.mana = 3;
     s = play(s, 'T0');
-    expect(s.sides.a.mana).toBe(7);
-    expect(costOf(db, s.sides.a, s.sides.a.hand[0]!)).toBe(2);
+    expect(s.sides.a.mana).toBe(6);
+    expect(costOf(db, s.sides.a, s.sides.a.hand[0]!)).toBe(1);
+    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('toll-in-advance');
     s = applyAction(db, s, { type: 'endTurn' }).state;
-    expect(s.sides.a.costTax).toBe(0);
+    expect(s.sides.a.mana).toBe(s.sides.a.maxMana - 2);
+    expect(cardText(db, db.cards['toll-in-advance']!)).toMatch(/Gain 4 Mana/);
+    // (a turn never starts below 0; the debt left over carries to the turn after)
+    let low = fight(['toll-in-advance']);
+    low.sides.a.maxMana = 1;
+    low = play(low, 'T0');
+    low = applyAction(db, low, { type: 'endTurn' }).state;
+    expect(low.sides.a.mana).toBe(0);
+    expect(low.sides.a.nextMana).toBe(-1);
+    low = applyAction(db, low, { type: 'endTurn' }).state;
+    expect(low.sides.a.mana).toBe(0);
+    expect(low.sides.a.nextMana).toBe(0);
   });
 
   it('Helping Hand (Right Hand Hand) comes back when you play a card that costs 2 or more', () => {
@@ -382,14 +416,39 @@ describe('the other new rules', () => {
     expect(s.sides.a.hand.some((c) => c.id === 'T0')).toBe(true);
   });
 
-  it('Echo of the Dead (Transfigure) gives a card Replay and makes it cost 1 more', () => {
-    let s = fight(['echo-of-the-dead', 'strike']);
+  it('Helping Hand comes back once a turn (#691)', () => {
+    let s = fight(['helping-hand', 'bone-bulwark', 'bone-bulwark']);
+    s = play(s, 'T0', foe(s).id);
+    s = play(s, 'T1');
+    s = play(s, 'T0', foe(s).id);
+    expect(s.sides.a.discard.some((c) => c.id === 'T0')).toBe(true);
+    s = play(s, 'T2');
+    expect(s.sides.a.hand.some((c) => c.id === 'T0')).toBe(false);
+    expect(cardText(db, db.cards['helping-hand']!)).toMatch(/\(once a turn\)/);
+  });
+
+  it('Echo of the Dead (Transfigure): you choose the card in your hand that is played again (#691)', () => {
+    let s = fight(['echo-of-the-dead', 'strike', 'defend']);
     s = play(s, 'T0');
+    expect(s.pending?.kind).toBe('replay');
+    expect([...s.pending!.pool].sort()).toEqual(['T1', 'T2']);
+    s = applyAction(db, s, { type: 'pick', cards: ['T1'] }).state;
     const c = s.sides.a.hand.find((x) => x.id === 'T1')!;
     expect(c.replay).toBe(1);
+    expect(s.sides.a.hand.find((x) => x.id === 'T2')!.replay ?? 0).toBe(0);
     expect(costOf(db, s.sides.a, c)).toBe(2);
     s = play(s, 'T1', foe(s).id);
     expect(foe(s).hp).toBe(300 - 12);
+    expect(cardText(db, db.cards['echo-of-the-dead']!)).toMatch(/^Choose a card in your hand/);
+    // (Echo itself is consumed once the choice is made; upgraded it Holds and is not)
+    expect(s.sides.a.exhausted.map((x) => x.card)).toContain('echo-of-the-dead');
+    expect(db.cards['echo-of-the-dead+']).toMatchObject({ retain: true });
+    expect(db.cards['echo-of-the-dead+']?.exhaust ?? false).toBe(false);
+    // (with one card to choose from, no choice is asked)
+    let one = fight(['echo-of-the-dead', 'strike']);
+    one = play(one, 'T0');
+    expect(one.pending).toBeNull();
+    expect(one.sides.a.hand.find((x) => x.id === 'T1')!.replay).toBe(1);
   });
 
   it('Death Grip is your own blow, 10 + 6 per Command card played earlier this fight (Robert 2026-11-08, #689)', () => {
@@ -456,7 +515,7 @@ describe('the small card fixes (DECISIONS #397)', () => {
     expect(text('bone-bulwark')).toBe('Raise Dead 5. Gain 8 Barrier.');
     expect(text('bone-sift')).toMatch(/^Raise Dead 5./);
     expect(text('grave-robbery')).toMatch(/^Deal 6 damage./);
-    expect(text('ghostform')).toMatch(/6 or more/);
+    expect(text('ghostform')).toMatch(/3 or more/);
   });
 });
 
@@ -512,19 +571,20 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
     let s = fight(['grave-colossus', 'knucklebone']);
     s = play(s, 'T0');
     const colossus = s.sides.a.units.find((u) => u.def === 'grave-colossus')!;
-    expect(colossus.maxHp).toBe(18);
+    // (the card raises 22 since #691)
+    expect(colossus.maxHp).toBe(22);
     // a 6-damage Command: the Thrall deals 6, the Colossus 3
     s = play(s, 'T1', foe(s).id);
     expect(foe(s).hp).toBe(300 - 6 - 3);
     const { events } = applyAction(db, s, { type: 'endTurn' });
-    expect(dealtBy(events, colossus.id)).toEqual([6]);
+    expect(dealtBy(events, colossus.id)).toEqual([7]);
   });
 
   it('with no slot free, Raise Dead grows the healthiest companion, the Colossus', () => {
     let s = fight(['grave-colossus', 'raise-thrall']);
     s = play(s, 'T0');
     s = play(s, 'T1');
-    expect(s.sides.a.units.find((u) => u.def === 'grave-colossus')!.maxHp).toBe(23);
+    expect(s.sides.a.units.find((u) => u.def === 'grave-colossus')!.maxHp).toBe(27);
     expect(thralls(s).filter((u) => u.def === 'bone-thrall')).toHaveLength(1);
   });
 
@@ -617,27 +677,27 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
 });
 
 describe('Reaping Scythe grows and comes round again (2026-11-07)', () => {
-  it('deals 16, every copy grows 5, and it is not consumed', () => {
+  it('deals 22, every copy grows 7 (#691), and it is not consumed', () => {
     let s = fight(['reaping-scythe', 'reaping-scythe']);
     s = play(s, 'T0', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 16);
+    expect(foe(s).hp).toBe(300 - 22);
     expect(s.sides.a.exhausted.some((c) => c.card === 'reaping-scythe')).toBe(false);
     s = play(s, 'T1', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 16 - 21);
+    expect(foe(s).hp).toBe(300 - 22 - 29);
   });
 });
 
 describe('Raise Colossus (2026-11-07)', () => {
   it('reads Raise Colossus; with no room for another, the Colossus standing gains the HP, not a Thrall', () => {
-    expect(cardText(db, db.cards['grave-colossus']!)).toBe('Raise Colossus 18.');
-    expect(cardText(db, db.cards['grave-colossus+']!)).toBe('Raise Colossus 22.');
+    expect(cardText(db, db.cards['grave-colossus']!)).toBe('Raise Colossus 22.');
+    expect(cardText(db, db.cards['grave-colossus+']!)).toBe('Raise Colossus 29.');
     let s = fight(['grave-colossus', 'grave-colossus']);
     s = play(s, 'T0');
     // (a Thrall and a Colossus fill the three slots; a big Thrall must not take the second Colossus's HP)
     thralls(s).find((u) => u.def === 'bone-thrall')!.maxHp = 40;
     s = play(s, 'T1');
     const colossi = thralls(s).filter((u) => u.def === 'grave-colossus');
-    expect(colossi.map((u) => u.maxHp)).toEqual([36]);
+    expect(colossi.map((u) => u.maxHp)).toEqual([44]);
     expect(thralls(s).find((u) => u.def === 'bone-thrall')!.maxHp).toBe(40);
     // (HP only: no Might)
     expect(colossi[0]!.statuses.might ?? 0).toBe(0);
@@ -661,7 +721,7 @@ describe('Raise Colossus (2026-11-07)', () => {
     s = applyAction(db, s, asIs!).state;
     expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
       ['bone-thrall', 9],
-      ['grave-colossus', 18 + Math.floor((3 + 5) / 2)],
+      ['grave-colossus', 22 + Math.floor((3 + 5) / 2)],
     ]);
     // (released, not killed: nothing burst at an enemy)
     expect(foe(s).hp).toBe(before);
@@ -679,7 +739,7 @@ describe('Raise Colossus (2026-11-07)', () => {
     s = applyAction(db, s, { type: 'play', card: 'T2', release: [small!.id, big!.id] }).state;
     expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
       ['bone-thrall', 5],
-      ['grave-colossus', 18 + Math.floor((3 + 9) / 2)],
+      ['grave-colossus', 22 + Math.floor((3 + 9) / 2)],
     ]);
   });
   it('never offers to release a Colossus for another', () => {
@@ -710,8 +770,8 @@ describe('Raise Colossus, the uncommon (2026-11-07)', () => {
 });
 
 describe('Grave Debt (Robert 2026-11-08, #688)', () => {
-  it('a companion that dies curses every enemy with a quarter of its max HP, 3 times a turn at most; one released for a Colossus does not', () => {
-    expect(db.cards['grave-debt']).toMatchObject({ rarity: 'rare', cost: 2, kind: 'power' });
+  it('a companion that dies curses every enemy with half its max HP (#691), 3 times a turn at most; one released for a Colossus does not', () => {
+    expect(db.cards['grave-debt']).toMatchObject({ rarity: 'rare', cost: 1, kind: 'power' });
     expect(db.cards['grave-debt+']?.cost).toBe(1);
     // (the Bonelord's four slots: Bone Rain gives up four Thralls of 12, 16, 8 and 3 max HP at once)
     let s = fight(['grave-debt', 'bone-rain'], ['squire', 'squire'], 'necromancer:bonelord');
@@ -722,8 +782,15 @@ describe('Grave Debt (Robert 2026-11-08, #688)', () => {
     addThrall(s, 3, 'B-d');
     s = play(s, 'T0');
     s = play(s, 'T1');
-    // (3 + 4 + 2; the fourth death this turn curses no one)
-    for (const u of s.sides.b.units.filter((x) => x.hp > 0)) expect(u.statuses.doom).toBe(9);
+    // (6 + 8 + 4; the fourth death this turn curses no one)
+    for (const u of s.sides.b.units.filter((x) => x.hp > 0)) expect(u.statuses.doom).toBe(18);
+    // (upgraded, two thirds: 12 a death of 18)
+    let up = fight(['grave-debt+', 'fen-offering'], ['squire']);
+    up.sides.a.units = up.sides.a.units.filter((u) => u.kind !== 'ally');
+    addThrall(up, 18, 'B-a');
+    up = play(up, 'T0');
+    up = play(up, 'T1', 'B-a');
+    expect(foe(up).statuses.doom ?? 0).toBe(12);
     // (the same release with and without it: the trait's own Fate for consuming the card is the same either way)
     const released = (debt: boolean): number => {
       let t = fight([debt ? 'grave-debt' : 'strike', 'raise-colossus'], ['squire']);
@@ -736,5 +803,86 @@ describe('Grave Debt (Robert 2026-11-08, #688)', () => {
       return foe(t).statuses.doom ?? 0;
     };
     expect(released(true)).toBe(released(false));
+  });
+});
+
+describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
+  const text = (id: string) => cardText(db, db.cards[id]!);
+
+  it('Bone Rain says the Thralls die and you gain the Barrier, for 2 Mana', () => {
+    expect(text('bone-rain')).toBe(
+      'Each of your Bone Thralls dies. For each one: you gain 9 Barrier and deal 9 damage to ALL enemies.',
+    );
+    expect(db.cards['bone-rain']?.cost).toBe(2);
+  });
+
+  it('Bonded Dead: 1 Mana a turn, paid by your healthiest companion (most max HP) losing 3 HP', () => {
+    expect(text('bonded-dead')).toMatch(/your healthiest companion loses 3 HP/);
+    let s = fight(['bonded-dead']);
+    thralls(s)[0]!.hp = thralls(s)[0]!.maxHp = 80;
+    s = play(s, 'T0');
+    expect(hero(s).statuses.sapped ?? 0).toBe(0);
+    const { state, events } = applyAction(db, s, { type: 'endTurn' });
+    expect(state.sides.a.mana).toBe(state.sides.a.maxMana + 1);
+    const paid = events.some(
+      (e) => e.type === 'damage' && e.kind === 'direct' && e.target === thralls(s)[0]!.id && e.lost === 3,
+    );
+    expect(paid).toBe(true);
+  });
+
+  it('Spirit Walk: Ghostly 2 once 3 cards are consumed, and a card more next turn', () => {
+    let s = fight(['ghostform', 'strike', 'strike', 'defend']);
+    s = play(s, 'T0');
+    expect(hero(s).statuses.ghostly).toBe(2);
+    expect(s.sides.a.nextDraw).toBe(1);
+    let few = fight(['ghostform', 'strike']);
+    few = play(few, 'T0');
+    expect(hero(few).statuses.ghostly ?? 0).toBe(0);
+  });
+
+  it('Call the Departed puts 2 Gravesouls in your hand and 1 in your draw pile', () => {
+    let s = fight(['call-the-departed']);
+    const pile = s.sides.a.draw.filter((c) => c.card === 'gravesoul').length;
+    s = play(s, 'T0');
+    expect(s.sides.a.hand.filter((c) => c.card === 'gravesoul')).toHaveLength(2);
+    expect(s.sides.a.draw.filter((c) => c.card === 'gravesoul')).toHaveLength(pile + 1);
+    expect(db.cards['call-the-departed+']).toMatchObject({ cost: 0, exhaust: true });
+  });
+
+  it('Common Grave costs you 2 HP, not Sapped; upgraded it costs nothing', () => {
+    let s = fight(['common-grave']);
+    const hp = hero(s).hp;
+    s = play(s, 'T0', foe(s).id);
+    expect(hero(s).hp).toBe(hp - 2);
+    expect(hero(s).statuses.sapped ?? 0).toBe(0);
+    expect(foe(s).statuses.sapped).toBe(2);
+    let up = fight(['common-grave+']);
+    up = play(up, 'T0', foe(up).id);
+    expect(hero(up).hp).toBe(hp);
+  });
+
+  it('Whispers Beyond starts in your opening hand; upgraded the card it finds costs 1 less', () => {
+    expect(db.cards['whispers-beyond']?.innate).toBe(true);
+    expect(text('whispers-beyond+')).toMatch(/costs 1 less until played/);
+    let s = fight(['whispers-beyond+']);
+    s = play(s, 'T0');
+    const before = new Set(s.sides.a.hand.map((c) => c.id));
+    const { state } = applyAction(db, s, { type: 'endTurn' });
+    // (the card the turn-start discover made: Fleeting, and new to the hand; draws are not Fleeting from it)
+    const made = state.sides.a.hand.filter((c) => !before.has(c.id) && c.ethereal && c.costMod !== undefined);
+    const cost = (id: string) => db.cards[id]!.cost;
+    const found = state.sides.a.hand.find((c) => !before.has(c.id) && c.ethereal);
+    expect(found, 'a card was discovered').toBeDefined();
+    expect(costOf(db, state.sides.a, found!)).toBe(Math.max(0, cost(found!.card) - 1));
+    expect(made.every((c) => c.costMod === -Math.min(1, cost(c.card)))).toBe(true);
+  });
+
+  it('Phylactery costs 2, is not Fleeting and draws 1 when played', () => {
+    expect(db.cards.phylactery).toMatchObject({ cost: 2 });
+    expect(db.cards.phylactery?.ethereal ?? false).toBe(false);
+    let s = fight(['phylactery']);
+    const n = s.sides.a.hand.length;
+    s = play(s, 'T0');
+    expect(s.sides.a.hand.length).toBe(n);
   });
 });

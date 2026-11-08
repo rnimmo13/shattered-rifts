@@ -182,9 +182,9 @@ describe('Defer', () => {
   it('the cards say it', () => {
     const text = (id: string): string => cardText(db, db.cards[id]!);
     expect(text('stalkers-lunge')).toBe('Deal 15 damage. Defer a card.');
-    expect(text('side-slip')).toBe('Defer a card.');
+    expect(text('side-slip')).toBe('Defer a card. Gain 3 Barrier.');
     expect(text('palm-switch')).toBe('Gain 7 Barrier. Defer a card.');
-    expect(text('quick-reflexes')).toBe('Premeditate. Draw 1 card. Defer a card.');
+    expect(text('quick-reflexes')).toBe('Premeditate. Draw 2 cards. Gain 2 Barrier.');
     expect(text('cartwheel-cut')).toBe('Premeditate. Deal 5 damage to ALL enemies. Defer a card.');
     expect(text('into-the-shadows')).toBe('Defer up to 3 cards. Discard your hand. Gain Poised.');
     expect(db.cards['into-the-shadows']!.cost).toBe(2);

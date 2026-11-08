@@ -96,11 +96,14 @@ describe('the made-card hovers stay tidy (review of #448)', () => {
     return keywordsOf(def, () => false, cardText(db, def)).map((k) => k.name);
   };
   it('an upgraded maker lists the upgraded card once, not the base too', () => {
-    const id = Object.values(db.cards).find(
-      (c) => c.id.endsWith('+') && JSON.stringify(c.effects).includes('"card":"sleeve-knife+"'),
-    )!.id;
-    expect(names(id)).toContain('Dagger+');
-    expect(names(id)).not.toContain('Dagger');
+    // (any upgraded card that makes an upgraded token: no Rogue card makes upgraded Daggers since #692, Soul Rend+ makes Gravesoul+)
+    const maker = Object.values(db.cards).find(
+      (c) => c.id.endsWith('+') && /"card":"[a-z-]+\+"/.test(JSON.stringify(c.effects)),
+    )!;
+    const made = /"card":"([a-z-]+)\+"/.exec(JSON.stringify(maker.effects))![1]!;
+    const name = db.cards[made]!.name;
+    expect(names(maker.id)).toContain(`${name}+`);
+    expect(names(maker.id)).not.toContain(name);
   });
   it('a sanctified card does not explain itself', () => {
     expect(names('hi~gathering-storm')).not.toContain('Gathering Storm');

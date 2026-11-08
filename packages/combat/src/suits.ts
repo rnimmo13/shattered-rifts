@@ -48,6 +48,8 @@ const FOES = new Set<Sel>([
   'attacker',
   'attackerOrRandom',
   'targetOrMostFracture',
+  'targetOrRandom',
+  'mostBledFoe',
 ]);
 
 function suitOfOp(o: Op, aimsAtFoe: boolean): Suit | null {

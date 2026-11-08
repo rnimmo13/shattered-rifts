@@ -1,3 +1,8 @@
+## 0.232.0 - 2026-11-08
+
+- Necromancer cost pass (DECISIONS #691; rules 99): every card priced to the new targets (Rares in A, most Uncommons in B, upgrades about +30%); Off the Leash, Fleshcraft, Ossify, Bone Rain and Killing Chill down; Grave Debt, The Last Toll, Soul Harvest, Spirit Walk, Call the Departed, Phylactery and the B Rares up; Echo of the Dead chooses its card; Helping Hand returns once a turn; Bone Rain text fixed.
+- Rogue cost pass (DECISIONS #692): Hidden Blades gives a Dagger, Barbed Dagger or Shadow Feint by Ascendancy; Edge reaches the first 4 Daggers a turn; Serrated Edges, Final Flourish and Shadow Echo count cards costing 1 or more; Bleed and Sleight Rares to A; defence commons and upgrades evened out.
+
 ## 0.231.0 - 2026-11-08
 
 - The Knight and Rogue show their still paintings again everywhere (DECISIONS #690); the animated rigs are switched off, their files kept.

@@ -113,10 +113,13 @@ describe('Bleed is the Silent’s Poison', () => {
     expect(foe(s).statuses.seared).toBe(14);
   });
 
-  it('Serrated Edges (Envenom) adds Bleed when an Attack gets through', () => {
-    let s = fight(['serrated-edges', 'quick-slash']);
+  it('Serrated Edges (#692): an Attack that costs 1 or more applies 2 Bleed; a free one (a Dagger) does not', () => {
+    let s = fight(['serrated-edges', 'quick-slash', 'dirty-hit']);
     s = play(play(s, 'serrated-edges'), 'quick-slash');
-    expect(foe(s).statuses.seared).toBe(1);
+    expect(foe(s).statuses.seared).toBeUndefined();
+    s = play(s, 'dirty-hit');
+    expect(foe(s).statuses.seared).toBe(2);
+    expect(cardText(db, db.cards['serrated-edges']!)).toMatch(/an Attack that costs 1 or more/);
   });
 
   it('Red Mirage (Mirage) gives Barrier equal to the Bleed on every enemy', () => {
@@ -127,29 +130,29 @@ describe('Bleed is the Silent’s Poison', () => {
 });
 
 describe('Daggers (Sleeve Knives) are the Silent’s Shivs', () => {
-  it('Knife Juggle (Blade Dance) adds three; Whetted Edge (Accuracy) makes each hit 4 harder', () => {
+  it('Knife Juggle (Blade Dance) adds three; Whetted Edge (Accuracy) makes each hit 2 harder (#692)', () => {
     let s = play(fight(['knife-juggle', 'whetted-edge']), 'knife-juggle');
     expect(inHand(s, 'sleeve-knife')).toBe(3);
     s = play(s, 'whetted-edge');
     const hp = foeHp(s);
     s = play(s, 'sleeve-knife');
-    expect(hp - foeHp(s)).toBe(8);
+    expect(hp - foeHp(s)).toBe(6);
   });
 
   it('Wide Arc (Fan of Knives) makes knives hit every enemy', () => {
     let s = play(fight(['wide-arc']), 'wide-arc');
-    expect(inHand(s, 'sleeve-knife')).toBe(2);
+    expect(inHand(s, 'sleeve-knife')).toBe(3);
     s = play(s, 'sleeve-knife');
     expect(foeHp(s, 0)).toBe(196);
     expect(foeHp(s, 1)).toBe(196);
   });
 
-  it('Ghost Knives (Phantom Blades): the first knife each turn hits 9 harder, and knives Hold', () => {
+  it('Ghost Knives (Phantom Blades): the first knife each turn hits 7 harder (#692), and knives Hold', () => {
     let s = fight(['ghost-knives', 'sleeve-knife', 'sleeve-knife', 'sleeve-knife']);
     s = play(s, 'ghost-knives');
     let hp = foeHp(s);
     s = play(s, 'sleeve-knife');
-    expect(hp - foeHp(s)).toBe(13);
+    expect(hp - foeHp(s)).toBe(11);
     hp = foeHp(s);
     s = play(s, 'sleeve-knife');
     expect(hp - foeHp(s)).toBe(4);
@@ -289,9 +292,9 @@ describe('Premeditate (was Sly, DECISIONS #433) and discarding', () => {
     expect(s.sides.a.hand.map((c) => c.card)).toEqual(['defend', 'defend', 'defend']);
   });
 
-  it('Steel Monsoon (Storm of Steel) makes a knife for every card discarded', () => {
+  it('Steel Monsoon (Storm of Steel) makes a knife for every card discarded, and one more (#692)', () => {
     const s = play(fight(['steel-monsoon', 'strike', 'defend']), 'steel-monsoon');
-    expect(inHand(s, 'sleeve-knife')).toBe(2);
+    expect(inHand(s, 'sleeve-knife')).toBe(3);
   });
 
   it('Graveside Cut (Memento Mori) hits 4 harder for each card discarded this turn', () => {
@@ -307,16 +310,16 @@ describe('Premeditate (was Sly, DECISIONS #433) and discarding', () => {
 
   it('Practiced Hands (Expertise) draws cards that Hold this turn', () => {
     const s = endTurn(play(fight(['practiced-hands']), 'practiced-hands'));
-    // two Held Defends, five drawn and the knife Hidden Blades brings
-    expect(s.sides.a.hand).toHaveLength(8);
+    // three Held cards (#692), five drawn and the knife Hidden Blades brings
+    expect(s.sides.a.hand).toHaveLength(9);
   });
 
-  it('Bolt Hole (Escape Plan) gives Barrier only when it draws a Skill', () => {
+  it('Bolt Hole (Escape Plan) draws 1 and gives 4 Barrier whatever it draws (#692)', () => {
     const s = play(fight(['bolt-hole']), 'bolt-hole');
-    expect(hero(s).barrier).toBe(3);
+    expect(hero(s).barrier).toBe(4);
     const s0 = fight(['bolt-hole']);
     s0.sides.a.draw = [{ id: 'D0', card: 'strike' }];
-    expect(hero(play(s0, 'bolt-hole')).barrier).toBe(0);
+    expect(hero(play(s0, 'bolt-hole')).barrier).toBe(4);
   });
 });
 
@@ -326,7 +329,7 @@ describe('the rest of the Silent’s tricks', () => {
     foe(s0, 0).hp = 5;
     const s = play(s0, 'rippling-cut');
     expect(s.sides.b.units).toHaveLength(1);
-    expect(foeHp(s, 0)).toBe(180);
+    expect(foeHp(s, 0)).toBe(184);
   });
 
   // (no card applies Strangled since Garrote left the pool, DECISIONS #474; the rule stays in the engine)
@@ -343,12 +346,14 @@ describe('the rest of the Silent’s tricks', () => {
     expect(canonicalCard('garrote+')).toBe('graveside-cut+');
   });
 
-  it('Stilled Time (Bullet Time) makes the hand free and stops drawing', () => {
+  it('Stilled Time (Bullet Time) draws 2, then makes the hand free and stops drawing (#692)', () => {
     let s = play(fight(['stilled-time', 'stalkers-lunge', 'backspring']), 'stilled-time');
     const mana = s.sides.a.mana;
+    expect(s.sides.a.hand).toHaveLength(4);
     s = play(play(s, 'stalkers-lunge'), 'backspring');
     expect(s.sides.a.mana).toBe(mana);
-    expect(s.sides.a.hand).toHaveLength(0);
+    // (the two it drew stay: Backspring draws nothing)
+    expect(s.sides.a.hand).toHaveLength(2);
   });
 
   it('Recurring Dream (Nightmare) brings three copies of the chosen card next turn', () => {
@@ -358,7 +363,7 @@ describe('the rest of the Silent’s tricks', () => {
 
   it('Roll Away (Dodge and Roll) gives Barrier next turn; Smoke Veil (Blur) keeps it through the turn change', () => {
     const s = endTurn(play(fight(['roll-away']), 'roll-away'));
-    expect(hero(s).barrier).toBe(4);
+    expect(hero(s).barrier).toBe(5);
     const b0 = fight(['smoke-veil']);
     b0.sides.b.units = b0.sides.b.units.slice(0, 1);
     foe(b0).intent = null;
@@ -394,7 +399,7 @@ describe('the rest of the Silent’s tricks', () => {
 
   it('Clean Cut (Precise Cut) deals 2 less for each other card in hand', () => {
     const s = play(fight(['clean-cut', 'strike', 'strike']), 'clean-cut');
-    expect(foeHp(s)).toBe(200 - 9);
+    expect(foeHp(s)).toBe(200 - 7);
   });
 
   it('Spring Attack (Pounce) makes the next Skill free', () => {
@@ -415,12 +420,12 @@ describe('the rest of the Silent’s tricks', () => {
 
   it('Mantle of Night (Shadowmeld) doubles Barrier for the turn; Lay Bare (Expose) strips an enemy’s', () => {
     const s = play(play(fight(['mantle-of-night', 'turn-aside']), 'mantle-of-night'), 'turn-aside');
-    expect(hero(s).barrier).toBe(8);
+    expect(hero(s).barrier).toBe(10);
     const e0 = fight(['lay-bare']);
     foe(e0).barrier = 12;
     const e = play(e0, 'lay-bare');
     expect(foe(e).barrier).toBe(0);
-    expect(foe(e).statuses.exposed).toBe(2);
+    expect(foe(e).statuses.exposed).toBe(3);
   });
 
   it('Sapping Wound (Malaise) spends X on Sapped and Faltering', () => {
@@ -568,7 +573,7 @@ describe('the rest of the Silent’s tricks', () => {
 
   it('Lay Bare does not mention Steadfast, and still takes it (DECISIONS #478)', () => {
     expect(cardText(db, db.cards['lay-bare']!)).toBe(
-      'Remove all Barrier from the target. Apply 2 Exposed. Consume.',
+      'Remove all Barrier from the target. Apply 3 Exposed. Consume.',
     );
     const s = fight(['lay-bare']);
     foe(s).statuses.steadfast = 1;
@@ -576,13 +581,111 @@ describe('the rest of the Silent’s tricks', () => {
     const after = play(s, 'lay-bare');
     expect(foe(after).barrier).toBe(0);
     expect(foe(after).statuses.steadfast).toBeUndefined();
-    // (with the Steadfast gone first, the Exposed lands)
-    expect(foe(after).statuses.exposed).toBe(2);
+    // (with the Steadfast gone first, the Exposed lands: 3 since #692)
+    expect(foe(after).statuses.exposed).toBe(3);
   });
 
   it('the Virulent status reads as Hemorrhage, and the card of that name as Red Tide (DECISIONS #472)', () => {
     expect(cardText(db, db.cards['thin-the-blood']!)).toBe('On play: Gain 1 Hemorrhage.');
     expect(db.cards.hemorrhage!.name).toBe('Red Tide');
     expect(Object.values(db.cards).filter((c) => c.name === 'Hemorrhage')).toEqual([]);
+  });
+});
+
+describe('the Rogue cost pass (Robert 2026-11-08, #692)', () => {
+  const start = (ascendancy?: string): CombatState =>
+    createCombat(db, {
+      seed: 'rogue-692',
+      a: {
+        hero: 'assassin',
+        deck: [...RIFTWALKERS.assassin.starter],
+        ...(ascendancy ? { ascendancy } : {}),
+      },
+      b: { enemies: ['squire'] },
+    }).state;
+  const tokens = (s: CombatState) =>
+    s.sides.a.hand
+      .map((c) => c.card)
+      .filter((c) => ['sleeve-knife', 'barbed-dagger', 'shadow-feint'].includes(c))
+      .sort();
+
+  it('Hidden Blades follows the Ascendancy: a Dagger, a Barbed Dagger or a Shadow Feint (only the trait card changes)', () => {
+    expect(tokens(start())).toEqual(['sleeve-knife']);
+    expect(tokens(start('assassin:bladedancer'))).toEqual(['sleeve-knife', 'sleeve-knife']);
+    expect(tokens(start('assassin:bloodletter'))).toEqual(['barbed-dagger']);
+    expect(tokens(start('assassin:assassin'))).toEqual(['shadow-feint']);
+    expect(cardText(db, db.cards['barbed-dagger']!)).toBe('Deal 1 damage. Apply 3 Bleed. Consume.');
+    expect(db.cards['barbed-dagger']?.tags ?? []).not.toContain('knife');
+    expect(cardText(db, db.cards['shadow-feint']!)).toBe('Gain 3 Barrier. Consume.');
+  });
+
+  it('Edge reaches only the first 4 Daggers each turn', () => {
+    let s = fight(['whetted-edge', ...Array<string>(5).fill('sleeve-knife')]);
+    s = play(s, 'whetted-edge');
+    const hits: number[] = [];
+    for (let i = 0; i < 5; i++) {
+      const hp = foeHp(s);
+      s = play(s, 'sleeve-knife');
+      hits.push(hp - foeHp(s));
+    }
+    expect(hits).toEqual([6, 6, 6, 6, 4]);
+    expect(cardText(db, db.cards['whetted-edge']!)).toMatch(/first 4 Daggers each turn/);
+  });
+
+  it('Final Flourish counts only Attacks that cost 1 or more', () => {
+    let s = fight(['sleeve-knife', 'sleeve-knife', 'dirty-hit', 'final-flourish']);
+    s = play(play(play(s, 'sleeve-knife'), 'sleeve-knife'), 'dirty-hit');
+    const hp = foeHp(s);
+    s = play(s, 'final-flourish');
+    expect(hp - foeHp(s)).toBe(6 + 6);
+  });
+
+  it("Serpent's Coil answers the first 5 cards each turn", () => {
+    let s = fight(['serpents-coil', ...Array<string>(7).fill('turn-aside')], 1);
+    // (its own play is the first of the five)
+    const hp = foeHp(s);
+    s = play(s, 'serpents-coil');
+    for (let i = 0; i < 7; i++) s = play(s, 'turn-aside');
+    expect(hp - foeHp(s)).toBe(5 * 5);
+  });
+
+  it('Blood Scent makes the most-bled enemy Faltering at the start of your turn', () => {
+    let s = fight(['blood-scent', 'open-vein']);
+    for (const u of s.sides.b.units) u.intent = null;
+    s = play(s, 'blood-scent');
+    s = play(s, 'open-vein', 1);
+    s = endTurn(s);
+    expect(foe(s, 1).statuses.faltering ?? 0).toBeGreaterThan(0);
+    expect(foe(s, 0).statuses.faltering ?? 0).toBe(0);
+    // (with no enemy bleeding, no one is made Faltering)
+    let dry = fight(['blood-scent']);
+    for (const u of dry.sides.b.units) u.intent = null;
+    dry = endTurn(play(dry, 'blood-scent'));
+    for (const u of dry.sides.b.units) expect(u.statuses.faltering ?? 0).toBe(0);
+  });
+
+  it('Red Tide draws 1, then each card drawn this turn curses every enemy with 4 Bleed', () => {
+    let s = fight(['hemorrhage', 'backspring']);
+    s = play(s, 'hemorrhage');
+    // (its own draw comes first and does not count; the next one does)
+    for (const u of s.sides.b.units) expect(u.statuses.seared ?? 0).toBe(0);
+    expect(cardText(db, db.cards.hemorrhage!)).toMatch(/^Draw 1 card. This turn, whenever you draw/);
+    s = play(s, 'backspring');
+    for (const u of s.sides.b.units) expect(u.statuses.seared).toBe(8);
+  });
+
+  it('Sapping Wound also applies 2 Bleed per X', () => {
+    let s = fight(['sapping-wound']);
+    s.sides.a.mana = 3;
+    s = play(s, 'sapping-wound');
+    expect(foe(s).statuses.seared).toBe(6);
+  });
+
+  it('Patient Hands draws a card more each turn', () => {
+    let s = fight(['patient-hands']);
+    s = play(s, 'patient-hands');
+    s = endTurn(s);
+    // (five, the Dagger and the extra card)
+    expect(s.sides.a.hand.length).toBe(7);
   });
 });

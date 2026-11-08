@@ -164,7 +164,9 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
     to === 'front' ||
     to === 'foeHero' ||
     to === 'weakestFoe' ||
-    to === 'targetOrMostFracture';
+    to === 'targetOrMostFracture' ||
+    to === 'targetOrRandom' ||
+    to === 'mostBledFoe';
   for (const o of ops) {
     if (o.op === 'damage' || o.op === 'loseHp') out.add('attack');
     else if (o.op === 'barrier') out.add('defend');
@@ -477,6 +479,8 @@ const WHO: Record<Sel, string> = {
   biggestAlly: ' to your biggest companion',
   foeHero: ' to the enemy hero',
   targetOrMostFracture: ' to its target (or the enemy with the most Fracture)',
+  targetOrRandom: ' to its target (or a random enemy)',
+  mostBledFoe: ' to the enemy with the most Bleed',
 };
 /** The same targets as seen from an enemy's move: "you" are the other side. */
 const WHO_ENEMY: Record<Sel, string> = {
@@ -494,6 +498,8 @@ const WHO_ENEMY: Record<Sel, string> = {
   biggestAlly: ' to its biggest ally',
   foeHero: ' to you',
   targetOrMostFracture: ' to its target (or your unit with the most Fracture)',
+  targetOrRandom: ' to its target (or a random unit of yours)',
+  mostBledFoe: ' to your unit with the most Bleed',
 };
 const KIND_PLURAL: Record<string, string[]> = {
   attack: ['Attack'],
@@ -615,6 +621,7 @@ const PLURAL: Partial<Record<Metric, string>> = {
   powers: 'Auras you have',
   played: 'cards played this turn',
   attacksPlayed: 'Attacks played this turn',
+  paidAttacksPlayed: 'Attacks costing 1 or more played this turn',
   skillsPlayed: 'Skills played this turn',
   strikes: 'Strike cards in your deck',
   drawn: 'cards drawn this fight',
@@ -676,6 +683,10 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   mana: { per: 'Mana left', equal: 'your Mana' },
   played: { per: 'card played this turn', equal: 'the cards played this turn' },
   attacksPlayed: { per: 'Attack played this turn', equal: 'the Attacks played this turn' },
+  paidAttacksPlayed: {
+    per: 'Attack costing 1 or more played this turn',
+    equal: 'the Attacks costing 1 or more played this turn',
+  },
   skillsPlayed: { per: 'Skill played this turn', equal: 'the Skills played this turn' },
   strikes: { per: 'Strike card in your deck', equal: 'the number of Strike cards in your deck' },
   drawn: { per: 'card drawn this fight', equal: 'the cards you have drawn this fight' },
@@ -919,6 +930,8 @@ function amountText(
           ? 'half '
           : m === 0.25
             ? 'a quarter '
+            : Math.abs(m - 2 / 3) < 1e-9
+              ? 'two thirds '
             : m > 1
               ? `${m} times `
               : `${Math.round(m * 100)}% of `;
@@ -1277,6 +1290,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       // (on your own cards: Haunt, Necro Mastery)
       if (o.to === 'randomFoe' && who.self === WHO.self) return `A random enemy loses ${a.num} HP.`;
       if (o.to === 'allFoes' && who.self === WHO.self) return `ALL enemies lose ${a.num} HP.`;
+      // (Bonded Dead, #691: the companion with the most max HP pays)
+      if (o.to === 'biggestAlly') return `Your healthiest companion loses ${a.num} HP.`;
       return `Take ${a.num} HP${who[o.to]}.`;
     }
     case 'barrier':
@@ -1375,7 +1390,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       }
       // Edge is what makes Sleeve Knives hit harder: say so on the card instead of leaving it to a tooltip
       if (o.status === 'edge' && o.to === 'self' && !o.scale && o.amount > 0)
-        return `Gain ${o.amount} Edge: your Daggers deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
+        return `Gain ${o.amount} Edge: your first 4 Daggers each turn deal ${o.amount} more damage ${o.temp ? 'this turn' : 'for the rest of the fight'}.`;
       // a status that is on or off has no number: "Gain Fortified" (DECISIONS #347, #492)
       if (ON_OR_OFF.has(o.status) && o.amount > 0 && !o.scale) {
         const mine = o.to === 'self' && who.self === WHO.self;
@@ -1612,7 +1627,13 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           ? `${article(KIND_WORD[o.filter] ?? o.filter)} ${KIND_WORD[o.filter] ?? cap(o.filter)}`
           : 'a card';
       // (a cost limit: "a 0-cost Attack")
-      const costed = o.maxCost !== undefined ? what.replace(/^an? /, `a ${o.maxCost}-cost `) : what;
+      const costed =
+        o.maxCost !== undefined
+          ? what.replace(/^an? /, `a ${o.maxCost}-cost `)
+          : // (a kind or tag with a cost floor, #692: "an Attack that costs 1 or more")
+            o.minCost !== undefined && (o.tag || o.filter)
+            ? `${what} that costs ${o.minCost} or more`
+            : what;
       const rune = o.rune ? (db.runes?.[o.rune]?.name ?? o.rune) : '';
       // (with no kind or tag, a Fleeting or cost-floor narrowing names the card: "a card that costs 2 or more")
       const playWhat =
@@ -1689,7 +1710,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : o.ownTurn
             ? 'on your turn'
             : 'each turn';
-      const limitText = limit === undefined ? '' : ` (first ${limit} activations ${limitPeriod})`;
+      const limitText =
+        limit === undefined
+          ? ''
+          : limit === 1
+            ? ` (once ${limitPeriod})`
+            : ` (first ${limit} activations ${limitPeriod})`;
       const later = o.afterLimit?.length
         ? ` Whenever it activates again that ${o.perRoundLimit !== undefined ? 'round' : 'turn'}: ${joinClause(o.afterLimit.map((x) => opText(db, x, inner)))}`
         : '';
@@ -1800,7 +1826,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
       const thisTurn = many ? ' (they cost 0 this turn)' : ' (it costs 0 this turn)';
-      return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : ''}${o.ethereal ? `, ${many ? 'all ' : ''}Fleeting` : ''}.`;
+      const less = o.cheaper ? ` (${many ? 'they cost' : 'it costs'} ${o.cheaper} less until played)` : '';
+      return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : less}${o.ethereal ? `, ${many ? 'all ' : ''}Fleeting` : ''}.`;
     }
     case 'upgrade':
       if (o.scope === 'discard') {
@@ -1967,6 +1994,23 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `${what} ${o.amount}.`;
     }
     case 'command': {
+      // (a Command that gives the companions up, Bone Rain: "Each of your Bone Thralls dies. For each one: you gain 9 Barrier and deal
+      // 9 damage to ALL enemies." Robert 2026-11-08: the old "Your companions each gain 9 Barrier to your hero... Then they die." read
+      // as if the Thralls were shielded, and a Colossus never takes part)
+      if (o.ops.some((x) => x.op === 'sacrifice' && x.self)) {
+        const nm = o.unit ? db.units[o.unit]?.name : undefined;
+        const each = nm ? `Each of your ${nm}s dies.` : 'Each of your companions dies.';
+        const parts = o.ops
+          .filter((x) => !(x.op === 'sacrifice' && x.self))
+          .map((x) => {
+            const t = opText(db, x, who).replace(/\.$/, '');
+            const low = t.charAt(0).toLowerCase() + t.slice(1);
+            return x.op === 'barrier' && x.to === 'hero'
+              ? `you gain ${x.amount} Barrier`
+              : low.replace(/^gain\b/, 'you gain');
+          });
+        return parts.length ? `${each} For each one: ${parts.join(' and ')}.` : each;
+      }
       // "Your companions each deal 6 damage." (what they read of themselves is theirs: "equal to its HP")
       const lines = o.ops.map((x, i) => {
         if (x.op === 'sacrifice' && x.self) return 'Then they die.';
@@ -1975,15 +2019,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           x.op === 'damage' &&
           x.scale &&
           (x.scale.by === 'hp' || x.scale.by === 'maxHp') &&
-          (x.scale.mult ?? 1) === 1 &&
+          [0.5, 1, 1.5, 2].includes(x.scale.mult ?? 1) &&
           !x.scale.of &&
           !x.scale.into
         ) {
           const plain = { ...x };
           delete plain.scale;
+          // (Off the Leash, half; The Drowned King+, 1.5 times: #691)
+          const m = x.scale.mult ?? 1;
+          const share = m === 0.5 ? 'half ' : m === 1.5 ? '1.5 times ' : m === 2 ? 'twice ' : '';
           const t = opText(db, plain, who).replace(
             / damage(.*)\.$/,
-            ` damage$1, plus their own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
+            ` damage$1, plus ${share}their own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
           );
           return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
         }
@@ -2011,7 +2058,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           : o.flag === 'retain'
             ? 'Hold'
             : 'Replay (it is played one more time)';
-      return `A random card in your hand gains ${what}${o.costUp ? ` and costs ${o.costUp} more for this fight` : ''}.`;
+      return `${o.pick ? 'Choose a card in your hand: it gains' : 'A random card in your hand gains'} ${what}${o.costUp ? ` and costs ${o.costUp} more for this fight` : ''}.`;
     }
     case 'costTax':
       return `Cards cost ${o.amount} more this turn.`;
@@ -2330,7 +2377,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
     );
   if (c.recallOnCost)
     parts.push(
-      `Whenever you play a card that costs ${c.recallOnCost} or more, this returns from your discard pile to your hand.`,
+      `Whenever you play a card that costs ${c.recallOnCost} or more, this returns from your discard pile to your hand (once a turn).`,
     );
   if (c.replayFromExhaust)
     parts.push(

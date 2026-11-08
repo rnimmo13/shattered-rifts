@@ -45,8 +45,6 @@ const COST_CUT_AURAS = [
   'phylactery',
   'blood-scent',
   'grand-scheme',
-  'nimble-routine',
-  'patient-hands',
   // on/off, a Mana engine, or a card or machine every turn
   'dutch-courage',
   // (it answers every Sword and Spell, so more per play would be too much: DECISIONS #564)
@@ -68,8 +66,13 @@ const COST_CUT_AURAS = [
   'attunement',
   'heart-of-the-rift',
   'hunters-eye',
-  // (Grave Debt, #688: its numbers are already small; the upgrade makes it cheaper)
-  'grave-debt',
+  // (#691: Ossify and Shared Agony, engine Auras whose numbers already sit on budget; the upgrade makes them cheaper. Grave Debt's
+  // upgrade raises its share instead)
+  'calcify',
+  'shared-agony',
+  // (#692: the Rogue's Whetted Edge and Wide Arc cost 1 upgraded; Nimble Routine and Patient Hands gain Opening hand instead)
+  'whetted-edge',
+  'wide-arc',
 ];
 
 const auras = (): CardDef[] =>

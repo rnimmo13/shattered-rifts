@@ -46,6 +46,90 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.232.0",
+    date: "2026-11-08",
+    title: "Necromancer and Rogue card passes",
+    summary: "Every Necromancer and Rogue card was priced again: the runaway cards come down, the weak Rares come up, and each Rogue Ascendancy gets its own free card.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Hidden Blades follows your Ascendancy",
+        hero: "assassin",
+        text: "Once you ascend, the Rogue’s free card each turn matches your path: a Bladedancer still gets a Dagger, a Bloodletter a Barbed Dagger (1 damage, 3 Bleed), an Assassin a Shadow Feint (a free Skill: 3 Barrier). Other cards still make Daggers. The Assassin’s description now says plainly how Preparation builds up and is spent."
+      },
+      {
+        kind: "balance",
+        title: "Daggers stop multiplying",
+        hero: "assassin",
+        text: "Edge only reaches your first 4 Daggers each turn. Serrated Edges, Final Flourish and Shadow Echo now count only cards that cost 1 or more, so the Bleed and Sleight builds keep them.",
+        changes: [
+          {
+            label: "Whetted Edge",
+            before: "1 Mana, Edge 4",
+            after: "2 Mana, Edge 2 (first 4 Daggers)",
+            direction: "nerf"
+          },
+          {
+            label: "Ghost Knives",
+            before: "1 Mana, +9",
+            after: "2 Mana, +7",
+            direction: "nerf"
+          },
+          {
+            label: "Serpent's Coil",
+            before: "4 per card",
+            after: "5 on the first 5 cards each turn",
+            direction: "nerf"
+          },
+          {
+            label: "Serrated Edges",
+            before: "2 Mana, 1 Bleed per hit",
+            after: "1 Mana, 2 Bleed per Attack costing 1+",
+            direction: "neutral"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Rogue Rares and defence",
+        hero: "assassin",
+        text: "The Bleed and Sleight Rares (Red Tide, Blood Scent, Grand Scheme, Nimble Routine, Patient Hands, Stilled Time, Razor Skin, Double Trick and more) are stronger, and Turn Aside, Roll Away, Sense the Blow, Side Slip and Slip the Blow defend better. Full list in the card library."
+      },
+      {
+        kind: "balance",
+        title: "Necromancer cards evened out",
+        hero: "necromancer",
+        text: "Off the Leash, Fleshcraft, Ossify, Bone Rain and Killing Chill come down; Grave Debt, The Last Toll, Soul Harvest, Spirit Walk, Call the Departed, Phylactery and most Rares come up. Echo of the Dead lets you choose its card, and Bone Rain’s text now says what it does.",
+        changes: [
+          {
+            label: "Off the Leash",
+            before: "6 + its HP",
+            after: "4 + half its HP",
+            direction: "nerf"
+          },
+          {
+            label: "Fleshcraft",
+            before: "9 per debuff",
+            after: "8, once a turn",
+            direction: "nerf"
+          },
+          {
+            label: "Grave Debt",
+            before: "2 Mana, a quarter",
+            after: "1 Mana, half",
+            direction: "buff"
+          }
+        ]
+      },
+      {
+        kind: "changed",
+        title: "Upgrades",
+        text: "Upgrades on these two classes now add about the same, roughly a third more, so no upgrade doubles a card."
+      }
+    ],
+    heads: "Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge."
+  },
+  {
     version: '0.231.0',
     date: '2026-11-08',
     title: 'The Knight and Rogue as painted',

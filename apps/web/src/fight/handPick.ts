@@ -46,6 +46,8 @@ export function pickVerb(p: PendingView): string {
       return 'Copy';
     case 'empower':
       return 'Empower';
+    case 'replay':
+      return 'Again';
     default:
       return 'Chosen';
   }
@@ -73,6 +75,7 @@ export function prompt(p: PendingView): string {
   if (p.kind === 'scry') return 'Choose a card to draw. The rest are discarded.';
   if (p.kind === 'copy') return 'Choose a card: copies of it come to your hand next turn.';
   if (p.kind === 'empower') return 'Choose a generator: it yields more for the rest of the fight.';
+  if (p.kind === 'replay') return 'Choose a card: it is played one more time.';
   if (p.kind === 'defer')
     return p.min === 0
       ? `Defer up to ${upTo}: ${p.max > 1 ? 'they come' : 'it comes'} back next turn costing 1 less.`

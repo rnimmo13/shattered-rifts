@@ -244,7 +244,8 @@ describe('real card data, end to end', () => {
     delete s0.sides.b.units[0]!.statuses.exposed;
     const base = dealt(s0, 'N');
     const buffed = applyAction(db, s0, { type: 'play', card: 'K' }).state;
-    expect(dealt(buffed, 'N')).toBe(base + 4);
+    // (Edge 2 since #692)
+    expect(dealt(buffed, 'N')).toBe(base + 2);
     expect(dealt(buffed, 'S')).toBe(dealt(s0, 'S'));
   });
 

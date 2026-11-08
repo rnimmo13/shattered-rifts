@@ -29,6 +29,8 @@ const TITLE: Record<PendingView['kind'], string> = {
   defer: 'Defer',
   // (The Forgemaster, DECISIONS #480)
   empower: 'Empower',
+  // (Echo of the Dead, DECISIONS #691)
+  replay: 'Play again',
 };
 
 export function PickModal(props: {

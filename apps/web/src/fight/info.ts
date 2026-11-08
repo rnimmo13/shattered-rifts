@@ -271,7 +271,7 @@ export const STATUS_INFO: Record<
     name: 'Edge',
     glyph: '†',
     tone: 'good',
-    text: 'Your Daggers deal 1 more damage per stack.',
+    text: 'Your first 4 Daggers each turn deal 1 more damage per stack.',
   },
   sapped: {
     name: 'Sapped',

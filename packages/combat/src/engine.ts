@@ -1475,6 +1475,17 @@ function resolve(r: Run, a: Act, sel: Sel): Unit[] {
       const h = heroOf(r.s.sides[other(a.actor.side)]);
       return h && h.hp > 0 ? [h] : [];
     }
+    // (#692) the card's target, or a random enemy when it has none (an attack on every enemy)
+    case 'targetOrRandom':
+      if (a.target && a.target.hp > 0 && a.target.side !== a.actor.side) return [a.target];
+      return foes.length ? [foes[nextInt(r.s.rng, foes.length)] as Unit] : [];
+    case 'mostBledFoe': {
+      // (no one bleeding, no one chosen)
+      const bled = foes.filter((x) => stacks(x, 'seared') > 0);
+      return bled.length
+        ? [bled.reduce((m, x) => (stacks(x, 'seared') > stacks(m, 'seared') ? x : m))]
+        : [];
+    }
     case 'targetOrMostFracture':
       if (a.target && a.target.hp > 0 && a.target.side !== a.actor.side) return [a.target];
       return foes.length
@@ -1573,6 +1584,8 @@ function metricValue(
       return sd.played;
     case 'attacksPlayed':
       return sd.attacksPlayed;
+    case 'paidAttacksPlayed':
+      return sd.paidAttacksTurn ?? 0;
     case 'skillsPlayed':
       return sd.skillsPlayed;
     case 'strikes': {
@@ -2006,7 +2019,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       // (X = 0: no hit, so Primed stays)
       if (hits <= 0) return;
       const knife = a.card?.tags?.includes(EDGE_TAG) === true;
-      const edge = knife ? stacks(a.actor, 'edge') : 0;
+      // (Edge reaches only the first EDGE_LIMIT knives played each turn, #692: Whetted Edge doubled every one of 6-8 a turn)
+      const edge = knife && knivesPlayedTurn(r, side) < EDGE_LIMIT ? stacks(a.actor, 'edge') : 0;
       // (assassin) Fanned knives hit every enemy; Honed adds to the first knife of the turn
       const to: Sel =
         knife && op.to === 'target' && stacks(a.actor, 'fanned') > 0 ? 'allFoes' : op.to;
@@ -2671,6 +2685,10 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (op.free && pick.cost > 0) made.costMod = -pick.cost;
         if (op.turn) made.freeTurn = true;
         if (op.ethereal) made.ethereal = true;
+        // (the card made may be the upgraded one, with its own cost; never below 0 with free stacked on it)
+        const madeCost = cardDef(r.db, made.card).cost;
+        if (op.cheaper && madeCost > 0)
+          made.costMod = Math.max(-madeCost, (made.costMod ?? 0) - op.cheaper);
       }
       return;
     }
@@ -3326,6 +3344,23 @@ function execOp(r: Run, a: Act, op: Op): void {
             : false;
       const pool = side.hand.filter((c) => !has(c) && !cardDef(r.db, c.card).unplayable);
       if (!pool.length) return;
+      // (Echo of the Dead, #691: the player chooses which card is played again)
+      if (op.pick && op.flag === 'replay' && a.pick && pool.length > 1) {
+        r.s.pending = {
+          kind: 'replay',
+          ...(op.costUp ? { costUp: op.costUp } : {}),
+          pool: pool.map((x) => x.id),
+          min: 1,
+          max: 1,
+          rest: [],
+          actor: a.actor.id,
+          target: a.target?.id ?? null,
+          finish: null,
+          x: a.x,
+        };
+        r.ev.push({ type: 'pending', side: side.id, kind: 'replay' });
+        return;
+      }
       const c = pool[nextInt(r.s.rng, pool.length)] as CardInst;
       if (op.flag === 'ethereal') c.ethereal = true;
       else if (op.flag === 'retain') c.retain = true;
@@ -4757,6 +4792,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (r.s.winner) return;
   sd.played = 0;
   sd.attacksPlayed = 0;
+  sd.paidAttacksTurn = 0;
   sd.skillsPlayed = 0;
   if (sd.totems) {
     sd.commanded = false;
@@ -5628,6 +5664,8 @@ function finishCard(
   bringBack(r, sd, cd);
   countPlayed(sd, cd, inst);
   const cost = paid ?? cd.cost + (inst.costUp ?? 0);
+  // (#692: a free card, a Dagger or a Premeditated one, is not paid for)
+  if (cd.kind === 'attack' && cost >= 1) sd.paidAttacksTurn = (sd.paidAttacksTurn ?? 0) + 1;
   // (the Monk) a technique played from hand is a step of his form's objective, before the Auras answer the play
   if (!free) techniqueStep(r, sd, cd, target, aimed);
   // (the Shaman) the spell's element lights, and Trinity may trigger
@@ -5638,6 +5676,13 @@ function finishCard(
 }
 
 /** (the Necrobinder copy) what a played card adds to the turn's and fight's counters: Fetch's "first time", Fleeting cards played */
+/** (#692) Edge adds to this many knives a turn */
+export const EDGE_LIMIT = 4;
+/** knife cards already played this turn (the one being played is counted once it finishes) */
+function knivesPlayedTurn(r: Pick<Run, 'db'>, sd: SideState): number {
+  return (sd.playedTurn ?? []).filter((id) => r.db.cards[id]?.tags?.includes(EDGE_TAG)).length;
+}
+
 function countPlayed(sd: SideState, cd: CardDef, inst: CardInst): void {
   (sd.playedTurn ??= []).push(cd.id.replace(/\+$/, ''));
   if (isEthereal(cd, inst)) sd.etherealPlayed = (sd.etherealPlayed ?? 0) + 1;
@@ -5651,6 +5696,9 @@ function recallOnCost(r: Run, sd: SideState, cost: number, played: string): void
     if (c.id === played) continue;
     const d = r.db.cards[c.card];
     if (!d?.recallOnCost || cost < d.recallOnCost || sd.hand.length >= MAX_HAND) continue;
+    // (once a turn for each copy, #691: Helping Hand came back after every 2-Mana card)
+    if (c.recalledTurn === r.s.turn) continue;
+    c.recalledTurn = r.s.turn;
     sd.discard = sd.discard.filter((x) => x.id !== c.id);
     sd.hand.push(c);
     r.ev.push({ type: 'draw', side: sd.id, card: c.id, def: c.card });
@@ -5912,7 +5960,17 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
         r.ev.push({ type: 'transform', side, card: c.id, def: c.card });
       }
     }
-  for (const id of p.kind === 'copy' || p.kind === 'empower' ? [] : ids) {
+  // (Echo of the Dead, #691: the chosen card stays in your hand and is played one more time)
+  if (p.kind === 'replay')
+    for (const id of ids) {
+      const c = sd.hand.find((x) => x.id === id);
+      if (c) {
+        c.replay = (c.replay ?? 0) + 1;
+        if (p.costUp) c.costUp = (c.costUp ?? 0) + p.costUp;
+        r.ev.push({ type: 'transform', side, card: c.id, def: c.card });
+      }
+    }
+  for (const id of p.kind === 'copy' || p.kind === 'empower' || p.kind === 'replay' ? [] : ids) {
     const pile = p.kind === 'scry' || p.from === 'draw' ? sd.draw : sd.hand;
     const k = pile.findIndex((c) => c.id === id);
     const [c] = k >= 0 ? pile.splice(k, 1) : [];
@@ -6465,7 +6523,7 @@ export function previewCardDamage(
   const knife = def.tags?.includes(EDGE_TAG) === true;
   const edge = deftOf(a) + help;
   // (each its own step in the breakdown, as the engine adds them: DECISIONS #479)
-  const knifeEdge = knife ? stacks(hero, 'edge') : 0;
+  const knifeEdge = knife && knivesPlayedTurn(r, sd) < EDGE_LIMIT ? stacks(hero, 'edge') : 0;
   const honed = knife && !sd.honedUsed ? stacks(hero, 'honed') : 0;
   const lethality = def.kind === 'attack' && sd.attacksPlayed === 0 ? stacks(hero, 'lethality') : 0;
   const leth = 1 + lethality / 100;
@@ -6598,7 +6656,7 @@ export function previewCardDamage(
             : foes
         : to === 'front'
           ? foes.slice(0, 1)
-          : to === 'targetOrMostFracture'
+          : to === 'targetOrMostFracture' || to === 'targetOrRandom'
             ? chosen
               ? [chosen]
               : foes
