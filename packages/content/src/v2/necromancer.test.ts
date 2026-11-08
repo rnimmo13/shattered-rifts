@@ -118,14 +118,19 @@ describe('Dorian, the Necrobinder copy', () => {
     expect(foe(play(none, 'T0', foe(none).id)).hp).toBe(300);
   });
 
-  it('Off the Leash adds each Thrall’s own HP; The Drowned King its max HP', () => {
+  it('Off the Leash adds each Thrall’s own HP; The Drowned King has only the healthiest strike, for its max HP (#689)', () => {
     const s = fight(['off-the-leash', 'the-drowned-king']);
     addThrall(s, 10);
     thralls(s)[0]!.hp = 1; // a hurt 3-HP Thrall
     let after = play(s, 'T0', foe(s).id);
     expect(foe(after).hp).toBe(300 - (6 + 1) - (6 + 10));
     after = play(after, 'T1', foe(after).id);
-    expect(foe(after).hp).toBe(300 - 23 - (10 + 3) - (10 + 10));
+    // (the 10-HP Thrall alone, not the 3-HP one too)
+    expect(foe(after).hp).toBe(300 - 23 - (10 + 10));
+    expect(cardText(db, db.cards['the-drowned-king']!)).toBe(
+      'Your healthiest companion deals 10 damage, plus its own max HP.',
+    );
+    expect(db.cards['the-drowned-king']?.cost).toBe(2);
   });
 
   it('Ossify (Calcify) makes the Thralls hit harder, and Rattle the Bones hits harder for every earlier command', () => {
@@ -387,20 +392,20 @@ describe('the other new rules', () => {
     expect(foe(s).hp).toBe(300 - 12);
   });
 
-  it('Death Grip is your own blow, 15 + 4 per Command card played earlier this fight (Robert 2026-11-08)', () => {
+  it('Death Grip is your own blow, 10 + 6 per Command card played earlier this fight (Robert 2026-11-08, #689)', () => {
     expect(cardText(db, db.cards['death-grip']!)).toBe(
-      'Deal 15 (+4 per Command card you played earlier this fight) damage.',
+      'Deal 10 (+6 per Command card you played earlier this fight) damage.',
     );
     // (with none played, the deck's Commands do not count, and the companions do not strike)
     let s = fight(['death-grip']);
-    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(300 - 15);
+    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(300 - 10);
     s = fight(['off-the-leash', 'off-the-leash', 'death-grip']);
     s = play(s, 'T0', foe(s).id);
     s = play(s, 'T1', foe(s).id);
     expect(s.sides.a.tagsPlayed?.command).toBe(2);
     const before = foe(s).hp;
     s = play(s, 'T2', foe(s).id);
-    expect(before - foe(s).hp).toBe(15 + 4 * 2);
+    expect(before - foe(s).hp).toBe(10 + 6 * 2);
     // (it is not a Command itself, so it never counts itself)
     expect(s.sides.a.tagsPlayed?.command).toBe(2);
   });
@@ -705,16 +710,20 @@ describe('Raise Colossus, the uncommon (2026-11-07)', () => {
 });
 
 describe('Grave Debt (Robert 2026-11-08, #688)', () => {
-  it('a companion that dies curses every enemy with 3 Fate plus half its max HP; one released for a Colossus does not', () => {
+  it('a companion that dies curses every enemy with a quarter of its max HP, 3 times a turn at most; one released for a Colossus does not', () => {
     expect(db.cards['grave-debt']).toMatchObject({ rarity: 'rare', cost: 2, kind: 'power' });
-    let s = fight(['grave-debt', 'bone-rain'], ['squire', 'squire']);
+    expect(db.cards['grave-debt+']?.cost).toBe(1);
+    // (the Bonelord's four slots: Bone Rain gives up four Thralls of 12, 16, 8 and 3 max HP at once)
+    let s = fight(['grave-debt', 'bone-rain'], ['squire', 'squire'], 'necromancer:bonelord');
     s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
-    addThrall(s, 10, 'B-a');
-    addThrall(s, 14, 'B-b');
+    addThrall(s, 12, 'B-a');
+    addThrall(s, 16, 'B-b');
+    addThrall(s, 8, 'B-c');
+    addThrall(s, 3, 'B-d');
     s = play(s, 'T0');
-    // (Bone Rain: both Thralls strike and give themselves up: 3 + 5 and 3 + 7)
     s = play(s, 'T1');
-    for (const u of s.sides.b.units.filter((x) => x.hp > 0)) expect(u.statuses.doom).toBe(8 + 10);
+    // (3 + 4 + 2; the fourth death this turn curses no one)
+    for (const u of s.sides.b.units.filter((x) => x.hp > 0)) expect(u.statuses.doom).toBe(9);
     // (the same release with and without it: the trait's own Fate for consuming the card is the same either way)
     const released = (debt: boolean): number => {
       let t = fight([debt ? 'grave-debt' : 'strike', 'raise-colossus'], ['squire']);

@@ -244,9 +244,11 @@ export const NECROMANCER: CardDef[] = [
   g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raiseColossus(18)], {
     up: { effects: [raiseColossus(22)] },
   }),
-  // (Robert 2026-11-08, DECISIONS #688: a death curses every enemy. 3 + half the fallen's max HP to ALL at 0.9 a stack: ~3 Thrall deaths
-  // of ~10 HP over four turns is ~22 against a 2-Mana rare Aura's ~33, rising with grown companions and sacrifices: Bone Rain giving up
-  // four 15-HP Thralls is ~42 Fate on every enemy. Released companions (making way for a Colossus) do not die, so do not count.)
+  // (Robert 2026-11-08, DECISIONS #688: a death curses every enemy. Cut the same day after 0.229: 3 + half its max HP to ALL fed on the
+  // Thrall raised every turn and hit whole packs, Fleshcraft once per enemy per death. Now a quarter of its max HP, no flat part, at most 3
+  // times a turn: a fresh 3-HP Thrall gives nothing, a grown 20-HP one 5 Fate to all, a 40-HP Colossus 10. ~3 deaths of ~16 HP over four
+  // turns is ~12 Fate to all, ~11 points against a 2-Mana rare Aura's ~33 on one enemy, ~2-3x that against a group; upgraded it costs 1.
+  // Released companions (making way for a Colossus) do not die, so do not count.)
   g(
     'rare',
     'grave-debt',
@@ -254,12 +256,12 @@ export const NECROMANCER: CardDef[] = [
     'power',
     2,
     'none',
-    [on('allyDies', [scaled(status('doom', 3, 'allFoes'), per('diedMaxHp', 0.5))])],
-    {
-      up: {
-        effects: [on('allyDies', [scaled(status('doom', 5, 'allFoes'), per('diedMaxHp', 0.5))])],
-      },
-    },
+    [
+      on('allyDies', [scaled(status('doom', 0, 'allFoes'), per('diedMaxHp', 0.25))], {
+        perTurnLimit: 3,
+      }),
+    ],
+    { up: { cost: 1 } },
   ),
   // (a smaller Colossus that is consumed, Robert 2026-11-07: 14 HP (16.8) + 3 body + its ~5 hit over two or three turns, less ~5 for
   // its second slot, ~26 against a 2-Mana uncommon's ~21 with Consume's +25%, ~27; upgraded 18)
@@ -296,23 +298,30 @@ export const NECROMANCER: CardDef[] = [
     'death-grip',
     'Death Grip',
     'attack',
-    3,
+    // (2 Mana, 10 + 6 a Command, after Robert found it useless next to The Drowned King: ~22/58/100 on turns 2/6/10, #689)
+    2,
     'foe',
-    [scaled(dmg(15), { by: 'tagPlayed', tag: 'command', mult: 4 })],
+    [scaled(dmg(10), { by: 'tagPlayed', tag: 'command', mult: 6 })],
     {
-      up: { effects: [scaled(dmg(20), { by: 'tagPlayed', tag: 'command', mult: 5 })] },
+      up: { effects: [scaled(dmg(14), { by: 'tagPlayed', tag: 'command', mult: 7 })] },
     },
   ),
   // (Protector, an Ancient card in her game: here a Rare)
+  // (every companion striking for 10 + its max HP for 1 Mana was ~60 mid-fight and ~130 with four grown Thralls once they grew and
+  // multiplied, #684; now only the healthiest strikes, for 2 Mana: ~30 from a 20-HP Thrall, ~50 from a 40-HP one, a Colossus at half
+  // like every Command. Robert 2026-11-08, DECISIONS #689)
   g(
     'rare',
     'the-drowned-king',
     'The Drowned King',
     'attack',
-    1,
+    2,
     'foe',
-    [command(scaled(dmg(10), per('maxHp')))],
-    { ...CMD, up: { effects: [command(scaled(dmg(15), per('maxHp')))] } },
+    [{ op: 'command', ops: [scaled(dmg(10), per('maxHp'))], healthiest: true }],
+    {
+      ...CMD,
+      up: { effects: [{ op: 'command', ops: [scaled(dmg(15), per('maxHp'))], healthiest: true }] },
+    },
   ),
   // --- blood and bone: HP and consumed cards grow the dead (#684) ---
   // (lose 5 HP (-7.5), Raise Dead 10 (12, +3 when it brings a new Thrall), and Grave Chill's first-HP-lost growth (~4.8): ~9.3 into a

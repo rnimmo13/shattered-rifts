@@ -1,3 +1,7 @@
+# Release approved 0.230.0 / rules 98 (2026-11-08; decisions 688-689)
+
+Robert explicitly approves pushing/deploying: Death Grip at 2 Mana scaling 10 + 6 per Command played, The Drowned King at 2 Mana striking with only the healthiest companion, and Grave Debt cut to a quarter of the fallen's max HP as Fate to all, 3 times a turn. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.229.0 / rules 97 (2026-11-08; decision 688)
 
 Robert explicitly approves pushing/deploying: the Grave Debt rare Necromancer Aura (a companion's death curses all enemies with Fate), Command tags and badge for the Engineer's and Hunter's companion cards, and Raise Colossus keeping half the HP of the Thralls that make way. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -68,6 +68,8 @@ const COST_CUT_AURAS = [
   'attunement',
   'heart-of-the-rift',
   'hunters-eye',
+  // (Grave Debt, #688: its numbers are already small; the upgrade makes it cheaper)
+  'grave-debt',
 ];
 
 const auras = (): CardDef[] =>

@@ -3268,10 +3268,12 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'command': {
       // each companion strikes in turn, at the card's target (or, if it has fallen, the front enemy)
       // (only companions of op.unit, when the Command names one: Bone Rain gives up its Thralls, never a Colossus)
-      const crew = side.units.filter(
+      const all = side.units.filter(
         (u) => u.kind === 'ally' && u.hp > 0 && (!op.unit || u.def.replace(/\+$/, '') === op.unit),
       );
-      if (!crew.length) return;
+      if (!all.length) return;
+      // (only the healthiest strikes: the most max HP, the first on the board on a tie)
+      const crew = op.healthiest ? [all.reduce((m, u) => (u.maxHp > m.maxHp ? u : m))] : all;
       for (const u of crew) {
         if (r.s.winner) break;
         if (u.hp <= 0) continue;

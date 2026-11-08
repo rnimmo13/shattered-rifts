@@ -46,6 +46,92 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.230.0',
+    date: '2026-11-08',
+    title: 'Necromancer payoffs evened out',
+    summary:
+      'Death Grip is cheaper and grows faster, The Drowned King strikes with your healthiest companion, and Grave Debt is toned down.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Death Grip',
+        hero: 'necromancer',
+        card: 'death-grip',
+        text: 'Cheaper, and grows faster with every Command you play this fight.',
+        changes: [
+          {
+            label: 'Cost',
+            before: '3',
+            after: '2',
+            direction: 'buff',
+          },
+          {
+            label: 'Damage',
+            before: '15 + 4 per Command played',
+            after: '10 + 6 per Command played',
+            direction: 'buff',
+          },
+          {
+            label: 'Upgraded',
+            before: '20 + 5',
+            after: '14 + 7',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'The Drowned King',
+        hero: 'necromancer',
+        card: 'the-drowned-king',
+        text: 'Only your healthiest companion strikes now, for 10 plus its max HP (15 upgraded). With several grown Thralls it dealt over 100 for 1 Mana.',
+        changes: [
+          {
+            label: 'Cost',
+            before: '1',
+            after: '2',
+            direction: 'nerf',
+          },
+          {
+            label: 'Who strikes',
+            before: 'every companion',
+            after: 'your healthiest companion',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Grave Debt',
+        hero: 'necromancer',
+        card: 'grave-debt',
+        text: 'A death now curses ALL enemies with Fate equal to a quarter of the fallen companion’s max HP, at most 3 times a turn. Upgraded, it costs 1.',
+        changes: [
+          {
+            label: 'Fate per death',
+            before: '3 + half its max HP',
+            after: 'a quarter of its max HP',
+            direction: 'nerf',
+          },
+          {
+            label: 'Limit',
+            before: 'none',
+            after: '3 deaths a turn',
+            direction: 'nerf',
+          },
+          {
+            label: 'Upgraded',
+            before: '5 + half',
+            after: 'costs 1',
+            direction: 'neutral',
+          },
+        ],
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.229.0',
     date: '2026-11-08',
     title: 'Grave Debt, and Commands for every pack',

@@ -1990,6 +1990,12 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         const t = opText(db, x, who).replace(/\byour (HP|max HP)\b/g, 'its $1');
         return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
       });
+      // (one companion: "Your healthiest companion deals 10 damage, plus its own max HP.")
+      if (o.healthiest)
+        return `Your healthiest companion ${lines
+          .join(' ')
+          .replace(/^(\w+?)(?=\s)/, (w) => (w.endsWith('s') ? `${w}es` : `${w}s`))
+          .replace(/\btheir own\b/g, 'its own')}`;
       return `Your companions each ${lines.join(' ')}`;
     }
     case 'doomNow':

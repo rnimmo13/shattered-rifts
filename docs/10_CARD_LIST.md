@@ -997,11 +997,11 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Bonded Dead | 1 | aura | uncommon | Gain 2 Sapped. At the start of your turn: Gain 1 Mana. |
 | Shared Agony | 2 | aura | rare | Raise Dead 5. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost. |
 | Grave Colossus | 3 | skill | rare | Raise Colossus 18. |
-| Grave Debt | 2 | aura | rare | Whenever one of your allies dies: Curse ALL enemies with 3 (+1 per 2 of the fallen companion's max HP) Fate. |
+| Grave Debt | 2 | aura | rare | Whenever one of your allies dies (first 3 activations each turn): Curse ALL enemies with Fate equal to a quarter of the fallen companion's max HP. |
 | Fen Offering | 1 | skill | rare | Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Hold. |
 | Ever Watchful | 2 | aura | rare | At the start of your turn: Add a Baleful Glance to your hand. |
-| Death Grip | 3 | attack | rare | Deal 15 (+4 per Command card you played earlier this fight) damage. |
-| The Drowned King | 1 | attack | rare | Your companions each deal 10 damage, plus their own max HP. |
+| Death Grip | 2 | attack | rare | Deal 10 (+6 per Command card you played earlier this fight) damage. |
+| The Drowned King | 2 | attack | rare | Your healthiest companion deals 10 damage, plus its own max HP. |
 | The Last Toll | 3 | skill | rare | Curse ALL enemies with 29 Fate. Every enemy whose HP is at or below its Fate dies now. |
 | Mark of Ending | 0 | skill | rare | This turn, whenever you play a card: Curse the target with 3 Fate. |
 | Reaper's Mantle | 3 | aura | rare | On play: For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate. |

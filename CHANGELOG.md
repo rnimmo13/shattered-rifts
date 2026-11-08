@@ -1,3 +1,9 @@
+## 0.230.0 - 2026-11-08
+
+- Death Grip (DECISIONS #689; rules 98): 2 Mana, 10 + 6 per Command played this fight (14 + 7 upgraded).
+- The Drowned King: 2 Mana, only the healthiest companion strikes for 10 + its max HP (15 + upgraded); new `healthiest` option on Commands.
+- Grave Debt: a death curses ALL enemies with a quarter of the fallen's max HP as Fate, at most 3 times a turn; upgraded costs 1.
+
 ## 0.229.0 - 2026-11-08
 
 - New Necromancer rare Aura Grave Debt (DECISIONS #688; rules 97): a companion's death curses ALL enemies with 3 Fate + half its max HP (5 + half upgraded).

@@ -925,7 +925,8 @@ export type Op =
   | { op: 'raise'; unit: string; amount: number; times?: number; scale?: Scale; same?: boolean }
   /** each of your living companions does these, as the actor ("Osty deals 6"); nothing happens with none. It counts as a strike */
   /** each living companion strikes with `ops` (only companions of `unit`, when it is given); a companion's `commandPct` scales its damage */
-  | { op: 'command'; ops: Op[]; unit?: string }
+  /** `healthiest`: only the companion with the most max HP strikes (the first on a tie; The Drowned King, #689) */
+  | { op: 'command'; ops: Op[]; unit?: string; healthiest?: boolean }
   /** every target whose HP is at or below its Fate dies now */
   | { op: 'doomNow'; to: Sel }
   /** the debuffs on the target are put on every other enemy too (Misery) */
