@@ -68,8 +68,8 @@ describe('the hunt', () => {
     expect(extraDamage(['deadfall'])).toBe(18);
   });
 
-  it('Baited Snare: each companion strikes the attacker for 5', () => {
-    expect(extraDamage(['baited-snare'])).toBe(5);
+  it('Baited Snare: each companion strikes the attacker for 6 (#693)', () => {
+    expect(extraDamage(['baited-snare'])).toBe(6);
   });
 
   it('Hunting Grounds: a Trap springing gives 1 Might', () => {

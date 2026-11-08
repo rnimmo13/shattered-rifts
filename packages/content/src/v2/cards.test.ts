@@ -196,7 +196,7 @@ describe('card text says where a condition stops (DECISIONS #485)', () => {
     expect(cardText(db, db.cards['fault-reader']!)).toBe(
       'The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier.',
     );
-    expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(/^When you or an ally is attacked: Cancel that hit and deal 12 damage to the attacker\.$/);
+    expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(/^When you or an ally is attacked: Cancel that hit, deal 18 damage to the attacker and apply 2 Exposed to the attacker\.$/);
   });
 
   it('what always happens comes first, then the keywords, then the condition', () => {
@@ -515,10 +515,11 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
   };
 
   it('X cards hit X times', () => {
-    expect(lostBy('hunter', 'bloodstorm')).toBe(5 * 3);
+    // (Bloodstorm hits X + 1 times for 7 since #693)
+    expect(lostBy('hunter', 'bloodstorm')).toBe(7 * 4);
     expect(lostBy('necromancer', 'oblivion')).toBe(11 * 3);
     expect(lostBy('monk', 'berserk-tide')).toBe(4 * 3);
-    expect(lostBy('hunter', 'whirling-maul')).toBe(6 * 3);
+    expect(lostBy('hunter', 'whirling-maul')).toBe(7 * 3);
     expect(lostBy('monk', 'rift-whirl')).toBe(4 * 3);
   });
 
@@ -534,7 +535,7 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
     expect(lostBy('hunter', 'apex-maw')).toBe(2 * 4);
     expect(lostBy('hunter', 'apex-maw', 3, (s) => void (s.sides.a.played = 2))).toBe(2 * (4 + 2 * 2));
     expect(lostBy('hunter', 'wild-swings', 3, (s) => void (s.sides.a.played = 2))).toBe(3 + 3 * 2);
-    expect(lostBy('trickster', 'trapline-rider')).toBe(4);
+    expect(lostBy('trickster', 'trapline-rider')).toBe(5);
     expect(
       lostBy('shaman', 'flak-burst', 3, (s) => {
         s.sides.a.discard = [

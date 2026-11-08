@@ -98,8 +98,19 @@ export function disciplineTrigger(
     d.usedTurn = state.turn;
     return [{ op: 'damage', amount: r.base + r.perConsumed * d.progress, to: 'weakestFoe' }];
   }
-  if (r.kind === 'execution' && when === 'play' && ctx.card?.kind === 'skill')
+  if (r.kind === 'execution' && r.perSkill && when === 'play' && ctx.card?.kind === 'skill')
     d.progress = Math.min(r.cap, d.progress + r.perSkill);
+  // (the Predator's Ambush, #693: a card drawn on your turn after the opening hand)
+  if (r.kind === 'execution' && r.perDraw && when === 'drawMidTurn' && own)
+    d.progress = Math.min(r.cap, d.progress + r.perDraw);
+  // (the Reaver's Bloodlust, #693: HP your own effects cost you becomes Might for the fight)
+  if (r.kind === 'bloodlust' && when === 'loseHp' && (ctx.lost ?? 0) > 0) {
+    // (worked out from the HP paid alone: roundGain is reset every turn)
+    const before = Math.min(r.cap, Math.floor(d.progress / r.perHp));
+    d.progress += ctx.lost ?? 0;
+    const due = Math.min(r.cap, Math.floor(d.progress / r.perHp)) - before;
+    if (due > 0) return [{ op: 'status', status: 'might', amount: due, to: 'self' }];
+  }
   if (r.kind === 'volley' && when === 'play' && ctx.card?.tags?.includes(r.tag)) {
     if (d.usedTurn !== state.turn) {
       d.usedTurn = state.turn;
@@ -204,10 +215,20 @@ export function disciplineAttack(
     d.usedTurn !== state.turn
   ) {
     d.usedTurn = state.turn;
-    d.progress = d.target === target.id ? Math.min(r.cap, d.progress + r.perTurn) : r.perTurn;
+    // (#694: when the marked enemy is dead, the next mark keeps the bonus and grows on)
+    const old = d.target
+      ? Object.values(state.sides)
+          .flatMap((s) => s.units)
+          .find((u) => u.id === d.target)
+      : undefined;
+    const fell = !!d.target && (!old || old.hp <= 0);
+    d.progress =
+      d.target === target.id || fell ? Math.min(r.cap, d.progress + r.perTurn) : r.perTurn;
     d.target = target.id;
   }
   if (r.kind === 'fury' && (actor.statuses.wrath ?? 0) > 0) return d.progress;
+  // (the Brewmaster, #695: every Fermentation makes his Attacks hit harder)
+  if (r.kind === 'brewing' && r.attackPct) return d.progress * r.attackPct;
   if (r.kind === 'desperation') {
     const hpPct = (actor.hp * 100) / actor.maxHp;
     if (hpPct <= r.threshold + 1e-9) {
@@ -231,10 +252,24 @@ export function disciplineAttack(
   return 0;
 }
 
+/** (the Reaver's Bloodlust, #693) what an Attack that took `lost` HP off an enemy heals its hero */
+export function disciplineLifesteal(side: SideState, lost: number): number {
+  const r = side.discipline?.rule;
+  const hero = side.units.find((u) => u.kind === 'hero');
+  if (r?.kind !== 'bloodlust' || !hero || hero.hp <= 0 || lost <= 0) return 0;
+  if (hero.hp * 100 > hero.maxHp * r.lowPct) return 0;
+  return Math.floor((lost * r.healPct) / 100);
+}
+
 export function disciplineTarget(side: SideState, target: Unit): number {
   const d = side.discipline;
   if (d?.rule.kind === 'pursuit' && d.target === target.id) return d.progress;
-  if (d?.rule.kind === 'execution' && target.hp * 100 <= target.maxHp * d.rule.woundedPct)
+  if (
+    d?.rule.kind === 'execution' &&
+    d.rule.woundedPct &&
+    d.rule.bonus &&
+    target.hp * 100 <= target.maxHp * d.rule.woundedPct
+  )
     return d.rule.bonus;
   return 0;
 }
@@ -257,7 +292,9 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
           .find((u) => u.id === d.target)?.name ?? 'No mark'
       } +${d.progress}%`;
     case 'execution':
-      return `Preparation +${d.progress}%`;
+      return `${r.name ?? 'Preparation'} +${d.progress}%`;
+    case 'bloodlust':
+      return `Bloodlust ${Math.min(r.cap, Math.floor(d.progress / r.perHp))}/${r.cap} Might`;
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivated ${d.progress}/${r.cap}`
@@ -279,7 +316,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
     case 'spellCycle':
       return `Recovery ${side.nextStars ?? 0} Spell Power`;
     case 'brewing':
-      return `Fermentation ${d.progress}/${r.cap}`;
+      return `Fermentation ${d.progress}/${r.cap}${r.attackPct && d.progress ? ` · +${d.progress * r.attackPct}%` : ''}`;
     case 'harvest':
       return `Harvest ${d.progress} · Reap ${r.base + r.perConsumed * d.progress}${(side.exhaustedTurn ?? 0) > 0 && d.usedTurn !== state.turn ? ' ready' : ''}`;
     case 'commandGuard':
@@ -303,7 +340,12 @@ export function disciplineText(side: SideState): string | null {
     case 'pursuit':
       return `Attacks against your marked enemy deal ${d.progress}% more damage.`;
     case 'execution':
-      return `Preparation +${d.progress}%: your next Attack deals that much more and uses it all up (even a Dagger). Every Skill you play adds +${r.perSkill}% (up to +${r.cap}%). Attacks also deal +${r.bonus}% to enemies at ${r.woundedPct}% HP or less.`;
+      return `${r.name ?? 'Preparation'} +${d.progress}%: your next Attack deals that much more and uses it all up (${r.perSkill ? 'even a Dagger' : 'even a free one'}). ${r.perDraw ? `Every card you draw on your turn after your opening hand adds +${r.perDraw}%` : `Every Skill you play adds +${r.perSkill ?? 0}%`} (up to +${r.cap}%).${r.bonus && r.woundedPct ? ` Attacks also deal +${r.bonus}% to enemies at ${r.woundedPct}% HP or less.` : ''}`;
+    case 'bloodlust':
+    {
+      const got = Math.min(r.cap, Math.floor(d.progress / r.perHp));
+      return `Bloodlust: ${got}/${r.cap} Might gained. Every ${r.perHp} HP your own effects cost you gives 1 Might for the fight${got < r.cap ? ` (${Math.floor(d.progress) % r.perHp}/${r.perHp} toward the next)` : ''}. At ${r.lowPct}% HP or less, your Attacks heal you for ${r.healPct}% of the HP they take off.`;
+    }
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivation: complete, ${d.progress}/${r.cap} Spirit gained this fight.`
@@ -323,7 +365,7 @@ export function disciplineText(side: SideState): string | null {
     case 'spellCycle':
       return `Spell recovery: ${side.nextStars ?? 0} Spell Power due next turn; ${d.usedTurn === side.turnBegan ? 'used this turn' : 'ready'}.`;
     case 'brewing':
-      return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${Number((d.progress * r.healPct).toFixed(2))}% max HP and gives ${d.progress * r.barrier} Barrier.`;
+      return `Fermentation: ${d.progress}/${r.cap}; end turn heals ${Number((d.progress * r.healPct).toFixed(2))}% max HP and gives ${d.progress * r.barrier} Barrier.${r.attackPct ? ` Your Attacks deal ${d.progress * r.attackPct}% more.` : ''}`;
     case 'harvest':
       return `Harvest ${d.progress}; ${d.roundGain}/${r.roundLimit ?? '∞'} eligible consumptions this round. After hand cleanup and companion actions, consuming a card this turn enables one Reap for ${r.base + r.perConsumed * d.progress} non-attack damage against the lowest-HP enemy. Barrier can absorb it.`;
     case 'desperation':

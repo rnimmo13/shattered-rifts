@@ -159,12 +159,13 @@ describe('innate traits', () => {
       const after = playCard(s, 'T0');
       return before - after.sides.b.units[0]!.hp;
     };
-    expect(hit(0)).toBe(6);
+    // (Hammer Swing deals 7 since #695)
+    expect(hit(0)).toBe(7);
     // (Robert's game: 19 of 88 HP, 69 missing, is 78% missing: +78%, not +69%)
     expect(max).toBe(88);
     expect(pct(69)).toBe(78);
-    expect(hit(69)).toBe(Math.floor((6 * 178) / 100));
-    expect(hit(44)).toBe(9); // half his HP: +50%
+    expect(hit(69)).toBe(Math.floor((7 * 178) / 100));
+    expect(hit(44)).toBe(10); // half his HP: +50%
   });
 
   it("Clutch Genes reads the share of HP missing, so the Arena's bigger HP gives the same bonus", () => {
@@ -290,7 +291,8 @@ describe('losing HP to your own cards or Hangover pays by how much (DECISIONS #4
     kp(t).barrier = 99;
     const b2 = clone(t);
     t = applyAction(db, t, { type: 'endTurn' }).state;
-    expect(foeLost(b2, t)).toEqual([6, 6]);
+    // (Glass Jaw strikes back up to 7 since #695)
+    expect(foeLost(b2, t)).toEqual([7, 7]);
   });
 
   it('Mean Drunk: 1 Might for the turn per 2 HP lost (Take It on the Chin: 3 HP, 1 Might), and its Barrier', () => {

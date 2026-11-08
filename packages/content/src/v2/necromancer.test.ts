@@ -451,20 +451,24 @@ describe('the other new rules', () => {
     expect(one.sides.a.hand.find((x) => x.id === 'T1')!.replay).toBe(1);
   });
 
-  it('Death Grip is your own blow, 10 + 6 per Command card played earlier this fight (Robert 2026-11-08, #689)', () => {
+  it('Death Grip is your own blow, 8 + 4 per Command card played earlier this fight, double to finish (#689, #696)', () => {
     expect(cardText(db, db.cards['death-grip']!)).toBe(
-      'Deal 10 (+6 per Command card you played earlier this fight) damage.',
+      'Deal 8 (+4 per Command card you played earlier this fight) damage. Double damage to an enemy at half HP or less.',
     );
     // (with none played, the deck's Commands do not count, and the companions do not strike)
     let s = fight(['death-grip']);
-    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(300 - 10);
+    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(300 - 8);
+    // (a wounded enemy, at half its HP or less, takes double)
+    s = fight(['death-grip']);
+    foe(s).hp = 150;
+    expect(foe(play(s, 'T0', foe(s).id)).hp).toBe(150 - 16);
     s = fight(['off-the-leash', 'off-the-leash', 'death-grip']);
     s = play(s, 'T0', foe(s).id);
     s = play(s, 'T1', foe(s).id);
     expect(s.sides.a.tagsPlayed?.command).toBe(2);
     const before = foe(s).hp;
     s = play(s, 'T2', foe(s).id);
-    expect(before - foe(s).hp).toBe(10 + 6 * 2);
+    expect(before - foe(s).hp).toBe(8 + 4 * 2);
     // (it is not a Command itself, so it never counts itself)
     expect(s.sides.a.tagsPlayed?.command).toBe(2);
   });
@@ -884,5 +888,17 @@ describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
     const n = s.sides.a.hand.length;
     s = play(s, 'T0');
     expect(s.sides.a.hand.length).toBe(n);
+  });
+});
+
+describe('Bonelord back to A (Robert 2026-11-08, #696)', () => {
+  it('companions deal 3 more and gain 2 max HP at the start of each turn', () => {
+    let s = fight([], ['squire'], 'necromancer:bonelord');
+    expect(hero(s).statuses.marrow).toBe(3);
+    const t = thralls(s)[0]!;
+    t.hp = t.maxHp = 100;
+    for (const u of s.sides.b.units) u.intent = null;
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(s.sides.a.units.find((u) => u.id === t.id)!.maxHp).toBe(102);
   });
 });

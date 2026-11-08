@@ -556,7 +556,20 @@ export type CombatDiscipline =
       recoverCap?: number;
     }
   | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
-  | { kind: 'execution'; perSkill: number; cap: number; woundedPct: number; bonus: number }
+  /** Preparation (the Assassin): each Skill adds perSkill%; or (the Predator's Ambush, #693) each card drawn on your turn after the
+   * opening hand adds perDraw%. The next Attack spends it. `woundedPct`/`bonus`: more against a wounded enemy. `name`: what it is called */
+  | {
+      kind: 'execution';
+      perSkill?: number;
+      perDraw?: number;
+      cap: number;
+      woundedPct?: number;
+      bonus?: number;
+      name?: string;
+    }
+  /** (the Reaver, #693) every perHp HP your own effects cost you gives 1 Might for the fight, up to cap; at lowPct% HP or less your
+   * Attacks heal healPct% of the HP they take off */
+  | { kind: 'bloodlust'; perHp: number; cap: number; healPct: number; lowPct: number }
   /** `cap`: the most Spirit cultivation gives in a fight (progress counts it) */
   | { kind: 'cultivation'; minimum: number; spirit: number; cap?: number }
   /** (the Trapmaster) Trap damage +perSprung% for each of your Traps already sprung this fight, up to cap% */
@@ -569,7 +582,8 @@ export type CombatDiscipline =
   | { kind: 'fury'; perEntry: number; cap: number; barrier: number; perExit: number }
   | { kind: 'radiance'; first: number; step: number; cap: number }
   | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
-  | { kind: 'brewing'; cap: number; healPct: number; barrier: number }
+  /** `attackPct`: the hero's Attacks deal that much % more per Fermentation (#695) */
+  | { kind: 'brewing'; cap: number; healPct: number; barrier: number; attackPct?: number }
   | { kind: 'harvest'; base: number; perConsumed: number; roundLimit?: number }
   | {
       kind: 'commandGuard';
@@ -623,6 +637,8 @@ export type Op =
       to: Sel;
       scale?: Scale;
       lonePct?: number;
+      /** (Death Grip, #696) x`mult` damage to an enemy at `belowPct`% of its max HP or less, as the hit lands */
+      finisher?: { belowPct: number; mult: number };
       lifesteal?: number;
       /** with `to: 'randomFoe'`: each hit finds an enemy no earlier hit of it struck, so `hits` is how many different
        * enemies it strikes, once each (fewer when fewer are standing; DECISIONS #357) */
@@ -684,6 +700,8 @@ export type Op =
       unit: string;
       ifAbsent?: boolean;
       /** Release matching friendly summons before making room; not deaths. */ replace?: string[];
+      /** (#693) it arrives with this much more max HP (Dire Wolf+) */
+      bonusHp?: number;
     }
   /** (Gorrmaw's rule, DECISIONS #546) every other unit of this kind on your side is eaten: for each, heal `heal` and gain `might`
    * Might, plus `healPct` percent of its max HP; with none to eat, `none` happens instead */
@@ -1076,7 +1094,8 @@ export interface CardDef {
   /** costs 0 while a metric (of your side) is at least this much (Flatten) */
   freeIf?: { by: Metric; atLeast: number };
   /** costs `mult` less for every point of a metric (of your side) */
-  cheaperPer?: { by: Metric; mult: number };
+  /** `min`: it never gets cheaper than this by it (Showstopper, #694) */
+  cheaperPer?: { by: Metric; mult: number; min?: number };
   /** whenever you play a card that costs at least this much, this comes back from your discard pile to your hand */
   recallOnCost?: number;
   /** exhausts if it is still in your hand at the end of your turn */

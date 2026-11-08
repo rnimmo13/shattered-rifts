@@ -56,8 +56,6 @@ const COST_CUT_AURAS = [
   'scrapyard-king',
   'hunger-unbound',
   'hunting-grounds',
-  'killing-spree',
-  'red-frenzy',
   'wild-hunt',
   'ascendant-form',
   'litany',
@@ -73,6 +71,10 @@ const COST_CUT_AURAS = [
   // (#692: the Rogue's Whetted Edge and Wide Arc cost 1 upgraded; Nimble Routine and Patient Hands gain Opening hand instead)
   'whetted-edge',
   'wide-arc',
+  // (#693: the Hunter's Den Mother, Blood Pact, Berserk Tempo cost 1 less upgraded)
+  'den-mother',
+  'blood-pact',
+  'berserk-tempo',
 ];
 
 const auras = (): CardDef[] =>
@@ -109,7 +111,6 @@ describe('Aura upgrades', () => {
       'battle-rhythm',
       'shell-game',
       'legion',
-      'patient-hunter',
       'reading-the-signs',
       'hair-trigger',
       'hunters-call',

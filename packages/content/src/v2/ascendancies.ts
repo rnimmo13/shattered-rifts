@@ -146,10 +146,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'hunter',
     'Beastmaster',
     'The pack',
-    'Your companions share three quarters of your Might, not half. At the start of your turn, gain 1 Might.',
+    // (all your Might, and companions that grow every turn, so a pack can win on its own; the Might stops at 10: Robert 2026-11-08, #693)
+    'Your companions share all your Might. At the start of your turn, each of your companions gains 2 max HP, and in your first 10 turns you gain 1 Might.',
     {
-      set: { shareMight: 0.75 },
-      turnStart: [status('might', 1)],
+      set: { shareMight: 1 },
+      turnStart: [growHp(2, 'allAllies')],
+      triggers: [on('turnStart', [status('might', 1)], { times: 10 })],
     },
   ),
   a(
@@ -158,11 +160,17 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Paying blood',
     // (and 2 Primed, DECISIONS #545)
     // (and 1 Might, DECISIONS #685: something that grows; a more distinct Reaver is still wanted)
-    'The first time each turn one of your own effects costs you HP, draw 1 card, gain 2 Primed, 1 Might and 4 Barrier.',
+    // (Bloodlust, modelled on the Blood Knight's scaling: what he pays is kept as Might, up to 12, and he heals when low, so paying HP
+    // is fuel he can survive: Robert 2026-11-08, #693)
+    'Bloodlust: every 3 HP your own effects cost you gives 1 Might for the rest of the fight (up to 12). The first time each turn one of your own effects costs you HP, draw 1 card and gain 4 Barrier. At half HP or less, your Attacks heal you for 20% of the HP they take off.',
     {
-      triggers: [
-        on('loseHp', [draw(1), status('vigor', 2), status('might', 1), barrier(4)], { once: true }),
+      fightStart: [
+        {
+          op: 'discipline',
+          rule: { kind: 'bloodlust', perHp: 3, cap: 12, healPct: 20, lowPct: 50 },
+        },
       ],
+      triggers: [on('loseHp', [draw(1), barrier(4)], { once: true })],
     },
   ),
   a(
@@ -170,15 +178,13 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Predator',
     'Big turns',
     // (2, was 1: Primed loses half each turn now, DECISIONS #533, #545)
-    'The first 6 additional cards you draw on your turn each give 2 Primed; later draws give 1 Primed each. Your opening hand does not count.',
+    // (Ambush, the Assassin's Preparation built by draws, and Exposed that draws: two ways to win, Robert 2026-11-08, #693)
+    'Ambush: each card you draw on your turn after your opening hand adds 10% to your next Attack (up to 60%). That Attack uses it all, even a free one, and Ambush waits for you across turns. The first time each turn you apply Exposed, draw 1 card.',
     {
-      triggers: [
-        on('drawMidTurn', [status('vigor', 2)], {
-          ownTurn: true,
-          perTurnLimit: 6,
-          afterLimit: [status('vigor', 1)],
-        }),
+      fightStart: [
+        { op: 'discipline', rule: { kind: 'execution', perDraw: 10, cap: 60, name: 'Ambush' } },
       ],
+      triggers: [on('exposeFoe', [draw(1)], { once: true, ownTurn: true })],
     },
   ),
 
@@ -187,24 +193,38 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Trapmaster',
     'Traps',
     // (2 Barrier, was 3, DECISIONS #545; two more Traps and Trap damage that grows, DECISIONS #685)
-    'You can have 2 more Traps set. Whenever one of your Traps springs, draw 1 card and gain 2 Barrier. Your Traps deal 5% more damage for each of your Traps sprung before it this fight, up to 50% more.',
+    // (Trap damage and Trap control both grow through the fight: 10% a Trap up to double, and a Barrier that grows with every Trap
+    // sprung. Robert 2026-11-08, #694)
+    'You can have 2 more Traps set. Whenever one of your Traps springs, draw 1 card and gain 2 Barrier, plus 1 for every Trap sprung this fight (up to 8 more). Your Traps deal 10% more damage for each of your Traps sprung before it this fight, up to 100% more.',
     {
       fightStart: [
         { op: 'snareSlot', amount: 2 },
-        { op: 'discipline', rule: { kind: 'snarecraft', perSprung: 5, cap: 50 } },
+        { op: 'discipline', rule: { kind: 'snarecraft', perSprung: 10, cap: 100 } },
       ],
-      triggers: [on('snare', [draw(1), barrier(2)])],
+      triggers: [on('snare', [draw(1), scaled(barrier(2), { by: 'snaresSprung', max: 8 })])],
     },
   ),
   // (and 1 Might, DECISIONS #685)
-  a('trickster', 'Cardsharp', 'Suits', 'A Full Trick also gives you 1 Mana and 1 Might.', {
-    triggers: [on('allSuits', [mana(1), status('might', 1)])],
-  }),
+  // (2 Might, up to 12, and a draw at 3 suits so Full Tricks come reliably: Robert 2026-11-08, #694)
+  a(
+    'trickster',
+    'Cardsharp',
+    'Suits',
+    'A Full Trick also gives you 1 Mana and 2 Might (up to 12 Might this way). The first time each turn you have shown 3 suits, draw 1 card.',
+    {
+      triggers: [
+        on('allSuits', [mana(1)]),
+        on('allSuits', [status('might', 2)], { times: 6 }),
+        on('play', [draw(1)], { once: true, ownTurn: true, only: { by: 'suits', atLeast: 3 } }),
+      ],
+    },
+  ),
   a(
     'trickster',
     'Seer',
     'Marked prey',
-    'Your first damaging aimed Attack each turn marks its enemy and applies 1 Exposed. Keeping the same mark builds +10% attack damage against it each qualifying turn, up to +50%; choosing a new mark restarts at +10%.',
+    // (when the mark dies, the next keeps the bonus, #694)
+    'Your first damaging aimed Attack each turn marks its enemy and applies 1 Exposed. Keeping the same mark builds +10% attack damage against it each qualifying turn, up to +50%; choosing a new mark restarts at +10%, unless your marked enemy has died, when the new mark keeps the bonus.',
     {
       fightStart: [
         { op: 'discipline', rule: { kind: 'pursuit', perTurn: 10, cap: 50, exposed: 1 } },
@@ -377,10 +397,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Brewmaster',
     'Hangover',
-    'Your first actual Hangover payment on your turn builds 1 Fermentation, up to 5. At the end of your turn, each Fermentation heals 0.6% of your max HP and gives 2 Barrier. Round healing up after totaling all stacks. Fermentation lasts for the fight.',
+    // (up to 8, 1% each, and an Attack bonus: Hangover damage or sustain, Robert 2026-11-08, #695)
+    'Your first actual Hangover payment on your turn builds 1 Fermentation, up to 8. At the end of your turn, each Fermentation heals 1% of your max HP (rounded up once, after adding them all) and gives 2 Barrier. Your Attacks deal 4% more for each Fermentation. Fermentation lasts for the fight.',
     {
       fightStart: [
-        { op: 'discipline', rule: { kind: 'brewing', cap: 5, healPct: 0.6, barrier: 2 } },
+        {
+          op: 'discipline',
+          rule: { kind: 'brewing', cap: 8, healPct: 1, barrier: 2, attackPct: 4 },
+        },
       ],
     },
   ),
@@ -389,10 +413,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'drunkard',
     'Gunslinger',
     'The Gun',
-    'The Old Twelve Gauge starts each fight 3 sharper, and grows 2 sharper at the start of each of your turns.',
+    // (and each Shell sharpens it: the big gun or Shell spam, and it keeps growing, his far-scaling engine: Robert 2026-11-08, #695)
+    'The Old Twelve Gauge starts each fight 3 sharper, and grows 2 sharper at the start of each of your turns. Each Shell you play makes it 1 sharper.',
     {
       fightStart: [{ op: 'forge', card: 'old-twelve-gauge', amount: 3 }],
       turnStart: [{ op: 'forge', card: 'old-twelve-gauge', amount: 2 }],
+      triggers: [
+        on('play', [{ op: 'forge', card: 'old-twelve-gauge', amount: 1 }], { tag: 'shell' }),
+      ],
     },
   ),
   a(
@@ -400,7 +428,7 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Deathwish',
     'Low HP',
     // (and on to +40% at 10% HP, DECISIONS #685)
-    'Below 70% HP, your extra Attack damage grows gradually to +25% at 40% HP and on to +40% at 10% HP, on top of Clutch Genes. Your first Attack on your turn grants 5% of your max HP as Barrier, rounded up, before resolving if you are at 40% HP or lower. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
+    'Below 70% HP, your extra Attack damage grows gradually to +30% at 40% HP and on to +50% at 10% HP, on top of Clutch Genes. Twice each turn, when your own cards or Hangover cost you HP, deal that much (up to 4) to a random enemy. Your first Attack on your turn grants 5% of your max HP as Barrier, rounded up, before resolving if you are at 40% HP or lower. Once each fight, lethal opposing damage leaves you at 1 HP and gives Barrier equal to 10% of your max HP. Follow-up hits can kill. Self-payments, Fate execution and sudden death do not trigger the rescue.',
     {
       fightStart: [
         {
@@ -408,14 +436,22 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
           rule: {
             kind: 'desperation',
             threshold: 40,
-            bonus: 25,
+            bonus: 30,
             emergencyBarrierPct: 10,
             rampFrom: 70,
             attackBarrierPct: 5,
-            deepBonus: 40,
+            deepBonus: 50,
             deepAt: 10,
           },
         },
+      ],
+      // (#695: the pain route, every payment strikes back)
+      triggers: [
+        on(
+          'loseHp',
+          [scaled({ op: 'damage', amount: 0, to: 'randomFoe' }, { by: 'hpLostNow', max: 4 })],
+          { perTurnLimit: 2 },
+        ),
       ],
     },
   ),
@@ -425,10 +461,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Bonelord',
     'Companions',
     // (an army, not a wall: Robert 2026-11-07, DECISIONS #684; the extra Raise a turn and the Barrier for each Thrall went)
-    'You have 4 companion slots (two Grave Colossi fit). Your companions deal 2 more damage. A companion an enemy kills bursts for its full max HP at that enemy, not half.',
+    // (3 more damage and 2 max HP a turn, so the army grows: back to A after the #691 card pass, Robert 2026-11-08, #696)
+    'You have 4 companion slots (two Grave Colossi fit). Your companions deal 3 more damage, and at the start of your turn each gains 2 max HP. A companion an enemy kills bursts for its full max HP at that enemy, not half.',
     {
       maxAllies: 4,
-      fightStart: [status('marrow', 2)],
+      fightStart: [status('marrow', 3)],
+      turnStart: [growHp(2, 'allAllies')],
       // (the other half of the burst: Grave Chill gives the first)
       triggers: [on('allyDies', [deathBurst(0.5, true)])],
     },

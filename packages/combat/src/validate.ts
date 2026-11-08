@@ -61,7 +61,11 @@ export function validateDb(db: CombatDb): string[] {
             ? ['tag', 'unit', 'unitName']
             : o.rule.kind === 'volley'
               ? ['tag']
-              : [];
+              : o.rule.kind === 'execution'
+                ? ['name']
+                : [];
+        if (o.rule.kind === 'execution' && !o.rule.perSkill && !o.rule.perDraw)
+          errs.push(`${where}: an execution rule needs perSkill or perDraw`);
         if (o.rule.kind === 'volley' && !o.rule.tag.trim())
           errs.push(`${where}: a volley needs a tag`);
         for (const [key, value] of Object.entries(o.rule))

@@ -20,7 +20,6 @@ import {
   status,
   drawNext,
   cheapen,
-  discoverOp,
   maxMana,
   discard,
   doubleSt,
@@ -94,8 +93,10 @@ export const TRICKSTER: CardDef[] = [
     [PREVENT, status('faltering', 1, 'attacker')],
     { trigger: { on: 'attacked' } },
   ),
-  v('rare', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(12, 'allFoes')], {
+  // (15 since #694: B 112%; ~140%; upgraded 19)
+  v('rare', 'time-bomb', 'Time Bomb', 'snare', 1, 'none', [dmg(15, 'allFoes')], {
     trigger: { on: 'foeTurn' },
+    up: { effects: [dmg(19, 'allFoes')] },
   }),
   v('common', 'spring-loaded', 'Spring-Loaded', 'skill', 1, 'none', [
     scaled(barrier(0), per('snares', 5)),
@@ -117,9 +118,11 @@ export const TRICKSTER: CardDef[] = [
     'snare',
     2,
     'none',
-    [PREVENT, dmg(12, 'attacker')],
+    // (18 and 2 Exposed since #694: C 86%; ~129%; upgraded 28)
+    [PREVENT, dmg(18, 'attacker'), status('exposed', 2, 'attacker')],
     {
       trigger: { on: 'attacked' },
+      up: { effects: [PREVENT, dmg(28, 'attacker'), status('exposed', 2, 'attacker')] },
     },
   ),
   v(
@@ -129,10 +132,11 @@ export const TRICKSTER: CardDef[] = [
     'snare',
     2,
     'none',
-    [status('stunned', 2, 'attacker'), status('shielded', 1)],
+    // (Stun 3 and 2 Exposed since #694: C 89%; ~136%; upgraded it costs 1)
+    [status('stunned', 3, 'attacker'), status('shielded', 1), status('exposed', 2, 'attacker')],
     {
       trigger: { on: 'attacked' },
-      up: { effects: [status('stunned', 3, 'attacker'), status('shielded', 1)] },
+      up: { cost: 1 },
     },
   ),
 
@@ -170,11 +174,13 @@ export const TRICKSTER: CardDef[] = [
     1,
     'none',
     [on('snare', [draw(1), barrier(5)])],
-    { suit: 'clubs', up: { effects: [on('snare', [draw(1), barrier(8)])] } },
+    // (upgraded 7 since #694: 8 was +40%)
+    { suit: 'clubs', up: { effects: [on('snare', [draw(1), barrier(7)])] } },
   ),
-  v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [
-    scaled(dmg(6), per('snares', 5)),
-  ]),
+  // (8 + 6 a Trap since #694: B 108%; ~136%; upgraded 10 + 8)
+  v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [scaled(dmg(8), per('snares', 6))], {
+    up: { effects: [scaled(dmg(10), per('snares', 8))] },
+  }),
 
   // --- Exposed ---
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
@@ -202,10 +208,11 @@ export const TRICKSTER: CardDef[] = [
     'coup-de-grace',
     'Coup de Grace',
     'attack',
-    3,
+    // (2 Mana, 20 + 5 an Exposed since #694: C 74%; ~126%; upgraded 26 + 6)
+    2,
     'foe',
-    [scaled(dmg(18), per('exposed', 4, 'target'))],
-    { up: { effects: [scaled(dmg(22), per('exposed', 5, 'target'))] } },
+    [scaled(dmg(20), per('exposed', 5, 'target'))],
+    { up: { effects: [scaled(dmg(26), per('exposed', 6, 'target'))] } },
   ),
 
   v(
@@ -213,10 +220,14 @@ export const TRICKSTER: CardDef[] = [
     'patient-hunter',
     'Patient Hunter',
     'power',
-    1,
+    0,
     'none',
+    // (0 Mana and Opening hand since #694: B 90%; ~150%; upgraded also 1 Faltering to all when played)
     [on('turnStart', [status('exposed', 1, 'allFoes')])],
-    { up: { innate: true } },
+    {
+      innate: true,
+      up: { effects: [on('turnStart', [status('exposed', 1, 'allFoes')]), status('faltering', 1, 'allFoes')] },
+    },
   ),
 
   // (more Exposed)
@@ -278,19 +289,21 @@ export const TRICKSTER: CardDef[] = [
       exhaust: true,
     },
   ),
-  v('rare', 'hunters-eye', "Hunter's Eye", 'power', 2, 'none', [
-    on('play', [status('exposed', 1, 'target')], { filter: 'attack' }),
-  ]),
+  // (1 Mana and Opening hand since #694: D 63%; ~150%; upgraded it costs 0)
   v(
     'rare',
-    'blindside',
-    'Blindside',
-    'attack',
-    2,
-    'foe',
-    [dmg(22), status('exposed', 3, 'target')],
-    { exhaust: true },
+    'hunters-eye',
+    "Hunter's Eye",
+    'power',
+    1,
+    'none',
+    [on('play', [status('exposed', 1, 'target')], { filter: 'attack' })],
+    { innate: true, up: { cost: 0 } },
   ),
+  // (not consumed since #694: B 104%; ~131%; upgraded 30)
+  v('rare', 'blindside', 'Blindside', 'attack', 2, 'foe', [dmg(22), status('exposed', 3, 'target')], {
+    up: { effects: [dmg(30), status('exposed', 3, 'target')] },
+  }),
 
   // --- Suits ---
   // (DECISIONS #387) every card shows a suit: ♠ Attacks, ♥ protection, ♦ cards and Mana, ♣ Traps and debuffs (the rule is in
@@ -300,8 +313,10 @@ export const TRICKSTER: CardDef[] = [
   v('common', 'shadow-cloak', 'Shadow Cloak', 'skill', 1, 'none', [barrier(6), draw(1)], {
     up: { effects: [barrier(9), draw(1)] },
   }),
-  v('common', 'roll-with-it', 'Weigh the Odds', 'skill', 1, 'none', [scry(3), draw(1)], {
+  // (draw 2 since #694: C 80%; upgraded draw 3)
+  v('common', 'roll-with-it', 'Weigh the Odds', 'skill', 1, 'none', [scry(3), draw(2)], {
     retain: true,
+    up: { effects: [scry(3), draw(3)] },
   }),
   v('common', 'discarded-hand', 'Hidden Hand', 'skill', 1, 'none', [draw(2), barrier(3)], {
     retain: true,
@@ -327,9 +342,11 @@ export const TRICKSTER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [dmg(14), status('exposed', 1, 'target')],
+    // (16 since #694: C 89%; upgraded 21)
+    [dmg(16), status('exposed', 1, 'target')],
     {
       retain: true,
+      up: { effects: [dmg(21), status('exposed', 1, 'target')] },
     },
   ),
   v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'foe', [scaled(dmg(4), per('suits', 3))]),
@@ -368,43 +385,59 @@ export const TRICKSTER: CardDef[] = [
       },
     },
   ),
-  v('uncommon', 'wild-card', 'Wild Card', 'skill', 0, 'none', [draw(1)], {
+  // (draw 2 since #694: C 83%)
+  v('uncommon', 'wild-card', 'Wild Card', 'skill', 0, 'none', [draw(2)], {
     suit: 'wild',
     // (a free card that draws must Consume: balance.test.ts)
     exhaust: true,
     up: { retain: true },
   }),
-  v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1)], {
+  // (and draw 1 since #694: B 104%; ~128%; upgraded draw 2, in place of costing 0 (+70%))
+  v('rare', 'second-act', 'Second Act', 'skill', 1, 'none', [status('twinned', 1), draw(1)], {
     retain: true,
-    up: { cost: 0 },
+    up: { effects: [status('twinned', 1), draw(2)] },
   }),
   v(
     'rare',
     'pickpocket-master',
     'Pickpocket Master',
     'skill',
+    // (still 2 Mana, the price of the Monk's All-Seeing; 3 upgraded free cards since #694: D 67%; ~121%; upgraded 4)
     2,
     'none',
-    [discoverOp(undefined, 2, true)],
-    { exhaust: true },
+    [{ op: 'discover', count: 3, free: true, upgraded: true }],
+    { exhaust: true, up: { effects: [{ op: 'discover', count: 4, free: true, upgraded: true }] } },
   ),
   v(
     'rare',
     'royal-flourish',
     'Royal Flourish',
     'attack',
-    2,
+    // (1 Mana since #694: C 81%; ~140%)
+    1,
     'foe',
     [scaled(dmg(0), per('suits', 7))],
     { up: { effects: [scaled(dmg(0), per('suits', 9))] } },
   ),
-  v('rare', 'showstopper', 'Showstopper', 'attack', 3, 'foe', [dmg(30)], {
-    cheaperPer: { by: 'suits', mult: 1 },
-    up: { effects: [dmg(38)] },
+  // (20, and never below 1 Mana, since #694: 30 for 0 after three suits was ~240%; ~160%; upgraded 26)
+  v('rare', 'showstopper', 'Showstopper', 'attack', 3, 'foe', [dmg(20)], {
+    cheaperPer: { by: 'suits', mult: 1, min: 1 },
+    up: { effects: [dmg(26)] },
   }),
-  v('rare', 'the-joker', 'The Joker', 'skill', 1, 'none', [discoverOp(undefined, 1, true)], {
-    suit: 'wild',
-  }),
+  // (an upgraded card since #694: B 104%; ~128%; upgraded also draw 1 and 2 Barrier)
+  v(
+    'rare',
+    'the-joker',
+    'The Joker',
+    'skill',
+    1,
+    'none',
+    [{ op: 'discover', count: 1, free: true, upgraded: true }],
+    {
+      suit: 'wild',
+      up: { effects: [{ op: 'discover', count: 1, free: true, upgraded: true }, draw(1), barrier(2)] },
+    },
+  ),
   v(
     'rare',
     'the-whole-deck',
@@ -412,8 +445,9 @@ export const TRICKSTER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('allSuits', [draw(2), manaNext(1)])],
-    { up: { effects: [on('allSuits', [draw(3), manaNext(1)])] } },
+    // (+1 Mana now since #694: B 110%; ~140%; upgraded draw 3)
+    [on('allSuits', [draw(2), mana(1)])],
+    { up: { effects: [on('allSuits', [draw(3), mana(1)])] } },
   ),
   // (was the Patience Legendary, DECISIONS #338: now every suit you showed strikes every enemy as the turn ends)
   v(
@@ -450,13 +484,18 @@ export const TRICKSTER: CardDef[] = [
   v('uncommon', 'long-game', 'The Long Game', 'power', 1, 'none', [on('turnStart', [draw(1)])], {
     up: { innate: true },
   }),
-  v('uncommon', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [cheapen(1, 'hand')], {
+  // (draw 1 first since #694: D 54%; ~96%; upgraded draw 2)
+  v('uncommon', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [draw(1), cheapen(1, 'hand')], {
     exhaust: true,
+    up: { effects: [draw(2), cheapen(1, 'hand')] },
   }),
   // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
   // (2 Mana, the cost of the Knight's Inner Furnace, which does the same: Robert, 2026-10-28)
+  // (still 2 Mana, the shared price of a +1 Mana Aura (#410), so Opening hand in the base card since #694: ~92%, B, the one Rare kept
+  // under A by that rule; upgraded it also draws 2 when played)
   v('rare', 'deep-pockets', 'Deep Pockets', 'power', 2, 'none', [maxMana(1)], {
-    up: { retain: true, innate: true },
+    innate: true,
+    up: { effects: [maxMana(1), draw(2)] },
   }),
 
   // --- Traps (more traps) ---
@@ -467,7 +506,8 @@ export const TRICKSTER: CardDef[] = [
     'snare',
     3,
     'none',
-    [PREVENT, dmg(22, 'attacker'), status('stunned', 2, 'attacker')],
+    // (26 since #694: B 117%; ~126%; upgraded it costs 2)
+    [PREVENT, dmg(26, 'attacker'), status('stunned', 2, 'attacker')],
     { trigger: { on: 'attacked' }, up: { cost: 2 } },
   ),
   v(
@@ -477,12 +517,13 @@ export const TRICKSTER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [scaled(dmg(4, 'allFoes'), { by: 'snaresSprung', step: 4 })], { filter: 'snare' })],
+    // (3 since #694: A 147% for an uncommon; ~110%; upgraded 4)
+    [on('play', [scaled(dmg(3, 'allFoes'), { by: 'snaresSprung', step: 4 })], { filter: 'snare' })],
     {
       suit: 'clubs',
       up: {
         effects: [
-          on('play', [scaled(dmg(6, 'allFoes'), { by: 'snaresSprung', step: 4 })], {
+          on('play', [scaled(dmg(4, 'allFoes'), { by: 'snaresSprung', step: 4 })], {
             filter: 'snare',
           }),
         ],
@@ -525,9 +566,10 @@ export const TRICKSTER: CardDef[] = [
       up: { effects: [dmg(5, 'allFoes'), barrier(3)] },
     },
   ),
-  v('uncommon', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [
-    scaled(dmg(4), per('snares', 4, 'self')),
-  ]),
+  // (5 + 4 a Trap since #694: C 89%; upgraded 7 + 5)
+  v('uncommon', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [scaled(dmg(5), per('snares', 4, 'self'))], {
+    up: { effects: [scaled(dmg(7), per('snares', 5, 'self'))] },
+  }),
   v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
     dmg(12),
     scaled(barrier(0), per('snares', 4)),
@@ -557,9 +599,10 @@ export const TRICKSTER: CardDef[] = [
     [dmg(5), barrier(3), status('exposed', 1, 'target')],
     { up: { effects: [dmg(8), barrier(3), status('exposed', 1, 'target')] } },
   ),
-  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [
-    scaled(dmg(8, 'allFoes'), per('exposed', 3, 'each')),
-  ]),
+  // (14 + 5 an Exposed since #694: C 77%; ~131%; upgraded 18 + 6)
+  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [scaled(dmg(14, 'allFoes'), per('exposed', 5, 'each'))], {
+    up: { effects: [scaled(dmg(18, 'allFoes'), per('exposed', 6, 'each'))] },
+  }),
   v(
     'uncommon',
     'cripple',
@@ -599,18 +642,24 @@ export const TRICKSTER: CardDef[] = [
     'skill',
     1,
     'none',
+    // (upgraded draw 3 since #694: 2 Exposed to all was +39%)
     [status('exposed', 1, 'allFoes'), draw(2)],
-    { up: { effects: [status('exposed', 2, 'allFoes'), draw(2)] } },
+    { up: { effects: [status('exposed', 1, 'allFoes'), draw(3)] } },
   ),
   v('uncommon', 'step-aside', 'Step Aside', 'skill', 1, 'none', [barrier(6), drawNext(1)], {
     up: { effects: [barrier(9), drawNext(1)] },
   }),
 
   // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
-  v('rare', 'between-worlds', 'Between Worlds', 'skill', 2, 'none', [status('ghostly', 2)], {
+  // (Ghostly 3 since #694: C 88%; ~131%; upgraded it costs 1)
+  v('rare', 'between-worlds', 'Between Worlds', 'skill', 2, 'none', [status('ghostly', 3)], {
     exhaust: true,
+    up: { cost: 1 },
   }),
-  v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(13), discard(1)]),
+  // (16 since #694: B 109%; ~138%; upgraded 20)
+  v('rare', 'perfect-alibi', 'Perfect Alibi', 'skill', 1, 'none', [barrier(16), discard(1)], {
+    up: { effects: [barrier(20), discard(1)] },
+  }),
   v('uncommon', 'sleight-of-hand', 'Sleight of Hand', 'skill', 1, 'none', [draw(2), manaNext(1)], {
     up: { effects: [draw(3), manaNext(1)] },
   }),
@@ -643,7 +692,8 @@ export const TRICKSTER: CardDef[] = [
     'compound-fear',
     'Compound Fear',
     'skill',
-    1,
+    // (0 Mana since #694: C 77%; ~128%)
+    0,
     'foe',
     // (a doubler always Consumes: balance.test.ts)
     [status('exposed', 2, 'target'), doubleSt('exposed', 'target', 2, 4)],
@@ -663,9 +713,10 @@ export const TRICKSTER: CardDef[] = [
     'skill',
     0,
     'none',
-    [scry(2), barrier(2)],
+    // (Foresee 3 and 3 Barrier since #694: D 66%, and its upgrade was +111%; upgraded 5 Barrier)
+    [scry(3), barrier(3)],
     {
-      up: { effects: [scry(3), barrier(4)] },
+      up: { effects: [scry(3), barrier(5)] },
     },
   ),
   v('uncommon', 'stolen-moment', 'Stolen Moment', 'skill', 0, 'none', [mana(1), scry(2)], {
@@ -688,7 +739,8 @@ export const TRICKSTER: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnEnd', [scaled(barrier(2), per('hand', 1))])],
-    { up: { effects: [on('turnEnd', [scaled(barrier(4), per('hand', 1))])] } },
+    // (4 a card held, at most 24, since #694: C 72%; ~144%; upgraded 5, at most 30. The cap: Hold cards can keep 8-10 in hand)
+    [on('turnEnd', [scaled(barrier(0), { by: 'hand', mult: 4, max: 24 })])],
+    { up: { effects: [on('turnEnd', [scaled(barrier(0), { by: 'hand', mult: 5, max: 30 })])] } },
   ),
 ];

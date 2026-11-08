@@ -144,7 +144,7 @@ export const STATUS_INFO: Record<
     name: 'Cadence',
     glyph: '☥',
     tone: 'good',
-    text: 'Gains that much Might at the end of its turn.',
+    text: 'Gains that much Might at the end of its turn (a hero: in its first 8 turns of the fight).',
   },
   fracture: {
     name: 'Fracture',

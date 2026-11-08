@@ -147,15 +147,13 @@ describe('shared balance rules 79', () => {
     expect(s.sides.a.discipline?.recovery ?? 0).toBe(0);
     expect(machine(s).investedHp ?? 0).toBe(0);
   });
-  it('Predator slows after six draws, resets on its next turn, and ignores opening cards', () => {
+  it('Predator Ambush (#693): mid-turn draws add 10% each up to 60%, ignoring the opening hand, and it waits across turns', () => {
     let s = fight('hunter', 'predator');
-    expect(hero(s).statuses.vigor ?? 0).toBe(0);
+    expect(s.sides.a.discipline?.progress ?? 0).toBe(0);
     s = play(s, 'draw8');
-    expect(hero(s).statuses.vigor).toBe(14);
+    expect(s.sides.a.discipline?.progress).toBe(60);
     s = end(end(s));
-    hero(s).statuses.vigor = 0;
-    s = play(s, 'draw8');
-    expect(hero(s).statuses.vigor).toBe(14);
+    expect(s.sides.a.discipline?.progress).toBe(60);
   });
   it('Soulreaper caps round growth separately from Barrier and resets next own turn', () => {
     let s = fight('necromancer', 'soulreaper');
@@ -207,8 +205,8 @@ describe('shared balance rules 79', () => {
       hero(s).hp = (hero(s).maxHp * pct) / 100;
       return disciplineAttack(s, s.sides.a, hero(s), db.cards.hit!, hero(s, 'b'), 0);
     };
-    // (and on below 40%, to +40% at 10%: DECISIONS #685)
-    expect([100, 70, 60, 55, 40, 25, 10, 5].map(bonus)).toEqual([0, 0, 8, 12, 25, 32, 40, 40]);
+    // (and on below 40%, to +50% at 10%: DECISIONS #685, #695)
+    expect([100, 70, 60, 55, 40, 25, 10, 5].map(bonus)).toEqual([0, 0, 10, 15, 30, 40, 50, 50]);
   });
   it('Storm Sovereign limits Barrier without limiting command damage or counting passives', () => {
     let s = play(fight('shaman'), 'storm-sovereign');

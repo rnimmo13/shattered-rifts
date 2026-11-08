@@ -73,8 +73,9 @@ const RAW_ALLIES: UnitDef[] = [
   ally('pup', 'Pup', 5, [dmg(3)]),
   ally('hound', 'Hound', 8, [dmg(4)]),
   ally('pack-alpha', 'Pack Alpha', 12, [dmg(6)]),
-  // (it strikes twice, DECISIONS #678: a 3-Mana rare companion that dies easily has to hit hard while it stands)
-  ally('dire-wolf', 'Dire Wolf', 18, [dmg(9, 'target', 2)]),
+  // (it strikes twice, DECISIONS #678: a 3-Mana rare companion that dies easily has to hit hard while it stands. 15 HP and 7 twice
+  // since #693: 18 and 9 twice priced near twice a 3-Mana rare)
+  ally('dire-wolf', 'Dire Wolf', 15, [dmg(7, 'target', 2)]),
   // Gloomfen: Dorian's dead. A Raise Dead brings a Bone Thrall with the HP the card says (5 here is only a default), and his Command
   // cards make each companion strike. Since #684 (Robert 2026-11-07) they also strike on their own, at the end of his turn, for 2 plus
   // 1 for every 4 max HP: growing them pays. (They did not act at all from #370, as the Necrobinder's Osty did not.)

@@ -142,8 +142,9 @@ describe('simulation-led balance revision', () => {
   it.each([
     ['heavy-industry', 4],
     ['heavy-industry+', 6],
-    ['pack-bond', 4],
-    ['pack-bond+', 6],
+    // (3 / 4 since #693)
+    ['pack-bond', 3],
+    ['pack-bond+', 4],
   ] as const)('%s costs one Mana and gives its shield next turn, not on play', (card, amount) => {
     let s = setup(card.startsWith('heavy') ? 'engineer' : 'hunter');
     s.sides.a.mana = 1;

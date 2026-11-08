@@ -339,13 +339,13 @@ describe('distinct late-game Ascendancy disciplines', () => {
         .map((e) => (e.type === 'barrier' ? e.amount : 0)),
     ).toEqual([5]);
   });
-  it('Brewmaster develops only after actual Hangover payments and caps Fermentation at five', () => {
+  it('Brewmaster develops only after actual Hangover payments and caps Fermentation at eight (#695)', () => {
     let s = fight('drunkard', 'brewmaster');
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 10; i++) {
       hero(s).hp = hero(s).maxHp;
       hero(s).statuses.hangover = 3;
       s = end(s);
-      expect(s.sides.a.discipline?.progress).toBe(Math.min(5, i + 1));
+      expect(s.sides.a.discipline?.progress).toBe(Math.min(8, i + 1));
     }
     const progress = s.sides.a.discipline?.progress;
     hero(s).hp = 1;
@@ -484,9 +484,10 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
       const hp = foe(t).hp;
       return hp - foe(end(t)).hp;
     };
+    // (10% a Trap sprung before it, up to double, since #694)
     expect(spring(0)).toBe(10);
-    expect(spring(4)).toBe(12);
-    expect(spring(30)).toBe(15);
+    expect(spring(4)).toBe(14);
+    expect(spring(30)).toBe(20);
   });
   it('Bladedancer Daggers ramp 0/10/20/30/40/50% within a turn and start over next turn', () => {
     let s = fight('assassin', 'bladedancer');
@@ -514,20 +515,26 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     for (let k = 0; k < 6; k++) s = play(end(end(s)), 'probe-sword').state;
     expect(hero(s).statuses.keen).toBe(5);
   });
-  it('Cardsharp Full Tricks give 1 Mana and 1 Might', () => {
-    const trick = ASCENDANCIES.find((x) => x.id === 'trickster:cardsharp')?.triggers?.[0];
-    expect(trick?.when).toBe('allSuits');
-    expect(trick?.ops).toEqual([
-      { op: 'mana', amount: 1 },
-      { op: 'status', status: 'might', amount: 1, to: 'self' },
-    ]);
+  it('Cardsharp Full Tricks give 1 Mana and 2 Might, six times a fight (#694)', () => {
+    const [mana, might] = ASCENDANCIES.find((x) => x.id === 'trickster:cardsharp')?.triggers ?? [];
+    // (the Mana every Full Trick; only the Might stops after six)
+    expect(mana?.when).toBe('allSuits');
+    expect(mana?.times).toBeUndefined();
+    expect(mana?.ops).toEqual([{ op: 'mana', amount: 1 }]);
+    expect(might?.when).toBe('allSuits');
+    expect(might?.times).toBe(6);
+    expect(might?.ops).toEqual([{ op: 'status', status: 'might', amount: 2, to: 'self' }]);
   });
-  it('Reaver also gains 1 Might from its first HP payment each turn', () => {
+  it('Reaver Bloodlust (#693): every 3 HP paid is 1 Might for the fight, up to 12', () => {
     let s = fight('hunter', 'reaver');
     const might = hero(s).statuses.might ?? 0;
+    hero(s).hp = hero(s).maxHp = 500;
     s = play(s, 'probe-blood').state;
     s = play(s, 'probe-blood').state;
-    expect(hero(s).statuses.might ?? 0).toBe(might + 1);
+    const paid = 500 - hero(s).hp;
+    expect(hero(s).statuses.might ?? 0).toBe(might + Math.floor(paid / 3));
+    for (let i = 0; i < 40; i++) s = play(s, 'probe-blood').state;
+    expect(hero(s).statuses.might ?? 0).toBe(might + 12);
   });
   let uniq = 0;
   // (an id no other card has, so a later turn never plays an older copy)
@@ -573,16 +580,16 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     };
     expect(run('sunwalker') - run('zealot')).toBe(10);
   });
-  it('Deathwish keeps growing below 40% HP, to +40% at 10% HP', () => {
+  it('Deathwish keeps growing below 40% HP, to +50% at 10% HP (#695)', () => {
     const at = (pct: number): number => {
       const s = fight('drunkard', 'deathwish');
       hero(s).hp = Math.floor((hero(s).maxHp * pct) / 100);
       hero(s).statuses.clutch = 0;
       return damage(play(s, 'probe-double'))[0] ?? 0;
     };
-    expect(at(40)).toBe(12);
-    expect(at(25)).toBe(13);
-    expect(at(10)).toBe(14);
-    expect(at(5)).toBe(14);
+    expect(at(40)).toBe(13);
+    expect(at(25)).toBe(14);
+    expect(at(10)).toBe(15);
+    expect(at(5)).toBe(15);
   });
 });

@@ -96,11 +96,12 @@ describe("KP's Hangover", () => {
   });
 
   it('stops at 10', () => {
-    // (three Bottoms Up: 4 Hangover each)
-    let s = fight(['bottoms-up', 'bottoms-up', 'bottoms-up'], 0);
+    // (four Bottoms Up: 3 Hangover each since #695)
+    let s = fight(['bottoms-up', 'bottoms-up', 'bottoms-up', 'bottoms-up'], 0);
     s = playCard(s, 'T0');
     s = playCard(s, 'T1');
     s = playCard(s, 'T2');
+    s = playCard(s, 'T3');
     expect(heroOf(s).statuses.hangover).toBe(10);
   });
 

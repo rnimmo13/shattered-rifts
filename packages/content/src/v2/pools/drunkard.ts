@@ -51,7 +51,8 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     1,
     'foe',
-    [dmg(6), status('brittle', 1, 'target')],
+    // (7 since #695: ~84%; upgraded 9, +26%)
+    [dmg(7), status('brittle', 1, 'target')],
     { up: { effects: [dmg(9), status('brittle', 1, 'target')] } },
   ),
   p('basic', 'pane-up', 'Pane Up', 'skill', 1, 'none', [
@@ -87,7 +88,8 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     1,
     'none',
-    [dmg(6, 'allFoes'), status('brittle', 1, 'allFoes')],
+    // (7 to all since #695: ~88%; upgraded 9)
+    [dmg(7, 'allFoes'), status('brittle', 1, 'allFoes')],
     { up: { effects: [dmg(9, 'allFoes'), status('brittle', 1, 'allFoes')] } },
   ),
   p('uncommon', 'shatter', 'Smash the Pane', 'attack', 2, 'foe', [
@@ -97,7 +99,11 @@ export const DRUNKARD: CardDef[] = [
   // --- Shells: the 12 gauge ---
   // (two, not three: a Shell is a free card that hits every enemy, DECISIONS #393)
   p('common', 'load-shells', 'Load Shells', 'skill', 1, 'none', [addTo('buckshot-shell', 2)]),
-  p('common', 'slug-round', 'Slug Round', 'attack', 2, 'foe', [dmg(16)], GUN),
+  // (19 since #695: ~84%; upgraded 24)
+  p('common', 'slug-round', 'Slug Round', 'attack', 2, 'foe', [dmg(19)], {
+    ...GUN,
+    up: { effects: [dmg(24)] },
+  }),
   p(
     'uncommon',
     'pump-action',
@@ -106,7 +112,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [addTo('buckshot-shell', 2), draw(1)],
-    { up: { effects: [addTo('buckshot-shell', 3), draw(1)] } },
+    // (upgraded draw 2 since #695: a third Shell was +39%)
+    { up: { effects: [addTo('buckshot-shell', 2), draw(2)] } },
   ),
   p(
     'uncommon',
@@ -115,8 +122,9 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [dmg(7, 'allFoes', 2)],
-    GUN,
+    // (8 x 2 since #695: ~85%; upgraded 10 x 2)
+    [dmg(8, 'allFoes', 2)],
+    { ...GUN, up: { effects: [dmg(10, 'allFoes', 2)] } },
   ),
   p(
     'uncommon',
@@ -135,8 +143,9 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     3,
     'none',
-    [scaled(dmg(14, 'allFoes'), per('exhausted', 2))],
-    GUN,
+    // (22 to all + 2 a card consumed since #695: ~97%; ~126%; upgraded 30 + 2)
+    [scaled(dmg(22, 'allFoes'), per('exhausted', 2))],
+    { ...GUN, up: { effects: [scaled(dmg(30, 'allFoes'), per('exhausted', 2))] } },
   ),
   p(
     'rare',
@@ -145,8 +154,14 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'foe',
-    [dmg(24), status('exposed', 1, 'target')],
-    { exhaust: true, retain: true, ...GUN },
+    // (32 and 2 Exposed since #695: ~98%; ~135%; upgraded 42)
+    [dmg(32), status('exposed', 2, 'target')],
+    {
+      exhaust: true,
+      retain: true,
+      ...GUN,
+      up: { effects: [dmg(42), status('exposed', 2, 'target')] },
+    },
   ),
 
   // --- liquid courage ---
@@ -159,8 +174,9 @@ export const DRUNKARD: CardDef[] = [
     'power',
     3,
     'none',
-    [on('turnStart', [addTo('buckshot-shell', 2), heal(3)])],
-    { up: { effects: [on('turnStart', [addTo('buckshot-shell', 2), heal(6)])] } },
+    // (3 Shells since #695: ~107%; ~134%; upgraded heal 6)
+    [on('turnStart', [addTo('buckshot-shell', 3), heal(3)])],
+    { up: { effects: [on('turnStart', [addTo('buckshot-shell', 3), heal(6)])] } },
   ),
   // Hangover: Barrier that grows as you hurt, and every wound you deal yourself (a Hangover too) cuts every enemy (DECISIONS #338, #354)
   p(
@@ -170,12 +186,13 @@ export const DRUNKARD: CardDef[] = [
     'power',
     3,
     'none',
-    [on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 6))]), on('loseHp', [hurtBack(5)])],
+    // (4 Barrier and up to 6 since #695: ~124%; ~132%; upgraded up to 8)
+    [on('turnStart', [scaled(barrier(4), per('missingPct', 1 / 6))]), on('loseHp', [hurtBack(6)])],
     {
       up: {
         effects: [
-          on('turnStart', [scaled(barrier(3), per('missingPct', 1 / 6))]),
-          on('loseHp', [hurtBack(7)]),
+          on('turnStart', [scaled(barrier(4), per('missingPct', 1 / 6))]),
+          on('loseHp', [hurtBack(8)]),
         ],
       },
     },
@@ -227,7 +244,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [barrier(7), forge('old-twelve-gauge', 2)],
-    { up: { effects: [barrier(7), forge('old-twelve-gauge', 4)] } },
+    // (upgraded 3 Precision since #695: 4 was +37%)
+    { up: { effects: [barrier(7), forge('old-twelve-gauge', 3)] } },
   ),
   p(
     'uncommon',
@@ -239,8 +257,9 @@ export const DRUNKARD: CardDef[] = [
     [on('play', [forge('old-twelve-gauge', 1)], { tag: 'shell' })],
     { up: { innate: true } },
   ),
+  // (upgraded 4 since #695: 5 was +48%)
   p('uncommon', 'reload', 'Reload', 'skill', 1, 'none', [forge('old-twelve-gauge', 3), draw(1)], {
-    up: { effects: [forge('old-twelve-gauge', 5), draw(1)] },
+    up: { effects: [forge('old-twelve-gauge', 4), draw(1)] },
   }),
   p(
     'rare',
@@ -249,13 +268,23 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnStart', [forge('old-twelve-gauge', 2), addTo('buckshot-shell')])],
-    { up: { effects: [on('turnStart', [forge('old-twelve-gauge', 3), addTo('buckshot-shell')])] } },
+    // (3 Precision since #695: ~108%; ~133%; upgraded Opening hand)
+    [on('turnStart', [forge('old-twelve-gauge', 3), addTo('buckshot-shell')])],
+    { up: { innate: true } },
   ),
-  p('rare', 'rack-and-ruin', 'Rack and Ruin', 'attack', 2, 'none', [
-    dmg(10, 'allFoes'),
-    forge('old-twelve-gauge', 4),
-  ]),
+  // (12 to all and 6 Precision since #695: ~97%; ~129%; upgraded 14 and 8)
+  p(
+    'rare',
+    'rack-and-ruin',
+    'Rack and Ruin',
+    'attack',
+    2,
+    'none',
+    [dmg(12, 'allFoes'), forge('old-twelve-gauge', 6)],
+    {
+      up: { effects: [dmg(14, 'allFoes'), forge('old-twelve-gauge', 8)] },
+    },
+  ),
   p(
     'rare',
     'trigger-discipline',
@@ -263,7 +292,8 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [forge('old-twelve-gauge', 1)], { filter: 'attack' })],
+    // (and 1 Barrier an Attack since #695: ~100%; ~148%)
+    [on('play', [forge('old-twelve-gauge', 1), barrier(1)], { filter: 'attack' })],
     { up: { innate: true } },
   ),
   p(
@@ -278,7 +308,10 @@ export const DRUNKARD: CardDef[] = [
   ),
 
   // (more Shells)
-  p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(5, 'target', 4)]),
+  // (6 x 4 since #695: ~85%; upgraded 7 x 4)
+  p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(6, 'target', 4)], {
+    up: { effects: [dmg(7, 'target', 4)] },
+  }),
   p(
     'uncommon',
     'shellshocked',
@@ -287,7 +320,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [on('exhaust', [dmg(2, 'allFoes')])],
-    { up: { effects: [on('exhaust', [dmg(3, 'allFoes')])] } },
+    // (upgraded Opening hand since #695: 3 was +50%)
+    { up: { innate: true } },
   ),
   p(
     'rare',
@@ -296,17 +330,30 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(12, 'allFoes'), per('exhausted', 1))],
-    { up: { effects: [scaled(dmg(15, 'allFoes'), per('exhausted', 1))] } },
+    // (16 + 1.5 a card consumed since #695: ~99%; ~137%; upgraded 20 + 2)
+    [scaled(dmg(16, 'allFoes'), per('exhausted', 1.5))],
+    { up: { effects: [scaled(dmg(20, 'allFoes'), per('exhausted', 2))] } },
   ),
   // (six shells, not eight (Robert, 2026-10-26); upgraded, the same six, each one upgraded)
-  p('rare', 'ammo-dump', 'Ammo Dump', 'skill', 2, 'none', [addTo('buckshot-shell', 6)], {
+  // (7 Shells and draw 1 since #695: ~105%, upgraded Shells+ was +50%; ~133%; upgraded 9 Shells)
+  p('rare', 'ammo-dump', 'Ammo Dump', 'skill', 2, 'none', [addTo('buckshot-shell', 7), draw(1)], {
     exhaust: true,
-    up: { effects: [addTo('buckshot-shell+', 6)] },
+    up: { effects: [addTo('buckshot-shell', 9), draw(1)] },
   }),
-  p('rare', 'rolling-thunder', 'Rolling Thunder', 'power', 2, 'none', [
-    on('turnStart', [addTo('buckshot-shell', 2)]),
-  ]),
+  // (Opening hand since #695: ~110%; ~137%; upgraded it costs 1)
+  p(
+    'rare',
+    'rolling-thunder',
+    'Rolling Thunder',
+    'power',
+    2,
+    'none',
+    [on('turnStart', [addTo('buckshot-shell', 2)])],
+    {
+      innate: true,
+      up: { cost: 1 },
+    },
+  ),
   // (more Gun)
   p('common', 'aim', 'Aim', 'skill', 0, 'none', [forge('old-twelve-gauge', 2)], { retain: true }),
   p(
@@ -326,8 +373,9 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     1,
     'none',
-    [forge('old-twelve-gauge', 3), addTo('buckshot-shell', 2)],
-    { exhaust: true, up: { effects: [forge('old-twelve-gauge', 3), addTo('buckshot-shell', 3)] } },
+    // (4 Precision since #695: ~115%; ~131%; upgraded 3 Shells)
+    [forge('old-twelve-gauge', 4), addTo('buckshot-shell', 2)],
+    { exhaust: true, up: { effects: [forge('old-twelve-gauge', 4), addTo('buckshot-shell', 3)] } },
   ),
   p(
     'rare',
@@ -336,15 +384,26 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(3)])],
-    { up: { effects: [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(5)])] } },
+    // (4 Barrier since #695: ~122%; ~146%; upgraded 6)
+    [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(4)])],
+    { up: { effects: [on('turnEnd', [forge('old-twelve-gauge', 1), barrier(6)])] } },
   ),
   p('uncommon', 'bar-stool', 'Bar Stool', 'attack', 1, 'foe', [
     scaled(dmg(7), per('missingPct', 1 / 6)),
   ]),
-  p('rare', 'last-orders', 'Last Orders', 'attack', 2, 'none', [
-    scaled(dmg(8, 'allFoes'), per('missingPct', 1 / 4)),
-  ]),
+  // (14 + 1 per 3% missing since #695: ~85%; ~131%; upgraded 18 + 0.4 a %)
+  p(
+    'rare',
+    'last-orders',
+    'Last Orders',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(14, 'allFoes'), per('missingPct', 1 / 3))],
+    {
+      up: { effects: [scaled(dmg(18, 'allFoes'), per('missingPct', 0.4))] },
+    },
+  ),
 
   // --- Junk Traps (more) ---
   p(
@@ -354,8 +413,12 @@ export const DRUNKARD: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(5, 'allFoes'), status('faltering', 1, 'allFoes')],
-    { trigger: { on: 'foeTurn' } },
+    // (7 to all since #695: ~88%; upgraded 9)
+    [dmg(7, 'allFoes'), status('faltering', 1, 'allFoes')],
+    {
+      trigger: { on: 'foeTurn' },
+      up: { effects: [dmg(9, 'allFoes'), status('faltering', 1, 'allFoes')] },
+    },
   ),
   p(
     'uncommon',
@@ -376,15 +439,18 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('loseHp', [hurtBack(6), barrier(2)])],
-    { up: { effects: [on('loseHp', [hurtBack(8), barrier(3)])] } },
+    // (up to 7 and 3 Barrier since #695: ~120%; ~132%; upgraded 9 and 4)
+    [on('loseHp', [hurtBack(7), barrier(3)])],
+    { up: { effects: [on('loseHp', [hurtBack(9), barrier(4)])] } },
   ),
 
   // --- Shells (more) ---
   p('uncommon', 'sawn-off', 'Sawn-Off', 'attack', 1, 'none', [dmg(9, 'allFoes'), lose(1)], GUN),
   p('uncommon', 'tin-can-alley', 'Tin Can Alley', 'attack', 1, 'none', [dmg(3, 'allFoes', 3)], GUN),
-  p('uncommon', 'pick-up-the-brass', 'Pick Up the Brass', 'skill', 1, 'none', [reclaim(2)], {
+  // (3 since #695: ~74%; upgraded Hold)
+  p('uncommon', 'pick-up-the-brass', 'Pick Up the Brass', 'skill', 1, 'none', [reclaim(3)], {
     exhaust: true,
+    up: { retain: true },
   }),
   p(
     'rare',
@@ -393,8 +459,9 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('exhaust', [barrier(1), forge('old-twelve-gauge', 1)])],
-    { up: { effects: [on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)])] } },
+    // (2 Barrier since #695: ~111%; ~147%; upgraded 3)
+    [on('exhaust', [barrier(2), forge('old-twelve-gauge', 1)])],
+    { up: { effects: [on('exhaust', [barrier(3), forge('old-twelve-gauge', 1)])] } },
   ),
   p(
     'uncommon',
@@ -403,8 +470,9 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(10, 'allFoes'), per('created', 0.5))],
-    GUN,
+    // (12 + 1 a card made since #695: ~80%; upgraded 16 + 1)
+    [scaled(dmg(12, 'allFoes'), per('created', 1))],
+    { ...GUN, up: { effects: [scaled(dmg(16, 'allFoes'), per('created', 1))] } },
   ),
 
   // --- brought back (DECISIONS #337) ---
@@ -441,9 +509,8 @@ export const DRUNKARD: CardDef[] = [
     'none',
     // (2, DECISIONS #681: every shell is a gun now, and Bandolier is the shell specialist)
     [on('play', [barrier(2)], { tag: 'gun' })],
-    {
-      up: { effects: [on('play', [barrier(3)], { tag: 'gun' })] },
-    },
+    // (upgraded Opening hand since #695: 3 was +50%)
+    { up: { innate: true } },
   ),
   p(
     'uncommon',
@@ -452,8 +519,9 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     1,
     'none',
-    [forge('old-twelve-gauge', 2), status('exposed', 1, 'allFoes')],
-    { up: { effects: [forge('old-twelve-gauge', 2), status('exposed', 2, 'allFoes')] } },
+    // (3 Precision since #695: ~85%; upgraded 4)
+    [forge('old-twelve-gauge', 3), status('exposed', 1, 'allFoes')],
+    { up: { effects: [forge('old-twelve-gauge', 4), status('exposed', 1, 'allFoes')] } },
   ),
 
   // --- glue: cards for any deck (DECISIONS #337) ---
@@ -484,19 +552,42 @@ export const DRUNKARD: CardDef[] = [
     },
   ),
   // (utility for any deck, DECISIONS #393: a look at what is coming, and a guard that draws)
-  p('common', 'rummage-the-bin', 'Rummage the Bin', 'skill', 0, 'none', [scry(3)]),
+  // (and 1 Barrier since #695: ~83%; upgraded 3 Barrier)
+  p('common', 'rummage-the-bin', 'Rummage the Bin', 'skill', 0, 'none', [scry(3), barrier(1)], {
+    up: { effects: [scry(3), barrier(3)] },
+  }),
   p('uncommon', 'sway', 'Sway', 'skill', 1, 'none', [barrier(7), draw(1)], {
     up: { effects: [barrier(10), draw(1)] },
   }),
 
   // --- more glue: uncommons and rares for any deck (DECISIONS #339) ---
-  p('rare', 'whiskey-miracle', 'Whiskey Miracle', 'skill', 1, 'none', [heal(10)], {
-    exhaust: true,
-  }),
-  p('rare', 'rock-bottom', 'Rock Bottom', 'power', 1, 'none', [
-    status('might', 2),
-    on('turnStart', [lose(1)]),
-  ]),
+  // (and 1 per 10% missing since #695: ~96%; ~125%; upgraded heal 14)
+  p(
+    'rare',
+    'whiskey-miracle',
+    'Whiskey Miracle',
+    'skill',
+    1,
+    'none',
+    [scaled(heal(10), per('missingPct', 0.1))],
+    {
+      exhaust: true,
+      up: { effects: [scaled(heal(14), per('missingPct', 0.1))] },
+    },
+  ),
+  // (3 Might now, then 1 HP for 1 Might each of your first 6 turns, since #695: ~35% before; A in a pain deck; upgraded Opening hand)
+  p(
+    'rare',
+    'rock-bottom',
+    'Rock Bottom',
+    'power',
+    1,
+    'none',
+    [status('might', 3), on('turnStart', [lose(1), status('might', 1)], { times: 6 })],
+    {
+      up: { innate: true },
+    },
+  ),
   p('uncommon', 'liquid-courage', 'Liquid Courage', 'skill', 1, 'none', [
     barrier(5),
     status('vigor', 6),
@@ -523,8 +614,13 @@ export const DRUNKARD: CardDef[] = [
     'snare',
     2,
     'none',
-    [PREVENT, dmg(13, 'attacker')],
-    { trigger: { on: 'attacked' } },
+    // (18, 2 Brittle and 5 Barrier since #695: ~89%; ~134%; upgraded 26. Its own glass rider, not the Trickster's Bait and
+    // Switch's Exposed)
+    [PREVENT, dmg(18, 'attacker'), status('brittle', 2, 'attacker'), barrier(5)],
+    {
+      trigger: { on: 'attacked' },
+      up: { effects: [PREVENT, dmg(26, 'attacker'), status('brittle', 2, 'attacker'), barrier(5)] },
+    },
   ),
   p(
     'rare',
@@ -533,8 +629,9 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnEnd', [scaled(dmg(1, 'allFoes'), per('missingPct', 1 / 6))])],
-    { up: { effects: [on('turnEnd', [scaled(dmg(3, 'allFoes'), per('missingPct', 1 / 6))])] } },
+    // (4 + 1 per 5% missing since #695: ~82%; ~137%; upgraded 7)
+    [on('turnEnd', [scaled(dmg(4, 'allFoes'), per('missingPct', 1 / 5))])],
+    { up: { effects: [on('turnEnd', [scaled(dmg(7, 'allFoes'), per('missingPct', 1 / 5))])] } },
   ),
 
   // --- new for the 20/30/25 rarity target (DECISIONS #341) ---
@@ -557,12 +654,23 @@ export const DRUNKARD: CardDef[] = [
     'power',
     1,
     'none',
-    [on('play', [dmg(3, 'allFoes')], { tag: 'shell' })],
-    { up: { effects: [on('play', [dmg(4, 'allFoes')], { tag: 'shell' })] } },
+    // (4 since #695: ~117%; ~156%; upgraded 5)
+    [on('play', [dmg(4, 'allFoes')], { tag: 'shell' })],
+    { up: { effects: [on('play', [dmg(5, 'allFoes')], { tag: 'shell' })] } },
   ),
-  p('rare', 'ricochet', 'Ricochet', 'power', 1, 'none', [on('play', [draw(1)], { tag: 'shell' })], {
-    up: { innate: true },
-  }),
+  // (and 1 Barrier a Shell since #695: ~90%; ~126%)
+  p(
+    'rare',
+    'ricochet',
+    'Ricochet',
+    'power',
+    1,
+    'none',
+    [on('play', [draw(1), barrier(1)], { tag: 'shell' })],
+    {
+      up: { innate: true },
+    },
+  ),
 
   // --- Hangover: drink now, pay tomorrow (DECISIONS #354) ---
   // (DECISIONS #434: more for the cards that pay off losing HP; Hangover counts as losing it)
@@ -584,7 +692,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [scaled(barrier(5), { by: 'hangover', max: 8 })],
-    { up: { effects: [scaled(barrier(8), { by: 'hangover', max: 8 })] } },
+    // (upgraded 7 since #695: 8 was +37%)
+    { up: { effects: [scaled(barrier(7), { by: 'hangover', max: 8 })] } },
   ),
   p(
     'uncommon',
@@ -602,12 +711,14 @@ export const DRUNKARD: CardDef[] = [
     exhaust: true,
     up: { effects: [mana(2), hangover(2)] },
   }),
-  p('common', 'one-for-the-road', 'One for the Road', 'skill', 0, 'none', [draw(3), hangover(3)], {
+  // (2 Hangover since #695: ~87%; upgraded 1)
+  p('common', 'one-for-the-road', 'One for the Road', 'skill', 0, 'none', [draw(3), hangover(2)], {
     exhaust: true,
-    up: { effects: [draw(3), hangover(2)] },
+    up: { effects: [draw(3), hangover(1)] },
   }),
+  // (upgraded 17 since #695: 18 was +42%)
   p('common', 'drunken-swing', 'Drunken Swing', 'attack', 1, 'foe', [dmg(14), hangover(3)], {
-    up: { effects: [dmg(18), hangover(3)] },
+    up: { effects: [dmg(17), hangover(3)] },
   }),
   p('common', 'bottle-to-the-head', 'Bottle to the Head', 'attack', 1, 'foe', [
     scaled(dmg(5), per('hangover', 2)),
@@ -620,7 +731,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     [scaled(heal(3), per('missingPct', 1 / 8)), draw(1)],
-    { exhaust: true, up: { effects: [scaled(heal(6), per('missingPct', 1 / 8)), draw(1)] } },
+    // (upgraded heal 5 since #695: 6 was +45%)
+    { exhaust: true, up: { effects: [scaled(heal(5), per('missingPct', 1 / 8)), draw(1)] } },
   ),
   p(
     'common',
@@ -639,10 +751,11 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     0,
     'none',
-    [status('might', 4, 'self', true), hangover(2)],
+    // (5 Might and draw 1 since #695: ~60%; ~119%; upgraded 6 Might)
+    [status('might', 5, 'self', true), hangover(2), draw(1)],
     {
       exhaust: true,
-      up: { effects: [status('might', 5, 'self', true), hangover(2)] },
+      up: { effects: [status('might', 6, 'self', true), hangover(2), draw(1)] },
     },
   ),
   p(
@@ -652,13 +765,15 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [dmg(16, 'allFoes'), hangover(2)],
+    // (18 to all since #695: ~84%; upgraded 23)
+    [dmg(18, 'allFoes'), hangover(2)],
     {
-      up: { effects: [dmg(20, 'allFoes'), hangover(2)] },
+      up: { effects: [dmg(23, 'allFoes'), hangover(2)] },
     },
   ),
+  // (upgraded 17 since #695: 18 was +48%)
   p('uncommon', 'black-out', 'Black Out', 'skill', 1, 'none', [barrier(14), hangover(4)], {
-    up: { effects: [barrier(18), hangover(4)] },
+    up: { effects: [barrier(17), hangover(4)] },
   }),
   // (2 hits, harder the drunker, DECISIONS #502, #509)
   p(
@@ -702,12 +817,14 @@ export const DRUNKARD: CardDef[] = [
     [on('turnEnd', [scaled(barrier(0), per('hangover', 1))])],
     { up: { cost: 0 } },
   ),
-  p('rare', 'hammer-time', 'Haymaker', 'attack', 2, 'foe', [scaled(dmg(14), per('hangover', 3))], {
-    up: { effects: [scaled(dmg(20), per('hangover', 3))] },
+  // (18 + 4 a Hangover since #695: ~97%; ~126%; upgraded 26 + 4)
+  p('rare', 'hammer-time', 'Haymaker', 'attack', 2, 'foe', [scaled(dmg(18), per('hangover', 4))], {
+    up: { effects: [scaled(dmg(26), per('hangover', 4))] },
   }),
-  p('rare', 'bottoms-up', 'Bottoms Up', 'skill', 1, 'none', [mana(2), draw(2), hangover(4)], {
+  // (draw 3, 3 Hangover since #695: ~96%; ~131%; upgraded draw 4, 2 Hangover)
+  p('rare', 'bottoms-up', 'Bottoms Up', 'skill', 1, 'none', [mana(2), draw(3), hangover(3)], {
     exhaust: true,
-    up: { effects: [mana(2), draw(3), hangover(4)] },
+    up: { effects: [mana(2), draw(4), hangover(2)] },
   }),
   // (an Aura, DECISIONS #410: +1 Mana a turn is ~28 over a fight, a 2-cost Aura like Inner Furnace and Deep Pockets; at 1 its 4
   // Hangover was too light a price, and nearly free in a Hangover deck. The Hangover stays as his flavour, and feeds his payoffs)
@@ -716,9 +833,11 @@ export const DRUNKARD: CardDef[] = [
     'last-call',
     'Last Call',
     'power',
-    2,
+    // (#695, Robert: 1 Mana, and the tab runs every turn: +1 Mana and 1 Hangover at the start of each turn. The Hangover each turn is the
+    // real price #410 asks of a 1-Mana +1 Mana Aura (~22 points, ~110%, B on its own), and in a Brewmaster deck it builds Fermentation every turn (A))
+    1,
     'none',
-    [hangover(2), on('turnStart', [mana(1)])],
+    [on('turnStart', [mana(1), hangover(1)])],
     {
       up: { innate: true },
     },
@@ -730,8 +849,9 @@ export const DRUNKARD: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnStart', [scaled(heal(2), per('missingPct', 1 / 10)), draw(1)])],
-    { up: { effects: [on('turnStart', [scaled(heal(4), per('missingPct', 1 / 10)), draw(1)])] } },
+    // (heal 3 since #695: ~121%; ~137%; upgraded heal 5)
+    [on('turnStart', [scaled(heal(3), per('missingPct', 1 / 10)), draw(1)])],
+    { up: { effects: [on('turnStart', [scaled(heal(5), per('missingPct', 1 / 10)), draw(1)])] } },
   ),
   p(
     'rare',
@@ -740,8 +860,9 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     2,
     'none',
-    [scaled(heal(8), per('missingPct', 1 / 3)), soberUp],
-    { exhaust: true },
+    // (and draw 2 since #695: ~106%; ~140%; upgraded it costs 1)
+    [scaled(heal(8), per('missingPct', 1 / 3)), soberUp, draw(2)],
+    { exhaust: true, up: { cost: 1 } },
   ),
 
   // --- Hangover: Stagger, a drunk's swing (DECISIONS #393) ---
@@ -760,15 +881,17 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     1,
     'none',
-    [dmg(9, 'randomFoe'), barrier(4), hangover(2)],
+    // (10 and 5 Barrier since #695: ~88%; upgraded 13)
+    [dmg(10, 'randomFoe'), barrier(5), hangover(2)],
     {
       tags: ['stagger'],
-      up: { effects: [dmg(12, 'randomFoe'), barrier(4), hangover(2)] },
+      up: { effects: [dmg(13, 'randomFoe'), barrier(5), hangover(2)] },
     },
   ),
-  p('uncommon', 'free-for-all', 'Free-for-All', 'attack', 2, 'none', [dmg(7, 'randomFoe', 3)], {
+  // (8 x 3 since #695: ~89%; upgraded 10 x 3)
+  p('uncommon', 'free-for-all', 'Free-for-All', 'attack', 2, 'none', [dmg(8, 'randomFoe', 3)], {
     tags: ['stagger'],
-    up: { effects: [dmg(9, 'randomFoe', 3)] },
+    up: { effects: [dmg(10, 'randomFoe', 3)] },
   }),
   // (a deck plays one or two Stagger cards a turn, so each one pays a little more than a Shell's Bandolier)
   p(
@@ -789,10 +912,11 @@ export const DRUNKARD: CardDef[] = [
     'attack',
     2,
     'none',
-    [scaled(dmg(6, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })],
+    // (9 x 3 since #695: ~93%; ~128%; upgraded 12 x 3)
+    [scaled(dmg(9, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })],
     {
       tags: ['stagger'],
-      up: { effects: [scaled(dmg(8, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })] },
+      up: { effects: [scaled(dmg(12, 'randomFoe', 3), { by: 'hangover', step: 2, mult: 2 })] },
     },
   ),
   p(

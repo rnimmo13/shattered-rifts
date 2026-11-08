@@ -109,7 +109,8 @@ describe('live card damage and companion calculations', () => {
       ops: [{ op: 'status', status: 'might', amount: 2, to: 'self' }],
     });
     const live = previewCardDamage(db, s, 'preview', s.sides.b.units[0]!.id).get(1)!;
-    expect(live.lo).toBe(9);
+    // (8 a hit since #693, plus the 2 Might)
+    expect(live.lo).toBe(10);
     expect(live.total!.lo).toBe(incoming(s));
   });
   it('stops before unknown draws instead of using hidden deck order', () => {

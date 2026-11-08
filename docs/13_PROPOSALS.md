@@ -7,7 +7,22 @@ approved it moves into the real doc (`08_COMBAT_V2.md`, `03_CAMPAIGN.md`) and ge
 
 ## For review
 
-### Rogue cost pass (2026-11-08; approved and built, DECISIONS #692; awaiting release)
+### Drunkard cost pass (2026-11-08; approved and built, DECISIONS #695; awaiting release)
+
+Full chart in [DRUNKARD_COST_PASS_PROPOSAL_2026-11-08.md](DRUNKARD_COST_PASS_PROPOSAL_2026-11-08.md): Shells sharpen the gun (no limit),
+Brewmaster's Fermentation hits harder, Deathwish's pain strikes back, Last Call runs a tab, Rares to A and Uncommons to B.
+
+### Trickster cost pass (2026-11-08; approved and built, DECISIONS #694; awaiting release)
+
+Full chart in [TRICKSTER_COST_PASS_PROPOSAL_2026-11-08.md](TRICKSTER_COST_PASS_PROPOSAL_2026-11-08.md): Trapmaster's Traps and Barrier
+grow, Cardsharp's 2 Might and three-suit draw, the Seer's bonus survives its mark, Rares to A and Uncommons to B.
+
+### Hunter cost pass (2026-11-08; approved and built, DECISIONS #693; awaiting release)
+
+Full chart in [HUNTER_COST_PASS_PROPOSAL_2026-11-08.md](HUNTER_COST_PASS_PROPOSAL_2026-11-08.md): Beastmaster's pack, Reaver's
+Bloodlust, Predator's Ambush, Ritual capped at 8 turns, Rares to A and Uncommons to B.
+
+### Rogue cost pass (2026-11-08; approved, built and released in 0.232.0, DECISIONS #692)
 
 Full chart in [ROGUE_COST_PASS_PROPOSAL_2026-11-08.md](ROGUE_COST_PASS_PROPOSAL_2026-11-08.md): cap the per-Dagger multipliers,
 Bleed and Sleight Rares to A with payoffs that only count cards costing 1 or more, defence commons to B, upgrades to +30%, and the

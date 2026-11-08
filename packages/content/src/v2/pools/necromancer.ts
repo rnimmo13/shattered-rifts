@@ -325,13 +325,26 @@ export const NECROMANCER: CardDef[] = [
     'death-grip',
     'Death Grip',
     'attack',
-    // (2 Mana, 10 + 6 a Command, after Robert found it useless next to The Drowned King: ~22/58/100 on turns 2/6/10, #689)
+    // (2 Mana, 10 + 6 a Command, after Robert found it useless next to The Drowned King: ~22/58/100 on turns 2/6/10, #689.
+    // A finisher since #696, Robert: 8 + 4 a Command, double against an enemy at half HP or less. ~24 by turn 4, ~48 at half HP:
+    // ~36 on average, 152%; late, ~48 and ~96 to finish. Upgraded 10 + 5, +25%)
     2,
     'foe',
-    [scaled(dmg(10), { by: 'tagPlayed', tag: 'command', mult: 6 })],
+    [
+      {
+        ...scaled(dmg(8), { by: 'tagPlayed', tag: 'command', mult: 4 }),
+        finisher: { belowPct: 50, mult: 2 },
+      } as Op,
+    ],
     {
-      // (12 + 8 since #691: +29% at ~4 Commands; 14 + 7 was +24%)
-      up: { effects: [scaled(dmg(12), { by: 'tagPlayed', tag: 'command', mult: 8 })] },
+      up: {
+        effects: [
+          {
+            ...scaled(dmg(10), { by: 'tagPlayed', tag: 'command', mult: 5 }),
+            finisher: { belowPct: 50, mult: 2 },
+          } as Op,
+        ],
+      },
     },
   ),
   // (Protector, an Ancient card in her game: here a Rare)

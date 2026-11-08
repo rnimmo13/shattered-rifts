@@ -46,6 +46,79 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.233.0",
+    date: "2026-11-08",
+    title: "Hunter, Trickster and Drunkard card passes",
+    summary: "Every Hunter, Trickster and Drunkard card priced again, each Ascendancy opening more than one way to win, Bonelord back up and Death Grip a real finisher.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Hunter Ascendancies",
+        hero: "hunter",
+        text: "Beastmaster: companions share all your Might and gain 2 max HP each turn (1 Might a turn for your first 10 turns). Reaver: every 3 HP your own cards cost you is 1 Might for the fight (up to 12), and at half HP or less your Attacks heal you. Predator: Ambush, each card you draw on your turn adds 10% to your next Attack (up to 60%), and your first Exposed each turn draws a card."
+      },
+      {
+        kind: "changed",
+        title: "Trickster Ascendancies",
+        hero: "trickster",
+        text: "Trapmaster: Traps deal 10% more per Trap sprung (up to double) and each spring gives more Barrier as the fight goes on. Cardsharp: a Full Trick gives 1 Mana and 2 Might (up to 12), and three suits draw a card. Seer: when your mark dies, your next mark keeps the bonus."
+      },
+      {
+        kind: "changed",
+        title: "Drunkard Ascendancies",
+        hero: "drunkard",
+        text: "Gunslinger: every Shell also sharpens the gun. Brewmaster: up to 8 Fermentation, each healing 1% and making your Attacks 4% stronger. Deathwish: up to +50% at low HP, and HP your own cards or Hangover cost you strikes a random enemy (twice a turn)."
+      },
+      {
+        kind: "balance",
+        title: "Rares and upgrades",
+        text: "Most Hunter, Trickster and Drunkard Rares are stronger, the runaway cards (Dire Wolf, Pack Bond, Showstopper) come down, and upgrades now add about a third. Ritual (Cadence) gives a hero Might in its first 8 turns only. Full list in the card library."
+      },
+      {
+        kind: "balance",
+        title: "Bonelord and Death Grip",
+        hero: "necromancer",
+        text: "Bonelord companions deal 3 more and gain 2 max HP each turn. Death Grip is a finisher: double damage to an enemy at half HP or less.",
+        changes: [
+          {
+            label: "Death Grip",
+            before: "10 + 6 per Command",
+            after: "8 + 4 per Command, double at half HP",
+            direction: "neutral"
+          },
+          {
+            label: "Bonelord",
+            before: "+2 damage",
+            after: "+3 damage, +2 max HP a turn",
+            direction: "buff"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Last Call",
+        hero: "drunkard",
+        card: "last-call",
+        text: "Now 1 Mana: each turn, gain 1 Mana and 1 Hangover.",
+        changes: [
+          {
+            label: "Cost",
+            before: "2",
+            after: "1",
+            direction: "buff"
+          },
+          {
+            label: "Each turn",
+            before: "+1 Mana",
+            after: "+1 Mana and 1 Hangover",
+            direction: "neutral"
+          }
+        ]
+      }
+    ],
+    heads: "Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge."
+  },
+  {
     version: "0.232.0",
     date: "2026-11-08",
     title: "Necromancer and Rogue card passes",

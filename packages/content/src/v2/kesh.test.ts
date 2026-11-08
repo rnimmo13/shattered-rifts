@@ -23,11 +23,11 @@ const play = (s: CombatState, id: string): CombatState => {
 };
 
 describe('Den Mother', () => {
-  it('is a 2 Mana Aura (DECISIONS #377), and the upgrade hits harder without costing less', () => {
+  it('is a 2 Mana Aura (DECISIONS #377); upgraded it costs 1 (#693)', () => {
     const c = db.cards['den-mother']!;
     const up = db.cards['den-mother+']!;
     expect([c.kind, c.cost]).toEqual(['power', 2]);
-    expect([up.kind, up.cost]).toEqual(['power', 2]);
+    expect([up.kind, up.cost]).toEqual(['power', 1]);
     expect(up.retain).toBeFalsy();
     expect(up.innate).toBeFalsy();
     const dmg = (id: string): number => {
@@ -35,7 +35,7 @@ describe('Den Mother', () => {
       return p?.op === 'power' && p.ops[0]?.op === 'damage' ? p.ops[0].amount : 0;
     };
     expect(dmg('den-mother')).toBe(15);
-    expect(dmg('den-mother+')).toBe(20);
+    expect(dmg('den-mother+')).toBe(15);
   });
 
   it('strikes the enemy that killed one of her companions, and only that', () => {
@@ -53,10 +53,12 @@ describe('Den Mother', () => {
     // the same turn without Den Mother, and with her: each companion an enemy killed costs that enemy 15 more
     const without = run(['summon-pup']);
     const withHer = run(['den-mother', 'summon-pup']);
-    expect(withHer.fallen).toBe(without.fallen);
     expect(without.fallen).toBeGreaterThan(0);
+    // (each death also brings a Pup and 1 Might since #693, so count the deaths from the enemies' losses)
     const lost = without.hp.map((hp, i) => hp - (withHer.hp[i] ?? 0));
-    expect(lost.reduce((a, b) => a + b, 0)).toBe(15 * withHer.fallen);
+    // (the Pups it brings can fall too, each costing 15 more; the Pup and the Might are checked in hunterPass.test.ts)
+    expect(lost.reduce((a, b) => a + b, 0) % 15).toBe(0);
+    expect(lost.reduce((a, b) => a + b, 0)).toBeGreaterThanOrEqual(15 * without.fallen);
   });
 
   it('does nothing when a companion was not killed by an attack (a sacrifice)', () => {
@@ -98,7 +100,8 @@ describe('the summons, by cost', () => {
       const o = b.kind === 'ally' ? b.act[0] : undefined;
       expect(o?.op === 'damage' ? o.hits : 0, id).toBe(2);
     }
-    expect(hit('dire-wolf+')).toBe(11);
+    // (15 HP and 7 twice since #693; the upgraded card brings it with 4 more max HP)
+    expect(hit('dire-wolf+')).toBe(9);
     expect(hp('pup')).toBeLessThan(hp('hound'));
     // the Pup never outgrows the Hound, even upgraded
     expect(hp('pup+')).toBeLessThanOrEqual(hp('hound'));

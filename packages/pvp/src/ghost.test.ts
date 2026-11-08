@@ -58,5 +58,6 @@ describe('the smart bot that pilots a ghost', () => {
         if (m.over?.winner === seat) smart++;
       }
     expect(smart).toBeGreaterThanOrEqual(Math.ceil(n / 2));
-  });
+    // (eight whole bot matches: the same allowance as the test above, 2026-11-08)
+  }, 20000);
 });

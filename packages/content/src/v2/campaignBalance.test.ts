@@ -184,8 +184,9 @@ describe('approved campaign balance pass', () => {
   });
 
   it.each([
-    ['gleeful-trapsmith', 7],
-    ['gleeful-trapsmith+', 9],
+    // (3 / 4 a Trap since #694)
+    ['gleeful-trapsmith', 6],
+    ['gleeful-trapsmith+', 7],
   ] as const)('%s reads sprung traps, not traps merely set', (card, expected) => {
     let s = fight('trickster', [card, 'trip-line']);
     s.sides.a.snaresSprung = 12;

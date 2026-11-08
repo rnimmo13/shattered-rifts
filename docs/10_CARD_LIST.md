@@ -233,46 +233,46 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Savage Bite | 1 | attack | basic | Deal 7 damage. Lifesteal 50%. |
 | Blood Frenzy | 1 | attack | basic | Deal 3 damage to ALL enemies. Lose 1 HP. Gain 1 Might. |
 | Rend | 1 | attack | basic | Deal 6 damage. Lose 2 HP. Gain 1 Might. |
-| Twin Fang | 1 | attack | common | Deal 6 damage 2 times. Lose 2 HP. |
-| Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 2 cards. Consume. |
+| Twin Fang | 1 | attack | common | Deal 7 damage 2 times. Lose 2 HP. |
+| Feral Instinct | 0 | skill | common | Lose 2 HP. Draw 3 cards. Consume. |
 | Pain Ward | 1 | skill | common | Gain 5 (+1 per 5% HP missing) Barrier. |
 | Rummage | 1 | attack | common | Deal 8 damage. Put a random Attack card from your discard pile on top of your draw pile. |
 | Pound | 1 | attack | common | Deal 8 damage. Draw 1 card. Lose 1 HP. |
 | Pack Tactics | 1 | skill | common | Gain 1 Might. Gain 4 Barrier to all friends. |
 | Thick Hide | 1 | skill | common | Gain 5 Barrier to all friends. |
 | Summon Pup | 1 | summon | common | Summon Pup (5 HP; at the end of your turn it will deal 3 damage). |
-| Trail of Blood | 1 | aura | common | Whenever you summon an ally: Gain 1 Might. |
-| Open a Vein | 0 | skill | common | Lose 4 HP. Gain 2 Might. Consume. |
+| Trail of Blood | 0 | aura | common | Whenever you summon an ally: Gain 1 Might. |
+| Open a Vein | 0 | skill | common | Lose 3 HP. Gain 2 Might. Consume. |
 | Wounded Wrath | 1 | aura | common | Whenever you lose HP to your own cards or Hangover: Deal 4 damage to a random enemy. |
 | Bared Teeth | 1 | skill | common | Gain 3 (+3 per ally) Barrier. |
 | Lead the Charge | 1 | attack | common | Deal 5 (+3 per ally) damage. |
-| Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. |
+| Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. Heal 2. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Primal Feast | 1 | skill | common | Heal 3 to your hero. Your companions gain 4 max HP. |
 | Rush In | 1 | attack | common | Deal 7 damage. Draw 1 card. |
-| Pounding Heart | 0 | skill | common | Gain 1 Mana. Lose 2 HP. Consume. |
+| Pounding Heart | 0 | skill | common | Gain 1 Mana. Lose 2 HP. Draw 1 card. Consume. |
 | Wild Swings | 1 | attack | common | Deal 3 (+3 per card played this turn) damage. |
 | Shake Loose | 1 | skill | common | Draw 2 cards. Gain 3 Barrier. |
 | Bear Trap | 1 | trap | common | When you or an ally is attacked: Deal 6 damage to the attacker and apply 2 Faltering to the attacker. |
 | Snare Line | 1 | trap | common | At the start of the enemy turn: Gain 5 Barrier and apply 1 Faltering to ALL enemies. |
 | Single Out | 1 | skill | common | Apply 1 Exposed. Each of your companions gains 3 Primed. Draw 1 card. |
-| Crushing Blow | 2 | attack | uncommon | Deal 10 (+2 per Might) damage. |
-| Run Wild | 2 | attack | uncommon | Deal 7 damage 2 times. Gain 1 Might. |
+| Crushing Blow | 2 | attack | uncommon | Deal 14 (+2 per Might) damage. |
+| Run Wild | 2 | attack | uncommon | Deal 8 damage 2 times. Gain 1 Might. |
 | Ravage | 2 | attack | uncommon | Deal 10 damage 2 times to ALL enemies. Lose 3 HP. |
 | The Hunger | 1 | aura | uncommon | On play: Lose 4 HP. Gain 3 Might for the rest of the fight. |
-| Whirling Maul | X | attack | uncommon | Deal 6 damage X times to ALL enemies. Lose 3 HP. |
-| Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 7 damage 2 times. |
+| Whirling Maul | X | attack | uncommon | Deal 7 damage X times to ALL enemies. Lose 2 HP. |
+| Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 8 damage 2 times. |
 | Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Savage Command | 1 | skill | uncommon | Command your companions to act now. Gain 1 Might. |
-| Pack Bond | 1 | aura | uncommon | At the start of your turn: Gain 4 Barrier to all friends. |
+| Pack Bond | 1 | aura | uncommon | At the start of your turn: Gain 3 Barrier to all friends. |
 | Unchained | 2 | aura | uncommon | On play: Gain 4 Might for the rest of the fight. |
-| Feeding Time | 1 | skill | uncommon | Your companions gain 3 max HP. Gain 1 Might. |
+| Feeding Time | 1 | skill | uncommon | Your companions gain 2 max HP. Gain 1 Might. |
 | Rally the Pack | 2 | skill | uncommon | Summon Hound (8 HP; at the end of your turn it will deal 4 damage). Each of your allies gains 3 Barrier. |
-| Devour | 2 | attack | uncommon | Deal 16 damage. Lifesteal 50%. |
+| Devour | 2 | attack | uncommon | Deal 14 damage. Lifesteal 50%. |
 | Devour Ally | 1 | skill | uncommon | Heal 8 to your hero. Apply 2 Might to your hero. Sacrifice the chosen ally. |
 | Gnarltooth Trap | 1 | trap | uncommon | When you or an ally is attacked: Deal 6 damage to the attacker and gain 1 Might. |
-| Bone Offering | 1 | skill | uncommon | Consume 1 card. Draw 2 cards. Heal 2. |
-| Bloodied Howl | 1 | skill | uncommon | Lose 2 HP. Apply 2 Exposed to ALL enemies. Draw 1 card. |
+| Bone Offering | 1 | skill | uncommon | Consume 1 card. Draw 2 cards. Heal 3. |
+| Bloodied Howl | 1 | skill | uncommon | Lose 1 HP. Apply 2 Exposed to ALL enemies. Draw 1 card. |
 | Frothing Rage | 1 | skill | uncommon | Lose 3 HP. Gain 3 Might until the end of your turn. Draw 2 cards. |
 | Blood Bond | 1 | skill | uncommon | Lose 3 HP. Gain 1 Might. Gain 5 Barrier to all friends. |
 | Litter | 2 | skill | uncommon | Summon 2 Pups (5 HP each; at the end of your turn each will deal 3 damage). |
@@ -280,41 +280,41 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Bl
 | Hunter's Call | 1 | aura | uncommon | At the start of your turn: Gain 1 Might. |
 | Gut Trap | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to ALL enemies and heal 4. |
 | Whet the Fangs | 0 | skill | uncommon | Gain 6 Primed. |
-| Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 4 HP. Consume. |
+| Frenzied Gulp | 0 | skill | uncommon | Draw 3 cards. Lose 2 HP. Consume. |
 | Adrenal Surge | 0 | skill | uncommon | Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 1 card. Lose 3 HP. Consume. |
 | Blur of Claws | 1 | attack | uncommon | Deal 5 (+3 per card played this turn) damage. |
-| Battle Rhythm | 1 | aura | uncommon | At the start of your turn: Draw 1 card and lose 1 HP. |
-| Reckless Abandon | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. |
+| Battle Rhythm | 1 | aura | uncommon | At the start of your turn: Draw 1 card. |
+| Reckless Abandon | 1 | skill | uncommon | Draw 3 cards. Discard 1 card. Gain 2 Barrier. |
 | Burst of Speed | 1 | skill | uncommon | Next turn, gain 1 extra Mana. Next turn, draw 2 extra cards. |
-| Rip and Tear | 2 | attack | uncommon | Deal 6 damage 3 times. Draw 1 card. |
-| Pack Leader | 2 | aura | uncommon | Whenever you play an Attack: Gain 2 Barrier to all friends. |
-| Tear Loose | 1 | attack | uncommon | Deal 9 damage. Lose 2 HP. Gain 4 Primed. |
+| Rip and Tear | 2 | attack | uncommon | Deal 7 damage 3 times. Draw 1 card. |
+| Pack Leader | 2 | aura | uncommon | Whenever you play an Attack: Gain 2 Barrier and each of your allies gains 1 Barrier. |
+| Tear Loose | 1 | attack | uncommon | Deal 10 damage. Lose 2 HP. Gain 5 Primed. |
 | Deadfall | 2 | trap | uncommon | When you or an ally is attacked: Deal 18 damage to the attacker and apply 2 Exposed to the attacker. |
-| Baited Snare | 1 | trap | uncommon | When you or an ally is attacked: Your companions each deal 5 damage and gain 3 Barrier. |
-| Hunting Grounds | 1 | aura | uncommon | Whenever one of your Traps is triggered: Gain 1 Might. |
+| Baited Snare | 1 | trap | uncommon | When you or an ally is attacked: Your companions each deal 6 damage and gain 4 Barrier. |
+| Hunting Grounds | 1 | aura | uncommon | Opening hand. Whenever one of your Traps is triggered: Gain 1 Might. |
 | Run It Down | 1 | attack | uncommon | Deal 7 damage. If the target is Faltering: Your companions each deal 5 damage. |
 | Blood Tithe | 0 | skill | rare | Lose 7 HP. Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 2 cards. Gain 1 Might. Consume. |
 | Scar Tissue | 1 | aura | rare | Whenever you lose HP to your own cards or Hangover: Gain 2 Barrier and gain 1 Might until the end of your turn. |
-| Skullcrusher | 3 | attack | rare | Deal 26 damage. Command your companions to act now. |
+| Skullcrusher | 3 | attack | rare | Deal 30 damage. Command your companions to act now. Gain 1 Might. |
 | Scarred Warrior | 1 | aura | rare | At the start of your turn: Lose 2 HP and gain 8 Barrier. |
 | Alpha Call | 2 | summon | rare | Summon Pack Alpha (12 HP; at the end of your turn it will deal 6 damage). |
-| Den Mother | 2 | aura | rare | Whenever one of your allies dies: Deal 15 damage to the attacker. |
-| Dire Wolf | 3 | summon | rare | Summon Dire Wolf (18 HP; at the end of your turn it will deal 9 damage 2 times). |
-| Pack Frenzy | 2 | skill | rare | Gain 2 Might. Command your companions to act now. Consume. |
-| Wild Hunt | 3 | aura | rare | At the start of your turn: Command your companions to act now. |
-| The Hunger Unleashed | 2 | aura | rare | On play: Lose 6 HP. Gain 2 Might. Gain 1 Cadence. These last the rest of the fight. |
-| Apex Frenzy | 2 | attack | rare | Deal 4 (+2 per card played this turn) damage 2 times. Lifesteal 50%. Consume. |
-| Blood Pact | 1 | aura | rare | On play: Lose 7 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. |
-| Death or Glory | 2 | attack | rare | Deal 10 (+1 per 2.5% HP missing) damage. Consume. |
-| Bloodsong | 0 | aura | rare | On play: Lose 3 HP. Gain 1 Cadence for the rest of the fight. |
-| Slip the Leash | 2 | skill | rare | Double the Might to yourself. Consume. |
-| Berserk Tempo | 2 | aura | rare | At the start of your turn: Gain 1 Mana, draw 1 card and lose 2 HP. |
-| Red Frenzy | 1 | aura | rare | Whenever you draw a card during your turn: Gain 1 Might until the end of your turn. |
-| Bloodstorm | X | attack | rare | Deal 5 damage X times. Draw cards equal to the Mana spent. |
-| Rising Howl | 2 | attack | rare | Deal 10 (+5 per card played this turn) damage. |
-| Killing Spree | 3 | aura | rare | Whenever you play an Attack: Draw 1 card. |
-| Ancient Fury | 2 | aura | rare | At the start of your turn: Gain 2 Might and lose 3 HP. |
-| Hunger Unbound | 3 | aura | rare | Gain Unbound. At the start of your turn: Lose 2 HP. |
+| Den Mother | 2 | aura | rare | Whenever one of your allies dies: Deal 15 damage to the attacker, gain 1 Might and summon Pup (5 HP; at the end of your turn it will deal 3 damage). |
+| Dire Wolf | 3 | summon | rare | Summon Dire Wolf (15 HP; at the end of your turn it will deal 7 damage 2 times). |
+| Pack Frenzy | 2 | skill | rare | Gain 3 Might. Command your companions to act now. Command your companions to act now. |
+| Wild Hunt | 2 | aura | rare | Opening hand. At the start of your turn: Command your companions to act now and your companions gain 2 max HP. |
+| The Hunger Unleashed | 1 | aura | rare | On play: Lose 4 HP. Gain 4 Might. Gain 1 Cadence. These last the rest of the fight. Cadence gives Might in your first 8 turns only. |
+| Apex Frenzy | 2 | attack | rare | Deal 4 (+2 per card played this turn) damage 2 times. Lifesteal 50%. |
+| Blood Pact | 1 | aura | rare | On play: Lose 4 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Draw 1 card. |
+| Death or Glory | 2 | attack | rare | Deal 12 (+1 per 2% HP missing) damage. |
+| Bloodsong | 0 | aura | rare | On play: Lose 2 HP. Gain 2 Might. Gain 1 Cadence. Draw 1 card. These last the rest of the fight. Cadence gives Might in your first 8 turns only. |
+| Slip the Leash | 1 | skill | rare | Double the Might to yourself. Consume. |
+| Berserk Tempo | 2 | aura | rare | Opening hand. At the start of your turn: Gain 1 Mana, draw 1 card and lose 1 HP. |
+| Red Frenzy | 1 | aura | rare | Whenever you draw a card during your turn: Gain 1 Might until the end of your turn and gain 1 Barrier. |
+| Bloodstorm | X | attack | rare | Deal 7 damage X+1 times. Draw cards equal to the Mana spent. |
+| Rising Howl | 2 | attack | rare | Deal 14 (+7 per card played this turn) damage. |
+| Killing Spree | 1 | aura | rare | Whenever you play an Attack (first 2 activations each turn): Draw 1 card. |
+| Ancient Fury | 1 | aura | rare | For the next 6 turns, at the start of your turn: Gain 2 Might and lose 2 HP. |
+| Hunger Unbound | 2 | aura | rare | On play: Gain Unbound. Opening hand. |
 | Bloodmoon Hunt | 2 | skill | rare | Summon Hound (8 HP; at the end of your turn it will deal 4 damage). Each of your companions gains 2 Might. Command your companions to act now. Consume. |
 
 ## Trickster (umbral, 80 HP)
@@ -341,7 +341,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the We
 | Cold Read | 0 | skill | common | Foresee 4. |
 | Patient Blade | 1 | attack | common | Deal 9 damage. Hold. |
 | Shadow Cloak | 1 | skill | common | Gain 6 Barrier. Draw 1 card. |
-| Weigh the Odds | 1 | skill | common | Foresee 3. Draw 1 card. Hold. |
+| Weigh the Odds | 1 | skill | common | Foresee 3. Draw 2 cards. Hold. |
 | Hidden Hand | 1 | skill | common | Draw 2 cards. Gain 3 Barrier. Hold. |
 | Flourish | 1 | attack | common | Deal 7 damage. If you have played a ♥ this turn: Gain 4 Barrier. |
 | Fang Pit | 1 | trap | common | When you lose 3+ HP at once: Deal 6 damage to ALL enemies and apply 1 Exposed to ALL enemies. |
@@ -358,19 +358,19 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the We
 | Strip the Guard | 1 | skill | uncommon | Apply 3 Exposed. Apply 2 Brittle. |
 | Smoke Bomb | 1 | skill | uncommon | Apply 1 Faltering to ALL enemies. Apply 1 Exposed to ALL enemies. Gain 3 Barrier. |
 | Fade Back | 1 | skill | uncommon | Gain 6 Barrier. Next turn, gain 4 Barrier. Hold. |
-| Long Con | 2 | attack | uncommon | Deal 14 damage. Apply 1 Exposed. Hold. |
+| Long Con | 2 | attack | uncommon | Deal 16 damage. Apply 1 Exposed. Hold. |
 | Card Fan | 1 | attack | uncommon | Deal 4 (+3 per suit played this turn) damage. |
 | Card Sharp | 1 | attack | uncommon | Deal 8 damage. If all four suits are showing: Deal 8 damage. |
 | Cut the Deck | 1 | skill | uncommon | Draw 2 cards. If you have played 3 or more suits this turn: Once on your turn across all copies: Gain 1 Mana. |
 | Queen of Hearts | 1 | skill | uncommon | Gain 5 (+2 per suit played this turn) Barrier. |
 | Ace of Clubs | 1 | skill | uncommon | Apply 2 Exposed. Apply 1 Faltering. If you have played 3 or more suits this turn: Draw 1 card. |
-| Wild Card | 0 | skill | uncommon | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Draw 1 card. Consume. |
+| Wild Card | 0 | skill | uncommon | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Draw 2 cards. Consume. |
 | Saved Breath | 0 | skill | uncommon | Next turn, gain 2 extra Mana. Foresee 2. Consume. |
 | The Long Game | 1 | aura | uncommon | At the start of your turn: Draw 1 card. |
-| Frozen Moment | 1 | skill | uncommon | Cards in your hand cost 1 less the next time you play them. Consume. |
-| Gleeful Trapsmith | 1 | aura | uncommon | Whenever you play a Trap: Deal 4 (+1 per 4 Trap sprung this fight) damage to ALL enemies. |
+| Frozen Moment | 1 | skill | uncommon | Draw 1 card. Cards in your hand cost 1 less the next time you play them. Consume. |
+| Gleeful Trapsmith | 1 | aura | uncommon | Whenever you play a Trap: Deal 3 (+1 per 4 Trap sprung this fight) damage to ALL enemies. |
 | Metronome Trap | 0 | trap | uncommon | At the start of the enemy turn: Deal 3 damage to ALL enemies and gain 3 Barrier. |
-| Trapline Rider | 1 | attack | uncommon | Deal 4 (+4 per Trap set) damage. |
+| Trapline Rider | 1 | attack | uncommon | Deal 5 (+4 per Trap set) damage. |
 | Grim Collection | 2 | attack | uncommon | Deal 12 damage. Gain Barrier equal to 4 times the number of Traps you have set. |
 | Trap Door | 2 | aura | uncommon | At the start of your turn: Add a Trip Line to your hand. |
 | Dread Gaze | 0 | skill | uncommon | Apply 3 Exposed. Consume. |
@@ -381,34 +381,34 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the We
 | Mask of Faces | 1 | skill | uncommon | Gain 2 Steadfast. Gain 6 Barrier. |
 | Poison Pantry | 0 | trap | uncommon | When an enemy gains Barrier: Deal 10 damage to that enemy and apply 2 Brittle to that enemy. |
 | Hamstring | 1 | attack | uncommon | Deal 6 damage. Apply 2 Exposed. |
-| Trick of the Light | 0 | skill | uncommon | Foresee 2. Gain 2 Barrier. |
+| Trick of the Light | 0 | skill | uncommon | Foresee 3. Gain 3 Barrier. |
 | Stolen Moment | 0 | skill | uncommon | Gain 1 Mana. Foresee 2. Consume. |
 | Curtain Call | 1 | skill | uncommon | Draw 1 card. Return 2 random Trap cards from your discard pile to your hand. |
-| Time Bomb | 1 | trap | rare | At the start of the enemy turn: Deal 12 damage to ALL enemies. |
+| Time Bomb | 1 | trap | rare | At the start of the enemy turn: Deal 15 damage to ALL enemies. |
 | Master Trapper | 1 | aura | rare | Whenever you play a Trap: Draw 1 card and gain 3 Barrier. |
-| Bait and Switch | 2 | trap | rare | When you or an ally is attacked: Cancel that hit and deal 12 damage to the attacker. |
-| Silencing Trap | 2 | trap | rare | When you or an ally is attacked: Shock the attacker for 2 turns and gain 1 Shielded. |
+| Bait and Switch | 2 | trap | rare | When you or an ally is attacked: Cancel that hit, deal 18 damage to the attacker and apply 2 Exposed to the attacker. |
+| Silencing Trap | 2 | trap | rare | When you or an ally is attacked: Shock the attacker for 3 turns, gain 1 Shielded and apply 2 Exposed to the attacker. |
 | Trapper's Dividend | 1 | aura | rare | Whenever one of your Traps is triggered: Draw 1 card and gain 5 Barrier. |
-| Spring the Trap | 1 | attack | rare | Deal 6 (+5 per Trap set) damage. |
-| Coup de Grace | 3 | attack | rare | Deal 18 (+4 per Exposed on the target) damage. |
-| Patient Hunter | 1 | aura | rare | At the start of your turn: Apply 1 Exposed to ALL enemies. |
+| Spring the Trap | 1 | attack | rare | Deal 8 (+6 per Trap set) damage. |
+| Coup de Grace | 2 | attack | rare | Deal 20 (+5 per Exposed on the target) damage. |
+| Patient Hunter | 0 | aura | rare | Opening hand. At the start of your turn: Apply 1 Exposed to ALL enemies. |
 | Opening Strike | 0 | attack | rare | Deal 8 damage. Apply 2 Exposed. Consume. Opening hand. |
-| Hunter's Eye | 2 | aura | rare | Whenever you play an Attack: Apply 1 Exposed. |
-| Blindside | 2 | attack | rare | Deal 22 damage. Apply 3 Exposed. Consume. |
-| Second Act | 1 | skill | rare | Gain 1 Reverb: your next Attack is played twice. Hold. |
-| Pickpocket Master | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
-| Royal Flourish | 2 | attack | rare | Deal damage equal to 7 times the suits played this turn. |
-| Showstopper | 3 | attack | rare | Costs 1 less for each suit played this turn. Deal 30 damage. |
-| The Joker | 1 | skill | rare | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Add a random card from your pool to your hand (it costs 0 the next time you play it). |
-| The Whole Deck | 1 | aura | rare | Whenever you make a Full Trick (all four suits this turn): Draw 2 cards and next turn, gain 1 extra Mana. |
+| Hunter's Eye | 1 | aura | rare | Opening hand. Whenever you play an Attack: Apply 1 Exposed. |
+| Blindside | 2 | attack | rare | Deal 22 damage. Apply 3 Exposed. |
+| Second Act | 1 | skill | rare | Gain 1 Reverb: your next Attack is played twice. Draw 1 card. Hold. |
+| Pickpocket Master | 2 | skill | rare | Add 3 random upgraded cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
+| Royal Flourish | 1 | attack | rare | Deal damage equal to 7 times the suits played this turn. |
+| Showstopper | 3 | attack | rare | Costs 1 less for each suit played this turn (this never takes it below 1). Deal 20 damage. |
+| The Joker | 1 | skill | rare | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Add a random upgraded card from your pool to your hand (it costs 0 the next time you play it). |
+| The Whole Deck | 1 | aura | rare | Whenever you make a Full Trick (all four suits this turn): Draw 2 cards and gain 1 Mana. |
 | Masquerade | 2 | aura | rare | At the end of your turn, if you completed a Full Trick this turn: Deal 12 (+2 per Full Trick this fight) damage to ALL enemies; If you did not complete a Full Trick this turn: Deal damage equal to 3 times the suits played this turn to ALL enemies. |
-| Deep Pockets | 2 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
-| The Perfect Trap | 3 | trap | rare | When you or an ally is attacked: Cancel that hit, deal 22 damage to the attacker and shock the attacker for 2 turns. |
-| Culling | 2 | attack | rare | Deal 8 (+3 per Exposed on each) damage to ALL enemies. |
-| Between Worlds | 2 | skill | rare | Gain 2 Ghostly. Consume. |
-| Perfect Alibi | 1 | skill | rare | Gain 13 Barrier. Discard 1 card. |
-| Compound Fear | 1 | skill | rare | Apply 2 Exposed. Double the Exposed on the target (at most +4). Consume. |
-| Patient Guard | 1 | aura | rare | At the end of your turn: Gain 2 (+1 per card in hand) Barrier. |
+| Deep Pockets | 2 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Opening hand. |
+| The Perfect Trap | 3 | trap | rare | When you or an ally is attacked: Cancel that hit, deal 26 damage to the attacker and shock the attacker for 2 turns. |
+| Culling | 2 | attack | rare | Deal 14 (+5 per Exposed on each) damage to ALL enemies. |
+| Between Worlds | 2 | skill | rare | Gain 3 Ghostly. Consume. |
+| Perfect Alibi | 1 | skill | rare | Gain 16 Barrier. Discard 1 card. |
+| Compound Fear | 0 | skill | rare | Apply 2 Exposed. Double the Exposed on the target (at most +4). Consume. |
+| Patient Guard | 1 | aura | rare | At the end of your turn: Gain Barrier equal to 4 times the number of cards in your hand (at most 24). |
 | The Long Ambush | 3 | trap | rare | At the start of the enemy turn: Deal 20 damage to ALL enemies, shock ALL enemies for 1 turn and apply 2 Exposed to ALL enemies. |
 
 ## Rogue (umbral, 75 HP)
@@ -825,12 +825,12 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
-| Hammer Swing | 1 | attack | basic | Deal 6 damage. Apply 1 Brittle. |
+| Hammer Swing | 1 | attack | basic | Deal 7 damage. Apply 1 Brittle. |
 | Pane Up | 1 | skill | basic | Gain 5 (+1 per 11% HP missing) Barrier. |
 | Bottle Tripwire | 1 | trap | basic | When you or an ally is attacked: Deal 7 damage to the attacker and apply 1 Faltering to the attacker. |
-| Shard Toss | 1 | attack | common | Deal 6 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
+| Shard Toss | 1 | attack | common | Deal 7 damage to ALL enemies. Apply 1 Brittle to ALL enemies. |
 | Load Shells | 1 | skill | common | Add 2 Buckshot Shells to your hand. |
-| Slug Round | 2 | attack | common | Deal 16 damage. |
+| Slug Round | 2 | attack | common | Deal 19 damage. |
 | Rack the Slide | 1 | skill | common | Precision 4 (every Old Twelve Gauge you have deals 4 more damage for the rest of the fight). |
 | Powder Load | 0 | skill | common | Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight). Consume. |
 | Pistol Whip | 1 | attack | common | Deal 6 damage. Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). |
@@ -841,11 +841,11 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Gun Oil | 1 | aura | common | Whenever you play a gun: Gain 2 Barrier. |
 | Broken Bottle | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Chaser | 0 | skill | common | Lose 2 HP. Gain 1 Mana. Draw 1 card. Consume. |
-| Rummage the Bin | 0 | skill | common | Foresee 3. |
+| Rummage the Bin | 0 | skill | common | Foresee 3. Gain 1 Barrier. |
 | Bar Fight | 1 | attack | common | Deal 7 (+3 per time you lost HP this turn, at most +9) damage. |
 | Nurse the Hangover | 1 | skill | common | Gain 5 (+1 per Hangover, at most +8) Barrier. |
 | Liquid Lunch | 0 | skill | common | Gain 2 Mana. Gain 3 Hangover. Consume. |
-| One for the Road | 0 | skill | common | Draw 3 cards. Gain 3 Hangover. Consume. |
+| One for the Road | 0 | skill | common | Draw 3 cards. Gain 2 Hangover. Consume. |
 | Drunken Swing | 1 | attack | common | Deal 14 damage. Gain 3 Hangover. |
 | Bottle to the Head | 1 | attack | common | Deal 5 (+2 per Hangover) damage. |
 | Sob Story | 1 | skill | common | Heal 3 (+1 per 8% HP missing). Draw 1 card. Consume. |
@@ -854,23 +854,23 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Drunken Lurch | 1 | attack | common | Stagger. Deal 12 damage to a random enemy. |
 | Smash the Pane | 2 | attack | uncommon | Deal 12 (+1 per 4% HP missing) damage. |
 | Pump Action | 1 | skill | uncommon | Add 2 Buckshot Shells to your hand. Draw 1 card. |
-| Shotgun Wedding | 2 | attack | uncommon | Deal 7 damage 2 times to ALL enemies. |
+| Shotgun Wedding | 2 | attack | uncommon | Deal 8 damage 2 times to ALL enemies. |
 | Shell Game | 1 | aura | uncommon | At the start of your turn: Add a Buckshot Shell to your hand. |
 | Glass Cover | 1 | skill | uncommon | Gain 7 Barrier. Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). |
 | Hair Trigger | 1 | aura | uncommon | Whenever you play a shell: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). |
 | Reload | 1 | skill | uncommon | Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight). Draw 1 card. |
-| Slugfest | 2 | attack | uncommon | Deal 5 damage 4 times. |
+| Slugfest | 2 | attack | uncommon | Deal 6 damage 4 times. |
 | Shellshocked | 1 | aura | uncommon | Whenever a card is consumed: Deal 2 damage to ALL enemies. |
 | Scope | 1 | aura | uncommon | At the start of your turn: Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). |
 | Bar Stool | 1 | attack | uncommon | Deal 7 (+1 per 6% HP missing) damage. |
-| Rusty Nail Board | 1 | trap | uncommon | At the start of the enemy turn: Deal 5 damage to ALL enemies and apply 1 Faltering to ALL enemies. |
+| Rusty Nail Board | 1 | trap | uncommon | At the start of the enemy turn: Deal 7 damage to ALL enemies and apply 1 Faltering to ALL enemies. |
 | Molotov Cocktail | 0 | trap | uncommon | When the enemy summons: Deal 12 damage to ALL enemies and apply 1 Brittle to ALL enemies. |
 | Sawn-Off | 1 | attack | uncommon | Deal 9 damage to ALL enemies. Lose 1 HP. |
 | Tin Can Alley | 1 | attack | uncommon | Deal 3 damage 3 times to ALL enemies. |
-| Pick Up the Brass | 1 | skill | uncommon | Return 2 random Consumed cards to your hand (never one that returns cards). Consume. |
-| Spray and Pray | 2 | attack | uncommon | Deal 10 (+1 per 2 cards created this fight) damage to ALL enemies. |
+| Pick Up the Brass | 1 | skill | uncommon | Return 3 random Consumed cards to your hand (never one that returns cards). Consume. |
+| Spray and Pray | 2 | attack | uncommon | Deal 12 (+1 per card created this fight) damage to ALL enemies. |
 | Spare Barrel | 1 | skill | uncommon | Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). Add a Buckshot Shell to your hand. |
-| Dead Eye | 1 | skill | uncommon | Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight). Apply 1 Exposed to ALL enemies. |
+| Dead Eye | 1 | skill | uncommon | Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight). Apply 1 Exposed to ALL enemies. |
 | Dumpster Dive | 1 | skill | uncommon | Draw 2 cards. Discard 1 card. Heal 4. |
 | Sway | 1 | skill | uncommon | Gain 7 Barrier. Draw 1 card. |
 | Liquid Courage | 1 | skill | uncommon | Gain 5 Barrier. Gain 6 Primed. |
@@ -879,45 +879,45 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Double Tap | 1 | skill | uncommon | Add an Old Twelve Gauge to your hand. |
 | Bandolier | 1 | aura | uncommon | Whenever you play a shell: Gain 3 Barrier. |
 | Take It on the Chin | 1 | skill | uncommon | Lose 3 HP. Gain 10 Barrier. Draw 1 card. |
-| Swig | 0 | skill | uncommon | Gain 4 Might until the end of your turn. Gain 2 Hangover. Consume. |
-| Barroom Brawl | 2 | attack | uncommon | Deal 16 damage to ALL enemies. Gain 2 Hangover. |
+| Swig | 0 | skill | uncommon | Gain 5 Might until the end of your turn. Gain 2 Hangover. Draw 1 card. Consume. |
+| Barroom Brawl | 2 | attack | uncommon | Deal 18 damage to ALL enemies. Gain 2 Hangover. |
 | Black Out | 1 | skill | uncommon | Gain 14 Barrier. Gain 4 Hangover. |
 | Bender | 1 | attack | uncommon | Deal 4 (+1 per 2 Hangover) damage 2 times. |
 | Hair of the Dog | 0 | skill | uncommon | Clear your Hangover. Gain 1 Mana. Gain 2 Hangover. Consume. |
 | Liquid Dinner | 1 | skill | uncommon | Heal 2 (+1 per 5% HP missing). Draw 1 card. Consume. |
 | Dutch Courage | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to your Hangover. |
-| Stumble | 1 | attack | uncommon | Stagger. Deal 9 damage to a random enemy. Gain 4 Barrier. Gain 2 Hangover. |
-| Free-for-All | 2 | attack | uncommon | Stagger. Deal 7 damage to a random enemy 3 times. |
+| Stumble | 1 | attack | uncommon | Stagger. Deal 10 damage to a random enemy. Gain 5 Barrier. Gain 2 Hangover. |
+| Free-for-All | 2 | attack | uncommon | Stagger. Deal 8 damage to a random enemy 3 times. |
 | Drunken Master | 2 | aura | uncommon | The first time you play a Stagger card on your turn: Gain 1 Might and gain 3 Barrier. |
 | Morning After | 2 | aura | uncommon | The first time on your turn Hangover costs you HP: Gain 1 Might and gain 3 Barrier. |
 | The Twelve-Gauge Opera | 2 | aura | rare | Precision 6 (every Old Twelve Gauge you have deals 6 more damage for the rest of the fight). Whenever you play a gun: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight) and gain 3 Barrier. |
-| Boomstick | 3 | attack | rare | Deal 14 (+2 per consumed card) damage to ALL enemies. |
-| The Last Shell | 2 | attack | rare | Deal 24 damage. Apply 1 Exposed. Consume. Hold. |
-| One More Round | 3 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand and heal 3. |
-| The Glass Palace | 3 | aura | rare | At the start of your turn: Gain 3 (+1 per 6% HP missing) Barrier. Whenever you lose HP to your own cards or Hangover: Deal damage equal to the HP you lost (at most 5) to ALL enemies. |
-| Extended Mag | 2 | aura | rare | At the start of your turn: Precision 2 (every Old Twelve Gauge you have deals 2 more damage for the rest of the fight) and add a Buckshot Shell to your hand. |
-| Rack and Ruin | 2 | attack | rare | Deal 10 damage to ALL enemies. Precision 4 (every Old Twelve Gauge you have deals 4 more damage for the rest of the fight). |
-| Trigger Discipline | 1 | aura | rare | Whenever you play an Attack: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). |
-| Fire in the Hole | 2 | attack | rare | Deal 12 (+1 per consumed card) damage to ALL enemies. |
-| Ammo Dump | 2 | skill | rare | Add 6 Buckshot Shells to your hand. Consume. |
-| Rolling Thunder | 2 | aura | rare | At the start of your turn: Add 2 Buckshot Shells to your hand. |
-| Ironsights | 1 | skill | rare | Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight). Add 2 Buckshot Shells to your hand. Consume. |
-| Gunmetal Soul | 1 | aura | rare | At the end of your turn: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight) and gain 3 Barrier. |
-| Last Orders | 2 | attack | rare | Deal 8 (+1 per 4% HP missing) damage to ALL enemies. |
-| Glass Jaw | 2 | aura | rare | Whenever you lose HP to your own cards or Hangover: Deal damage equal to the HP you lost (at most 6) to ALL enemies and gain 2 Barrier. |
-| Hot Brass | 1 | aura | rare | Whenever a card is consumed: Gain 1 Barrier and Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). |
-| Whiskey Miracle | 1 | skill | rare | Heal 10. Consume. |
-| Rock Bottom | 1 | aura | rare | Gain 2 Might. At the start of your turn: Lose 1 HP. |
-| Booby-Trapped Window | 2 | trap | rare | When you or an ally is attacked: Cancel that hit and deal 13 damage to the attacker. |
-| Broken Window Theory | 2 | aura | rare | At the end of your turn: Deal 1 (+1 per 6% HP missing) damage to ALL enemies. |
-| Scattergun Symphony | 1 | aura | rare | Whenever you play a shell: Deal 3 damage to ALL enemies. |
-| Ricochet | 1 | aura | rare | Whenever you play a shell: Draw 1 card. |
-| Haymaker | 2 | attack | rare | Deal 14 (+3 per Hangover) damage. |
-| Bottoms Up | 1 | skill | rare | Gain 2 Mana. Draw 2 cards. Gain 4 Hangover. Consume. |
-| Last Call | 2 | aura | rare | Gain 2 Hangover. At the start of your turn: Gain 1 Mana. |
-| Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 2 (+1 per 10% HP missing) and draw 1 card. |
-| Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Consume. |
-| Blind Drunk | 2 | attack | rare | Stagger. Deal 6 (+2 per 2 Hangover) damage to a random enemy 3 times. |
+| Boomstick | 3 | attack | rare | Deal 22 (+2 per consumed card) damage to ALL enemies. |
+| The Last Shell | 2 | attack | rare | Deal 32 damage. Apply 2 Exposed. Consume. Hold. |
+| One More Round | 3 | aura | rare | At the start of your turn: Add 3 Buckshot Shells to your hand and heal 3. |
+| The Glass Palace | 3 | aura | rare | At the start of your turn: Gain 4 (+1 per 6% HP missing) Barrier. Whenever you lose HP to your own cards or Hangover: Deal damage equal to the HP you lost (at most 6) to ALL enemies. |
+| Extended Mag | 2 | aura | rare | At the start of your turn: Precision 3 (every Old Twelve Gauge you have deals 3 more damage for the rest of the fight) and add a Buckshot Shell to your hand. |
+| Rack and Ruin | 2 | attack | rare | Deal 12 damage to ALL enemies. Precision 6 (every Old Twelve Gauge you have deals 6 more damage for the rest of the fight). |
+| Trigger Discipline | 1 | aura | rare | Whenever you play an Attack: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight) and gain 1 Barrier. |
+| Fire in the Hole | 2 | attack | rare | Deal 16 (+1.5 per consumed card) damage to ALL enemies. |
+| Ammo Dump | 2 | skill | rare | Add 7 Buckshot Shells to your hand. Draw 1 card. Consume. |
+| Rolling Thunder | 2 | aura | rare | Opening hand. At the start of your turn: Add 2 Buckshot Shells to your hand. |
+| Ironsights | 1 | skill | rare | Precision 4 (every Old Twelve Gauge you have deals 4 more damage for the rest of the fight). Add 2 Buckshot Shells to your hand. Consume. |
+| Gunmetal Soul | 1 | aura | rare | At the end of your turn: Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight) and gain 4 Barrier. |
+| Last Orders | 2 | attack | rare | Deal 14 (+1 per 3% HP missing) damage to ALL enemies. |
+| Glass Jaw | 2 | aura | rare | Whenever you lose HP to your own cards or Hangover: Deal damage equal to the HP you lost (at most 7) to ALL enemies and gain 3 Barrier. |
+| Hot Brass | 1 | aura | rare | Whenever a card is consumed: Gain 2 Barrier and Precision 1 (every Old Twelve Gauge you have deals 1 more damage for the rest of the fight). |
+| Whiskey Miracle | 1 | skill | rare | Heal 10 (+1 per 10% HP missing). Consume. |
+| Rock Bottom | 1 | aura | rare | Gain 3 Might. For the next 6 turns, at the start of your turn: Lose 1 HP and gain 1 Might. |
+| Booby-Trapped Window | 2 | trap | rare | When you or an ally is attacked: Cancel that hit, deal 18 damage to the attacker, apply 2 Brittle to the attacker and gain 5 Barrier. |
+| Broken Window Theory | 2 | aura | rare | At the end of your turn: Deal 4 (+1 per 5% HP missing) damage to ALL enemies. |
+| Scattergun Symphony | 1 | aura | rare | Whenever you play a shell: Deal 4 damage to ALL enemies. |
+| Ricochet | 1 | aura | rare | Whenever you play a shell: Draw 1 card and gain 1 Barrier. |
+| Haymaker | 2 | attack | rare | Deal 18 (+4 per Hangover) damage. |
+| Bottoms Up | 1 | skill | rare | Gain 2 Mana. Draw 3 cards. Gain 3 Hangover. Consume. |
+| Last Call | 1 | aura | rare | At the start of your turn: Gain 1 Mana and gain 1 Hangover. |
+| Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 3 (+1 per 10% HP missing) and draw 1 card. |
+| Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Draw 2 cards. Consume. |
+| Blind Drunk | 2 | attack | rare | Stagger. Deal 9 (+2 per 2 Hangover) damage to a random enemy 3 times. |
 
 Tokens (made by other cards):
 
@@ -1002,7 +1002,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Grave Debt | 1 | aura | rare | Whenever one of your allies dies (first 3 activations each turn): Curse ALL enemies with Fate equal to half of the fallen companion's max HP. |
 | Fen Offering | 1 | skill | rare | Gain Barrier equal to 2 times the target's max HP. Sacrifice the chosen ally. Draw 1 card. Hold. |
 | Ever Watchful | 2 | aura | rare | At the start of your turn: Add a Baleful Glance to your hand. |
-| Death Grip | 2 | attack | rare | Deal 10 (+6 per Command card you played earlier this fight) damage. |
+| Death Grip | 2 | attack | rare | Deal 8 (+4 per Command card you played earlier this fight) damage. Double damage to an enemy at half HP or less. |
 | The Drowned King | 2 | attack | rare | Your healthiest companion deals 15 damage, plus its own max HP. |
 | The Last Toll | 2 | skill | rare | Curse ALL enemies with 32 Fate. Every enemy whose HP is at or below its Fate dies now. |
 | Mark of Ending | 0 | skill | rare | This turn, whenever you play a card: Curse the target with 4 Fate. |

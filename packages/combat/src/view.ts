@@ -1254,13 +1254,19 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         }
         times =
           o.scale.by === 'x'
-            ? ' X times'
+            ? hits > 0
+              ? ` X+${hits} times`
+              : ' X times'
             : hits === 0
               ? `${m === 1 ? '' : ` ${m} times`} for each ${w.per}`
               : `${hits > 1 ? ` ${hits} times` : ''}, ${more} per ${o.scale.step ? `${o.scale.step} ` : ''}${w.per}`;
       }
       // Point Blank: more against a lone enemy
       const lone = o.lonePct ? ` Point Blank: ${o.lonePct}% more when only one enemy is left.` : '';
+      // (#696: a finisher)
+      const finish = o.finisher
+        ? ` ${o.finisher.mult === 2 ? 'Double' : `${o.finisher.mult} times the`} damage to an enemy at ${o.finisher.belowPct === 50 ? 'half' : `${o.finisher.belowPct}%`} HP or less.`
+        : '';
       // (Lifesteal: heal that percent of the HP it took off)
       const steal = o.lifesteal ? ` Lifesteal ${o.lifesteal}%.` : '';
       const cracks = o.hitFracture ? ` Each hit applies ${o.hitFracture} Fracture.` : '';
@@ -1277,8 +1283,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const randomEach = o.to === 'randomFoe' && times !== '';
       const tail = randomEach ? `${who[o.to]}${times}` : `${times}${who[o.to]}`;
       return a.equal
-        ? `Deal damage equal to ${a.num}${tail}.${lone}${steal}${cracks}${kill}`
-        : `Deal ${a.num} damage${tail}.${lone}${steal}${cracks}${kill}`;
+        ? `Deal damage equal to ${a.num}${tail}.${lone}${finish}${steal}${cracks}${kill}`
+        : `Deal ${a.num} damage${tail}.${lone}${finish}${steal}${cracks}${kill}`;
     }
     case 'loseHp': {
       const a = amountText(o.amount, o.scale);
@@ -2368,7 +2374,9 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.needsEmptyDraw) parts.push('Only playable while your draw pile is empty.');
   // (the Necrobinder copy)
   if (c.cheaperPer)
-    parts.push(`Costs ${c.cheaperPer.mult} less for each ${METRIC_WORDS[c.cheaperPer.by].per}.`);
+    parts.push(
+      `Costs ${c.cheaperPer.mult} less for each ${METRIC_WORDS[c.cheaperPer.by].per}${c.cheaperPer.min !== undefined ? ` (this never takes it below ${c.cheaperPer.min})` : ''}.`,
+    );
   if (c.freeIf)
     parts.push(
       c.freeIf.by === 'allyStrikes' && c.freeIf.atLeast === 1
@@ -2481,6 +2489,9 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   const lasting = c.effects.filter((o) => isLasting(o)).length;
   if (c.kind === 'power' && !ongoing && lasting > 1)
     parts.push('These last the rest of the fight.');
+  // (#693: a hero's Cadence stops after its 8th turn)
+  if (c.effects.some((o) => o.op === 'status' && o.status === 'ritual' && o.to === 'self'))
+    parts.push('Cadence gives Might in your first 8 turns only.');
   if (
     c.kind === 'power' &&
     !ongoing &&

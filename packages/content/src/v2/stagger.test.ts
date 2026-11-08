@@ -73,9 +73,10 @@ describe('Stagger', () => {
       expect(hits).toHaveLength(3);
       return (hits[0] as { amount: number }).amount;
     };
-    expect(swing(0)).toBe(6);
-    expect(swing(3)).toBe(8);
-    expect(swing(8)).toBe(14);
+    // (9 a hit since #695)
+    expect(swing(0)).toBe(9);
+    expect(swing(3)).toBe(11);
+    expect(swing(8)).toBe(17);
   });
 
   it('Free-for-All: three hits, each at an enemy of its own choosing (two enemies both get hit over a few seeds)', () => {
@@ -83,17 +84,17 @@ describe('Stagger', () => {
     for (let i = 0; i < 12 && !split; i++) {
       const s0 = fight(['free-for-all'], 0, `ffa-${i}`);
       const s = play(s0, 'free-for-all').state;
-      expect(lost(s)).toBe(21);
+      expect(lost(s)).toBe(24);
       split = s.sides.b.units.every((u) => u.hp < 200);
     }
     expect(split).toBe(true);
   });
 
-  it('Stumble: 9 to a random enemy, 4 Barrier and 2 Hangover', () => {
+  it('Stumble: 10 to a random enemy, 5 Barrier and 2 Hangover (#695)', () => {
     const s = play(fight(['stumble']), 'stumble').state;
     const hero = s.sides.a.units.find((u) => u.kind === 'hero')!;
-    expect(lost(s)).toBe(9);
-    expect(hero.barrier).toBe(4);
+    expect(lost(s)).toBe(10);
+    expect(hero.barrier).toBe(5);
     expect(hero.statuses.hangover).toBe(2);
   });
 

@@ -167,11 +167,12 @@ describe('long-fight balance rules81', () => {
       expect(hero(s, 'b').statuses.fracture).toBe(14);
     },
   );
+  // (1% a stack since #695)
   it.each([
-    [88, 3],
-    [528, 16],
-    [588, 18],
-    [100, 3],
+    [88, 5],
+    [528, 27],
+    [588, 30],
+    [100, 5],
   ])('Fermentation at %i max HP heals %i at five stacks, rounding the sum once', (hp, heal) => {
     let s = fight('drunkard', 'brewmaster', hp);
     s.sides.a.discipline!.progress = 5;

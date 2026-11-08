@@ -3,7 +3,13 @@
 
 import { nextInt, seedRng, shuffle } from './rng';
 import { SUITS, suitShown } from './suits';
-import { attunementPct, disciplineAttack, disciplineTarget, disciplineTrigger } from './disciplines';
+import {
+  attunementPct,
+  disciplineAttack,
+  disciplineLifesteal,
+  disciplineTarget,
+  disciplineTrigger,
+} from './disciplines';
 import { attackAuraBonus } from './attackAuras';
 import {
   DEBUFFS,
@@ -860,6 +866,11 @@ function attackHit(
     t.side !== a.actor.side
   )
     fireTriggers(r, r.s.sides[a.actor.side], 'hitFoe', { target: t });
+  // (the Reaver's Bloodlust, #693: low on HP, his Attacks heal him)
+  if (lostHere > 0 && a.actor.kind === 'hero' && a.card?.kind === 'attack' && t.side !== a.actor.side) {
+    const back = disciplineLifesteal(r.s.sides[a.actor.side], lostHere);
+    if (back > 0) healUnit(r, a.actor, back);
+  }
   // (hits taken this turn, for Hammer and Anvil; Reflect sends what its Barrier soaked back to the attacker)
   if (t.side !== a.actor.side) {
     t.hitsTaken = (t.hitsTaken ?? 0) + 1;
@@ -2097,6 +2108,11 @@ function execOp(r: Run, a: Act, op: Op): void {
           const alive = t.hp > 0;
           // (Hang: cards tagged "noose" deal double to it per stack, capped so the number stays sane)
           const noose = noosed ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
+          // (#696: a finisher hits a wounded enemy harder)
+          const fin =
+            op.finisher && t.side !== a.actor.side && t.hp * 100 <= t.maxHp * op.finisher.belowPct
+              ? op.finisher.mult
+              : 1;
           const scaledAmount = amountOf(r, a, op.amount, op.scale, t);
           let steps: string[] | undefined;
           if (r.projection) {
@@ -2125,6 +2141,7 @@ function execOp(r: Run, a: Act, op: Op): void {
               [lone, 'Point Blank'],
               [leth, 'first Attack'],
               [noose, 'Noose'],
+              [fin, 'Finisher'],
               [allyPct, 'Companion bonus'],
             ] as [number, string][]) {
               if (factor !== 1) {
@@ -2154,6 +2171,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 lone *
                 leth *
                 noose *
+                fin *
                 allyPct,
             ),
             to === 'target' || to === 'front',
@@ -2419,6 +2437,10 @@ function execOp(r: Run, a: Act, op: Op): void {
         }
       }
       const u = spawn(r, side, op.unit, false, a.actor);
+      if (u && op.bonusHp) {
+        u.maxHp += op.bonusHp;
+        u.hp += op.bonusHp;
+      }
       // (a hero who shares Might: the new companion arrives with it)
       const lead = heroOf(side);
       const given = lead
@@ -5010,7 +5032,9 @@ function decay(r: Run, side: Side): void {
       addStatus(r, u, 'plating', -1);
     }
     const ritual = stacks(u, 'ritual');
-    if (ritual > 0) addStatus(r, u, 'might', ritual);
+    // (a hero's Ritual gives Might for its first RITUAL_TURNS turns only, #693: stacked Rituals ran away in long Arena fights)
+    if (ritual > 0 && (u.kind !== 'hero' || Math.ceil(r.s.turn / 2) <= RITUAL_TURNS))
+      addStatus(r, u, 'might', ritual);
     if (stacks(u, 'ghostly') > 0) addStatus(r, u, 'ghostly', -1);
     if (stacks(u, 'brittle') > 0) addStatus(r, u, 'brittle', -1);
     if (stacks(u, 'debilitated') > 0) addStatus(r, u, 'debilitated', -1);
@@ -5424,7 +5448,12 @@ export function costOf(
       (c.deferred ? 1 : 0) -
       (cd.cheaperPerAttack ?? 0) * (sd.attacksPlayed ?? 0) -
       (cd.cheaperPerSkill ?? 0) * (sd.skillsPlayed ?? 0) -
-      (cd.cheaperPer ? Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)) : 0) -
+      (cd.cheaperPer
+        ? Math.min(
+            Math.floor(cd.cheaperPer.mult * sideCount(sd, cd.cheaperPer.by)),
+            cd.cheaperPer.min !== undefined ? Math.max(0, cd.cost - cd.cheaperPer.min) : Infinity,
+          )
+        : 0) -
       cut,
   );
 }
@@ -5675,7 +5704,8 @@ function finishCard(
   recallOnCost(r, sd, cost, inst.id);
 }
 
-/** (the Necrobinder copy) what a played card adds to the turn's and fight's counters: Fetch's "first time", Fleeting cards played */
+/** (#693) a hero's Ritual gives Might for this many of its turns */
+export const RITUAL_TURNS = 8;
 /** (#692) Edge adds to this many knives a turn */
 export const EDGE_LIMIT = 4;
 /** knife cards already played this turn (the one being played is counted once it finishes) */
@@ -5683,6 +5713,7 @@ function knivesPlayedTurn(r: Pick<Run, 'db'>, sd: SideState): number {
   return (sd.playedTurn ?? []).filter((id) => r.db.cards[id]?.tags?.includes(EDGE_TAG)).length;
 }
 
+/** (the Necrobinder copy) what a played card adds to the turn's and fight's counters: Fetch's "first time", Fleeting cards played */
 function countPlayed(sd: SideState, cd: CardDef, inst: CardInst): void {
   (sd.playedTurn ??= []).push(cd.id.replace(/\+$/, ''));
   if (isEthereal(cd, inst)) sd.etherealPlayed = (sd.etherealPlayed ?? 0) + 1;
@@ -6723,6 +6754,9 @@ export function previewCardDamage(
       if (leth !== 1) how.push(`first Attack +${lethality}% = ${Math.round(run * lone * leth)}`);
       const noose = t && def.tags?.includes('noose') ? 2 ** Math.min(10, stacks(t, 'noose')) : 1;
       if (noose !== 1) how.push(`Noose ×${noose} = ${Math.round(run * lone * leth * noose)}`);
+      const fin =
+        t && op.finisher && t.hp * 100 <= t.maxHp * op.finisher.belowPct ? op.finisher.mult : 1;
+      if (fin !== 1) how.push(`finisher ×${fin} = ${Math.round(run * lone * leth * noose * fin)}`);
       let victim = t;
       let styleBonus = 0;
       if (def.kind === 'attack' && after.sides[sd.id].discipline) {
@@ -6760,7 +6794,8 @@ export function previewCardDamage(
             attackAuraBonus(sd, hero, def.kind === 'attack')) *
             lone *
             leth *
-            noose,
+            noose *
+            fin,
         ),
         hero,
         victim,

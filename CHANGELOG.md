@@ -1,3 +1,10 @@
+## 0.233.0 - 2026-11-08
+
+- Hunter cost pass (DECISIONS #693; rules 100): Beastmaster's pack, Reaver's Bloodlust, Predator's Ambush; hero Ritual gives Might for 8 turns; Rares to A, Uncommons to B, upgrades about +30%.
+- Trickster cost pass (#694): Trapmaster's Traps and Barrier grow, Cardsharp's 2 Might and three-suit draw, the Seer's bonus survives its mark; Showstopper never below 1 Mana from suits.
+- Drunkard cost pass (#695): Shells sharpen the Gunslinger's gun, Brewmaster's Fermentation up to 8 with an Attack bonus, Deathwish strikes back; Last Call 1 Mana with a running Hangover.
+- Bonelord companions +3 damage and +2 max HP a turn; Death Grip doubles against an enemy at half HP or less (new damage `finisher`) (#696).
+
 ## 0.232.0 - 2026-11-08
 
 - Necromancer cost pass (DECISIONS #691; rules 99): every card priced to the new targets (Rares in A, most Uncommons in B, upgrades about +30%); Off the Leash, Fleshcraft, Ossify, Bone Rain and Killing Chill down; Grave Debt, The Last Toll, Soul Harvest, Spirit Walk, Call the Departed, Phylactery and the B Rares up; Echo of the Dead chooses its card; Helping Hand returns once a turn; Bone Rain text fixed.
