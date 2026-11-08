@@ -1,3 +1,7 @@
+# Release approved 0.227.0 / rules 95 (2026-11-07)
+
+Robert explicitly approves pushing/deploying: server-led saved-deck sync across devices (seen-runs tracking, desktop expired-session reconnect instead of a device Vault, Saved decks status line and focus refresh), Raise Colossus (grows a standing Colossus when there is no room, HP only), a new uncommon Raise Colossus card (2 Mana, Raise Colossus 14/18, Consume), and Reaping Scythe without Consume (16 +5, upgraded 20 +6). Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.226.0 / rules 94 (2026-11-07)
 
 Robert explicitly approves updating the game so engraved upgrade cards (Flare on Thunder Memory+ and the like) load again, plus the matching engraving-picker guard. Website/server and matching Windows updater. Future changes need fresh release approval.

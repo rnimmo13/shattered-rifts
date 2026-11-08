@@ -1937,7 +1937,11 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'raise': {
       // ("Raise Dead 6" since #684, Robert 2026-11-07: a Bone Thrall with 6 HP, or with every slot taken the healthiest companion
       // gains 6 max HP; the Raise Dead keyword explains it. Another unit is named.)
-      const what = o.unit === 'bone-thrall' ? 'Raise Dead' : `Raise Dead (${db.units[o.unit]?.name ?? o.unit})`;
+      // ("Raise Colossus 18" for the Grave Colossus: the last word of a companion's name, #684)
+      const what =
+        o.unit === 'bone-thrall'
+          ? 'Raise Dead'
+          : `Raise ${(db.units[o.unit]?.name ?? o.unit).split(' ').at(-1)}`;
       if (o.scale?.by === 'x') return `${what} ${o.amount}, X times.`;
       if (o.scale) return `${what} ${o.amount} for each ${METRIC_WORDS[o.scale.by].per}.`;
       const n = o.times ?? 1;

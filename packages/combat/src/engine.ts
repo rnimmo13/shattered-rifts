@@ -3229,7 +3229,8 @@ function execOp(r: Run, a: Act, op: Op): void {
     // --- the Necrobinder copy (Dorian: his minions stand in for Osty, several at once) ---------------------------------
     case 'raise': {
       const n = amountOf(r, a, op.times ?? 1, op.scale, null);
-      for (let k = 0; k < n && !r.s.winner; k++) raiseAlly(r, side, op.unit, op.amount, a.actor);
+      for (let k = 0; k < n && !r.s.winner; k++)
+        raiseAlly(r, side, op.unit, op.amount, a.actor, op.same === true);
       return;
     }
     case 'command': {
@@ -3545,7 +3546,14 @@ function execOp(r: Run, a: Act, op: Op): void {
  * Raise (the Necrobinder copy's Summon N): a companion of `unit` rises with `hp` max HP while a slot is free; with every slot
  * taken, the weakest companion (least max HP) gains that much max HP and HP instead, so a Raise is never wasted.
  */
-function raiseAlly(r: Run, sd: SideState, unit: string, hp: number, actor: Unit): void {
+function raiseAlly(
+  r: Run,
+  sd: SideState,
+  unit: string,
+  hp: number,
+  actor: Unit,
+  same = false,
+): void {
   if (hp <= 0 || sd.hero === null) return;
   const crew = sd.units.filter((u) => u.kind !== 'hero');
   if (slotsUsed(r.db, sd) + slotsOf(r.db, unit) <= allyCap(r.db, sd)) {
@@ -3563,7 +3571,10 @@ function raiseAlly(r: Run, sd: SideState, unit: string, hp: number, actor: Unit)
     if (actor.kind === 'hero') fireTriggers(r, sd, 'summon');
     return;
   }
-  const alive = crew.filter((u) => u.hp > 0);
+  const living = crew.filter((u) => u.hp > 0);
+  // (Raise Colossus: a Colossus standing takes the HP, before any other companion; HP only, no Might)
+  const kin = same ? living.filter((u) => u.def.replace(/\+$/, '') === unit) : [];
+  const alive = kin.length ? kin : living;
   if (!alive.length) return;
   // (with no slot free, the healthiest companion grows: the most max HP, the first on the board on a tie; Robert 2026-11-07, #684.
   // It was the weakest, when Thralls were only bodies: now one big companion is the late-game engine)

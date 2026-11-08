@@ -603,3 +603,43 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
     expect(burst.reduce((n, e) => n + (e.type === 'damage' ? e.lost + e.blocked : 0), 0)).toBe(10);
   });
 });
+
+describe('Reaping Scythe grows and comes round again (2026-11-07)', () => {
+  it('deals 16, every copy grows 5, and it is not consumed', () => {
+    let s = fight(['reaping-scythe', 'reaping-scythe']);
+    s = play(s, 'T0', foe(s).id);
+    expect(foe(s).hp).toBe(300 - 16);
+    expect(s.sides.a.exhausted.some((c) => c.card === 'reaping-scythe')).toBe(false);
+    s = play(s, 'T1', foe(s).id);
+    expect(foe(s).hp).toBe(300 - 16 - 21);
+  });
+});
+
+describe('Raise Colossus (2026-11-07)', () => {
+  it('reads Raise Colossus; with no room for another, the Colossus standing gains the HP, not a Thrall', () => {
+    expect(cardText(db, db.cards['grave-colossus']!)).toBe('Raise Colossus 18.');
+    expect(cardText(db, db.cards['grave-colossus+']!)).toBe('Raise Colossus 22.');
+    let s = fight(['grave-colossus', 'grave-colossus']);
+    s = play(s, 'T0');
+    // (a Thrall and a Colossus fill the three slots; a big Thrall must not take the second Colossus's HP)
+    thralls(s).find((u) => u.def === 'bone-thrall')!.maxHp = 40;
+    s = play(s, 'T1');
+    const colossi = thralls(s).filter((u) => u.def === 'grave-colossus');
+    expect(colossi.map((u) => u.maxHp)).toEqual([36]);
+    expect(thralls(s).find((u) => u.def === 'bone-thrall')!.maxHp).toBe(40);
+    // (HP only: no Might)
+    expect(colossi[0]!.statuses.might ?? 0).toBe(0);
+  });
+});
+
+describe('Raise Colossus, the uncommon (2026-11-07)', () => {
+  it('raises a 14 HP Colossus and is consumed; upgraded 18', () => {
+    expect(cardText(db, db.cards['raise-colossus']!)).toBe('Raise Colossus 14. Consume.');
+    expect(cardText(db, db.cards['raise-colossus+']!)).toBe('Raise Colossus 18. Consume.');
+    expect(db.cards['raise-colossus']).toMatchObject({ rarity: 'uncommon', cost: 2, exhaust: true });
+    let s = fight(['raise-colossus']);
+    s = play(s, 'T0');
+    expect(thralls(s).find((u) => u.def === 'grave-colossus')?.maxHp).toBe(14);
+    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('raise-colossus');
+  });
+});

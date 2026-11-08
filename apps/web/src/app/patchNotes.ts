@@ -46,6 +46,40 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.227.0',
+    date: '2026-11-07',
+    title: 'Decks in step, and a Colossus that grows',
+    summary:
+      'Saved decks follow your account across devices, the Grave Colossus card grows a Colossus already standing, and Reaping Scythe keeps growing.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Saved decks on every device',
+        text: 'Decks saved or removed on one device now show on the others signed in to the same account, including the desktop app. A device that cannot reach your online decks says so on the Saved decks page, and the page refreshes when you come back to it. A desktop sign-in that has ended asks you to reconnect instead of showing another set of decks.',
+      },
+      {
+        kind: 'changed',
+        title: 'Raise Colossus',
+        hero: 'necromancer',
+        text: 'Grave Colossus now reads Raise Colossus 18 (22 upgraded): with no room for another, your healthiest Grave Colossus gains that much max HP instead. HP only, no extra Might.',
+      },
+      {
+        kind: 'new',
+        title: 'Raise Colossus (card)',
+        hero: 'necromancer',
+        text: 'A new uncommon: Raise Colossus 14 for 2 Mana, consumed (18 upgraded). A smaller Colossus earlier in a run, or more HP for the one you have.',
+      },
+      {
+        kind: 'balance',
+        title: 'Reaping Scythe',
+        hero: 'necromancer',
+        text: 'No longer consumed, so it keeps growing through the fight: 16 damage, every copy +5 each play (upgraded 20, +6). Was 13, +4, Consume.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
+  },
+  {
     version: '0.226.0',
     date: '2026-11-07',
     title: 'Flared cards load again',

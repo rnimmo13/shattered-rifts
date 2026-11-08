@@ -45,9 +45,9 @@ import {
   per,
   pool,
   raise,
+  raiseColossus,
   scaled,
   spreadDebuffs,
-  summon,
   status,
   statusTheirs,
   when,
@@ -239,8 +239,16 @@ export const NECROMANCER: CardDef[] = [
   // (was Reanimate, Raise 20 and Consume. Since #684 it summons the Grave Colossus: 18 HP (22 upgraded), Taunt, 2 slots, strikes for
   // 2 + 1 per 4 max HP and takes half of a Command. ~40 points (21.6 HP + 3 body + 6 x ~2.5 acts) less ~5 for its second slot: a
   // 3-Mana rare's 35)
-  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [summon('grave-colossus')], {
-    up: { effects: [summon('grave-colossus+')] },
+  // (Raise Colossus, Robert 2026-11-07: with no room for another, the Colossus standing gains the HP instead: HP only, no Might, unlike
+  // the Engineer's Salvage. Grown, it is ~22 points (18 sticky HP and +4.5 a hit), under the summon's ~35, never a dead draw)
+  g('rare', 'grave-colossus', 'Grave Colossus', 'skill', 3, 'none', [raiseColossus(18)], {
+    up: { effects: [raiseColossus(22)] },
+  }),
+  // (a smaller Colossus that is consumed, Robert 2026-11-07: 14 HP (16.8) + 3 body + its ~5 hit over two or three turns, less ~5 for
+  // its second slot, ~26 against a 2-Mana uncommon's ~21 with Consume's +25%, ~27; upgraded 18)
+  g('uncommon', 'raise-colossus', 'Raise Colossus', 'skill', 2, 'none', [raiseColossus(14)], {
+    exhaust: true,
+    up: { effects: [raiseColossus(18)] },
   }),
   // (Sacrifice: the chosen Thrall dies, and you gain twice its max HP as Barrier)
   g(
@@ -898,6 +906,8 @@ export const NECROMANCER: CardDef[] = [
     },
   ),
   // (The Scythe: hers grows for the rest of the run; ours for the rest of the fight, as the campaign has no piece to keep it)
+  // (no Consume, Robert 2026-11-07: a card that grows has to come round again. A growing card is priced at ~90% of its budget on the
+  // first play plus 1.2 for each point it grows (docs/14 §3): 16 + 5 x 1.2 = 22 against a 2-Mana rare's ~24; upgraded 20 + 6)
   g(
     'rare',
     'reaping-scythe',
@@ -905,8 +915,8 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(13), per('bonus')), forge('reaping-scythe', 4)],
-    { exhaust: true, up: { effects: [scaled(dmg(13), per('bonus')), forge('reaping-scythe', 5)] } },
+    [scaled(dmg(16), per('bonus')), forge('reaping-scythe', 5)],
+    { up: { effects: [scaled(dmg(20), per('bonus')), forge('reaping-scythe', 6)] } },
   ),
   // (Transfigure: a random card in your hand)
   g('rare', 'echo-of-the-dead', 'Echo of the Dead', 'skill', 1, 'none', [mark('replay', 1)], {

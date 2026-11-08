@@ -311,6 +311,13 @@ export const deathBurst = (share: number, roundUp = false): Op =>
       ...(roundUp ? { round: 'ceil' as const } : {}),
     }),
   ]);
+/** Raise Colossus N (#684): a Grave Colossus rises with N HP, or with no room one standing gains N max HP (HP only, no Might) */
+export const raiseColossus = (amount: number): Op => ({
+  op: 'raise',
+  unit: 'grave-colossus',
+  amount,
+  same: true,
+});
 /** each of your companions does these ("Osty deals 6") */
 export const command = (...ops: Op[]): Op => ({ op: 'command', ops });
 export const doomNow = (to: Sel = 'allFoes'): Op => ({ op: 'doomNow', to });

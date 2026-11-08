@@ -762,6 +762,11 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
     name: 'Raise Dead',
     text: 'A new Bone Thrall rises with that much HP. With no companion slot free, your healthiest companion gains that much max HP instead. Your companions take hits meant for you and strike at the end of your turn for 2, plus 1 for every 4 max HP; your Commands make them strike too.',
   },
+  // (Raise Colossus, #684)
+  raiseColossus: {
+    name: 'Raise Colossus',
+    text: 'A Grave Colossus rises with that much HP: it takes 2 companion slots, has Taunt, strikes for 2 plus 1 for every 4 max HP, and deals half of a Command’s damage. With no room for one, your healthiest Grave Colossus gains that much max HP instead (or, with none, your healthiest companion).',
+  },
   replay: { name: 'Replay', text: 'The card is played one more time each time you play it.' },
 };
 

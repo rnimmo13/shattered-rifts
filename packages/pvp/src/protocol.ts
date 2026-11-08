@@ -100,7 +100,8 @@ export interface Entry {
 // 92: every Drunkard card that fires is a gun (shells included); Gun Oil 2 Barrier, Bandolier 3 (#681).
 // 93: the Totemist adds 2 totem positions and starts with a second Hawk and Bear (#682).
 // 94: Spiritwalker Attunement (#683); the Necromancer reworked: Raise Dead, companions strike, death bursts, Grave Colossus, Bonelord (#684).
-export const RULES_VERSION = 94;
+// 95: Raise Colossus (a Colossus standing takes the HP when there is no room); Reaping Scythe 16 +5, no Consume.
+export const RULES_VERSION = 95;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

@@ -31,6 +31,21 @@
 .decks__links a {
   color: var(--c-gold-light);
 }
+/* how the list stands against the online copy (a quiet line; a failed sync is warmer, so it is noticed) */
+.decks__sync {
+  max-width: 62ch;
+  margin: 0.4rem auto 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.decks__sync--failed {
+  color: #ffc98a;
+  opacity: 1;
+}
+.decks__sync .btn {
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
 .deckrep {
   display: grid;
   gap: 0.7rem;

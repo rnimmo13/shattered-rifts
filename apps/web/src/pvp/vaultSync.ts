@@ -59,9 +59,15 @@ export function ensureVaultCode(): string {
   return made;
 }
 
+/**
+ * Why a call failed. 'play': another device holds play, so this one may only read (#579); 'signin': the account's sign-in has ended
+ * (on the desktop app, its Google session expired and needs reconnecting).
+ */
+export type RemoteError = 'full' | 'offline' | 'bad-deck' | 'bad-code' | 'play' | 'signin';
+
 export type Remote =
   | { ok: true; decks: VaultDeck[] }
-  | { ok: false; error: 'full' | 'offline' | 'bad-deck' | 'bad-code'; decks: VaultDeck[] };
+  | { ok: false; error: RemoteError; decks: VaultDeck[] };
 
 /** The server's web address: the same host as the game's socket. */
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
@@ -77,14 +83,24 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
     const decks = cleanVault(data.decks);
     if (data.ok) return { ok: true, decks };
     const e = data.error;
-    // the session ended (it expired, or was cleared elsewhere): treat this browser as a guest again
     if (e === 'signin') {
-      signedIn = false;
-      me = null;
+      // the desktop app's Google session ended: it stays the account's (never a device-only Vault in its place, which hid the
+      // account's decks without a word, 2026-11-07) and asks to be reconnected
+      if (desktopBridge() && desktopGoogle) accountExpired = true;
+      else {
+        // the browser's session ended (it expired, or was cleared elsewhere): treat this browser as a guest again
+        signedIn = false;
+        me = null;
+      }
     }
     return {
       ok: false,
-      error: e === 'full' || e === 'bad-deck' || e === 'bad-code' ? e : 'offline',
+      error:
+        e === 'full' || e === 'bad-deck' || e === 'bad-code' || e === 'signin'
+          ? e
+          : e === 'play-required'
+            ? 'play'
+            : 'offline',
       decks,
     };
   } catch {
@@ -117,6 +133,13 @@ export const remoteVault = {
 
 let signedIn = false;
 let me: Promise<Me> | null = null;
+/** (the desktop app) a Google account is saved on this device */
+let desktopGoogle = false;
+/** (the desktop app) that account's session has ended: it must be reconnected before its decks can be read */
+let accountExpired = false;
+
+/** The desktop app's Google session has ended and needs reconnecting (Settings > Account). False in a browser. */
+export const accountNeedsReconnect = (): boolean => accountExpired;
 
 export interface Me {
   signedIn: boolean;
@@ -131,7 +154,11 @@ export function whoAmI(): Promise<Me> {
     return desktop
       .status()
       .then((status) => {
-        signedIn = status.online || status.provider === 'google';
+        // (a saved Google account whose session ended is still the account: its Vault is the account's, and the game asks for a
+        // reconnect instead of quietly using a device-only Vault code)
+        desktopGoogle = status.provider === 'google';
+        accountExpired = desktopGoogle && !status.online;
+        signedIn = status.online || desktopGoogle;
         return { signedIn, available: status.available === true };
       })
       .catch(() => ({ signedIn: false, available: false }));
@@ -171,8 +198,51 @@ export const signInUrl = (to: 'home' | 'arena' = 'arena'): string =>
 export const vaultKey = (): Key => (signedIn ? null : ensureVaultCode());
 
 export type Synced =
-  | { ok: true; decks: VaultDeck[]; complete: boolean }
-  | { ok: false; error: 'offline' | 'bad-code' | 'full' | 'bad-deck'; decks: VaultDeck[] };
+  | {
+      ok: true;
+      decks: VaultDeck[];
+      /** every deck this device holds is online too */
+      complete: boolean;
+      /** why some of this device's decks are not online yet: another device holds play, the online Vault is full, or a save failed */
+      waiting?: 'play' | 'full' | 'offline';
+    }
+  | { ok: false; error: RemoteError; decks: VaultDeck[] };
+
+/**
+ * The runs whose decks this device has seen online, for each Vault (the account's, or a Vault code's). A deck this device holds that
+ * the server no longer has was removed elsewhere if it was seen there before (it goes here too), and is new on this device if not (it
+ * goes up). Before this, every deck the server lacked was sent back up, so a deck removed or replaced on another device came back,
+ * and while another device held play the refused upload left this device's old list on show (2026-11-07). With nothing seen yet (the
+ * first sync after the update) every deck goes up once, as before, so none is lost.
+ */
+const SEEN_KEY = 'sr.vaultSeen';
+
+/** For one Vault: each run seen online, with the newest save of it seen there (its `bankedAt`). */
+function seenFor(key: Key): Map<string, number> {
+  try {
+    const all: unknown = JSON.parse(localStorage.getItem(SEEN_KEY) ?? '{}');
+    const one = all && typeof all === 'object' ? (all as Record<string, unknown>)[key ?? ''] : null;
+    const out = new Map<string, number>();
+    if (one && typeof one === 'object' && !Array.isArray(one))
+      for (const [run, at] of Object.entries(one as Record<string, unknown>))
+        if (typeof at === 'number') out.set(run, at);
+    return out;
+  } catch {
+    return new Map();
+  }
+}
+
+function rememberSeen(key: Key, seen: Map<string, number>): void {
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem(SEEN_KEY) ?? '{}');
+    const all = raw && typeof raw === 'object' ? (raw as Record<string, unknown>) : {};
+    // (the newest 200 runs are plenty: a Vault holds far fewer)
+    all[key ?? ''] = Object.fromEntries([...seen].sort((a, b) => a[1] - b[1]).slice(-200));
+    localStorage.setItem(SEEN_KEY, JSON.stringify(all));
+  } catch {
+    /* storage unavailable: the next sync uploads what it cannot tell apart, as before */
+  }
+}
 
 const PENDING_KEY = 'sr.pendingDrops';
 
@@ -215,8 +285,10 @@ export async function forgetRun(code: Key, run: string): Promise<number | null> 
 }
 
 /**
- * Bring the browser's decks and the server's together: whatever the browser has that the server lacks goes up (as far as the
- * slots allow), and the result is what the server now holds. If the server can't be reached the browser's list stands.
+ * Bring this device's decks and the server's together. The server's list is the one to show: a deck saved on this device and not yet
+ * online (new here, or a newer save of a run) goes up first, as far as the slots and the play claim allow; a deck the server no longer
+ * has that this device saw there before was removed on another device and leaves this list too. Decks that could not go up yet stay
+ * in the list beside the server's, and `waiting` says why. If the server can't be reached at all, this device's list stands.
  */
 export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Promise<Synced> {
   // runs that collapsed while the server could not be reached: finish dropping their decks before anything is merged back
@@ -225,21 +297,42 @@ export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Prom
   const local = localAll.filter((d) => !gone.has(runOf(d.id)));
   let r = await remoteVault.list(code);
   if (!r.ok) return { ok: false, error: r.error, decks: [...local] };
-  for (const d of local) {
-    // already there, unless this is a newer save of the run than the server's
-    if (r.decks.some((x) => runOf(x.id) === runOf(d.id) && x.bankedAt >= d.bankedAt)) continue;
+  const seen = seenFor(code);
+  const newer = (d: VaultDeck, list: readonly VaultDeck[]): boolean =>
+    !list.some((x) => runOf(x.id) === runOf(d.id) && x.bankedAt >= d.bankedAt);
+  // this device's decks the server should have: new here, or a newer save than any seen online. A save no newer than one seen online
+  // that the server no longer holds was removed on another device. (By date, not by run: a run whose deck was removed elsewhere and
+  // then played on here saves a newer deck, and that one goes up; review of 2026-11-07)
+  const toSend = local.filter((d) => {
+    if (!newer(d, r.decks)) return false;
+    const seenAt = seen.get(runOf(d.id));
+    const onServer = r.decks.some((x) => runOf(x.id) === runOf(d.id));
+    return onServer || seenAt === undefined || d.bankedAt > seenAt;
+  });
+  let waiting: 'play' | 'full' | 'offline' | undefined;
+  for (const d of toSend) {
     const next = await remoteVault.bank(code, d);
     if (next.ok) r = next;
-    else if (next.error === 'full') {
-      r = { ok: true, decks: next.decks };
+    // (a deck the server will not take is skipped; the rest still go up)
+    else if (next.error === 'bad-deck' || next.error === 'bad-code') continue;
+    else {
+      waiting = next.error === 'full' ? 'full' : next.error === 'play' ? 'play' : 'offline';
+      if (next.error === 'full') r = { ok: true, decks: next.decks };
       break;
-    } else if (next.error === 'offline') return { ok: false, error: 'offline', decks: [...local] };
+    }
   }
   const server = r.decks;
-  // everything fitted: the two lists are now one. Otherwise the server is full of other decks, so the browser's list stands
-  // (nothing is lost on either side) and the caller is told it is not all online.
-  const complete = local.every((d) =>
-    server.some((x) => runOf(x.id) === runOf(d.id) && x.bankedAt >= d.bankedAt),
-  );
-  return { ok: true, complete, decks: complete ? mergeVaults(local, server) : [...local] };
+  for (const x of server) {
+    const run = runOf(x.id);
+    seen.set(run, Math.max(seen.get(run) ?? 0, x.bankedAt));
+  }
+  rememberSeen(code, seen);
+  // what did not get online yet stays in this device's list, in front, beside everything the server holds
+  const left = toSend.filter((d) => newer(d, server));
+  return {
+    ok: true,
+    complete: left.length === 0,
+    decks: mergeVaults(left, server),
+    ...(left.length && waiting ? { waiting } : {}),
+  };
 }

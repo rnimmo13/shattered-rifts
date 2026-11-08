@@ -1,3 +1,9 @@
+## 0.227.0 - 2026-11-07
+
+- Fixed: saved decks did not follow the account across devices (a desktop app kept its old list). The online list now leads: a device sends up only decks it saved itself and drops decks removed elsewhere; the Saved decks page refreshes on focus and shows how it stands; an ended desktop Google session asks to reconnect instead of switching to a device-only Vault.
+- Grave Colossus reads Raise Colossus 18/22: with no room, the healthiest Grave Colossus gains the HP (HP only). New uncommon Raise Colossus: 2 Mana, Raise Colossus 14 (18 upgraded), Consume.
+- Reaping Scythe: no Consume; 16 damage, +5 each play (upgraded 20, +6). Rules 95.
+
 ## 0.226.0 - 2026-11-07
 
 - Fixed: a run holding a card engraved (Flare, Hold, Opening hand) on an upgrade that the base card could not take, such as Flare on Thunder Memory+ (its upgrade drops Consume), could not be loaded. Such cards read back now, and the engraving event and the Gambler's chisel only offer cards whose engraved version exists.

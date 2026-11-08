@@ -908,7 +908,11 @@ export type Op =
    * Raise (Summon N): a companion of `unit` rises with `amount` max HP, `times` times (its scale adds to the times); with every
    * companion slot taken, your weakest companion gains that much max HP instead
    */
-  | { op: 'raise'; unit: string; amount: number; times?: number; scale?: Scale }
+  /**
+   * a companion of `unit` rises with `amount` HP; with no slot free the healthiest companion gains `amount` max HP instead, or with
+   * `same`, the healthiest of that unit when one stands (Raise Colossus feeds a Colossus, #684)
+   */
+  | { op: 'raise'; unit: string; amount: number; times?: number; scale?: Scale; same?: boolean }
   /** each of your living companions does these, as the actor ("Osty deals 6"); nothing happens with none. It counts as a strike */
   /** each living companion strikes with `ops` (only companions of `unit`, when it is given); a companion's `commandPct` scales its damage */
   | { op: 'command'; ops: Op[]; unit?: string }
