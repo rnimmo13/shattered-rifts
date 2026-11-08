@@ -362,7 +362,15 @@ export function chooseable(deck: readonly string[], act: DeckChoice, mark?: Card
       return all.filter((id) => {
         const c = COMBAT_DB.cards[id];
         // one tag per card: a tagged card is not tagged again; and a sanctified card is final, it takes no tag (DECISIONS #327)
-        return !!c && !!mark && markOf(id) === null && rollOf(id) === 0 && canMark(c, mark);
+        // (and never a tag the game could not read back: Flare on Thunder Memory+ left a run that would not load, 2026-11-07)
+        return (
+          !!c &&
+          !!mark &&
+          markOf(id) === null &&
+          rollOf(id) === 0 &&
+          canMark(c, mark) &&
+          !!COMBAT_DB.cards[markedId(id, mark)]
+        );
       });
   }
 }

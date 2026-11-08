@@ -1,3 +1,7 @@
+# Release approved 0.226.0 / rules 94 (2026-11-07)
+
+Robert explicitly approves updating the game so engraved upgrade cards (Flare on Thunder Memory+ and the like) load again, plus the matching engraving-picker guard. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.225.0 / rules 94 (2026-11-07; decisions 683-684)
 
 Robert explicitly approves pushing/deploying: the Spiritwalker's Attunement (first command draws and gives Spirit; +5% card damage per Spirit, max 50%), and the Necromancer rework (Raise Dead to the healthiest companion, companions strike on their own, death bursts at the killer, HP-loss growth, the Grave Colossus companion with half Commands, Blood Offering, Bone Feast, Grave Tithe, thralls-only Bone Rain, Bonelord 4 slots and full bursts). Website/server and matching Windows updater. Future changes need fresh release approval.

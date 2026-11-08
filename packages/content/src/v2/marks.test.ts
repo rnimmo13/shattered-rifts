@@ -26,6 +26,19 @@ describe('engraved card tags', () => {
     expect(db.cards['hold^strike']!.name).toBe(`${base.name} ◆`);
   });
 
+  it('Flare on an upgrade that dropped its Consume reads back (Thunder Memory+: a run would not load, 2026-11-07)', () => {
+    expect(db.cards['thunder-memory']!.exhaust).toBe(true);
+    expect(db.cards['thunder-memory+']!.exhaust).toBeFalsy();
+    const up = db.cards['thunder-memory+']!;
+    expect(db.cards['flare^thunder-memory+']).toMatchObject({ exhaust: true, cost: up.cost - 1 });
+    // (its base already has Consume: Flare there would change nothing, so it stays unknown)
+    expect(db.cards['flare^thunder-memory']).toBeUndefined();
+    // every card any version of which can take a tag reads back with it
+    for (const c of Object.values(db.cards))
+      for (const mark of ['hold', 'opening', 'flare'] as const)
+        if (canMark(c, mark)) expect(db.cards[markedId(c.id, mark)], `${mark}^${c.id}`).toBeDefined();
+  });
+
   it('a tagged card upgrades into the tagged upgrade, and can be sanctified too', () => {
     expect(db.cards['hold^strike']!.upgrade).toBe('hold^strike+');
     expect(db.cards['hold^strike+']).toMatchObject({

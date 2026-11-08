@@ -1,3 +1,7 @@
+## 0.226.0 - 2026-11-07
+
+- Fixed: a run holding a card engraved (Flare, Hold, Opening hand) on an upgrade that the base card could not take, such as Flare on Thunder Memory+ (its upgrade drops Consume), could not be loaded. Such cards read back now, and the engraving event and the Gambler's chisel only offer cards whose engraved version exists.
+
 ## 0.225.0 - 2026-11-07
 
 - Necromancer rework (DECISIONS #684; rules 94): Raise Dead 3 a turn, extra HP to the healthiest companion; companions strike on their own (2 + 1 per 4 max HP); an enemy kill makes a companion burst for half its max HP at the killer (replaces the death's 2 Fate); the first HP lost on your turn gives every companion 2 max HP.

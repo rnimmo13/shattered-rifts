@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.226.0',
+    date: '2026-11-07',
+    title: 'Flared cards load again',
+    summary: 'A run holding an engraved upgrade that had lost its Consume can be continued again.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Runs that would not continue',
+        text: 'A card engraved with Flare after an upgrade removed its Consume (Thunder Memory, Red Mirage, Echo of the Dead, Grave Robbery) could stop the run from loading. Those runs load again, and engraving events only offer cards they can keep.',
+      },
+    ],
+  },
+  {
     version: '0.225.0',
     date: '2026-11-07',
     title: 'The dead rise and fight',

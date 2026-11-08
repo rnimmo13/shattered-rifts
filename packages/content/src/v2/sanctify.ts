@@ -129,9 +129,16 @@ export function withRolls(cards: Record<string, CardDef>): Record<string, CardDe
     const real = Object.hasOwn(cards, realId) ? cards[realId] : undefined;
     if (!real) return undefined;
     // the tag first ("hold^strike"), then the roll on top of it
-    // a tag is only real where an event could have cut it: judged on the card before its upgrade (an upgrade may already hold)
+    // a tag is only real where it could have been cut: on the card before its upgrade (an upgrade may already hold), or on the
+    // upgraded card itself (an event judges the card as it is: Thunder Memory+ drops the Consume its base has, so it can take
+    // Flare, and a run holding "flare^thunder-memory+" could not be read, 2026-11-07)
     const unupgraded = realId.endsWith('+') ? cards[realId.slice(0, -1)] : real;
-    if (mark && (!unupgraded || !canMark(unupgraded, mark))) return undefined;
+    if (
+      mark &&
+      !(unupgraded && canMark(unupgraded, mark)) &&
+      !(realId.endsWith('+') && canMark(real, mark))
+    )
+      return undefined;
     const base = mark ? markedVariant(real, mark) : real;
     if (!dir) {
       made.set(id, base);

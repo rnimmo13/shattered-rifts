@@ -7,6 +7,7 @@ import {
   COMBAT_DB,
   canMark,
   canRoll,
+  markedId,
   markOf,
   rollOf,
   stripRoll,
@@ -87,12 +88,14 @@ export function engravable(deck: readonly string[], mark: CardMark): string[] {
     ...new Set(
       deck.filter((id) => {
         const c = COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')];
+        const now = COMBAT_DB.cards[id];
         return (
           markOf(id) === null &&
           rollOf(id) === 0 &&
-          !!COMBAT_DB.cards[id] &&
-          !!c &&
-          canMark(c, mark)
+          !!now &&
+          ((!!c && canMark(c, mark)) || canMark(now, mark)) &&
+          // (never a tag the game could not read back: that left a run that would not load, 2026-11-07)
+          !!COMBAT_DB.cards[markedId(id, mark)]
         );
       }),
     ),
