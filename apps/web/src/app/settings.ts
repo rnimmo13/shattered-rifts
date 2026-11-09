@@ -8,7 +8,7 @@ const OPEN = 'sr:settings-open';
 const CHANGED = 'sr:settings-changed';
 
 /** What changed: sound needs no telling (the sound module reads its own setting on every sound), so it is not announced. */
-export type SettingKind = 'graphics' | 'tips';
+export type SettingKind = 'graphics' | 'tips' | 'models';
 
 /** Opens the Settings panel (from a button on any screen). */
 export function openSettings(): void {

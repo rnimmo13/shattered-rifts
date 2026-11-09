@@ -14,7 +14,10 @@ import {
 import { KNIGHT_CLIPS } from '../art/hero2d/knight_anims';
 import { ROGUE_CLIPS } from '../art/hero2d/rogue_anims';
 
-export { HERO_RIGS } from '../art/heroRigs';
+import { VIDEO_PREFIX } from '../art/heroRigs';
+import { VideoHeroSprite, loadHeroVideo, type VideoAssets } from './heroVideo';
+
+export { HERO_RIGS, heroRigFor } from '../art/heroRigs';
 
 export type Facing = 'right' | 'left';
 
@@ -90,14 +93,22 @@ const PROFILES: Record<string, RigProfile> = {
 };
 
 interface RigAssets {
+  kind: 'rig';
   rig: unknown;
   atlas: HTMLImageElement;
 }
 
+/** A loaded model: a skeletal rig's skeleton and atlas, or a video model's clips (DECISIONS #715). */
+export type LoadedRig = RigAssets | VideoAssets;
+
 const loads = new Map<string, Promise<RigAssets | null>>();
 
-/** Fetch a rig's skeleton and atlas once. Null when either is missing or WebGL2 is not available: the hero keeps its picture. */
-export function loadRig(id: string): Promise<RigAssets | null> {
+/**
+ * Fetch a rig's skeleton and atlas once, or a video model's idle clip ("video:<hero>", heroRigFor). Null when it is missing or WebGL2
+ * is not available: the hero keeps its picture.
+ */
+export function loadRig(id: string): Promise<LoadedRig | null> {
+  if (id.startsWith(VIDEO_PREFIX)) return loadHeroVideo(id.slice(VIDEO_PREFIX.length));
   let p = loads.get(id);
   if (!p) {
     const dir = `${import.meta.env.BASE_URL}art/heroes2d/${id}/`;
@@ -113,7 +124,7 @@ export function loadRig(id: string): Promise<RigAssets | null> {
             img.src = `${dir}atlas.png`;
           }),
         ]);
-        return rig && atlas ? { rig, atlas } : null;
+        return rig && atlas ? { kind: 'rig' as const, rig, atlas } : null;
       } catch {
         return null;
       }
@@ -141,7 +152,39 @@ function webgl2(): boolean {
 /** the largest side of the canvas, in pixels */
 const MAX_SIDE = 2048;
 
-export class HeroSprite {
+/** What a hero model on a canvas does, a skeletal rig or a video (Fighters and HeroModel use only this). */
+export interface HeroSprite {
+  readonly canvas: HTMLCanvasElement;
+  readonly texture: Texture;
+  readonly anchor: { x: number; y: number };
+  readonly stageScale: number;
+  widthFor(height: number): number;
+  resize(height: number, pixelScale: number): boolean;
+  readonly remaining: number;
+  /** `variant`: the weapon a card swings ("shotgun"), for a model with a clip of its own for it (a video model, DECISIONS #715) */
+  play(
+    clip: KnightClip,
+    opts?: { onEvent?: (e: { name: string }) => void; onEnd?: () => void; variant?: string },
+  ): void;
+  /** seconds from a clip's start to its moment, when the model knows (a video model measures its strikes) */
+  momentIn?(clip: KnightClip, variant?: string): number;
+  readonly clip: KnightClip;
+  readonly finished: boolean;
+  update(dt: number): void;
+  render(): void;
+  onLost(lost: () => void): void;
+  dispose(): void;
+}
+
+/** A model for this id and what was loaded for it: a video model or a skeletal rig. Null when it cannot be made (the picture stays). */
+export const HeroSprite = {
+  create(id: string, assets: LoadedRig, facing: Facing): HeroSprite | null {
+    if (assets.kind === 'video') return VideoHeroSprite.create(assets, facing);
+    return RigSprite.create(id, assets, facing);
+  },
+};
+
+class RigSprite implements HeroSprite {
   readonly canvas: HTMLCanvasElement;
   readonly texture: Texture;
   private readonly gl: WebGL2RenderingContext;
@@ -181,7 +224,7 @@ export class HeroSprite {
   }
 
   /** A rigged hero, or null when the rig is unknown or WebGL2 cannot be had (the caller keeps the picture). */
-  static create(id: string, assets: RigAssets, facing: Facing): HeroSprite | null {
+  static create(id: string, assets: RigAssets, facing: Facing): RigSprite | null {
     const profile = PROFILES[id];
     if (!profile) return null;
     const canvas = document.createElement('canvas');
@@ -195,7 +238,7 @@ export class HeroSprite {
     });
     if (!gl) return null;
     try {
-      return new HeroSprite(canvas, gl, assets, profile, facing);
+      return new RigSprite(canvas, gl, assets, profile, facing);
     } catch {
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       return null;

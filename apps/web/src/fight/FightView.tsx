@@ -119,7 +119,7 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { HERO_RIGS } from './heroSprite';
+import { heroRigFor } from '../art/heroRigs';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
 import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
@@ -363,11 +363,12 @@ function specsFrom(
         attack: attackFor(e.u.def, e.hero),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
-        // (the default look of a rigged hero animates; a skin you wear is a still picture, DECISIONS #676)
-        ...(e.hero && HERO_RIGS[e.u.def] && !(side === me && skinOf?.(e.u.def))
+        // (the default look of a rigged hero animates, or its video model with the beta setting on; a skin you wear is a still
+        // picture, DECISIONS #676, #715)
+        ...(e.hero && heroRigFor(e.u.def) && !(side === me && skinOf?.(e.u.def))
           ? {
               rig: {
-                id: HERO_RIGS[e.u.def]!,
+                id: heroRigFor(e.u.def)!,
                 facing: flip ? ('left' as const) : ('right' as const),
               },
             }

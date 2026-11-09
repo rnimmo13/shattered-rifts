@@ -155,6 +155,43 @@ void app
       assert.equal(await value(win, "!!document.querySelector('.update-prompt')"), false);
       await delay(1500);
       writeFileSync(resolve(profile, 'fight.png'), (await win.webContents.capturePage()).toPNG());
+      // (DECISIONS #715) The beta video models: the same fight with the setting on, its videos served by the local protocol.
+      await value(win, "localStorage.setItem('sr.animatedModels', 'on')");
+      await value(win, "location.hash = '#/'");
+      await waitFor(win, "!!document.querySelector('.home__play')");
+      await value(win, "location.hash = '#/fight'");
+      await waitFor(win, "document.body.textContent.includes('Begin the fight')");
+      // (the Training Dummy, one enemy: a card plays at once from its number key)
+      await value(
+        win,
+        "(() => { const s = document.querySelector('.setup__select select'); const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set; set.call(s, 'training-dummy'); s.dispatchEvent(new Event('change', { bubbles: true })); return s.value; })()",
+      );
+      await value(win, "document.querySelector('.setup__go').click()");
+      await waitFor(win, "!!document.querySelector('canvas') && !!document.querySelector('.fhand__slot')");
+      await delay(5000);
+      writeFileSync(
+        resolve(profile, 'fight-video.png'),
+        (await win.webContents.capturePage()).toPNG(),
+      );
+      // a Strike from the hand, and the strike clip caught on its way in and at its blow
+      const slot = (await value(
+        win,
+        "[...document.querySelectorAll('.fhand__slot')].findIndex((s) => /Deal \\d+ damage/.test(s.textContent))",
+      )) as number;
+      if (slot >= 0 && slot < 9) {
+        const key = String(slot + 1);
+        win.webContents.sendInputEvent({ type: 'keyDown', keyCode: key });
+        win.webContents.sendInputEvent({ type: 'char', keyCode: key });
+        win.webContents.sendInputEvent({ type: 'keyUp', keyCode: key });
+        for (const [i, wait] of [250, 300, 300, 400].entries()) {
+          await delay(wait);
+          writeFileSync(
+            resolve(profile, `fight-video-strike-${i}.png`),
+            (await win.webContents.capturePage()).toPNG(),
+          );
+        }
+      }
+      await value(win, "localStorage.removeItem('sr.animatedModels')");
       // Isolated fixture: render the new Ascendancy progress chip through the real campaign UI.
       await value(win, "location.hash = '#/'");
       await waitFor(win, "!!document.querySelector('.home__play')");

@@ -13,6 +13,7 @@ import {
   type GraphicsQuality,
 } from '../duel/effects';
 import { loadTipsOn, saveSeen, saveTipsOn } from '../fight/tips';
+import { loadAnimatedModels, saveAnimatedModels } from '../art/heroRigs';
 import { onSettingsOpen, settingsChanged } from '../app/settings';
 import { isRecording, lastReport, startRecording } from '../app/perfReport';
 import './settings.css';
@@ -71,6 +72,7 @@ export function SettingsPanel() {
   const [graphics, setGraphics] = useState<GraphicsQuality>(loadGraphicsQuality);
   const [reduced, setReduced] = useState(() => loadEffectsMode() === 'reduced');
   const [tips, setTips] = useState(loadTipsOn);
+  const [models, setModels] = useState(loadAnimatedModels);
   const [tipsReset, setTipsReset] = useState(false);
   const [full, setFull] = useState(fullscreenOn);
   const [report, setReport] = useState<string | null>(lastReport);
@@ -90,6 +92,7 @@ export function SettingsPanel() {
         setGraphics(loadGraphicsQuality());
         setReduced(loadEffectsMode() === 'reduced');
         setTips(loadTipsOn());
+        setModels(loadAnimatedModels());
         setTipsReset(false);
         setFull(fullscreenOn());
         setReport(lastReport());
@@ -366,6 +369,25 @@ export function SettingsPanel() {
                   saveEffectsMode(v);
                   setReduced(v === 'reduced');
                   settingsChanged('graphics');
+                }}
+              />
+            </Row>
+            {/* (DECISIONS #715: video models, off unless a player opts in while they are built) */}
+            <Row
+              label="2D animated models (beta)"
+              hint="Under construction: heroes move in animated 2D models instead of their still paintings. Some moves still use stand-in motion, and a fight already under way keeps its look until the next one."
+            >
+              <Choice
+                label="2D animated models (beta)"
+                value={models ? 'on' : 'off'}
+                options={[
+                  { value: 'off', label: 'Off' },
+                  { value: 'on', label: 'On' },
+                ]}
+                onChange={(v) => {
+                  saveAnimatedModels(v === 'on');
+                  setModels(v === 'on');
+                  settingsChanged('models');
                 }}
               />
             </Row>

@@ -1,3 +1,7 @@
+## 0.237.0 - 2026-11-09
+
+- 2D animated hero models from video (DECISIONS #715, #716), a beta setting in Settings > Graphics, off by default: idle, attack (Drunkard hammer or shotgun by card) and death clips for all ten heroes, keyed out in a WebGL2 shader, measured impact moments, game-speed playback; clips with no video use stand-in motion. Desktop serves MP4 in byte ranges. No rules change.
+
 ## 0.236.0 - 2026-11-09
 
 - X cards (DECISIONS #709, #711; rules 102): every X card spends at most 6 Mana; X-hit attacks get half the Might and Primed per hit. Bloodstorm deals 7 X times and draws 2 (#702).

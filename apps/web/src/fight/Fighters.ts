@@ -525,6 +525,8 @@ export class Fighters {
     clip: 'strike' | 'aura' | 'hit' | 'death',
     moment?: { name: string; at: () => void; within: number },
     onEnd?: () => void,
+    /** the weapon the card swings (DECISIONS #715) */
+    variant?: string,
   ): void {
     let done = false;
     const fire = (): void => {
@@ -537,10 +539,16 @@ export class Fighters {
         if (moment && e.name === moment.name) fire();
       },
       ...(onEnd ? { onEnd } : {}),
+      ...(variant ? { variant } : {}),
     });
     this.h.wake?.(clip === 'death' ? 2400 : 1600);
-    // (the moment always comes, even if the rig is not drawn to it; gsap keeps the same game speed the rig does)
-    if (moment) this.track(gsap.delayedCall(moment.within, fire));
+    // (the moment always comes, even if the rig is not drawn to it; gsap keeps the same game speed the rig does. A model that knows
+    // when its moment comes, as a video model's measured strike, is waited for a little past it)
+    const known = rig.momentIn?.(clip, variant);
+    if (moment)
+      this.track(
+        gsap.delayedCall(known !== undefined ? Math.max(moment.within, known + 0.2) : moment.within, fire),
+      );
   }
 
   // --- animation -------------------------------------------------------------------------------------------
@@ -575,7 +583,16 @@ export class Fighters {
           : undefined;
     const dir = f.spec.side === 'a' ? 1 : -1;
     // a rigged hero strikes with its own animation: the blow (and the damage after it) lands on the clip's impact
-    if (f.rig) return this.rigStrike(f, f.rig, t, dir, onHit, spread);
+    if (f.rig)
+      return this.rigStrike(
+        f,
+        f.rig,
+        t,
+        dir,
+        onHit,
+        spread,
+        f.spec.hero ? (weaponFor(f.spec.hero, card) ?? undefined) : undefined,
+      );
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
     const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
     const tex = wid ? weaponTexture(wid) : undefined;
@@ -756,6 +773,8 @@ export class Fighters {
     dir: number,
     onHit?: () => void,
     spread: Fighter[] | null = null,
+    /** the weapon the card swings, for a model with its own clip for it (DECISIONS #715) */
+    variant?: string,
   ): Promise<void> {
     // (a strike or aura still under way finishes first)
     return this.afterClip(rig).then(
@@ -793,6 +812,7 @@ export class Fighters {
               },
             },
             end,
+            variant,
           );
           // (the clip ends on its own; this only frees the figure if it never gets drawn to its end)
           this.track(gsap.delayedCall(1.4, end));

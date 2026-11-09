@@ -1,3 +1,7 @@
+# Release approved 0.237.0 / rules 102 (2026-11-09; decisions 715-716)
+
+Robert explicitly approves pushing/deploying ("push") the beta 2D animated hero models from video (Settings > Graphics, off by default: idle, attack and death clips, weapon variants, measured impacts) and the desktop's MP4 byte-range serving. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.236.0 / rules 102 (2026-11-09; decisions 701-714)
 
 Robert explicitly approves pushing/deploying ("push"): won runs auto-bank with no run file export/import, Bloodstorm X times draw 2, every X card at most 6 Mana with half Might/Primed on X hits, Mana-every-turn Auras +1 cost and Mana cards consumed, Shatter +5 a threshold with the spread from 50, Arena HP costs x5, Sandbox training dummies and the goldfish tool, the synergy-3 bot, and player balance data kept 30 days. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.237.0",
+    date: "2026-11-09",
+    title: "2D animated heroes (beta)",
+    summary: "Try the new animated hero models: turn on 2D animated models (beta) in Settings, under Graphics.",
+    notes: [
+      {
+        kind: "new",
+        title: "2D animated models (beta)",
+        text: "Heroes can now move in animated 2D models instead of their still paintings: an idle stance, an attack when you play an Attack card (the Drunkard swings his hammer or fires his shotgun), and a fall when they are beaten. It is off unless you turn it on in Settings > Graphics while the models are being built; some moves still use stand-in motion."
+      }
+    ]
+  },
+  {
     version: "0.236.0",
     date: "2026-11-09",
     title: "X cards, Mana engines, Shatter and Arena HP costs",

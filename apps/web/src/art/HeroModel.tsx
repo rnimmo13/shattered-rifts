@@ -4,8 +4,9 @@
 // with reduced motion or on Low graphics, if the browser takes the rig's GL context away, or until the rig has loaded. Hovering
 // the model raises its aura. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { HERO_RIGS } from './heroRigs';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { heroRigFor } from './heroRigs';
+import { useSettingsChanged, type SettingKind } from '../app/settings';
 // (a type only: the rig code itself is loaded on demand below)
 import type { HeroSprite } from '../fight/heroSprite';
 import './heroModel.css';
@@ -27,7 +28,14 @@ export function HeroModel(props: {
 }) {
   const box = useRef<HTMLSpanElement>(null);
   const [live, setLive] = useState(false);
-  const rigId = !props.skin ? HERO_RIGS[props.hero] : undefined;
+  // (the beta video models are turned on or off in Settings: the model follows at once)
+  const [, setModels] = useState(0);
+  useSettingsChanged(
+    useCallback((kind: SettingKind) => {
+      if (kind === 'models') setModels((n) => n + 1);
+    }, []),
+  );
+  const rigId = !props.skin ? heroRigFor(props.hero) : undefined;
   const fill = props.fill ?? 0.94;
 
   useEffect(() => {

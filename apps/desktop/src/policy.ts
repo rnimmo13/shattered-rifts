@@ -36,7 +36,8 @@ export function assetPath(root: string, raw: string): string | null {
 }
 
 /** Media the protocol serves in byte ranges, so the player can seek, restart and loop it. */
-export const MEDIA_TYPES: Record<string, string> = { '.mp3': 'audio/mpeg' };
+// (mp4: the beta 2D animated hero models seek within their clips, DECISIONS #715)
+export const MEDIA_TYPES: Record<string, string> = { '.mp3': 'audio/mpeg', '.mp4': 'video/mp4' };
 
 /**
  * The inclusive byte span a single-range `Range` header asks for in a file of `size` bytes, or
