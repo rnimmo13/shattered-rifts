@@ -124,7 +124,8 @@ export const NECROMANCER: CardDef[] = [
     1,
     'none',
     [on('turnStart', [raise(2), mana(2)], { times: 1 })],
-    { up: { effects: [on('turnStart', [raise(3), mana(3)], { times: 1 })] } },
+    // (Consume since #710: a card that gives more Mana than it costs is spent, Robert)
+    { exhaust: true, up: { effects: [on('turnStart', [raise(3), mana(3)], { times: 1 })] } },
   ),
   // (Poke)
   g('common', 'knucklebone', 'Knucklebone', 'attack', 0, 'foe', [command(dmg(6))], CMD),
@@ -922,10 +923,11 @@ export const NECROMANCER: CardDef[] = [
     'phylactery',
     'Phylactery',
     'power',
-    2,
+    // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+    3,
     'none',
     [draw(1), on('turnStart', [mana(1), draw(1)])],
-    { up: { cost: 1 } },
+    { up: { cost: 2 } },
   ),
   // (Devour Life. Raise 3 a Soul since #691: ~27, 135%; upgraded Raise 4, +29%)
   g(
@@ -1109,7 +1111,8 @@ export const NECROMANCER: CardDef[] = [
     'bonded-dead',
     'Bonded Dead',
     'power',
-    1,
+    // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+    2,
     'none',
     [on('turnStart', [mana(1), lose(3, 'biggestAlly')])],
     { up: { effects: [on('turnStart', [mana(1), lose(2, 'biggestAlly')])] } },

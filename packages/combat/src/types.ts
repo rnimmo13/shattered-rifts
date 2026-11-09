@@ -248,11 +248,19 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 30 at 20, 110 at 100, with none held
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 25 at 20, 30 at 30... 65 at 100, with none held (DECISIONS #713)
  * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_BASE = 10;
-export const SHATTER_STEP = 10;
+export const SHATTER_BASE = 15;
+/** 5 more each threshold since #713 (Robert: "shatter shoudl simply grow by 5 damage each threshold"; was 10) */
+export const SHATTER_STEP = 5;
+/** (DECISIONS #708, #713) from the Shatter at this much Fracture on, every Shatter also puts SHATTER_SPREAD Fracture on another enemy */
+export const SHATTER_SPREAD_AT = 50;
+export const SHATTER_SPREAD = 10;
+/** In the Arena (1000 HP), HP a hero's own effects cost them is this many times what the card says, so paying HP is a real cost there:
+ * "Lose 2 HP" costs 10. Five, not ten: an Arena opponent deals far more than a Campaign enemy (Robert, DECISIONS #707, #713).
+ * The Campaign is unchanged. */
+export const ARENA_HP_COST_MULT = 5;
 /** Orbit pays out for every this much Mana spent. */
 export const ORBIT_STEP = 4;
 /** Mana gained when leaving Calm (the Monk's trait, the first time each turn: stepping in and out again pays nothing, so it cannot loop;
@@ -1077,6 +1085,8 @@ export interface CardDef {
   x?: boolean;
   /** an X card's "+1": X counts as this much more than the Mana spent (the "+" version of every X card has 1) */
   xBonus?: number;
+  /** an X card spends at most this much Mana (then Reserves); the rest stays for other cards (DECISIONS #706) */
+  xMax?: number;
   /** starts in your opening hand */
   innate?: boolean;
   /** only playable while this many cards (not Auras) are in your consumed pile */

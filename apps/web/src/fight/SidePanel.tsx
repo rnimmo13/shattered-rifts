@@ -5,6 +5,8 @@
 import { cardArtV2 } from './art';
 import { emblemSvg } from '../art/emblems';
 import { cardText, type CombatDb, type SideView } from '@sr/combat';
+import { useContext } from 'react';
+import { HpCostMult } from './hpCost';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { RUNE_GLYPH, UI_TIPS } from './info';
 import { FloatPanel } from './FloatPanel';
@@ -91,6 +93,8 @@ export function RuneArc(props: {
 /** Your Auras in play, as a list in your side column (FightView's .fight__side). */
 /** A side's Auras in a panel the player can move, resize and fold (`panel` names it, so each side's is remembered apart). */
 export function AuraList(props: { db: CombatDb; me: SideView; panel: string; title: string }) {
+  // (an Arena Aura that costs HP says the Arena's number, #713)
+  const hpCostMult = useContext(HpCostMult);
   const { db, me } = props;
   if (me.powers.length === 0) return null;
   // one row per Aura card, not per trigger: a card with two triggers (Blood Fire: lose HP at the start of your turn, and hit
@@ -125,7 +129,7 @@ export function AuraList(props: { db: CombatDb; me: SideView; panel: string; tit
               {...tipAttrs({
                 kicker: 'Aura',
                 title: c?.name ?? 'Aura',
-                text: c ? cardText(db, c) : '',
+                text: c ? cardText(db, c, undefined, { hpCostMult }) : '',
               })}
             >
               {c && <img className="aux__thumb" src={cardArtV2(c)} alt="" />}

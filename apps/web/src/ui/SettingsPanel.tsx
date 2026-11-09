@@ -432,6 +432,13 @@ export function SettingsPanel() {
           {/* (a report of the stalls on this computer, to send in: DECISIONS #572) */}
           <section className="settings__group" aria-labelledby="settings-perf">
             <h3 id="settings-perf">Playtest and performance reports</h3>
+            {/* (DECISIONS #714: what online play keeps for the developer's balance review) */}
+            <Row
+              label="Game data"
+              hint="When you play online, your decks, card choices, Campaign fights (every move) and Arena games are kept on the server for 30 days so the developer can balance the game. They are tied to an anonymous id, never your name or email. Offline desktop play is never sent."
+            >
+              {null}
+            </Row>
             <Row
               label="Balance playtest results"
               hint="Export recent fight results, class choices, deck quality and versions to share with the developer. Kept on this device; no names, account details or automatic uploads."

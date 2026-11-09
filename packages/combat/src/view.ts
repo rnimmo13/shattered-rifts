@@ -389,7 +389,7 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potionCount: sd.potions.length,
       stars: sd.stars,
       ...(sd.discipline
-        ? { disciplineText: disciplineText(sd) ?? '', disciplineLabel: disciplineLabel(sd, s) }
+        ? { disciplineText: disciplineText(sd, s.mode) ?? '', disciplineLabel: disciplineLabel(sd, s) }
         : attackAuraProgress(sd)
           ? { disciplineLabel: attackAuraProgress(sd) ?? '' }
           : {}),
@@ -1288,7 +1288,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         : `Deal ${a.num} damage${tail}.${lone}${finish}${steal}${cracks}${kill}`;
     }
     case 'loseHp': {
-      const a = amountText(o.amount, o.scale);
+      // (in the Arena a hero's own HP costs are five times as much, and the card says so: DECISIONS #707, #713)
+      const a = amountText(o.to === 'self' ? o.amount * textHpCostMult : o.amount, o.scale);
       if (a.equal && o.to === 'allFoes' && who.self === WHO.self)
         return `ALL enemies lose HP equal to ${a.num}.`;
       if (a.equal) return `${o.to === 'self' ? 'Lose' : 'The target loses'} HP equal to ${a.num}.`;
@@ -2318,7 +2319,29 @@ function liveDamageText(
  * A card's rules text. With `live` (what previewCardDamage says it would do now, by effect index), each damage number and scaled Barrier
  * is marked with what it would really come to, for the card in your hand.
  */
-export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
+/** Set only for the length of one cardText call (see its opts). */
+let textHpCostMult = 1;
+
+export interface CardTextOptions {
+  /** what HP costs on your own cards are multiplied by where this card is shown (ARENA_HP_COST_MULT in the Arena) */
+  hpCostMult?: number;
+}
+
+export function cardText(
+  db: CombatDb,
+  c: CardDef,
+  live?: ReadonlyMap<number, LiveDamage>,
+  opts?: CardTextOptions,
+): string {
+  if (opts?.hpCostMult !== undefined && opts.hpCostMult !== textHpCostMult) {
+    const was = textHpCostMult;
+    textHpCostMult = opts.hpCostMult;
+    try {
+      return cardText(db, c, live);
+    } finally {
+      textHpCostMult = was;
+    }
+  }
   if (c.text) {
     const all = [...(live?.values() ?? [])].filter((l) => !l.barrier && !l.uncertain);
     const known = all.filter((l) => !l.shatter);
@@ -2396,6 +2419,7 @@ export function cardText(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, Li
   if (c.tags?.includes('sword')) parts.push('Sword.');
   if (c.tags?.includes('spell')) parts.push('Spell.');
   // (a Spell Power cost is shown on the card itself, under the Mana cost, as a number, X or X/2: it is not said again in the text)
+  if (c.xMax !== undefined) parts.push(`Spends at most ${c.xMax} Mana.`);
   if (c.xBonus) parts.push(`X is ${c.xBonus} higher.`);
   const who: Record<Sel, string> =
     c.target === 'ally' || c.target === 'friend' ? { ...WHO, target: ' to the ally' } : WHO;

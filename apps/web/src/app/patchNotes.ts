@@ -46,6 +46,60 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.236.0",
+    date: "2026-11-09",
+    title: "X cards, Mana engines, Shatter and Arena HP costs",
+    summary: "X cards and Mana engines are reined in, Shatters grow more slowly, HP costs bite in the Arena, won runs bank themselves, and the Sandbox has training dummies.",
+    notes: [
+      {
+        kind: "balance",
+        title: "X cards",
+        text: "Every X card spends at most 6 Mana; whatever is left stays for your other cards. An X card that hits X times gets half your Might and Primed on each hit."
+      },
+      {
+        kind: "balance",
+        title: "Bloodstorm",
+        text: "Deal 7 damage X times, then draw 2 cards (upgraded: X is 1 higher). It used to draw a card for every Mana spent."
+      },
+      {
+        kind: "balance",
+        title: "Mana every turn",
+        text: "Auras that give Mana every turn cost 1 more: Attunement, Inner Furnace, Blood Pact, Berserk Tempo, Deep Pockets, Ascendant Form, Phylactery, Bonded Dead, Last Call, Ancient Pact and The Long Memory. Spirit Offering, Burnt Offering, Call at Dusk and Throw Scraps now Consume."
+      },
+      {
+        kind: "balance",
+        title: "Shatter",
+        text: "Shatters grow by 5 each time instead of 10: 20 at 10 Fracture, 25 at 20, 30 at 30, up to 65 at 100. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy."
+      },
+      {
+        kind: "balance",
+        title: "Arena HP costs",
+        text: "In the Arena, HP your own cards cost you is 5 times the number on the card (\"Lose 2 HP\" costs 10), and Arena cards show the real cost. The Reaver's Bloodlust counts 15 HP per Might there. The Campaign is unchanged."
+      },
+      {
+        kind: "changed",
+        title: "Won runs bank themselves",
+        text: "Finishing the Campaign saves your deck for the Arena automatically. Export run and Import a run file are gone: saved runs already follow your account between devices."
+      },
+      {
+        kind: "new",
+        title: "Training dummies",
+        text: "The Sandbox has a Training group: a Training Dummy (1000 HP, stands still) and a Sparring Dummy (1000 HP, hits for 6 three times a turn), plus an Arena-size HP option, to try decks and count their damage."
+      },
+      {
+        kind: "changed",
+        title: "Smarter ghosts",
+        text: "Arena ghost decks now value their Auras properly and play them earlier."
+      },
+      {
+        kind: "new",
+        title: "Game data",
+        text: "Online games (decks, card choices, Campaign fights and Arena games) are kept for 30 days to help balance the game, tied to an anonymous id. See Settings. Offline desktop play is never sent."
+      }
+    ],
+    heads: "Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept."
+  },
+  {
     version: "0.235.0",
     date: "2026-11-09",
     title: "Shared seeds, a new Hunter basic and Raise Colossus choices",

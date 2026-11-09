@@ -17,6 +17,10 @@ import { ENGINEER } from './pools/engineer';
 import { MONK } from './pools/monk';
 import { TRICKSTER } from './pools/trickster';
 
+/** Every X card spends at most this much Mana (Robert 2026-11-09, DECISIONS #709: "apply the same cap to it as every other X cost"). */
+export const X_MANA_CAP = 6;
+const capX = (c: CardDef): CardDef => (c.x && c.xMax === undefined ? { ...c, xMax: X_MANA_CAP } : c);
+
 /** Every playable card with its "+" version, plus junk. */
 export const V2_CARDS: CardDef[] = [
   ...withUpgrades([
@@ -34,7 +38,7 @@ export const V2_CARDS: CardDef[] = [
     ...DRUNKARD,
     ...SIGNATURES,
     ...ANCESTRAL,
-  ]),
+  ]).map(capX),
   ...JUNK,
   ...SHAMAN_STATUSES,
 ];

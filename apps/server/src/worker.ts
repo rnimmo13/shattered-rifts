@@ -233,7 +233,7 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
     const text = await request.text();
     // (a ghost Warden request carries the ghosts a run has met: up to 25 ids of 64 characters)
     // (a Campaign fight carries its whole setup and every move: a few tens of kilobytes)
-    if (text.length > (what === 'fight' ? 320_000 : what === 'ghostboss' ? 4_000 : 2_000))
+    if (text.length > (what === 'fight' ? 345_000 : what === 'ghostboss' ? 4_000 : 2_000))
       return json({ ok: false, error: 'too big' }, 413);
     let body: Record<string, unknown>;
     try {

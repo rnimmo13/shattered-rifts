@@ -4,6 +4,7 @@ export * from './protocol';
 export * from './balanceReport';
 export * from './arenaBalance';
 export * from './arenaEvidence';
+export * from './fightStats';
 export * from './trophies';
 export * from './ranks';
 export * from './seasons';

@@ -32,6 +32,9 @@ const HERO: Record<string, [Archetype, Realm]> = {
 };
 
 const UNIT: Record<string, [Archetype, Realm]> = {
+  // the Sandbox's training dummies (DECISIONS #704)
+  'training-dummy': ['mech', 'neutral'],
+  'sparring-dummy': ['mech', 'neutral'],
   // companions
   drone: ['drone', 'nexus'],
   'patrol-drone': ['drone', 'nexus'],

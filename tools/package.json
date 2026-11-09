@@ -7,6 +7,7 @@
   "scripts": {
     "balance:campaign": "tsx src/campaignReport.ts",
     "balance:arena": "tsx src/arenaReport.ts",
+    "balance:players": "tsx src/playerReport.ts",
     "balance:report": "tsx src/balanceReport.ts",
     "balance:history": "tsx src/balanceHistory.ts",
     "lore:art": "tsx src/loreArt.ts",
@@ -15,6 +16,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "play:smoke": "tsx src/playAccessProbe.ts",
     "sim": "tsx src/sim.ts",
+    "goldfish": "tsx src/goldfish/run.ts",
     "deploy:web": "tsx src/deploy.ts",
     "artlist": "tsx src/artlist.ts",
     "cardprompts": "tsx src/cardprompts.ts",

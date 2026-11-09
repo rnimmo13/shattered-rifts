@@ -515,8 +515,9 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
   };
 
   it('X cards hit X times', () => {
-    // (Bloodstorm hits X + 1 times for 7 since #693)
-    expect(lostBy('hunter', 'bloodstorm')).toBe(7 * 4);
+    // (Bloodstorm hits X times for 7 since #702)
+    expect(lostBy('hunter', 'bloodstorm')).toBe(7 * 3);
+    expect(lostBy('hunter', 'bloodstorm+')).toBe(7 * 4);
     expect(lostBy('necromancer', 'oblivion')).toBe(11 * 3);
     expect(lostBy('monk', 'berserk-tide')).toBe(4 * 3);
     expect(lostBy('hunter', 'whirling-maul')).toBe(7 * 3);

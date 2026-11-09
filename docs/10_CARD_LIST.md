@@ -50,7 +50,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Break Guard | 1 | attack | uncommon | Deal 8 damage. If the target is Exposed: Deal 8 damage. |
 | Rising Fist | 2 | attack | uncommon | Deal 13 damage. Apply 1 Faltering. Apply 1 Exposed. |
 | Pile On | 0 | attack | uncommon | Deal 4 (+2 per Exposed on the target) damage. |
-| Whirling Blade | X | attack | uncommon | Deal 5 damage X times to ALL enemies. |
+| Whirling Blade | X | attack | uncommon | Spends at most 6 Mana. Deal 5 damage X times to ALL enemies. |
 | Mounting Fury | 1 | attack | uncommon | Deal 9 damage, plus all it has grown. Every copy of this card gains 5 damage for the rest of the fight. |
 | Hammer Fall | 3 | attack | uncommon | Deal 32 damage. |
 | Plunder | 1 | attack | uncommon | Deal 6 damage. Draw cards until you draw a card that is not an Attack. |
@@ -99,14 +99,14 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Unholy Pact | 3 | aura | rare | On play: Gain Unbound. |
 | Burn It All | 2 | attack | rare | Deal damage equal to 7 times the number of cards in your hand. Consume your hand. Consume. |
 | Forsake | 0 | skill | rare | Lose 1 HP. Consume 1 card. Gain 1 Might. |
-| Unravel | X | skill | rare | Play the top X cards of your draw pile. |
+| Unravel | X | skill | rare | Spends at most 6 Mana. Play the top X cards of your draw pile. |
 | Fan the Flames | 1 | skill | rare | Consume your hand. Add a random card from your pool to your hand for each card consumed this way. |
 | Ashen Reckoning | 0 | attack | rare | Only playable with 3 or more cards consumed. Deal 17 damage to ALL enemies. |
 | Crimson Offering | 0 | skill | rare | Lose 6 HP. Gain 1 Mana. Next turn, gain 1 extra Mana. Draw 3 cards. Consume. |
 | Bloodied Plate | 1 | aura | rare | At the start of your turn: Lose 1 HP and gain 8 Barrier. |
 | Rending Fury | 2 | attack | rare | Deal 8 (+3 per time you lost HP this fight, at most +45) damage. |
 | Rally | 2 | skill | rare | Heal 10. Consume. |
-| Inner Furnace | 2 | aura | rare | At the start of your turn: Gain 1 Mana. |
+| Inner Furnace | 3 | aura | rare | At the start of your turn: Gain 1 Mana. |
 | Patient Wall | 2 | aura | rare | At the end of your turn: Gain Barrier equal to 4 times your Reserves. |
 | Oath Unbroken | 2 | aura | rare | Max Reserves +2 for the rest of the fight. At the end of your turn, if your Reserves is 4 or more: Gain 3 Might. |
 | Vow Fulfilled | 3 | attack | rare | Deal 18 (+7 per Reserve) damage. |
@@ -166,7 +166,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Deploy Drone, Tune-Up, 
 | Link Up | 1 | skill | uncommon | Gain 6 Barrier to all friends. Draw 1 card. |
 | Arc Relay | 2 | attack | uncommon | Deal 9 damage to ALL enemies. Apply 4 Primed to all friends. |
 | Clockwork Trap | 1 | trap | uncommon | When you lose 5+ HP at once: Each of your companions gains 3 Primed and gain 8 Barrier. |
-| Surge Protocol | X | skill | uncommon | Apply Might equal to the Mana spent to all friends. |
+| Surge Protocol | X | skill | uncommon | Spends at most 6 Mana. Apply Might equal to the Mana spent to all friends. |
 | Laser Grid | 2 | attack | uncommon | Deal 8 damage 2 times to ALL enemies. |
 | Targeting Uplink | 1 | aura | uncommon | Whenever you play an Attack: Each of your companions gains 2 Primed. |
 | Reinforce | 1 | skill | uncommon | Gain 8 Barrier to the ally. Apply 2 Might to the ally. |
@@ -247,7 +247,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Fren
 | Wounded Wrath | 1 | aura | common | Whenever you lose HP to your own cards or Hangover: Deal 4 damage to a random enemy. |
 | Bared Teeth | 1 | skill | common | Gain 3 (+3 per ally) Barrier. |
 | Lead the Charge | 1 | attack | common | Deal 5 (+3 per ally) damage. |
-| Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. Heal 2. |
+| Throw Scraps | 0 | skill | common | Consume 1 card. Gain 1 Mana. Heal 2. Consume. |
 | Bone Crack | 1 | attack | common | Deal 7 damage. Apply 1 Exposed. |
 | Primal Feast | 1 | skill | common | Heal 3 to your hero. Your companions gain 4 max HP. |
 | Rush In | 1 | attack | common | Deal 7 damage. Draw 1 card. |
@@ -261,7 +261,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Fren
 | Run Wild | 2 | attack | uncommon | Deal 8 damage 2 times. Gain 1 Might. |
 | Ravage | 2 | attack | uncommon | Deal 10 damage 2 times to ALL enemies. Lose 3 HP. |
 | The Hunger | 1 | aura | uncommon | On play: Lose 4 HP. Gain 3 Might for the rest of the fight. |
-| Whirling Maul | X | attack | uncommon | Deal 7 damage X times to ALL enemies. Lose 2 HP. |
+| Whirling Maul | X | attack | uncommon | Spends at most 6 Mana. Deal 7 damage X times to ALL enemies. Lose 2 HP. |
 | Reckless Blow | 1 | attack | uncommon | Lose 2 HP. Deal 8 damage 2 times. |
 | Hamstring Slam | 2 | attack | uncommon | Deal 11 damage. Apply 2 Faltering. Each of your allies gains 3 Barrier. |
 | Savage Command | 1 | skill | uncommon | Command your companions to act now. Gain 1 Might. |
@@ -305,13 +305,13 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Fren
 | Wild Hunt | 2 | aura | rare | Opening hand. At the start of your turn: Command your companions to act now and your companions gain 2 max HP. |
 | The Hunger Unleashed | 1 | aura | rare | On play: Lose 4 HP. Gain 4 Might. Gain 1 Cadence. These last the rest of the fight. Cadence gives Might in your first 8 turns only. |
 | Apex Frenzy | 2 | attack | rare | Deal 4 (+2 per card played this turn) damage 2 times. Lifesteal 50%. |
-| Blood Pact | 1 | aura | rare | On play: Lose 4 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Draw 1 card. |
+| Blood Pact | 2 | aura | rare | On play: Lose 4 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Draw 1 card. |
 | Death or Glory | 2 | attack | rare | Deal 12 (+1 per 2% HP missing) damage. |
 | Bloodsong | 0 | aura | rare | On play: Lose 2 HP. Gain 2 Might. Gain 1 Cadence. Draw 1 card. These last the rest of the fight. Cadence gives Might in your first 8 turns only. |
 | Slip the Leash | 1 | skill | rare | Double the Might to yourself. Consume. |
-| Berserk Tempo | 2 | aura | rare | Opening hand. At the start of your turn: Gain 1 Mana, draw 1 card and lose 1 HP. |
+| Berserk Tempo | 3 | aura | rare | Opening hand. At the start of your turn: Gain 1 Mana, draw 1 card and lose 1 HP. |
 | Red Frenzy | 1 | aura | rare | Whenever you draw a card during your turn: Gain 1 Might until the end of your turn and gain 1 Barrier. |
-| Bloodstorm | X | attack | rare | Deal 7 damage X+1 times. Draw cards equal to the Mana spent. |
+| Bloodstorm | X | attack | rare | Spends at most 6 Mana. Deal 7 damage X times. Draw 2 cards. |
 | Rising Howl | 2 | attack | rare | Deal 14 (+7 per card played this turn) damage. |
 | Killing Spree | 1 | aura | rare | Whenever you play an Attack (first 2 activations each turn): Draw 1 card. |
 | Ancient Fury | 1 | aura | rare | For the next 6 turns, at the start of your turn: Gain 2 Might and lose 2 HP. |
@@ -403,7 +403,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Veil Strike, Set the We
 | The Joker | 1 | skill | rare | Wild (it shows the first suit you are missing this turn, in the order ♠ ♥ ♦ ♣). Add a random upgraded card from your pool to your hand (it costs 0 the next time you play it). |
 | The Whole Deck | 1 | aura | rare | Whenever you make a Full Trick (all four suits this turn): Draw 2 cards and gain 1 Mana. |
 | Masquerade | 2 | aura | rare | At the end of your turn, if you completed a Full Trick this turn: Deal 12 (+2 per Full Trick this fight) damage to ALL enemies; If you did not complete a Full Trick this turn: Deal damage equal to 3 times the suits played this turn to ALL enemies. |
-| Deep Pockets | 2 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Opening hand. |
+| Deep Pockets | 3 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. Opening hand. |
 | The Perfect Trap | 3 | trap | rare | When you or an ally is attacked: Cancel that hit, deal 26 damage to the attacker and shock the attacker for 2 turns. |
 | Culling | 2 | attack | rare | Deal 14 (+5 per Exposed on each) damage to ALL enemies. |
 | Between Worlds | 2 | skill | rare | Gain 3 Ghostly. Consume. |
@@ -454,7 +454,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Rippling Cut | 1 | attack | uncommon | Deal 8 damage to ALL enemies. Repeat this for each enemy it kills. |
 | Darting Strike | 2 | attack | uncommon | Gain 10 Barrier. Deal 10 damage. |
 | Final Flourish | 1 | attack | uncommon | Deal 6 (+6 per Attack costing 1 or more played this turn) damage. |
-| Run Through | X | attack | uncommon | Deal 8 damage X times. |
+| Run Through | X | attack | uncommon | Spends at most 6 Mana. Deal 8 damage X times. |
 | Spring Attack | 2 | attack | uncommon | Deal 14 damage. Gain 1 Free Skill. |
 | Nerve Strike | 3 | attack | uncommon | Costs 1 less for each Skill played this turn. Deal 15 damage. |
 | Clean Cut | 0 | attack | uncommon | Deal 11 (-2 per card in hand) damage. |
@@ -490,7 +490,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Red Tide | 1 | skill | rare | Draw 1 card. This turn, whenever you draw a card: Apply 4 Bleed to ALL enemies. |
 | Serrated Edges | 1 | aura | rare | Whenever you play an Attack that costs 1 or more: Apply 2 Bleed to its target (or a random enemy). |
 | Bloodburst | 2 | skill | rare | Apply 9 Bleed to ALL enemies. The Bleed on ALL enemies deals its damage now. |
-| Sapping Wound | X | skill | rare | Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Apply Bleed equal to 2 times the Mana spent. Consume. |
+| Sapping Wound | X | skill | rare | Spends at most 6 Mana. Apply Sapped equal to the Mana spent. Apply Faltering equal to the Mana spent. Apply Bleed equal to 2 times the Mana spent. Consume. |
 | Blood Scent | 2 | aura | rare | Gain Tracking. At the start of your turn: Apply 1 Faltering to the enemy with the most Bleed. |
 | Razor Skin | 2 | aura | rare | Premeditate. On play: Gain 1 Bracing. Gain 6 Thorns. These last the rest of the fight. |
 | Rush of Blood | 0 | skill | rare | Gain 1 Mana. Draw 2 cards. Consume. |
@@ -538,7 +538,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost
 | Wind Wall | 1 | skill | common | Storm. Gain 5 Barrier. Apply 2 Sapped to ALL enemies until the end of their next turn. |
 | Thunderbird Call | 2 | attack | common | Storm. Deal 8 damage to ALL enemies. Plant a Thunderbird. |
 | Hawk Call | 1 | skill | common | Gain 4 Barrier. For the next 2 turns, at the start of your turn: Plant a Hawk. |
-| Spirit Offering | 0 | skill | common | Gain 1 Mana. Next turn, gain 1 extra Mana. Add a Void to your discard pile. |
+| Spirit Offering | 0 | skill | common | Gain 1 Mana. Next turn, gain 1 extra Mana. Add a Void to your discard pile. Consume. |
 | Spirit Rush | 0 | skill | common | Gain 2 Spirit until the end of your turn. Consume. |
 | Raise a Totem | 1 | skill | common | Plant a random totem. Gain 6 Barrier. |
 | Spirit Strike | 1 | attack | common | Deal 5 damage. Command your front totem. |
@@ -568,14 +568,14 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost
 | Dawn Ward | 0 | skill | uncommon | Frost. Gain 10 Barrier. Consume. Opening hand. |
 | Storm Chant | 2 | aura | uncommon | Whenever you play an Aura: Gain 1 Mana and plant a Thunderbird. |
 | Swift Strike | 0 | attack | uncommon | Storm. Deal 5 damage. If you have played 2 or fewer other cards this turn: Draw 1 card. |
-| Thunder Rush | X | skill | uncommon | Storm. Plant a Thunderbird X times. |
+| Thunder Rush | X | skill | uncommon | Storm. Spends at most 6 Mana. Plant a Thunderbird X times. |
 | Spark Strike | 0 | attack | uncommon | Storm. Deal 3 (+4 per Thunderbird you have) damage. |
 | Swift Study | 1 | skill | uncommon | Storm. Draw 3 cards. |
 | Thunder Chant | 1 | aura | uncommon | For the rest of the fight, a Thunderbird you command deals 5 more damage (its end-of-turn effect is not changed). |
 | Hurried Prayer | 0 | skill | uncommon | Draw 2 cards. Add a Void to your discard pile. Consume. |
 | Harmonize | 1 | skill | uncommon | Gain Spirit equal to 2 times the kinds of totem you have until the end of your turn. Consume. |
 | Double Rite | 1 | skill | uncommon | Gain Mana equal to your Mana. Consume. |
-| Burnt Offering | 1 | skill | uncommon | Consume 1 card. Next turn, gain 2 extra Mana. |
+| Burnt Offering | 1 | skill | uncommon | Consume 1 card. Next turn, gain 2 extra Mana. Consume. |
 | Snap Back | 2 | aura | uncommon | The first time you play a 0-cost Attack each turn: Return it to your hand. |
 | Bitter Lesson | 1 | aura | uncommon | The first time you draw a Status card each turn: Draw 2 cards. |
 | Turning Wheel | 1 | aura | uncommon | At the start of your turn: Your front totem's end-of-turn effect happens now. |
@@ -608,7 +608,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost
 | Wellspring | 0 | skill | rare | Gain 2 Mana. Next turn, gain 2 extra Mana. Consume. |
 | Doubled Vow | 1 | skill | rare | Your next Aura is played an extra time. Consume. |
 | Free Hand | 1 | aura | rare | On play: Your 0-cost Attacks deal 3 more damage for the rest of the fight. |
-| Chain of Calls | X | skill | rare | Command your front totem X times. |
+| Chain of Calls | X | skill | rare | Spends at most 6 Mana. Command your front totem X times. |
 | Salvage Spirit | 1 | aura | rare | Whenever you create a Status card: Plant a random totem. |
 | Ward of the Spirits | 2 | aura | rare | On play: The next time you would lose HP, you lose none instead. |
 | Fresh Start | 0 | skill | rare | Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume. |
@@ -657,7 +657,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still
 | Spinning Heel | 2 | attack | uncommon | Deal 12 damage. Apply 2 Exposed. Draw 1 card. |
 | Wrathful Guard | 1 | skill | uncommon | Gain 6 Barrier. Enter Fury. |
 | Hot-Blooded | 1 | attack | uncommon | Deal 4 (+1 per 6% HP missing) damage. Enter Fury. |
-| Storm of Fists | X | attack | uncommon | Deal 4 damage X times. Enter Fury. |
+| Storm of Fists | X | attack | uncommon | Spends at most 6 Mana. Deal 4 damage X times. Enter Fury. |
 | Coiled Serpent | 1 | trap | uncommon | When you lose 5+ HP at once: Deal 8 damage to the attacker, gain 4 Primed and Enter Fury. |
 | Settled Mind | 1 | skill | uncommon | Draw cards equal to 3 times your Serene. Enter Serene. |
 | Unmoved Mind | 2 | aura | uncommon | Whenever you enter a stance: Gain 2 Barrier and deal 2 damage to a random enemy. |
@@ -689,13 +689,13 @@ Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still
 | Rampage of Ire | 2 | aura | rare | Whenever you enter Fury: Deal 6 damage to ALL enemies. |
 | Rage Unbound | 0 | skill | rare | Enter Fury. Gain 1 Mana. Lose 3 HP. Consume. |
 | Ashes of Restraint | 2 | attack | rare | Deal 9 (+2 per consumed card) damage. Enter Fury. |
-| Ascendant Form | 2 | aura | rare | At the start of your turn: Gain 1 Mana. |
+| Ascendant Form | 3 | aura | rare | At the start of your turn: Gain 1 Mana. |
 | Perfect Calm | 2 | skill | rare | Gain 12 Barrier. Enter Serene. Draw 1 card. |
 | Recollect | 1 | skill | rare | Return a random card from your discard pile to your hand. Enter Serene. Hold. |
 | All-Seeing | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Serenity Incarnate | 3 | aura | rare | At the end of your turn: Heal 3 and gain 6 Barrier. |
 | Gentle Return | 1 | aura | rare | Whenever you enter Serene: Heal 1 and gain 3 Barrier. |
-| Tide of Peace | X | skill | rare | Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene. |
+| Tide of Peace | X | skill | rare | Spends at most 6 Mana. Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene. |
 | Litany | 1 | aura | rare | Whenever you play a Skill: Gain 1 Fervor. |
 | Rise Radiant | 2 | skill | rare | Enter Radiant. Consume. |
 | Perfect Balance | 2 | aura | rare | Whenever you enter a stance: Draw 1 card and gain 2 Barrier. |
@@ -915,7 +915,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Hammer Swing, Pane Up, 
 | Ricochet | 1 | aura | rare | Whenever you play a shell: Draw 1 card and gain 1 Barrier. |
 | Haymaker | 2 | attack | rare | Deal 18 (+4 per Hangover) damage. |
 | Bottoms Up | 1 | skill | rare | Gain 2 Mana. Draw 3 cards. Gain 3 Hangover. Consume. |
-| Last Call | 1 | aura | rare | At the start of your turn: Gain 1 Mana and gain 1 Hangover. |
+| Last Call | 2 | aura | rare | At the start of your turn: Gain 1 Mana and gain 1 Hangover. |
 | Bottomless Flask | 2 | aura | rare | At the start of your turn: Heal 3 (+1 per 10% HP missing) and draw 1 card. |
 | Pass Out | 2 | skill | rare | Heal 8 (+1 per 3% HP missing). Clear your Hangover. Draw 2 cards. Consume. |
 | Blind Drunk | 2 | attack | rare | Stagger. Deal 9 (+2 per 2 Hangover) damage to a random enemy 3 times. |
@@ -940,7 +940,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Off the Leash | 1 | attack | basic | Your companions each deal 4 damage, plus half their own HP. |
 | After the End | 1 | skill | common | Raise Dead 6. Consume. |
 | Bone Crush | 2 | attack | common | Costs 0 if your companions have struck this turn. Your companions each deal 12 damage. |
-| Call at Dusk | 1 | skill | common | Next turn: Raise Dead 2 and gain 2 Mana. |
+| Call at Dusk | 1 | skill | common | Consume. Next turn: Raise Dead 2 and gain 2 Mana. |
 | Knucklebone | 0 | attack | common | Your companions each deal 6 damage. |
 | Bone Bulwark | 2 | skill | common | Raise Dead 5. Gain 8 Barrier. |
 | Bone Snap | 1 | attack | common | Your companions each deal 7 damage. A random card in your hand gains Hold. |
@@ -982,7 +982,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Wither | 1 | attack | uncommon | Deal 10 damage. Apply 2 Debilitated. |
 | Fester | 1 | skill | uncommon | Apply 1 Faltering. Apply 2 Exposed. Consume. |
 | Bottled Soul | 1 | skill | uncommon | The target loses 3 HP. Add 2 Gravesouls to your draw pile. |
-| Lament | X | skill | uncommon | Raise Dead 3, X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume. |
+| Lament | X | skill | uncommon | Spends at most 6 Mana. Raise Dead 3, X times. Add Gravesouls to your draw pile equal to the Mana spent. Consume. |
 | Restless Spirits | 1 | aura | uncommon | Whenever you play a Gravesoul (first 3 activations on your turn): A random enemy loses 4 (+1 per 3 previously consumed Gravesoul) HP. Whenever it activates again that turn: A random enemy loses 1 HP. |
 | Killing Chill | 1 | aura | uncommon | On play: For the rest of the fight, your first Attack each turn deals 30% more damage. Fleeting. |
 | Grimoire Gale | 1 | aura | uncommon | Whenever you draw a Fleeting card: Draw 1 card. |
@@ -997,7 +997,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Grave Digging | 1 | skill | uncommon | Return 3 random cards from your discard pile to your hand. Consume. |
 | Mourning | 3 | skill | uncommon | Costs 1 less for each death this fight. Gain 13 Barrier. |
 | Entomb | 4 | attack | uncommon | Deal 48 damage. |
-| Bonded Dead | 1 | aura | uncommon | At the start of your turn: Gain 1 Mana and your healthiest companion loses 3 HP. |
+| Bonded Dead | 2 | aura | uncommon | At the start of your turn: Gain 1 Mana and your healthiest companion loses 3 HP. |
 | Shared Agony | 2 | aura | rare | Raise Dead 5. Whenever one of your companions loses HP: ALL enemies lose HP equal to the HP it lost. |
 | Grave Colossus | 3 | skill | rare | Raise Colossus 22. |
 | Grave Debt | 1 | aura | rare | Whenever one of your allies dies (first 3 activations each turn): Curse ALL enemies with Fate equal to half of the fallen companion's max HP. |
@@ -1014,10 +1014,10 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 | Soul Tithe | 0 | aura | rare | Gain 1 Mana. Next turn, gain 2 extra Mana. Draw 2 cards. At the start of your turn: Curse yourself with Fate equal to 2% of your max HP, rounded up (at least 3). |
 | Wailing Cry | 9 | attack | rare | Costs 2 less for each Fleeting card played this fight. Deal 36 damage to ALL enemies. |
 | Whispers Beyond | 1 | aura | rare | Opening hand. At the start of your turn: Add a random card from your pool to your hand, Fleeting. |
-| Phylactery | 2 | aura | rare | Draw 1 card. At the start of your turn: Gain 1 Mana and draw 1 card. |
+| Phylactery | 3 | aura | rare | Draw 1 card. At the start of your turn: Gain 1 Mana and draw 1 card. |
 | Soul Harvest | 1 | aura | rare | Whenever you play a Gravesoul: Raise Dead 3. |
 | Spirit Walk | 1 | skill | rare | Consume your hand. Next turn, draw 1 extra card. If 3 or more cards were consumed this way: Gain 2 Ghostly. |
-| Unmaking | X | attack | rare | Deal 11 damage X times. Hold. |
+| Unmaking | X | attack | rare | Spends at most 6 Mana. Deal 11 damage X times. Hold. |
 | Gather Souls | 1 | skill | rare | Add 3 Gravesouls to your draw pile. Draw 1 card. Consume. |
 | Gallows | 1 | attack | rare | Deal 10 damage, plus all it has grown. Every copy of this card gains 6 damage for the rest of the fight. |
 | Call the Departed | 1 | skill | rare | Add 2 Gravesouls to your hand. Add a Gravesoul to your draw pile. Fleeting. |
@@ -1056,7 +1056,7 @@ Tokens (made by other cards):
 | Needling Blow | 0 | attack | common | Deal 6 damage. Add a copy of this card to your discard pile. |
 | Plan Ahead | 1 | skill | common | Next turn, gain 1 extra Mana. Next turn, draw 1 extra card. |
 | Rift Storm | 2 | attack | uncommon | Deal 7 damage to ALL enemies. |
-| Rift Whirl | X | attack | uncommon | Deal 4 damage X times to ALL enemies. |
+| Rift Whirl | X | attack | uncommon | Spends at most 6 Mana. Deal 4 damage X times to ALL enemies. |
 | Wanderer's Draught | 1 | skill | uncommon | Heal 6. Consume. |
 | Steady Nerves | 1 | skill | uncommon | Lessen every debuff on you by 50% (at least 2). Gain 6 Barrier. |
 | Nerve Surge | 0 | skill | uncommon | Draw 1 card. Gain 1 Mana. Consume. |
@@ -1069,7 +1069,7 @@ Tokens (made by other cards):
 | Echoing Blow | 1 | skill | rare | Gain 1 Reverb: your next Attack is played twice. |
 | Rift Smithing | 2 | skill | rare | Upgrade every card in your hand for this fight. Consume. |
 | Rift Collapse | 3 | attack | rare | Deal 30 damage to ALL enemies. Lose 15 HP. Consume. |
-| Attunement | 3 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
+| Attunement | 4 | aura | rare | From your next turn, gain 1 more Mana every turn for the rest of the fight. |
 
 ## Ancestral
 
@@ -1080,12 +1080,12 @@ Tokens (made by other cards):
 | Forebear's Gift | 0 | skill | ancestral | Gain 2 Mana. Draw 2 cards. Consume. |
 | Echo of Ages | 1 | skill | ancestral | Gain 2 Might. Gain 2 Thorns. Consume. |
 | Rite of Renewal | 2 | skill | ancestral | Heal 14. Gain 10 Barrier. Consume. |
-| Ancient Pact | 1 | aura | ancestral | At the start of your turn: Gain 1 Mana and lose 2 HP. |
+| Ancient Pact | 2 | aura | ancestral | At the start of your turn: Gain 1 Mana and lose 2 HP. |
 | Ancestral Memory | 1 | skill | ancestral | Draw 2 cards. Upgrade every card in your hand for this fight. Consume. |
 | Spirit Hunt | 1 | attack | ancestral | Deal 12 damage to ALL enemies. Consume. |
 | Lineage | 1 | aura | ancestral | Whenever you play an Aura: Draw 1 card. |
 | Wrath of Ages | 3 | attack | ancestral | Deal 40 damage. Apply 2 Exposed. Consume. |
-| The Long Memory | 2 | aura | ancestral | Opening hand. At the start of your turn: Gain 1 Mana. |
+| The Long Memory | 3 | aura | ancestral | Opening hand. At the start of your turn: Gain 1 Mana. |
 | Unbroken Line | 3 | aura | ancestral | At the start of your turn: Gain 6 Barrier and heal 2. |
 
 ## Warden signature cards

@@ -835,7 +835,8 @@ export const DRUNKARD: CardDef[] = [
     'power',
     // (#695, Robert: 1 Mana, and the tab runs every turn: +1 Mana and 1 Hangover at the start of each turn. The Hangover each turn is the
     // real price #410 asks of a 1-Mana +1 Mana Aura (~22 points, ~110%, B on its own), and in a Brewmaster deck it builds Fermentation every turn (A))
-    1,
+    // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+    2,
     'none',
     [on('turnStart', [mana(1), hangover(1)])],
     {

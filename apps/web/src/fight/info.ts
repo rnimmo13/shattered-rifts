@@ -28,7 +28,12 @@ export const STATUS_INFO: Record<
     tone: 'bad',
     text: 'Deals 25% less damage with attacks.',
   },
-  might: { name: 'Might', glyph: '✦', tone: 'good', text: 'Attacks deal 1 more damage per stack.' },
+  might: {
+    name: 'Might',
+    glyph: '✦',
+    tone: 'good',
+    text: 'Attacks deal 1 more damage per stack. An X card that hits X times gets half your Might on each hit (rounded down).',
+  },
   burn: {
     name: 'Burn',
     glyph: '♨',
@@ -150,7 +155,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, harder each time: 20 at 10, 30 at 20, 10 more each time, 110 at 100, plus the Spell Power of whoever applied it. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, 5 harder each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus the Spell Power of whoever applied it. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -168,7 +173,7 @@ export const STATUS_INFO: Record<
     name: 'Primed',
     glyph: '↯',
     tone: 'good',
-    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent. Yours and your companions' loses half at the end of your turn.",
+    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent (an X card that hits X times gets half on each hit). Yours and your companions' loses half at the end of your turn.",
   },
   doom: {
     name: 'Fate',
@@ -711,7 +716,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 10 more each time: 20 at 10, 30 at 20, 110 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 5 more each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy (a Shatter that sets off does not spread again). Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',

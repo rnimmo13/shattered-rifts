@@ -9,6 +9,11 @@ import type {
   TriggerWhen,
   Unit,
 } from './types';
+import { ARENA_HP_COST_MULT } from './types';
+
+/** (the Reaver's Bloodlust) HP paid for 1 Might: five times as much in the Arena, as HP costs are there, DECISIONS #707, #713 */
+const bloodlustPer = (perHp: number, mode?: CombatState['mode']): number =>
+  perHp * (mode === 'pvp' ? ARENA_HP_COST_MULT : 1);
 
 /** (the Spiritwalker) how much more the hero's card damage deals for the Spirit held: perSpirit% each, up to the cap; 0 without it */
 export function attunementPct(side: SideState): number {
@@ -106,9 +111,10 @@ export function disciplineTrigger(
   // (the Reaver's Bloodlust, #693: HP your own effects cost you becomes Might for the fight)
   if (r.kind === 'bloodlust' && when === 'loseHp' && (ctx.lost ?? 0) > 0) {
     // (worked out from the HP paid alone: roundGain is reset every turn)
-    const before = Math.min(r.cap, Math.floor(d.progress / r.perHp));
+    const per = bloodlustPer(r.perHp, state.mode);
+    const before = Math.min(r.cap, Math.floor(d.progress / per));
     d.progress += ctx.lost ?? 0;
-    const due = Math.min(r.cap, Math.floor(d.progress / r.perHp)) - before;
+    const due = Math.min(r.cap, Math.floor(d.progress / per)) - before;
     if (due > 0) return [{ op: 'status', status: 'might', amount: due, to: 'self' }];
   }
   if (r.kind === 'volley' && when === 'play' && ctx.card?.tags?.includes(r.tag)) {
@@ -294,7 +300,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
     case 'execution':
       return `${r.name ?? 'Preparation'} +${d.progress}%`;
     case 'bloodlust':
-      return `Bloodlust ${Math.min(r.cap, Math.floor(d.progress / r.perHp))}/${r.cap} Might`;
+      return `Bloodlust ${Math.min(r.cap, Math.floor(d.progress / bloodlustPer(r.perHp, state.mode)))}/${r.cap} Might`;
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivated ${d.progress}/${r.cap}`
@@ -326,7 +332,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
   }
 }
 
-export function disciplineText(side: SideState): string | null {
+export function disciplineText(side: SideState, mode?: CombatState['mode']): string | null {
   const d = side.discipline;
   if (!d) return null;
   const r = d.rule;
@@ -343,8 +349,9 @@ export function disciplineText(side: SideState): string | null {
       return `${r.name ?? 'Preparation'} +${d.progress}%: your next Attack deals that much more and uses it all up (${r.perSkill ? 'even a Dagger' : 'even a free one'}). ${r.perDraw ? `Every card you draw on your turn after your opening hand adds +${r.perDraw}%` : `Every Skill you play adds +${r.perSkill ?? 0}%`} (up to +${r.cap}%).${r.bonus && r.woundedPct ? ` Attacks also deal +${r.bonus}% to enemies at ${r.woundedPct}% HP or less.` : ''}`;
     case 'bloodlust':
     {
-      const got = Math.min(r.cap, Math.floor(d.progress / r.perHp));
-      return `Bloodlust: ${got}/${r.cap} Might gained. Every ${r.perHp} HP your own effects cost you gives 1 Might for the fight${got < r.cap ? ` (${Math.floor(d.progress) % r.perHp}/${r.perHp} toward the next)` : ''}. At ${r.lowPct}% HP or less, your Attacks heal you for ${r.healPct}% of the HP they take off.`;
+      const per = bloodlustPer(r.perHp, mode);
+      const got = Math.min(r.cap, Math.floor(d.progress / per));
+      return `Bloodlust: ${got}/${r.cap} Might gained. Every ${per} HP your own effects cost you gives 1 Might for the fight${got < r.cap ? ` (${Math.floor(d.progress) % per}/${per} toward the next)` : ''}. At ${r.lowPct}% HP or less, your Attacks heal you for ${r.healPct}% of the HP they take off.`;
     }
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap

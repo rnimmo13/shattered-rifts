@@ -1,4 +1,5 @@
-import { forwardRef, memo, useMemo, useState, type CSSProperties } from 'react';
+import { forwardRef, memo, useContext, useMemo, useState, type CSSProperties } from 'react';
+import { HpCostMult } from './hpCost';
 import {
   ELEMENTS,
   cardText,
@@ -59,8 +60,13 @@ function frameOf(db: CombatDb, c: CardDef): number {
 
 const FRAME_NAME = ['', 'Light', 'Heavy', 'Colossal'];
 
-function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamage>): string {
-  let text = cardText(db, c, live);
+function rulesFor(
+  db: CombatDb,
+  c: CardDef,
+  live?: ReadonlyMap<number, LiveDamage>,
+  hpCostMult = 1,
+): string {
+  let text = cardText(db, c, live, { hpCostMult });
   const plainId = c.id.replace(/^(hi|lo)~/, '');
   const plain = plainId !== c.id ? db.cards[plainId] : undefined;
   if (plain) {
@@ -68,7 +74,7 @@ function rulesFor(db: CombatDb, c: CardDef, live?: ReadonlyMap<number, LiveDamag
     const LIVE = /\[\[live:[^\]]+\]\]/g;
     const held = text.match(LIVE) ?? [];
     const HOLD = '\u0001';
-    const base = cardText(db, plain, live).replace(LIVE, HOLD);
+    const base = cardText(db, plain, live, { hpCostMult }).replace(LIVE, HOLD);
     const parts = markRollDiff(text.replace(LIVE, HOLD), base).split(HOLD);
     text = parts.map((p, k) => p + (k < parts.length - 1 ? (held[k] ?? '') : '')).join('');
   }
@@ -197,15 +203,16 @@ export const FightCard = memo(
     // a picture that does not arrive (a dropped request, files swapped by a deploy) falls back to the painted one, never a blank
     const [artFailed, setArtFailed] = useState<string | null>(null);
     const shown = artFailed === def.id ? paintedCardArt(def) : art;
+    const hpCostMult = useContext(HpCostMult);
     const text = useMemo(
       // (a sharpened card in your hand shows the sharpened damage itself; anywhere else the text says how much was added)
       () =>
-        rulesFor(db, def, live) +
+        rulesFor(db, def, live, hpCostMult) +
         (bonus && !(live && [...live.values()].some((l) => !l.barrier && !l.shatter))
           ? ` ${forgeLabel(def.forgeWord ?? 'Sharpen')}: +${bonus}.`
           : '') +
         (note ? ` ${note.replace(KEYWORDS, '**$1**')}` : ''),
-      [db, def, bonus, live, note],
+      [db, def, bonus, live, note, hpCostMult],
     );
     const runs = useMemo(() => parseRules(text), [text]);
     const n = text

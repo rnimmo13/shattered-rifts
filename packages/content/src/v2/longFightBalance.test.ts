@@ -318,7 +318,8 @@ it.each(resources)(
       ['', now, later],
       ['+', upNow, upLater],
     ] as const) {
-      let s = play(fight(), id + suffix);
+      // (an Arena-sized hero: HP costs are five times as much there since #713)
+      let s = play(fight('engineer', undefined, 1000), id + suffix);
       expect(s.sides.a.mana).toBe(20 + immediate);
       s = round(restored(s));
       expect(s.sides.a.mana).toBe(3 + delayed);

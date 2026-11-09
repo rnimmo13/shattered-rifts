@@ -11,7 +11,7 @@ import { other, clone } from './types';
 import { seedRng, shuffle } from './rng';
 
 /** Stamp ghost results and simulations so different policies never share a balance sample. */
-export const BOT_VERSION = 'synergy-2';
+export const BOT_VERSION = 'synergy-3';
 export const BOT_SEARCH = { width: 8, depth: 10, budget: 900 } as const;
 
 /** Plan against a plausible unknown draw, never the live RNG or an opponent's secret cards.
@@ -67,6 +67,40 @@ function estimatedThreat(s: CombatState, me: Side): number {
   return 6 + 3 * them.hand.length + 6 * allies + 2 * might;
 }
 
+/** How many more of its own turns an Aura played now is likely to work for: more while both sides have most of their HP left. */
+function auraTurnsLeft(s: CombatState, me: Side): number {
+  const share = (side: Side): number => {
+    const units = s.sides[side].units;
+    const hp = units.reduce((n, u) => n + u.hp, 0);
+    const max = units.reduce((n, u) => n + u.maxHp, 0);
+    return max > 0 ? hp / max : 0;
+  };
+  const left = Math.min(share(other(me)), share(me));
+  // (an Arena fight runs about ten turns a side; a Campaign fight about four)
+  return s.mode === 'pvp'
+    ? Math.min(6, Math.max(1, Math.ceil(8 * left)))
+    : Math.min(4, Math.max(1, Math.ceil(4 * left)));
+}
+
+/**
+ * What the Auras in play are worth (#704): each about its Mana cost in value for every turn it should still work, so a cheap Aura early is
+ * worth more than one more Attack now, and the same Aura late is not. Knows nothing about the card beyond its cost (an X or 0-cost Aura
+ * counts as 1); an Aura made of several triggers counts once. One that ends with this turn counts nothing.
+ */
+const AURA_VALUE_PER_MANA_TURN = 5;
+function aurasValue(db: CombatDb, s: CombatState, me: Side): number {
+  const powers = s.sides[me].powers.filter((p) => !p.card.startsWith('__') && !p.temp);
+  if (powers.length === 0) return 0;
+  const turns = auraTurnsLeft(s, me);
+  let v = 0;
+  for (const p of powers) {
+    const card = db.cards[p.card];
+    const parts = Math.max(1, card?.effects.filter((o) => o.op === 'power').length ?? 1);
+    v += (Math.max(1, card?.cost ?? 1) * AURA_VALUE_PER_MANA_TURN * turns) / parts;
+  }
+  return v;
+}
+
 /** How good the position is for `me` at the end of a turn: the plain evaluation plus defence against what could come back. */
 function value(db: CombatDb, s: CombatState, from: CombatState, me: Side): number {
   let v = evaluate(db, s, me);
@@ -87,7 +121,7 @@ function value(db: CombatDb, s: CombatState, from: CombatState, me: Side): numbe
         (aura.perSummons ? Math.floor((mine.summonedFight ?? 0) / aura.perSummons) : 0)) *
       (aura.scope === 'friends' ? 5 : 3);
   for (const unit of s.sides[other(me)].units) v += (unit.statuses.fracture ?? 0) * 1.5;
-  v += mine.powers.filter((p) => !p.card.startsWith('__')).length * 2;
+  v += aurasValue(db, s, me);
   if (s.mode === 'pvp') {
     const hero = s.sides[me].units.find((u) => u.kind === 'hero');
     if (hero) v += Math.min(hero.barrier, estimatedThreat(s, me)) * 0.6;

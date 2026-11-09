@@ -239,12 +239,12 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(hero(s).statuses.vigor ?? 0).toBe(0);
   });
 
-  it('Spirit Offering gives 1 Mana now and 1 next turn, adding a Void without being consumed', () => {
+  it('Spirit Offering gives 1 Mana now and 1 next turn, adding a Void, and is consumed since #710', () => {
     let s = fight(['spirit-offering']);
     s = play(s, 'spirit-offering');
     expect(s.sides.a.mana).toBe(9 + 1);
     expect(s.sides.a.discard.map((c) => c.card)).toContain('void-drain');
-    expect(s.sides.a.exhausted.map((c) => c.card)).not.toContain('spirit-offering');
+    expect(s.sides.a.exhausted.map((c) => c.card)).toContain('spirit-offering');
   });
 
   it('Wildfire is a skill that applies 8 Burn and deals nothing (DECISIONS #501)', () => {

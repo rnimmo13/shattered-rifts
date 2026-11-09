@@ -1,7 +1,7 @@
 // #/models: every Riftwalker, companion and enemy standing side by side, so look-alikes are easy to spot (a dev page; no link).
 
 import { useEffect, useRef } from 'react';
-import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
+import { COMBAT_DB, RIFTWALKERS, TRAINING_UNIT_IDS } from '@sr/content/v2';
 import { heroFigure, unitFigure } from './art';
 import { HeroModel } from '../art/HeroModel';
 import '../play/play.css';
@@ -38,7 +38,10 @@ function Figure(props: { src: HTMLCanvasElement; name: string; note: string; her
 }
 
 export function Bestiary() {
-  const units = Object.values(COMBAT_DB.units).filter((u) => !u.id.endsWith('+'));
+  // (the Sandbox's training dummies are not enemies of the world)
+  const units = Object.values(COMBAT_DB.units).filter(
+    (u) => !u.id.endsWith('+') && !TRAINING_UNIT_IDS.has(u.id),
+  );
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">

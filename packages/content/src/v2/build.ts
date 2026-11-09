@@ -462,6 +462,7 @@ type Extra = Partial<
     | 'starCost'
     | 'statusCost'
     | 'x'
+    | 'xMax'
     | 'innate'
     | 'ethereal'
     | 'onDiscard'

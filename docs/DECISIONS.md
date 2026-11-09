@@ -1530,3 +1530,127 @@ Robert: with Raise Colossus, the player should be able to pick the Colossus alre
 - The play action has a new optional `grow` field (the Colossus's id). The engine offers it only when a release is possible, refuses it on a unit that is not a Colossus of that side, and refuses it together with a release. The PvP server passes it through.
 - Played as it is, the card still releases the weakest, as before; with nothing able to make way it still grows the Colossus without asking.
 - No card numbers changed. Old action logs replay the same (they never name `grow`).
+
+## 701 - A won run saves its deck by itself; no run file export or import (2026-11-09)
+
+Robert: finishing a run asked him to save the deck and offered Export run. The deck should save automatically, and exporting runs should not be needed.
+
+- **A won run banks itself.** As soon as the finale is won the run is banked: its deck goes into the Vault (here and online), the run is recorded in History as Completed and on the leaderboard. The victory screen says where the deck went (or, with a full Vault, asks which deck to give up) and has one button, Return to the Sanctum. Before this, "Return to the Sanctum" left the run parked unbanked, so its deck was not kept and the run was not recorded as completed; such a parked win is banked when it is next opened.
+- **Export run and Import a run file are removed.** Saved runs now follow the account between devices, so files were only a second way to move a run, and an edited file was an easy way to put a doctored run on the leaderboard. Run saves themselves are unchanged.
+- Cost: the desktop's offline local mode has no other way to back up or move a run.
+
+## 702 - Bloodstorm hits X times and draws 2 (2026-11-09)
+
+Robert, after an Arena simulation in which a Reaver deck won in about 4 own turns: "bloodstorm shouldnt draw that many cards, so change it to damage X times then upgrade to x+1 times and only draw two cards."
+
+- **Bloodstorm** (Hunter rare, X): Deal 7 damage X times. Draw 2 cards. Upgraded: X is 1 higher (so X+1 times). It was X+1 times (X+2 upgraded) and drew a card per Mana spent, which often drew the next Bloodstorm and chained whole turns of 400+ damage with Bloodlust Might on every hit.
+- Price: 21 + 2 draws = 27 points at X = 3, about 96% of a 3-Mana Rare (a B; it was ~138%). It stays far above that in a Might deck, since every hit carries the Might.
+- Open, not decided: Robert is considering making HP-cost cards cost a share of max HP in the Arena (or everywhere), so paying HP is a real cost at 1000 HP without getting out of hand.
+
+## 703 - Arena pacing: every build kills in about 10 turns, on its own damage curve (2026-11-09)
+
+Robert, after the 0.235 Arena simulation (median about 7 own turns, Reaver B in 5): "there needs to be an emphasis on making sure damage comes at different times for each build (burst, consistent, setup w/ payoff, ramping, etc..) but they should all take around the 10 turns to kill in arena. that is also a decent reason why builds could use better defensive mitigaiotn like sapped and other forms". By scaling he means damage that grows too quickly (an optimized Shatterer is expected to outgrow a 10-round fight).
+
+- Direction, refining #599: some imbalance between builds is wanted, but the time each takes to kill should not differ drastically. Builds differ in *when* their damage comes (burst, steady, setup then payoff, ramp), not in how soon the fight ends.
+- Ramping damage should grow in a straight line or level off, not multiply; the fast-growing builds (Shatterer first) are the ones to slow.
+- Every class should have some real damage mitigation (Sapped and other forms), so defence is part of how a fight reaches 10 turns.
+- Not yet measured or implemented; no cards changed by this entry.
+
+## 704 - Training dummies in the Sandbox, a goldfish tool, and a bot that values Auras (2026-11-09)
+
+Robert: "i did have teh sandbox built so you could use it to test things more efficiently. ideally, this would include a dummy for you to test these scenarios. im ok with linear scaling. obviously the bot needs to be improved with auras in mind."
+
+- **Sandbox, Training group:** Training Dummy (1000 HP, stands still) and Sparring Dummy (1000 HP, Three Jabs: 6 damage 3 times every turn). Easy mode and a saved deck's tier never scale them. They live in `TRAINING_ENCOUNTERS`, not `ENCOUNTERS`, so no Campaign map or Arena meets them. A new **Arena HP (1000)** box gives your hero the Arena's HP, to try HP costs and Barrier at that size.
+- **`pnpm goldfish -- --decks <file.json>`** (tools/src/goldfish): each deck plays the Arena (1000 HP, its Ascendancy on) against an opponent who only ends turns, several seeds, and prints its kill turn and median damage on each own turn. Offline only. It cannot judge decks that need the opponent to act (Traps, Stagger, Riposte): those need a sparring opponent.
+- **Smart bot `synergy-3`:** an Aura in play is worth about its Mana cost (5 points a Mana) for every turn it should still work: up to 6 in the Arena and 4 in the Campaign, fewer as either side's HP runs down. It was a flat 2 for any Aura, so it rarely played them (Unbroken Line 0.07 plays a copy a game). The bot still knows nothing about specific cards. Arena ghosts use it, so this changes how ghosts play.
+
+## 705 - The goldfish tool's sparring opponent; HP costs stay flat in the Campaign; the Arena target is a kill in about 10 turns (2026-11-09)
+
+Robert: "add the hitting back opponent to the dummy tool. i mean if the hp thing doesnt seem good for campaign then i dont want to change it to a percentage ... otherwise i might just multiply hp costs by 10 in arena or something like that ... i would like every character to be in the 10 turn range for the kill. every character has a differnt level if mitigation that kind of equalizes differences in damage over time, so they dont have to be exact."
+
+- **`pnpm goldfish -- --spar [start,step,hits]`:** the opponent plays Strikes at the deck's hero every turn, by default 50 damage on its first turn and 10 more each turn after, in 4 hits (a deck that kills in about ten turns). The hits are real card plays, so Barrier, Sapped, Thorns, Riposte and Traps answer them; the tool sets the opponent's Mana, hand and Might each turn to hold the pace. It also reports the HP the deck lost and whether it fell. It aims every hit at the hero, never a companion.
+- **HP costs stay flat numbers in the Campaign** (no percentages). For the Arena, an Arena-only multiplier on HP your own cards cost you (Robert floated x10) is under consideration, not decided or built.
+- **Target:** every Ascendancy kills in about 10 own turns against the dummy; it need not be exact, since each class's mitigation evens out differences over a fight. Refines #703.
+
+## 706 - Arena pacing pass: HP costs x10 in the Arena, Exposed spent, Shatters capped at 50 (2026-11-09)
+
+Robert, choosing from the goldfish-tool proposals (#704, #705): "im ok with most of these changes except i want bloodstorm to cap at max use of mana ... i dont want to change the might cap. and idk about the legion change for swarmwright, i feel like its fine?"; then "shatter limit: just cap it at 50 for now for both ... bloodlust per 30 hp sounds better to me, if we have to make it more balanced, hten maxing it at 8 is fine with me".
+
+- **Arena HP costs x10** (`ARENA_HP_COST_MULT`): HP a hero's own effects cost them is ten times the card's number in an Arena fight ("Lose 2 HP" costs 20), and every card in that fight shows the real number. The Campaign is unchanged (no percentages, #705). Bloodlust counts 30 HP a Might in the Arena.
+- **Bloodlust up to 8 Might** (was 12): with HP x10 alone the Reaver still killed the sparring opponent on turn 5; at 8, turn 6.
+- **Bloodstorm spends at most 6 Mana** (new generic `xMax`: an X card spends at most that much, the rest stays); upgraded it hits at most 7 times.
+- **Coup de Grace** counts at most 10 Exposed (+50 / +60) and removes the target's Exposed; **Culling** removes the Exposed it counts. Exposed counted twice (each stack a turn of +50% and +5/+6 here): one 500-damage turn.
+- **Rising Howl** +5 a card played (+6 upgraded; was +7 / +9).
+- **Sunwalker:** Dawn 1 Might (was 2); Radiant exits return 1 Fervor rising to 3 (was 2 to 4).
+- **Swarm Tactics** answers the first 3 summons each turn. **Legion unchanged** (Robert).
+- **Shatters stop growing at 50** (the 4th on an enemy: 20, 30, 40, then 50 every time), Campaign and Arena alike, "for now": the Shatterer needs more depth, a later design question.
+- **Spiritwalker:** the first ordered command each turn gives 2 Spirit (was 1).
+- Goldfish (sparring opponent, 4 seeds, all 34 decks, before the Bloodlust cap): kill turns now 5 (Reaver, Swarmwright) to 11 (Spiritwalker, Brewmaster), most at 7-8; before 4 to 13. The remaining gap is field-wide; raising Arena HP is the suggested next step, not decided.
+- Rules change: RULES_VERSION to be bumped at release.
+
+## 707 - Arena HP costs x5, not x10; Bloodlust 15 HP a Might there (2026-11-09)
+
+Robert: "i changed my mind about arena hp costs, lets do 5x the regular cost. this is because in arena you actually are matched up against an opponent that does so much more dmage that campaign. bloodlust should be adjusted to be more in line with the previous change i just stated. so maybe 15hp or something"
+
+- `ARENA_HP_COST_MULT` 5: "Lose 2 HP" costs 10 in the Arena. Bloodlust follows the same multiplier: 15 HP a Might in the Arena (3 in the Campaign), still up to 8 Might (#706). Supersedes the x10 in #706.
+
+## 708 - Shatters keep growing past 50, by half; from 50 Fracture each Shatter cracks another enemy (2026-11-09)
+
+Robert: "shatter should keep counting up from 50 but it should be diminishing returns above 50. and starting at 50 and every 10 above should apply 10 fracture to another target enemy." Then: "if shatter is still scaling too quickly, then we can just adjust the shatter damage."
+
+- Shatter damage: 20, 30, 40, 50, then 5 more each (55, 60, 65...): half the step past the 4th. Replaces #706's flat 50.
+- From the Shatter at 50 Fracture on (the 5th, and every one after), each Shatter also puts 10 Fracture on another living enemy of the same side, chosen at random (seeded). A Shatter set off by that spread Fracture does not spread again, so two enemies never pass it back and forth. Alone (most Arena fights, no companions) it does nothing.
+- Interpretation flagged to Robert: "diminishing" read as half the step; "starting at 50" read as 50 Fracture on the enemy.
+- Goldfish (sparring): both Shatterer decks kill on turn 5 again (6 with the flat 50). Tested smaller curves, all turn 6: base 10 step 8, base 5 step 8, base 10 step 6 (smoothest). Not chosen yet.
+
+## 709 - Every X card spends at most 6 Mana (2026-11-09)
+
+Robert: "for whirling maul, apply the same cap to it as every other X cost. in a perfect world, we wouldnt need caps, the game would just be balanced in a way such that the combo would require luck to draw those cards and setup ... i think my fix for part of these issues would be to add more consume to cards to big damages can be one and done ... im ok to bringing down damage and campaign hp/dmg if it meant for more balanced arena play".
+
+- `X_MANA_CAP` 6 on every Mana X card (content/v2/cards.ts), the 14 there are, upgraded or not (Bloodstorm already had it, #706). Text: "Spends at most 6 Mana." Spell Power X cards are untouched.
+- Direction recorded, not built: fewer permanent-Might Hunter cards (some become Consume skills giving Might for 3 turns), more Consume on big-damage cards, Mana ramp kept answerable, and damage brought down (with Campaign enemy HP and damage to match) rather than Arena Barrier or HP costs raised.
+
+## 710 - Shatters +5 a threshold; Might for 3 turns on four Hunter cards; Mana-every-turn Auras cost 1 more; Mana cards that pay back consumed (2026-11-09)
+
+Robert: "shatter shoudl simply grow by 5 damage each threshold. i am curious to see the hunter changes and if it will still be viable. i think cards that give mana ever turn need to probably be a bit costlier. im not sure if consume does anything. if its an aura then consume does nothing, and if its a card that gives mana then yea it probbaly should have consume and be balanced with that in mind." Earlier: "we probably shouldnt have so many hunter cards give permanent might. im open to changing some of them to consume skills that give the might for 3 turns."
+
+- **Shatter:** 20 at 10 Fracture, then 5 more each threshold (25, 30... 65 at 100; 425 in all by 100, was 650 before #706). Replaces #706's cap and #708's half step; #708's spread (from 50 Fracture, 10 to another enemy) stays. Fracture cards are now over-priced by the costing guide until repriced.
+- **New rule:** a status op's `temp` can be a number of turns ("Gain 6 Might for 3 turns"), counted down at the end of each of your turns.
+- **Hunter:** The Hunger (now a 1-Mana Consume skill: lose 4, 5 Might for 3 turns; upgraded lose 3, 6), Unchained (1-Mana Consume skill: 6 Might for 3 turns, upgraded 8; was a 2-Mana Aura with 4 lasting), The Hunger Unleashed (its 4 / 5 Might last 3 turns; the Ritual still builds lasting Might), Open a Vein (3 Might for 3 turns, was 2 lasting).
+- **1 more Mana** for the Auras that give Mana every turn: Attunement 4 (upgraded 3), Inner Furnace 3, Blood Pact 2 (1), Berserk Tempo 3 (2), Deep Pockets 3, Ascendant Form 3, Phylactery 3 (2), Bonded Dead 2, Last Call 2, Ancient Pact 2, The Long Memory 3. The Whole Deck and Storm Chant (Mana on a condition) unchanged.
+- **Consume** on the one-shot cards that give back more Mana than they cost: Spirit Offering, Burnt Offering, Call at Dusk, Throw Scraps. The "next turn, 1 extra Mana" cards that only move Mana are unchanged, as is Brace for Battle (its own lock).
+- Not hand-priced yet against the costing guide; goldfish results reported to Robert.
+
+## 711 - An X card's hits carry half your Might and Primed (2026-11-09)
+
+Robert: "can you make the X scaling cards to benefit from might/prime at half? would that hlep"
+
+- A damage effect whose number of hits is X (Bloodstorm, Whirling Maul, Whirling Blade, Rift Whirl, Berserk Tide and the rest) adds half the attacker's Might to each hit (rounded down) and half its Primed; Primed is still spent in full. Engine and damage preview alike (`xHitsHalf`); the Might and Primed tooltips say so. Campaign and Arena alike.
+- Goldfish (sparring, 12 seeds): Reaver B kills on turn 7 (was 5), damage by turn 5 748 (was 1000), biggest turn 267 (was 385); Bloodstorm and Whirling Maul now 44% of its damage (66%). Other Hunter builds unchanged.
+
+## 712 - Most of this week's balance pass reverted; X cards and Mana cards kept (2026-11-09)
+
+Robert, after the Arena matchup sim showed the pass overcorrecting (Reaver, Cardsharp, Seer, Predator, Beastmaster falling to D-F): "you are making this very hard for me. can we just revert most of these changes except for the X cost cards and the mana cards"
+
+- **Reverted to 0.235:** #706 (Arena HP costs multiplied, Bloodlust Arena count and 8 cap, Coup de Grace and Culling spending Exposed, Rising Howl, Sunwalker, Swarm Tactics, Spiritwalker), #707 (x5), #708 (Shatter half step and spread), #710's Shatter +5 a threshold and its Hunter Might-for-3-turns cards (and the engine's temporary-for-N-turns status, unused). Shatters are again 10 + 10k with no limit.
+- **Kept:** #702 Bloodstorm (X times, draw 2); #709 every Mana X card spends at most 6 Mana; #711 X cards' hits carry half the Might and Primed; #710's Mana changes (11 Auras giving Mana every turn cost 1 more; Spirit Offering, Burnt Offering, Call at Dusk, Throw Scraps consumed). Also kept, not balance: the Sandbox training dummies and Arena-HP box (#704), the goldfish tool (#704, #705), the bot's Aura valuation (synergy-3).
+- Open: by the costing guide, 7 of the 11 Mana Auras are now C/D at +1 cost (Attunement, Inner Furnace, Ascendant Form, Bonded Dead, Ancient Pact, Deep Pockets, The Long Memory, Last Call), and Burnt Offering D with Consume; Robert's call whether to keep them there.
+
+## 713 - Back in after #712: Shatters +5 a threshold (with the spread), Arena HP costs x5 (2026-11-09)
+
+Robert: "oh yea nerf shatter the way i wanted it too. and the hp cost should still be 5x in arena"
+
+- **Shatter:** 20 at 10 Fracture, 5 more each threshold (25, 30... 65 at 100; 425 by 100, was 650). From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy at random; a Shatter set off by that spread does not spread again (#708's rule, kept with his +5 from #710). Fracture is now about 2.5 a point in the costing guide.
+- **Arena HP costs x5** (`ARENA_HP_COST_MULT`, #707): "Lose 2 HP" costs 10 in the Arena and every card in an Arena fight shows it (hand, hover, Aura and Trap tips). Bloodlust counts 15 HP a Might there. The Campaign is unchanged; Bloodlust's cap stays 12.
+
+## 714 - Player balance data: every online fight, deck choices and Arena replays, kept 30 days, and a report (2026-11-09)
+
+Robert: "my belief is that you arent going to be able to reliably balance the game without player data to analyse. can you please make sure you have a way to analyse player data to figure out whats actually strong in the game and what players are exploiting for big damage? also, we need to know what players are having trouble with in terms of lacking damage." On retention and notice: "30 day retention only. just a line in settings."
+
+- **Every online Campaign fight** goes to a new owner-only `balance_fights` table with its replay, encounter, node, floor and its numbers (`FightStats`: damage by card and by turn, the biggest turn and its cards, turns, HP lost, HP paid), worked out by replaying it on the player's machine when it is saved. It rides the request that already keeps the player's ten fights (#697): no extra Durable Object requests.
+- **Deck choices**: the run remembers its last 150 (card rewards offered and taken or skipped, buys, removals, upgrades: `draftLog`), sent in the existing private Campaign snapshots (#607).
+- **Arena**: the owner's export now carries each game's replay with it.
+- **Retention 30 days** for all balance tables (Arena games and Campaign snapshots were 90). Fights per network address a day 400 (was 60), so testers on one connection are not cut off.
+- **Notice**: a "Game data" line in Settings. No consent screen (Robert).
+- **Report**: `pnpm balance:players` (docs/PLAYER_DATA.md): builds by tier, where players lose, builds lacking damage, card damage and win rates, biggest turns, reward pick rates, Arena in real games. Checked end to end on a bot-played sample in the export's shape.
+- Review fixes: damage is counted from the hits (an enemy's Barrier wearing off or self-harm is not damage dealt; HP paid counts only the hero's own direct hits on itself); the server rebuilds stats from known fields; the report recomputes them from the replay under today's rules; Arena exports drop player names; the size cap reads a small length column, not the text; export pages are 20 rows.

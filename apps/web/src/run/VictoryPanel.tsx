@@ -1,17 +1,20 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, type ReactNode } from 'react';
 import { classNameOf } from '@sr/content/v2';
 import type { RunState } from '@sr/campaign';
 import { enterVictory } from '../audio/music';
 
-/** An earned, persistent ending: no automatic restart or forced navigation. */
+/**
+ * An earned, persistent ending: no automatic restart or forced navigation. The run banks itself as it is won, so its deck is saved
+ * without asking (children: where it went; Robert 2026-11-09, #701).
+ */
 export function VictoryPanel({
   run,
-  onKeep,
   onHome,
+  children,
 }: {
   run: RunState;
-  onKeep: () => void;
   onHome: () => void;
+  children?: ReactNode;
 }) {
   // Beyond the Clouds plays from the beginning while the ending is open (DECISIONS #664).
   // (a layout effect, like FightView's, so leaving the last fight goes straight to this theme)
@@ -34,11 +37,9 @@ export function VictoryPanel({
           {classNameOf(run.character, run.ascendancy)} · {run.stats.duelsWon} victories ·{' '}
           {run.deck.length} cards
         </p>
+        {children}
         <div className="choices-row">
-          <button className="btn btn--primary" onClick={onKeep}>
-            <span>Keep this victorious deck</span>
-          </button>
-          <button className="btn" onClick={onHome}>
+          <button className="btn btn--primary" onClick={onHome}>
             <span>Return to the Sanctum</span>
           </button>
         </div>

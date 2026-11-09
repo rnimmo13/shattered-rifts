@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { applyAction, createCombat, heroOf, legalActions, type CombatState } from '@sr/combat';
+import {
+  applyAction,
+  ARENA_HP_COST_MULT as ARENA,
+  createCombat,
+  heroOf,
+  legalActions,
+  type CombatState,
+} from '@sr/combat';
 import { COMBAT_DB as db } from './index';
 
 const setup = (hero: string, ascendancy?: string) => {
@@ -31,17 +38,19 @@ describe('simulation-led balance revision', () => {
     const hp = heroOf(s.sides.a)!.hp;
     s = play(s, 'blood-oath');
     expect(s.sides.a.reserves).toBe(3);
-    expect(heroOf(s.sides.a)!.hp).toBe(hp - 3);
+    // (an Arena fight: its HP costs are five times the card's, #713)
+    expect(heroOf(s.sides.a)!.hp).toBe(hp - 3 * ARENA);
     s.sides.a.reserves = 0;
     s = play(s, 'blood-oath+');
     expect(s.sides.a.reserves).toBe(0);
-    expect(heroOf(s.sides.a)!.hp).toBe(hp - 3);
+    // (an Arena fight: its HP costs are five times the card's, #713)
+    expect(heroOf(s.sides.a)!.hp).toBe(hp - 3 * ARENA);
     s = round(s);
     s.sides.a.reserves = 0;
     const before = heroOf(s.sides.a)!.hp;
     s = play(s, 'blood-oath+');
     expect(s.sides.a.reserves).toBe(3);
-    expect(heroOf(s.sides.a)!.hp).toBe(before - 2);
+    expect(heroOf(s.sides.a)!.hp).toBe(before - 2 * ARENA);
   });
 
   it('Marshal gains a Reserve each own turn, within the four-Reserve limit', () => {

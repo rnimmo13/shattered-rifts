@@ -157,7 +157,8 @@ export const NEUTRAL: CardDef[] = [
     { exhaust: true, up: { effects: [dmg(36, 'allFoes'), lose(15)] } },
   ),
   // (an Aura: its Mana lasts the rest of the fight, like Blood Pact, DECISIONS #381; a Mana dearer than the class versions, #500)
-  n('rare', 'attunement', 'Attunement', 'power', 3, 'none', [maxMana(1)], { up: { cost: 2 } }),
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  n('rare', 'attunement', 'Attunement', 'power', 4, 'none', [maxMana(1)], { up: { cost: 3 } }),
 ];
 
 // Warden signature cards: one set per Warden, offered as the Warden's Gift. Any Riftwalker can take them.
@@ -361,7 +362,8 @@ export const ANCESTRAL: CardDef[] = [
   anc('rite-of-renewal', 'Rite of Renewal', 'skill', 2, 'none', [heal(14), barrier(10)], {
     exhaust: true,
   }),
-  anc('ancient-pact', 'Ancient Pact', 'power', 1, 'none', [on('turnStart', [mana(1), lose(2)])], {
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  anc('ancient-pact', 'Ancient Pact', 'power', 2, 'none', [on('turnStart', [mana(1), lose(2)])], {
     up: { effects: [on('turnStart', [mana(1), lose(1)])] },
   }),
   anc('ancestral-memory', 'Ancestral Memory', 'skill', 1, 'none', [draw(2), upgradeOp('hand')], {
@@ -382,7 +384,8 @@ export const ANCESTRAL: CardDef[] = [
   ),
   // (an Aura, DECISIONS #410: +1 Mana a turn for 1 with no price was ~40% over; at 2 like the other Mana Auras, with Opening hand as
   // an ancestral card's edge over Attunement)
-  anc('the-long-memory', 'The Long Memory', 'power', 2, 'none', [on('turnStart', [mana(1)])], {
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  anc('the-long-memory', 'The Long Memory', 'power', 3, 'none', [on('turnStart', [mana(1)])], {
     innate: true,
     // (not cheaper, DECISIONS #500: +1 Mana a turn for 1, in the opening hand, with no price, beat every class version)
     up: { effects: [draw(1), on('turnStart', [mana(1)])] },

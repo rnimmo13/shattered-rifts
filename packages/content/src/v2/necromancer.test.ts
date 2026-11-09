@@ -484,7 +484,7 @@ describe('the other new rules', () => {
     const t = (id: string) => cardText(db, db.cards[id]!);
     expect(t('raise-thrall')).toBe('Raise Dead 5.');
     expect(t('knucklebone')).toBe('Your companions each deal 6 damage.');
-    expect(t('call-at-dusk')).toBe('Next turn: Raise Dead 2 and gain 2 Mana.');
+    expect(t('call-at-dusk')).toBe('Consume. Next turn: Raise Dead 2 and gain 2 Mana.');
     expect(t('bone-crush')).toMatch(/^Costs 0 if your companions have struck this turn\./);
   });
 });
@@ -924,7 +924,8 @@ describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
   });
 
   it('Phylactery costs 2, is not Fleeting and draws 1 when played', () => {
-    expect(db.cards.phylactery).toMatchObject({ cost: 2 });
+    // (3 since #710: Mana every turn)
+    expect(db.cards.phylactery).toMatchObject({ cost: 3 });
     expect(db.cards.phylactery?.ethereal ?? false).toBe(false);
     let s = fight(['phylactery']);
     const n = s.sides.a.hand.length;

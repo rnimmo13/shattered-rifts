@@ -2,7 +2,8 @@
 // ten stay, and each has a link anyone can open to watch it, or a file can be saved instead. A fight only plays back under the rules it
 // was fought under (RULES_VERSION), as an Arena replay.
 
-import { RULES_VERSION } from '@sr/pvp';
+import { RULES_VERSION, fightStats, type FightStats } from '@sr/pvp';
+import { COMBAT_DB } from '@sr/content/v2';
 import { BUILD } from '../build';
 import type { FightReplay } from '../fight/recap';
 import { here } from '../pvp/matchHistory';
@@ -20,8 +21,16 @@ export interface CampaignFight {
   ascendancy?: string;
   tier: number;
   replay: FightReplay;
+  /** (DECISIONS #714) for the owner's balance review: which fight it was, where on the map, and what it came to */
+  encounter?: string;
+  node?: string;
+  floor?: number;
+  stats?: FightStats;
 }
-export type CampaignFightSummary = Omit<CampaignFight, 'replay'> & { id: string; at: number };
+export type CampaignFightSummary = Omit<CampaignFight, 'replay' | 'stats'> & {
+  id: string;
+  at: number;
+};
 
 /** A link anyone can open to watch a kept Campaign fight. */
 export const fightLink = (id: string): string => here(`#/campaign-fight/${id}`);
@@ -31,8 +40,12 @@ export function campaignFight(
   replay: FightReplay,
   run: { character: string; ascendancy?: string; tier: number },
   won: boolean,
+  where?: { encounter?: string; node?: string; floor?: number },
 ): CampaignFight {
   return {
+    ...(where?.encounter ? { encounter: where.encounter } : {}),
+    ...(where?.node ? { node: where.node } : {}),
+    ...(where?.floor !== undefined ? { floor: where.floor } : {}),
     rules: RULES_VERSION,
     version: BUILD.version,
     title: replay.title,
@@ -58,7 +71,14 @@ export function saveCampaignFight(fight: CampaignFight): Promise<string | null> 
   const p = (async () => {
     try {
       const { boardPost } = await import('../pvp/boardApi');
-      const d = await boardPost('fight', { fight });
+      // (what the fight came to, worked out once by replaying it: kept with it for the owner's balance review, DECISIONS #714)
+      let stats: FightStats | undefined;
+      try {
+        stats = fightStats(COMBAT_DB, fight.replay.setup, fight.replay.moves, fight.replay.me);
+      } catch {
+        stats = undefined;
+      }
+      const d = await boardPost('fight', { fight: stats ? { ...fight, stats } : fight });
       if (d && typeof d['id'] === 'string') return d['id'];
     } catch {
       /* not kept */

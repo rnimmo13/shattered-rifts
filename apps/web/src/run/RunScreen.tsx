@@ -56,7 +56,6 @@ import {
   finishDuel,
   leaveMerchant,
   newRun,
-  parseRun,
   realmOfRun,
   takeShrine,
   leaveShrine,
@@ -75,7 +74,8 @@ import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { ChanceReel, type Flip } from './ChanceReel';
 import { PotionChip } from '../fight/PotionChip';
-import { BankedPanel } from './BankedPanel';
+import { BankedPanel, DeckSaved } from './BankedPanel';
+import { canPlay, localOnly } from '../playAccess';
 import {
   arenaProblem,
   autoSaveForArena,
@@ -109,7 +109,6 @@ import type { PvpLink } from '../pvp/link';
 import type { Action } from '@sr/combat';
 import {
   clearSavedRun,
-  exportRun,
   RUN_SLOTS,
   loadActiveRun,
   runCount,
@@ -363,6 +362,17 @@ export default function RunScreen() {
     [setRun, saveToArena, runClock],
   );
 
+  // a won run banks itself: its deck goes to the Vault and the run is recorded as completed, without a button to press (Robert
+  // 2026-11-09, #701). This also finishes a won run that was parked on its victory screen before this.
+  const wonUnbanked = run?.won === true && run.phase === 'loopCleared';
+  useEffect(() => {
+    // (read from the ref: an effect run twice must not bank twice)
+    // (and only while this device may play: a run another device has taken over is not finished from here)
+    const cur = runRef.current;
+    if (wonUnbanked && cur?.won && cur.phase === 'loopCleared' && (canPlay() || localOnly()))
+      act(bank);
+  }, [wonUnbanked, act]);
+
   const reportResult = useCallback(
     (
       won: boolean,
@@ -382,7 +392,7 @@ export default function RunScreen() {
     [act],
   );
 
-  /** Start a run from a new or imported state: it takes a free slot; if every slot is taken it is refused (nothing is thrown away). */
+  /** Start a new run: it takes a free slot; if every slot is taken it is refused (nothing is thrown away). */
   const begin = (r: RunState): boolean => {
     if (runCount() >= RUN_SLOTS) {
       say(
@@ -429,24 +439,6 @@ export default function RunScreen() {
     setConfirmAbandon(false);
   };
 
-  const onImport = async (file: File | undefined) => {
-    if (!file) return;
-    const parsed = parseRun(await file.text());
-    if (!parsed) {
-      say('That file is not a valid run save.');
-      return;
-    }
-    // (an imported run of a rebuilt Riftwalker is migrated the same way, and says so: DECISIONS #415)
-    const notice = parsed.reworkNotice;
-    delete parsed.reworkNotice;
-    if (notice) {
-      clearFightLog(duelKey(parsed));
-      clearGhostLog(duelKey(parsed));
-      say(notice);
-    }
-    begin(settleInterrupted(parsed).run);
-  };
-
   // a stage whose Warden may be a ghost: as the stage begins, the server is asked for one from your tier or up to three below it.
   // None (or no connection): the map shows the usual Warden, and that is the fight (DECISIONS #253)
   const settling = run !== null ? (ghostToSettle(run)?.id ?? null) : null;
@@ -482,7 +474,6 @@ export default function RunScreen() {
     return (
       <Sanctum
         onStart={startRun}
-        onImport={(f) => void onImport(f)}
         notice={notice}
         onDismiss={() => say(null)}
       />
@@ -609,7 +600,14 @@ export default function RunScreen() {
           onExit={() => setConfirmForfeit(true)}
           // (DECISIONS #697: the fight is kept for the signed-in player as its result shows, to share by a link or save as a file)
           resultExtra={(r) =>
-            r.replay ? <ShareFight fight={campaignFight(r.replay, run, r.winner === 'a')} /> : null
+            r.replay ? (
+              <ShareFight
+                fight={campaignFight(r.replay, run, r.winner === 'a', {
+                  encounter: plan.ghost ? 'ghost' : plan.encounterId,
+                  ...(atNode ? { node: atNode.kind, floor: atNode.floor } : {}),
+                })}
+              />
+            ) : null
           }
           onDone={(r) => {
             if (r.replay) lastFightRef.current = { ...r.replay, won: r.winner === 'a' };
@@ -876,7 +874,6 @@ function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void; mid
 
 function Sanctum(props: {
   onStart: (c: HeroId, d: Difficulty, seed?: string) => void;
-  onImport: (f: File | undefined) => void;
   notice: string | null;
   onDismiss: () => void;
 }) {
@@ -921,15 +918,6 @@ function Sanctum(props: {
             </span>
           </button>
         </div>
-        <label className="btn btn--ghost">
-          <span>Import a run file</span>
-          <input
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            onChange={(e) => props.onImport(e.target.files?.[0])}
-          />
-        </label>
       </div>
       <details
         className="setup__seed"
@@ -1372,7 +1360,8 @@ function Body(props: {
     case 'prelude':
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'loopCleared':
-      if (run.won) return <VictoryPanel run={run} onKeep={() => act(bank)} onHome={props.onHome} />;
+      // (only for a moment: a won run banks itself, #701)
+      if (run.won) return <VictoryPanel run={run} onHome={() => act(bank)} />;
       return (
         <section className="stage-panel" aria-label="Tier cleared">
           <h2 className="stage-panel__title">
@@ -1448,7 +1437,13 @@ function Body(props: {
         </section>
       );
     case 'banked':
-      return <BankedPanel run={run} onExport={() => exportRun(run)} onLeave={props.onLeave} />;
+      return run.won ? (
+        <VictoryPanel run={run} onHome={props.onLeave}>
+          <DeckSaved run={run} />
+        </VictoryPanel>
+      ) : (
+        <BankedPanel run={run} onLeave={props.onLeave} />
+      );
     case 'duel':
       return null;
   }

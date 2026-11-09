@@ -533,7 +533,8 @@ export const KNIGHT: CardDef[] = [
   // (Burning Pact)
   m('uncommon', 'pact-of-embers', 'Pact of Embers', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
   // (Pyre)
-  m('rare', 'inner-furnace', 'Inner Furnace', 'power', 2, 'none', [on('turnStart', [mana(1)])]),
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  m('rare', 'inner-furnace', 'Inner Furnace', 'power', 3, 'none', [on('turnStart', [mana(1)])]),
 
   // --- the Mana Reserves trait: Reserves, held Barrier, blood for Reserves ---
   // (a Barrier card for a quiet turn that lets the bank grow past its limit)

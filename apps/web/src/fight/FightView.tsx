@@ -18,6 +18,7 @@ import { createPortal } from 'react-dom';
 import { enterBattle } from '../battleActivity';
 import {
   applyAction,
+  ARENA_HP_COST_MULT,
   forgeWord,
   summonsThatFit,
   costOf,
@@ -133,6 +134,7 @@ import '../duel/duel.css';
 import '../play/play.css';
 import './fight.css';
 import type { StatusId } from '@sr/combat';
+import { HpCostMult } from './hpCost';
 import { hitFx, potionFx, potionHitsAllFoes, statusFx, tickOf, type FxId } from './fxMoments';
 import {
   bump as bumpFx,
@@ -2259,6 +2261,8 @@ export function FightView(props: {
         text: dealt.lethal ? `−${dealt.total} LETHAL` : `−${dealt.total}`,
       };
   }
+  // (Arena HP costs are five times the card's number, and every card in this fight says so: DECISIONS #707, #713)
+  const hpCostMult = live?.mode === 'pvp' ? ARENA_HP_COST_MULT : 1;
   // (DECISIONS #432) how each damage number on the hovered card is made, step by step, when it is one number against one enemy
   const hoverLive = hoverCard ? liveDamage.get(hoverCard.inst.id) : undefined;
   const damageSteps = hoverLive
@@ -2279,7 +2283,7 @@ export function FightView(props: {
         ...keywordsOf(
           hoverCard.def,
           (unit) => db.units[unit]?.taunt === true,
-          cardText(db, hoverCard.def),
+          cardText(db, hoverCard.def, undefined, { hpCostMult }),
         ),
       ]
     : [];
@@ -2322,6 +2326,7 @@ export function FightView(props: {
   );
 
   return (
+    <HpCostMult.Provider value={hpCostMult}>
     <div
       className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
       style={
@@ -3046,7 +3051,7 @@ export function FightView(props: {
               top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
               // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
               dx={showRunes ? 245 : 118}
-              tip={(card) => snareTip(db, card)}
+              tip={(card) => snareTip(db, card, hpCostMult)}
             />
           )}
           {pvp && foePlaced && (
@@ -3196,6 +3201,7 @@ export function FightView(props: {
         </>
       )}
     </div>
+    </HpCostMult.Provider>
   );
 }
 
@@ -3286,9 +3292,9 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
 }
 
 /** The tooltip for a face-down Trap: its name and what it does when it springs. */
-function snareTip(db: CombatDb, card: string | null): TipContent {
+function snareTip(db: CombatDb, card: string | null, hpCostMult = 1): TipContent {
   const def = card ? db.cards[card] : undefined;
-  return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def) : undefined);
+  return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def, undefined, { hpCostMult }) : undefined);
 }
 
 /** What the result line says when watching someone's match. */

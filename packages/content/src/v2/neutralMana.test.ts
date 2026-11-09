@@ -12,13 +12,14 @@ const CASES: [id: string, rarity: string, cost: number, text: string, upCost: nu
   ['plan-ahead', 'common', 1, 'Next turn, gain 1 extra Mana. Next turn, draw 1 extra card.', 1, 'Next turn, gain 1 extra Mana. Next turn, draw 2 extra cards.'],
   ['fever-dream', 'uncommon', 0, 'A random card in your hand costs 2 less the next time you play it. Consume.', 0, 'A random card in your hand costs 2 less the next time you play it. Consume. Hold.'],
   ['heart-of-the-rift', 'uncommon', 2, 'At the start of your turn: Draw 1 card.', 1, 'At the start of your turn: Draw 1 card.'],
-  ['attunement', 'rare', 3, 'From your next turn, gain 1 more Mana every turn for the rest of the fight.', 2, 'From your next turn, gain 1 more Mana every turn for the rest of the fight.'],
+  // (Attunement and The Long Memory cost 1 more since #710: Mana every turn)
+  ['attunement', 'rare', 4, 'From your next turn, gain 1 more Mana every turn for the rest of the fight.', 3, 'From your next turn, gain 1 more Mana every turn for the rest of the fight.'],
   ['rift-collapse', 'rare', 3, 'Deal 30 damage to ALL enemies. Lose 15 HP. Consume.', 3, 'Deal 36 damage to ALL enemies. Lose 15 HP. Consume.'],
   ['ancestral-blade', 'ancestral', 2, 'Deal 30 damage. Consume.', 2, 'Deal 34 damage. Consume.'],
   ['elders-bulwark', 'ancestral', 2, 'Gain 28 Barrier. Consume. Hold.', 2, 'Gain 32 Barrier. Consume. Hold.'],
   ['echo-of-ages', 'ancestral', 1, 'Gain 2 Might. Gain 2 Thorns. Consume.', 1, 'Gain 3 Might. Gain 2 Thorns. Consume.'],
   ['lineage', 'ancestral', 1, 'Whenever you play an Aura: Draw 1 card.', 1, 'Opening hand. Whenever you play an Aura: Draw 1 card.'],
-  ['the-long-memory', 'ancestral', 2, 'Opening hand. At the start of your turn: Gain 1 Mana.', 2, 'Draw 1 card. Opening hand. At the start of your turn: Gain 1 Mana.'],
+  ['the-long-memory', 'ancestral', 3, 'Opening hand. At the start of your turn: Gain 1 Mana.', 3, 'Draw 1 card. Opening hand. At the start of your turn: Gain 1 Mana.'],
 ];
 
 describe('the Neutral and Ancestral review (DECISIONS #500)', () => {

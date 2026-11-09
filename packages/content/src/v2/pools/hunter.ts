@@ -320,8 +320,9 @@ export const HUNTER: CardDef[] = [
   ),
   // (an Aura: its Mana lasts the rest of the fight, DECISIONS #380)
   // (lose 4 and draw 1 since #693: ~88% before; ~125%; upgraded it costs 0)
-  k('rare', 'blood-pact', 'Blood Pact', 'power', 1, 'none', [lose(4), maxMana(1), draw(1)], {
-    up: { cost: 0 },
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  k('rare', 'blood-pact', 'Blood Pact', 'power', 2, 'none', [lose(4), maxMana(1), draw(1)], {
+    up: { cost: 1 },
   }),
   // (more Feast)
   k(
@@ -428,7 +429,9 @@ export const HUNTER: CardDef[] = [
 
   // --- Feast (batch 3) ---
   // (and heal 2 since #693: ~67% before; upgraded heal 4)
+  // (Consume since #710: a card that gives more Mana than it costs is spent, Robert)
   k('common', 'throw-scraps', 'Throw Scraps', 'skill', 0, 'none', [exhaustN(1), mana(1), heal(2)], {
+    exhaust: true,
     up: { effects: [exhaustN(1), mana(1), heal(4)] },
   }),
   k('uncommon', 'gut-trap', 'Gut Trap', 'snare', 1, 'none', [dmg(8, 'allFoes'), heal(4)], {
@@ -550,10 +553,11 @@ export const HUNTER: CardDef[] = [
     'Berserk Tempo',
     'power',
     // (Opening hand and lose 1 since #693: ~84% before; ~125%; upgraded it costs 1)
-    2,
+    // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+    3,
     'none',
     [on('turnStart', [mana(1), draw(1), lose(1)])],
-    { innate: true, up: { cost: 1 } },
+    { innate: true, up: { cost: 2 } },
   ),
   // (only what you draw during your turn: the turn's own five gave five Might, DECISIONS #377)
   // (and 1 Barrier a draw since #693: ~80% generic; ~130%; upgraded 2 Barrier)
@@ -575,11 +579,13 @@ export const HUNTER: CardDef[] = [
     0,
     'foe',
     [
-      // (7, X + 1 times, since #693: ~92% before; ~138%)
-      scaled({ op: 'damage', amount: 7, hits: 1, to: 'target' }, per('x', 1, undefined, 'hits')),
-      scaled(draw(0), per('x')),
+      // (7, X times, draw 2 since #702 (Robert: it drew far too many cards, chaining into the next one); upgraded X is 1 higher, so
+      // X + 1 times. Was X + 1 times and a card per Mana spent (#693, ~138%); now 21 + 2 draws = 27 at X = 3, ~96%)
+      scaled({ op: 'damage', amount: 7, hits: 0, to: 'target' }, per('x', 1, undefined, 'hits')),
+      draw(2),
     ],
-    { x: true },
+    // (spends at most 6 Mana since #706, Robert: "cap at max use of mana"; upgraded, at most 7 times)
+    { x: true, xMax: 6 },
   ),
   // (14 + 7 a card since #693: ~95% before; ~133%; upgraded 18 + 9)
   k('rare', 'rising-howl', 'Rising Howl', 'attack', 2, 'foe', [scaled(dmg(14), per('played', 7))], {

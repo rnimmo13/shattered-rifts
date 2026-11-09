@@ -473,7 +473,9 @@ export const SHAMAN: CardDef[] = [
     0,
     'none',
     [mana(1), manaNext(1), wound('self', 'void-drain')],
+    // (Consume since #710: a card that gives more Mana than it costs is spent, Robert)
     {
+      exhaust: true,
       up: { effects: [mana(1), manaNext(2), wound('self', 'void-drain')] },
     },
   ),
@@ -919,7 +921,9 @@ export const SHAMAN: CardDef[] = [
     1,
     'none',
     [exhaustN(1), manaNext(2)],
+    // (Consume since #710: a card that gives more Mana than it costs is spent, Robert)
     {
+      exhaust: true,
       up: { effects: [exhaustN(1), manaNext(3)] },
     },
   ),

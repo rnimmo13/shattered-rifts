@@ -86,6 +86,7 @@ import {
 } from './rewards';
 import type {
   DealStep,
+  DraftChoice,
   Difficulty,
   GhostBoss,
   EventOption,
@@ -1306,6 +1307,15 @@ export function rerollReward(run: RunState): RunState {
   return r;
 }
 
+/** Most deck choices a run remembers for the balance review: the oldest go past it. */
+export const DRAFT_LOG_MAX = 150;
+/** Note a deck choice for the balance review (DECISIONS #714); never changes the run's play. */
+function noteDraft(r: RunState, choice: Omit<DraftChoice, 't'>): void {
+  const log = (r.draftLog ??= []);
+  log.push({ t: r.tier, ...choice });
+  if (log.length > DRAFT_LOG_MAX) log.splice(0, log.length - DRAFT_LOG_MAX);
+}
+
 export function chooseCard(run: RunState, cardId: string | null): RunState {
   need(run.phase === 'reward' || run.phase === 'gift', 'There is no card reward to choose from');
   const ctx = run.context;
@@ -1321,6 +1331,7 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
     need(canAdd(r.deck, cardId), 'That card would break the deck rules');
     r.deck.push(cardId);
   }
+  noteDraft(r, { k: 'reward', took: cardId, offered: [...(c.offers ?? [])] });
   if (r.phase !== 'gift' && nextReward(r, c, c.afterWarden === true)) return r;
   if (r.phase === 'gift' || c.afterWarden) afterGift(r);
   else if (c.nodeId === '') {
@@ -1591,6 +1602,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     const up = COMBAT_DB.cards[choice.card]?.upgrade;
     need(up, 'That card cannot be upgraded');
     r.deck[i] = up;
+    noteDraft(r, { k: 'upgrade', took: choice.card });
   } else if (choice.kind === 'remove') {
     need(
       r.deck.length > V2_DECK_RULES.minSize,
@@ -1599,6 +1611,7 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     const i = r.deck.indexOf(choice.card);
     need(i >= 0, 'That card is not in your deck');
     r.deck.splice(i, 1);
+    noteDraft(r, { k: 'remove', took: choice.card });
   } else if (gs) {
     wagerAt(r, gs, choice);
   }
@@ -1728,6 +1741,7 @@ export function buyCard(run: RunState, index: number): RunState {
   r.shards -= item.price;
   item.sold = true;
   r.deck.push(item.cardId);
+  noteDraft(r, { k: 'buy', took: item.cardId });
   // buying the card you put on hold ends the hold
   if (item.held) dropHold(r, item.cardId);
   return r;
@@ -1795,6 +1809,7 @@ export function buyRemoval(run: RunState, card: string): RunState {
   need(i >= 0, 'That card is not in your deck');
   r.shards -= m.removePrice;
   r.deck.splice(i, 1);
+  noteDraft(r, { k: 'remove', took: card });
   m.removed = true;
   r.removals = (r.removals ?? 0) + 1;
   // (as many as you can pay for, each double the last at this shop; the next shop starts over: DECISIONS #493)
@@ -1817,6 +1832,7 @@ export function buyUpgrade(run: RunState, card: string): RunState {
   need(r.shards >= price, 'Not enough shards');
   r.shards -= price;
   r.deck[i] = up;
+  noteDraft(r, { k: 'upgrade', took: card });
   m.upgrades = (m.upgrades ?? 0) + 1;
   return r;
 }

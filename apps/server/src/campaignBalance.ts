@@ -1,4 +1,29 @@
-import { COMBAT_DB, ascendancyOf } from '@sr/content/v2';
+import { COMBAT_DB, ascendancyOf, isDeckCard } from '@sr/content/v2';
+
+/** A run's deck choices as sent, kept only in their known shape and only with real card ids; at most 150. */
+function draftsOf(
+  raw: unknown,
+): { t: number; k: string; took: string | null; offered?: string[] }[] {
+  if (!Array.isArray(raw)) return [];
+  const card = (c: unknown): c is string =>
+    typeof c === 'string' && c.length <= 120 && isDeckCard(c);
+  return raw.slice(-150).flatMap((e: unknown) => {
+    if (!e || typeof e !== 'object') return [];
+    const d = e as Record<string, unknown>;
+    if (
+      !Number.isInteger(d['t']) ||
+      !['reward', 'buy', 'remove', 'upgrade'].includes(String(d['k']))
+    )
+      return [];
+    if (d['took'] !== null && !card(d['took'])) return [];
+    const offered =
+      Array.isArray(d['offered']) && d['offered'].length <= 6 && d['offered'].every(card)
+        ? d['offered']
+        : undefined;
+    const took = card(d['took']) ? d['took'] : null;
+    return [{ t: Number(d['t']), k: String(d['k']), took, ...(offered ? { offered } : {}) }];
+  });
+}
 
 /** Whitelist only deck/progression facts. Never export raw saves, seeds, names or credentials. */
 export function campaignDeckFacts(raw: unknown) {
@@ -59,5 +84,7 @@ export function campaignDeckFacts(raw: unknown) {
     fightsWon: fights('duelsWon'),
     fightsLost: fights('duelsLost'),
     clearedNodes: Array.isArray(r['cleared']) ? r['cleared'].length : null,
+    // (DECISIONS #714) the deck choices made this run: what was offered and taken, bought, removed or upgraded (known cards only)
+    drafts: draftsOf(r['draftLog']),
   };
 }

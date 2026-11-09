@@ -6,11 +6,13 @@ import {
   COMBAT_DB,
   ENCOUNTERS,
   RIFTWALKERS,
+  TRAINING_ENCOUNTERS,
   encounter,
   classNameOf,
   type HeroId,
 } from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
+import { ARENA_START_HP as ARENA_HP } from '@sr/pvp';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
 import { getHero, rememberHero } from '../app/heroChoice';
@@ -173,6 +175,13 @@ export default function FightScreen() {
         <label className="setup__select">
           <span className="sr-only">Encounter</span>
           <select value={enc} onChange={(e) => setEnc(e.target.value)}>
+            <optgroup label="Training">
+              {TRAINING_ENCOUNTERS.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.name} · 1000 HP
+                </option>
+              ))}
+            </optgroup>
             {KINDS.map((k) => (
               <optgroup key={k} label={KIND_LABEL[k]}>
                 {ENCOUNTERS.filter((e) => e.kind === k).map((e) => (
@@ -188,6 +197,14 @@ export default function FightScreen() {
       <label className="setup__select">
         <input type="checkbox" checked={easy} onChange={(e) => setEasy(e.target.checked)} /> Easy
         mode (weaker enemies)
+      </label>
+      <label className="setup__select">
+        <input
+          type="checkbox"
+          checked={testHp?.maxHp === ARENA_HP}
+          onChange={(e) => setTestHp(e.target.checked ? { hp: ARENA_HP, maxHp: ARENA_HP } : null)}
+        />{' '}
+        Arena-size HP ({ARENA_HP}) for your hero. HP costs stay at the card's number here; only real Arena fights multiply them by 5
       </label>
       {campaignTier !== null && (
         <div>
@@ -213,7 +230,10 @@ export default function FightScreen() {
         disabled={Object.keys(counts).length === 0}
         onClick={() => {
           const e = encounter(enc);
-          const scale = campaignTier === null ? { hp: 100, dmg: 100 } : enemyScale(campaignTier, 1);
+          // (a training dummy keeps its own numbers: Easy mode and a saved deck's tier never scale it)
+          const training = TRAINING_ENCOUNTERS.includes(e);
+          const scale =
+            campaignTier === null || training ? { hp: 100, dmg: 100 } : enemyScale(campaignTier, 1);
           const elite = campaignTier !== null && e.kind === 'elite';
           setSetup({
             title: e.name,
@@ -229,8 +249,8 @@ export default function FightScreen() {
               },
               b: {
                 enemies: e.units,
-                hpPct: easy ? 60 : Math.round(scale.hp * (elite ? 1.25 : 1)),
-                dmgPct: easy ? 55 : Math.round(scale.dmg * (elite ? 1.08 : 1)),
+                hpPct: easy && !training ? 60 : Math.round(scale.hp * (elite ? 1.25 : 1)),
+                dmgPct: easy && !training ? 55 : Math.round(scale.dmg * (elite ? 1.08 : 1)),
               },
             },
           });

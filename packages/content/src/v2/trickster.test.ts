@@ -95,9 +95,9 @@ describe('the Trickster costing pass', () => {
     expect(canonicalCard('whisper-net')).toBe('false-floor');
   });
 
-  it('Compound Fear still Consumes; Deep Pockets costs 2, the price of a +1 Mana Aura (DECISIONS #410)', () => {
+  it('Compound Fear still Consumes; Deep Pockets costs 3, a +1 Mana Aura since #710 (2 at #410)', () => {
     expect(db.cards['compound-fear']?.exhaust).toBe(true);
-    expect(db.cards['deep-pockets']?.cost).toBe(2);
+    expect(db.cards['deep-pockets']?.cost).toBe(3);
   });
 
   it('a hand-written upgrade replaces the automatic one (Veil Strike+ deals 9 and applies 1 Exposed)', () => {

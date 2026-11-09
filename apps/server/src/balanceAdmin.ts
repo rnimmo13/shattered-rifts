@@ -19,11 +19,12 @@ export async function balanceAdmin(request: Request, env: Env): Promise<Response
   const after = url.searchParams.get('after') ?? '0';
   if (!/^\d{1,15}$/.test(after)) return reject(400);
   const kind = url.searchParams.get('kind') ?? 'arena';
-  if (!['arena', 'campaign'].includes(kind)) return reject(400);
+  // (fights: every online Campaign fight with its numbers and replay, DECISIONS #714)
+  if (!['arena', 'campaign', 'fights'].includes(kind)) return reject(400);
   try {
     const res = await env.BOARD.get(env.BOARD.idFromName('main')).fetch(
       new Request(
-        `https://board.invalid/balance/${kind === 'campaign' ? 'campaign/' : ''}export?after=${after}`,
+        `https://board.invalid/balance/${kind === 'arena' ? '' : `${kind}/`}export?after=${after}`,
       ),
     );
     return new Response(await res.text(), { status: res.status, headers });

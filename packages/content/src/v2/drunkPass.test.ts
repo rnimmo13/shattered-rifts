@@ -99,7 +99,8 @@ describe('the Drunkard cost pass (#695)', () => {
   });
 
   it('Last Call: 1 Mana; each turn +1 Mana and 1 Hangover', () => {
-    expect(db.cards['last-call']?.cost).toBe(1);
+    // (2 since #710: Mana every turn)
+    expect(db.cards['last-call']?.cost).toBe(2);
     let s = fight(['last-call']);
     s = play(s, 'T0');
     s = applyAction(db, s, { type: 'endTurn' }).state;

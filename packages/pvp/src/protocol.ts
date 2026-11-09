@@ -102,7 +102,10 @@ export interface Entry {
 // 94: Spiritwalker Attunement (#683); the Necromancer reworked: Raise Dead, companions strike, death bursts, Grave Colossus, Bonelord (#684).
 // 95: Raise Colossus (a Colossus standing takes the HP when there is no room); Reaping Scythe 16 +5, no Consume.
 // 101: Guard the Den, the Hunter's fourth basic in one Strike's place (#699); Raise Colossus can grow the Colossus standing (#700).
-export const RULES_VERSION = 101;
+// 102: Bloodstorm X times, draw 2 (#702); every X card spends at most 6 Mana and its hits carry half the Might and Primed (#709, #711);
+// Auras that give Mana every turn cost 1 more, and Mana cards that pay back more than they cost are consumed (#710). #706-#708 reverted (#712);
+// Arena HP costs x5 and Shatters +5 a threshold, spreading from 50 Fracture (#713).
+export const RULES_VERSION = 102;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

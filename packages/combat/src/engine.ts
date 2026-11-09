@@ -18,6 +18,9 @@ import {
   SHATTER_AT,
   SHATTER_BASE,
   SHATTER_STEP,
+  SHATTER_SPREAD_AT,
+  SHATTER_SPREAD,
+  ARENA_HP_COST_MULT,
   SPELL_TAG,
   SWORD_TAG,
   ORBIT_STEP,
@@ -1912,6 +1915,17 @@ export function isEthereal(cd: CardDef, c: Pick<CardInst, 'ethereal'> | null | u
 }
 
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
+/** A damage op whose hits are X (Bloodstorm, Whirling Maul): each hit carries only half the Might and Primed (DECISIONS #711). */
+function xHitsHalf(op: Op): boolean {
+  return op.op === 'damage' && op.scale?.into === 'hits' && op.scale.by === 'x';
+}
+
+/** The Mana (then Reserves) an X card spends: all of it, or at most its xMax (DECISIONS #706). */
+function xSpend(cd: CardDef, sd: SideState): number {
+  const pool = sd.mana + sd.reserves;
+  return cd.xMax !== undefined ? Math.min(pool, cd.xMax) : pool;
+}
+
 function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   // (a tiny allowance, so a factor like 1/11 times 55 is 5 and not 4.999...)
   const v = metricValue(r, a, sc.by, sc.of, t, sc.tag, sc.rune);
@@ -2042,6 +2056,10 @@ function execOp(r: Run, a: Act, op: Op): void {
       if (knife && a.actor.kind === 'hero') side.honedUsed = true;
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = isAttackAct(a) ? stacks(a.actor, 'vigor') : 0;
+      // (an X card's hits carry half your Might and Primed, rounded down, DECISIONS #711: more hits already scale it)
+      const xHalved = xHitsHalf(op);
+      const hitVigor = xHalved ? Math.floor(vigor / 2) : vigor;
+      const halfMight = xHalved ? Math.ceil(Math.max(0, stacks(a.actor, 'might')) / 2) : 0;
       // (the Spellblade's Swords, DECISIONS #480)
       const sworded = a.card?.tags?.includes(SWORD_TAG) === true;
       let cracked = false;
@@ -2124,7 +2142,8 @@ function execOp(r: Run, a: Act, op: Op): void {
               [scaledAmount - op.amount, 'scaling'],
               [edge, 'Edge'],
               [honed, 'Honed'],
-              [vigor, 'Primed'],
+              [hitVigor, 'Primed'],
+              [-halfMight, 'half Might on an X card'],
               [keen, 'Whispering Edge'],
               [deft, 'bonus'],
               [ripostes.has(t.id) ? riposte : 0, 'Riposte'],
@@ -2161,7 +2180,8 @@ function execOp(r: Run, a: Act, op: Op): void {
               (scaledAmount +
                 edge +
                 honed +
-                vigor +
+                hitVigor -
+                halfMight +
                 keen +
                 deft +
                 (ripostes.has(t.id) ? riposte : 0) +
@@ -2218,11 +2238,18 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'loseHp':
       for (const t of resolve(r, a, op.to)) {
+        // (a hero paying HP for their own effect pays five times as much in the Arena, DECISIONS #707, #713)
+        const arenaPays = r.s.mode === 'pvp' && t === a.actor && t.kind === 'hero';
         const lost = applyDamage(
           r,
           a.actor,
           t,
-          scaledByDifficulty(a.actor, t, amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a)),
+          scaledByDifficulty(
+            a.actor,
+            t,
+            (amountOf(r, a, op.amount, op.scale, t) + resonanceOf(a)) *
+              (arenaPays ? ARENA_HP_COST_MULT : 1),
+          ),
           'direct',
         );
         // paying HP for your own card is something Powers can react to (and how much: DECISIONS #434)
@@ -3850,7 +3877,7 @@ function heroDefOf(db: CombatDb, sd: Pick<SideState, 'hero' | 'ascendancy'>): He
   return (sd.ascendancy ? db.ascended?.[sd.ascendancy] : undefined) ?? db.heroes[sd.hero];
 }
 
-/** What the k-th Shatter on a unit deals: 20, 30, 40... (DECISIONS #486, #523), plus its owner's Spell Power (#487) and what its Deepening adds. */
+/** What the k-th Shatter on a unit deals: 20, 25, 30... (DECISIONS #486, #523, #713), plus its owner's Spell Power (#487) and what its Deepening adds. */
 function shatterDamage(sd: SideState, k: number): number {
   const n = SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
   // (the Shatterer: a percentage on top, so it grows as the Shatters do, DECISIONS #542)
@@ -3896,9 +3923,17 @@ function projectShatter(
 }
 
 /** Fracture on a unit, and a Shatter from the side that applied it for every SHATTER_AT it crosses. Fracture is never removed. A Shatter is
- * not an attack (no Might, Primed, Exposed or Thorns); Barrier stops it; it never applies Fracture or sets off another Shatter.
- * Steadfast stops the application. */
-function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boolean {
+ * not an attack (no Might, Primed, Exposed or Thorns); Barrier stops it. From the one at SHATTER_SPREAD_AT Fracture on, each Shatter also
+ * puts SHATTER_SPREAD Fracture on another enemy at random (DECISIONS #708, #713); a Shatter that spread Fracture sets off does not spread
+ * again, so two enemies never pass it back and forth. Steadfast stops the application. */
+function fractureUnit(
+  r: Run,
+  a: Act,
+  owner: SideState,
+  t: Unit,
+  n: number,
+  spread = true,
+): boolean {
   if (n <= 0 || t.hp <= 0) return false;
   const before = stacks(t, 'fracture');
   if (!addStatus(r, t, 'fracture', n, a.actor.side)) return false;
@@ -3913,6 +3948,11 @@ function fractureUnit(r: Run, a: Act, owner: SideState, t: Unit, n: number): boo
     a.shattered++;
     reap(r);
     if (!r.s.winner) fireTriggers(r, owner, 'shatter', { target: t });
+    if (spread && !r.s.winner && k * SHATTER_AT >= SHATTER_SPREAD_AT) {
+      const others = r.s.sides[t.side].units.filter((u) => u.hp > 0 && u !== t);
+      if (others.length)
+        fractureUnit(r, a, owner, others[nextInt(r.s.rng, others.length)]!, SHATTER_SPREAD, false);
+    }
   }
   return true;
 }
@@ -5858,7 +5898,9 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     );
   const paid = costOf(r.db, sd, inst);
   payCost(r, sd, paid);
-  sd.spentTurn = (sd.spentTurn ?? 0) + paid + (cd.x ? sd.mana + sd.reserves : 0);
+  // (an X card spends all your Mana and Reserves, or at most its xMax: DECISIONS #706)
+  const xMana = cd.x ? xSpend(cd, sd) : 0;
+  sd.spentTurn = (sd.spentTurn ?? 0) + paid + xMana;
   if (freeAttack) addStatus(r, hero, 'freeattack', -1);
   if (freeSkill) addStatus(r, hero, 'freeskill', -1);
   if (freeEthereal) addStatus(r, hero, 'freeethereal', -1);
@@ -5874,15 +5916,16 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   delete inst.costMod;
   clearTurnFlags(inst);
   let x = 0;
-  // (an X card spends all your Mana, and all your Reserves after it)
-  const xMana = cd.x ? sd.mana + sd.reserves : 0;
+  // (an X card spends your Mana, and your Reserves after it: all of them, or up to its xMax with the rest kept)
   if (cd.x) {
-    x = sd.mana + sd.reserves + (cd.xBonus ?? 0);
-    sd.mana = 0;
-    if (sd.reserves > 0) {
-      if (sd.discipline?.rule.kind === 'reserves') sd.discipline.progress += sd.reserves;
-      sd.reserves = 0;
-      r.ev.push({ type: 'reserves', side: sd.id, reserves: 0, max: reservesCap(sd) });
+    x = xMana + (cd.xBonus ?? 0);
+    const fromMana = Math.min(sd.mana, xMana);
+    const fromReserves = xMana - fromMana;
+    sd.mana -= fromMana;
+    if (fromReserves > 0) {
+      if (sd.discipline?.rule.kind === 'reserves') sd.discipline.progress += fromReserves;
+      sd.reserves -= fromReserves;
+      r.ev.push({ type: 'reserves', side: sd.id, reserves: sd.reserves, max: reservesCap(sd) });
     }
   }
   orbitPay(r, sd, hero, paid + xMana);
@@ -6514,7 +6557,7 @@ export function previewCardDamage(
   }
   // as the effects will see it: the card has left the hand and its cost is paid (a card that counts your hand or your Mana)
   const pool = sd.mana + sd.reserves;
-  const paid = def.x ? pool : Math.min(pool, costOf(db, sd, inst));
+  const paid = def.x ? xSpend(def, sd) : Math.min(pool, costOf(db, sd, inst));
   const fromMana = Math.min(sd.mana, paid);
   let after: CombatState = {
     ...s,
@@ -6574,7 +6617,7 @@ export function previewCardDamage(
     inst,
     target: friendly ? mine : chosen,
     x: def.x
-      ? sd.mana + sd.reserves + (def.xBonus ?? 0)
+      ? xSpend(def, sd) + (def.xBonus ?? 0)
       : def.starX
         ? sd.stars + (def.xBonus ?? 0)
         : def.starHalf
@@ -6791,7 +6834,12 @@ export function previewCardDamage(
       add(keen, 'Whispering Edge');
       add(ruin, 'Measured Ruin');
       add(cycleBonus, 'Spell cycle');
-      add(v, 'Primed');
+      // (an X card's hits carry half your Might and Primed, as the engine does: DECISIONS #711)
+      const xHalved = xHitsHalf(op);
+      const pv = xHalved ? Math.floor(v / 2) : v;
+      const halfMight = xHalved ? Math.ceil(Math.max(0, stacks(hero, 'might')) / 2) : 0;
+      add(pv, 'Primed');
+      add(-halfMight, 'half Might on an X card');
       add(attackAuraBonus(sd, hero, def.kind === 'attack'), 'Aura');
       add(rip, 'Riposte');
       add(ember, 'Ember');
@@ -6836,7 +6884,8 @@ export function previewCardDamage(
             keen +
             ruin +
             cycleBonus +
-            v +
+            pv -
+            halfMight +
             rip +
             ember +
             attackAuraBonus(sd, hero, def.kind === 'attack')) *

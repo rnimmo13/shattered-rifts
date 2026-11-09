@@ -119,7 +119,12 @@ describe('the Hunter cost pass (#693)', () => {
     expect(hero(out.state).statuses.might).toBe(3);
     expect(out.events.filter((e) => e.type === 'damage' && e.source === hound)).toHaveLength(2);
     expect(out.state.sides.a.exhausted.some((c) => c.id === 'T0')).toBe(false);
-    expect(cardText(db, db.cards.bloodstorm!)).toContain('X+1 times');
+    expect(cardText(db, db.cards.bloodstorm!)).toBe(
+      'Spends at most 6 Mana. Deal 7 damage X times. Draw 2 cards.',
+    );
+    expect(cardText(db, db.cards['bloodstorm+']!)).toBe(
+      'Spends at most 6 Mana. X is 1 higher. Deal 7 damage X times. Draw 2 cards.',
+    );
     expect(cardText(db, db.cards.bloodsong!)).toMatch(/first 8 turns only/);
   });
 

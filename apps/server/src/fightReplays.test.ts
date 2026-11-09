@@ -126,9 +126,10 @@ it('refuses a fight of the wrong shape, keeps only the known fields, and needs a
 it('lets one address save only so many fights a day, whatever codes it uses', async () => {
   const b = board();
   let saved = 0;
-  for (let n = 0; n < 70; n++) {
+  // (400 a day since #714)
+  for (let n = 0; n < 410; n++) {
     const player = n.toString(16).padStart(64, '0');
     if ((await post(b, '/fight/save', { player, fight: fightOf(n) }))['ok']) saved++;
   }
-  expect(saved).toBe(60);
+  expect(saved).toBe(400);
 });

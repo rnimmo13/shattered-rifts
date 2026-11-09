@@ -4,7 +4,7 @@
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
 //   Swords   - hold it: a Sword's damage grows with it (the bigger ones strike a fixed few times) and swinging spends nothing
 //   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
-//   Fracture - marks on an enemy that only add up: every 10 Shatters it, harder each time (20, 30... 110 at 100, + the Spell Power held), found in rewards, not the starter
+//   Fracture - marks on an enemy that only add up: every 10 Shatters it, 5 harder each time (20, 25, 30... 65 at 100, + the Spell Power held; #713); from 50 each Shatter cracks another enemy for 10, found in rewards, not the starter
 // No caps on spending, by Robert's call. No Sword adds hits: Might and Primed pay off on the fixed hits of the bigger ones (DECISIONS #507, #509).
 
 import type { CardDef, Op, Scale, Sel } from '@sr/combat';

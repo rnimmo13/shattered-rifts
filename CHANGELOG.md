@@ -1,3 +1,14 @@
+## 0.236.0 - 2026-11-09
+
+- X cards (DECISIONS #709, #711; rules 102): every X card spends at most 6 Mana; X-hit attacks get half the Might and Primed per hit. Bloodstorm deals 7 X times and draws 2 (#702).
+- Mana engines (#710): the 11 Auras that give Mana every turn cost 1 more; Spirit Offering, Burnt Offering, Call at Dusk and Throw Scraps Consume.
+- Shatter (#713): 15 + 5 per threshold (20, 25... 65 at 100); from 50 Fracture each Shatter puts 10 Fracture on another enemy (no re-spread).
+- Arena HP costs x5 (#707, #713), shown on Arena cards; Bloodlust 15 HP a Might in the Arena.
+- Won runs bank their deck automatically; run file export/import removed (#701).
+- Sandbox training dummies and Arena-HP option (#704); `pnpm goldfish` dummy tool (#704, #705); smart bot synergy-3 values Auras.
+- Player balance data (#714): every online Campaign fight's stats and replay, deck choices and Arena replays kept 30 days for the owner's review (`pnpm balance:players`); Settings "Game data" line; balance tables 30-day retention.
+- #706 and #708 were tried and reverted (#712).
+
 ## 0.235.0 - 2026-11-09
 
 - Shared seeds (DECISIONS #698): every new run has a seed code (Seed button on the run bar, shown in History); "Play a shared seed" in the Sanctum. Per-stop random streams so the same seed gives the same maps, Wardens and offers; old runs keep their single stream; leaderboard unchanged.

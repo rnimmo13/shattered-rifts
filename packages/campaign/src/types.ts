@@ -364,6 +364,15 @@ export interface RunStats {
   nodesCleared: number;
 }
 
+/** One deck choice (DECISIONS #714): a card reward (what was offered, what was taken, or null for a skip), a card bought, or a card removed
+ * or upgraded at a shop or shrine. `t` is the Rift Tier it was made at. */
+export interface DraftChoice {
+  t: number;
+  k: 'reward' | 'buy' | 'remove' | 'upgrade';
+  took: string | null;
+  offered?: string[];
+}
+
 export interface RunState {
   /** Time spent with this particular run open, including idle map/event/battle time. */
   elapsedMs?: number;
@@ -388,6 +397,8 @@ export interface RunState {
   ledger?: number;
   /** card removals bought from merchants this run, a count only: the price goes by the shop (DECISIONS #493); missing = none */
   removals?: number;
+  /** (DECISIONS #714) the deck choices made this run, newest last, for the owner's balance review: at most DRAFT_LOG_MAX */
+  draftLog?: DraftChoice[];
   /** Tier whose combat-card reward reroll was used. Missing = unused. */
   rewardRerollTier?: number;
   /** the Warden's Heart this run holds, if any (DECISIONS #246) */

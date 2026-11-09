@@ -9,6 +9,7 @@
   "scripts": {
     "balance:campaign": "pnpm --filter @sr/tools balance:campaign",
     "balance:arena": "pnpm --filter @sr/tools balance:arena",
+    "balance:players": "pnpm --filter @sr/tools balance:players",
     "balance:report": "pnpm --filter @sr/tools balance:report",
     "balance:history": "pnpm --filter @sr/tools balance:history",
     "lore:smoke": "pnpm --filter @sr/web lore:smoke",
@@ -37,6 +38,7 @@
     "fight": "pnpm --filter @sr/tools fight",
     "fight:check": "pnpm --filter @sr/tools fight:check",
     "sim": "pnpm --filter @sr/tools sim",
+    "goldfish": "pnpm --filter @sr/tools goldfish",
     "deploy:web": "pnpm --filter @sr/tools deploy:web",
     "artlist": "pnpm --filter @sr/tools artlist",
     "cardprompts": "pnpm --filter @sr/tools cardprompts",

@@ -39,6 +39,8 @@ import { TOTEMS } from './pools/shaman';
 import { POTIONS } from './potions';
 import { isVariant, stripRoll, withRolls } from './sanctify';
 import { ALLIES, ENEMY_UNITS } from './units';
+import { TRAINING_UNITS } from './training';
+export { TRAINING_UNIT_IDS } from './training';
 import { WORLD_ENEMIES, WORLD_ENCOUNTERS } from './worldEnemies';
 import type { CampaignMapRealm } from './worlds';
 import { CAMPAIGN_REALMS } from './worlds';
@@ -379,7 +381,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Spell Power lasts the whole fight. You start every fight with 4 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
       'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit.',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, harder each time: 20 at 10, 30 at 20, up to 110 at 100 and beyond, plus 1 for each Spell Power you hold. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, 5 harder each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus 1 for each Spell Power you hold. From 50 Fracture on, each Shatter also cracks another enemy for 10. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {
@@ -932,8 +934,14 @@ for (const realm of CAMPAIGN_REALMS) {
   );
 }
 
+/** The Sandbox's training dummies (DECISIONS #704): kept out of ENCOUNTERS, so no Campaign map or Arena ever meets them. */
+export const TRAINING_ENCOUNTERS: Encounter[] = [
+  enc('training-dummy', 'Training Dummy', 'all', 'regular', 'training-dummy'),
+  enc('sparring-dummy', 'Sparring Dummy', 'all', 'regular', 'sparring-dummy'),
+];
+
 export const encounter = (id: string): Encounter => {
-  const e = ENCOUNTERS.find((x) => x.id === id);
+  const e = ENCOUNTERS.find((x) => x.id === id) ?? TRAINING_ENCOUNTERS.find((x) => x.id === id);
   if (!e) throw new Error(`Unknown encounter "${id}"`);
   return e;
 };
@@ -958,7 +966,9 @@ export const COMBAT_DB: CombatDb = {
   cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
   boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
-  units: Object.fromEntries([...ALLIES, ...ENEMY_UNITS, ...WORLD_ENEMIES].map((u) => [u.id, u])),
+  units: Object.fromEntries(
+    [...ALLIES, ...ENEMY_UNITS, ...WORLD_ENEMIES, ...TRAINING_UNITS].map((u) => [u.id, u]),
+  ),
   heroes: HERO_DEFS,
   ascended: ascendedHeroes(HERO_DEFS),
 };

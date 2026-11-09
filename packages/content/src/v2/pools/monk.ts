@@ -187,7 +187,8 @@ export const MONK: CardDef[] = [
     [on('stance', [barrier(2), dmg(2, 'randomFoe')])],
     { up: { effects: [on('stance', [barrier(3), dmg(3, 'randomFoe')])] } },
   ),
-  s('rare', 'ascendant-form', 'Ascendant Form', 'power', 2, 'none', [on('turnStart', [mana(1)])]),
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  s('rare', 'ascendant-form', 'Ascendant Form', 'power', 3, 'none', [on('turnStart', [mana(1)])]),
   s('rare', 'perfect-calm', 'Perfect Calm', 'skill', 2, 'none', [
     barrier(12),
     stance('calm'),

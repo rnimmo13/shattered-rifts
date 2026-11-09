@@ -364,15 +364,3 @@ export function clearDuelStarted(key?: string): void {
   }
 }
 
-/** Download the run as a .json file (only ever started by the player pressing Export). */
-export function exportRun(run: RunState): void {
-  const blob = new Blob([serializeRun(run)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `shattered-rifts-run-${run.seed}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-}

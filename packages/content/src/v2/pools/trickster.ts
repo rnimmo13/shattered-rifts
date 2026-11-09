@@ -493,7 +493,8 @@ export const TRICKSTER: CardDef[] = [
   // (2 Mana, the cost of the Knight's Inner Furnace, which does the same: Robert, 2026-10-28)
   // (still 2 Mana, the shared price of a +1 Mana Aura (#410), so Opening hand in the base card since #694: ~92%, B, the one Rare kept
   // under A by that rule; upgraded it also draws 2 when played)
-  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 2, 'none', [maxMana(1)], {
+  // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
+  v('rare', 'deep-pockets', 'Deep Pockets', 'power', 3, 'none', [maxMana(1)], {
     innate: true,
     up: { effects: [maxMana(1), draw(2)] },
   }),

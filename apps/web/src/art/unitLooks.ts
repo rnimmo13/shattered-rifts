@@ -533,6 +533,9 @@ export const LOOKS: Record<string, Look> = {
     w: 1.1,
     aura: 'rgba(70,200,170,0.3)',
   },
+  // ---- the Sandbox's training dummies (DECISIONS #704)
+  'training-dummy': { sat: 0.3, light: 1.1, w: 1.15 },
+  'sparring-dummy': { sat: 0.3, light: 0.95, w: 1.15, accessories: ['shield'], trim: STEEL },
   // ---- Aurelion enemies
   squire: { accessories: ['shield'], trim: STEEL, hue: -10 },
   'gilded-page': {

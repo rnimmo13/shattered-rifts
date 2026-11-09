@@ -1,5 +1,5 @@
-// What you see after banking a deck: it goes into the Vault (this browser's list of banked decks, the ones you can take into
-// a PvP match). A full Vault asks which deck to give up.
+// What you see after a run's deck is banked: it goes into the Vault (the banked decks, the ones you can take into an Arena match), here and
+// online. A full Vault asks which deck to give up. A won run banks itself and shows this under its victory (Robert 2026-11-09, DECISIONS #701).
 
 import { useEffect, useState } from 'react';
 import type { RunState } from '@sr/campaign';
@@ -14,7 +14,8 @@ import {
 } from '../pvp/vault';
 import { remoteVault, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
 
-export function BankedPanel(props: { run: RunState; onExport: () => void; onLeave: () => void }) {
+/** Puts the run's deck in the Vault when it mounts, and says where it went (or, with a full Vault, asks which deck to give up). */
+export function DeckSaved(props: { run: RunState }) {
   const { run } = props;
   const [at] = useState(() => Date.now());
   const [state, setState] = useState<{ list: VaultDeck[]; saved: boolean }>(() => {
@@ -55,42 +56,44 @@ export function BankedPanel(props: { run: RunState; onExport: () => void; onLeav
     setTick((t) => t + 1);
   };
 
+  return state.saved ? (
+    <p className="stage-panel__hint">
+      Your {run.deck.length}-card deck is saved in your Vault ({state.list.length} of {VAULT_SLOTS}{' '}
+      slots used). Take it into a match from <b>Arena</b> on the title screen.{' '}
+      {online === 'saved' && 'It is saved online too.'}
+      {online === 'partial' &&
+        'The online Vault is full of other decks, so it stays in this browser. Open Arena to manage them.'}
+      {online === 'offline' && 'It could not be saved online, so it stays in this browser.'}
+    </p>
+  ) : (
+    <>
+      <p className="stage-panel__hint">
+        Your Vault is full: it holds {VAULT_SLOTS} decks. Give one up to keep this{' '}
+        {run.deck.length}-card deck, or leave without saving it.
+      </p>
+      <ul className="vaultlist">
+        {state.list.map((d) => (
+          <li key={d.id}>
+            <span>
+              {labelOf(d)} <small>({d.deck.length} cards)</small>
+            </span>
+            <button className="btn btn--small" onClick={() => void replace(d.id)}>
+              <span>Replace this one</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+/** A banked run that was not won (an older save banked before the finale banked itself). */
+export function BankedPanel(props: { run: RunState; onLeave: () => void }) {
   return (
     <section className="stage-panel" aria-label="Deck saved">
-      <h2 className="stage-panel__title">{state.saved ? 'Deck saved' : 'Your Vault is full'}</h2>
-      {state.saved ? (
-        <p className="stage-panel__hint">
-          This {run.deck.length}-card deck is in your Vault ({state.list.length} of {VAULT_SLOTS}{' '}
-          slots used). Take it into a match from <b>Arena</b> on the title screen.{' '}
-          {online === 'saved' && 'It is saved online too.'}
-          {online === 'partial' &&
-            'The online Vault is full of other decks, so it stays in this browser. Open Arena to manage them.'}
-          {online === 'offline' && 'It could not be saved online, so it stays in this browser.'}
-        </p>
-      ) : (
-        <>
-          <p className="stage-panel__hint">
-            The Vault holds {VAULT_SLOTS} decks. Give one up to keep this {run.deck.length}-card
-            deck, or leave without saving it.
-          </p>
-          <ul className="vaultlist">
-            {state.list.map((d) => (
-              <li key={d.id}>
-                <span>
-                  {labelOf(d)} <small>({d.deck.length} cards)</small>
-                </span>
-                <button className="btn btn--small" onClick={() => void replace(d.id)}>
-                  <span>Replace this one</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <h2 className="stage-panel__title">Deck saved</h2>
+      <DeckSaved run={props.run} />
       <div className="choices-row">
-        <button className="btn" onClick={props.onExport}>
-          <span>Export run</span>
-        </button>
         <button className="btn btn--primary" onClick={props.onLeave}>
           <span>Back to the Sanctum</span>
         </button>

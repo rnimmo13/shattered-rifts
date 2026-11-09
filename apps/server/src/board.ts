@@ -64,6 +64,7 @@ import {
   type RankBadge,
   type RankedStanding,
   isArenaBalanceGame,
+  cleanFightStats,
 } from '@sr/pvp';
 import { ascendancyOf } from '@sr/content/v2';
 import type { Env } from './env';
@@ -88,9 +89,14 @@ const FIGHTS_PER_DAY = 300;
 /** the longest a kept fight's text may be, in characters */
 const FIGHT_MAX_CHARS = 300_000;
 /** fights one address may save in a day (any number of accounts behind it) */
-const FIGHTS_PER_IP_DAY = 60;
+// (400 since #714: every fight is now balance data, and testers may share a home connection)
+const FIGHTS_PER_IP_DAY = 400;
 /** all kept fights together, in characters: past it the oldest anyone's are let go, so this one board never fills */
 const FIGHTS_TOTAL_CHARS = 400_000_000;
+/** (DECISIONS #714) player balance data: every online Campaign fight's numbers and replay, and the balance tables, kept this many days
+ * (Robert: "30 day retention only"), and at most this many characters of fights in all (past it the oldest go) */
+const BALANCE_DAYS = 30;
+const BALANCE_FIGHTS_TOTAL_CHARS = 1_500_000_000;
 /** a fight's id: 10 letters and digits, as a replay's */
 const FIGHT_ID = /^[A-Za-z0-9]{10}$/;
 const isId = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
@@ -333,6 +339,14 @@ export class Leaderboard extends DurableObject<Env> {
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS balance_games_at ON balance_games (at)');
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS balance_campaign (seq INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL, at INTEGER NOT NULL, data TEXT NOT NULL)',
+    );
+    // (DECISIONS #714) every online Campaign fight, for the owner's balance review: its numbers and its replay, BALANCE_DAYS
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS balance_fights (seq INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, key TEXT NOT NULL, at INTEGER NOT NULL, len INTEGER NOT NULL, data TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS balance_fights_at ON balance_fights (at)');
+    ctx.storage.sql.exec(
+      'CREATE UNIQUE INDEX IF NOT EXISTS balance_fights_key ON balance_fights (owner, key)',
     );
     // how often a player or an address has done something in the current hour or day
     ctx.storage.sql.exec(
@@ -739,6 +753,7 @@ export class Leaderboard extends DurableObject<Env> {
     };
     const data = JSON.stringify({ ...summary, replay });
     if (data.length > FIGHT_MAX_CHARS) return json({ ok: false, error: 'too-big' }, 413);
+    this.keepBalanceFight(owner, key, f, summary, replay, now);
     this.ctx.storage.sql.exec(
       'INSERT INTO fight_replays (id, owner, at, key, summary, data) VALUES (?, ?, ?, ?, ?, ?)',
       id,
@@ -766,6 +781,56 @@ export class Leaderboard extends DurableObject<Env> {
         'DELETE FROM fight_replays WHERE id IN (SELECT id FROM fight_replays ORDER BY at ASC, rowid ASC LIMIT 100)',
       );
     return json({ ok: true, id });
+  }
+
+  /**
+   * (DECISIONS #714) The owner's copy of a Campaign fight for balance review: kept BALANCE_DAYS whatever the player's own ten do, with the
+   * stats the client worked out (checked for shape) and where on the map it was. Only known fields are kept.
+   */
+  private keepBalanceFight(
+    owner: string,
+    key: string,
+    f: Record<string, unknown>,
+    summary: Record<string, unknown>,
+    replay: unknown,
+    now: number,
+  ): void {
+    const short = (v: unknown, max: number): string | undefined =>
+      typeof v === 'string' && v.length > 0 && v.length <= max ? v : undefined;
+    const floor = f['floor'];
+    const row = {
+      ...summary,
+      encounter: short(f['encounter'], 80),
+      node: short(f['node'], 40),
+      floor:
+        typeof floor === 'number' && Number.isInteger(floor) && floor >= 0 && floor < 1000
+          ? floor
+          : undefined,
+      stats: cleanFightStats(f['stats']) ?? undefined,
+      replay,
+    };
+    const data = JSON.stringify(row);
+    this.ctx.storage.sql.exec(
+      'INSERT OR IGNORE INTO balance_fights (owner, key, at, len, data) VALUES (?, ?, ?, ?, ?)',
+      owner,
+      key,
+      now,
+      data.length,
+      data,
+    );
+    this.ctx.storage.sql.exec('DELETE FROM balance_fights WHERE at < ?', now - BALANCE_DAYS * DAY);
+    // (the total is checked now and then, not on every fight, from the small len column (never the text itself); past it the oldest go,
+    // as many as bring it back under in one statement)
+    if (Math.random() < 0.02) {
+      const over =
+        this.count('SELECT COALESCE(SUM(len), 0) AS n FROM balance_fights') -
+        BALANCE_FIGHTS_TOTAL_CHARS;
+      if (over > 0)
+        this.ctx.storage.sql.exec(
+          'DELETE FROM balance_fights WHERE seq <= (SELECT seq FROM (SELECT seq, SUM(len) OVER (ORDER BY seq) AS run FROM balance_fights) WHERE run >= ? ORDER BY seq LIMIT 1)',
+          over,
+        );
+    }
   }
 
   /** One kept fight, for anyone with its link. */
@@ -1511,26 +1576,65 @@ export class Leaderboard extends DurableObject<Env> {
           snapshots: page.map((r) => JSON.parse(r.data) as unknown),
           next: page.at(-1)?.seq ?? after,
           more: rows.length > 250,
-          retentionDays: 90,
+          retentionDays: BALANCE_DAYS,
           maxSnapshots: 20000,
+        });
+      }
+      if (url.pathname === '/balance/fights/export') {
+        const after = Number(url.searchParams.get('after') ?? 0);
+        if (!Number.isSafeInteger(after) || after < 0) return json({}, 400);
+        const rows = this.ctx.storage.sql
+          .exec<{ seq: number; owner: string; data: string }>(
+            'SELECT seq, owner, data FROM balance_fights WHERE seq > ? ORDER BY seq LIMIT 21',
+            after,
+          )
+          .toArray();
+        // (20 a page: a fight with its replay can be a few hundred kilobytes, and the board must not hold too much at once)
+        const page = rows.slice(0, 20);
+        return json({
+          schema: 1,
+          // (the owner id is already a one-way hash of the account: kept so one player's fights can be told apart, never who they are)
+          fights: page.map((r) => ({ player: r.owner, ...(JSON.parse(r.data) as object) })),
+          next: page.at(-1)?.seq ?? after,
+          more: rows.length > 20,
+          retentionDays: BALANCE_DAYS,
         });
       }
       if (url.pathname === '/balance/export') {
         const after = Number(url.searchParams.get('after') ?? 0);
         if (!Number.isSafeInteger(after) || after < 0) return json({ ok: false }, 400);
+        // (DECISIONS #714: each game with its replay, seed and every move, when one was kept, so the owner's tool can replay it card by
+        // card; fewer a page, as replays are big)
         const rows = this.ctx.storage.sql
-          .exec<{ seq: number; data: string }>(
-            'SELECT seq, data FROM balance_games WHERE seq > ? ORDER BY seq LIMIT 251',
+          .exec<{ seq: number; data: string; replay: string | null }>(
+            'SELECT g.seq, g.data, r.data AS replay FROM balance_games g LEFT JOIN replay_keys k ON k.game = g.id LEFT JOIN replays r ON r.id = k.id WHERE g.seq > ? ORDER BY g.seq LIMIT 21',
             after,
           )
           .toArray();
-        const page = rows.slice(0, 250);
+        const page = rows.slice(0, 20);
+        // (a replay keeps the players' names for its viewers: the balance export never carries them)
+        const nameless = (text: string): unknown => {
+          const r = JSON.parse(text) as Record<string, unknown>;
+          for (const seat of ['a', 'b'] as const) {
+            const e = r[seat];
+            if (e && typeof e === 'object') {
+              const { name: _name, ...rest } = e as Record<string, unknown>;
+              void _name;
+              r[seat] = rest;
+            }
+          }
+          delete r['names'];
+          return r;
+        };
         return json({
           schema: 1,
-          games: page.map((r) => JSON.parse(r.data) as unknown),
+          games: page.map((r) => ({
+            ...(JSON.parse(r.data) as object),
+            ...(r.replay ? { replay: nameless(r.replay) } : {}),
+          })),
           next: page.at(-1)?.seq ?? after,
-          more: rows.length > 250,
-          retentionDays: 90,
+          more: rows.length > 20,
+          retentionDays: BALANCE_DAYS,
           maxGames: 20000,
         });
       }
@@ -1561,7 +1665,7 @@ export class Leaderboard extends DurableObject<Env> {
         now,
         JSON.stringify(game),
       );
-      this.ctx.storage.sql.exec('DELETE FROM balance_games WHERE at < ?', now - 90 * DAY);
+      this.ctx.storage.sql.exec('DELETE FROM balance_games WHERE at < ?', now - BALANCE_DAYS * DAY);
       this.ctx.storage.sql.exec(
         'DELETE FROM balance_games WHERE seq IN (SELECT seq FROM balance_games ORDER BY seq DESC LIMIT -1 OFFSET 20000)',
       );
@@ -1610,6 +1714,7 @@ export class Leaderboard extends DurableObject<Env> {
         v: 2,
         character: s['hero'],
         deck: s['cards'],
+        draftLog: s['drafts'],
         stats: { duelsWon: s['fightsWon'], duelsLost: s['fightsLost'] },
       });
       if (!facts) return json({}, 400);
@@ -1631,7 +1736,10 @@ export class Leaderboard extends DurableObject<Env> {
         now,
         JSON.stringify(snapshot),
       );
-      this.ctx.storage.sql.exec('DELETE FROM balance_campaign WHERE at < ?', now - 90 * DAY);
+      this.ctx.storage.sql.exec(
+        'DELETE FROM balance_campaign WHERE at < ?',
+        now - BALANCE_DAYS * DAY,
+      );
       this.ctx.storage.sql.exec(
         'DELETE FROM balance_campaign WHERE seq IN (SELECT seq FROM balance_campaign ORDER BY seq DESC LIMIT -1 OFFSET 20000)',
       );
