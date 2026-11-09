@@ -13,6 +13,7 @@ import { gameplayAction } from '../playAccess';
 import { MatchHistory } from '../pvp/MatchList';
 import { RecentFights } from './RecentFights';
 import { BUILD } from '../build';
+import { showSeed } from './runSeed';
 import './history.css';
 
 const ReplayPlayer = lazy(() => import('../fight/ReplayPlayer'));
@@ -226,6 +227,10 @@ function RunRow(props: {
           )}
           <p className="history__meta">
             Max HP {run.maxHp} · {run.nodesCleared} stops cleared
+            {/* (a record from another device is checked before it is shown) */}
+            {typeof run.seedCode === 'string' &&
+              run.seedCode.length <= 64 &&
+              ` · Seed ${showSeed(run.seedCode)}`}
             {run.boons.length > 0 &&
               ` · Boons: ${run.boons.map((b) => COMBAT_DB.boons[b]?.name ?? b).join(', ')}`}
           </p>

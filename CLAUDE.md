@@ -1,3 +1,7 @@
+# Release approved 0.235.0 / rules 101 (2026-11-09; decisions 698-700)
+
+Robert explicitly approves pushing/deploying shared seeds (seed codes, Seed button, Play a shared seed, per-stop streams, no leaderboard change), Guard the Den as the Hunter's fourth basic in one Strike's place, and Raise Colossus growing the Colossus standing instead of releasing companions. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.234.0 / rules 100 (2026-11-08; decision 697)
 
 Robert explicitly approves pushing/deploying Campaign fight sharing: the last 10 Campaign fights per account kept on the server, the Share fight button on the end-of-fight popup, the History Campaign fights tab, and the fight:check tool. No rules change; seed sharing comes later without a leaderboard part. Website/server and matching Windows updater. Future changes need fresh release approval.

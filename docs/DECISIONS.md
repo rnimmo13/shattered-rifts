@@ -1498,3 +1498,35 @@ Robert wanted to share a Campaign fight with friends or with Claude (to check co
 - **History has a Campaign fights tab** listing the 10, with Copy link, and a button to open a saved fight record. A fight played under older rules can still be shared and saved, but not watched (it might not replay the same way).
 - **`pnpm fight:check <link | id | file>`** replays a shared fight with the engine and prints every hit by unit (damage, HP lost, Barrier blocked), so a number a player saw can be checked.
 - No combat or rules change.
+
+## 698 - Shared seeds: a friend can play the same run (2026-11-08)
+
+Robert: Slay the Spire 2 lets players share a run's seed, and he wants the same; no leaderboard part.
+
+- **Every new run has a seed code**, 8 letters and digits shown as `K7QM-2XRP` (no 0/O, 1/I/L). The run bar has a **Seed** button that shows it and copies it, and History shows each ended run's seed.
+- **The Sanctum has "Play a shared seed"**: type a code, and Begin starts a run on it.
+- **The same seed gives the same run.** A run's randomness now starts afresh at each stop, from the seed, the tier and the stop, and at each tier's map, from the seed and the tier (a buried-treasure dig has its own). So two players on one seed meet the same realms, Wardens and maps, and the same class at the same stop rolls the same offers, events and shop whatever route led there. A fight at a stop deals the same draws, counting only the fights lost at that stop (a retry is dealt differently). The class, the deck and what a player holds (cards owned, Boons, a Heart) can still change offers.
+- **A run keeps its own id** (`seed`, made from the code and the time) apart from the seed code (`seedCode`), so a seed played twice is two runs in History, saves and the leaderboard.
+- **Runs saved before this** have no seed code and keep their single stream; nothing about them changes.
+- **Leaderboard unchanged** (Robert, no leaderboard part): runs on a shared seed are ranked like any other. Known risk: a player can replay a seed they already know (their own included) and so know every stop ahead; flagging such runs is left for later if it matters.
+- No combat or card change.
+
+## 699 - The Hunter's fourth basic: Guard the Den (2026-11-09)
+
+Robert: give the Hunter one more basic, a summon (a Pup variant is fine) or a defensive card; she already has several basic attacks.
+
+- **Guard the Den** (basic Skill, 1 Mana): gain 5 Barrier; if you have no companion, summon a Pup. Upgraded: 7 Barrier and a Pup+.
+- It takes **one Strike's place**: her new ten-card starter is 3 Strikes, 3 Defends, Savage Bite, Blood Frenzy, Rend and Guard the Den (four signature basics, like the other classes).
+- **Why this shape:** while the starting Hound stands it is a Defend; once the pack falls it brings it back, so the Pack Instinct trait keeps something to share Might with. A Pup every time would be 6 + 12 = 18 points, near twice a basic.
+- **Price** (docs/14_CARD_COSTING.md): 5 Barrier = 6, plus a Pup (12) about a quarter of the times it is played = ~9, ~90% of a 1-Mana card (the class-signature basic band is 70-90%). Upgraded 8.4 + ~4.3 = ~12.7, +32%.
+- The card-text condition "If you have no companion" is new wording for the existing `allies` count; no engine rule changed.
+- New runs only: existing decks and saved runs keep their cards. No simulations.
+
+## 700 - Raise Colossus can grow the Colossus you have (2026-11-09)
+
+Robert: with Raise Colossus, the player should be able to pick the Colossus already on the field to grow it, instead of giving up two Thralls for another.
+
+- When a Raise Colossus card (Raise Colossus, Grave Colossus) has no room and smaller companions could make way, the make-way prompt now also offers **Grow the Grave Colossus (N HP)** for each Colossus standing; clicking the Colossus itself does the same. It takes the card's Raise amount as max HP and HP, HP only, no Might: the same as when there is no room at all. No companion is released, so it gets none of their HP.
+- The play action has a new optional `grow` field (the Colossus's id). The engine offers it only when a release is possible, refuses it on a unit that is not a Colossus of that side, and refuses it together with a release. The PvP server passes it through.
+- Played as it is, the card still releases the weakest, as before; with nothing able to make way it still grows the Colossus without asking.
+- No card numbers changed. Old action logs replay the same (they never name `grow`).

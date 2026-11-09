@@ -178,11 +178,19 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
       startUnits: ['hound'],
     },
-    starter: [...rep('strike', 4), ...rep('defend', 3), 'savage-bite', 'blood-frenzy', 'rend'],
+    // (Guard the Den in one Strike's place, DECISIONS #699)
+    starter: [
+      ...rep('strike', 3),
+      ...rep('defend', 3),
+      'savage-bite',
+      'blood-frenzy',
+      'rend',
+      'guard-the-den',
+    ],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     mechanics: ['Companions', 'Might', 'Self-damage', 'Mana and draw'],
     howTo: [
-      'You start with a Hound. Might makes every attack hit harder, permanently.',
+      'You start with a Hound. Might makes every attack hit harder, permanently. If the pack falls, Guard the Den calls a Pup.',
       'Many of your cards cost HP. Spend it to buff the pack; Savage Bite and Devour heal some of it back.',
       'Predator: gain Mana, draw hard and play many cards in one turn; its attacks grow with every card played that turn.',
     ],

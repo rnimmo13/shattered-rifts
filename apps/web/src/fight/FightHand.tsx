@@ -19,6 +19,8 @@ export interface HandCard {
   targets: string[];
   /** each smallest set of companions that could be released (scrapped) to make room, when the card's summons do not fit */
   releases: string[][];
+  /** (Raise Colossus) the Colossi standing it could grow instead of making way for another (DECISIONS #700) */
+  grows?: string[];
   /** what it costs now (a cost change or Unbound), when different from the printed one */
   cost?: number;
 }

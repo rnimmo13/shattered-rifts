@@ -229,8 +229,14 @@ function shuffledRealms(rng: RngState): StageRealm[] {
   return shuffle(rng, ['aurelion', 'nexus', 'wyldmaw', 'umbral'] as StageRealm[]);
 }
 
-export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'normal'): RunState {
-  const rng = seedRng(`run:${seed}`);
+/** A new run. `seed` is its own id; `seedCode` is the seed its randomness comes from (a shared one, or by default the id). */
+export function newRun(
+  hero: HeroId,
+  seed: string,
+  difficulty: Difficulty = 'normal',
+  seedCode: string = seed,
+): RunState {
+  const rng = seedRng(`run:${seedCode}`);
   const realmOrder = shuffle(rng, [...CAMPAIGN_REALM_IDS]);
   const wardenOrder = realmOrder.map((id) => {
     const world = CAMPAIGN_REALMS.find((r) => r.id === id)!;
@@ -261,6 +267,7 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
     ...(rework ? { reworked: rework } : {}),
     weaponCards: true,
     seed,
+    seedCode,
     character: hero,
     difficulty,
     tier: 1,
@@ -285,6 +292,11 @@ export function newRun(hero: HeroId, seed: string, difficulty: Difficulty = 'nor
   // the very start: The Threshold (the run starts with the Riftwalker's plain starting deck, DECISIONS #374)
   openPrelude(run, 'threshold');
   return run;
+}
+
+/** Start the run's randomness afresh for one place in it (a stop, or a tier's map), for runs that share by seed (DECISIONS #698). */
+function reseed(r: RunState, place: string): void {
+  if (r.seedCode !== undefined) r.rng = seedRng(`run:${r.seedCode}:t${r.tier}:${place}`);
 }
 
 /** Put the start-of-run / start-of-stage choice in front of the player (changes `run`, which must be a copy). */
@@ -495,11 +507,15 @@ export function enterNode(run: RunState, nodeId: string): RunState {
     'That node is not reachable',
   );
   const r = clone(run);
+  // (what this stop offers comes from the seed and the stop, not the route that led here)
+  reseed(r, nodeId);
   const node = nodeOf(r, nodeId);
   const treasure = promisedTreasure(r);
   if (treasure) {
     delete r.eventResult;
     delete r.eventFlips;
+    // (the dig has its own stream, so the stop after it does not repeat its rolls)
+    reseed(r, `${nodeId}:treasure`);
     r.context = { nodeId, bonusEvent: true, event: treasure };
     r.phase = 'event';
     return r;
@@ -956,7 +972,11 @@ export function duelPlan(run: RunState): FightPlan | null {
         eliteDamage,
     ),
     kind: node.kind,
-    seed: `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
+    // (a shared seed deals the same fights, counting only the losses at this stop: DECISIONS #698)
+    seed:
+      run.seedCode !== undefined
+        ? `${run.seedCode}:t${run.tier}:${node.id}:${run.context?.retries ?? 0}`
+        : `${run.seed}:t${run.tier}:${node.id}:${run.stats.duelsLost}`,
   };
 }
 
@@ -994,6 +1014,7 @@ export function finishDuel(
   const node = nodeOf(r, ctx.nodeId);
   if (!won) {
     r.stats.duelsLost++;
+    ctx.retries = (ctx.retries ?? 0) + 1;
     r.resolve = Math.max(0, r.resolve - resolveCost(node.kind));
     if (r.resolve === 0) {
       r.phase = 'collapsed';
@@ -2005,6 +2026,7 @@ export function continueLoop(run: RunState): RunState {
   if (!r.realmRoute) r.realmRoute = 'legacy-themed';
   r.tier += 1;
   r.stage = 1;
+  reseed(r, 'map');
   const next = realmOfTier(
     r.rng,
     r.tier,

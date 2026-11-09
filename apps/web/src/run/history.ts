@@ -16,8 +16,10 @@ export const HISTORY_FIGHTS = 12;
 export type RunEnd = 'collapsed' | 'banked' | 'abandoned';
 
 export interface RunRecord {
-  /** the run's seed (a run is recorded once; ending it again replaces the record) */
+  /** the run's own id (a run is recorded once; ending it again replaces the record) */
   id: string;
+  /** the seed it was played on, which can be shared (DECISIONS #698) */
+  seedCode?: string;
   /** when it ended, epoch ms */
   at: number;
   hero: string;
@@ -96,6 +98,7 @@ export function recordOf(
 ): RunRecord {
   return {
     id: run.seed,
+    ...(run.seedCode ? { seedCode: run.seedCode } : {}),
     at: now,
     hero: run.character,
     difficulty: run.difficulty,

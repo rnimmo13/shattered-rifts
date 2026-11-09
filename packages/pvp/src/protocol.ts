@@ -101,7 +101,8 @@ export interface Entry {
 // 93: the Totemist adds 2 totem positions and starts with a second Hawk and Bear (#682).
 // 94: Spiritwalker Attunement (#683); the Necromancer reworked: Raise Dead, companions strike, death bursts, Grave Colossus, Bonelord (#684).
 // 95: Raise Colossus (a Colossus standing takes the HP when there is no room); Reaping Scythe 16 +5, no Consume.
-export const RULES_VERSION = 100;
+// 101: Guard the Den, the Hunter's fourth basic in one Strike's place (#699); Raise Colossus can grow the Colossus standing (#700).
+export const RULES_VERSION = 101;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

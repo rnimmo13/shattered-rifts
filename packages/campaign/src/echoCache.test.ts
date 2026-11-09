@@ -169,7 +169,10 @@ describe('an Echo pays like an Elite', () => {
       const { run, echo } = withEcho(ghost(`b${i}`));
       const r = finishDuel(
         enterNode(
-          before({ ...run, seed: `boon-${i}`, rng: seedRng(`boon-${i}`) }, echo.id),
+          before(
+            { ...run, seed: `boon-${i}`, seedCode: `boon-${i}`, rng: seedRng(`boon-${i}`) },
+            echo.id,
+          ),
           echo.id,
         ),
         true,

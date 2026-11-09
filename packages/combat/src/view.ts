@@ -1083,6 +1083,7 @@ function whenText(o: Extract<Op, { op: 'when' }>, db?: CombatDb): string {
   if (o.by === 'exposed' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Exposed';
   if (o.by === 'faltering' && o.of === 'target' && (lo ?? 0) >= 1) return 'the target is Faltering';
   if (o.by === 'hpLostTurn' && (lo ?? 0) >= 1) return 'you have lost HP this turn';
+  if (o.by === 'allies' && hi === 0 && lo === undefined && !o.of) return 'you have no companion';
   if (o.by === 'snares' && lo === 1 && hi === undefined) return 'you have a Trap set';
   if (o.by === 'suits' && lo === 4) return 'all four suits are showing';
   if (o.by === 'suits' && lo !== undefined && hi === undefined)

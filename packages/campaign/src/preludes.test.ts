@@ -482,7 +482,12 @@ describe('offers that fit the run (DECISIONS #517)', () => {
       ],
     };
     for (let i = 0; i < 40; i++) {
-      const after = continueLoop({ ...r, seed: `fit-${i}`, rng: seedRng(`fit-${i}`) });
+      const after = continueLoop({
+        ...r,
+        seed: `fit-${i}`,
+        seedCode: `fit-${i}`,
+        rng: seedRng(`fit-${i}`),
+      });
       const list = after.context?.prelude?.options ?? [];
       expect(list.length).toBeGreaterThan(0);
       expect(effects(list).some((e) => e.k === 'remove' || e.k === 'transform')).toBe(false);

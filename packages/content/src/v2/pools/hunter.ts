@@ -53,6 +53,19 @@ export const HUNTER: CardDef[] = [
     { up: { effects: [dmg(5, 'allFoes'), lose(1), status('might', 1)] } },
   ),
 
+  // (her fourth basic, in one Strike's place, DECISIONS #699: a Defend while the Hound stands, and the pack's way back once it falls.
+  // 6 for the Barrier + a Pup's 12 about a quarter of the time = ~9, ~90% of a 1-Mana card; upgraded 7 and a Pup+ = ~12.7, +32%)
+  k(
+    'basic',
+    'guard-the-den',
+    'Guard the Den',
+    'skill',
+    1,
+    'none',
+    [barrier(5), when('allies', { atMost: 0 }, [summon('pup')])],
+    { up: { effects: [barrier(7), when('allies', { atMost: 0 }, [summon('pup+')])] } },
+  ),
+
   // --- Bloodrage ---
   // (every HP a common pays buys about 3 damage or Barrier, or something lasting: DECISIONS #285)
   // (one of her basics now, in Guard Dog's place: DECISIONS #308)

@@ -898,6 +898,38 @@ button.mapnode--warden {
   justify-content: center;
   gap: 0.8rem;
 }
+/* a seed a friend shared (DECISIONS #698) */
+.setup__seed {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  max-width: 34rem;
+  text-align: center;
+  color: var(--c-text-dim);
+}
+.setup__seed summary {
+  cursor: pointer;
+  color: var(--c-text);
+}
+.setup__seed p {
+  margin: 0;
+}
+.setup__seedInput {
+  width: 12rem;
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--c-text);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--c-line, rgba(255, 255, 255, 0.2));
+  border-radius: 6px;
+}
+.setup__seedInput[aria-invalid='true'] {
+  border-color: #ff5a86;
+}
 .setup__note {
   margin: 0;
   font-size: 1.02rem;

@@ -110,6 +110,8 @@ interface Run {
   salvage?: { inst: string; might: number; vigor: number; hp: number };
   /** (Raise Colossus) the HP of the companions released to make room for this card's Colossus, which it takes (Robert 2026-11-08) */
   fed?: { inst: string; hp: number };
+  /** (Raise Colossus) the Colossus standing the player chose to grow with this card instead of making way for another (#700) */
+  grow?: { inst: string; unit: string };
 }
 interface ProjectedHit {
   limited?: boolean;
@@ -3301,6 +3303,30 @@ function execOp(r: Run, a: Act, op: Op): void {
         const mine = op.same && r.fed && a.inst?.id === r.fed.inst;
         const fed = mine ? (r.fed?.hp ?? 0) : 0;
         if (mine) delete r.fed;
+        // (or the Colossus standing the player chose to grow instead, #700: it takes the HP, HP only, as with no room)
+        const grow = op.same && r.grow && a.inst?.id === r.grow.inst ? r.grow.unit : null;
+        if (grow !== null) {
+          delete r.grow;
+          const into = findUnit(r.s, grow);
+          if (op.amount <= 0) continue;
+          // (the Colossus chosen has gone: still no one is released, as the player chose; it is raised as a plain Raise would be)
+          if (!into || into.hp <= 0 || into.side !== side.id) {
+            raiseAlly(r, side, op.unit, op.amount, a.actor, false);
+            continue;
+          }
+          {
+            into.maxHp += op.amount;
+            into.hp += op.amount;
+            r.ev.push({
+              type: 'heal',
+              target: into.id,
+              amount: op.amount,
+              hp: into.hp,
+              maxHp: into.maxHp,
+            });
+            continue;
+          }
+        }
         raiseAlly(r, side, op.unit, op.amount + fed, a.actor, op.same === true);
       }
       return;
@@ -5534,6 +5560,19 @@ function raisedSlots(db: CombatDb, cd: CardDef): number {
   );
 }
 
+/**
+ * (Raise Colossus, #700) the Colossi standing that the card could grow instead of making way for another: only when companions could
+ * make way (with nothing to release, playing it as it is grows the Colossus anyway, so there is nothing to choose)
+ */
+function growable(db: CombatDb, sd: SideState, cd: CardDef): Unit[] {
+  const raised = cd.effects.find((o) => o.op === 'raise' && o.same);
+  if (!raised || raised.op !== 'raise' || !needsRelease(db, sd, cd)) return [];
+  if (releaseSets(db, sd, cd).length === 0) return [];
+  return sd.units.filter(
+    (u) => u.kind === 'ally' && u.hp > 0 && u.def.replace(/\+$/, '') === raised.unit,
+  );
+}
+
 /** A card whose summons do not fit in the free companion slots: companions have to be released (scrapped) to make room. */
 function needsRelease(db: CombatDb, sd: SideState, cd: CardDef): boolean {
   // (a card that summons nothing never asks, even on a side somehow over its cap)
@@ -5632,6 +5671,9 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
       for (const p of plays)
         for (const set of sets)
           out.push({ ...p, release: set.length === 1 ? (set[0] as UnitId) : set });
+      // ... or, for Raise Colossus, grow a Colossus standing instead (#700)
+      for (const p of plays)
+        for (const u of growable(db, sd, cd)) out.push({ ...p, grow: u.id });
     }
     // ... and as it is, last: what fits is summoned, the rest is not (DECISIONS #405)
     out.push(...plays);
@@ -5758,6 +5800,12 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
   const hero = heroOf(sd);
   if (!hero) throw new RulesError('No hero to play cards');
   let scrapped = 0;
+  // (Raise Colossus: the player chose to grow a Colossus standing instead of making way for another, #700)
+  if (action.grow !== undefined) {
+    if (releaseIds(action).length > 0 || !growable(r.db, sd, cd).some((u) => u.id === action.grow))
+      throw new RulesError('Choose a Colossus of yours to grow');
+    r.grow = { inst: inst.id, unit: action.grow };
+  }
   // (with no room and no companion named, the card is played as it is: what fits is summoned, DECISIONS #405)
   if (needsRelease(r.db, sd, cd) && releaseIds(action).length > 0) {
     const ids = [...new Set(releaseIds(action))];

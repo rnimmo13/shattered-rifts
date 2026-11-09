@@ -1,3 +1,9 @@
+## 0.235.0 - 2026-11-09
+
+- Shared seeds (DECISIONS #698): every new run has a seed code (Seed button on the run bar, shown in History); "Play a shared seed" in the Sanctum. Per-stop random streams so the same seed gives the same maps, Wardens and offers; old runs keep their single stream; leaderboard unchanged.
+- Guard the Den (#699; rules 101): new Hunter basic in one Strike's place, 1 Mana, 5 Barrier and a Pup if you have no companion (7 and a Pup+ upgraded).
+- Raise Colossus (#700): when companions would make way, the player can grow the Colossus standing instead (new optional `grow` on the play action).
+
 ## 0.234.0 - 2026-11-08
 
 - Campaign fights kept online and shared by link (DECISIONS #697): the newest 10 per account, a Share fight button on the end-of-fight popup, a Campaign fights tab in History, and `pnpm fight:check` to replay one hit by hit. No rules change.

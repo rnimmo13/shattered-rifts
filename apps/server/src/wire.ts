@@ -78,11 +78,14 @@ export function cleanAction(a: Action): Action {
             .map(str)
             .filter((x): x is string => !!x)
         : str(raw);
+      // (Raise Colossus: the Colossus that grows instead, DECISIONS #700)
+      const grow = str(o['grow']);
       return {
         type: 'play',
         card: str(o['card']) ?? '',
         ...(target ? { target } : {}),
         ...(release && release.length ? { release } : {}),
+        ...(grow ? { grow } : {}),
       };
     }
     case 'potion': {

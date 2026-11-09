@@ -106,7 +106,9 @@ describe('once a prize is taken the reel is done (DECISIONS #530)', () => {
   it('a reel holding +1 Resolve survives a reload (a save that lost it would be unreadable)', () => {
     const r = eliteRun(1, { resolve: 1, maxResolve: 3 });
     expect(r.context!.event!.trial!.prizes.some((p) => p.icon === 'resolve')).toBe(true);
-    expect(parseRun(serializeRun(r))?.context?.event?.trial?.prizes.some((p) => p.icon === 'resolve')).toBe(true);
+    expect(
+      parseRun(serializeRun(r))?.context?.event?.trial?.prizes.some((p) => p.icon === 'resolve'),
+    ).toBe(true);
   });
 
   it('the Twin copies the card chosen, and refuses a basic card or one not held', () => {
@@ -123,7 +125,9 @@ describe('once a prize is taken the reel is done (DECISIONS #530)', () => {
     expect(taken.phase).toBe('map');
     const saved = eliteRun(1, { deck: [...r0.deck] });
     expect(saved.context?.event?.trial?.prizes.some((p) => p.twin)).toBe(true);
-    expect(parseRun(serializeRun(saved))?.context?.event?.trial?.prizes.some((p) => p.twin)).toBe(true);
+    expect(parseRun(serializeRun(saved))?.context?.event?.trial?.prizes.some((p) => p.twin)).toBe(
+      true,
+    );
   });
 });
 
@@ -300,7 +304,10 @@ describe('chances are recorded for the coin', () => {
     };
     let found: RunState | null = null;
     for (let i = 0; i < 400 && !found; i++) {
-      const e = enterNode({ ...run, seed: `f-${i}`, rng: newRun('knight', `f-${i}`).rng }, node.id);
+      const e = enterNode(
+        { ...run, seed: `f-${i}`, seedCode: `f-${i}`, rng: newRun('knight', `f-${i}`).rng },
+        node.id,
+      );
       if (e.context?.event?.options.some((o) => o.id === 'bet')) found = e;
     }
     expect(found, 'no gambler in 400 seeds').toBeTruthy();

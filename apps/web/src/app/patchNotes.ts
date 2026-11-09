@@ -46,6 +46,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.235.0",
+    date: "2026-11-09",
+    title: "Shared seeds, a new Hunter basic and Raise Colossus choices",
+    summary: "Share a run's seed so a friend can play the same run, the Hunter starts with Guard the Den, and Raise Colossus can grow the Colossus you have.",
+    notes: [
+      {
+        kind: "new",
+        title: "Shared seeds",
+        text: "Every new run has a seed code (like K7QM-2XRP). The Seed button on the run bar copies it, History shows it, and \"Play a shared seed\" in the Sanctum starts a run on a friend's code: the same realms, Wardens, maps and offers at each stop. Runs started before this update are unchanged."
+      },
+      {
+        kind: "new",
+        title: "Guard the Den",
+        text: "A new Hunter basic in one Strike's place: 1 Mana, gain 5 Barrier, and if you have no companion, summon a Pup (upgraded 7 Barrier and a Pup+). New runs only."
+      },
+      {
+        kind: "changed",
+        title: "Raise Colossus",
+        text: "When companions would have to make way for a new Colossus, you can grow the Colossus you already have instead: click it, or press its Grow button. It gains the card's HP and no one is released."
+      }
+    ]
+  },
+  {
     version: "0.234.0",
     date: "2026-11-08",
     title: "Share your Campaign fights",

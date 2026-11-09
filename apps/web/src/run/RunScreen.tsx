@@ -124,10 +124,8 @@ import { useRunClock } from './useRunClock';
 import { ShareFight } from './ShareFight';
 import { campaignFight } from './campaignFights';
 import { RunTimer } from './RunTimer';
+import { newRunId, newSeedCode, readSeed, showSeed } from './runSeed';
 import type { RunClock } from './runClock';
-
-const newSeed = (): string =>
-  `${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
 
 const duelKey = (r: RunState): string =>
   `${r.seed}:${r.context?.nodeId ?? ''}:${r.stats.duelsWon}:${r.stats.duelsLost}`;
@@ -399,8 +397,10 @@ export default function RunScreen() {
     setRun(r);
     return true;
   };
-  const startRun = (c: HeroId, d: Difficulty) => {
-    begin(newRun(c, newSeed(), d));
+  /** a new run, on a seed a friend shared or a fresh one (DECISIONS #698) */
+  const startRun = (c: HeroId, d: Difficulty, shared?: string) => {
+    const code = shared ?? newSeedCode();
+    begin(newRun(c, newRunId(code), d, code));
   };
   /** Back to the home page with the run parked: it is already saved, and can be carried on from there. */
   const goHome = () => {
@@ -875,7 +875,7 @@ function AbandonDialog(props: { onConfirm: () => void; onCancel: () => void; mid
 }
 
 function Sanctum(props: {
-  onStart: (c: HeroId, d: Difficulty) => void;
+  onStart: (c: HeroId, d: Difficulty, seed?: string) => void;
   onImport: (f: File | undefined) => void;
   notice: string | null;
   onDismiss: () => void;
@@ -886,6 +886,10 @@ function Sanctum(props: {
     rememberHero(h);
   };
   const difficulty: Difficulty = 'normal';
+  const [seedText, setSeedText] = useState('');
+  const [seedOpen, setSeedOpen] = useState(false);
+  // (a seed only counts while its box is open: closed, Begin plays a new one)
+  const seed = seedOpen && seedText.trim() ? readSeed(seedText) : undefined;
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">
@@ -905,9 +909,16 @@ function Sanctum(props: {
         <div className="setup__start">
           <button
             className="btn btn--primary setup__go"
-            onClick={() => props.onStart(pick, difficulty)}
+            disabled={seed === null}
+            onClick={() => props.onStart(pick, difficulty, seed ?? undefined)}
           >
-            <span>Begin the run</span>
+            <span>
+              {seed
+                ? `Begin on seed ${showSeed(seed)}`
+                : seed === null
+                  ? 'Finish the seed below'
+                  : 'Begin the run'}
+            </span>
           </button>
         </div>
         <label className="btn btn--ghost">
@@ -920,11 +931,71 @@ function Sanctum(props: {
           />
         </label>
       </div>
+      <details
+        className="setup__seed"
+        open={seedOpen}
+        onToggle={(e) => setSeedOpen(e.currentTarget.open)}
+      >
+        <summary>Play a shared seed</summary>
+        <p>
+          Type a seed a friend shared (it is on their run bar) to play the same maps, Wardens and
+          offers. The run starts with Begin. Close this to play a new seed instead.
+        </p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (seed) props.onStart(pick, difficulty, seed);
+          }}
+        >
+          <input
+            className="setup__seedInput"
+            type="text"
+            value={seedText}
+            placeholder="K7QM-2XRP"
+            maxLength={24}
+            spellCheck={false}
+            autoCapitalize="characters"
+            aria-label="Seed"
+            aria-invalid={seed === null}
+            onChange={(e) => setSeedText(e.target.value)}
+          />
+        </form>
+        {/* (said once something the length of a seed has been typed, not at the first letter) */}
+        {seed === null && seedText.replace(/[\s-]/g, '').length >= 8 && (
+          <small role="alert">That is not a seed: 8 letters and digits, like K7QM-2XRP.</small>
+        )}
+      </details>
       <p className="setup__note">
         Early alpha. Easy mode is on by default so the whole game can be tested quickly: enemies are
         weaker and you start with extra Resolve and shards.
       </p>
     </main>
+  );
+}
+
+/** The run's seed on the run bar: a click copies it, to share (DECISIONS #698). */
+function SeedButton({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      className="btn btn--small btn--ghost runbar__seed"
+      {...tipAttrs({
+        kicker: 'Seed',
+        title: showSeed(code),
+        text: 'Share this seed and a friend can play the same maps, Wardens and offers: they type it in the Sanctum under Play a shared seed. Click to copy it.',
+      })}
+      onClick={() => {
+        void navigator.clipboard?.writeText(showSeed(code)).then(
+          () => {
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1500);
+          },
+          () => undefined,
+        );
+      }}
+    >
+      <span>{copied ? 'Copied' : `Seed ${showSeed(code)}`}</span>
+    </button>
   );
 }
 
@@ -1058,6 +1129,7 @@ function RunBar(props: {
         >
           <span>Arena</span>
         </a>
+        {run.seedCode && <SeedButton code={run.seedCode} />}
         <SettingsButton />
         <button className="btn btn--small runbar__deck" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>

@@ -759,6 +759,48 @@ describe('Raise Colossus (2026-11-07)', () => {
     );
     expect(sets).toEqual([['B-a', 'B-b']]);
   });
+  it('lets the player grow the Colossus standing instead of releasing Thralls for another (Robert 2026-11-09, #700)', () => {
+    let s = fight(['grave-colossus', 'raise-colossus'], ['squire'], 'necromancer:bonelord');
+    s.sides.a.mana = 9;
+    s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
+    s = play(s, 'T0');
+    addThrall(s, 4, 'B-a');
+    addThrall(s, 6, 'B-b');
+    const colossus = thralls(s).find((u) => u.def === 'grave-colossus')!;
+    const grows = legalActions(db, s).flatMap((a) =>
+      a.type === 'play' && a.card === 'T1' && a.grow !== undefined ? [a.grow] : [],
+    );
+    expect(grows).toEqual([colossus.id]);
+    s = applyAction(db, s, { type: 'play', card: 'T1', grow: colossus.id }).state;
+    // (the Thralls stay; the Colossus takes the card's 14, HP only)
+    expect(thralls(s).map((u) => [u.def, u.maxHp])).toEqual([
+      ['grave-colossus', 22 + 14],
+      ['bone-thrall', 4],
+      ['bone-thrall', 6],
+    ]);
+    expect(thralls(s)[0]!.statuses.might ?? 0).toBe(0);
+  });
+  it('only offers to grow when companions could make way, and refuses a Thrall or a grow with a release', () => {
+    // (one Colossus and a Thrall in three slots: nothing can make way, so it simply grows as it is, with no choice to make)
+    let s = fight(['grave-colossus', 'raise-colossus']);
+    s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
+    s = play(s, 'T0');
+    addThrall(s, 4, 'B-a');
+    expect(
+      legalActions(db, s).some((a) => a.type === 'play' && a.card === 'T1' && a.grow),
+    ).toBe(false);
+    // (the Bonelord's board: a Thrall is not a Colossus, and a grow cannot come with a release)
+    let t = fight(['grave-colossus', 'raise-colossus'], ['squire'], 'necromancer:bonelord');
+    t.sides.a.units = t.sides.a.units.filter((u) => u.kind !== 'ally');
+    t = play(t, 'T0');
+    addThrall(t, 4, 'B-a');
+    addThrall(t, 6, 'B-b');
+    const colossus = thralls(t).find((u) => u.def === 'grave-colossus')!;
+    expect(() => applyAction(db, t, { type: 'play', card: 'T1', grow: 'B-a' })).toThrow();
+    expect(() =>
+      applyAction(db, t, { type: 'play', card: 'T1', grow: colossus.id, release: ['B-a', 'B-b'] }),
+    ).toThrow();
+  });
 });
 
 describe('Raise Colossus, the uncommon (2026-11-07)', () => {

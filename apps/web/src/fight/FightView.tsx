@@ -1755,6 +1755,9 @@ export function FightView(props: {
         seen.add(key);
         return [set];
       });
+      const grows = [
+        ...new Set(mine.flatMap((a) => (a.type === 'play' && a.grow ? [a.grow] : []))),
+      ];
       return [
         {
           inst,
@@ -1762,6 +1765,7 @@ export function FightView(props: {
           playable: mine.length > 0,
           targets,
           releases,
+          grows,
           cost: costOf(db, mineView, inst),
         },
       ];
@@ -1843,6 +1847,36 @@ export function FightView(props: {
     },
     [act, releasing],
   );
+  // (Raise Colossus: grow a Colossus standing instead of releasing anyone, DECISIONS #700; only before any companion is picked)
+  const growIds = useMemo(
+    () =>
+      releaseCard && releasing && releasing.picked.length === 0 ? (releaseCard.grows ?? []) : [],
+    [releaseCard, releasing],
+  );
+  const sendGrow = useCallback(
+    (unit: string) => {
+      if (!releasing) return;
+      act({
+        type: 'play',
+        card: releasing.card,
+        grow: unit,
+        ...(releasing.target ? { target: releasing.target } : {}),
+      });
+      setReleasing(null);
+      setHoverCard(null);
+    },
+    [act, releasing],
+  );
+  const growButtons = useMemo(() => {
+    const crew = live?.sides[mySide].units ?? [];
+    return growIds.map((id) => {
+      const u = crew.find((x) => x.id === id);
+      return {
+        id,
+        label: `Grow ${u ? `the ${db.units[u.def]?.name ?? 'Colossus'} (${u.hp} HP)` : 'the Colossus'}`,
+      };
+    });
+  }, [growIds, live, mySide, db]);
   // how many of the card's companions would come if it is played as it is, with no room made (DECISIONS #405)
   const releaseFit = useMemo(() => {
     const side = live?.sides[mySide];
@@ -1861,7 +1895,10 @@ export function FightView(props: {
   const aimSet = useMemo(
     () =>
       releaseCard && releasing
-        ? new Set(releaseFits.flatMap((set) => set.filter((u) => !releasing.picked.includes(u))))
+        ? new Set([
+            ...releaseFits.flatMap((set) => set.filter((u) => !releasing.picked.includes(u))),
+            ...growIds,
+          ])
         : aimPotion !== null
           ? new Set(
               legal.flatMap((a) =>
@@ -1869,7 +1906,7 @@ export function FightView(props: {
               ),
             )
           : (dragTargets ?? (selectedCard ? new Set(selectedCard.targets) : new Set<string>())),
-    [selectedCard, dragTargets, aimPotion, legal, releaseCard, releasing, releaseFits],
+    [selectedCard, dragTargets, aimPotion, legal, releaseCard, releasing, releaseFits, growIds],
   );
   // what each card in hand would really deal right now (Might, Sharpen, Faltering...), and the card being aimed at the unit under
   // the pointer (its Exposed too); a card that could hit several enemies shows the range
@@ -1989,7 +2026,8 @@ export function FightView(props: {
 
   const chooseAimedUnit = (unit: string) => {
     if (!aimSet.has(unit)) return;
-    if (releasing) {
+    if (releasing && growIds.includes(unit)) sendGrow(unit);
+    else if (releasing) {
       const picked = [...releasing.picked, unit];
       const done = releaseFits.find(
         (set) => set.length === picked.length && picked.every((id) => set.includes(id)),
@@ -2563,7 +2601,9 @@ export function FightView(props: {
                 {releaseCard && raisesColossus(releaseCard.def)
                   ? releasing.picked.length > 0
                     ? 'Still not enough room. Choose another to make way.'
-                    : 'Choose which companions make way for the Colossus. It takes half their HP.'
+                    : growIds.length > 0
+                      ? 'Choose which companions make way for a new Colossus (it takes half their HP), or grow the one you have.'
+                      : 'Choose which companions make way for the Colossus. It takes half their HP.'
                   : releasing.picked.length > 0
                     ? 'Still not enough room. Scrap another companion.'
                     : 'Not enough room. Scrap a companion to make room.'}{' '}
@@ -2581,6 +2621,15 @@ export function FightView(props: {
                   onClick={() => sendRelease(c.set)}
                 >
                   <span>{c.label}</span>
+                </button>
+              ))}
+              {growButtons.map((g) => (
+                <button
+                  key={g.id}
+                  className="btn btn--small btn--primary"
+                  onClick={() => sendGrow(g.id)}
+                >
+                  <span>{g.label}</span>
                 </button>
               ))}
               {releaseFit && releaseCard && playAnywayHelps(releaseCard.def, releaseFit.fit) && (

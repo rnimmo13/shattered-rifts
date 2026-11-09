@@ -461,6 +461,9 @@ export function parseRun(text: string): RunState | null {
   const shop = (r.context as { merchant?: { crossed?: unknown } } | null | undefined)?.merchant;
   if (shop && typeof shop.crossed === 'string') shop.crossed = canonicalHero(shop.crossed);
   if (typeof r.seed !== 'string') return null;
+  // (a seed that cannot be read leaves the run on its single stream, rather than losing it)
+  if (r.seedCode !== undefined && (typeof r.seedCode !== 'string' || r.seedCode.length > 64))
+    delete r.seedCode;
   if (typeof r.character !== 'string' || !Object.hasOwn(RIFTWALKERS, r.character)) return null;
   // (DECISIONS #531: acts are gone. A run saved between two acts has cleared its tier; one inside an act finishes that map, and that clears it)
   if ((r.phase as string) === 'stageClear') {

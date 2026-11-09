@@ -1808,7 +1808,8 @@ export interface CombatSetup {
 export type Action =
   /** `release` names the companion that leaves (is scrapped) to make room, when a card summons more than the free companion slots
    * hold; a list when several have to go (DECISIONS #383) */
-  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[] }
+  /** `grow` (Raise Colossus, DECISIONS #700): the Colossus standing that takes the HP, so no companion has to make way for another */
+  | { type: 'play'; card: InstId; target?: UnitId; release?: UnitId | UnitId[]; grow?: UnitId }
   /** `potion` names the potion meant, so a belt that has since shifted can never drink the wrong one */
   | { type: 'potion'; index: number; potion?: string; target?: UnitId }
   | { type: 'endTurn' }

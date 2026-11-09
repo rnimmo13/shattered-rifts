@@ -285,6 +285,8 @@ export interface NodeContext {
   nodeId: string;
   /** An extra encounter before entering this node; completing it leaves the route untouched. */
   bonusEvent?: boolean;
+  /** fights lost at this stop so far (a run on a shared seed deals each retry from it, not from the run's losses: DECISIONS #698) */
+  retries?: number;
   /** a Warden that is a ghost: the deck that was fetched for it (kept, so a retry or a reload meets the same one) */
   ghost?: GhostBoss;
   /** the server has been asked for this Warden's ghost (whether or not one came): do not ask again */
@@ -394,7 +396,14 @@ export interface RunState {
   heartMaxHpLoss?: number;
   /** the Ascendancy this run has taken (DECISIONS #519) */
   ascendancy?: string;
+  /** this run's own id (unique: a shared seed played twice is two runs) */
   seed: string;
+  /**
+   * The seed the run's randomness comes from, which players can share (DECISIONS #698). It starts afresh at each stop, from this,
+   * the tier and the stop (and at each tier's map), so the same seed gives the same maps, and the same stop the same offers whatever
+   * route led there. Runs saved before it have none, and keep one stream (from `seed`) throughout.
+   */
+  seedCode?: string;
   character: HeroId;
   /** The run's difficulty setting (see DIFFICULTY): Normal unless chosen otherwise (see DIFFICULTY). */
   difficulty: Difficulty;
