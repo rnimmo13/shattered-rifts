@@ -1,3 +1,7 @@
+# Release approved 0.234.0 / rules 100 (2026-11-08; decision 697)
+
+Robert explicitly approves pushing/deploying Campaign fight sharing: the last 10 Campaign fights per account kept on the server, the Share fight button on the end-of-fight popup, the History Campaign fights tab, and the fight:check tool. No rules change; seed sharing comes later without a leaderboard part. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.233.0 / rules 100 (2026-11-08; decisions 693-696)
 
 Robert explicitly approves pushing/deploying the Hunter, Trickster and Drunkard cost passes (each Ascendancy opening more than one way to win, Rares in A, Uncommons in B, upgrades about +30%), Bonelord back to A and Death Grip as a finisher. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -119,7 +119,7 @@ export async function claimName(name: string): Promise<ClaimResult> {
 }
 
 async function post(
-  what: 'id' | 'run' | 'view' | 'ghostboss' | 'trophies' | 'replays',
+  what: 'id' | 'run' | 'view' | 'ghostboss' | 'trophies' | 'replays' | 'fight' | 'fights',
   extra: Record<string, unknown>,
 ): Promise<Record<string, unknown> | null> {
   try {
@@ -129,7 +129,9 @@ async function post(
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(key === null ? extra : { code: key, ...extra }),
-      ...(what === 'replays' ? { signal: AbortSignal.timeout(8000) } : {}),
+      ...(what === 'replays' || what === 'fights' || what === 'fight'
+        ? { signal: AbortSignal.timeout(what === 'fight' ? 15000 : 8000) }
+        : {}),
     });
     const data = (await res.json()) as Record<string, unknown>;
     return data['ok'] === true ? data : null;
@@ -137,6 +139,10 @@ async function post(
     return null;
   }
 }
+
+/** (DECISIONS #697) the same signed-in request, for the Campaign fights kept on the server (run/campaignFights.ts) */
+export const boardPost = (what: 'fight' | 'fights', extra: Record<string, unknown>) =>
+  post(what, extra);
 
 /** This player's Arena trophies, newest first (null when they are not known to the server, or it cannot be reached). */
 export async function fetchTrophies(): Promise<Trophy[] | null> {

@@ -82,7 +82,20 @@ const NAME_CLAIMS_PER_DAY = 8;
 const IP_NAME_CLAIMS_PER_DAY = 40;
 /** Arena games one player may have kept as replays in a day. */
 const REPLAYS_PER_DAY = 120;
+/** (DECISIONS #697) Campaign fights kept for each account, how many it may save in a day, and the biggest one kept. */
+const FIGHTS_KEPT = 10;
+const FIGHTS_PER_DAY = 300;
+/** the longest a kept fight's text may be, in characters */
+const FIGHT_MAX_CHARS = 300_000;
+/** fights one address may save in a day (any number of accounts behind it) */
+const FIGHTS_PER_IP_DAY = 60;
+/** all kept fights together, in characters: past it the oldest anyone's are let go, so this one board never fills */
+const FIGHTS_TOTAL_CHARS = 400_000_000;
+/** a fight's id: 10 letters and digits, as a replay's */
+const FIGHT_ID = /^[A-Za-z0-9]{10}$/;
 const isId = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{64}$/.test(v);
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
 const isAddr = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80;
 /** An Ascendancy id that belongs to this Riftwalker, or null (what a browser sends, or an old row, is checked: DECISIONS #539). */
 const boardAscendancy = (hero: unknown, raw: unknown): string | null =>
@@ -302,6 +315,18 @@ export class Leaderboard extends DurableObject<Env> {
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS replay_keys (game TEXT PRIMARY KEY, id TEXT NOT NULL)',
     );
+    // Campaign fights (DECISIONS #697): each account's last few, so a fight can be watched again or shared from a link
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS fight_replays (id TEXT PRIMARY KEY, owner TEXT NOT NULL, at INTEGER NOT NULL, key TEXT NOT NULL, summary TEXT NOT NULL, data TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec(
+      'CREATE INDEX IF NOT EXISTS fight_replays_owner ON fight_replays (owner, at)',
+    );
+    // (one fight saved twice, as when the game is reloaded on its result, is kept once)
+    ctx.storage.sql.exec(
+      'CREATE UNIQUE INDEX IF NOT EXISTS fight_replays_key ON fight_replays (owner, key)',
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS fight_replays_at ON fight_replays (at)');
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS balance_games (seq INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT UNIQUE NOT NULL, at INTEGER NOT NULL, data TEXT NOT NULL)',
     );
@@ -652,6 +677,120 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()[0];
     if (!row) return json({ ok: false, error: 'not-found' }, 404);
     return new Response(`{"ok":true,"replay":${row.data}}`, {
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  // ---- Campaign fights (DECISIONS #697) ----
+
+  /** Keep a finished Campaign fight for its player: the newest FIGHTS_KEPT stay, older ones go. */
+  private saveFight(body: Record<string, unknown>, now: number): Response {
+    const owner = body['player'];
+    const f = body['fight'];
+    if (!isId(owner) || !isId(body['ip']) || !isRecord(f))
+      return json({ ok: false, error: 'bad-fight' }, 400);
+    const replay = f['replay'];
+    const setup = isRecord(replay) ? replay['setup'] : null;
+    const shortText = (v: unknown, max: number): v is string =>
+      typeof v === 'string' && v.length > 0 && v.length <= max;
+    const optText = (v: unknown, max: number): boolean => v === undefined || shortText(v, max);
+    if (
+      !isRecord(replay) ||
+      !isRecord(setup) ||
+      !shortText(setup['seed'], 200) ||
+      !Array.isArray(replay['moves']) ||
+      replay['moves'].length > 6000 ||
+      typeof f['rules'] !== 'number' ||
+      !Number.isInteger(f['rules']) ||
+      !shortText(f['title'], 200) ||
+      typeof f['won'] !== 'boolean' ||
+      typeof f['tier'] !== 'number' ||
+      !Number.isInteger(f['tier']) ||
+      !shortText(f['hero'], 40) ||
+      !optText(f['version'], 40) ||
+      !optText(f['ascendancy'], 40)
+    )
+      return json({ ok: false, error: 'bad-fight' }, 400);
+    // (the fight's seed names it: the same fight sent again gets the link it already has)
+    const key = setup['seed'];
+    const known = this.ctx.storage.sql
+      .exec<{ id: string }>('SELECT id FROM fight_replays WHERE owner = ? AND key = ?', owner, key)
+      .toArray()[0];
+    if (known) return json({ ok: true, id: known.id });
+    if (
+      !this.within(`fight:${owner}`, DAY, FIGHTS_PER_DAY, now) ||
+      !this.within(`fight-ip:${body['ip']}`, DAY, FIGHTS_PER_IP_DAY, now)
+    )
+      return json({ ok: false, error: 'limited' });
+    const bytes = crypto.getRandomValues(new Uint8Array(10));
+    const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+    const id = Array.from(bytes, (x) => abc[x % abc.length]).join('');
+    // (only what is known is kept, in a known shape: anything else sent along is dropped)
+    const summary = {
+      id,
+      at: now,
+      title: f['title'],
+      won: f['won'],
+      rules: f['rules'],
+      version: f['version'],
+      hero: f['hero'],
+      ascendancy: f['ascendancy'],
+      tier: f['tier'],
+    };
+    const data = JSON.stringify({ ...summary, replay });
+    if (data.length > FIGHT_MAX_CHARS) return json({ ok: false, error: 'too-big' }, 413);
+    this.ctx.storage.sql.exec(
+      'INSERT INTO fight_replays (id, owner, at, key, summary, data) VALUES (?, ?, ?, ?, ?, ?)',
+      id,
+      owner,
+      now,
+      key,
+      JSON.stringify(summary),
+      data,
+    );
+    this.ctx.storage.sql.exec(
+      'DELETE FROM fight_replays WHERE owner = ? AND id NOT IN (SELECT id FROM fight_replays WHERE owner = ? ORDER BY at DESC, rowid DESC LIMIT ?)',
+      owner,
+      owner,
+      FIGHTS_KEPT,
+    );
+    // past the total, the oldest fights anyone kept are let go, a hundred at a time
+    for (
+      let i = 0;
+      i < 20 &&
+      this.count('SELECT COALESCE(SUM(length(data)), 0) AS n FROM fight_replays') >
+        FIGHTS_TOTAL_CHARS;
+      i++
+    )
+      this.ctx.storage.sql.exec(
+        'DELETE FROM fight_replays WHERE id IN (SELECT id FROM fight_replays ORDER BY at ASC, rowid ASC LIMIT 100)',
+      );
+    return json({ ok: true, id });
+  }
+
+  /** One kept fight, for anyone with its link. */
+  private fight(id: string | null): Response {
+    if (!id || !FIGHT_ID.test(id)) return json({ ok: false, error: 'not-found' }, 404);
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>('SELECT data FROM fight_replays WHERE id = ?', id)
+      .toArray()[0];
+    if (!row) return json({ ok: false, error: 'not-found' }, 404);
+    return new Response(`{"ok":true,"fight":${row.data}}`, {
+      headers: { 'content-type': 'application/json' },
+    });
+  }
+
+  /** A player's kept fights, newest first: what each was, not its moves (those come with its link). */
+  private recentFights(player: unknown): Response {
+    if (!isId(player)) return json({ ok: false }, 401);
+    const rows = this.ctx.storage.sql
+      .exec<{ summary: string }>(
+        'SELECT summary FROM fight_replays WHERE owner = ? ORDER BY at DESC, rowid DESC LIMIT ?',
+        player,
+        FIGHTS_KEPT,
+      )
+      .toArray();
+    return new Response(`{"ok":true,"fights":[${rows.map((r) => r.summary).join(',')}]}`, {
       headers: { 'content-type': 'application/json' },
     });
   }
@@ -1402,6 +1541,7 @@ export class Leaderboard extends DurableObject<Env> {
       if (url.pathname === '/ghostdecks') return json(this.ghostDecks(now));
       if (url.pathname === '/ranks') return json(this.rankBoard(now));
       if (url.pathname === '/replay') return this.replay(url.searchParams.get('id'));
+      if (url.pathname === '/fight') return this.fight(url.searchParams.get('id'));
       return json({ ok: false, error: 'not-found' }, 404);
     }
     let body: Record<string, unknown>;
@@ -1497,6 +1637,8 @@ export class Leaderboard extends DurableObject<Env> {
       );
       return json({ ok: true });
     }
+    if (url.pathname === '/fight/save') return this.saveFight(body, now);
+    if (url.pathname === '/fight/recent') return this.recentFights(body['player']);
     if (url.pathname === '/replay/recent') {
       if (!isId(body['player'])) return json({ ok: false }, 401);
       const rows = this.ctx.storage.sql

@@ -1487,3 +1487,14 @@ Robert: the Necromancer card pass (#691) left Bonelord at B+ (it leaned on Off t
 - **Bonelord:** 4 companion slots and the full death burst as before; companions deal 3 more damage (Marrow 3, was 2), and at the start of your turn each companion gains 2 max HP. The army grows like the Beastmaster's pack (#693); with four companions it is +8 max HP a turn. Expected A- / A.
 - **Death Grip (rare, 2 Mana):** 8 + 4 per Command card played earlier this fight, and double against an enemy at half HP or less (upgraded 10 + 5). About 24 by turn 4 and 48 at half HP (~36 on average, 152%); late, about 48 and 96 to finish. New generic `finisher` on the damage op (x`mult` to an enemy at `belowPct`% HP or less, read as each hit lands), shown in card text and the damage preview.
 - No simulations; tests in necromancer.test.ts. RULES_VERSION is bumped at release.
+
+## 697 - Campaign fights are kept online and can be shared by link (2026-11-08)
+
+Robert wanted to share a Campaign fight with friends or with Claude (to check companion damage hit by hit), with only the last 10 kept. Arena already keeps the last 10 replays per player with share links; Campaign now does the same.
+
+- **When a Campaign fight ends** (won or lost, on the result popup) the fight is saved on the server for the player's account, or for the device's Vault code when not signed in: the seed and move log, the run's class, Ascendancy and Tier, the version and rules. The popup shows **Share fight** (copies a link) and **Save fight record** (a JSON file, which also works offline). A forfeited fight shows no popup and is not saved. The desktop's offline profile saves nothing online (#579).
+- **The server keeps each account's 10 newest Campaign fights** in the Leaderboard Durable Object (`fight_replays`); older ones are deleted when a new one arrives. The same fight sent twice (for example after a reload on the result) is kept once, under its first link. Limits: 300 saves a day per account, 60 a day per address (hashed), 300,000 characters per fight, and 400 million characters for all fights together (past that the oldest anyone kept are let go). Only the known fields are kept.
+- **Links** are `#/campaign-fight/<10-character id>`; anyone with the link can watch the fight. It holds no account details, only the deck, the moves and the fight's seed (which belongs to that run). A deleted fight's link says it is no longer kept (a browser may keep a copy for up to five minutes).
+- **History has a Campaign fights tab** listing the 10, with Copy link, and a button to open a saved fight record. A fight played under older rules can still be shared and saved, but not watched (it might not replay the same way).
+- **`pnpm fight:check <link | id | file>`** replays a shared fight with the engine and prints every hit by unit (damage, HP lost, Barrier blocked), so a number a player saw can be checked.
+- No combat or rules change.

@@ -46,6 +46,24 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.234.0",
+    date: "2026-11-08",
+    title: "Share your Campaign fights",
+    summary: "Your last 10 Campaign fights are kept online, and each can be shared with a link.",
+    notes: [
+      {
+        kind: "new",
+        title: "Share fight",
+        text: "When a Campaign fight ends, the result popup has a Share fight button that copies a link anyone can open to watch the fight or read its battle log, and a Save fight record button for a file."
+      },
+      {
+        kind: "new",
+        title: "Campaign fights in History",
+        text: "History has a Campaign fights tab with your 10 most recent fights, each with its link. A fight from older rules can still be shared and saved, but not watched."
+      }
+    ]
+  },
+  {
     version: "0.233.0",
     date: "2026-11-08",
     title: "Hunter, Trickster and Drunkard card passes",

@@ -66,7 +66,7 @@ export function replaceMatches(list: readonly MatchRecord[]): void {
 }
 
 /** The address of this page with another route on it (what a shared link points at). */
-const here = (route: string): string =>
+export const here = (route: string): string =>
   `${window.location.protocol === 'srgame:' ? 'https://shatteredrifts.app/' : window.location.origin + window.location.pathname}${route}`;
 
 /** A link anyone can open to watch a finished game again. */

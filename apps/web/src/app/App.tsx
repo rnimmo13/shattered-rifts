@@ -29,6 +29,7 @@ const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
 const PatchNotesScreen = lazy(() => import('./PatchNotesScreen'));
 const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
+const CampaignFightScreen = lazy(() => import('../run/CampaignFightScreen'));
 const WatchScreen = lazy(() => import('../pvp/WatchScreen'));
 const LeaderboardScreen = lazy(() =>
   import('../pvp/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen })),
@@ -179,6 +180,20 @@ function Screens({ hash }: { hash: string }) {
       </Suspense>
     );
   }
+  // a shared Campaign fight (DECISIONS #697), or a saved fight record to open
+  if (hash === '#/campaign-fight')
+    return (
+      <Suspense fallback={<div className="loading">Opening fight record…</div>}>
+        <CampaignFightScreen />
+      </Suspense>
+    );
+  const sharedFight = /^#\/campaign-fight\/([A-Za-z0-9]{10})$/.exec(hash)?.[1];
+  if (sharedFight)
+    return (
+      <Suspense fallback={<div className="loading">Opening the fight…</div>}>
+        <CampaignFightScreen key={sharedFight} id={sharedFight} />
+      </Suspense>
+    );
   const watching = /^#\/watch\/([A-Za-z0-9]{4,12})$/.exec(hash)?.[1];
   if (watching) {
     return (

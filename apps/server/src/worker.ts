@@ -10,6 +10,7 @@
 //   POST /pvp/vault/listsync         ... and their run history and Arena match history (DECISIONS #318)
 //   /pvp/board/*                    the weekly and monthly leaderboards (board.ts)
 //   GET /pvp/replay/ID               a finished Arena game, to watch again
+//   GET /pvp/fight/ID                a kept Campaign fight, to watch again from its link (DECISIONS #697)
 //   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
@@ -186,6 +187,8 @@ const CORS_POST = {
  * POST /pvp/board/claim {code?, name}            claim a username: 3 to 20 characters, and no two players share one
  * POST /pvp/board/trophies {code?}              this player's Arena trophies (DECISIONS #238)
  * GET  /pvp/board/ranks                         this season's ranked board (DECISIONS #240); POST /pvp/board/view {kind: 'ranks'} adds yours
+ * POST /pvp/board/fight {code?, fight}          keep a finished Campaign fight (the newest 10 per player stay; DECISIONS #697)
+ * POST /pvp/board/fights {code?}                this player's kept Campaign fights, newest first
  */
 async function boardRoute(request: Request, env: Env, what: string, url: URL): Promise<Response> {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
@@ -222,12 +225,15 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         what !== 'view' &&
         what !== 'trophies' &&
         what !== 'replays' &&
+        what !== 'fight' &&
+        what !== 'fights' &&
         what !== 'ghostboss')
     )
       return json({ ok: false, error: 'not found' }, 404);
     const text = await request.text();
     // (a ghost Warden request carries the ghosts a run has met: up to 25 ids of 64 characters)
-    if (text.length > (what === 'ghostboss' ? 4_000 : 2_000))
+    // (a Campaign fight carries its whole setup and every move: a few tens of kilobytes)
+    if (text.length > (what === 'fight' ? 320_000 : what === 'ghostboss' ? 4_000 : 2_000))
       return json({ ok: false, error: 'too big' }, 413);
     let body: Record<string, unknown>;
     try {
@@ -309,6 +315,25 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
         }),
       );
       return json(await res.json(), res.status);
+    }
+    if (what === 'fight' || what === 'fights') {
+      const res = await stub.fetch(
+        new Request(`https://board.invalid/fight/${what === 'fight' ? 'save' : 'recent'}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            player: id,
+            fight: what === 'fight' ? body['fight'] : undefined,
+            // where it came from (hashed), so one address cannot fill the board under many codes
+            ip: await sha256(
+              `shattered-rifts-board-ip:${request.headers.get('CF-Connecting-IP') ?? 'local'}`,
+            ),
+          }),
+        }),
+      );
+      return new Response(await res.text(), {
+        status: res.status,
+        headers: { ...CORS_POST, 'content-type': 'application/json', 'cache-control': 'no-store' },
+      });
     }
     if (what === 'replays') {
       const res = await stub.fetch(
@@ -472,6 +497,25 @@ export default {
       if (forwarded instanceof Response) return forwarded;
       const stub = env.MATCHMAKER.get(env.MATCHMAKER.idFromName('main'));
       return stub.fetch(forwarded);
+    }
+    // GET /pvp/fight/ID: a kept Campaign fight, to watch again (DECISIONS #697)
+    const fightId = /^\/pvp\/fight\/([A-Za-z0-9]{10})$/.exec(url.pathname)?.[1];
+    if (fightId && request.method === 'GET') {
+      try {
+        const stub = env.BOARD.get(env.BOARD.idFromName('main'));
+        const res = await stub.fetch(new Request(`https://board.invalid/fight?id=${fightId}`));
+        // (a kept fight never changes, but it is dropped once ten newer ones are kept: cached for an hour)
+        return new Response(await res.text(), {
+          status: res.status,
+          headers: {
+            'content-type': 'application/json',
+            'access-control-allow-origin': '*',
+            'cache-control': res.ok ? 'public, max-age=300' : 'no-store',
+          },
+        });
+      } catch {
+        return json({ ok: false, error: 'unavailable' }, 503);
+      }
     }
     // GET /pvp/replay/ID: a finished Arena game, to watch again (DECISIONS #239)
     const replayId = /^\/pvp\/replay\/([A-Za-z0-9]{10})$/.exec(url.pathname)?.[1];

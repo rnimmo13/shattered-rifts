@@ -11,6 +11,7 @@ import type { FightReplay } from '../fight/recap';
 import { forgetRun, runHistory, type RunRecord } from './history';
 import { gameplayAction } from '../playAccess';
 import { MatchHistory } from '../pvp/MatchList';
+import { RecentFights } from './RecentFights';
 import { BUILD } from '../build';
 import './history.css';
 
@@ -44,7 +45,7 @@ function deckLines(deck: readonly string[]): { name: string; n: number }[] {
 }
 
 export default function HistoryScreen() {
-  const [tab, setTab] = useState<'runs' | 'arena'>('runs');
+  const [tab, setTab] = useState<'runs' | 'fights' | 'arena'>('runs');
   const [runs, setRuns] = useState<RunRecord[]>(runHistory);
   const [open, setOpen] = useState<string | null>(null);
   const [recap, setRecap] = useState<FightReplay | null>(null);
@@ -88,6 +89,14 @@ export default function HistoryScreen() {
         </button>
         <button
           role="tab"
+          aria-selected={tab === 'fights'}
+          className={`btn btn--small${tab === 'fights' ? ' is-on' : ''}`}
+          onClick={() => setTab('fights')}
+        >
+          <span>Campaign fights</span>
+        </button>
+        <button
+          role="tab"
           aria-selected={tab === 'arena'}
           className={`btn btn--small${tab === 'arena' ? ' is-on' : ''}`}
           onClick={() => setTab('arena')}
@@ -97,6 +106,8 @@ export default function HistoryScreen() {
       </div>
       {tab === 'arena' ? (
         <MatchHistory key={synced} />
+      ) : tab === 'fights' ? (
+        <RecentFights />
       ) : (
         <>
           <p className="history__lead">

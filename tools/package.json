@@ -11,6 +11,7 @@
     "balance:history": "tsx src/balanceHistory.ts",
     "lore:art": "tsx src/loreArt.ts",
     "fight": "tsx src/fight.ts",
+    "fight:check": "tsx src/fightCheck.ts",
     "typecheck": "tsc -p tsconfig.json",
     "play:smoke": "tsx src/playAccessProbe.ts",
     "sim": "tsx src/sim.ts",

@@ -121,6 +121,8 @@ import { soonSyncRuns } from './runCloud';
 import '../play/play.css';
 import './run.css';
 import { useRunClock } from './useRunClock';
+import { ShareFight } from './ShareFight';
+import { campaignFight } from './campaignFights';
 import { RunTimer } from './RunTimer';
 import type { RunClock } from './runClock';
 
@@ -605,6 +607,10 @@ export default function RunScreen() {
           }
           // there is no "leave" in a campaign fight: giving up counts as a loss
           onExit={() => setConfirmForfeit(true)}
+          // (DECISIONS #697: the fight is kept for the signed-in player as its result shows, to share by a link or save as a file)
+          resultExtra={(r) =>
+            r.replay ? <ShareFight fight={campaignFight(r.replay, run, r.winner === 'a')} /> : null
+          }
           onDone={(r) => {
             if (r.replay) lastFightRef.current = { ...r.replay, won: r.winner === 'a' };
             reportResult(

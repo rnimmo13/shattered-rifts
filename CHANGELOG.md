@@ -1,3 +1,7 @@
+## 0.234.0 - 2026-11-08
+
+- Campaign fights kept online and shared by link (DECISIONS #697): the newest 10 per account, a Share fight button on the end-of-fight popup, a Campaign fights tab in History, and `pnpm fight:check` to replay one hit by hit. No rules change.
+
 ## 0.233.0 - 2026-11-08
 
 - Hunter cost pass (DECISIONS #693; rules 100): Beastmaster's pack, Reaver's Bloodlust, Predator's Ambush; hero Ritual gives Might for 8 turns; Rares to A, Uncommons to B, upgrades about +30%.
