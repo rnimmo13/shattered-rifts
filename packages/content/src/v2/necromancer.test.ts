@@ -251,7 +251,7 @@ describe('Fate (her Doom)', () => {
     const after = play(s, 'T0', foe(s).id);
     expect(foe(after).statuses.doom).toBe(25 + 10 + 10);
     expect(cardText(db, db.cards['last-rites']!)).toBe(
-      'Curse the target with 10 (+5 per 10 Fate on the target) Fate.',
+      'Curse the target with 10 (+5 per 10 Fate on the target, half as much past +15, at most +25) Fate.',
     );
   });
 

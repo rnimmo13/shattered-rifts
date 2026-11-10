@@ -149,12 +149,12 @@ describe('Suits', () => {
   });
 
   it('per-suit payoffs count the card being played; Showstopper costs 1 less a suit', () => {
-    // Card Fan: 4 + 3 per suit; after ♥ and ♣ it is the third suit: 13
+    // Card Fan: 4 + 4 per suit (#727; was 3); after ♥ and ♣ it is the third suit: 16
     const s = playAll(fight(['defend', 'mark-prey', 'card-fan']), ['defend', 'mark-prey']).state;
     const before = foe(s).hp;
     const exposed = foe(s).statuses.exposed ?? 0;
     const after = foe(play(s, 'card-fan').state).hp;
-    expect(before - after).toBe(Math.floor(13 * (exposed > 0 ? 1.5 : 1)));
+    expect(before - after).toBe(Math.floor(16 * (exposed > 0 ? 1.5 : 1)));
     const show = playAll(fight(['defend', 'mark-prey', 'showstopper']), ['defend', 'mark-prey']);
     const stopper = show.state.sides.a.hand.find((c) => c.card === 'showstopper')!;
     const mana = show.state.sides.a.mana;

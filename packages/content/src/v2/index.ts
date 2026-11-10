@@ -157,7 +157,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'You start with a Drone. Allies attack for you when you end your turn.',
       'You have 3 companion slots. A Light machine takes 1, a Heavy 2 and a Colossal all 3 (the pips on the card and the machine). Many small drones can be spent freely; one big machine can be built up (heals and upgrades give it max HP) and cashed in; and companions can be charged up (Primed: their next strike hits harder).',
       'With no room, a summon scraps companions to make room, and Salvage passes their Might, Primed and half their HP to the new machine.',
-      'Your own weapons can win fights too: Might and Primed strengthen every hit, Weapon Bench builds Might, and Ion Lance grows each time you fire it. Mix weapons with any machines you want.',
+      'Your own weapons can win fights too: Might and Primed strengthen every hit (half on a weapon that fires 3 or more times), Weapon Bench builds Might, and Ion Lance grows each time you fire it. Mix weapons with any machines you want.',
       'Enemies can hit your allies too; an ally with Taunt has to be attacked first.',
     ],
   },
@@ -260,7 +260,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Daggers', 'Bleed', 'Discard', 'Premeditate', 'Faltering'],
     howTo: [
       'Every turn a Dagger comes to your hand (Hidden Blades): a 0-cost Attack that is consumed when played. Many cards make more of them, and Edge makes each one hit harder.',
-      'Bleed hurts for its stacks at the start of the enemy’s turn and then shrinks by 1. Pile it on and let it work.',
+      'Bleed hurts for its stacks at the start of the enemy’s turn (in full up to 30, half of what is past that) and then shrinks by 1. Pile it on and let it work.',
       'Discarding is a resource: a card with Premeditate that a card makes you discard comes back next turn, on top of your hand, and costs 0 until you play it.',
     ],
   },
@@ -379,9 +379,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     mechanics: ['Spell Power', 'Swords', 'Spells', 'Fracture'],
     howTo: [
       'Spell Power lasts the whole fight. You start every fight with 4 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
-      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit.',
+      'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit (half on a Sword that hits 3 or more times).',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, 5 harder each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus 1 for each Spell Power you hold. From 50 Fracture on, each Shatter also cracks another enemy for 10. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus 1 for each Spell Power you hold. From 50 Fracture on, each Shatter also cracks another enemy for 10. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {

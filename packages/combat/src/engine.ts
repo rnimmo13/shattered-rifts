@@ -52,6 +52,9 @@ import {
   DEFENSIVE_TAG,
   STRIKING_TAG,
   RADIANT_ENTER_MANA,
+  MANY_HITS,
+  TICK_FULL,
+  TICK_EXTRA_FROM,
   RulesError,
   STANCES,
   other,
@@ -420,7 +423,11 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
   if (to !== 'none') {
     u.statuses[to] = 1;
     r.ev.push({ type: 'status', target: u.id, status: to, amount: 1, total: 1 });
-    if (to === 'radiant') gainMana(r, sd, RADIANT_ENTER_MANA);
+    // (its Mana only the first time each turn: a deck that re-entered it three times a turn paid for its whole hand that way)
+    if (to === 'radiant' && sd.radiantManaTurn !== r.s.turn) {
+      sd.radiantManaTurn = r.s.turn;
+      gainMana(r, sd, RADIANT_ENTER_MANA);
+    }
   }
   r.ev.push({ type: 'stance', unit: u.id, stance: to });
   if (cur && u.kind === 'hero') fireTriggers(r, sd, 'stanceLeft', { stance: cur });
@@ -1926,9 +1933,12 @@ export function isEthereal(cd: CardDef, c: Pick<CardInst, 'ethereal'> | null | u
 }
 
 /** `amount` plus whatever its scale adds (never below 0 for amounts that cannot be negative). */
-/** A damage op whose hits are X (Bloodstorm, Whirling Maul): each hit carries only half the Might and Primed (DECISIONS #711). */
-function xHitsHalf(op: Op): boolean {
-  return op.op === 'damage' && op.scale?.into === 'hits' && op.scale.by === 'x';
+/** A damage op whose hits are X (Bloodstorm, Whirling Maul): each hit carries only half the Might and Primed (DECISIONS #711). So does
+ * a hero's card that hits MANY_HITS times or more (Thousand Palms, Rip and Tear): every hit already multiplies what Might adds. */
+function xHitsHalf(op: Op, heroCard = true): boolean {
+  if (op.op !== 'damage') return false;
+  if (op.scale?.into === 'hits' && op.scale.by === 'x') return true;
+  return heroCard && (op.hits ?? 1) >= MANY_HITS;
 }
 
 /** The Mana (then Reserves) an X card spends: all of it, or at most its xMax (DECISIONS #706). */
@@ -2070,7 +2080,8 @@ function execOp(r: Run, a: Act, op: Op): void {
       // (a hero's Vigor goes into its next attack card; an enemy's or a companion's into its next attacking move, DECISIONS #361)
       const vigor = isAttackAct(a) ? stacks(a.actor, 'vigor') : 0;
       // (an X card's hits carry half your Might and Primed, rounded down, DECISIONS #711: more hits already scale it)
-      const xHalved = xHitsHalf(op);
+      // (and so do a hero's Attack cards that hit 3 or more times, DECISIONS #726; only an attack carries Might at all)
+      const xHalved = isAttackAct(a) && xHitsHalf(op, a.actor.kind === 'hero' && !!a.card);
       const hitVigor = xHalved ? Math.floor(vigor / 2) : vigor;
       const halfMight = xHalved ? Math.ceil(Math.max(0, stacks(a.actor, 'might')) / 2) : 0;
       // (the Spellblade's Swords, DECISIONS #480)
@@ -2156,7 +2167,7 @@ function execOp(r: Run, a: Act, op: Op): void {
               [edge, 'Edge'],
               [honed, 'Honed'],
               [hitVigor, 'Primed'],
-              [-halfMight, 'half Might on an X card'],
+              [-halfMight, 'half Might on a many-hit card'],
               [keen, 'Whispering Edge'],
               [deft, 'bonus'],
               [ripostes.has(t.id) ? riposte : 0, 'Riposte'],
@@ -4195,18 +4206,25 @@ function fitsFree(r: Run, op: Extract<Op, { op: 'playPile' }>, c: CardInst): boo
 }
 
 /** Bleed (Seared) deals its stacks past any Barrier, then loses 1. */
-function searedTick(r: Run, u: Unit): void {
+/** What a Bleed or Burn of `n` deals in one tick: all of it up to TICK_FULL, half of the rest; an extra tick (a Bloodletter's third and
+ * later in a turn) deals half of that. The stack itself is never cut. */
+export function tickDamage(n: number, extra = false): number {
+  const full = n <= TICK_FULL ? n : TICK_FULL + Math.floor((n - TICK_FULL) / 2);
+  return extra ? Math.ceil(full / 2) : full;
+}
+
+function searedTick(r: Run, u: Unit, extra = false): void {
   const n = stacks(u, 'seared');
   if (n <= 0 || u.hp <= 0) return;
-  applyDamage(r, null, u, n, 'direct', false, false, u.statusSources?.seared);
+  applyDamage(r, null, u, tickDamage(n, extra), 'direct', false, false, u.statusSources?.seared);
   addStatus(r, u, 'seared', -1);
 }
 
 /** Burn (the Shaman's, #421) deals its stacks, which have to get through Barrier first (#501), then loses 1, blocked or not. */
-function burnTick(r: Run, u: Unit): void {
+function burnTick(r: Run, u: Unit, extra = false): void {
   const n = stacks(u, 'burn');
   if (n <= 0 || u.hp <= 0) return;
-  applyDamage(r, null, u, n, 'burn', false, false, u.statusSources?.burn);
+  applyDamage(r, null, u, tickDamage(n, extra), 'burn', false, false, u.statusSources?.burn);
   addStatus(r, u, 'burn', -1);
 }
 
@@ -4801,7 +4819,7 @@ function startOfTurn(r: Run, side: Side): void {
   // Burn ticks while last turn's Barrier still stands: once that falls away there would be nothing for it to get through (#501)
   const lastTurns = new Map(sd.units.map((u) => [u.id, u.barrier]));
   const tickFrom = r.ev.length;
-  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) burnTick(r, u);
+  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) burnTick(r, u, i >= TICK_EXTRA_FROM);
   for (const e of r.ev.slice(tickFrom))
     if (e.type === 'damage' && e.blocked > 0)
       lastTurns.set(e.target, Math.max(0, (lastTurns.get(e.target) ?? 0) - e.blocked));
@@ -4823,7 +4841,7 @@ function startOfTurn(r: Run, side: Side): void {
     }
   }
   // Seared (Bleed) burns
-  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) searedTick(r, u);
+  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) searedTick(r, u, i >= TICK_EXTRA_FROM);
   // the morning after: each Hangover costs 1% of Max HP, rounded up on the whole, but never the last one, and it clears (DECISIONS #354, #502)
   for (const u of [...sd.units]) {
     const owed = stacks(u, 'hangover');
@@ -6862,11 +6880,11 @@ export function previewCardDamage(
       add(ruin, 'Measured Ruin');
       add(cycleBonus, 'Spell cycle');
       // (an X card's hits carry half your Might and Primed, as the engine does: DECISIONS #711)
-      const xHalved = xHitsHalf(op);
+      const xHalved = def.kind === 'attack' && xHitsHalf(op);
       const pv = xHalved ? Math.floor(v / 2) : v;
       const halfMight = xHalved ? Math.ceil(Math.max(0, stacks(hero, 'might')) / 2) : 0;
       add(pv, 'Primed');
-      add(-halfMight, 'half Might on an X card');
+      add(-halfMight, 'half Might on a many-hit card');
       add(attackAuraBonus(sd, hero, def.kind === 'attack'), 'Aura');
       add(rip, 'Riposte');
       add(ember, 'Ember');

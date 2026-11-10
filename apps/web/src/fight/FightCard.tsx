@@ -123,7 +123,7 @@ const KIND_OWNER: Record<Kind, string> = {
 };
 const KIND_TEXT: Record<Kind, string> = {
   sword:
-    'A sword strike. Most strike more times the more Spell Power you hold, and swinging spends none. Might and Primed add to every hit.',
+    'A sword strike. Most strike more times the more Spell Power you hold, and swinging spends none. Might and Primed add to every hit (half on a Sword that hits 3 or more times).',
   spell:
     'A magic card. Some Swords and Auras pay off when you play a Spell first: earlier this turn, or straight before them.',
   gun: 'A gun shot: the Old Twelve Gauge, every shell, and the other cards that fire. Cards that answer "whenever you play a gun" (The Twelve-Gauge Opera, Gun Oil) answer this one.',

@@ -539,7 +539,8 @@ export const ASSASSIN: CardDef[] = [
     2,
     'none',
     [status('seared', 9, 'allFoes'), tick('allFoes')],
-    { up: { effects: [status('seared', 12, 'allFoes'), tick('allFoes')] } },
+    // (Consume since #728: two copies replayed every cycle were an extra tick a turn; the Bloodletter killed on turn 6)
+    { exhaust: true, up: { effects: [status('seared', 12, 'allFoes'), tick('allFoes')] } },
   ),
   // (Malaise: Strength lost for good is Sapped for good)
   q(

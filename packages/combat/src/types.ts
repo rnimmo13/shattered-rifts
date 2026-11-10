@@ -248,12 +248,12 @@ export const BLADE_TAG = 'blade';
 /** (the Spellblade's Spell Power rework, DECISIONS #480) her Swords, and her Spells */
 export const SWORD_TAG = 'sword';
 export const SPELL_TAG = 'spell';
-/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 25 at 20, 30 at 30... 65 at 100, with none held (DECISIONS #713)
+/** A unit Shatters at every this much Fracture. Its k-th Shatter deals SHATTER_BASE + SHATTER_STEP x k + the Spell Power of whoever applied it: 20 at 10, 23 at 20, 26 at 30... 47 at 100, with none held (DECISIONS #713, #726)
  * (plus what its owner's Deepening adds, DECISIONS #483). */
 export const SHATTER_AT = 10;
-export const SHATTER_BASE = 15;
-/** 5 more each threshold since #713 (Robert: "shatter shoudl simply grow by 5 damage each threshold"; was 10) */
-export const SHATTER_STEP = 5;
+export const SHATTER_BASE = 17;
+/** 3 more each threshold since #726 (Robert: "lower teh shatterer step"; 5 since #713, 10 before) */
+export const SHATTER_STEP = 3;
 /** (DECISIONS #708, #713) from the Shatter at this much Fracture on, every Shatter also puts SHATTER_SPREAD Fracture on another enemy */
 export const SHATTER_SPREAD_AT = 50;
 export const SHATTER_SPREAD = 10;
@@ -267,6 +267,12 @@ export const ORBIT_STEP = 4;
  * DECISIONS #413), and on entering Radiant (the engine). */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 1;
+/** A hero's card that hits this many times or more carries half the Might and Primed on each hit, as an X card does (#711, #726). */
+export const MANY_HITS = 3;
+/** A Bleed or Burn tick deals the stack in full up to this much, and half of what is past it (#726). */
+export const TICK_FULL = 30;
+/** Ticks in one turn from this one on (counting from 0) deal half: the Bloodletter's own second tick is full, more from Hemorrhage are not. */
+export const TICK_EXTRA_FROM = 2;
 
 // --- effects (the op DSL) -------------------------------------------------------------------------------
 
@@ -580,7 +586,7 @@ export type CombatDiscipline =
     }
   /** (the Reaver, #693) every perHp HP your own effects cost you gives 1 Might for the fight, up to cap; at lowPct% HP or less your
    * Attacks heal healPct% of the HP they take off */
-  | { kind: 'bloodlust'; perHp: number; cap: number; healPct: number; lowPct: number }
+  | { kind: 'bloodlust'; perHp: number; cap: number; healPct: number; lowPct: number; /** Might it gives a turn at most; the rest waits for a later payment */ perTurn?: number }
   /** `cap`: the most Spirit cultivation gives in a fight (progress counts it) */
   | { kind: 'cultivation'; minimum: number; spirit: number; cap?: number }
   /** (the Trapmaster) Trap damage +perSprung% for each of your Traps already sprung this fight, up to cap% */
@@ -621,6 +627,10 @@ export interface DisciplineState {
   /** Current charge, investment, or progress, as described by rule.kind. */
   progress: number;
   roundGain: number;
+  /** (bloodlust) the Might given so far, and this turn */
+  given?: number;
+  givenTurn?: number;
+  givenAt?: number;
   usedTurn?: number;
   exitTurn?: number;
   target?: UnitId;
@@ -1659,6 +1669,8 @@ export interface SideState {
   /** Defer: cards set aside this turn, coming back to the hand next turn costing 1 less */
   deferring?: CardInst[];
   honedUsed?: boolean;
+  /** the turn Radiant last gave its Mana (once a turn) */
+  radiantManaTurn?: number;
   /** Mana spent on cards this turn; totems planted this fight, by kind */
   spentTurn?: number;
   /** (the Spellblade's Spell Power rework, DECISIONS #480) what her Shatters deal on top of SHATTER_DAMAGE; this turn's spending and sequence */

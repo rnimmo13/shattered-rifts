@@ -61,13 +61,13 @@ describe('approved campaign balance pass', () => {
     let s = fight('engineer', ['pulse-pistol', 'pulse-pistol'], 'engineer:foreman');
     expect(ascendancyOf('engineer', 'engineer:foreman')?.id).toBe('engineer:artillerist');
     expect(hero(s).name).toBe('Artillerist');
-    expect(hero(s).statuses.might).toBe(2);
+    expect(hero(s).statuses.might).toBe(3);
     expect(allies(s)).toHaveLength(1);
     expect(s.sides.a.allyPct).toBeUndefined();
     s = play(play(s, 'pulse-pistol'), 'pulse-pistol');
     expect(hero(s).barrier).toBe(6);
     s = end(s);
-    expect(hero(s).statuses.might).toBe(4);
+    expect(hero(s).statuses.might).toBe(6);
     s = play(hand(s, ['pulse-pistol']), 'pulse-pistol');
     expect(hero(s).barrier).toBe(6);
   });
@@ -105,9 +105,10 @@ describe('approved campaign balance pass', () => {
   });
 
   it.each([
-    ['rotary-cannon', 44],
-    ['rotary-cannon+', 48],
-  ] as const)('%s has four fixed hits with Might and Primed', (card, expected) => {
+    // (6 / 8 a hit since #726, and a card that hits 3 or more times carries half the Might and Primed: 2 Might 1, 5 Primed 2)
+    ['rotary-cannon', 36],
+    ['rotary-cannon+', 44],
+  ] as const)('%s has four fixed hits with half the Might and Primed', (card, expected) => {
     const s = fight('engineer', [card]);
     hero(s).statuses = { might: 2, vigor: 5 };
     const result = applyAction(db, s, {
@@ -184,9 +185,9 @@ describe('approved campaign balance pass', () => {
   });
 
   it.each([
-    // (3 / 4 a Trap since #694)
-    ['gleeful-trapsmith', 6],
-    ['gleeful-trapsmith+', 7],
+    // (3 / 4 a Trap since #694; +1 per 2 Traps sprung since #727, was per 4)
+    ['gleeful-trapsmith', 9],
+    ['gleeful-trapsmith+', 10],
   ] as const)('%s reads sprung traps, not traps merely set', (card, expected) => {
     let s = fight('trickster', [card, 'trip-line']);
     s.sides.a.snaresSprung = 12;

@@ -110,7 +110,8 @@ describe('the Monk costing pass', () => {
     foe.statuses = {};
     hero(s0).statuses = { vigor: 2 };
     const s = play(s0, 'thousand-palms');
-    expect(500 - s.sides.b.units[0]!.hp).toBe((5 + 2) * 4);
+    // (a card that hits 3 or more times carries half the Primed, #726)
+    expect(500 - s.sides.b.units[0]!.hp).toBe((5 + 1) * 4);
   });
 
   it('Still Guard: 5 Barrier and Serene (DECISIONS #677)', () => {

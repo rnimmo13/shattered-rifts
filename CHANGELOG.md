@@ -1,3 +1,9 @@
+## 0.242.0 - 2026-11-10
+
+- The damage pass (DECISIONS #726; rules 106), from goldfish runs of 72 decks: a card that hits 3 or more times carries half the Might and Primed on each hit; Bleed and Burn ticks deal the stack in full up to 30 and half past it, and extra ticks in a turn deal half; Bloodlust gives at most 2 Might a turn; Radiant gives its Mana once a turn and Dawn 1 Might; Shatters grow 3 a threshold (20... 47 at 100); ceilings on Coup de Grace, Culling, Last Rites and Final Reckoning; Scar Over once a turn. Slugfest 7 x 4, Rotary Cannon 6 x 4 and the Artillerist's 3 Might for 5 turns make up for the many-hit rule.
+- Bloodburst Consumes; Rending Fury grows at half rate past +21 and stops at +36 (upgraded +24, +45) (#728).
+- Slow builds and a hybrid Spellblade (#727): Showstopper 26 (34), Card Fan +4 a suit; Gleeful Trapsmith +1 per 2 Traps sprung (half past +8), Metronome Trap 5 (7); the Swords that hit 3 or 4 times apply 2 Fracture a hit (the two commons 1, Fault Piercer 8), and Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb apply a little.
+
 ## 0.241.0 - 2026-11-10
 
 - The Grimoire scrolls instead of turning pages (DECISIONS #725): one long page, a swipe down on touch screens, with as many cards across as fit so a row spans the page (a wide window showed six cards and a bare strip). No rules change.

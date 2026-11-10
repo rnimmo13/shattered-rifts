@@ -32,19 +32,19 @@ export const STATUS_INFO: Record<
     name: 'Might',
     glyph: '✦',
     tone: 'good',
-    text: 'Attacks deal 1 more damage per stack. An X card that hits X times gets half your Might on each hit (rounded down).',
+    text: 'Attacks deal 1 more damage per stack. A card that hits 3 or more times, or X times, gets half your Might on each hit (rounded down).',
   },
   burn: {
     name: 'Burn',
     glyph: '♨',
     tone: 'bad',
-    text: 'Burning: takes damage equal to its stacks at the start of its turn, then loses 1 stack. Unlike Bleed, it has to get through Barrier first, and it ticks before last turn’s Barrier falls away. The Shaman’s Flame.',
+    text: 'Burning: takes damage equal to its stacks at the start of its turn (in full up to 30, half of what is past that), then loses 1 stack. Unlike Bleed, it has to get through Barrier first, and it ticks before last turn’s Barrier falls away. The Shaman’s Flame.',
   },
   seared: {
     name: 'Bleed',
     glyph: '❣',
     tone: 'bad',
-    text: 'Bleeding: takes damage equal to its stacks at the start of its turn, then loses 1 stack.',
+    text: 'Bleeding: takes damage equal to its stacks at the start of its turn (in full up to 30, half of what is past that), then loses 1 stack.',
   },
   stunned: {
     name: 'Shocked',
@@ -87,7 +87,7 @@ export const STATUS_INFO: Record<
     name: 'Radiant',
     glyph: '☀',
     tone: 'good',
-    text: 'A stance. You deal triple attack damage. Entering it gives 1 Mana. It ends when your turn ends.',
+    text: 'A stance. You deal triple attack damage. Entering it gives 1 Mana, the first time each turn. It ends when your turn ends.',
   },
   mantra: {
     name: 'Fervor',
@@ -155,7 +155,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, 5 harder each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus the Spell Power of whoever applied it. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus the Spell Power of whoever applied it. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -173,7 +173,7 @@ export const STATUS_INFO: Record<
     name: 'Primed',
     glyph: '↯',
     tone: 'good',
-    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent (an X card that hits X times gets half on each hit). Yours and your companions' loses half at the end of your turn.",
+    text: "Its next attack (an Attack card, or a companion's or enemy's strike) deals that much more damage on every hit, then it is spent (a card that hits 3 or more times, or X times, gets half on each hit). Yours and your companions' loses half at the end of your turn.",
   },
   doom: {
     name: 'Fate',
@@ -313,7 +313,7 @@ export const STATUS_INFO: Record<
     name: 'Hemorrhage',
     glyph: '☣',
     tone: 'good',
-    text: 'Bleed on your enemies deals its damage this many more times each turn, losing 1 each time.',
+    text: 'Bleed and Burn on your enemies deal their damage this many more times each turn, losing 1 each time. From the third time in a turn on, they deal half.',
   },
   honed: {
     name: 'Honed',
@@ -708,7 +708,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   sword: {
     name: 'Sword',
-    text: 'An Attack that reads your Spell Power and spends none: it deals more damage the more you hold. Swinging spends none. Might and Primed add to every hit.',
+    text: 'An Attack that reads your Spell Power and spends none: it deals more damage the more you hold. Swinging spends none. Might and Primed add to every hit (half on a Sword that hits 3 or more times).',
   },
   spell: {
     name: 'Spell',
@@ -716,7 +716,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 5 more each time: 20 at 10, 25 at 20, 30 at 30... 65 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy (a Shatter that sets off does not spread again). Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 3 more each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy (a Shatter that sets off does not spread again). Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',

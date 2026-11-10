@@ -109,7 +109,13 @@ export interface Entry {
 // 104: Burning Litany deals half the Fervor gained this fight, Mantra Engine Barriers the Fervor gained this turn (#721).
 // 105: growth ceilings (#722): Thunder Memory counts no Thunderbirds of its own, always Consumes, full to 5 then half (no cap);
 // Slow Murder full to 28 cards drawn then half, at most +44.
-export const RULES_VERSION = 105;
+// 106: the damage pass (#726): a card that hits 3+ times carries half the Might and Primed; Bleed and Burn ticks full to 30 then half,
+// extra ticks half; Bloodlust 2 Might a turn; Radiant's Mana once a turn; Shatters +3 a threshold; ceilings on Coup de Grace, Culling,
+// Last Rites, Final Reckoning; Scar Over once a turn; Dawn 1 Might; Artillerist 3 Might x 5; Slugfest 7/9, Rotary Cannon 6/8.
+// Also (#727): Showstopper 26/34, Card Fan +4 a suit, Gleeful Trapsmith +1 per 2 Traps sprung (half past +8), Metronome Trap 5/7; the Swords
+// that hit 3 or 4 times apply 2 Fracture a hit (the two commons 1, Fault Piercer 8 flat); Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb apply Fracture.
+// And (#728): Bloodburst Consumes; Rending Fury half past +21, at most +36 (upgraded +24, +45).
+export const RULES_VERSION = 106;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

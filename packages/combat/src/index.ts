@@ -14,6 +14,7 @@ export {
   costOf,
   heroOf,
   modifiedDamage,
+  tickDamage,
   previewCardDamage,
   previewAllyDamage,
   summonsThatFit,

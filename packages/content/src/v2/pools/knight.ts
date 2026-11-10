@@ -478,7 +478,9 @@ export const KNIGHT: CardDef[] = [
   // (Hemokinesis)
   m('uncommon', 'reckless-smite', 'Reckless Smite', 'attack', 1, 'foe', [lose(2), dmg(15)]),
   // (Rupture)
-  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [on('loseHp', [status('might', 1)])]),
+  m('uncommon', 'scar-over', 'Scar Over', 'power', 1, 'none', [
+    on('loseHp', [status('might', 1)], { perTurnLimit: 1 }),
+  ]),
   // (Inferno)
   m('uncommon', 'blood-fire', 'Blood Fire', 'power', 1, 'none', [
     on('turnStart', [lose(1)]),
@@ -515,8 +517,9 @@ export const KNIGHT: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(8), { by: 'hpLostFight', mult: 3, max: 45 })],
-    { up: { effects: [scaled(dmg(10), { by: 'hpLostFight', mult: 4, max: 60 })] } },
+    // (half past +21, at most +36 since #728; upgraded half past +24, at most +45: it was +45 / +60, over the growth ceiling of #722)
+    [scaled(dmg(8), { by: 'hpLostFight', mult: 3, half: 21, max: 36 })],
+    { up: { effects: [scaled(dmg(10), { by: 'hpLostFight', mult: 4, half: 24, max: 45 })] } },
   ),
   // (Not Yet)
   m('rare', 'rally', 'Rally', 'skill', 2, 'none', [heal(10)], { exhaust: true }),

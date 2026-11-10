@@ -4,7 +4,10 @@
 // One reserve, Spell Power (the `stars` resource underneath; replaces Arcana and Sharpen), three ways to win:
 //   Swords   - hold it: a Sword's damage grows with it (the bigger ones strike a fixed few times) and swinging spends nothing
 //   Spells   - spend it: X is all of it (`starX`), X/2 half (`starHalf`), the rate per point rising with Mana (4 at 1, 6 at 2, 8 at 3)
-//   Fracture - marks on an enemy that only add up: every 10 Shatters it, 5 harder each time (20, 25, 30... 65 at 100, + the Spell Power held; #713); from 50 each Shatter cracks another enemy for 10, found in rewards, not the starter
+//   (#727: the Swords that hit 3 or 4 times apply 2 Fracture a hit, and Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb a little,
+//   so a Sword or Spell deck can lean into Shatters; the two commons, Obsidian Flurry and Rift Sweep, 1 a hit, so they stay behind the
+//   Fracture commons)
+//   Fracture - marks on an enemy that only add up: every 10 Shatters it, 3 harder each time (20, 23, 26... 47 at 100, + the Spell Power held; #713, #726); from 50 each Shatter cracks another enemy for 10, found in rewards, not the starter
 // No caps on spending, by Robert's call. No Sword adds hits: Might and Primed pay off on the fixed hits of the bigger ones (DECISIONS #507, #509).
 
 import type { CardDef, Op, Scale, Sel } from '@sr/combat';
@@ -229,9 +232,9 @@ export const SPELLBLADE: CardDef[] = [
   ),
 
   // --- Swords ---
-  a('common', 'obsidian-flurry', 'Obsidian Flurry', 'attack', 2, 'foe', [volley(4, 3, 3)], {
+  a('common', 'obsidian-flurry', 'Obsidian Flurry', 'attack', 2, 'foe', [volley(4, 3, 3), fracture(3)], {
     tags: [SWORD],
-    up: { effects: [volley(6, 3, 3)] },
+    up: { effects: [volley(6, 3, 3), fracture(3)] },
   }),
   a(
     'common',
@@ -255,9 +258,9 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SWORD],
     up: { effects: [swing(1, 5, 2), etch] },
   }),
-  a('common', 'rift-sweep', 'Rift Sweep', 'attack', 2, 'none', [volley(3, 3, 3, 'allFoes')], {
+  a('common', 'rift-sweep', 'Rift Sweep', 'attack', 2, 'none', [volley(3, 3, 3, 'allFoes'), fracture(3, 'allFoes')], {
     tags: [SWORD],
-    up: { effects: [volley(5, 3, 3, 'allFoes')] },
+    up: { effects: [volley(5, 3, 3, 'allFoes'), fracture(3, 'allFoes')] },
   }),
   a('common', 'glass-needle', 'Glass Needle', 'attack', 0, 'foe', [swing(2, 1, 3)], {
     exhaust: true,
@@ -288,12 +291,17 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'foe',
-    [volley(4, 3, 3), when('starsSpentTurn', { atLeast: 1 }, [status('exposed', 2, 'target')])],
+    [
+      volley(4, 3, 3),
+      fracture(6),
+      when('starsSpentTurn', { atLeast: 1 }, [status('exposed', 2, 'target')]),
+    ],
     {
       tags: [SWORD],
       up: {
         effects: [
           volley(6, 3, 3),
+          fracture(6),
           when('starsSpentTurn', { atLeast: 1 }, [status('exposed', 2, 'target')]),
         ],
       },
@@ -324,11 +332,18 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'foe',
-    [volley(4, 3, 3), when('fracture', { atLeast: 1, of: 'target' }, [fracture(2)])],
+    [
+      volley(4, 3, 3),
+      // (8 flat since #727: 2 a hit like the other Swords, and the 2 it gave a cracked target, which its own 6 would always meet)
+      fracture(8),
+    ],
     {
       tags: [SWORD],
       up: {
-        effects: [volley(6, 3, 3), when('fracture', { atLeast: 1, of: 'target' }, [fracture(2)])],
+        effects: [
+          volley(6, 3, 3),
+          fracture(8),
+        ],
       },
     },
   ),
@@ -339,15 +354,15 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     2,
     'foe',
-    [volley(3, 4, 3), scaled(stars(0), per('swordFoes'))],
+    [volley(3, 4, 3), fracture(8), scaled(stars(0), per('swordFoes'))],
     {
       tags: [SWORD],
-      up: { effects: [volley(5, 4, 3), scaled(stars(0), per('swordFoes'))] },
+      up: { effects: [volley(5, 4, 3), fracture(8), scaled(stars(0), per('swordFoes'))] },
     },
   ),
-  a('rare', 'storm-of-glass', 'Storm of Glass', 'attack', 3, 'foe', [volley(5, 4, 2)], {
+  a('rare', 'storm-of-glass', 'Storm of Glass', 'attack', 3, 'foe', [volley(5, 4, 2), fracture(8)], {
     tags: [SWORD],
-    up: { effects: [volley(7, 4, 2)] },
+    up: { effects: [volley(7, 4, 2), fracture(8)] },
   }),
   a('rare', 'thousand-shards', 'Thousand Shards', 'attack', 2, 'foe', [burst(0, 6)], {
     starX: true,
@@ -364,12 +379,12 @@ export const SPELLBLADE: CardDef[] = [
     'attack',
     3,
     'foe',
-    [scaled(dmg(7, 'target', 3), SPENT(2))],
+    [scaled(dmg(7, 'target', 3), SPENT(2)), fracture(6)],
     {
       starHalf: true,
       tags: [SWORD],
       up: {
-        effects: [scaled(dmg(9, 'target', 3), SPENT(2))],
+        effects: [scaled(dmg(9, 'target', 3), SPENT(2)), fracture(6)],
       },
     },
   ),
@@ -491,15 +506,15 @@ export const SPELLBLADE: CardDef[] = [
   ),
 
   // --- Spells ---
-  a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [burst(8, 4)], {
+  a('common', 'skybolt', 'Spellbolt', 'attack', 1, 'foe', [burst(8, 4), fracture(2)], {
     starHalf: true,
     tags: [SPELL],
-    up: { effects: [burst(11, 4)] },
+    up: { effects: [burst(11, 4), fracture(2)] },
   }),
-  a('common', 'astral-pulse', 'Arcane Pulse', 'attack', 1, 'none', [burst(7, 3, 'allFoes')], {
+  a('common', 'astral-pulse', 'Arcane Pulse', 'attack', 1, 'none', [burst(7, 3, 'allFoes'), fracture(2, 'allFoes')], {
     starHalf: true,
     tags: [SPELL],
-    up: { effects: [burst(9, 3, 'allFoes')] },
+    up: { effects: [burst(9, 3, 'allFoes'), fracture(2, 'allFoes')] },
   }),
   a(
     'common',
@@ -579,10 +594,10 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [onKill(burst(12, 4), [scaled(fracture(0, 'allFoes'), SPENT())])] },
     },
   ),
-  a('uncommon', 'devastate', 'Molten Ruin', 'attack', 2, 'foe', [burst(12, 6)], {
+  a('uncommon', 'devastate', 'Molten Ruin', 'attack', 2, 'foe', [burst(12, 6), fracture(4)], {
     starX: true,
     tags: [SPELL],
-    up: { effects: [burst(18, 6)] },
+    up: { effects: [burst(18, 6), fracture(4)] },
   }),
   a('uncommon', 'radiance', 'Arcane Flood', 'attack', 2, 'none', [burst(10, 4, 'allFoes')], {
     starX: true,
@@ -604,11 +619,11 @@ export const SPELLBLADE: CardDef[] = [
     },
   ),
   // (her big payoff: the best rate per point in her pool, DECISIONS #484, #503)
-  a('rare', 'comet', 'Lava Bomb', 'attack', 3, 'foe', [burst(20, 7)], {
+  a('rare', 'comet', 'Lava Bomb', 'attack', 3, 'foe', [burst(20, 7), fracture(6)], {
     starX: true,
     exhaust: true,
     tags: [SPELL],
-    up: { effects: [burst(28, 7)] },
+    up: { effects: [burst(28, 7), fracture(6)] },
   }),
   a('rare', 'supernova', 'Cataclysm', 'attack', 3, 'none', [burst(18, 6, 'allFoes')], {
     starX: true,

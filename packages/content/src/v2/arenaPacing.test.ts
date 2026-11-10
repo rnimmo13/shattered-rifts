@@ -107,7 +107,7 @@ describe('Arena HP costs x5 (#713)', () => {
   });
 });
 
-describe('Shatters +5 a threshold, spreading from 50 Fracture (#713)', () => {
+describe('Shatters spreading from 50 Fracture (#713; +3 a threshold since #726)', () => {
   const two = (): CombatState => {
     const s = clone(
       createCombat(db, {
@@ -137,15 +137,15 @@ describe('Shatters +5 a threshold, spreading from 50 Fracture (#713)', () => {
   it('below 50 Fracture a Shatter cracks nothing else; from 50 on it puts 10 on the other enemy, which does not spread back', () => {
     let s = two();
     s.sides.b.units[0]!.statuses.fracture = 35;
-    // (Rupture Script: 10 Fracture, the Shatter at 40 deals 35 and does not spread)
+    // (Rupture Script: 10 Fracture, the Shatter at 40 deals 29 and does not spread)
     s = playAt(s, 'rupture-script', s.sides.b.units[0]!.id);
     expect(s.sides.b.units[1]!.statuses.fracture ?? 0).toBe(0);
     s.sides.b.units[1]!.statuses.fracture = 45;
-    // (the Shatter at 50 on the first spreads 10 to the second: its own Shatter at 50 deals 40 and spreads no further)
+    // (the Shatter at 50 on the first spreads 10 to the second: its own Shatter at 50 deals 32 and spreads no further)
     const hpY = s.sides.b.units[1]!.hp;
     s = playAt(s, 'rupture-script', s.sides.b.units[0]!.id);
     expect(s.sides.b.units[1]!.statuses.fracture).toBe(55);
-    expect(hpY - s.sides.b.units[1]!.hp).toBe(40);
+    expect(hpY - s.sides.b.units[1]!.hp).toBe(32);
     expect(s.sides.b.units[0]!.statuses.fracture).toBe(55);
   });
 });

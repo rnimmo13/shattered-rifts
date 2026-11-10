@@ -98,11 +98,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'engineer',
     'Artillerist',
     'Personal weapons',
-    // (up to 12 Might from it, the first 6 turns: uncapped it ran away in long Arena fights, DECISIONS #685)
-    'At the start of your first 6 turns, gain 2 Might (up to 12). The first Attack you play on your turn gives you 6 Barrier.',
+    // (capped since DECISIONS #685: uncapped it ran away in long Arena fights; 3 a turn for 5 turns, up to 15, since #726, as his
+    // many-hit weapons carry only half of it; it was 2 a turn for 6 turns, up to 12)
+    'At the start of your first 5 turns, gain 3 Might (up to 15). The first Attack you play on your turn gives you 6 Barrier.',
     {
       triggers: [
-        on('turnStart', [status('might', 2)], { times: 6 }),
+        on('turnStart', [status('might', 3)], { times: 5 }),
         on('play', [barrier(6)], { filter: 'attack', once: true, ownTurn: true }),
       ],
     },
@@ -162,12 +163,12 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     // (and 1 Might, DECISIONS #685: something that grows; a more distinct Reaver is still wanted)
     // (Bloodlust, modelled on the Blood Knight's scaling: what he pays is kept as Might, up to 12, and he heals when low, so paying HP
     // is fuel he can survive: Robert 2026-11-08, #693)
-    'Bloodlust: every 3 HP your own effects cost you gives 1 Might for the rest of the fight (up to 12). The first time each turn one of your own effects costs you HP, draw 1 card and gain 4 Barrier. At half HP or less, your Attacks heal you for 20% of the HP they take off.',
+    'Bloodlust: every 3 HP your own effects cost you gives 1 Might for the rest of the fight (up to 12, at most 2 a turn; what is owed past that comes with a later payment). The first time each turn one of your own effects costs you HP, draw 1 card and gain 4 Barrier. At half HP or less, your Attacks heal you for 20% of the HP they take off.',
     {
       fightStart: [
         {
           op: 'discipline',
-          rule: { kind: 'bloodlust', perHp: 3, cap: 12, healPct: 20, lowPct: 50 },
+          rule: { kind: 'bloodlust', perHp: 3, cap: 12, healPct: 20, lowPct: 50, perTurn: 2 },
         },
       ],
       triggers: [on('loseHp', [draw(1), barrier(4)], { once: true })],
@@ -350,11 +351,11 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Sunwalker',
     'Radiant',
     // (Dawn: what Radiant gives partly stays, rather than Radiant more often, DECISIONS #686)
-    'The first time each turn you enter a stance, gain 1 more Fervor. Your first Radiant exit on your turn returns 2 Fervor; each later qualifying exit this fight returns 1 more, up to 4. Dawn: the first 5 times you enter Radiant, gain 2 Might.',
+    'The first time each turn you enter a stance, gain 1 more Fervor. Your first Radiant exit on your turn returns 2 Fervor; each later qualifying exit this fight returns 1 more, up to 4. Dawn: the first 5 times you enter Radiant, gain 1 Might.',
     {
       triggers: [
         on('stance', [status('mantra', 1)], { once: true }),
-        on('stance', [status('might', 2)], { stance: 'radiant', times: 5 }),
+        on('stance', [status('might', 1)], { stance: 'radiant', times: 5 }),
       ],
       fightStart: [{ op: 'discipline', rule: { kind: 'radiance', first: 2, step: 1, cap: 4 } }],
     },

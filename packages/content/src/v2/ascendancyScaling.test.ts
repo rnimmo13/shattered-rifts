@@ -457,11 +457,11 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     expect(s.sides.a.discipline?.progress).toBe(5);
     expect(hero(s).statuses.spirit ?? 0).toBeLessThanOrEqual(at);
   });
-  it('Artillerist gains 2 Might on each of its first 6 turns, 12 in all', () => {
+  it('Artillerist gains 3 Might on each of its first 5 turns, 15 in all (#726; was 2 for 6 turns)', () => {
     let s = fight('engineer', 'artillerist');
-    expect(hero(s).statuses.might).toBe(2);
+    expect(hero(s).statuses.might).toBe(3);
     for (let k = 0; k < 9; k++) s = end(end(s));
-    expect(hero(s).statuses.might).toBe(12);
+    expect(hero(s).statuses.might).toBe(15);
   });
   it('Trapmaster sets up to 5 Traps, and its Traps deal 5% more per Trap sprung before, up to 50%', () => {
     const s = fight('trickster', 'trapmaster');
@@ -525,15 +525,25 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     expect(might?.times).toBe(6);
     expect(might?.ops).toEqual([{ op: 'status', status: 'might', amount: 2, to: 'self' }]);
   });
-  it('Reaver Bloodlust (#693): every 3 HP paid is 1 Might for the fight, up to 12', () => {
+  it('Reaver Bloodlust (#693, #726): every 3 HP paid is 1 Might for the fight, up to 12, at most 2 a turn', () => {
     let s = fight('hunter', 'reaver');
     const might = hero(s).statuses.might ?? 0;
     hero(s).hp = hero(s).maxHp = 500;
+    // (8 HP paid: 2 Might; more the same turn is owed, not given)
     s = play(s, 'probe-blood').state;
-    s = play(s, 'probe-blood').state;
-    const paid = 500 - hero(s).hp;
-    expect(hero(s).statuses.might ?? 0).toBe(might + Math.floor(paid / 3));
-    for (let i = 0; i < 40; i++) s = play(s, 'probe-blood').state;
+    expect(hero(s).statuses.might ?? 0).toBe(might + 2);
+    for (let i = 0; i < 10; i++) s = play(s, 'probe-blood').state;
+    expect(hero(s).statuses.might ?? 0).toBe(might + 2);
+    // (what is owed arrives with a payment on a later turn, 2 a turn, and stops at 12)
+    for (let turn = 0; turn < 4; turn++) {
+      s.turn += 1;
+      s = play(s, 'probe-blood').state;
+      expect(hero(s).statuses.might ?? 0).toBe(might + 4 + 2 * turn);
+    }
+    for (let turn = 0; turn < 6; turn++) {
+      s.turn += 1;
+      s = play(s, 'probe-blood').state;
+    }
     expect(hero(s).statuses.might ?? 0).toBe(might + 12);
   });
   let uniq = 0;
@@ -569,7 +579,7 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     // (the card played left the hand; Sage drew one each turn, Zealot none)
     expect(sage.drawn - zealot.drawn).toBe(7);
   });
-  it('Sunwalker Dawn: the first 5 Radiant entries each give 2 Might', () => {
+  it('Sunwalker Dawn: the first 5 Radiant entries each give 1 Might (#726; was 2)', () => {
     const run = (asc: string) => {
       let s = fight('monk', asc);
       for (let k = 0; k < 7; k++) {
@@ -578,7 +588,7 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
       }
       return hero(s).statuses.might ?? 0;
     };
-    expect(run('sunwalker') - run('zealot')).toBe(10);
+    expect(run('sunwalker') - run('zealot')).toBe(5);
   });
   it('Deathwish keeps growing below 40% HP, to +50% at 10% HP (#695)', () => {
     const at = (pct: number): number => {

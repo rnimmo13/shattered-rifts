@@ -483,7 +483,7 @@ export const NECROMANCER: CardDef[] = [
         status: 'doom',
         amount: 10,
         to: 'target',
-        scale: { by: 'doom', mult: 5, of: 'target', step: 10 },
+        scale: { by: 'doom', mult: 5, of: 'target', step: 10, half: 15, max: 25 },
       },
     ],
     {
@@ -494,7 +494,7 @@ export const NECROMANCER: CardDef[] = [
             status: 'doom',
             amount: 15,
             to: 'target',
-            scale: { by: 'doom', mult: 5, of: 'target', step: 10 },
+            scale: { by: 'doom', mult: 5, of: 'target', step: 10, half: 15, max: 30 },
           },
         ],
       },
@@ -607,8 +607,8 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     2,
     'foe',
-    [scaled(dmg(5), per('doom', 1, 'target'))],
-    { exhaust: true, up: { effects: [scaled(dmg(15), per('doom', 1, 'target'))] } },
+    [scaled(dmg(5), { ...per('doom', 1, 'target'), half: 60, max: 120 })],
+    { exhaust: true, up: { effects: [scaled(dmg(15), { ...per('doom', 1, 'target'), half: 60, max: 120 })] } },
   ),
   // (Misery; upgraded 8 and Hold since #691: 9 and Hold was +40%)
   g('rare', 'spreading-rot', 'Spreading Rot', 'attack', 0, 'foe', [dmg(7), spreadDebuffs], {

@@ -1,3 +1,7 @@
+# Release approved 0.242.0 / rules 106 (2026-11-10; decisions 726-728)
+
+Robert explicitly approves pushing what we have ("lets push what we have"): the damage pass from goldfish runs of 72 decks (many-hit cards carry half the Might and Primed, Bleed and Burn ticks full to 30 then half and extra ticks half, Bloodlust 2 Might a turn, Radiant Mana once a turn and Dawn 1 Might, Shatters +3 a threshold, ceilings on Coup de Grace, Culling, Last Rites, Final Reckoning and Rending Fury, Scar Over once a turn, Bloodburst Consumes), buffs (Slugfest, Rotary Cannon, Artillerist, Showstopper, Card Fan, Gleeful Trapsmith, Metronome Trap) and Fracture on the 3- and 4-hit Swords and four Spells. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.241.0 / rules 105 (2026-11-10; decision 725)
 
 Robert explicitly approves committing and pushing what we have ("lets commit and push what we have"): the Grimoire as one scrolling page with rows spanning the page (fitScroll), animated hero models attacking on hover/click/tap, and the 2D animation prompt guideline doc. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

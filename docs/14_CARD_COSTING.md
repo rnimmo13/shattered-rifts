@@ -27,7 +27,7 @@ Every effect converts into points. A card's points, added up, should land on its
 |---|---|---|
 | 0 | **6** | Quick Slash (6), Arc Flash (3 + 1 Exposed), Turn Aside (4 Barrier) |
 | 1 | **10** | Hilt Strike (9 + draw 1), Twin Cut (5 x2), Dirty Hit (8 + 1 Faltering), Stone Skin (9 Barrier), Emberstrike (9 + 1 Arcana) |
-| 2 | **19** | Obsidian Flurry (18 at 8 Spell Power), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + Defer a card) |
+| 2 | **19** | Obsidian Flurry (18 at 8 Spell Power; since #727 it also applies 3 Fracture, so it is a little over budget), Glass Veil (11 + 5 next turn), Stalker's Lunge (15 + Defer a card) |
 | 3 | **28** | Harvest (27, Hold), Skybreaker (26, +1 Mana on a kill), Hammer Fall (32, uncommon) |
 | 4 | **37** | |
 
@@ -226,8 +226,23 @@ For "whenever X" triggers, count how often X happens per turn in the deck that w
    - Growth adds damage to each hit, never hits (§2). Use real counts from the player data (`pnpm balance:players`) when there are
      enough fights; until then, estimate them for a deck built around the card.
    - Robert may leave a Consume finisher uncapped, with only the half rate, when placing a lot is the fun of it (Thunder Memory).
+   - Rending Fury: 8 + 3 per HP loss, full to +21, half after, at most +36 (#728).
+   - Coup de Grace: 20 + 5 per Exposed, full to +20, half after, at most +40 (Culling 14, +15, +30). Last Rites: 10 + 5 per 10 Fate, full to
+     +15, half after, at most +25. Final Reckoning (Consume): 5 + 1 per Fate, full to +60, half after, at most +120 (DECISIONS #726).
    - Thunder Memory: 1 + Thunderbirds planted, full to 5, half after, no cap (6 plants by turn 5, about 60 to all; 8 by turn 10).
      Slow Murder: 8 + cards drawn, full to 28, half after, at most +44 (36 by turn 5, 52 by turn 10).
+7. **The many-hit rule (DECISIONS #726).** A hero's card that hits 3 or more times carries half the Might and Primed on each hit, as an X
+   card does (#711). Price a 3- or 4-hit card on its printed total: it no longer needs points taken off for a Might deck (Slugfest 7 x 4,
+   Rotary Cannon 6 x 4). Two-hit cards still carry all of it. The Spellblade's 3- and 4-hit Swords are under it too (#509's "a fixed
+   few hits so Might and Primed still pay off" now pays half on those).
+8. **Might that comes with a count comes at a pace.** A source that gives Might for something a deck does many times a turn (HP paid,
+   stances entered) gives it a set number of times a turn: Bloodlust 2 a turn, Scar Over once a turn a copy, Dawn 1 a Radiant.
+9. **Bleed and Burn ticks.** A tick deals the stack in full up to 30 and half of what is past it; a third or later tick in one turn
+   (Hemorrhage) deals half. A stack past 30 is worth about half the usual rate for what is past it.
+10. **Fracture riding on a Sword or Spell (#727).** The Swords that hit 3 or 4 times apply 2 Fracture a hit (the two commons 1) and four damage Spells a
+   little, given on top of their budgets to open a hybrid deck and to pay back the many-hit rule; they are not priced as on-budget
+   cards. Two Fault Lines make an 8-Fracture Sword Shatter on every play (measured: a kill on turn 11): check that line before adding more
+   Fracture to Swords.
 
 ---
 
@@ -491,7 +506,7 @@ Every card's price is in `docs/reworks/SPELLBLADE_SPELL_POWER_MERGED.md`. These 
 | **A Sword reading SP** | priced at **8 SP** | The mid-fight number for a deck that holds it. A Sword never adds hits: more damage per step of SP, at most 2 a point across all its hits; the bigger ones strike a fixed 2-4 times (DECISIONS #507, #509). |
 | **Keen N** | **N x 3.5** a turn | About two Swords a turn, at 1-4 hits each (Whispering Edge: Keen 2). |
 | **X or X/2** | budget adds **4.5** per SP spent, at **4 spent for 1 Mana, 6 for 2, 10 for 3** | Below 6 for a fixed cost: it scales with what you hold, and no point is wasted. X/2 cards are priced at half of about 8 held (DECISIONS #482). |
-| **Fracture** | **2.5** a point, **3.3** to ALL (3.1 / 4.1 before #713) | It only adds up, and the k-th Shatter deals 15 + 5k (20, 25, 30..., DECISIONS #713; was 10 + 10k) + the Spell Power held: 35.5 per 10 over the first four at the priced 8 (43 before #713), so Fracture is about **2.5** a point (3.3 to ALL) from #713, and the cards priced at 3.1 are about 19% lower, less the delay and Barrier (DECISIONS #486, #487, #523). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 45 at 20, 75 at 30, 150 at 50, 425 at 100 (650 before #713). From 50 Fracture on, each Shatter also cracks another enemy for 10 (about 3 a Shatter against a group, nothing alone). Over a six-turn fight, 11 Mana of it deals about 22 a Mana at 8 Spell Power, between a deck with 2 Mounting Furies (19) and one with 3 (24). Applied at about **7 a Mana** on a common since DECISIONS #564 (5 from #499; Faultline Hex 1: 7, Final Shatter 2: 8 and 12 Barrier on a Shatter, Rupture Script 2: 10 with Consume). That stays over budget at this rate on purpose: Fracture does nothing until it crosses a 10. |
+| **Fracture** | **2.2** a point, **2.9** to ALL since #726 (2.5 / 3.3 at +5 a threshold, #713; 3.1 / 4.1 before) | It only adds up, and the k-th Shatter deals 17 + 3k (20, 23, 26..., DECISIONS #726; 15 + 5k under #713, the numbers that follow are from then; was 10 + 10k) + the Spell Power held: 35.5 per 10 over the first four at the priced 8 (43 before #713), so Fracture is about **2.5** a point (3.3 to ALL) from #713, and the cards priced at 3.1 are about 19% lower, less the delay and Barrier (DECISIONS #486, #487, #523). Damage by total Fracture on one enemy, before Spell Power: 20 at 10, 45 at 20, 75 at 30, 150 at 50, 425 at 100 (650 before #713). From 50 Fracture on, each Shatter also cracks another enemy for 10 (about 3 a Shatter against a group, nothing alone). Over a six-turn fight, 11 Mana of it deals about 22 a Mana at 8 Spell Power, between a deck with 2 Mounting Furies (19) and one with 3 (24). Applied at about **7 a Mana** on a common since DECISIONS #564 (5 from #499; Faultline Hex 1: 7, Final Shatter 2: 8 and 12 Barrier on a Shatter, Rupture Script 2: 10 with Consume). That stays over budget at this rate on purpose: Fracture does nothing until it crosses a 10. |
 | **Shatter damage +N** | **4** a point | About four Shatters left in a Fracture deck. |
 | **Might** | **10** a stack in a Sword deck, 5 otherwise | About 3.5 hits a turn for 3 turns, as her Swords no longer add hits (DECISIONS #509). Worth less on a turn the Obsidian Blade swings, one hit without Blade Echo (DECISIONS #488); not repriced. |
 | **Primed** | **4** a stack | Saved for the biggest swing, about 4 hits. |
@@ -614,7 +629,7 @@ The full before/after numbers and hand calculations are in [BALANCE_PROPOSAL_202
 - **Fixed multi-hit weapons:** Rotary Cannon is 16 raw damage for 2 Mana, 24 at 2 Might. Primed 5 adds 20 more, not 5. Its upgrade is four hits of 5; no resource adds hits. Combine with Exposed, two Weapon Benches and Artillerist when checking the ceiling.
 - **Conditional lasting growth:** Measured Conviction gives four Might plus eight Barrier over four qualifying turns: approximately 29.6 points. Drunken Master gives four Might plus twelve Barrier: approximately 34.4, about 8% above the uncommon Aura reference. Its Might fires once per own turn, not once per Stagger or hit. Morning After requires actual Hangover HP loss and gives nothing at the 1-HP floor or for unrelated self-damage.
 - **Invested defenses:** Bulwark Frame is unchanged at 20 ally max HP (12 Barrier; 15 upgraded), but reaches 20/23 at 60 max HP. That late-fight budget excess is deliberate and requires paid companion investment; it does not increase Heavy Hitter's multiplier.
-- **Stack-based engines:** Swarm Tactics gains one damage per four successful non-starting summons. Gleeful Trapsmith gains one per four actual springs. These read counters shared by the side, not a separate counter for each Aura. Evaluate two copies and resource costs; failed summons and merely setting Traps add no progress.
+- **Stack-based engines:** Swarm Tactics gains one damage per four successful non-starting summons. Gleeful Trapsmith gains one per two actual springs, half as much past +8 (#727; was one per four). These read counters shared by the side, not a separate counter for each Aura. Evaluate two copies and resource costs; failed summons and merely setting Traps add no progress.
 - **Fervor:** Foretold Flame reads one-third of actual positive Fervor gains through the fight, including trait gains, retaining progress after Radiant spends stacks. The Monk's new permanent Might reward is once per own turn across every stance together and never from initial Serene setup. Check four-hit Radiant, not a single-hit normal attack.
 - **Burn payoff:** Heart of the Pyre costs 2 and reads the randomly selected enemy's Burn. At 4 Burn and two Flame cards each turn, four full turns give 48 damage, close to the 47.5 rare Aura reference. At 20 Burn, its base trigger is 10. It keeps the Burn; Flashpoint still spends half.
 - **Command growth:** Spirit Pact grants one Spirit and 3 Barrier after the first explicit command on the owner's turn. Passive effects, planting push-outs and empty commands do not qualify. Spirit improves every applicable totem number, including Fork targets, so three totems, extra positions and two Aura copies need separate ceiling checks.

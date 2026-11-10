@@ -240,7 +240,7 @@ describe('the rest of the Ironclad list', () => {
     expect(foeHp(play(s0, 'rending-fury'))).toBe(200 - (8 + 3 * 3));
     const long = fight(['rending-fury']);
     long.sides.a.lostHpFight = 40;
-    expect(foeHp(play(long, 'rending-fury'))).toBe(200 - (8 + 45));
+    expect(foeHp(play(long, 'rending-fury'))).toBe(200 - (8 + 36));
   });
 
   it('Plunder draws until a card that is not an Attack comes up', () => {

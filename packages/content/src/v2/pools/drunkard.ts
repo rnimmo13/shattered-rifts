@@ -309,8 +309,8 @@ export const DRUNKARD: CardDef[] = [
 
   // (more Shells)
   // (6 x 4 since #695: ~85%; upgraded 7 x 4)
-  p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(6, 'target', 4)], {
-    up: { effects: [dmg(7, 'target', 4)] },
+  p('uncommon', 'slugfest', 'Slugfest', 'attack', 2, 'foe', [dmg(7, 'target', 4)], {
+    up: { effects: [dmg(9, 'target', 4)] },
   }),
   p(
     'uncommon',

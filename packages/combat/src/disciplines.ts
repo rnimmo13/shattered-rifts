@@ -112,10 +112,19 @@ export function disciplineTrigger(
   if (r.kind === 'bloodlust' && when === 'loseHp' && (ctx.lost ?? 0) > 0) {
     // (worked out from the HP paid alone: roundGain is reset every turn)
     const per = bloodlustPer(r.perHp, state.mode);
-    const before = Math.min(r.cap, Math.floor(d.progress / per));
     d.progress += ctx.lost ?? 0;
-    const due = Math.min(r.cap, Math.floor(d.progress / per)) - before;
-    if (due > 0) return [{ op: 'status', status: 'might', amount: due, to: 'self' }];
+    // (at most perTurn a turn: what is owed past that arrives with a later payment)
+    if (d.givenAt !== state.turn) {
+      d.givenAt = state.turn;
+      d.givenTurn = 0;
+    }
+    const owed = Math.min(r.cap, Math.floor(d.progress / per)) - (d.given ?? 0);
+    const due = Math.min(owed, (r.perTurn ?? Infinity) - (d.givenTurn ?? 0));
+    if (due > 0) {
+      d.given = (d.given ?? 0) + due;
+      d.givenTurn = (d.givenTurn ?? 0) + due;
+      return [{ op: 'status', status: 'might', amount: due, to: 'self' }];
+    }
   }
   if (r.kind === 'volley' && when === 'play' && ctx.card?.tags?.includes(r.tag)) {
     if (d.usedTurn !== state.turn) {
@@ -300,7 +309,7 @@ export function disciplineLabel(side: SideState, state: CombatState): string {
     case 'execution':
       return `${r.name ?? 'Preparation'} +${d.progress}%`;
     case 'bloodlust':
-      return `Bloodlust ${Math.min(r.cap, Math.floor(d.progress / bloodlustPer(r.perHp, state.mode)))}/${r.cap} Might`;
+      return `Bloodlust ${d.given ?? 0}/${r.cap} Might`;
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap
         ? `Cultivated ${d.progress}/${r.cap}`
@@ -350,8 +359,9 @@ export function disciplineText(side: SideState, mode?: CombatState['mode']): str
     case 'bloodlust':
     {
       const per = bloodlustPer(r.perHp, mode);
-      const got = Math.min(r.cap, Math.floor(d.progress / per));
-      return `Bloodlust: ${got}/${r.cap} Might gained. Every ${per} HP your own effects cost you gives 1 Might for the fight${got < r.cap ? ` (${Math.floor(d.progress) % per}/${per} toward the next)` : ''}. At ${r.lowPct}% HP or less, your Attacks heal you for ${r.healPct}% of the HP they take off.`;
+      const got = d.given ?? 0;
+      const owed = Math.min(r.cap, Math.floor(d.progress / per)) - got;
+      return `Bloodlust: ${got}/${r.cap} Might gained. Every ${per} HP your own effects cost you gives 1 Might for the fight${r.perTurn !== undefined ? `, at most ${r.perTurn} a turn` : ''}${owed > 0 ? ` (${owed} more owed: it comes when you next pay HP on a later turn)` : got < r.cap ? ` (${Math.floor(d.progress) % per}/${per} toward the next)` : ''}. At ${r.lowPct}% HP or less, your Attacks heal you for ${r.healPct}% of the HP they take off.`;
     }
     case 'cultivation':
       return r.cap !== undefined && d.progress >= r.cap

@@ -75,7 +75,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'fervor',
     title: 'Fervor',
-    text: 'Fervor builds up as you play cards that give it. At 10 you spend it and enter Radiant: triple damage, and 2 extra Mana, until your turn ends.',
+    text: 'Fervor builds up as you play cards that give it. At 10 you spend it and enter Radiant: triple damage until your turn ends, and 1 extra Mana the first time each turn.',
     when: (v) => !!hero(v)?.statuses.mantra,
   },
   {

@@ -204,7 +204,9 @@ describe('long-fight balance rules81', () => {
       hero(s, 'b').barrier = 0;
       const third = hero(s, 'b').hp;
       s = play(s, 'obsidian-drill');
-      expect(third - hero(s, 'b').hp).toBe(141); // Sword:3*(7+2*20), no Spell-only bonuses
+      // (Sword: 3 * (7 + 2 * 20), no Spell-only bonuses; then its 6 Fracture on Molten Ruin's 8 Shatters once: 20 + the 20 Spell Power
+      // still held, #727)
+      expect(third - hero(s, 'b').hp).toBe(141 + 40);
     },
   );
   it('Cut the Deck shares its successful refund across base/upgraded copies and resets next own turn', () => {

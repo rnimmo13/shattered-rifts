@@ -46,6 +46,50 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.242.0",
+    date: "2026-11-10",
+    title: "Fights that last longer",
+    summary: "The builds that ended Arena fights in four to seven turns are reined in, slow builds get buffs, and the Spellblade can mix Swords with Fracture.",
+    notes: [
+      {
+        kind: "balance",
+        title: "Many hits share your Might",
+        text: "A card of yours that hits 3 or more times adds half your Might and Primed to each hit, as X cards already do (Thousand Palms, Rip and Tear, Slugfest, Rotary Cannon, the Spellblade's 3- and 4-hit Swords and others). Cards that hit once or twice are unchanged."
+      },
+      {
+        kind: "balance",
+        title: "Bleed and Burn",
+        text: "A tick deals the stack in full up to 30 and half of what is past that. A third or later tick in one turn (Hemorrhage) deals half. Bloodburst now Consumes."
+      },
+      {
+        kind: "balance",
+        title: "Shatters",
+        text: "Each Shatter grows by 3 instead of 5: 20 at 10 Fracture, 23 at 20, up to 47 at 100."
+      },
+      {
+        kind: "balance",
+        title: "Growth limits",
+        text: "Coup de Grace, Culling, Last Rites, Final Reckoning and Rending Fury grow at half the rate past a point and stop at a maximum (the numbers are on each card). Scar Over gives its Might once each turn."
+      },
+      {
+        kind: "balance",
+        title: "Ascendancies",
+        text: "Reaver: Bloodlust gives at most 2 Might a turn (still 12 in all). Sunwalker: Dawn gives 1 Might a Radiant (was 2), and Radiant gives its Mana only the first time each turn, for every Monk. Artillerist: 3 Might on each of your first 5 turns, up to 15 (was 2 for 6, up to 12)."
+      },
+      {
+        kind: "balance",
+        title: "Buffs",
+        text: "Slugfest 7 damage 4 times (9 upgraded). Rotary Cannon 6 damage 4 times (8 upgraded). Showstopper 26 (34 upgraded). Card Fan +4 a suit. Gleeful Trapsmith +1 per 2 Traps sprung, half as much past +8. Metronome Trap 5 to ALL (7 upgraded)."
+      },
+      {
+        kind: "balance",
+        title: "Swords and Spells crack",
+        text: "The Spellblade's Swords that hit 3 or 4 times apply Fracture: Obsidian Flurry and Rift Sweep 3, Tyrant Strike and Obsidian Drill 6, Fault Piercer, Hammer and Anvil and Storm of Glass 8. Spellbolt and Arcane Pulse apply 2, Molten Ruin 4 and Lava Bomb 6, so a Sword or Spell deck can lean into Shatters."
+      }
+    ],
+    heads: "Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept."
+  },
+  {
     version: "0.241.0",
     date: "2026-11-10",
     title: "A Grimoire that scrolls",

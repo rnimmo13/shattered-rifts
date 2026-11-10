@@ -257,17 +257,17 @@ describe('Fracture and Shatter', () => {
     foe(start).statuses.fracture = 15;
     const s = play(start, 'rupture-script');
     expect(foe(s).statuses.fracture).toBe(25);
-    // (it crosses 20 only: the second Shatter, 25 since #713, + Spell Power 8)
-    expect(lost(s)).toBe(33);
+    // (it crosses 20 only: the second Shatter, 23 since #726, + Spell Power 8)
+    expect(lost(s)).toBe(31);
   });
 
-  // (Shatters grow by 5 each threshold since #713: 20, 25, 30... 65 at 100)
-  it('the Shatter at 100 deals 65, and ten of them come to 425 (DECISIONS #523, #713)', () => {
+  // (Shatters grow by 3 each threshold since #726: 20, 23, 26... 47 at 100; 5 since #713)
+  it('the Shatter at 100 deals 47, and ten of them come to 335 (DECISIONS #523, #713, #726)', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 95;
     const r = play(s, 'hairline-crack');
     expect(foe(r).statuses.fracture).toBe(100);
-    expect(lost(r)).toBe(65);
+    expect(lost(r)).toBe(47);
     let total = fight(['rupture-script'], { stars: 0 });
     foe(total).statuses.fracture = 0;
     total = play(total, 'rupture-script');
@@ -277,7 +277,7 @@ describe('Fracture and Shatter', () => {
       total = play(total, 'rupture-script');
     }
     expect(foe(total).statuses.fracture).toBe(100);
-    expect(lost(total)).toBe(20 + 25 + 30 + 35 + 40 + 45 + 50 + 55 + 60 + 65);
+    expect(lost(total)).toBe(20 + 23 + 26 + 29 + 32 + 35 + 38 + 41 + 44 + 47);
   });
 
   it('every Shatter adds the Spell Power you hold, and spends none (DECISIONS #487)', () => {
@@ -297,12 +297,12 @@ describe('Fracture and Shatter', () => {
     );
     foe(s).statuses.fracture = 15;
     const live = previewCardDamage(db, s, 'T0');
-    // (the second Shatter, 25 since #713, + Spell Power 8), as playing it deals
-    expect(live.get(0)).toMatchObject({ lo: 33, hi: 33, shatter: true });
-    expect(live.get(0)!.how).toEqual(['Shatter 2: 25', '+8 Spell Power = 33']);
-    expect(lost(play(s, 'faultline-hex'))).toBe(33);
+    // (the second Shatter, 23 since #726, + Spell Power 8), as playing it deals
+    expect(live.get(0)).toMatchObject({ lo: 31, hi: 31, shatter: true });
+    expect(live.get(0)!.how).toEqual(['Shatter 2: 23', '+8 Spell Power = 31']);
+    expect(lost(play(s, 'faultline-hex'))).toBe(31);
     expect(cardText(db, db.cards['faultline-hex']!, live)).toContain(
-      'Apply 7 Fracture (Shatter [[live:calc:33]]).',
+      'Apply 7 Fracture (Shatter [[live:calc:31]]).',
     );
   });
 
@@ -322,11 +322,11 @@ describe('Fracture and Shatter', () => {
   it("the Shatter preview counts Fault Lines' Fracture after the card, as playing it does", () => {
     const s = play(fight(['fault-lines', 'faultline-hex'], { stars: 0 }), 'fault-lines');
     s.sides.a.mana = 9;
-    // (12 + 7 = 19: no Shatter from the Hex itself; Fault Lines' 1 makes it 20, the second Shatter, 25 since #713)
+    // (12 + 7 = 19: no Shatter from the Hex itself; Fault Lines' 1 makes it 20, the second Shatter, 23 since #726)
     foe(s).statuses.fracture = 12;
     const hex = s.sides.a.hand.find((c) => c.card === 'faultline-hex')!.id;
-    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 25, hi: 25, shatter: true });
-    expect(lost(play(s, 'faultline-hex'))).toBe(25);
+    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 23, hi: 23, shatter: true });
+    expect(lost(play(s, 'faultline-hex'))).toBe(23);
   });
 
   it('Fault Reader answering the Shatter does not hide it', () => {
@@ -334,26 +334,26 @@ describe('Fracture and Shatter', () => {
     s.sides.a.mana = 9;
     foe(s).statuses.fracture = 15;
     const hex = s.sides.a.hand.find((c) => c.card === 'faultline-hex')!.id;
-    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 25, hi: 25, shatter: true });
-    expect(lost(play(s, 'faultline-hex'))).toBe(25);
+    expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 23, hi: 23, shatter: true });
+    expect(lost(play(s, 'faultline-hex'))).toBe(23);
   });
 
   it('several Shatters at once are counted together', () => {
-    // (upgraded Rupture Script applies 11: from 9 it crosses 10 and 20, so 20 + 25 since #713)
+    // (upgraded Rupture Script applies 11: from 9 it crosses 10 and 20, so 20 + 23 since #726)
     const s = fight(['rupture-script+'], { stars: 0 });
     foe(s).statuses.fracture = 9;
     const live = previewCardDamage(db, s, 'T0');
-    expect(live.get(0)).toMatchObject({ lo: 45, hi: 45, hits: 2, shatter: true });
+    expect(live.get(0)).toMatchObject({ lo: 43, hi: 43, hits: 2, shatter: true });
     expect(cardText(db, db.cards['rupture-script+']!, live)).toContain(
-      '(2 Shatters, [[live:calc:45]] total)',
+      '(2 Shatters, [[live:calc:43]] total)',
     );
-    expect(lost(play(s, 'rupture-script+'))).toBe(45);
+    expect(lost(play(s, 'rupture-script+'))).toBe(43);
   });
 
-  it('it keeps scaling past 100, 5 a Shatter (#713)', () => {
+  it('it keeps scaling past 100, 3 a Shatter (#726)', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 106;
-    expect(lost(play(s, 'hairline-crack'))).toBe(70);
+    expect(lost(play(s, 'hairline-crack'))).toBe(50);
   });
 
   it('a cleanse does not take Fracture off', () => {
@@ -554,8 +554,8 @@ describe('Fracture and Shatter', () => {
     hero(s).dmgPct = 50;
     const r = play(s, 'rupture-script');
     expect(lost(r)).toBe(10);
-    // (the next Shatter would be the second, 25 since #713, halved and rounded down)
-    expect(lost(play(r, 'breaking-point-hex'))).toBe(10 + 12);
+    // (the next Shatter would be the second, 23 since #726, halved and rounded down)
+    expect(lost(play(r, 'breaking-point-hex'))).toBe(10 + 11);
   });
 
   it('Hungering Void only deepens enemies already marked, and sets off no card-only Aura', () => {

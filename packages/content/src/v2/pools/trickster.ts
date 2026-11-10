@@ -211,8 +211,8 @@ export const TRICKSTER: CardDef[] = [
     // (2 Mana, 20 + 5 an Exposed since #694: C 74%; ~126%; upgraded 26 + 6)
     2,
     'foe',
-    [scaled(dmg(20), per('exposed', 5, 'target'))],
-    { up: { effects: [scaled(dmg(26), per('exposed', 6, 'target'))] } },
+    [scaled(dmg(20), { ...per('exposed', 5, 'target'), half: 20, max: 40 })],
+    { up: { effects: [scaled(dmg(26), { ...per('exposed', 6, 'target'), half: 24, max: 48 })] } },
   ),
 
   v(
@@ -349,7 +349,7 @@ export const TRICKSTER: CardDef[] = [
       up: { effects: [dmg(21), status('exposed', 1, 'target')] },
     },
   ),
-  v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'foe', [scaled(dmg(4), per('suits', 3))]),
+  v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'foe', [scaled(dmg(4), per('suits', 4))]),
   v('uncommon', 'card-sharp', 'Card Sharp', 'attack', 1, 'foe', [
     dmg(8),
     when('suits', { atLeast: 4 }, [dmg(8)]),
@@ -419,10 +419,11 @@ export const TRICKSTER: CardDef[] = [
     [scaled(dmg(0), per('suits', 7))],
     { up: { effects: [scaled(dmg(0), per('suits', 9))] } },
   ),
-  // (20, and never below 1 Mana, since #694: 30 for 0 after three suits was ~240%; ~160%; upgraded 26)
-  v('rare', 'showstopper', 'Showstopper', 'attack', 3, 'foe', [dmg(20)], {
+  // (20, and never below 1 Mana, since #694: 30 for 0 after three suits was ~240%; ~160%; upgraded 26;
+  // 26 / 34 since #727: the Cardsharp killed on turn 13)
+  v('rare', 'showstopper', 'Showstopper', 'attack', 3, 'foe', [dmg(26)], {
     cheaperPer: { by: 'suits', mult: 1, min: 1 },
-    up: { effects: [dmg(26)] },
+    up: { effects: [dmg(34)] },
   }),
   // (an upgraded card since #694: B 104%; ~128%; upgraded also draw 1 and 2 Barrier)
   v(
@@ -518,13 +519,17 @@ export const TRICKSTER: CardDef[] = [
     'power',
     1,
     'none',
-    // (3 since #694: A 147% for an uncommon; ~110%; upgraded 4)
-    [on('play', [scaled(dmg(3, 'allFoes'), { by: 'snaresSprung', step: 4 })], { filter: 'snare' })],
+    // (3 since #694: A 147% for an uncommon; ~110%; upgraded 4; +1 per 2 Traps sprung since #727, was per 4, not priced again)
+    [
+      on('play', [scaled(dmg(3, 'allFoes'), { by: 'snaresSprung', step: 2, half: 8 })], {
+        filter: 'snare',
+      }),
+    ],
     {
       suit: 'clubs',
       up: {
         effects: [
-          on('play', [scaled(dmg(4, 'allFoes'), { by: 'snaresSprung', step: 4 })], {
+          on('play', [scaled(dmg(4, 'allFoes'), { by: 'snaresSprung', step: 2, half: 8 })], {
             filter: 'snare',
           }),
         ],
@@ -561,10 +566,10 @@ export const TRICKSTER: CardDef[] = [
     'snare',
     0,
     'none',
-    [dmg(3, 'allFoes'), barrier(3)],
+    [dmg(5, 'allFoes'), barrier(3)],
     {
       trigger: { on: 'foeTurn' },
-      up: { effects: [dmg(5, 'allFoes'), barrier(3)] },
+      up: { effects: [dmg(7, 'allFoes'), barrier(3)] },
     },
   ),
   // (5 + 4 a Trap since #694: C 89%; upgraded 7 + 5)
@@ -601,8 +606,8 @@ export const TRICKSTER: CardDef[] = [
     { up: { effects: [dmg(8), barrier(3), status('exposed', 1, 'target')] } },
   ),
   // (14 + 5 an Exposed since #694: C 77%; ~131%; upgraded 18 + 6)
-  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [scaled(dmg(14, 'allFoes'), per('exposed', 5, 'each'))], {
-    up: { effects: [scaled(dmg(18, 'allFoes'), per('exposed', 6, 'each'))] },
+  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [scaled(dmg(14, 'allFoes'), { ...per('exposed', 5, 'each'), half: 15, max: 30 })], {
+    up: { effects: [scaled(dmg(18, 'allFoes'), { ...per('exposed', 6, 'each'), half: 18, max: 36 })] },
   }),
   v(
     'uncommon',

@@ -639,7 +639,7 @@ export const ENGINEER: CardDef[] = [
     [on('play', [status('might', 1)], { filter: 'attack', once: true, ownTurn: true })],
     { up: { cost: 1 } },
   ),
-  r('uncommon', 'rotary-cannon', 'Rotary Cannon', 'attack', 2, 'foe', [dmg(4, 'target', 4)], {
-    up: { effects: [dmg(5, 'target', 4)] },
+  r('uncommon', 'rotary-cannon', 'Rotary Cannon', 'attack', 2, 'foe', [dmg(6, 'target', 4)], {
+    up: { effects: [dmg(8, 'target', 4)] },
   }),
 ];
