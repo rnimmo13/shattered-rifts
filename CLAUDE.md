@@ -1,3 +1,7 @@
+# Release approved 0.239.0 / rules 103 (2026-11-09)
+
+Robert explicitly approves deploying the Grimoire clipping fix quickly ("i need to deploy that fix quickly as long as the cards are always visible"): the card list loses the browser list indent so every card sits inside its page. Fix only; the unreleased Fervor changes (#721) are not included. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.238.0 / rules 103 (2026-11-09; decisions 717-720)
 
 Robert explicitly approves pushing/deploying ("lets push what we have"): extra plays that add up (Echoing Spirit with Doubled Vow, Mirrored, Twinned), Tide of Peace healing 3 per Mana with Consume, the Grimoire filling from the top left one page at a time, and the video models placed and sized by the body. The X-cost cards stay as they are. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -1730,6 +1730,10 @@
   border-bottom: 1px solid rgb(90 58 20 / 0.4);
 }
 .grim__cards {
+  /* (no list indent: the browser gives a list 40px on the left, which pushed the last column off the page) */
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: grid;
   grid-template-columns: repeat(3, 176px);
   justify-content: center;

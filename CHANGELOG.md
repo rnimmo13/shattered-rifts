@@ -1,3 +1,7 @@
+## 0.239.0 - 2026-11-09
+
+- Fixed: Grimoire cards were clipped on the right of each page since 0.238.0 (the card list kept the browser's 40px list indent once cards filled from the left). No rules change.
+
 ## 0.238.0 - 2026-11-09
 
 - Every "played an extra time" adds its own play (DECISIONS #717; rules 103): a Boosted Aura under Echoing Spirit is played three times, likewise Mirrored and Twinned cards.

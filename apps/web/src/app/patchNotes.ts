@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.239.0",
+    date: "2026-11-09",
+    title: "Grimoire cards no longer cut off",
+    summary: "The last column of cards on each Grimoire page is fully visible again.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "Grimoire pages",
+        text: "Cards on the right side of each Grimoire page were clipped after the last update. Every card now sits fully inside its page, in the Card Library, your deck and the draw, discard and consumed piles."
+      }
+    ]
+  },
+  {
     version: "0.238.0",
     date: "2026-11-09",
     title: "Extra plays add up, Tide of Peace heals, a tidier Grimoire",
