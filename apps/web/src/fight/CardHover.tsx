@@ -39,6 +39,8 @@ export function CardHover(props: {
   plus?: boolean;
   /** what the card costs now, when that is not the printed cost */
   cost?: number;
+  /** the card alone, without its keyword notes (a touch screen in a fight: the notes made the preview too tall for the screen) */
+  noKeys?: boolean;
 }) {
   const box = useRef<HTMLDivElement>(null);
   // the preview's real height (card, keyword notes, "Upgraded" label) is only known once it is drawn, so slide it up
@@ -62,14 +64,16 @@ export function CardHover(props: {
   const PREVIEW_W = previewW();
   const compact = isCompact();
   const roll = sanctifiedNote(COMBAT_DB, props.def);
-  const keys = [
-    ...(roll ? [roll] : []),
-    ...keywordsOf(
-      props.def,
-      (u) => COMBAT_DB.units[u]?.taunt === true,
-      cardText(COMBAT_DB, props.def),
-    ),
-  ];
+  const keys = props.noKeys
+    ? []
+    : [
+        ...(roll ? [roll] : []),
+        ...keywordsOf(
+          props.def,
+          (u) => COMBAT_DB.units[u]?.taunt === true,
+          cardText(COMBAT_DB, props.def),
+        ),
+      ];
   return (
     <div
       ref={box}
@@ -77,7 +81,10 @@ export function CardHover(props: {
       aria-hidden
       style={
         props.at
-          ? beside(props.at, wide ? PREVIEW_W * 2 + 13 : PREVIEW_W + (compact ? 220 : 0))
+          ? beside(
+              props.at,
+              wide ? PREVIEW_W * 2 + 13 : PREVIEW_W + (compact && keys.length > 0 ? 220 : 0),
+            )
           : undefined
       }
     >

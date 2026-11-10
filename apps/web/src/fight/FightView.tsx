@@ -2327,6 +2327,9 @@ export function FightView(props: {
   }
   // (Arena HP costs are five times the card's number, and every card in this fight says so: DECISIONS #707, #713)
   const hpCostMult = live?.mode === 'pvp' ? ARENA_HP_COST_MULT : 1;
+  // (a touch screen in a fight shows a lifted card alone, without its keyword notes: a card with long notes was pushed off the
+  // top of the screen, Robert 2026-11-10. The words stay on the card; How to play explains each keyword.)
+  const touchNow = touchScreen();
   // what a second tap on the card a finger lifted will do, in a word under it
   // (the card as it is in the hand now, not as it was when it was lifted: a card lifted on the enemy's turn can be played on yours)
   const hoverNow = hoverCard
@@ -2852,7 +2855,7 @@ export function FightView(props: {
               {hoverArmed && armHint && (
                 <span className={`fight__armHint${armHint.go ? ' is-go' : ''}`}>{armHint.text}</span>
               )}
-              {keywords.length > 0 && (
+              {keywords.length > 0 && !touchNow && (
                 <ul className="fight__peekKeys">
                   {keywords.map((k) => (
                     <li key={k.name}>
@@ -2864,8 +2867,20 @@ export function FightView(props: {
             </div>
           )}
           {hoverCard && hoverArmed && armHint && !selected && !dragCard && mode !== 'portrait' && (
-            // (a phone on its side: the same words, over the hand)
-            <span className={`fight__armHint fight__armHint--float${armHint.go ? ' is-go' : ''}`}>
+            // (a phone on its side: the same words at the foot of the lifted card, clear of the big preview beside it)
+            <span
+              className={`fight__armHint fight__armHint--float${armHint.go ? ' is-go' : ''}`}
+              style={
+                hoverRect
+                  ? {
+                      left: Math.max(
+                        96,
+                        Math.min(window.innerWidth - 96, hoverRect.left + hoverRect.width / 2),
+                      ),
+                    }
+                  : undefined
+              }
+            >
               {armHint.text}
             </span>
           )}
@@ -2880,6 +2895,7 @@ export function FightView(props: {
                 def={hoverCard.def}
                 at={hoverRect}
                 plus={false}
+                noKeys={touchNow}
                 {...(hoverCard.cost !== undefined ? { cost: hoverCard.cost } : {})}
               />
             )}
@@ -2889,7 +2905,8 @@ export function FightView(props: {
             !dragCard &&
             window.innerHeight >= 600 &&
             mode !== 'portrait' &&
-            keywords.length > 0 && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
+            keywords.length > 0 &&
+            !touchNow && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
 
           {(selectedCard || releasing) && (!touch || touchAimAt) && (
             <AimArrow

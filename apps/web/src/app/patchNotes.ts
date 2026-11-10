@@ -46,6 +46,19 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.246.0",
+    date: "2026-11-10",
+    title: "A lifted card that stays on screen",
+    summary: "On a phone or tablet, a card you tap to read no longer runs off the top of the screen.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "Phones: the lifted card fits",
+        text: "In a fight on a phone or tablet, a card you tap to read shows alone, without its keyword notes underneath: a card with long notes was pushed off the top of the screen. The keywords are still marked on the card, and How to play explains each one. Held sideways, \"Tap again to play\" sits at the foot of the lifted card, clear of the big preview. Nothing changes with a mouse.",
+      },
+    ],
+  },
+  {
     version: "0.245.0",
     date: "2026-11-10",
     title: "A phone pass: tap to read, tap to play",

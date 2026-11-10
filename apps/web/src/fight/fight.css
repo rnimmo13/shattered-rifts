@@ -4524,7 +4524,7 @@ button.totem:disabled {
 .fight__armHint--float {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--cw, 154px) * 1.4 + 1.6rem);
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
   translate: -50% 0;
   z-index: 211;
   pointer-events: none;

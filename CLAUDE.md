@@ -1,3 +1,7 @@
+# Release approved 0.246.0 / rules 106 (2026-11-10)
+
+Robert explicitly approves pushing ("push"): on a touch screen in a fight, a lifted card shows alone without its keyword notes (a card with long notes was pushed off the top of the screen), and held sideways "Tap again to play" sits at the foot of the lifted card. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.245.0 / rules 106 (2026-11-10; decisions 730-731)
 
 Robert explicitly approves pushing after a full check and build ("i want to push but only after you do a full check and build now and prepare the version bump and patch notes"), and chooses to include the pending work already in the tree: the phone pass (tap a card to read it and tap again to play it on touch, finger-sized fight controls, tips as a sheet over the hand, compact totems, crowded upright boards, wider phone margins, the Arena page's folded rules, no battle log on phones, the Sanctum and leaderboards fitting a phone), buttons in the game's font, the Vault at 20 decks with all of them coming to a match, Home first in the map header and the Arena page's tiles. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

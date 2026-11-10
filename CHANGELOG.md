@@ -1,3 +1,7 @@
+## 0.246.0 - 2026-11-10
+
+- Phones and tablets, in a fight: a card you lift shows alone, without its keyword notes underneath (a card with long notes was pushed off the top of the screen). Sideways, "Tap again to play" sits at the foot of the lifted card, clear of the big preview.
+
 ## 0.245.0 - 2026-11-10
 
 - Phones and tablets: tap a card to lift it and read it, tap it again (or the big card) to play it; tap anywhere else to put it back. Dragging a card up still plays it at once, and a card that needs a target still goes straight to choosing one (DECISIONS #731).
