@@ -1,8 +1,9 @@
 // #/models: every Riftwalker, companion and enemy standing side by side, so look-alikes are easy to spot (a dev page; no link).
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COMBAT_DB, RIFTWALKERS, TRAINING_UNIT_IDS } from '@sr/content/v2';
 import { heroFigure, unitFigure } from './art';
+import { loadUnitFigures } from '../art/assets';
 import { HeroModel } from '../art/HeroModel';
 import '../play/play.css';
 
@@ -42,6 +43,17 @@ export function Bestiary() {
   const units = Object.values(COMBAT_DB.units).filter(
     (u) => !u.id.endsWith('+') && !TRAINING_UNIT_IDS.has(u.id),
   );
+  // (figures other than the heroes' are fetched only when asked for: this page asks for them all, and draws again once they are in)
+  const [, setLoaded] = useState(0);
+  useEffect(() => {
+    let gone = false;
+    void loadUnitFigures(Object.keys(COMBAT_DB.units)).then(() => {
+      if (!gone) setLoaded((n) => n + 1);
+    });
+    return () => {
+      gone = true;
+    };
+  }, []);
   return (
     <main className="setup setup--wide">
       <a className="btn btn--small setup__back" href="#/">

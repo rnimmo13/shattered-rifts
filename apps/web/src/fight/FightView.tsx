@@ -104,7 +104,8 @@ import { mySkin } from '../cosmetics/cosmetics';
 import { FloatPanel } from './FloatPanel';
 import { CardTips } from './CardTips';
 import { CardHover } from './CardHover';
-import { preloadAllArt, preloadFigure, realSkinFigure } from '../art/assets';
+import { FIGURE_READY_EVENT, needsFigure, preloadFightArt, realSkinFigure } from '../art/assets';
+import { fightUnits } from './fightUnits';
 import { PotionButton } from './PotionChip';
 import { PickModal } from './PickModal';
 import { isHandPick, pickStep, pickVerb, premeditateIn, prompt as pickPrompt } from './handPick';
@@ -269,7 +270,11 @@ function specsFrom(
       const hero = u.kind === 'hero';
       const flies = !hero && hoverOf(u.def) > 0;
       // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
-      const raw = figures.get(u.id, hero ? u.def : figureId(u.def, u.maxHp), () =>
+      // (a unit whose figure is still coming is drawn as its stand-in under a form of its own, so the real one replaces it at the
+      // redraw when it arrives: FIGURE_READY_EVENT)
+      const form = hero ? u.def : figureId(u.def, u.maxHp);
+      const waiting = !hero && needsFigure(form);
+      const raw = figures.get(u.id, waiting ? `${form}~waiting` : form, () =>
         hero
           ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
           : unitFigure(u.def, u.maxHp),
@@ -1350,12 +1355,14 @@ export function FightView(props: {
     void loadWeaponArt();
     const opened = performance.now();
     perfNote('a fight is opening');
-    Promise.all([
-      preloadAllArt(),
-      ...('enemies' in setup.b && setup.b.enemies.includes('vorthax')
-        ? [preloadFigure('unit:vorthax', 'figures/vorthax.png')]
-        : []),
-    ])
+    // (only this fight's figures: its enemies and whatever its cards and units can summon; "Opening the rift" shows meanwhile)
+    let toLoad: Iterable<string> = [];
+    try {
+      toLoad = fightUnits(db, createCombat(db, setup).state);
+    } catch {
+      /* the fight itself reports a setup it cannot start; its figures come as they are drawn */
+    }
+    preloadFightArt(toLoad)
       .then(() =>
         BattlefieldScene.create(
           el,
@@ -1505,6 +1512,21 @@ export function FightView(props: {
         },
       );
   }, [mode, db, mySide]);
+
+  // a figure that was still coming has arrived: the board draws it in place of its stand-in, without waiting for the next move
+  useEffect(() => {
+    const on = (): void => {
+      const g = game.current;
+      // (while moves are still playing out the display lags the board; the resync at the end of the batch draws it then)
+      if (g && pending.current.all === 0)
+        scene.current?.fighters.sync(
+          specsFrom(db, g.display, mySide, skinOf.current, modeRef.current, fixedFigures.current),
+          { instant: true },
+        );
+    };
+    window.addEventListener(FIGURE_READY_EVENT, on);
+    return () => window.removeEventListener(FIGURE_READY_EVENT, on);
+  }, [db, mySide]);
 
   useEffect(() => {
     if (watch) return; // (a replay keeps its own speed: see below)

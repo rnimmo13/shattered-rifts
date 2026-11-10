@@ -1,3 +1,11 @@
+## 0.243.0 - 2026-11-10
+
+- A new look for the Grimoire (decks, piles, the Card library and the practice deck builder): an obsidian tome with a seam of gold, violet and blue in place of the leather and parchment; the realms are a bar of pills with glowing realm dots and counts, wrapping instead of trimming names; a frosted header that stays put while the cards scroll, showing what is on the page (cards, Attacks, Skills, Auras, Summons, Traps, average Mana); cards rise into place when a realm opens and lift with a glow of their realm's colour when pointed at. Phone chips match. No rules change.
+
+- Faster first load: the game no longer downloads every enemy and companion figure at start (139 paintings, about 64 MB, each kept as a full-size canvas). The home screen fetches only the ten hero figures (about 8 MB); a fight fetches its own enemies and every companion or summon its cards and enemies can bring, behind the "Opening the rift" screen, and a unit no one foresaw gets its painting at the next redraw. No rules change.
+
+- Animated 2D models start and end their attacks smoothly. Five heroes (Drunkard, Shaman, Spellblade, Trickster, Rogue) had idle videos cut at another size from their attack and death clips, so the figure jumped about 7% of its height when an attack began and back when it ended; each clip is now lined up with the idle from its first frame. A change of clip fades over 0.16 s, the idle comes back from its first frame (the pose every clip ends on), and outside battle a hover waits for the attack clip instead of sliding the whole figure in a stand-in lunge. No rules change.
+
 ## 0.242.0 - 2026-11-10
 
 - The damage pass (DECISIONS #726; rules 106), from goldfish runs of 72 decks: a card that hits 3 or more times carries half the Might and Primed on each hit; Bleed and Burn ticks deal the stack in full up to 30 and half past it, and extra ticks in a turn deal half; Bloodlust gives at most 2 Might a turn; Radiant gives its Mana once a turn and Dawn 1 Might; Shatters grow 3 a threshold (20... 47 at 100); ceilings on Coup de Grace, Culling, Last Rites and Final Reckoning; Scar Over once a turn. Slugfest 7 x 4, Rotary Cannon 6 x 4 and the Artillerist's 3 Might for 5 turns make up for the many-hit rule.

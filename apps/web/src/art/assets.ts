@@ -59,67 +59,110 @@ function loadImage(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-/** The two stages of loading the art: the manifest and the hero figures (the first screens need them), then everything else. */
+/**
+ * The stages of loading the art: the manifest, then the hero figures (the first screens need them). Every other figure (enemies,
+ * companions) is fetched only when a fight that can show it opens (preloadFightArt): all of them at once was about 64 MB on a first
+ * visit and a full-size canvas each in memory.
+ */
 interface Stages {
+  manifest: Promise<void>;
   heroes: Promise<void>;
-  all: Promise<void>;
+}
+
+/** every figure the manifest lists, by key ("unit:slime"), to its URL */
+const figurePaths = new Map<string, string>();
+/** figures asked for and not yet in (or in, or failed: one request each) */
+const figureLoads = new Map<string, Promise<void>>();
+
+/** Fetch one listed figure into the store, once. */
+function fetchFigure(key: string): Promise<void> {
+  let p = figureLoads.get(key);
+  if (!p) {
+    const url = figurePaths.get(key);
+    p = !url
+      ? Promise.resolve()
+      : loadImage(url).then((img) => {
+          if (!img) return;
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth;
+          c.height = img.naturalHeight;
+          c.getContext('2d')?.drawImage(img, 0, 0);
+          figures.set(key, c);
+          // (a fight on show swaps it in for its stand-in; not ART_READY_EVENT, which redraws whole screens)
+          if (!key.startsWith('hero:')) window.dispatchEvent(new Event(FIGURE_READY_EVENT));
+        });
+    figureLoads.set(key, p);
+  }
+  return p;
+}
+
+/** A unit's figure that was not in when a fight drew it has arrived (needsFigure): the fight draws it now. */
+export const FIGURE_READY_EVENT = 'sr-figure-ready';
+/** the manifest has been read (or failed): until then no figure can be known to be missing */
+let manifestSettled = false;
+
+/** The figure key a unit is drawn from: its own, or the world unit it borrows its art from (as realFigure reads it). */
+function unitKey(id: string): string {
+  // (an upgraded unit, "patrol-drone+", stands as its base)
+  const unit = id.replace(/\+$/, '');
+  const own = `unit:${unit}`;
+  if (figurePaths.has(own)) return own;
+  const alias = WORLD_UNIT_ART[unit];
+  return alias ? `unit:${alias}` : own;
 }
 
 function load(): Stages {
   const none = Promise.resolve();
-  const start = async (): Promise<Stages> => {
+  const start = async (): Promise<{ heroes: Promise<void> }> => {
     let m: Manifest;
     try {
       const res = await fetch(`${base()}art/manifest.json`, { cache: 'no-cache' });
       if (!res.ok) {
         reportProgress({ completed: 0, total: 0, stage: 'ready' });
-        return { heroes: none, all: none };
+        return { heroes: none };
       }
       m = (await res.json()) as Manifest;
     } catch {
       reportProgress({ completed: 0, total: 0, stage: 'ready' });
-      return { heroes: none, all: none }; // no manifest: all placeholders
+      return { heroes: none }; // no manifest: all placeholders
     }
     for (const [id, path] of Object.entries(m.cards ?? {})) cards.set(id, `${base()}art/${path}`);
     for (const [id, path] of Object.entries(m.backdrops ?? {}))
       backdrops.set(id, `${base()}art/${path}`);
     // (skins are only listed: the Store shows them as plain images, so nothing is fetched here)
     for (const [id, path] of Object.entries(m.skins ?? {})) skins.set(id, `${base()}art/${path}`);
-    const fetchFigure = (key: string, path: string): Promise<void> =>
-      loadImage(`${base()}art/${path}`).then((img) => {
-        if (!img) return;
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth;
-        c.height = img.naturalHeight;
-        c.getContext('2d')?.drawImage(img, 0, 0);
-        figures.set(key, c);
-      });
-    const entries = Object.entries(m.figures ?? {});
-    const heroEntries = entries.filter(([k]) => k.startsWith('hero:'));
-    reportProgress({ completed: 0, total: heroEntries.length, stage: 'heroes' });
-    // the heroes come first: the home screen and every character screen show them
+    for (const [key, path] of Object.entries(m.figures ?? {}))
+      figurePaths.set(key, `${base()}art/${path}`);
+    const heroKeys = [...figurePaths.keys()].filter((k) => k.startsWith('hero:'));
+    reportProgress({ completed: 0, total: heroKeys.length, stage: 'heroes' });
+    // the heroes only: the home screen and every character screen show them
     const heroes = Promise.all(
-      heroEntries.map(([k, p]) =>
-        fetchFigure(k, p).finally(() => {
+      heroKeys.map((k) =>
+        fetchFigure(k).finally(() => {
           reportProgress({ ...progress, completed: progress.completed + 1 });
         }),
       ),
     ).then(() => {
       reportProgress({ ...progress, stage: 'ready' });
     });
-    const rest = Promise.all(
-      entries.filter(([k]) => !k.startsWith('hero:')).map(([k, p]) => fetchFigure(k, p)),
-    );
-    return { heroes, all: Promise.all([heroes, rest]).then(() => undefined) };
+    return { heroes };
   };
   const staged = start();
-  return { heroes: staged.then((x) => x.heroes), all: staged.then((x) => x.all) };
+  const manifest = staged.then(
+    () => {
+      manifestSettled = true;
+    },
+    () => {
+      manifestSettled = true;
+    },
+  );
+  return { manifest, heroes: staged.then((x) => x.heroes) };
 }
 
 /** How long a first screen waits for the hero figures on a slow connection (about 8 MB the first time, cached after). */
 const HEROES_WAIT_MS = 15000;
-/** How long a fight waits for the rest of the figures (enemies, companions). */
-const ALL_WAIT_MS = 10000;
+/** How long a fight waits for its own figures (its enemies and the companions it can summon). */
+const FIGHT_WAIT_MS = 10000;
 
 const wait = (ms: number): Promise<void> =>
   new Promise<void>((resolve) => window.setTimeout(resolve, ms));
@@ -146,25 +189,47 @@ function preloadIcons(): void {
   for (const id of paintedFiles()) new Image().src = iconUrl(id);
 }
 
-/** Load all the figures (heroes, enemies, companions): what a fight needs before it draws. */
-export function preloadAllArt(): Promise<void> {
+/** Load the figures of these units (unit def ids), once each, after the manifest. Resolves when they are in (or failed). */
+export function loadUnitFigures(units: Iterable<string>): Promise<void> {
   void preloadArt();
-  preloadIcons();
-  return Promise.race([(staged as Stages).all.catch(() => undefined), wait(ALL_WAIT_MS)]);
+  const want = [...new Set(units)];
+  return (staged as Stages).manifest
+    .then(() => Promise.all(want.map((u) => fetchFigure(unitKey(u)))))
+    .then(() => undefined)
+    .catch(() => undefined);
 }
 
-/** Prioritize an encounter’s essential figure rather than waiting behind the whole art catalog. */
-export function preloadFigure(key: string, path: string): Promise<void> {
-  if (figures.has(key)) return Promise.resolve();
-  const loaded = loadImage(`${base()}art/${path}`).then((img) => {
-    if (!img || figures.has(key)) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    canvas.getContext('2d')?.drawImage(img, 0, 0);
-    figures.set(key, canvas);
-  });
-  return Promise.race([loaded, wait(ALL_WAIT_MS)]);
+/**
+ * What a fight needs before it draws: the hero figures, the figures of the units it can show (its enemies, and every companion or
+ * summon its cards and units can bring: fightUnits), and the status icons. Waits at most FIGHT_WAIT_MS; a figure that comes later is
+ * swapped in at the next redraw (needsFigure).
+ */
+export function preloadFightArt(units: Iterable<string>): Promise<void> {
+  const heroes = preloadArt();
+  preloadIcons();
+  return Promise.race([
+    Promise.all([heroes, loadUnitFigures(units)]).then(() => undefined),
+    wait(FIGHT_WAIT_MS),
+  ]);
+}
+
+/**
+ * True when a unit has a real figure listed that is not in yet (it is fetched now): the caller draws the stand-in this time and asks
+ * again at its next redraw. A unit no one expected (a card made mid-fight that summons something new) still gets its art this way.
+ */
+export function needsFigure(unit: string): boolean {
+  // (a fight opened before the manifest came: everything may still be coming; it is fetched once the manifest is in)
+  if (!manifestSettled) {
+    if (staged)
+      void staged.manifest.then(() => {
+        needsFigure(unit);
+      });
+    return true;
+  }
+  const key = unitKey(unit);
+  if (figures.has(key) || !figurePaths.has(key)) return false;
+  void fetchFigure(key);
+  return true;
 }
 
 /** A real figure for a hero ('hero:knight') or unit ('unit:slime'), if one was supplied. */

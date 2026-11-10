@@ -46,6 +46,29 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.243.0",
+    date: "2026-11-10",
+    title: "A new Grimoire, faster loading",
+    summary: "The Grimoire gets a new look, the game loads only the art it needs, and the animated models start and end their attacks smoothly.",
+    notes: [
+      {
+        kind: "changed",
+        title: "A new look for the Grimoire",
+        text: "Decks, piles, the Card library and the practice deck builder are an obsidian tome now. The realms are a bar of glowing pills with their counts, the header stays put while you scroll and shows what is on the page (Attacks, Skills, Auras, Summons, Traps, average Mana), and cards rise into place and glow in their realm's colour when you point at them."
+      },
+      {
+        kind: "changed",
+        title: "Faster first load",
+        text: "The game no longer downloads every enemy painting when it starts (about 64 MB). The home screen fetches only the Riftwalkers; each fight fetches its own enemies and everything its cards can summon while \"Opening the rift\" shows."
+      },
+      {
+        kind: "fixed",
+        title: "Animated models move smoothly",
+        text: "With the beta 2D animated models on, the Drunkard, Shaman, Spellblade, Trickster and Rogue no longer jump when an attack starts or ends: every clip is lined up with the idle pose and fades into the next. Outside battle, hovering no longer slides the whole figure across while its attack is still loading, and switching heroes is quicker."
+      }
+    ]
+  },
+  {
     version: "0.242.0",
     date: "2026-11-10",
     title: "Fights that last longer",

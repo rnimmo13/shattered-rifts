@@ -168,6 +168,10 @@ export interface HeroSprite {
   ): void;
   /** seconds from a clip's start to its moment, when the model knows (a video model measures its strikes) */
   momentIn?(clip: KnightClip, variant?: string): number;
+  /** whether a clip would play its own video now and not a stand-in (a video model still loading its clip, or lining it up) */
+  ready?(clip: KnightClip, variant?: string): boolean;
+  /** a change of clip is still fading from one video to the next (a video model) */
+  readonly fading?: boolean;
   readonly clip: KnightClip;
   readonly finished: boolean;
   update(dt: number): void;

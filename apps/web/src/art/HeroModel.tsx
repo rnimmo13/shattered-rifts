@@ -103,7 +103,11 @@ export function HeroModel(props: {
     let swings = 0;
     const attack = (): void => {
       if (!sprite || sprite.clip !== 'idle') return;
-      const variant = variants[swings++ % Math.max(1, variants.length)];
+      const variant = variants[swings % Math.max(1, variants.length)];
+      // (a video model whose attack clip is still loading waits for it: the canvas's stand-in lunge slid the whole figure across the
+      // screen and back, which a fight needs on time but a hover does not)
+      if (sprite.ready && !sprite.ready('strike', variant)) return;
+      swings++;
       sprite.play('strike', variant ? { variant } : {});
     };
     const hover = (e: PointerEvent): void => {

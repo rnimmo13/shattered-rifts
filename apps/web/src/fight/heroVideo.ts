@@ -25,6 +25,31 @@ export interface VideoAssets {
   bodyW: number;
   /** the key colour, 0-1 */
   key: [number, number, number];
+  /** the idle's first frame as a small silhouette, to line every other clip up with it (fitOf) */
+  mask: Mask | null;
+}
+
+/** A frame's silhouette at a small size: which pixels are not the key colour, and the list of them. */
+interface Mask {
+  w: number;
+  h: number;
+  /** the video's own size, for going back to video px */
+  vw: number;
+  vh: number;
+  solid: Uint8Array;
+  pts: Int16Array;
+}
+
+/**
+ * Where a clip's video stands in the idle video's px: its top-left corner and the scale of a clip px. The clips are made from the
+ * same first frame as the idle, but some were cut or encoded at another size and framing (an 854x480 idle beside 960x540 clips, the
+ * figure 4-5% lower and bigger in them): drawn at the idle's size as they are, the figure jumped when an attack began and back when
+ * it ended. Each clip's first frame is matched to the idle's so the figure stays where it stood.
+ */
+interface Fit {
+  x: number;
+  y: number;
+  s: number;
 }
 
 const loads = new Map<string, Promise<VideoAssets | null>>();
@@ -75,6 +100,7 @@ export function loadHeroVideo(hero: string): Promise<VideoAssets | null> {
         clips,
         size: { w: idle.videoWidth, h: idle.videoHeight },
         ...measured,
+        mask: maskOf(idle, measured.key),
       };
     })();
     loads.set(hero, p);
@@ -103,15 +129,7 @@ function measure(
     const i = (y * w + x) * 4;
     return [d[i]!, d[i + 1]!, d[i + 2]!];
   };
-  // (a few pixels in from the frame's edge, where an encoder may leave a dark line)
-  const corners = [at(4, 4), at(w - 5, 4), at(4, h - 5), at(w - 5, h - 5)];
-  // (the corner most like the others: a weapon or cape reaching one corner does not move the key)
-  const near = (p: number[], q: number[]): number =>
-    Math.abs(p[0]! - q[0]!) + Math.abs(p[1]! - q[1]!) + Math.abs(p[2]! - q[2]!);
-  const key = [...corners].sort(
-    (p, q) =>
-      corners.reduce((n, o) => n + near(p, o), 0) - corners.reduce((n, o) => n + near(q, o), 0),
-  )[0]!;
+  const key = keyIn(d, w, h);
   let x0 = w;
   let x1 = -1;
   let y0 = h;
@@ -150,7 +168,11 @@ function measure(
   let top = y1;
   for (let y = y0; y <= y1; y++) {
     let n = 0;
-    for (let x = Math.max(x0, Math.round(feetX) - half); x <= Math.min(x1, Math.round(feetX) + half); x++)
+    for (
+      let x = Math.max(x0, Math.round(feetX) - half);
+      x <= Math.min(x1, Math.round(feetX) + half);
+      x++
+    )
       if (solid(x, y)) n++;
     if (n >= 2) {
       top = y;
@@ -173,6 +195,109 @@ function measure(
     // (at least half its height: a figure standing with its feet together still takes its room in the line)
     bodyW: Math.max(bodyH * 0.5, s1 - s0 + 1) / scale,
   };
+}
+
+/** The key colour of a frame's pixels, 0-255: the corner most like the others. */
+function keyIn(d: Uint8ClampedArray, w: number, h: number): [number, number, number] {
+  const at = (x: number, y: number): [number, number, number] => {
+    const i = (y * w + x) * 4;
+    return [d[i]!, d[i + 1]!, d[i + 2]!];
+  };
+  // (a few pixels in from the frame's edge, where an encoder may leave a dark line)
+  const corners = [at(4, 4), at(w - 5, 4), at(4, h - 5), at(w - 5, h - 5)];
+  // (the corner most like the others: a weapon or cape reaching one corner does not move the key)
+  const near = (p: number[], q: number[]): number =>
+    Math.abs(p[0]! - q[0]!) + Math.abs(p[1]! - q[1]!) + Math.abs(p[2]! - q[2]!);
+  return [...corners].sort(
+    (p, q) =>
+      corners.reduce((n, o) => n + near(p, o), 0) - corners.reduce((n, o) => n + near(q, o), 0),
+  )[0]!;
+}
+
+/** the width of the silhouettes clips are lined up by */
+const MASK_W = 128;
+
+/** The frame on show as a small silhouette (its own key colour when `key` is not given, 0-1 otherwise). */
+function maskOf(v: HTMLVideoElement, key?: [number, number, number]): Mask | null {
+  if (!v.videoWidth || !v.videoHeight) return null;
+  const w = MASK_W;
+  const h = Math.max(8, Math.round((v.videoHeight / v.videoWidth) * w));
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  if (!g) return null;
+  g.drawImage(v, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h).data;
+  const k = key ? key.map((x) => x * 255) : keyIn(d, w, h);
+  const solid = new Uint8Array(w * h);
+  const pts: number[] = [];
+  for (let y = 2; y < h - 2; y++)
+    for (let x = 2; x < w - 2; x++) {
+      const i = (y * w + x) * 4;
+      if (Math.abs(d[i]! - k[0]!) + Math.abs(d[i + 1]! - k[1]!) + Math.abs(d[i + 2]! - k[2]!) < 150)
+        continue;
+      solid[y * w + x] = 1;
+      pts.push(x, y);
+    }
+  if (pts.length < 40) return null;
+  return { w, h, vw: v.videoWidth, vh: v.videoHeight, solid, pts: Int16Array.from(pts) };
+}
+
+/**
+ * Where a clip's first frame lines up with the idle's (both silhouettes): the scale and offset, in the idle video's px, that lay the
+ * most of each on the other. Searched near "the same framing" (the clip drawn to the idle's size), coarse then fine; a clip already
+ * framed as the idle is comes out as it is.
+ */
+function fitTo(idle: Mask, clip: Mask): Fit {
+  // (silhouette px: idle = s * clip + t)
+  const s0 = idle.w / clip.w;
+  const score = (s: number, tx: number, ty: number): number => {
+    let a = 0;
+    const cp = clip.pts;
+    for (let i = 0; i < cp.length; i += 2) {
+      const x = Math.round(s * cp[i]! + tx);
+      const y = Math.round(s * cp[i + 1]! + ty);
+      if (x >= 0 && y >= 0 && x < idle.w && y < idle.h && idle.solid[y * idle.w + x]) a++;
+    }
+    let b = 0;
+    const ip = idle.pts;
+    for (let i = 0; i < ip.length; i += 2) {
+      const x = Math.round((ip[i]! - tx) / s);
+      const y = Math.round((ip[i + 1]! - ty) / s);
+      if (x >= 0 && y >= 0 && x < clip.w && y < clip.h && clip.solid[y * clip.w + x]) b++;
+    }
+    return a / (cp.length / 2) + b / (ip.length / 2);
+  };
+  let best = { s: s0, tx: 0, ty: 0, v: score(s0, 0, 0) };
+  const search = (ss: number[], txs: number[], tys: number[]): void => {
+    for (const s of ss)
+      for (const tx of txs)
+        for (const ty of tys) {
+          const v = score(s, tx, ty);
+          if (v > best.v + 1e-9) best = { s, tx, ty, v };
+        }
+  };
+  const range = (mid: number, half: number, step: number): number[] => {
+    const out: number[] = [];
+    for (let x = mid - half; x <= mid + half + 1e-9; x += step) out.push(x);
+    return out;
+  };
+  // (up to 12% bigger or smaller, and 5% of the frame either way: the clips cut at another size are about 3-4% bigger and a pixel or
+  // two off at this size. About 50 ms a clip, once a session)
+  const R = Math.round(idle.w * 0.05);
+  search(range(s0, s0 * 0.12, s0 * 0.02), range(0, R, 2), range(0, R, 2));
+  let c = best;
+  search(range(c.s, s0 * 0.02, s0 * 0.005), range(c.tx, 2, 0.5), range(c.ty, 2, 0.5));
+  c = best;
+  search(range(c.s, s0 * 0.005, s0 * 0.0025), range(c.tx, 0.5, 0.25), range(c.ty, 0.5, 0.25));
+  // (a clip whose framing barely differs is left exactly as it is: no half-pixel wobble between clips that already agree)
+  const same = score(s0, 0, 0);
+  if (best.v - same < 0.01) best = { s: s0, tx: 0, ty: 0, v: same };
+  // silhouette px -> video px: idle video px = (s * clip video px * clip.w / clip.vw + t) * idle.vw / idle.w
+  const ki = idle.vw / idle.w;
+  const kc = clip.w / clip.vw;
+  return { x: best.tx * ki, y: best.ty * ki, s: best.s * kc * ki };
 }
 
 let gl2: boolean | null = null;
@@ -240,6 +365,8 @@ const MADE: Record<Exclude<VideoClip, 'idle'>, { dur: number; event: string; at:
 };
 /** the largest side of the canvas, in pixels */
 const MAX_SIDE = 2048;
+/** how long one clip fades into the next (seconds): the idle into an attack, the attack's end back into the idle */
+const FADE = 0.16;
 /** the widest a model may stand, as a share of the height it is given: a wide stance is drawn smaller to fit, as a painting would be */
 const MAX_WIDTH = 0.85;
 /** how much of the height a figure is given its body fills: a painting's height takes in its hat, weapon and cape too, so the body alone
@@ -280,6 +407,15 @@ export class VideoHeroSprite {
   private readonly own = new Map<string, HTMLVideoElement>();
   /** when the moment of the clip under way comes, as a share of it */
   private at = 0;
+  /** each clip video's URL, for its Fit */
+  private readonly srcOfVideo = new Map<HTMLVideoElement, string>();
+  /** the second texture: the video being faded out, drawn over the new one while it fades */
+  private readonly tex2: WebGLTexture;
+  /** the video a change of clip fades out of (the idle as an attack begins, the attack's last frame as the idle comes back) */
+  private fadeFrom: HTMLVideoElement | null = null;
+  private fadeT = 0;
+  /** how long the fade has waited for the new video's first frame (a seek still under way) */
+  private fadeWait = 0;
 
   private constructor(
     canvas: HTMLCanvasElement,
@@ -313,6 +449,12 @@ export class VideoHeroSprite {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    this.tex2 = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, this.tex2);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     this.idle = video(a.idle.currentSrc || a.idle.src, true);
     this.current = this.idle;
     void this.idle.play().catch(() => undefined);
@@ -320,8 +462,12 @@ export class VideoHeroSprite {
       if (!src) continue;
       const v = video(src, false);
       this.own.set(src, v);
-      // (where a strike lands in its own clip: measured once from its frames, while the idle plays)
-      if (/strike/.test(src)) void impactOf(src, a.key);
+      this.srcOfVideo.set(v, src);
+      // (where each clip lines up with the idle, from this copy's first frame; and where a strike lands in its own clip: measured once
+      // from its frames, while the idle plays)
+      if (v.readyState >= 2) fitFrom(v, src, a);
+      else v.addEventListener('loadeddata', () => fitFrom(v, src, a), { once: true });
+      if (/strike/.test(src)) void study(src, a);
     }
     this.texture = Texture.from(canvas);
     this.texture.dynamic = true;
@@ -425,14 +571,15 @@ export class VideoHeroSprite {
     this.onEnd = opts.onEnd;
     this.madeUp = false;
     if (clip === 'idle') {
-      this.show(this.idle);
+      this.backToIdle();
       this.dur = 0;
       return;
     }
     const src = this.srcOf(clip, opts.variant);
     const v = src ? this.own.get(src) : undefined;
-    // (its own video once it can play; until then, and for a clip with none, the idle video with the canvas's own motion)
-    if (src && v && v.readyState >= 2 && v.duration > 0) {
+    // (its own video once it can play and is lined up with the idle; until then, and for a clip with none, the idle video with the
+    // canvas's own motion: a fit landing partway through a swing would move the figure then)
+    if (src && v && v.readyState >= 2 && v.duration > 0 && fits.has(src)) {
       v.currentTime = 0;
       v.playbackRate = 1;
       this.show(v);
@@ -446,10 +593,46 @@ export class VideoHeroSprite {
     }
   }
 
+  /**
+   * The idle loop again after a clip of its own: from its first frame, the pose every clip starts and ends on, so the figure does not
+   * snap to wherever the loop had got to meanwhile. (A clip played on the idle video itself carries on with it.)
+   */
+  private backToIdle(): void {
+    if (this.current !== this.idle) {
+      try {
+        this.idle.currentTime = 0;
+      } catch {
+        /* not seekable yet: it carries on where it is */
+      }
+    }
+    this.show(this.idle);
+  }
+
+  /** The video shown from now on, faded in over the one shown until now (FADE), which holds where it was if it was a clip. */
   private show(v: HTMLVideoElement): void {
-    if (this.current !== v && this.current !== this.idle) this.current.pause();
+    const from = this.current;
+    if (from !== v) {
+      if (from !== this.idle) from.pause();
+      // (only a frame that is on show can be faded out of)
+      this.fadeFrom = from.readyState >= 2 ? from : null;
+      this.fadeT = 0;
+      this.fadeWait = 0;
+    }
     this.current = v;
     void v.play().catch(() => undefined);
+  }
+
+  /** a change of clip is still fading (a board that holds still keeps updating until it is done) */
+  get fading(): boolean {
+    return !!this.fadeFrom;
+  }
+
+  /** Whether a clip plays its own video now (the screens outside battle wait for it rather than play the canvas's stand-in lunge). */
+  ready(clip: VideoClip, variant?: string): boolean {
+    if (clip === 'idle') return true;
+    const src = this.srcOf(clip, variant);
+    const v = src ? this.own.get(src) : undefined;
+    return !!src && !!v && v.readyState >= 2 && v.duration > 0 && fits.has(src);
   }
 
   /** when update last ran (real time), to play a clip's own video at the game's pace */
@@ -461,6 +644,13 @@ export class VideoHeroSprite {
     const now = performance.now();
     const real = this.lastTick ? (now - this.lastTick) / 1000 : 0;
     this.lastTick = now;
+    // (a fade runs in real time, whatever the game's speed; it starts once the new video shows its frame, or after a short wait)
+    if (this.fadeFrom) {
+      const step = Math.min(0.1, real);
+      const shown = this.current.readyState >= 2 && !this.current.seeking;
+      if (shown || (this.fadeWait += step) > 0.3) this.fadeT += step;
+      if (this.fadeT >= FADE) this.fadeFrom = null;
+    }
     if (this.disposed || dt <= 0 || this.clipName === 'idle' || this.ended) return;
     // (a clip's own video plays at the game's pace, the speed setting and a heavy blow's hold included, so the board's timers and
     // the video agree; its moments and end follow the video. A clip the canvas makes up follows the game's time)
@@ -488,7 +678,7 @@ export class VideoHeroSprite {
       else {
         this.clipName = 'idle';
         this.madeUp = false;
-        this.show(this.idle);
+        this.backToIdle();
       }
       end?.();
     }
@@ -540,15 +730,50 @@ export class VideoHeroSprite {
       return;
     }
     gl.useProgram(this.prog);
-    gl.bindTexture(gl.TEXTURE_2D, this.tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.uniform3f(this.loc.key, ...this.a.key);
+    this.draw(v, this.tex, this.motion());
+    // (a change of clip: the video it came from on top, fading out, so the figure turns into the new clip instead of jumping to it)
+    const from = this.fadeFrom;
+    if (from && from !== v && from.readyState >= 2) {
+      const u = Math.min(1, this.fadeT / FADE);
+      // (eased: most of the change in the middle of the fade)
+      const out = 1 - u * u * (3 - 2 * u);
+      this.draw(from, this.tex2, {
+        dx: 0,
+        dy: 0,
+        turn: 0,
+        tint: [1, 1, 1, 0],
+        alpha: out,
+      });
+    }
+    this.texture.source.update();
+  }
+
+  /** Where a video's frame stands in the idle video's px: the idle itself as it is, a clip by its Fit (as the idle when unmeasured). */
+  private rectOf(v: HTMLVideoElement): { x: number; y: number; w: number; h: number } {
+    const { w, h } = this.a.size;
+    const src = this.srcOfVideo.get(v);
+    const fit = src ? fits.get(src) : undefined;
+    if (!fit || !v.videoWidth) return { x: 0, y: 0, w, h };
+    return { x: fit.x, y: fit.y, w: v.videoWidth * fit.s, h: v.videoHeight * fit.s };
+  }
+
+  /** One video's frame onto the canvas, keyed, moved by the canvas's own motion about the feet. */
+  private draw(
+    v: HTMLVideoElement,
+    tex: WebGLTexture,
+    m: ReturnType<VideoHeroSprite['motion']>,
+  ): void {
+    const gl = this.gl;
+    const { width: cw, height: ch } = this.canvas;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
-    const m = this.motion();
     // video px -> canvas px: the frame's origin moved to the canvas's, scaled by k; then the motion about the feet; then clip space
     const f = this.frame;
     const [fx, fy] = this.a.feet;
-    // (every clip is framed as the idle loop is: drawn to the idle video's size, whatever its own resolution)
-    const { w: vw, h: vh } = this.a.size;
+    // (every clip is framed as the idle loop is: drawn where its first frame lies over the idle's, whatever its own resolution)
+    const r = this.rectOf(v);
     const k = this.k;
     const cos = Math.cos(m.turn);
     const sin = Math.sin(m.turn);
@@ -556,8 +781,8 @@ export class VideoHeroSprite {
     const ax = (fx - f.x0) * this.k;
     const ay = (fy - f.y0) * this.k;
     const toCanvas = (u: number, w: number): [number, number] => {
-      const px = (u * vw - fx) * k;
-      const py = (w * vh - fy) * k;
+      const px = (r.x + u * r.w - fx) * k;
+      const py = (r.y + w * r.h - fy) * k;
       const rx = px * cos - py * sin + m.dx * k;
       const ry = px * sin + py * cos + m.dy * k;
       return [ax + rx, ay + ry];
@@ -584,11 +809,9 @@ export class VideoHeroSprite {
       1,
     ]);
     gl.uniformMatrix3fv(this.loc.m, false, mat);
-    gl.uniform3f(this.loc.key, ...this.a.key);
     gl.uniform4f(this.loc.tint, ...m.tint);
     gl.uniform1f(this.loc.alpha, m.alpha);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    this.texture.source.update();
   }
 
   onLost(lost: () => void): void {
@@ -611,77 +834,115 @@ export class VideoHeroSprite {
 
 /** Where in a strike clip its blow lands, as a share of it: the frame the body reaches furthest forward. */
 const impacts = new Map<string, number>();
+/** where each clip stands in its hero's idle video (Fit), by clip URL; null when it could not be measured (drawn as the idle is) */
+const fits = new Map<string, Fit | null>();
 const measuring = new Set<string>();
-async function impactOf(src: string, key: [number, number, number]): Promise<void> {
-  if (impacts.has(src) || measuring.has(src)) return;
+const fittingNow = new Set<string>();
+/** the line clips wait in for their fit, one at a time */
+let fitting: Promise<void> = Promise.resolve();
+
+/**
+ * Where a clip lines up with the idle, from the sprite's own copy of it once loaded (its first frame is on show until it is played,
+ * and it is not played before this is done), so no clip is downloaded a second time for it. One clip at a time, each in a task of its
+ * own, so several clips loading together do not stall a frame.
+ */
+function fitFrom(v: HTMLVideoElement, src: string, a: VideoAssets): void {
+  if (fits.has(src) || fittingNow.has(src) || v.readyState < 2) return;
+  const first = maskOf(v);
+  fittingNow.add(src);
+  fitting = fitting
+    .then(() => new Promise<void>((r) => window.setTimeout(r, 0)))
+    .then(() => {
+      // (null: measured, but no silhouette to line up by; drawn as the idle is)
+      fits.set(src, first && a.mask ? fitTo(a.mask, first) : null);
+    })
+    .catch(() => undefined)
+    .finally(() => fittingNow.delete(src));
+}
+
+/** Where a strike clip's blow lands, once (a copy of its own to seek through; one that fails is tried again by the next sprite). */
+async function study(src: string, a: VideoAssets): Promise<void> {
+  if (measuring.has(src) || impacts.has(src)) return;
   measuring.add(src);
   const v = video(src, false);
+  let timer = 0;
   try {
     await new Promise<void>((resolve, reject) => {
       v.addEventListener('loadeddata', () => resolve(), { once: true });
-      window.setTimeout(() => reject(new Error('slow')), 15000);
+      timer = window.setTimeout(() => reject(new Error('slow')), 15000);
       v.addEventListener('error', () => reject(new Error('video')), { once: true });
     });
-    const w = 160;
-    const h = Math.max(8, Math.round((v.videoHeight / v.videoWidth) * w));
-    const c = document.createElement('canvas');
-    c.width = w;
-    c.height = h;
-    const g = c.getContext('2d', { willReadFrequently: true });
-    if (!g || !(v.duration > 0)) return;
-    const k = key.map((x) => x * 255);
-    let best = -1;
-    let at = MADE.strike.at;
-    const STEPS = 16;
-    for (let i = 1; i < STEPS; i++) {
-      const t = (v.duration * i) / STEPS;
-      await new Promise<void>((resolve) => {
-        v.addEventListener('seeked', () => resolve(), { once: true });
-        window.setTimeout(resolve, 2000);
-        v.currentTime = t;
-      });
-      // (a seek is done before its frame is on show: wait for that frame, or every sample reads the same picture)
-      await new Promise<void>((resolve) => {
-        const timer = window.setTimeout(resolve, 150);
-        const frames = v as HTMLVideoElement & {
-          requestVideoFrameCallback?: (this: HTMLVideoElement, cb: () => void) => number;
-        };
-        if (typeof frames.requestVideoFrameCallback === 'function')
-          frames.requestVideoFrameCallback(() => {
-            clearTimeout(timer);
-            resolve();
-          });
-      });
-      g.drawImage(v, 0, 0, w, h);
-      const d = g.getImageData(0, 0, w, h).data;
-      // (the furthest column, facing right, with a few pixels that are not the key colour in it; the frame's own edge, where an
-      // encoder may leave a dark line, is left out)
-      let reach = -1;
-      for (let x = w - 4; x >= 3 && reach < 0; x--) {
-        let n = 0;
-        for (let y = 3; y < h - 3; y++) {
-          const j = (y * w + x) * 4;
-          if (
-            Math.abs(d[j]! - k[0]!) + Math.abs(d[j + 1]! - k[1]!) + Math.abs(d[j + 2]! - k[2]!) >
-            150
-          )
-            n++;
-        }
-        if (n >= 3) reach = x;
-      }
-      if (reach > best) {
-        best = reach;
-        at = i / STEPS;
-      }
-    }
-    impacts.set(src, at);
+    clearTimeout(timer);
+    await impactIn(v, src, a.key);
   } catch {
-    /* the default moment stands */
+    /* the default moment stands until then */
   } finally {
+    clearTimeout(timer);
     measuring.delete(src);
     v.removeAttribute('src');
     v.load();
   }
+}
+
+/** (a loaded strike clip, seeked through: its blow lands on the frame its body reaches furthest forward) */
+async function impactIn(
+  v: HTMLVideoElement,
+  src: string,
+  key: [number, number, number],
+): Promise<void> {
+  const w = 160;
+  const h = Math.max(8, Math.round((v.videoHeight / v.videoWidth) * w));
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  if (!g || !(v.duration > 0)) return;
+  const k = key.map((x) => x * 255);
+  let best = -1;
+  let at = MADE.strike.at;
+  const STEPS = 16;
+  for (let i = 1; i < STEPS; i++) {
+    const t = (v.duration * i) / STEPS;
+    await new Promise<void>((resolve) => {
+      v.addEventListener('seeked', () => resolve(), { once: true });
+      window.setTimeout(resolve, 2000);
+      v.currentTime = t;
+    });
+    // (a seek is done before its frame is on show: wait for that frame, or every sample reads the same picture)
+    await new Promise<void>((resolve) => {
+      const timer = window.setTimeout(resolve, 150);
+      const frames = v as HTMLVideoElement & {
+        requestVideoFrameCallback?: (this: HTMLVideoElement, cb: () => void) => number;
+      };
+      if (typeof frames.requestVideoFrameCallback === 'function')
+        frames.requestVideoFrameCallback(() => {
+          clearTimeout(timer);
+          resolve();
+        });
+    });
+    g.drawImage(v, 0, 0, w, h);
+    const d = g.getImageData(0, 0, w, h).data;
+    // (the furthest column, facing right, with a few pixels that are not the key colour in it; the frame's own edge, where an
+    // encoder may leave a dark line, is left out)
+    let reach = -1;
+    for (let x = w - 4; x >= 3 && reach < 0; x--) {
+      let n = 0;
+      for (let y = 3; y < h - 3; y++) {
+        const j = (y * w + x) * 4;
+        if (
+          Math.abs(d[j]! - k[0]!) + Math.abs(d[j + 1]! - k[1]!) + Math.abs(d[j + 2]! - k[2]!) >
+          150
+        )
+          n++;
+      }
+      if (n >= 3) reach = x;
+    }
+    if (reach > best) {
+      best = reach;
+      at = i / STEPS;
+    }
+  }
+  impacts.set(src, at);
 }
 
 function program(gl: WebGL2RenderingContext): WebGLProgram {

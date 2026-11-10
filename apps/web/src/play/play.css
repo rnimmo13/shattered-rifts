@@ -1522,52 +1522,85 @@
   gap: 0.35rem;
 }
 
-/* ribbon bookmarks, one per realm, sticking out of the top of the book */
+/* the realms: a bar of pills above the book, each with its realm's glowing dot and its count; the open one lit in its colour */
 .grim__tabs {
   display: flex;
-  /* one row, whatever the window: the ribbons shrink (smaller type, names trimmed) rather than wrapping onto a second line */
-  flex-wrap: nowrap;
-  gap: 0.2rem;
-  padding: 0 1.2rem;
-  margin-bottom: -0.65rem;
+  /* (the bar sits above the book, no longer over its edge as the bookmarks did, so a second row of pills overlaps nothing: every
+     realm keeps its whole name rather than being trimmed to a letter in a narrow column) */
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 5px;
+  margin-bottom: 10px;
   position: relative;
   z-index: 2;
+  border-radius: 14px;
+  background: rgb(10 12 30 / 0.72);
+  border: 1px solid rgb(160 150 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 8px 24px -12px rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(6px);
 }
 .grim__ribbon {
   --rib: #8a6f3a;
   position: relative;
   display: inline-flex;
-  flex: 0 1 auto;
+  flex: none;
   min-width: 0;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
-  padding: 0.35rem clamp(0.3rem, 0.8vw, 0.8rem) 0.55rem;
+  gap: 7px;
+  padding: 6px clamp(8px, 0.8vw, 12px);
   font: inherit;
   font-family: var(--font-display);
-  font-size: clamp(0.62rem, 0.95vw, 0.9rem);
-  letter-spacing: clamp(0.02em, 0.08vw, 0.1em);
+  font-size: clamp(0.66rem, 0.8vw, 0.8rem);
+  letter-spacing: 0.07em;
   white-space: nowrap;
   text-transform: uppercase;
-  color: #f4ead2;
-  background: linear-gradient(180deg, var(--rib), color-mix(in srgb, var(--rib) 60%, #000));
-  border: 0;
-  border-radius: 6px 6px 0 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  color: rgb(226 222 255 / 0.66);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
   cursor: pointer;
-  opacity: 0.72;
-  transform: translateY(6px);
   transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+/* (the realm's dot) */
+.grim__ribbon::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rib);
+  box-shadow: 0 0 7px 1px color-mix(in srgb, var(--rib) 80%, transparent);
 }
 .grim__ribbon:hover {
-  opacity: 0.95;
-  transform: translateY(2px);
+  color: var(--c-ivory);
+  background-color: rgb(255 255 255 / 0.05);
+}
+.grim__ribbon:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--rib) 80%, white);
+  outline-offset: 1px;
 }
 .grim__ribbon.is-open {
-  opacity: 1;
-  transform: translateY(-2px);
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--rib) 52%, transparent),
+    color-mix(in srgb, var(--rib) 20%, transparent)
+  );
+  border-color: color-mix(in srgb, var(--rib) 70%, rgb(255 255 255 / 0.25));
+  box-shadow:
+    0 0 18px -4px color-mix(in srgb, var(--rib) 75%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+.grim__ribbon.is-open::before {
+  background: #fff;
+  box-shadow: 0 0 8px 2px var(--rib);
 }
 .grim__ribbon span {
   min-width: 0;
@@ -1576,75 +1609,109 @@
 }
 .grim__ribbon b {
   flex: none;
-  min-width: 1.3rem;
-  padding: 0 0.3rem;
+  min-width: 1.35rem;
+  padding: 1px 6px;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-family: var(--font-body, inherit);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
   text-align: center;
-  color: #231b0c;
-  background: #f1d88f;
+  color: rgb(236 232 255 / 0.85);
+  background: rgb(255 255 255 / 0.08);
 }
-.grim__ribbon--aurelion {
-  --rib: #b48a2c;
+.grim__ribbon.is-open b {
+  color: #fff;
+  background: rgb(0 0 0 / 0.32);
 }
-.grim__ribbon--nexus {
-  --rib: #2f8aa8;
+/* each realm's colour: its pill's dot and glow, and the glow round its cards (grim__slot--<realm>) */
+.grim__ribbon--aurelion,
+.grim__slot--aurelion {
+  --rib: #e0b04a;
 }
-.grim__ribbon--wyldmaw {
-  --rib: #a8452f;
+.grim__ribbon--nexus,
+.grim__slot--nexus {
+  --rib: #3fb6dc;
 }
-.grim__ribbon--umbral {
-  --rib: #6a3fa8;
+.grim__ribbon--wyldmaw,
+.grim__slot--wyldmaw {
+  --rib: #e0623f;
 }
-.grim__ribbon--starfall {
-  --rib: #59607a;
+.grim__ribbon--umbral,
+.grim__slot--umbral {
+  --rib: #9a68ff;
 }
-.grim__ribbon--gloomfen {
-  --rib: #3c8a5a;
+.grim__ribbon--starfall,
+.grim__slot--starfall {
+  --rib: #8f9bd6;
 }
-.grim__ribbon--neutral {
-  --rib: #7c7c88;
+.grim__ribbon--gloomfen,
+.grim__slot--gloomfen {
+  --rib: #4fc27f;
 }
-.grim__ribbon--wardens {
-  --rib: #9c2f4a;
+.grim__ribbon--neutral,
+.grim__slot--neutral {
+  --rib: #a9a9bc;
 }
-.grim__ribbon--tokens {
-  --rib: #6b5a48;
+.grim__ribbon--wardens,
+.grim__slot--wardens {
+  --rib: #e04a72;
 }
-.grim__ribbon--other {
-  --rib: #55555e;
+.grim__ribbon--tokens,
+.grim__slot--tokens {
+  --rib: #b39a7c;
+}
+.grim__ribbon--other,
+.grim__slot--other {
+  --rib: #7d7d92;
+}
+/* (Everything: the gold of the game's own frame) */
+.grim__ribbon--all {
+  --rib: #f1d88f;
 }
 
-/* the book: leather cover, brass edge, a spine shadow where the pages meet */
+/* the book: an obsidian tome, its edge a thin seam of gold running into the rift's violet and blue, a glow of the rift above it */
 .grim__book {
   position: relative;
   display: grid;
   grid-template-columns: 2.4rem minmax(0, 1fr) 2.4rem;
   align-items: center;
   padding: 1.1rem 0.5rem;
-  border-radius: 16px;
+  border-radius: 18px;
+  border: 2px solid transparent;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgb(255 255 255 / 0.07), transparent 60%),
-    linear-gradient(160deg, #4a2b18, #2a160c 70%);
-  border: 2px solid #8a6a2c;
+    radial-gradient(70% 55% at 50% -10%, rgb(130 100 255 / 0.22), transparent 70%) padding-box,
+    radial-gradient(50% 40% at 100% 110%, rgb(60 200 255 / 0.12), transparent 70%) padding-box,
+    linear-gradient(165deg, #141a3a, #0a0c1d 58%, #100b22) padding-box,
+    linear-gradient(
+        135deg,
+        rgb(241 216 143 / 0.7),
+        rgb(140 100 255 / 0.45) 38%,
+        rgb(70 200 255 / 0.35) 70%,
+        rgb(241 216 143 / 0.55)
+      )
+      border-box;
   box-shadow:
-    0 14px 40px rgb(0 0 0 / 0.55),
-    inset 0 0 0 4px rgb(0 0 0 / 0.25),
-    inset 0 0 0 5px rgb(212 168 75 / 0.35);
+    0 22px 60px -10px rgb(0 0 0 / 0.7),
+    0 0 50px -18px rgb(130 100 255 / 0.55);
 }
 .grim__flip {
   width: 2.2rem;
   height: 4.2rem;
-  border-radius: 10px;
-  border: 1px solid #8a6a2c;
-  background: rgb(20 10 4 / 0.7);
+  border-radius: 12px;
+  border: 1px solid rgb(241 216 143 / 0.35);
+  background: rgb(255 255 255 / 0.04);
   color: #f1d88f;
   font-size: 1.8rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .grim__flip:hover:not(:disabled) {
-  background: rgb(60 34 14 / 0.9);
+  background: rgb(130 100 255 / 0.2);
+  box-shadow: 0 0 16px -4px rgb(130 100 255 / 0.7);
 }
 .grim__flip:disabled {
   opacity: 0.25;
@@ -1691,27 +1758,35 @@
     animation: none !important;
   }
 }
+/* a page: dark glass over the tome, a faint grid of rift-light dots that scrolls with the cards */
 .grim__page {
   position: relative;
+  z-index: 1;
   min-height: 32rem;
   padding: 0.8rem 1rem 1.6rem;
-  color: #2b1d0e;
+  color: var(--c-ivory);
   background:
-    radial-gradient(90% 70% at 50% 40%, rgb(255 244 214 / 0.55), transparent 80%),
-    repeating-linear-gradient(0deg, rgb(120 84 30 / 0.04) 0 2px, transparent 2px 5px), #e7d6ad;
+    radial-gradient(circle, rgb(200 190 255 / 0.07) 1px, transparent 1.5px) 0 0 / 22px 22px local,
+    linear-gradient(180deg, rgb(18 22 48 / 0.92), rgb(9 11 26 / 0.96));
 }
 /* the gutter: each page darkens towards the spine */
 .grim__page:first-child {
-  border-radius: 6px 0 0 6px;
-  box-shadow: inset -26px 0 28px -18px rgb(70 40 8 / 0.55);
+  border-radius: 12px 0 0 12px;
+  box-shadow:
+    inset -26px 0 28px -18px rgb(0 0 0 / 0.7),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 .grim__page:last-child {
-  border-radius: 0 6px 6px 0;
-  box-shadow: inset 26px 0 28px -18px rgb(70 40 8 / 0.55);
+  border-radius: 0 12px 12px 0;
+  box-shadow:
+    inset 26px 0 28px -18px rgb(0 0 0 / 0.7),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 .grim__page:only-child {
-  border-radius: 6px;
-  box-shadow: inset 0 0 40px rgb(70 40 8 / 0.25);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    inset 0 24px 40px -30px rgb(0 0 0 / 0.9);
 }
 .grim__pagehead {
   display: flex;
@@ -1723,11 +1798,15 @@
   padding-bottom: 0.3rem;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.98rem;
-  letter-spacing: 0.2em;
+  font-size: 0.94rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #5a3a14;
-  border-bottom: 1px solid rgb(90 58 20 / 0.4);
+  color: var(--c-gold-light);
+  text-shadow: 0 0 12px rgb(241 216 143 / 0.25);
+  /* (a hairline of gold under it, brightest in the middle) */
+  border-bottom: 0;
+  background: linear-gradient(90deg, transparent, rgb(241 216 143 / 0.5), transparent) bottom / 100%
+    1px no-repeat;
 }
 .grim__cards {
   /* (no list indent: the browser gives a list 40px on the left, which pushed the last column off the page) */
@@ -1744,28 +1823,58 @@
   justify-items: center;
   gap: 0.25rem;
 }
+/* a card: it lifts towards you when pointed at, with a glow in its realm's colour (the slot's --rib) */
 .grim__card {
   position: relative;
   padding: 0;
   border: 0;
   background: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease;
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .grim__card:hover,
 .grim__card:focus-visible {
-  transform: translateY(-3px);
+  z-index: 2;
+  transform: translateY(-6px) scale(1.025);
+  filter: drop-shadow(0 12px 16px rgb(0 0 0 / 0.55))
+    drop-shadow(0 0 12px color-mix(in srgb, var(--rib, #9a8cff) 60%, transparent));
 }
-.grim__slot:not(.is-in) .grim__card .card {
-  filter: saturate(0.85) brightness(0.93);
+.grim__card:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--rib, #9a8cff) 80%, white);
+  outline-offset: 3px;
+}
+/* (the deck builder: a card not in the deck is a little quieter than one that is) */
+.grim:not(.grim--view) .grim__slot:not(.is-in) .grim__card .card {
+  filter: saturate(0.82) brightness(0.88);
 }
 .grim__slot.is-in .grim__card {
   box-shadow:
-    0 0 0 3px #f1c85a,
-    0 0 18px 4px rgb(241 200 90 / 0.75);
+    0 0 0 2px #f1d88f,
+    0 0 22px 2px rgb(241 200 90 / 0.6);
+}
+/* the cards rise into place when a realm is opened, one after another along the first rows */
+.grim__slot--view {
+  animation: grim-rise 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 18ms);
+}
+@keyframes grim-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grim__slot--view {
+    animation: none;
+  }
+  .grim__card:hover,
+  .grim__card:focus-visible {
+    transform: none;
+  }
 }
 .grim__badge {
   position: absolute;
@@ -1776,41 +1885,51 @@
   border-radius: 999px;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #231b0c;
-  background: #f1c85a;
-  border: 2px solid #7a5a1c;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+  color: #1c1406;
+  background: linear-gradient(180deg, #fbe7a6, #e2b851);
+  border: 1px solid rgb(255 255 255 / 0.5);
+  box-shadow:
+    0 2px 8px rgb(0 0 0 / 0.55),
+    0 0 12px rgb(241 200 90 / 0.5);
 }
 .grim__ctl {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(255 255 255 / 0.08);
 }
 .grim__ctl button {
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 50%;
-  border: 1px solid #7a5a1c;
-  background: #f4e7c2;
-  color: #3a2810;
+  border: 1px solid rgb(241 216 143 / 0.4);
+  background: rgb(255 255 255 / 0.06);
+  color: var(--c-ivory);
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .grim__ctl button:hover:not(:disabled) {
-  background: #f1c85a;
+  background: #f1d88f;
+  color: #1c1406;
 }
 .grim__ctl button:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: default;
 }
 .grim__ctl b {
   min-width: 1.2rem;
   text-align: center;
-  color: #3a2810;
+  color: var(--c-ivory);
 }
 .grim__slot.is-in .grim__ctl b {
-  color: #8a4a00;
+  color: #f1d88f;
 }
 .grim__folio {
   position: absolute;
@@ -1819,14 +1938,15 @@
   right: 0;
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.96rem;
-  color: #6a4a1c;
+  font-size: 0.86rem;
+  letter-spacing: 0.2em;
+  color: rgb(226 222 255 / 0.4);
 }
 .grim__empty {
   margin: 4rem 0;
   text-align: center;
   font-style: italic;
-  color: #6a4a1c;
+  color: var(--c-text-dim);
 }
 .grim__deck {
   padding: 0.8rem 0.9rem;
@@ -1900,18 +2020,115 @@
 .grim--scroll .grim__page {
   /* (the scrollbar keeps its room, so its coming and going never changes the width the cards are fitted to) */
   scrollbar-gutter: stable;
-  scrollbar-color: #8a6a2c transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(160 140 255 / 0.45) transparent;
   overscroll-behavior: contain;
   touch-action: pan-y pinch-zoom;
 }
+.grim--scroll .grim__page::-webkit-scrollbar {
+  width: 8px;
+}
+.grim--scroll .grim__page::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(241 216 143 / 0.55), rgb(140 110 255 / 0.55));
+}
 .grim--scroll .grim__pagehead {
-  /* (the heading stays at the top of the page while the cards scroll under it) */
+  /* (the heading stays at the top of the page while the cards scroll under it, frosted so they show through it softly) */
   position: sticky;
   top: -12px;
-  z-index: 1;
+  z-index: 3;
   margin-top: -12px;
   padding-top: 12px;
-  background: #e7d6ad;
+  background:
+    linear-gradient(90deg, transparent, rgb(241 216 143 / 0.5), transparent) bottom / 100% 1px
+      no-repeat,
+    linear-gradient(180deg, rgb(16 20 44 / 0.95), rgb(14 17 38 / 0.82));
+  backdrop-filter: blur(10px);
+}
+/* the header of a page to read: who the cards belong to on the left, what is on the page on the right */
+.grim--view .grim__pagehead {
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+.grim__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.grim__whoname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grim__stats {
+  display: inline-flex;
+  flex: none;
+  gap: 6px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  text-shadow: none;
+}
+.grim__stat {
+  --dot: #b6b0d8;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px 2px 7px;
+  border-radius: 999px;
+  color: rgb(226 222 255 / 0.72);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.07);
+}
+.grim__stat::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 6px var(--dot);
+}
+.grim__stat b {
+  color: #fff;
+  font-weight: 700;
+}
+.grim__stat--total {
+  --dot: #f1d88f;
+}
+.grim__stat--attack {
+  --dot: #ff7a6b;
+}
+.grim__stat--skill {
+  --dot: #6bc4ff;
+}
+.grim__stat--power {
+  --dot: #c08bff;
+}
+.grim__stat--summon {
+  --dot: #6be0a4;
+}
+.grim__stat--snare {
+  --dot: #ffb45c;
+}
+.grim__stat--mana {
+  --dot: #4fd8ff;
+}
+/* (a narrower book keeps the total and drops the breakdown, then the rest) */
+@container grim-page (max-width: 760px) {
+  .grim__stat:not(.grim__stat--total, .grim__stat--mana) {
+    display: none;
+  }
+}
+@container grim-page (max-width: 420px) {
+  .grim__stats {
+    display: none;
+  }
+}
+.grim--view .grim__page {
+  container: grim-page / inline-size;
 }
 .grim--scroll .grim__cards {
   padding-bottom: 8px;
@@ -1996,9 +2213,13 @@
   border-radius: 16px;
   border: 1px solid transparent;
   background:
-    linear-gradient(160deg, rgb(20 32 74 / 0.97), rgb(8 10 20 / 0.98)) padding-box,
-    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, var(--c-violet)) border-box;
-  box-shadow: var(--shadow-deep);
+    radial-gradient(60% 40% at 20% 0%, rgb(130 100 255 / 0.16), transparent 70%) padding-box,
+    linear-gradient(165deg, rgb(16 20 46 / 0.97), rgb(7 8 18 / 0.98)) padding-box,
+    linear-gradient(140deg, var(--c-gold-light), rgb(140 100 255 / 0.6) 50%, rgb(70 200 255 / 0.5))
+      border-box;
+  box-shadow:
+    var(--shadow-deep),
+    0 0 60px -20px rgb(130 100 255 / 0.6);
   animation: toast-in var(--t-slow) var(--ease-pop);
 }
 .grimmodal__head {
@@ -2007,11 +2228,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-}
-.grim--view .grim__pagehead span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .grimmodal__head > button {
   flex: none;
@@ -2023,7 +2239,16 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.35rem;
+  letter-spacing: 0.06em;
   color: var(--c-gold-light);
+  background: linear-gradient(180deg, #fff3c9, #e2b851);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgb(241 216 143 / 0.25));
+}
+.grimmodal__title i {
+  -webkit-text-fill-color: var(--c-text-dim);
 }
 .grimmodal__title i {
   font-style: normal;
@@ -2148,19 +2373,23 @@
 .grim__chips .grim__ribbon {
   flex: none;
   min-height: 2.1rem;
-  padding: 0.2rem 0.75rem;
+  padding: 0.2rem 0.8rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--rib) 70%, white 10%);
-  background: rgb(8 10 20 / 0.7);
-  color: var(--c-ivory);
-  font-size: 0.78rem;
-  clip-path: none;
-  transform: none;
+  border: 1px solid rgb(255 255 255 / 0.09);
+  background-color: rgb(10 12 30 / 0.75);
+  color: rgb(226 222 255 / 0.8);
+  font-size: 0.76rem;
 }
+/* (open: lit in its realm's colour, as on the bar above a wider book) */
 .grim__chips .grim__ribbon.is-open {
-  background: color-mix(in srgb, var(--rib) 55%, rgb(8 10 20));
-  border-color: var(--c-gold-light);
-  box-shadow: 0 0 10px rgb(212 168 75 / 0.45);
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--rib) 55%, rgb(10 12 30)),
+    color-mix(in srgb, var(--rib) 25%, rgb(10 12 30))
+  );
+  border-color: color-mix(in srgb, var(--rib) 70%, rgb(255 255 255 / 0.25));
+  box-shadow: 0 0 14px -3px color-mix(in srgb, var(--rib) 75%, transparent);
 }
 .grim__list {
   display: grid;

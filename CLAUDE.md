@@ -1,3 +1,7 @@
+# Release approved 0.243.0 / rules 106 (2026-11-10)
+
+Robert explicitly approves pushing ("push"): the Grimoire's new look (obsidian tome, realm pill bar that wraps, frosted header with the page's makeup, cards rising and glowing in their realm's colour; deck builder and phone chips to match), enemy and companion figures fetched only for the fight that shows them (fightUnits walk incl. discover pools, a late figure swapped in on arrival; the home screen fetches only the hero figures), and smooth 2D video models (clips lined up with the idle by their first frame, 0.16 s crossfades, the idle back from its first frame, no stand-in lunge outside battle, no second download of clips). No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.242.0 / rules 106 (2026-11-10; decisions 726-728)
 
 Robert explicitly approves pushing what we have ("lets push what we have"): the damage pass from goldfish runs of 72 decks (many-hit cards carry half the Might and Primed, Bleed and Burn ticks full to 30 then half and extra ticks half, Bloodlust 2 Might a turn, Radiant Mana once a turn and Dawn 1 Might, Shatters +3 a threshold, ceilings on Coup de Grace, Culling, Last Rites, Final Reckoning and Rending Fury, Scar Over once a turn, Bloodburst Consumes), buffs (Slugfest, Rotary Cannon, Artillerist, Showstopper, Card Fan, Gleeful Trapsmith, Metronome Trap) and Fracture on the 3- and 4-hit Swords and four Spells. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -547,7 +547,10 @@ export class Fighters {
     const known = rig.momentIn?.(clip, variant);
     if (moment)
       this.track(
-        gsap.delayedCall(known !== undefined ? Math.max(moment.within, known + 0.2) : moment.within, fire),
+        gsap.delayedCall(
+          known !== undefined ? Math.max(moment.within, known + 0.2) : moment.within,
+          fire,
+        ),
       );
   }
 
@@ -1371,7 +1374,8 @@ export class Fighters {
    */
   private tickRig(f: Fighter, rig: HeroSprite, dt: number, still: boolean): void {
     if (typeof document !== 'undefined' && document.hidden) return;
-    const moving = !still || (rig.clip !== 'idle' && !rig.finished);
+    // (and a video model's fade from a clip back to the idle runs to its end, or the clip's last frame would stay over the idle)
+    const moving = !still || (rig.clip !== 'idle' && !rig.finished) || !!rig.fading;
     if (moving) rig.update(dt * gsap.globalTimeline.timeScale());
     // (after the update: a clip that just began or ended gets its own frame before it is drawn; a new canvas is drawn by fitRig)
     this.fitRig(f, rig);

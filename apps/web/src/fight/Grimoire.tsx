@@ -11,6 +11,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type FocusEvent,
   type MouseEvent,
   type ReactNode,
@@ -58,6 +59,16 @@ export interface GrimoireProps {
    */
   fitCount?: number;
 }
+
+/** the kinds of card, in the order the page's header counts them, and what the player calls them (one, many) */
+const KIND_ORDER = ['attack', 'skill', 'power', 'summon', 'snare'] as const;
+const KIND_LABEL: Record<string, [string, string]> = {
+  attack: ['Attack', 'Attacks'],
+  skill: ['Skill', 'Skills'],
+  power: ['Aura', 'Auras'],
+  summon: ['Summon', 'Summons'],
+  snare: ['Trap', 'Traps'],
+};
 
 export function Grimoire(props: GrimoireProps) {
   const grow = props.height === 'grow';
@@ -123,6 +134,26 @@ export function Grimoire(props: GrimoireProps) {
   const head = useMemo(() => paginate(shown, Math.max(1, shown.length), true)[0], [shown]);
   const total = entries.length;
   const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
+  // the page's makeup, in its header: how many of each kind, and the average Mana of the cards that can be played
+  const stats = useMemo(() => {
+    const kinds = new Map<string, number>();
+    let mana = 0;
+    let playable = 0;
+    for (const { def } of shown) {
+      kinds.set(def.kind, (kinds.get(def.kind) ?? 0) + 1);
+      if (!def.unplayable) {
+        mana += def.cost;
+        playable++;
+      }
+    }
+    return {
+      kinds: KIND_ORDER.filter((k) => kinds.has(k)).map((k) => ({
+        kind: k,
+        n: kinds.get(k) ?? 0,
+      })),
+      avg: playable ? mana / playable : 0,
+    };
+  }, [shown]);
   const realmTabs = (cls: string) => (
     <div className={cls} role="tablist" aria-label="Realms">
       {[{ id: 'all', name: 'Everything' }, ...tabs].map((t) => (
@@ -130,7 +161,7 @@ export function Grimoire(props: GrimoireProps) {
           key={t.id}
           role="tab"
           aria-selected={t.id === tab}
-          className={`grim__ribbon grim__ribbon--${t.id === 'all' ? 'other' : t.id}${t.id === tab ? ' is-open' : ''}`}
+          className={`grim__ribbon grim__ribbon--${t.id}${t.id === tab ? ' is-open' : ''}`}
           onClick={() => {
             setTab(t.id);
             // another realm starts at its top
@@ -148,6 +179,8 @@ export function Grimoire(props: GrimoireProps) {
       <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
     ) : (
       <ul
+        // (a realm opened afresh: its cards rise into place again)
+        key={tab}
         className={listClass}
         ref={listEl}
         style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}
@@ -157,7 +190,9 @@ export function Grimoire(props: GrimoireProps) {
           return (
             <li
               key={`${def.id}-${idx}`}
-              className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
+              // (its realm's colour for the glow when it is hovered; the first rows come in one after another)
+              className={`grim__slot grim__slot--view grim__slot--${tabOf(def)}${props.onPick && !ok ? ' is-off' : ''}`}
+              style={{ '--i': Math.min(idx, 24) } as CSSProperties}
             >
               <button
                 className="grim__card"
@@ -205,13 +240,30 @@ export function Grimoire(props: GrimoireProps) {
           >
             {shown.length > 0 && (
               <h4 className="grim__pagehead">
-                {head?.heroIds.map((h) => (
-                  <HeroIcon key={h} hero={h} size={26} />
-                ))}
-                <span>
-                  {!head || (head.heroes.length !== 1 && head.heroes.length !== 2)
-                    ? 'By rarity'
-                    : head.heroes.join(' · ') || 'Cards'}
+                <span className="grim__who">
+                  {head?.heroIds.map((h) => (
+                    <HeroIcon key={h} hero={h} size={26} />
+                  ))}
+                  <span className="grim__whoname">
+                    {!head || (head.heroes.length !== 1 && head.heroes.length !== 2)
+                      ? 'By rarity'
+                      : head.heroes.join(' · ') || 'Cards'}
+                  </span>
+                </span>
+                <span className="grim__stats" aria-label="What is on this page">
+                  <span className="grim__stat grim__stat--total">
+                    <b>{shown.length}</b> {shown.length === 1 ? 'card' : 'cards'}
+                  </span>
+                  {stats.kinds.map(({ kind, n }) => (
+                    <span key={kind} className={`grim__stat grim__stat--${kind}`}>
+                      <b>{n}</b> {KIND_LABEL[kind]?.[n === 1 ? 0 : 1] ?? kind}
+                    </span>
+                  ))}
+                  {stats.avg > 0 && (
+                    <span className="grim__stat grim__stat--mana">
+                      <b>{stats.avg.toFixed(1)}</b> avg Mana
+                    </span>
+                  )}
                 </span>
               </h4>
             )}
