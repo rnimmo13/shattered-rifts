@@ -355,6 +355,33 @@ describe('the Shaman: the totem cycle (DECISIONS #430)', () => {
     expect(lost(s)).toEqual([4 + 7, 4 + 7]);
   });
 
+  it('Gathering Storm grows every copy, Sanctified and engraved copies too', () => {
+    // (a Sanctum roll or an engraving is written into a copy's id, "hi~gathering-storm", "hold^gathering-storm": still the same card)
+    const ids = [
+      'gathering-storm',
+      'hi~gathering-storm',
+      'hold^gathering-storm',
+      'lo~gathering-storm+',
+    ];
+    let s = fight(ids, ['squire', 'squire']);
+    s = play(s, 'hi~gathering-storm');
+    // the three copies left each grew 3, and so did the one just cast
+    const bonus = (id: string) =>
+      [...s.sides.a.hand, ...s.sides.a.discard].find((c) => c.card === id)?.bonus ?? 0;
+    for (const id of ids) expect(bonus(id), id).toBe(3);
+    s = play(s, 'gathering-storm');
+    for (const id of ids) expect(bonus(id), id).toBe(6);
+  });
+
+  it('a Sanctified Gathering Storm alone grows itself, and makes no new copy', () => {
+    let s = fight(['hi~gathering-storm'], ['squire', 'squire']);
+    s = play(s, 'hi~gathering-storm');
+    const all = [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard];
+    expect(
+      all.filter((c) => c.card.includes('gathering-storm')).map((c) => [c.card, c.bonus]),
+    ).toEqual([['hi~gathering-storm', 3]]);
+  });
+
   it('Gathering Storm hits two different enemies, 25% harder against a lone one', () => {
     let s = fight(['gathering-storm'], ['squire', 'squire', 'squire']);
     s = play(s, 'gathering-storm');

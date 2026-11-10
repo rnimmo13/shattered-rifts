@@ -9,6 +9,7 @@ import {
 } from './engine';
 import { disciplineAttack, disciplineText, disciplineLabel } from './disciplines';
 import { attackAuraBonus, attackAuraProgress } from './attackAuras';
+import { baseCardId } from './cardId';
 import {
   other,
   clone,
@@ -2458,7 +2459,7 @@ export function cardText(
     } else {
       // a card that grows every copy of itself (Gathering Storm) says so, instead of naming a weapon to Sharpen (DECISIONS #353)
       const growsItself =
-        c.effects.some((x) => x.op === 'forge' && x.card === c.id.replace(/\+$/, '')) ||
+        c.effects.some((x) => x.op === 'forge' && baseCardId(x.card) === baseCardId(c.id)) ||
         (c.onDraw ?? []).some((x) => x.op === 'growSelf');
       // an "X" status cost on the card already says it spends all of it, so the text does not (DECISIONS #357)
       if (

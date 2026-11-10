@@ -542,6 +542,8 @@ export function enterNode(run: RunState, nodeId: string): RunState {
       break;
     case 'shrine':
       r.phase = 'shrine';
+      // (a shrine's news is its own: last visit's, word for word the same, would otherwise not be told again)
+      delete r.eventResult;
       // deep in the Rift a Shrine is a Gambler's Shrine: one blessing of seven, or the Brass Reel's prize instead (DECISIONS #234, #538)
       if (r.tier >= GAMBLER_TIER && !node.refinement) {
         r.context.gambler = makeGambler(r);
@@ -1579,13 +1581,16 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   need(run.phase === 'shrine' && run.context, 'You are not at a shrine');
   const refinement = nodeOf(run, run.context.nodeId).refinement;
   need(
-    !refinement || choice.kind === 'upgrade' || choice.kind === 'remove',
-    'This shrine only upgrades or removes one card',
+    !refinement || choice.kind === 'upgrade' || choice.kind === 'remove' || choice.kind === 'dice',
+    'This shrine only upgrades, removes or sanctifies one card',
   );
   const g = run.context.gambler;
   need(!g || !g.taken.includes(choice.kind), 'You have taken that blessing here already');
   const wager: ShrineKind[] = ['sacrifice', 'dice', 'engrave', 'ledger'];
-  need(!!g || !wager.includes(choice.kind), "Only a Gambler's Shrine takes wagers");
+  need(
+    !!g || (refinement && choice.kind === 'dice') || !wager.includes(choice.kind),
+    "Only a Gambler's Shrine takes wagers",
+  );
   // (one thing a visit, DECISIONS #538: a reel that was spun is the visit's choice, so its prize is taken or walked away from)
   need(
     !g || g.taken.length < GAMBLER_BLESSINGS - 1 || run.context.event?.trial?.state !== 'won',
@@ -1612,6 +1617,9 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
     need(i >= 0, 'That card is not in your deck');
     r.deck.splice(i, 1);
     noteDraft(r, { k: 'remove', took: choice.card });
+  } else if (choice.kind === 'dice' && refinement) {
+    // (a Refinement Shrine sanctifies one card, at the Loaded Dice's odds for this tier, Robert 2026-11-10)
+    r.eventResult = rollCard(r, choice.card);
   } else if (gs) {
     wagerAt(r, gs, choice);
   }
@@ -1637,6 +1645,22 @@ export function leaveShrine(run: RunState): RunState {
   return r;
 }
 
+/**
+ * Sanctify one card of the deck (`r` is already a copy): it rises 25% at this tier's odds (diceOdds), otherwise it falls 25%. What
+ * happened, in a sentence. Loaded Dice at a Gambler's Shrine, and a Refinement Shrine's Sanctify.
+ */
+function rollCard(r: RunState, card: string): string {
+  const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? id;
+  const i = r.deck.indexOf(card);
+  need(i >= 0, 'That card is not in your deck');
+  need(diceable(r.deck).includes(card), 'That card cannot be sanctified');
+  const up = nextInt(r.rng, 100) < diceOdds(r.tier);
+  r.deck[i] = rolledId(card, up ? 1 : -1);
+  return up
+    ? `The roll comes up high: ${name(card)} is sanctified, its numbers 25% stronger.`
+    : `The roll comes up low: ${name(card)} is sanctified, its numbers 25% weaker.`;
+}
+
 /** One of the Gambler's Shrine's wagers, done to the run (`r` is already a copy). */
 function wagerAt(
   r: RunState,
@@ -1660,12 +1684,7 @@ function wagerAt(
     r.deck[i] = choice.take;
     g.note = `${name(choice.card)} burns on the altar, and ${name(choice.take)} is yours.`;
   } else if (choice.kind === 'dice') {
-    need(diceable(r.deck).includes(choice.card), 'The dice cannot change that card');
-    const up = nextInt(r.rng, 100) < diceOdds(r.tier);
-    r.deck[i] = rolledId(choice.card, up ? 1 : -1);
-    g.note = up
-      ? `The dice come up high: ${name(choice.card)} is sanctified, its numbers 25% stronger.`
-      : `The dice come up low: ${name(choice.card)} is sanctified, its numbers 25% weaker.`;
+    g.note = rollCard(r, choice.card);
   } else {
     need(engravable(r.deck, g.chisel).includes(choice.card), 'The chisel cannot cut that card');
     r.deck[i] = markedId(choice.card, g.chisel);

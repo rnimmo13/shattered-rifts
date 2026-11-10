@@ -17,6 +17,7 @@ import {
 import { createPortal } from 'react-dom';
 import { enterBattle } from '../battleActivity';
 import {
+  baseCardId,
   applyAction,
   ARENA_HP_COST_MULT,
   forgeWord,
@@ -449,7 +450,7 @@ function sharpOf(
   if (!sd) return null;
   const cards = [...sd.hand, ...sd.draw, ...sd.discard, ...sd.exhausted];
   for (const weapon of SHARPENED) {
-    const copies = cards.filter((c) => c.card.replace(/\+$/, '') === weapon.card);
+    const copies = cards.filter((c) => baseCardId(c.card) === weapon.card);
     if (copies.length)
       return {
         weapon: weapon.name,

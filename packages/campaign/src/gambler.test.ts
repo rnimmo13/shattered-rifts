@@ -105,7 +105,7 @@ describe("the Gambler's Shrine", () => {
     expect(rolled).toHaveLength(1);
     expect(rolled[0]).toMatch(/^(hi|lo)~strike$/);
     // (the shrine closes with it, so what the dice did is the stop's news)
-    expect(done.eventResult).toMatch(/dice come up/);
+    expect(done.eventResult).toMatch(/roll comes up/);
     // a card already rolled cannot be rolled again
     const again = {
       ...done,

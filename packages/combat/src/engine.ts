@@ -2,6 +2,7 @@
 // Randomness only through the seeded PRNG held in the state. The caller never mutates the state it passes in.
 
 import { nextInt, seedRng, shuffle } from './rng';
+import { baseCardId } from './cardId';
 import { SUITS, suitShown } from './suits';
 import {
   attunementPct,
@@ -1105,7 +1106,8 @@ function techniqueStep(
   if (tag === 'defensive') sd.defensiveTurn = (sd.defensiveTurn ?? 0) + 1;
   if (sd.formDone) return;
   (sd.formSteps ??= []).push({
-    card: cd.id.replace(/\+$/, ''),
+    // (a Sanctified or engraved copy is the same card, not "a different card" for a Form, DECISIONS #732)
+    card: baseCardId(cd.id),
     tag,
     // (the enemy it was aimed at, by id: one it killed before a choice it asked is gone from the side, and still counts)
     ...(cd.target === 'foe' && (aimed ?? target?.id)
@@ -1730,7 +1732,8 @@ function metricValue(
     case 'hpLostNow':
       return a.lost;
     case 'samePlayed': {
-      const base = a.card?.id.replace(/\+$/, '');
+      // (a Sanctified or engraved copy is the same card, DECISIONS #732)
+      const base = a.card ? baseCardId(a.card.id) : undefined;
       return base ? (sd.playedTurn ?? []).filter((x) => x === base).length : 0;
     }
     case 'tagExhausted':
@@ -3244,8 +3247,9 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'forge': {
-      // a card and its upgrade ("+") grow together, so an upgraded Gathering Storm still grows itself
-      const same = (id: string) => id.replace(/\+$/, '') === op.card;
+      // a card and its upgrade ("+") grow together, so an upgraded Gathering Storm still grows itself; so do its Sanctified and
+      // engraved copies ("hi~gathering-storm", "hold^gathering-storm"): every copy is the same card
+      const same = (id: string) => baseCardId(id) === baseCardId(op.card);
       const all = [...side.hand, ...side.draw, ...side.discard];
       if (a.inst && same(a.inst.card)) all.push(a.inst);
       const mine = all.filter((c) => same(c.card));
@@ -5829,7 +5833,7 @@ function knivesPlayedTurn(r: Pick<Run, 'db'>, sd: SideState): number {
 
 /** (the Necrobinder copy) what a played card adds to the turn's and fight's counters: Fetch's "first time", Fleeting cards played */
 function countPlayed(sd: SideState, cd: CardDef, inst: CardInst): void {
-  (sd.playedTurn ??= []).push(cd.id.replace(/\+$/, ''));
+  (sd.playedTurn ??= []).push(baseCardId(cd.id));
   if (isEthereal(cd, inst)) sd.etherealPlayed = (sd.etherealPlayed ?? 0) + 1;
   for (const t of cd.tags ?? []) (sd.tagsPlayed ??= {})[t] = (sd.tagsPlayed[t] ?? 0) + 1;
 }

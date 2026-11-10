@@ -2,6 +2,7 @@
 
 export * from './types';
 export { validateDb } from './validate';
+export { baseCardId } from './cardId';
 export { SUITS, suitOf, suitShown } from './suits';
 export { chooseAction, evaluate } from './bot';
 export { chooseSmartAction, BOT_VERSION, BOT_SEARCH, type SmartOptions } from './smartBot';

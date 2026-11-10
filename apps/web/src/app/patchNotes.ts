@@ -46,6 +46,30 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.247.0",
+    date: "2026-11-10",
+    title: "Every copy grows, and a last Sanctify",
+    summary: "Sanctified and engraved copies are the same card again (Gathering Storm grows on all of them), and Tier XII's Refinement Shrines can sanctify one card.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "Gathering Storm grows on every copy",
+        text: "A Sanctified or engraved Gathering Storm now grows with all your other copies, and grows itself when you cast it. Before, those copies never grew, and with only Sanctified copies in your deck each cast added a new plain copy to your hand. The same holds for every card that grows itself and every weapon that is Sharpened.",
+      },
+      {
+        kind: "fixed",
+        title: "Every copy is the same card",
+        text: "A Sanctified or engraved copy counts as the same card as the plain one: for \"the first time you play this card this turn\" (Bone Toss) and for the Monk's Forms that ask for different cards.",
+      },
+      {
+        kind: "new",
+        title: "Tier XII's Refinement Shrines",
+        text: "A new choice: Sanctify one card for free, 72% it rises 25%, otherwise it falls 25% (a card that is already sanctified cannot be rolled again). Walk away is now a choice beside Upgrade and Let one go.",
+      },
+    ],
+    heads: "Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept.",
+  },
+  {
     version: "0.246.0",
     date: "2026-11-10",
     title: "A lifted card that stays on screen",

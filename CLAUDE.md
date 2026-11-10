@@ -1,3 +1,7 @@
+# Release approved 0.247.0 / rules 107 (2026-11-10; decisions 732-733)
+
+Robert explicitly approves pushing ("push"): every Sanctified or engraved copy is the same card (baseCardId: Gathering Storm and every card that grows itself or is Sharpened grow on all copies, no plain copy made when only decorated ones are held; same card played this turn; the Monk's Form steps), and Tier XII's Refinement Shrines gain a free Sanctify of one card at the dice odds (72%) and a Walk away tile. RULES_VERSION 107. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.246.0 / rules 106 (2026-11-10)
 
 Robert explicitly approves pushing ("push"): on a touch screen in a fight, a lifted card shows alone without its keyword notes (a card with long notes was pushed off the top of the screen), and held sideways "Tap again to play" sits at the foot of the lifted card. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

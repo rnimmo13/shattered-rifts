@@ -3039,3 +3039,12 @@ button.mapnode--warden {
     font-size: 0.76rem;
   }
 }
+
+/* A Refinement Shrine's Walk away, a choice beside the others (Robert, 2026-11-10): quieter than a blessing */
+.bigchoice--leave {
+  border-style: dashed;
+  background: rgb(8 10 20 / 0.55);
+}
+.bigchoice--leave b {
+  color: var(--c-ivory);
+}

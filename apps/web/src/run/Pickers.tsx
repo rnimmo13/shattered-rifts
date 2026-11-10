@@ -322,7 +322,9 @@ export function ShrineView(props: {
       : picking === 'remove'
         ? 'Remove a card'
         : picking === 'dice'
-          ? 'Roll the dice on a card'
+          ? refinement
+            ? 'Sanctify a card'
+            : 'Roll the dice on a card'
           : picking === 'engrave'
             ? `Engrave ${chisel ? MARK_INFO[chisel].name : ''} into a card`
             : picking
@@ -334,7 +336,7 @@ export function ShrineView(props: {
       : picking === 'remove'
         ? 'Choose a card to leave behind.'
         : picking === 'dice'
-          ? `${diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%. Only a card with numbers to roll, and no roll yet.`
+          ? `${diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%. Only a card with numbers to roll, not sanctified yet. Every copy still counts as the same card.`
           : picking === 'engrave'
             ? `The card ${chisel ? MARK_INFO[chisel].text : ''}. One keyword to a card.`
             : 'The card you choose burns on the altar, and the altar card takes its place.';
@@ -358,7 +360,7 @@ export function ShrineView(props: {
       </h2>
       <p className="stage-panel__hint">
         {refinement
-          ? 'One last refinement: upgrade one card or remove one card for free, including a Wound. Choose one, or walk away.'
+          ? 'One last refinement, for free: upgrade one card, remove one (a Wound too), or sanctify one. Choose one, or walk away.'
           : g
             ? 'Deep in the Rift the shrines deal in wagers. Take one blessing, or spin the reel and take its prize, or walk away. Only one: the shrine closes after it.'
             : 'The rift is thin here. Take one blessing, or walk away.'}
@@ -397,6 +399,25 @@ export function ShrineView(props: {
           <span>Remove a card from your deck</span>
           {tag('remove', !canRemove && `A deck cannot go below ${V2_DECK_RULES.minSize} cards`)}
         </button>
+        {refinement && (
+          <button
+            className="bigchoice"
+            disabled={dice.size === 0}
+            onClick={() => setPicking('dice')}
+          >
+            <b>Sanctify</b>
+            <span>
+              Sanctify one card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
+            </span>
+            {tag('dice', dice.size === 0 && 'No card left to sanctify')}
+          </button>
+        )}
+        {refinement && (
+          <button className="bigchoice bigchoice--leave" onClick={props.onLeave}>
+            <b>Walk away</b>
+            <span>Leave your deck as it is and go on</span>
+          </button>
+        )}
       </div>
       {g && (
         <>
@@ -448,9 +469,11 @@ export function ShrineView(props: {
           </div>
         </>
       )}
-      <button className="btn" onClick={props.onLeave}>
-        <span>{taken.size > 0 ? 'Leave the shrine' : 'Walk away'}</span>
-      </button>
+      {!refinement && (
+        <button className="btn" onClick={props.onLeave}>
+          <span>{taken.size > 0 ? 'Leave the shrine' : 'Walk away'}</span>
+        </button>
+      )}
       {g && run.context?.event?.trial && (
         <div className="gshrine__reel" role="group" aria-label="Spin To Win">
           <EventView

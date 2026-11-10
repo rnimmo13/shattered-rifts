@@ -1,4 +1,5 @@
 import {
+  baseCardId,
   OVERFLOW_NAME,
   OVERFLOW_PCT,
   cardText,
@@ -839,8 +840,8 @@ export function keywordsOf(
   text?: string,
 ): { name: string; text: string }[] {
   const out: { name: string; text: string }[] = [];
-  // (a sanctified copy, "hi~gathering-storm", is still itself)
-  const self = c.id?.replace(/^(hi|lo)~/, '').replace(/\+$/, '');
+  // (a sanctified or engraved copy, "hi~gathering-storm", "hold^gathering-storm", is still itself)
+  const self = c.id ? baseCardId(c.id) : undefined;
   const add = (k: { name: string; text: string } | undefined) => {
     // (a made card already listed upgraded, "Dagger+", is not listed again plain)
     if (k && !out.some((x) => x.name === k.name || x.name === `${k.name}+`)) out.push(k);

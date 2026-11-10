@@ -4,6 +4,7 @@ import {
   gauntletMap,
   enterNode,
   takeShrine,
+  leaveShrine,
   parseRun,
   serializeRun,
   duelPlan,
@@ -36,7 +37,9 @@ it('places five free upgrade/remove-only shrines between fights, with no healing
   const entered = enterNode(r, shrine.id);
   expect(entered.context?.gambler).toBeUndefined();
   expect(entered.context?.event).toBeUndefined();
-  expect(() => takeShrine(entered, { kind: 'rest' })).toThrow('only upgrades or removes');
+  expect(() => takeShrine(entered, { kind: 'rest' })).toThrow(
+    'only upgrades, removes or sanctifies',
+  );
   expect(() => takeShrine(entered, { kind: 'ledger' })).toThrow();
   const removed = takeShrine(entered, { kind: 'remove', card: 'wound' });
   expect(removed.deck).not.toContain('wound');
@@ -45,6 +48,27 @@ it('places five free upgrade/remove-only shrines between fights, with no healing
   expect(removed.phase).toBe('map');
   const card = entered.deck.find((id) => id === 'defend')!;
   expect(takeShrine(entered, { kind: 'upgrade', card }).deck).toContain('defend+');
+  // (Robert, 2026-11-10: a Refinement Shrine also sanctifies one card, and can be walked away from)
+  const strikes = entered.deck.filter((id) => id === 'strike').length;
+  const rolled = takeShrine(entered, { kind: 'dice', card: 'strike' });
+  expect(rolled.phase).toBe('map');
+  expect(rolled.deck.filter((id) => id === 'strike')).toHaveLength(strikes - 1);
+  expect(rolled.deck.filter((id) => id === 'hi~strike' || id === 'lo~strike')).toHaveLength(1);
+  expect(rolled.eventResult).toMatch(/sanctified/);
+  expect(rolled.deck).toHaveLength(entered.deck.length);
+  // (only once a card: a sanctified card is final)
+  const sanctified = {
+    ...entered,
+    deck: ['hi~strike', ...entered.deck.filter((id) => id !== 'strike')],
+  };
+  expect(() => takeShrine(sanctified, { kind: 'dice', card: 'hi~strike' })).toThrow(
+    'cannot be sanctified',
+  );
+  expect(() => takeShrine(entered, { kind: 'engrave', card: 'strike' })).toThrow();
+  const left = leaveShrine(entered);
+  expect(left.phase).toBe('map');
+  expect(left.deck).toEqual(entered.deck);
+  expect(left.cleared).toContain(shrine.id);
 });
 it('migrates existing gauntlets without changing entered fight seeds or making players backtrack', () => {
   const r = base();

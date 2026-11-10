@@ -1,3 +1,9 @@
+## 0.247.0 - 2026-11-10
+
+- Tier XII's Refinement Shrines: a new choice, Sanctify one card (72% it rises 25%, otherwise it falls 25%), and Walk away is a choice beside Upgrade and Let one go (DECISIONS #733).
+- A Sanctified or engraved copy is the same card: "the first time you play this card this turn" (Bone Toss) and the Monk's Forms ("a different card") count it with the plain copies.
+- Fixed: a Sanctified or engraved Gathering Storm (or any card that grows itself, or a weapon that is Sharpened) now grows with every other copy. Before, those copies never grew; and with only Sanctified copies in your deck, each cast made a new plain copy in your hand (DECISIONS #732).
+
 ## 0.246.0 - 2026-11-10
 
 - Phones and tablets, in a fight: a card you lift shows alone, without its keyword notes underneath (a card with long notes was pushed off the top of the screen). Sideways, "Tap again to play" sits at the foot of the lifted card, clear of the big preview.

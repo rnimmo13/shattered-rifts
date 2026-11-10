@@ -1811,3 +1811,20 @@ Robert asked for the phone game to feel like a premium mobile card game and left
 - **A crowded upright board.** Two rows of enemies with no Warden, and companions of yours (`portraitCrowd`): the enemies' rows stand 310 apart (355 when the board is theirs alone), their names fold away (health bars stay; the name shows while the enemy is aimed at) and a companion's next move sits on its shoulder, so your companions have their own strip of floor.
 - **Phones' page margins are 16 px** (were 8), and the Arena page folds its match rules and recording notice under "How a match works" on a phone.
 - **Not done, on purpose:** installing to the home screen as a standalone app (`display: standalone`) and drawing under the notch (`viewport-fit=cover`). Both need a real phone to check (Google sign-in inside an installed iOS web app; the fight's layout is computed from the window's size), and belong with the App Store wrapper.
+
+## 732 - Every copy of a card that grows is the same card, Sanctified and engraved ones too (2026-11-10)
+
+Robert, passing on a player's report: Gathering Storm "used to apply the growth to one card at a time and it should be all copies". The card itself has not changed since 0.131, and plain copies did all grow. But a Sanctum roll or an engraving is written into a copy's id ("hi~gathering-storm", "hold^gathering-storm"), and the engine's `forge` matched copies by id with only the "+" stripped. So a Sanctified or engraved copy never grew, and never grew itself when cast; and when every copy was decorated, `forge` found "none" and made a new plain Gathering Storm in hand on each cast.
+
+- **Fix:** a generic `baseCardId` (combat/cardId.ts) strips any roll prefix ("word~"), engraved tag ("word^") and the upgrade, knowing only that shape, not the marks' names (golden rule 2). `forge` and the card text's "grows every copy of itself" use it.
+- **Knock-on (intended):** every card that grows itself (Gathering Storm, Mounting Fury, Reaping Scythe...) and every Sharpened weapon (the Old Twelve Gauge and the rest) now grow on their Sanctified and engraved copies as well. That changes how existing fights replay, so RULES_VERSION goes up with the release.
+- **Same card played:** Robert then chose that "it should still treat them all as the same card": "the same card played this turn" (`samePlayed`, Bone Toss's first-of-the-turn draw) and the turn's played list now read the base card too, so a Sanctified or engraved copy is the same card there as well.
+
+## 733 - Tier XII's Refinement Shrines: sanctify one card, or walk away (2026-11-10)
+
+Robert: "for the shrines at tier 12, lets add a walk away option and a sanctified one card at a time". The five Refinement Shrines of Tier XII (#634) offered a free upgrade or a free removal; walking away was a plain button under the choices. Now:
+
+- **Sanctify:** a third choice, one card of the deck sanctified at the Loaded Dice's odds for the tier (`diceOdds`; 72% it rises 25% at Tier XII, otherwise it falls 25%). Claude's reading of "sanctified one card": the Sanctum's roll on one card, at the shrine's (better) odds, rather than a sure rise; still free, still one choice a visit. Only a card with numbers to roll and no roll yet (a sanctified card is final, #327), as for the Dice. The roll draws from the run's PRNG. What happened is told as the stop's news.
+- **Walk away:** a choice tile beside the others (the button under the choices is gone at these shrines), leaving the deck as it is.
+- **Still no** healing, wagers or engraving at these shrines.
+- Loaded Dice at a Gambler's Shrine is unchanged: the roll is the same function (`rollCard`), its sentence now says "The roll comes up high/low" for both.
