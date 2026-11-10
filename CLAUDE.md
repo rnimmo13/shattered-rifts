@@ -1,3 +1,7 @@
+# Release approved 0.241.0 / rules 105 (2026-11-10; decision 725)
+
+Robert explicitly approves committing and pushing what we have ("lets commit and push what we have"): the Grimoire as one scrolling page with rows spanning the page (fitScroll), animated hero models attacking on hover/click/tap, and the 2D animation prompt guideline doc. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.240.0 / rules 105 (2026-11-09; decisions 721-724)
 
 Robert explicitly approves pushing/deploying ("push"): Fervor payoffs reading the Fervor gained (Burning Litany, Mantra Engine), the growth-ceiling rule with Thunder Memory (uncounted own plants, always Consume, half past 5, no cap) and Slow Murder (half past +28, at most +44), public player decks with the unlisted #/deck-lookup page and a keyless edge-cached balance export, and the loading crest for animated models. Website/server and matching Windows updater. Future changes need fresh release approval.

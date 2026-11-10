@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CARD_SIZES, fitBook, type CardSize } from './grimoireData';
+import { CARD_SIZES, COL_GAP, fitBook, fitScroll, type CardSize } from './grimoireData';
 
 const SIZES = Object.keys(CARD_SIZES) as CardSize[];
 const WINDOWS: [number, number][] = [
@@ -52,5 +52,41 @@ describe('fitBook', () => {
     const f = fitBook(330, Infinity, 10, 'small', { spread: 1, narrow: true });
     expect(f.cols).toBe(2);
     expect(f.cardWidth).toBeGreaterThanOrEqual(CARD_SIZES.small.min);
+  });
+});
+
+describe('fitScroll (DECISIONS #725)', () => {
+  const span = (w: number, f: { cols: number; cardWidth: number }): number =>
+    (f.cols * f.cardWidth + (f.cols - 1) * COL_GAP) / w;
+
+  it('keeps every card inside its size range, whatever the width', () => {
+    for (const size of SIZES)
+      for (const w of [300, 700, 1100, 1500, 2339, 3500])
+        for (const h of [Infinity, 500, 900]) {
+          const f = fitScroll(w, h, size);
+          expect(f.cardWidth).toBeGreaterThanOrEqual(CARD_SIZES[size].min);
+          expect(f.cardWidth).toBeLessThanOrEqual(CARD_SIZES[size].max);
+        }
+  });
+
+  it('fills the row across the page, not a narrow grid with bare parchment beside it', () => {
+    // (Robert's screen, 2026-11-10: a page 2,339 px wide held six 220 px cards and a 1,000 px empty strip)
+    for (const size of ['read', 'pick', 'browse'] as const)
+      for (const w of [900, 1300, 1800, 2339, 3500])
+        expect(span(w, fitScroll(w, 900, size))).toBeGreaterThan(0.85);
+    expect(fitScroll(2339, 900, 'pick').cols).toBeGreaterThanOrEqual(9);
+  });
+
+  it('never makes a card taller than the list can show at once', () => {
+    const f = fitScroll(2000, 300, 'pick');
+    expect(f.cardWidth * 1.4).toBeLessThanOrEqual(Math.max(300, CARD_SIZES.pick.min * 1.4));
+  });
+
+  it('does not change for a window a few px different', () => {
+    expect(fitScroll(1502, 851, 'read')).toEqual(fitScroll(1500, 850, 'read'));
+  });
+
+  it('on a phone two cards fit across', () => {
+    expect(fitScroll(320, Infinity, 'read', true).cols).toBe(2);
   });
 });

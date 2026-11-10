@@ -1892,6 +1892,33 @@
   /* (cards start at the page's left edge and fill row by row, never a few centred in the middle) */
   justify-content: start;
 }
+/* a grimoire that scrolls (DECISIONS #725): one long page, no page-turn buttons; a row of cards spans the page (fitScroll in
+   grimoireData.ts picks how many across) and the rest are a scroll or a swipe down */
+.grim--scroll .grim__book {
+  grid-template-columns: minmax(0, 1fr);
+}
+.grim--scroll .grim__page {
+  /* (the scrollbar keeps its room, so its coming and going never changes the width the cards are fitted to) */
+  scrollbar-gutter: stable;
+  scrollbar-color: #8a6a2c transparent;
+  overscroll-behavior: contain;
+  touch-action: pan-y pinch-zoom;
+}
+.grim--scroll .grim__pagehead {
+  /* (the heading stays at the top of the page while the cards scroll under it) */
+  position: sticky;
+  top: -12px;
+  z-index: 1;
+  margin-top: -12px;
+  padding-top: 12px;
+  background: #e7d6ad;
+}
+.grim--scroll .grim__cards {
+  padding-bottom: 8px;
+  /* (cards fill each row from the left; the columns themselves spread to the page's edges, so no bare strip is left on the
+     right) */
+  justify-content: space-between;
+}
 /* a phone (DECISIONS #443): slimmer edges and page-turn buttons (NARROW_BOOK_SIDES, NARROW_PAGE_SIDES in grimoireData.ts) */
 .grim--view.grim--narrow .grim__book {
   grid-template-columns: 26px minmax(0, 1fr) 26px;

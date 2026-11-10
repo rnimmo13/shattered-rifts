@@ -46,6 +46,24 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.241.0",
+    date: "2026-11-10",
+    title: "A Grimoire that scrolls",
+    summary: "The Grimoire is one long page you scroll or swipe through, with cards filling the whole width, and animated heroes swing when you tap them.",
+    notes: [
+      {
+        kind: "changed",
+        title: "The Grimoire scrolls",
+        text: "Card lists are one long page to scroll, or swipe on a touch screen, instead of pages to turn. As many cards fit across as the window allows, so a wide screen no longer leaves a bare strip on the right."
+      },
+      {
+        kind: "changed",
+        title: "Heroes swing on a tap",
+        text: "With the beta animated models on, hovering over, clicking or tapping your hero plays an attack."
+      }
+    ]
+  },
+  {
     version: "0.240.0",
     date: "2026-11-09",
     title: "Fervor payoffs, growth limits, and a smoother hero",

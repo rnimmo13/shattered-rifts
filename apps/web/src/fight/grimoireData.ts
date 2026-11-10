@@ -176,6 +176,31 @@ export const COL_GAP = 14;
 export const ROW_GAP = 12;
 const ASPECT = 1.4;
 
+/**
+ * The cards of a grimoire that scrolls (DECISIONS #725): how many across a list `w` px wide, and how wide each is. As many across
+ * as fit with every card inside its size range, as big as it can be inside it (and never taller than the `h` px the list can show
+ * at once, when given), so the row spans the whole page and the rest of the cards are a scroll down, never a page turn.
+ */
+export function fitScroll(
+  w: number,
+  h: number,
+  size: CardSize,
+  narrow = false,
+): { cols: number; cardWidth: number } {
+  const min = narrow ? Math.min(CARD_SIZES[size].min, 110) : CARD_SIZES[size].min;
+  // (a card a little shorter than the room, so a row is never cut at the top and bottom at once)
+  const byH = Number.isFinite(h) && h > 0 ? Math.floor(h / ASPECT) : Infinity;
+  const max = Math.max(min, Math.min(CARD_SIZES[size].max, byH));
+  if (w <= 0) return { cols: 3, cardWidth: min };
+  const across = (cols: number): number => Math.floor((w - (cols - 1) * COL_GAP) / cols);
+  // the fewest columns that keep the cards at most `max`, then fewer while they would be under `min`
+  let cols = Math.max(1, Math.ceil((w + COL_GAP) / (max + COL_GAP)));
+  while (cols > 1 && across(cols) < min) cols--;
+  // (a multiple of 5, so a window dragged a few px wider does not redraw every card)
+  const cardWidth = Math.max(min, Math.floor(Math.min(max, across(cols)) / 5) * 5);
+  return { cols, cardWidth };
+}
+
 export interface BookFit {
   spread: 1 | 2;
   cols: number;

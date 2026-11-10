@@ -2,10 +2,11 @@
 // animated 2D rig when the hero's default look has one (DECISIONS #680), over the still picture it replaces. The picture stays in
 // place underneath, so the layout and anything that reads it are unchanged, and it is what shows with a skin worn, without WebGL2,
 // with reduced motion or on Low graphics, if the browser takes the rig's GL context away, or until the rig has loaded. Hovering
-// the model raises its aura. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
+// the model with a mouse, or clicking or tapping it, plays its attack. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { heroRigFor } from './heroRigs';
+import { VIDEO_PREFIX, heroRigFor } from './heroRigs';
+import { HERO_VIDEOS } from './heroVideos';
 import { useSettingsChanged, type SettingKind } from '../app/settings';
 // (a type only: the rig code itself is loaded on demand below)
 import type { HeroSprite } from '../fight/heroSprite';
@@ -92,14 +93,28 @@ export function HeroModel(props: {
       size = { w: e.contentRect.width, h: e.contentRect.height };
       place();
     });
-    const aura = (): void => {
-      if (sprite && sprite.clip === 'idle') sprite.play('aura');
+    // (a mouse over the model, or a click or a tap on it, plays its attack: each weapon's clip in turn for a model with more than one.
+    // A touch only counts as a tap, so a finger scrolling the page past the model does not set it off)
+    const variants = rigId.startsWith(VIDEO_PREFIX)
+      ? Object.keys(HERO_VIDEOS[rigId.slice(VIDEO_PREFIX.length)] ?? {})
+          .filter((c) => c.startsWith('strike:'))
+          .map((c) => c.slice('strike:'.length))
+      : [];
+    let swings = 0;
+    const attack = (): void => {
+      if (!sprite || sprite.clip !== 'idle') return;
+      const variant = variants[swings++ % Math.max(1, variants.length)];
+      sprite.play('strike', variant ? { variant } : {});
+    };
+    const hover = (e: PointerEvent): void => {
+      if (e.pointerType === 'mouse') attack();
     };
     // (everything the rig holds let go, and the picture shown again: on unmount, a lost context, or a switch to Low graphics)
     const stop = (): void => {
       cancelAnimationFrame(raf);
       resize.disconnect();
-      el.removeEventListener('pointerenter', aura);
+      el.removeEventListener('pointerenter', hover);
+      el.removeEventListener('click', attack);
       const s = sprite;
       sprite = null;
       if (s) {
@@ -133,7 +148,8 @@ export function HeroModel(props: {
         place();
         sprite.render();
         resize.observe(el);
-        el.addEventListener('pointerenter', aura);
+        el.addEventListener('pointerenter', hover);
+        el.addEventListener('click', attack);
         window.clearTimeout(slow);
         setLive(true);
         raf = requestAnimationFrame(frame);

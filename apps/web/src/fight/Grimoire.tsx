@@ -1,19 +1,35 @@
-// A set of cards shown as an open grimoire: parchment pages, realm ribbons (when the cards come from more than one realm), page
-// flips. Used wherever a player looks at a deck or a pile; the practice deck builder has its own, editable book (DeckBuilder.tsx).
-// The book is sized by the box it sits in and the cards by the book (inside a fixed range, CARD_SIZES), never the other way round,
-// so nothing it draws can make it grow, shrink or jump. GrimoireModal opens one over the whole window.
+// A set of cards shown as an open grimoire: one long parchment page that scrolls, with realm ribbons (when the cards come from more
+// than one realm). Used wherever a player looks at a deck or a pile; the practice deck builder has its own, editable book
+// (DeckBuilder.tsx). The book is sized by the box it sits in and the cards by the page's width (inside a fixed range, CARD_SIZES),
+// never the other way round, so nothing it draws can make it grow, shrink or jump. GrimoireModal opens one over the whole window.
+// (It turned pages until DECISIONS #725: a scroll reads better on a touch screen and lets a row span the page.)
 
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type FocusEvent,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 import type { CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
-import { NARROW_BELOW, fitBook, useSize, type CardSize, type GrimoireCard } from './grimoireData';
-
-/** A book that fills its box is laid out as if it held at least this many cards (one layout for a short pile and a long deck). */
-const LAYOUT_CARDS = 24;
+import {
+  NARROW_BELOW,
+  PAGE_ENDS,
+  fitScroll,
+  useSize,
+  useWidth,
+  type CardSize,
+  type GrimoireCard,
+} from './grimoireData';
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
 
 export interface GrimoireProps {
@@ -23,8 +39,9 @@ export interface GrimoireProps {
   /** only these ids can be picked; the rest are dimmed */
   pickable?: ReadonlySet<string>;
   cols?: number;
+  /** (unused since the book scrolls, DECISIONS #725) */
   rows?: number;
-  /** force one page (or two) whatever the box */
+  /** (unused since the book scrolls, DECISIONS #725: it is always one page) */
   spread?: 1 | 2;
   emptyText?: string;
   /** the range the cards are drawn in (see CARD_SIZES): 'pick' when choosing a card, 'read' (the default) for a deck or pile */
@@ -35,6 +52,7 @@ export interface GrimoireProps {
    */
   height?: 'fill' | 'grow';
   /**
+   * (unused since the book scrolls, DECISIONS #725: card size no longer depends on the count at all)
    * Size the cards as if the book held this many (the Card library: every card of the game), so a filter that shows fewer never
    * makes the cards jump in size (DECISIONS #446). Default: the cards it holds.
    */
@@ -43,7 +61,27 @@ export interface GrimoireProps {
 
 export function Grimoire(props: GrimoireProps) {
   const grow = props.height === 'grow';
-  const [bookRef, box] = useSize();
+  // the book's page is measured (its height: how tall a card may be) and so is the list in it (its width, less any scrollbar)
+  const [pageRef, page] = useSize();
+  const [listRef, listW] = useWidth();
+  const scrollRef = useRef<HTMLElement | null>(null);
+  // (stable refs: a ref made anew each render is detached and attached again every time, and each attach measures and re-renders)
+  const narrowNow = window.innerWidth < NARROW_BELOW;
+  const pageEl = useCallback(
+    (el: HTMLElement | null) => {
+      scrollRef.current = el;
+      pageRef(el);
+    },
+    [pageRef],
+  );
+  const listEl = useCallback(
+    (el: HTMLElement | null) => {
+      listRef(el);
+      // (on a phone it is the list that scrolls)
+      if (narrowNow && el) scrollRef.current = el;
+    },
+    [listRef, narrowNow],
+  );
   // every copy gets its own card: three Attacks are three cards on the page, never one card with a number on it
   const entries = useMemo(
     () =>
@@ -59,54 +97,30 @@ export function Grimoire(props: GrimoireProps) {
       ),
     [props.cards],
   );
-  // sized for every card in the book (not just the open ribbon's), so turning to another realm never resizes the cards
-  // (a phone: the book's edges are slimmer, so two cards fit across a page, DECISIONS #443)
-  const narrow = window.innerWidth < NARROW_BELOW;
-  // (a book that fills its box is always laid out as if it held a good handful of cards, so a short pile and a long deck share one
-  // layout: the cards keep their size and fill the left page row by row, then the right, never a few big cards in the middle)
-  const { spread, cols, rows, cardWidth } = fitBook(
-    box.w,
-    grow ? Infinity : box.h,
-    Math.max(entries.length, props.fitCount ?? 0, grow ? 0 : LAYOUT_CARDS),
+  // (a phone: the book's edges are slimmer and two cards fit across, DECISIONS #443)
+  const narrow = narrowNow;
+  // one long page that scrolls, not pages to turn (DECISIONS #725: a swipe down is how a touch screen reads a list). The cards
+  // are as many across as fit and as big as their size range allows, so a row spans the page; they never depend on how many
+  // cards there are or which realm ribbon is open, so a filter or a short pile never resizes them.
+  const fit = fitScroll(
+    listW,
+    // (a phone's list is narrower than any card is tall, so only the book's page limits a card's height)
+    grow || narrow ? Infinity : page.h - PAGE_ENDS,
     props.size ?? 'read',
-    {
-      ...(props.spread ? { spread: props.spread } : {}),
-      ...(props.cols ? { cols: props.cols } : {}),
-      ...(props.rows ? { rows: props.rows } : {}),
-      ...(narrow ? { narrow } : {}),
-    },
+    narrow,
   );
+  const cols = props.cols ?? fit.cols;
+  const cardWidth = fit.cardWidth;
   const tabs = useMemo(() => {
     const present = new Set(entries.map((e) => tabOf(e.def)));
     return TABS.filter((t) => present.has(t.id));
   }, [entries]);
   const [tab, setTab] = useState<string | 'all'>('all');
-  const [leaf, setLeaf] = useState(0);
-  const [dir, setDir] = useState<'next' | 'prev'>('next');
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
 
   const shown = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
-  const pages = useMemo(() => paginate(shown, cols * rows, true), [shown, cols, rows]);
-  const spreads = Math.max(1, Math.ceil(pages.length / spread));
-  const at = Math.min(leaf, spreads - 1);
-  const visible = pages.slice(at * spread, at * spread + spread);
-  // (both pages of a spread are always drawn, an empty right page included, so the book never changes shape)
-  const blanks = grow ? 0 : Math.max(0, spread - Math.max(1, visible.length));
-  const turn = (by: number): void => {
-    setDir(by > 0 ? 'next' : 'prev');
-    setLeaf(Math.max(0, Math.min(spreads - 1, at + by)));
-  };
-  // the arrow keys turn the pages of a book that fills its box (one on screen at a time)
-  useEffect(() => {
-    if (grow) return;
-    const onKey = (e: KeyboardEvent): void => {
-      if (e.target instanceof HTMLElement && e.target.closest('input, select, textarea')) return;
-      if (e.key === 'ArrowRight') turn(1);
-      else if (e.key === 'ArrowLeft') turn(-1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
+  // the page's heading: the characters whose cards are on it
+  const head = useMemo(() => paginate(shown, Math.max(1, shown.length), true)[0], [shown]);
   const total = entries.length;
   const tabCount = (id: string): number => entries.filter((e) => tabOf(e.def) === id).length;
   const realmTabs = (cls: string) => (
@@ -119,7 +133,8 @@ export function Grimoire(props: GrimoireProps) {
           className={`grim__ribbon grim__ribbon--${t.id === 'all' ? 'other' : t.id}${t.id === tab ? ' is-open' : ''}`}
           onClick={() => {
             setTab(t.id);
-            setLeaf(0);
+            // another realm starts at its top
+            scrollRef.current?.scrollTo({ top: 0 });
           }}
         >
           <span>{t.name}</span>
@@ -128,122 +143,80 @@ export function Grimoire(props: GrimoireProps) {
       ))}
     </div>
   );
-  // a phone: no book, no pages. The realms are a row of chips that slides sideways, and every card of the open one is in a list two
+  const cardList = (hoverable: boolean, listClass: string) =>
+    shown.length === 0 ? (
+      <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
+    ) : (
+      <ul
+        className={listClass}
+        ref={listEl}
+        style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}
+      >
+        {shown.map(({ def }, idx) => {
+          const ok = !!props.onPick && (!props.pickable || props.pickable.has(def.id));
+          return (
+            <li
+              key={`${def.id}-${idx}`}
+              className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
+            >
+              <button
+                className="grim__card"
+                disabled={!!props.onPick && !ok}
+                aria-label={props.onPick ? `Choose ${def.name}` : def.name}
+                onClick={() => ok && props.onPick?.(def.id)}
+                {...(hoverable
+                  ? {
+                      onMouseEnter: (e: MouseEvent<HTMLButtonElement>) =>
+                        setHover({ def, at: e.currentTarget.getBoundingClientRect() }),
+                      onMouseLeave: () => setHover(null),
+                      onFocus: (e: FocusEvent<HTMLButtonElement>) =>
+                        setHover({ def, at: e.currentTarget.getBoundingClientRect() }),
+                      onBlur: () => setHover(null),
+                    }
+                  : {})}
+              >
+                <FightCard db={COMBAT_DB} def={def} width={cardWidth} />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  // a phone: no book. The realms are a row of chips that slides sideways, and every card of the open one is in a list two
   // across that scrolls (Robert, 2026-11-02: the book's tabs overlapped and its pages held four cards each)
   if (narrow) {
-    const across = Math.max(1, (box.w || window.innerWidth) - 16);
-    const phoneWidth = Math.max(110, Math.min(200, Math.floor((across - 10) / 2)));
     return (
-      <div className={`grim grim--phone grim--${grow ? 'grow' : 'fill'}`} ref={bookRef}>
+      <div className={`grim grim--phone grim--${grow ? 'grow' : 'fill'}`} ref={pageRef}>
         {tabs.length > 1 && realmTabs('grim__chips')}
-        {shown.length === 0 ? (
-          <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
-        ) : (
-          <ul className="grim__list" style={{ gridTemplateColumns: `repeat(2, ${phoneWidth}px)` }}>
-            {shown.map(({ def }, idx) => {
-              const ok = !!props.onPick && (!props.pickable || props.pickable.has(def.id));
-              return (
-                <li
-                  key={`${def.id}-${idx}`}
-                  className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
-                >
-                  <button
-                    className="grim__card"
-                    disabled={!!props.onPick && !ok}
-                    aria-label={props.onPick ? `Choose ${def.name}` : def.name}
-                    onClick={() => ok && props.onPick?.(def.id)}
-                  >
-                    <FightCard db={COMBAT_DB} def={def} width={phoneWidth} />
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {cardList(false, 'grim__list')}
       </div>
     );
   }
   return (
-    <div
-      className={`grim grim--view grim--${grow ? 'grow' : 'fill'}${narrow ? ' grim--narrow' : ''}`}
-    >
+    <div className={`grim grim--view grim--scroll grim--${grow ? 'grow' : 'fill'}`}>
       <div className="grim__main">
         {tabs.length > 1 && realmTabs('grim__tabs')}
-        <div className={`grim__book grim__book--${spread}`} ref={bookRef}>
-          <button
-            className="grim__flip"
-            disabled={at === 0}
-            onClick={() => turn(-1)}
-            aria-label="Previous pages"
+        <div className="grim__book grim__book--1">
+          <section
+            className="grim__page"
+            ref={pageEl}
+            // (the big preview is placed where the card was; once the list moves it would point at another card)
+            onScroll={() => setHover(null)}
           >
-            ‹
-          </button>
-          <div key={`${tab}-${at}`} className={`grim__spread grim__spread--${dir}`}>
-            {visible.length === 0 && (
-              <section className="grim__page">
-                <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
-              </section>
+            {shown.length > 0 && (
+              <h4 className="grim__pagehead">
+                {head?.heroIds.map((h) => (
+                  <HeroIcon key={h} hero={h} size={26} />
+                ))}
+                <span>
+                  {!head || (head.heroes.length !== 1 && head.heroes.length !== 2)
+                    ? 'By rarity'
+                    : head.heroes.join(' · ') || 'Cards'}
+                </span>
+              </h4>
             )}
-            {visible.map((p, i) => (
-              <section key={i} className="grim__page">
-                <h4 className="grim__pagehead">
-                  {p.heroIds.map((h) => (
-                    <HeroIcon key={h} hero={h} size={26} />
-                  ))}
-                  <span>
-                    {p.heroes.length !== 1 && p.heroes.length !== 2
-                      ? 'By rarity'
-                      : p.heroes.join(' · ') || 'Cards'}
-                  </span>
-                </h4>
-                <ul
-                  className="grim__cards"
-                  style={{ gridTemplateColumns: `repeat(${cols}, ${cardWidth}px)` }}
-                >
-                  {p.cards.map(({ def }, idx) => {
-                    const ok = !!props.onPick && (!props.pickable || props.pickable.has(def.id));
-                    return (
-                      <li
-                        key={`${def.id}-${idx}`}
-                        className={`grim__slot grim__slot--view${props.onPick && !ok ? ' is-off' : ''}`}
-                      >
-                        <button
-                          className="grim__card"
-                          disabled={!!props.onPick && !ok}
-                          aria-label={props.onPick ? `Choose ${def.name}` : def.name}
-                          onClick={() => ok && props.onPick?.(def.id)}
-                          onMouseEnter={(e) =>
-                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
-                          }
-                          onMouseLeave={() => setHover(null)}
-                          onFocus={(e) =>
-                            setHover({ def, at: e.currentTarget.getBoundingClientRect() })
-                          }
-                          onBlur={() => setHover(null)}
-                        >
-                          <FightCard db={COMBAT_DB} def={def} width={cardWidth} />
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-                <span className="grim__folio">{at * spread + i + 1}</span>
-              </section>
-            ))}
-            {Array.from({ length: blanks }, (_, i) => (
-              <section key={`blank-${i}`} className="grim__page" aria-hidden="true">
-                <span className="grim__folio">{at * spread + Math.max(1, visible.length) + i + 1}</span>
-              </section>
-            ))}
-          </div>
-          <button
-            className="grim__flip"
-            disabled={at >= spreads - 1}
-            onClick={() => turn(1)}
-            aria-label="Next pages"
-          >
-            ›
-          </button>
+            {cardList(true, 'grim__cards')}
+          </section>
         </div>
       </div>
       <CardHover def={hover?.def ?? null} at={hover?.at ?? null} />

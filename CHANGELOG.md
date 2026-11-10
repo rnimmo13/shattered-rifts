@@ -1,3 +1,8 @@
+## 0.241.0 - 2026-11-10
+
+- The Grimoire scrolls instead of turning pages (DECISIONS #725): one long page, a swipe down on touch screens, with as many cards across as fit so a row spans the page (a wide window showed six cards and a bare strip). No rules change.
+- An animated hero model plays its attack when hovered with a mouse, clicked or tapped (each weapon's clip in turn for video models), in place of the old hover aura.
+
 ## 0.240.0 - 2026-11-09
 
 - Fervor payoffs read the Fervor gained (DECISIONS #721): Burning Litany half the Fervor gained this fight to ALL; Mantra Engine Barrier equal to the Fervor gained this turn (new `fervorGainedTurn` metric).

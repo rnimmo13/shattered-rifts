@@ -1738,3 +1738,13 @@ Robert: "the 2d animation models on the homescreen flash the non-animated model 
 
 - While an animated model that will be shown is loading (home stage, picker, Vault, Models and lore pages: `HeroModel`), its still picture is hidden and the S|R crest stands in its place, breathing, with a gold-and-violet light running round its rim.
 - The still picture shows instead if the rig cannot load or be drawn (no WebGL2, a lost context), after 8 seconds of loading (the rig still replaces it when it arrives), with a skin, on Low graphics or with reduced motion (no loader then: the picture at once, as before).
+
+## 725 - The Grimoire scrolls instead of turning pages, and a row spans the page (2026-11-10)
+
+Robert: "fix the UI so cards span the whole area of the grimoire"; then "i think we need to make the grimoire a scroll down to see the rest of the cards instead of paginated. that will work better on other devices that use touch".
+
+- The cause of the empty space: the book took the layout with the fewest empty places among those with the biggest cards, and allowed at most 8 across, so on a 2560 px window 33 cards to remove from were six 220 px cards across a 2,340 px page, with about 1,000 px of bare parchment on the right and a second page to turn to.
+- Every Grimoire (pile and deck views, card pickers, the Card library, the starter preview) is now one long page that scrolls (a swipe on a touch screen); no page-turn buttons, spreads, folios or arrow-key page turns. A phone keeps its two-across list (#543).
+- `fitScroll` (grimoireData.ts) picks the cards: as many across as fit with each card inside its size range (`CARD_SIZES`), as big as it can be inside it, and never taller than the page can show at once. The columns spread to the page's edges (`justify-content: space-between`); cards still fill each row from the left (#719). The size depends only on the page, never on how many cards there are or which realm ribbon is open (so #446's `fitCount` and #719's 24-card layout are no longer needed).
+- The page heading stays at the top while the cards scroll; choosing another realm returns to the top. `fitBook` is kept (and tested) but no longer used by the Grimoire. No rules change.
+

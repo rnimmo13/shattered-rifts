@@ -99,3 +99,9 @@
     scale: 0.97;
   }
 }
+
+/* a live model plays its attack when it is hovered, clicked or tapped (HeroModel.tsx) */
+.hero-model.is-live {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
