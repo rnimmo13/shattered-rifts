@@ -2981,3 +2981,61 @@ button.mapnode--warden {
     grid-template-areas: 'who clock' 'actions actions' 'stats stats';
   }
 }
+
+/* the Sanctum on a phone (Robert, 2026-11-10: it was cut off at the right): two tiles of 11.5rem and their gap were wider than the
+   page, so the tiles now share the width in two equal columns (a tile alone in its realm keeps that size, centred), and the
+   chosen Riftwalker's details below stay inside the page */
+@media (max-width: 32rem) {
+  .picker__stage {
+    align-items: stretch;
+  }
+  .picker__stage > *,
+  .picker__stage .picker__realms {
+    flex: none;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .picker__realms,
+  .picker__realm-group {
+    width: 100%;
+  }
+  .picker__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    width: 100%;
+  }
+  .picker__row > .picker__char {
+    width: auto;
+    min-width: 0;
+  }
+  .picker__row > .picker__char:only-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 0.3rem);
+  }
+  .picker__detail,
+  .picker__about {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  /* (its one column was sized by its widest content, wider than the page: now it is the page's width, and its content wraps) */
+  .picker__detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Touch screens (mobile review, 2026-11-10): the run header's buttons are a finger tall (Abandon sits beside Deck: at a
+   quarter of a centimetre they were easy to miss, and to hit by mistake), still in two short rows. */
+@media (pointer: coarse) and (max-width: 40rem) {
+  .runbar__actions {
+    gap: 0.45rem;
+  }
+  .runbar__actions .btn--small,
+  .runbar__arena {
+    min-height: 38px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.76rem;
+  }
+}

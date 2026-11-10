@@ -1,3 +1,16 @@
+## 0.245.0 - 2026-11-10
+
+- Phones and tablets: tap a card to lift it and read it, tap it again (or the big card) to play it; tap anywhere else to put it back. Dragging a card up still plays it at once, and a card that needs a target still goes straight to choosing one (DECISIONS #731).
+- Phones, held upright: against two rows of enemies with a companion of your own, the enemies close up and show health bars without names, and your companion stands clear of them.
+- Phones: wider page margins; the Arena page keeps its match rules under "How a match works".
+- Phones and tablets, in a fight: End turn, the menu, the potion belt and the Boons button are a finger's size; no key names on a touch screen (End turn's "E", the first tip's "press 1-9"); a teaching tip is a sheet over your hand, so your hero and the enemies stay in view while you read it; the build number and "Saved to account" no longer lie on your hand.
+- The Shaman's totems on a small screen: each totem's numbers sit beside it, and Spirit above the row, so they no longer cover the next totem, his name or his health bar. A companion's next move, held upright, is one short line over its head.
+- Phones: the run header's buttons (Deck, Abandon, Settings) are taller; buttons with no font of their own show the game's font, not the browser's; How to play and the Card library say "tap", not "press E" or "hover".
+- Phones: no battle log in a fight; a group of more than three enemies (or a Warden's escort) keeps to the right of your hero, so it never covers your hero, and two rows of enemies stand further apart so their next moves are readable; the Sanctum and the leaderboards fit the screen (they were cut off at the right, or zoomed out).
+- The map's header starts with Home, on every screen size.
+- The Arena page's links (Saved decks, Leaderboards, Ghost decks, What the Arena takes) are tiles like the home screen's.
+- The Vault holds 20 saved decks (was 10), and all of them come to a match (DECISIONS #730).
+
 ## 0.244.0 - 2026-11-10
 
 - The home screen: How to play and Patch notes (with its "new" dot) move up beside Settings; the tiles below are your collection and the boards, two rows of three: Saved decks, Collection, Trophy case, Run history, Card library, Leaderboards. Ghost decks are on the Arena page. The Cosmetics Vault is now called your Collection and has its own tile. "Download" opens a menu: Windows, and Mac marked as coming soon. How to play's odds page links to the Elite Event reels in the Sandbox.

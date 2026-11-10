@@ -44,6 +44,8 @@ export interface PlatesProps {
   scale?: number;
   /** the highest an intent may sit (CSS length): below the top bar */
   intentTop?: string;
+  /** a crowded upright board: a companion's next move sits on its shoulder, not over its head (stageLayout's portraitCrowd) */
+  allyIntentLow?: boolean;
   /** Direct selection through a unit's name/HP plate while aiming. */
   onTarget?: (unit: string) => void;
 }
@@ -58,6 +60,7 @@ export function UnitPlates({
   sharp,
   scale = 1,
   intentTop = '7.8rem',
+  allyIntentLow,
   onTarget,
 }: PlatesProps) {
   const k = scale;
@@ -113,9 +116,10 @@ export function UnitPlates({
         };
         // (a tall figure never pushes its next move off the screen: it stops below the title bar, over the figure's head if it must, and
         // an enemy at the side of the screen keeps it, and its words, inside the edges)
+        const low = !!allyIntentLow && u.kind === 'ally';
         const intentStyle: CSSProperties = {
-          left: `clamp(${7.2 * k}rem, ${x}px, calc(100% - ${7.2 * k}rem))`,
-          top: `max(${y - h - 8 * k}px, ${intentTop})`,
+          left: `clamp(${7.2 * k}rem, ${low ? x + w * 0.32 : x}px, calc(100% - ${7.2 * k}rem))`,
+          top: `max(${low ? y - h * 0.6 : y - h - 8 * k}px, ${intentTop})`,
           ...(k !== 1 ? { scale: String(k) } : {}),
         };
         return (
@@ -124,7 +128,7 @@ export function UnitPlates({
             data-figure-def={u.def}
             data-figure-height={Math.round(h * 100) / 100}
             data-figure-width={Math.round(w * 100) / 100}
-            className={`unit-group${u.kind === 'ally' ? ' is-ally' : ''}${hover === u.id ? ' is-hover' : ''}`}
+            className={`unit-group${u.kind === 'ally' ? ' is-ally' : ''}${u.kind === 'enemy' ? ' is-enemy' : ''}${hover === u.id ? ' is-hover' : ''}`}
           >
             {/* (an ally shows what it does at the end of its side's turn the same way, smaller) */}
             {u.kind !== 'hero' && iv && (

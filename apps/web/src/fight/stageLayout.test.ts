@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { PORTRAIT, boardReserve, frameFor, portraitMyY } from './stageLayout';
+import {
+  PORTRAIT,
+  PORTRAIT_CROWD_ROW,
+  boardReserve,
+  frameFor,
+  portraitCrowd,
+  portraitMyY,
+} from './stageLayout';
 
 describe('the upright stage', () => {
   it('a fixed final-boss frame contains Drago’s wings and leaves room for his court’s plates', () => {
@@ -33,5 +40,21 @@ describe('the upright stage', () => {
       expect(portraitMyY(w, h) - 215, `${w}x${h}`).toBeGreaterThanOrEqual(foePlateBottom);
     }
     expect(portraitMyY(412, 5000)).toBe(PORTRAIT.myMaxY);
+  });
+
+  it('closes the board up only for two rows of enemies with companions of yours, held upright, outside the Arena', () => {
+    expect(portraitCrowd('portrait', false, 6, 0, 1)).toBe(true);
+    expect(portraitCrowd('portrait', false, 4, 0, 2)).toBe(true);
+    // one row of enemies, or no companion: the board is as it was
+    expect(portraitCrowd('portrait', false, 3, 0, 1)).toBe(false);
+    expect(portraitCrowd('portrait', false, 6, 0, 0)).toBe(false);
+    // a Warden's escort has its own layout, and so have the Arena and a screen held sideways
+    expect(portraitCrowd('portrait', false, 6, 1, 1)).toBe(false);
+    expect(portraitCrowd('portrait', true, 6, 0, 1)).toBe(false);
+    expect(portraitCrowd('compact', false, 6, 0, 1)).toBe(false);
+    expect(portraitCrowd('wide', false, 6, 0, 1)).toBe(false);
+    // (closer than the two rows stand when the board is theirs alone, and still apart)
+    expect(PORTRAIT_CROWD_ROW).toBeLessThan(355);
+    expect(PORTRAIT_CROWD_ROW).toBeGreaterThan(200);
   });
 });

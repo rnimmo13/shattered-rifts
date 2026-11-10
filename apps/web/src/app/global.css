@@ -61,6 +61,15 @@ a {
   text-decoration: none;
 }
 
+/* a button or a field does not take the page's font by itself: without this, any button whose own rule sets no font shows the
+   browser's (Arial on a phone), beside text in the game's (mobile review, 2026-11-10; a rule with a class still wins) */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 ::selection {
   background: rgb(143 91 255 / 0.5);
 }
@@ -1042,4 +1051,26 @@ body:has(.learn) {
   padding: 0;
   list-style: none;
   font-size: 0.92rem;
+}
+
+/* ---- touch screens (mobile review, 2026-11-10) ---- */
+/* no grey flash under a tapped button (every button has its own pressed look), and no zoom from a quick double tap on a control */
+button,
+a,
+[role='button'],
+select,
+label {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+/* a fight fills the screen: a drag on it never pulls the page down to reload it or rubber-bands the whole game */
+html:has(.fight),
+html:has(.fight) body {
+  overscroll-behavior: none;
+}
+/* the build's number is over the hand and the piles on a phone in a fight; it is always in Settings > About and updates */
+@media (pointer: coarse) {
+  body:has(.fight) .game-version {
+    display: none;
+  }
 }

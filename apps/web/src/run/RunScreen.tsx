@@ -472,14 +472,7 @@ export default function RunScreen() {
     };
   }, [wanted, act]);
 
-  if (!run)
-    return (
-      <Sanctum
-        onStart={startRun}
-        notice={notice}
-        onDismiss={() => say(null)}
-      />
-    );
+  if (!run) return <Sanctum onStart={startRun} notice={notice} onDismiss={() => say(null)} />;
 
   // ---- a duel replaces the whole screen ----
   if (run.phase === 'duel' && run.context) {
@@ -986,7 +979,7 @@ function SeedButton({ code }: { code: string }) {
       {...tipAttrs({
         kicker: 'Seed',
         title: showSeed(code),
-        text: 'Share this seed and a friend can play the same maps, Wardens and offers: they type it in the Sanctum under Play a shared seed. Click to copy it.',
+        text: 'Share this seed and a friend can play the same maps, Wardens and offers: they type it in the Sanctum under Play a shared seed. Select it to copy it.',
       })}
       onClick={() => {
         void navigator.clipboard?.writeText(showSeed(code)).then(
@@ -1106,6 +1099,14 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__actions">
+        {/* (Home always comes first, on every screen size: Robert, 2026-11-10) */}
+        <button
+          className="btn btn--small btn--ghost runbar__home"
+          title="Leave for now. This run is kept, and you can carry on from the home page."
+          onClick={props.onHome}
+        >
+          <span>Home</span>
+        </button>
         {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it, or while
             the deck as it stands would not pass the Arena's check (DECISIONS #442); the details in its tip (DECISIONS #345) */}
         <a
@@ -1132,7 +1133,7 @@ function RunBar(props: {
                     ? { lines: problems.map((p, i) => ({ title: `${i + 1}.`, text: p.text })) }
                     : {}),
                   text: 'The Arena checks every deck before a match. Fix these on the way and the deck is entered again after your next fight.',
-                  hint: 'Click to see what the Arena takes.',
+                  hint: 'Select it to see what the Arena takes.',
                 }
               : {
                   kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
@@ -1147,13 +1148,6 @@ function RunBar(props: {
         <SettingsButton />
         <button className="btn btn--small runbar__deck" onClick={props.onDeck}>
           <span>Deck ({run.deck.length})</span>
-        </button>
-        <button
-          className="btn btn--small btn--ghost"
-          title="Leave for now. This run is kept, and you can carry on from the home page."
-          onClick={props.onHome}
-        >
-          <span>Home</span>
         </button>
         <button className="btn btn--small btn--ghost" onClick={props.onAbandon}>
           <span>Abandon</span>

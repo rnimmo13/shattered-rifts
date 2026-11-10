@@ -505,3 +505,59 @@ div.pvp__deck {
   width: min(44rem, 92vw);
   margin: 1.4rem auto 0.8rem;
 }
+
+/* The match rules and the recording notice (mobile review, 2026-11-10): one line to open on a phone, open already on a wide
+   screen. */
+.pvp__more {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+.pvp__more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-inline: auto;
+  padding: 0.3rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-gold-dark);
+  background: rgb(8 10 20 / 0.6);
+  color: var(--c-gold-light);
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+  width: fit-content;
+}
+.pvp__more > summary::-webkit-details-marker {
+  display: none;
+}
+.pvp__more > summary::after {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--t-fast, 0.15s) var(--ease-out, ease-out);
+}
+.pvp__more[open] > summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+.pvp__more[open] > summary {
+  border-color: var(--c-gold);
+}
+.pvp__more > p {
+  margin: 0.6rem 0 0;
+}
+/* (a wide screen reads them as plain paragraphs, as before: no button to close them) */
+@media (min-width: 40.01rem) {
+  .pvp__more > summary {
+    display: none;
+  }
+}

@@ -46,6 +46,54 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.245.0",
+    date: "2026-11-10",
+    title: "A phone pass: tap to read, tap to play",
+    summary: "Phones and tablets get a fight that fits a thumb: tap a card to read it and tap again to play it, bigger controls, tidier boards. The Vault holds 20 decks.",
+    notes: [
+      {
+        kind: "new",
+        title: "Phones: tap to read, tap again to play",
+        text: "On a phone or tablet, a tap lifts a card and shows it big with its keywords and \"Tap again to play\". Tap the card again (or the big card) to play it; tap anywhere else to put it back. Dragging a card up onto the field still plays it at once, and a card that needs a target still goes straight to choosing one. On the enemy's turn a tap still lifts a card to read it. Nothing changes with a mouse.",
+      },
+      {
+        kind: "changed",
+        title: "Phones: a fight that fits a thumb",
+        text: "End turn, the menu, the potion belt and the Boons button are a finger's size. A teaching tip is a sheet over your hand, so your hero and the enemies stay in view while you read it. No key names on a touch screen (End turn's \"E\", \"press 1-9\"). The build number and \"Saved to account\" no longer lie on your hand. There is no battle log in a fight on a phone: the fight's log is still in its recap.",
+      },
+      {
+        kind: "changed",
+        title: "Phones: crowded boards",
+        text: "Held upright, a group of more than three enemies (or a Warden's escort) keeps to the right of your hero and never covers it, and two rows of enemies stand further apart so their next moves are readable. With a companion of your own on the board, the enemies close up and show health bars without names (the name shows while you aim at one), and your companion stands clear of them with its next move on its shoulder.",
+      },
+      {
+        kind: "fixed",
+        title: "The Shaman's totems on a small screen",
+        text: "Each totem's numbers sit beside it and Spirit sits above the row, so they no longer cover the next totem, his name or his health bar.",
+      },
+      {
+        kind: "changed",
+        title: "Phones: the pages",
+        text: "Wider page margins. The Arena page keeps its match rules under \"How a match works\", so your rank and decks are on the first screen. The run header's buttons (Deck, Abandon, Settings) are taller. The Sanctum and the leaderboards fit the screen (they were cut off at the right, or zoomed out). How to play and the Card library say \"tap\", not \"press E\" or \"hover\".",
+      },
+      {
+        kind: "fixed",
+        title: "Buttons in the game's font",
+        text: "A button with no font of its own (the Sanctum's tiles, the Threshold's choices, the save line) showed the browser's font. They now use the game's, on every screen.",
+      },
+      {
+        kind: "changed",
+        title: "The Vault holds 20 decks",
+        text: "Saved decks: 20 (was 10), and all of them can come to a match. A Vault already full at 10 simply has room for 10 more.",
+      },
+      {
+        kind: "changed",
+        title: "The map and the Arena page",
+        text: "The map's header starts with Home, on every screen size. The Arena page's links (Saved decks, Leaderboards, Ghost decks, What the Arena takes) are tiles like the home screen's.",
+      },
+    ],
+  },
+  {
     version: "0.244.0",
     date: "2026-11-10",
     title: "Clearer Arena checks, a new menu",

@@ -127,8 +127,8 @@ export function PotionButton(props: {
         potionTip(
           p,
           aimed
-            ? 'Click, then choose a target. Free: costs no Mana.'
-            : 'Click to drink. Free: costs no Mana.',
+            ? 'Pick it, then choose a target. Free: costs no Mana.'
+            : 'Pick it to drink. Free: costs no Mana.',
         ),
       )}
     >

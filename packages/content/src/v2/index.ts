@@ -1032,7 +1032,8 @@ import { TRIMMED_CARDS } from './retired';
  */
 export const V2_DECK_RULES = {
   minSize: 8,
-  vaultSlots: 10,
+  // (20 since 2026-11-10, Robert: "lets increase saved decks limit to 20"; was 10)
+  vaultSlots: 20,
   maxLegendary: 1,
   maxAncestral: 2,
 } as const;

@@ -92,6 +92,8 @@ import {
   boardReserve,
   figureScale,
   portraitMyY,
+  portraitCrowd,
+  PORTRAIT_CROWD_ROW,
   foldsSide,
   frameFor,
   stageModeFor,
@@ -111,7 +113,8 @@ import { PickModal } from './PickModal';
 import { isHandPick, pickStep, pickVerb, premeditateIn, prompt as pickPrompt } from './handPick';
 import { tipAttrs, type TipContent } from '../ui/tip';
 import { STATUS_INFO, UI_TIPS } from './info';
-import { loadSeen, loadTipsOn, nextTip, saveSeen } from './tips';
+import { loadSeen, loadTipsOn, nextTip, saveSeen, tipText } from './tips';
+import { touchScreen } from '../ui/touch';
 import { AuraList, LumenCounter, ReservesCounter, RuneArc, SnareRow } from './SidePanel';
 import { StanceAura, StanceChip } from './StanceAura';
 import { ShieldBubble } from './ShieldBubble';
@@ -317,8 +320,10 @@ function specsFrom(
           ? selectionFormation(line, P.foeAllyNear, P.foeAllyFar)
           : selectionFormation(
               line,
-              P.foeNearCrowd,
-              bosses.length ? Math.max(P.foeNearCrowd + 200, escortEdge) : P.foeFar,
+              // (one row stands above your hero and may reach left over it; a second row, or a Warden's escort, which stands lower,
+              // comes down to your hero's height, so they keep to the right of your hero and never cover it, Robert 2026-11-10)
+              line.length > 3 || bosses.length ? P.foeNear : P.foeNearCrowd,
+              bosses.length ? Math.max(P.foeNear + 200, escortEdge) : P.foeFar,
             )
         : selectionFormation(line, P.allyNear, P.allyFar)
       : ds === 'b'
@@ -329,6 +334,17 @@ function specsFrom(
           )
         : selectionFormation(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
     let n = 0;
+    const foeRows = Math.max(0, ...fit.rows) + 1;
+    // (your companions need the floor under the enemies' front row: see portraitCrowd)
+    const crowd =
+      ds === 'b' &&
+      portraitCrowd(
+        mode,
+        pvp,
+        line.length,
+        bosses.length,
+        s.sides[me].units.filter((u) => u.kind === 'ally').length,
+      );
     for (const e of sized) {
       const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
@@ -356,7 +372,13 @@ function specsFrom(
           ? {
               y:
                 ds === 'b'
-                  ? P.foeY + (bosses.length && !e.boss ? 140 : 0) + row * 200
+                  ? P.foeY +
+                    (bosses.length && !e.boss ? 140 : 0) +
+                    // (two rows and no Warden: the back row a little higher and the rows further apart, so the front row's next
+                    // moves sit over the floor between them rather than on the back row's faces)
+                    (foeRows > 1 && !bosses.length
+                      ? row * (crowd ? PORTRAIT_CROWD_ROW : 355) - 140
+                      : row * 200)
                   : portraitMyY() - row * 200,
             }
           : !e.hero
@@ -571,6 +593,8 @@ export function FightView(props: {
   const [selected, setSelected] = useState<string | null>(null);
   const [hoverCard, setHoverCard] = useState<HandCard | null>(null);
   const [hoverRect, setHoverRect] = useState<DOMRect | null>(null);
+  /** a finger tapped the card in `hoverCard`: it waits, shown big, and a second tap (on it, or on the big card) plays it */
+  const [hoverArmed, setHoverArmed] = useState(false);
   const [hoverUnit, setHoverUnit] = useState<string | null>(null);
   const [dragTargets, setDragTargets] = useState<ReadonlySet<string> | null>(null);
   /** a card that summons, played with every companion slot taken: now choosing which companion leaves */
@@ -2105,6 +2129,14 @@ export function FightView(props: {
   const foeSide: Side = mySide === 'a' ? 'b' : 'a';
   const foePlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === foeSide) ?? null;
   const them = view?.sides[foeSide];
+  // (two rows of enemies and companions of yours, held upright: the board closes up, see stageLayout's portraitCrowd)
+  const crowd = portraitCrowd(
+    mode,
+    !!pvp,
+    them?.units.filter((u) => u.kind !== 'hero' && !isWardenFigure(u.def)).length ?? 0,
+    them?.units.filter((u) => u.kind !== 'hero' && isWardenFigure(u.def)).length ?? 0,
+    me?.units.filter((u) => u.kind === 'ally').length ?? 0,
+  );
   const theirSetup = foeSide === 'a' ? setup.a : setup.b;
   const foeBoons: readonly string[] =
     'boons' in theirSetup && Array.isArray(theirSetup.boons) ? theirSetup.boons : [];
@@ -2205,7 +2237,13 @@ export function FightView(props: {
     const at = side === mySide ? heroPlaced : foePlaced;
     if (!at) return null;
     const mirror = side !== mySide || mode === 'portrait';
-    const size = Math.max(mode === 'portrait' ? 40 : 54, Math.round(at.h * 0.24));
+    // (a small screen: the numbers beside each totem, and the row no taller than the figure it stands by, so nothing of it lies on
+    // the hero's name and health bar below or on the enemies above; in the Arena a name is over each hero, so Spirit stays below)
+    const small = mode !== 'wide';
+    const base = Math.max(mode === 'portrait' ? 40 : 54, Math.round(at.h * 0.24));
+    const size = small
+      ? Math.min(base, Math.max(26, Math.floor((at.h * 1.05) / Math.max(3, held.length))))
+      : base;
     return (
       <TotemArc
         key={`totems-${side}`}
@@ -2219,9 +2257,12 @@ export function FightView(props: {
             ? Math.min(window.innerWidth - size * 1.05 - 6, at.x + at.w * 0.38 + size * 0.45)
             : Math.max(size * 1.05 + 6, at.x - at.w * 0.38 - size * 0.45)
         }
-        cy={at.y - at.h * 0.55}
+        // (held upright the enemies' plates are just above your head: the row sits a little lower, level with the figure)
+        cy={at.y - at.h * (mode === 'portrait' ? 0.47 : 0.55)}
         size={size}
         mirror={mirror}
+        beside={small}
+        spiritAbove={small && !pvp}
       />
     );
   };
@@ -2286,6 +2327,21 @@ export function FightView(props: {
   }
   // (Arena HP costs are five times the card's number, and every card in this fight says so: DECISIONS #707, #713)
   const hpCostMult = live?.mode === 'pvp' ? ARENA_HP_COST_MULT : 1;
+  // what a second tap on the card a finger lifted will do, in a word under it
+  // (the card as it is in the hand now, not as it was when it was lifted: a card lifted on the enemy's turn can be played on yours)
+  const hoverNow = hoverCard
+    ? (handCards.find((c) => c.inst.id === hoverCard.inst.id) ?? hoverCard)
+    : null;
+  const armHint =
+    hoverNow && hoverArmed
+      ? !myTurn
+        ? { go: false, text: 'Not your turn' }
+        : waiting
+          ? { go: false, text: 'One moment' }
+          : hoverNow.playable
+            ? { go: true, text: 'Tap again to play' }
+            : { go: false, text: 'Cannot be played now' }
+      : null;
   // (DECISIONS #432) how each damage number on the hovered card is made, step by step, when it is one number against one enemy
   const hoverLive = hoverCard ? liveDamage.get(hoverCard.inst.id) : undefined;
   const damageSteps = hoverLive
@@ -2351,7 +2407,7 @@ export function FightView(props: {
   return (
     <HpCostMult.Provider value={hpCostMult}>
     <div
-      className={`fight fight--${mode}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
+      className={`fight fight--${mode}${crowd ? ' fight--crowd' : ''}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
       style={
         {
           '--cw': `${cw}px`,
@@ -2529,6 +2585,7 @@ export function FightView(props: {
             scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
             // (an intent hangs from this: room for the top bar and the intent itself)
             intentTop={mode === 'wide' ? '7.8rem' : mode === 'portrait' ? '5.8rem' : '6.6rem'}
+            allyIntentLow={crowd}
             preview={preview}
             items={placed}
             heroId={heroUnit?.id ?? null}
@@ -2753,34 +2810,48 @@ export function FightView(props: {
               if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
               refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
             }}
-            onHover={(c, r) => {
+            onHover={(c, r, armed) => {
               // (the hand lifts the card itself, at once; the rest of the screen, the tooltip and the previews, follows when it
               // can, so re-drawing it all never holds up the card under the pointer)
               startTransition(() => {
                 setHoverCard(c);
                 setHoverRect(c && r ? r : null);
+                setHoverArmed(!!c && !!armed);
               });
             }}
           />
           {hoverCard && hoverRect && !selected && !dragCard && mode === 'portrait' && (
             // held upright (DECISIONS #443): the card the finger is on is shown big above the hand, as it reads now, with its notes
-            <div className="fight__peek" aria-hidden>
+            <div
+              className={`fight__peek${hoverArmed ? ' is-armed' : ''}`}
+              {...(hoverArmed ? {} : { 'aria-hidden': true })}
+              // (a card that waits after a tap: the big card plays it, like a second tap on the small one)
+              onClick={() => {
+                if (!hoverArmed || !hoverNow || pickPool || waiting || finished) return;
+                if (!hoverNow.playable || needsAim(hoverNow)) return;
+                commit(hoverNow, hoverNow.targets[0] ?? null);
+                setHoverCard(null);
+              }}
+            >
               <FightCard
                 db={db}
-                def={hoverCard.def}
+                def={(hoverNow ?? hoverCard).def}
                 width={Math.round(Math.min(260, window.innerWidth * 0.56))}
                 playable={
-                  pickPool ? pickPool.includes(hoverCard.inst.id) : hoverCard.playable && !waiting
+                  pickPool ? pickPool.includes((hoverNow ?? hoverCard).inst.id) : (hoverNow ?? hoverCard).playable && !waiting
                 }
-                dimmed={pickPool ? !pickPool.includes(hoverCard.inst.id) : !hoverCard.playable}
-                {...(hoverCard.inst.bonus ? { bonus: hoverCard.inst.bonus } : {})}
-                {...(hoverCard.cost !== undefined && hoverCard.cost !== hoverCard.def.cost
-                  ? { cost: hoverCard.cost }
+                dimmed={pickPool ? !pickPool.includes((hoverNow ?? hoverCard).inst.id) : !(hoverNow ?? hoverCard).playable}
+                {...((hoverNow ?? hoverCard).inst.bonus ? { bonus: (hoverNow ?? hoverCard).inst.bonus } : {})}
+                {...((hoverNow ?? hoverCard).cost !== undefined && (hoverNow ?? hoverCard).cost !== (hoverNow ?? hoverCard).def.cost
+                  ? { cost: (hoverNow ?? hoverCard).cost }
                   : {})}
-                {...(liveDamage.has(hoverCard.inst.id)
-                  ? { live: liveDamage.get(hoverCard.inst.id)! }
+                {...(liveDamage.has((hoverNow ?? hoverCard).inst.id)
+                  ? { live: liveDamage.get((hoverNow ?? hoverCard).inst.id)! }
                   : {})}
               />
+              {hoverArmed && armHint && (
+                <span className={`fight__armHint${armHint.go ? ' is-go' : ''}`}>{armHint.text}</span>
+              )}
               {keywords.length > 0 && (
                 <ul className="fight__peekKeys">
                   {keywords.map((k) => (
@@ -2791,6 +2862,12 @@ export function FightView(props: {
                 </ul>
               )}
             </div>
+          )}
+          {hoverCard && hoverArmed && armHint && !selected && !dragCard && mode !== 'portrait' && (
+            // (a phone on its side: the same words, over the hand)
+            <span className={`fight__armHint fight__armHint--float${armHint.go ? ' is-go' : ''}`}>
+              {armHint.text}
+            </span>
           )}
           {hoverCard &&
             hoverRect &&
@@ -3108,7 +3185,7 @@ export function FightView(props: {
           {tip && flourishes.length === 0 && (
             <aside className="fight__tip" role="note" aria-live="polite">
               <b>{tip.title}</b>
-              <p>{tip.text}</p>
+              <p>{tipText(tip, touchScreen())}</p>
               <button className="btn btn--small" onClick={() => dismissTip(tip.id)}>
                 <span>Got it</span>
               </button>

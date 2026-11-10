@@ -87,6 +87,9 @@
   max-width: 62rem;
 }
 .board__wrap {
+  /* (positioned, so the table's screen-reader labels, absolutely placed, are clipped by its own scroll: unpositioned they were
+     placed against the page and made a phone's page 629px wide, which the browser then zoomed out, Robert 2026-11-10) */
+  position: relative;
   overflow-x: auto;
   border-radius: 10px;
   border: 1px solid rgb(255 255 255 / 0.16);

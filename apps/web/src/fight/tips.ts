@@ -7,6 +7,8 @@ export interface Tip {
   id: string;
   title: string;
   text: string;
+  /** the same tip in a touch screen's words (no keys, no clicks), where the two differ */
+  touch?: string;
 }
 
 /** What the fight's deck can do, so a tip can show before the first totem or Spell Power is on the board. */
@@ -24,11 +26,17 @@ const anyUnit = (v: CombatView, pred: (u: CombatView['sides']['a']['units'][numb
   [...v.sides.a.units, ...v.sides.b.units].some(pred);
 
 /** In the order they are offered: the basics first, then whatever the fight puts in front of the player. */
+/** A tip's words for this screen: a touch screen's own where it has them. */
+export const tipText = (tip: Tip, touch: boolean): string =>
+  touch && tip.touch ? tip.touch : tip.text;
+
 export const TIP_RULES: TipRule[] = [
   {
     id: 'basics',
     title: 'Your turn',
     text: 'Tap or click a card to play it (or drag it up, or press 1-9); on a touch screen, a long press lifts it to read. You have 3 Mana a turn, and each card shows its cost. Above every enemy is what it will do next. Press E to end your turn. Your hand holds at most 10 cards.',
+    touch:
+      'Tap a card to lift it and read it, then tap it again to play it, or drag it straight up onto the field. You have 3 Mana a turn, and each card shows its cost. Above every enemy is what it will do next. Tap End turn when you are done. Your hand holds at most 10 cards.',
     when: () => true,
   },
   {
@@ -167,5 +175,12 @@ export function saveTipsOn(on: boolean): void {
 /** The first tip that applies and has not been seen, or null. */
 export function nextTip(v: CombatView, c: TipContext, seen: ReadonlySet<string>): Tip | null {
   const rule = TIP_RULES.find((r) => !seen.has(r.id) && r.when(v, c));
-  return rule ? { id: rule.id, title: rule.title, text: rule.text } : null;
+  return rule
+    ? {
+        id: rule.id,
+        title: rule.title,
+        text: rule.text,
+        ...(rule.touch ? { touch: rule.touch } : {}),
+      }
+    : null;
 }

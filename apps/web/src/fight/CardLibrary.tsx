@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { cardText, type CardDef } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
 import { Grimoire } from './Grimoire';
+import { touchScreen } from '../ui/touch';
 import { bringsCompanion, catalog, type PoolKey } from './deckCatalog';
 import '../play/play.css';
 
@@ -85,7 +86,8 @@ export function CardLibrary() {
         </a>
         <h1 className="lib__title">Card library</h1>
         <p className="lib__lead">
-          {cards.length} card{cards.length === 1 ? '' : 's'} shown. Hover a card for a big preview.
+          {cards.length} card{cards.length === 1 ? '' : 's'} shown.{' '}
+          {touchScreen() ? 'Tap a card for a big preview.' : 'Hover a card for a big preview.'}
         </p>
       </header>
       <div className="grim__filters lib__filters">

@@ -251,7 +251,9 @@ export const QUEUE_WIDEN_MS = 20_000;
 /** Arena ratings further apart than this (about two divisions) are not paired until the wait widens. */
 export const QUEUE_RATING_GAP = 100;
 /** The most decks a player brings to a match (their whole Vault): they choose one before each game. */
-export const MAX_MATCH_DECKS = 10;
+// (20 with the Vault's 20 slots, DECISIONS #730, so every deck it holds can come; 20 decks of 80 cards are about 40 KB, under
+// the server's 64 KB message limit)
+export const MAX_MATCH_DECKS = 20;
 /** How long both players have to choose a deck (and who goes first) before each game, ms. */
 export const PICK_MS = 30_000;
 

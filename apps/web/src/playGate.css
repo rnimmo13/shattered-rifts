@@ -42,10 +42,30 @@
   border-radius: 0 0.3rem 0 0;
 }
 .play-status button {
+  /* (a button does not take the page's font by itself: it was the browser's own, bigger than the line it sits in) */
+  font: inherit;
   color: #f0d792;
   background: none;
   border: 0;
   text-decoration: underline;
   cursor: pointer;
   padding: 0.25rem;
+}
+
+/* A phone in a fight (mobile review, 2026-11-10): the line lies on the hand, so "Saved to account" is not shown at all, and
+   while a save is still on its way only its words are (the way to switch device is on the map, where it is safe to leave). */
+@media (pointer: coarse) {
+  body:has(.fight) .play-status[data-sync='saved'] {
+    display: none;
+  }
+  body:has(.fight) .play-status[data-sync] button {
+    display: none;
+  }
+  .play-status {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .play-status button {
+    min-height: 32px;
+    padding: 0.25rem 0.5rem;
+  }
 }

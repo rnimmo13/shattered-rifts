@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createCombat, viewFor } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { TIP_RULES, nextTip } from './tips';
+import { TIP_RULES, nextTip, tipText } from './tips';
 
 const viewOf = (hero: HeroId) => {
   const { state } = createCombat(db, {
@@ -38,5 +38,18 @@ describe('teaching tips', () => {
     }
     const seen = new Set(ids);
     expect(nextTip(viewOf('monk'), { usesRunes: true, usesStars: true }, seen)).toBeNull();
+  });
+
+  it('speaks the words of a touch screen on a touch screen: no keys, no clicks, no hovering', () => {
+    const basics = nextTip(viewOf('knight'), ctx, new Set());
+    expect(basics).not.toBeNull();
+    if (!basics) return;
+    expect(tipText(basics, false)).toBe(basics.text);
+    expect(tipText(basics, true)).not.toBe(basics.text);
+    for (const r of TIP_RULES) {
+      const words = tipText(r, true);
+      expect(words.length).toBeGreaterThan(30);
+      expect(words).not.toMatch(/press [A-Z0-9]|click|hover/i);
+    }
   });
 });

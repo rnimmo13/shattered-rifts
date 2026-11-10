@@ -42,6 +42,60 @@
   background: rgb(40 140 80 / 0.18);
   border: 1px solid rgb(110 220 150 / 0.4);
 }
+/* the Arena's other pages, as tiles (PvpScreen): four across, two by two on a phone */
+.pvp__links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 54rem;
+  margin: 0.2rem auto 0.8rem;
+}
+.pvp__link {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.2rem;
+  min-height: 5.2rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgb(212 168 75 / 0.3);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.015));
+  color: var(--c-gold-light);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+.pvp__link b {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.05em;
+}
+.pvp__link small {
+  color: var(--c-text-dim);
+  font-size: 0.8rem;
+}
+.pvp__link:hover,
+.pvp__link:focus-visible {
+  border-color: var(--c-gold-light);
+  background-color: rgb(241 216 143 / 0.08);
+  transform: translateY(-2px);
+  outline: none;
+}
+@media (max-width: 40rem) {
+  .pvp__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pvp__link:hover,
+  .pvp__link:focus-visible {
+    transform: none;
+  }
+}
 /* (on the Arena screen: under a deck it would leave out) */
 .pvp__decks li {
   flex-wrap: wrap;

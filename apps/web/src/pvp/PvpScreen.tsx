@@ -10,6 +10,7 @@ import {
   type Entry,
 } from '@sr/pvp';
 import { ArenaProblems } from './ArenaRules';
+import { LineIcon } from '../app/HomeLinks';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import { arenaFor } from './arenaVenue';
@@ -58,6 +59,18 @@ export default function PvpScreen() {
   const [name, setNameState] = useState(() => getName());
   const [code, setCode] = useState('');
   const [snap, setSnap] = useState<Snapshot>(EMPTY);
+  // (a wide screen shows the match rules open; a phone folds them under one line)
+  const [rulesWide, setRulesWide] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 40.01rem)').matches,
+  );
+  const [rulesShown, setRulesShown] = useState(false);
+  useEffect(() => {
+    // (a phone turned on its side becomes a wide screen: the rules open with it, as their button is gone there)
+    const mq = window.matchMedia('(min-width: 40.01rem)');
+    const on = (): void => setRulesWide(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
   const [confirmResign, setConfirmResign] = useState(false);
   /** your rank this season (once the board has said; nothing when it cannot be reached) */
   const [ranked, setRanked] = useState<RankedView['you']>(null);
@@ -279,6 +292,34 @@ export default function PvpScreen() {
     setConfirmResign(false);
   }
 
+  // (the Arena's other pages, as tiles like the home screen's: Robert, 2026-11-10; shown with or without decks)
+  const arenaLinks = (
+    <nav className="pvp__links" aria-label="More for the Arena">
+      <a className="pvp__link" href="#/decks">
+        <LineIcon name="decks" />
+        <b>Saved decks</b>
+        <small>
+          {decks.length} of {VAULT_SLOTS} saved
+        </small>
+      </a>
+      <a className="pvp__link" href="#/board">
+        <LineIcon name="boards" />
+        <b>Leaderboards</b>
+        <small>Ranks and wins</small>
+      </a>
+      <a className="pvp__link" href="#/ghosts">
+        <LineIcon name="ghosts" />
+        <b>Ghost decks</b>
+        <small>Decks the computer plays</small>
+      </a>
+      <a className="pvp__link" href="#/arena-rules">
+        <LineIcon name="learn" />
+        <b>What the Arena takes</b>
+        <small>The deck rules</small>
+      </a>
+    </nav>
+  );
+
   const deckList = (
     <ul className="pvp__decks" aria-label="Your decks">
       {decks.map((d, i) => (
@@ -321,16 +362,30 @@ export default function PvpScreen() {
           your <b>Arena rank</b>, from Bronze to Diamond, for the month&apos;s season. A run saves
           its deck to your Vault as you play ({vault.length} of {VAULT_SLOTS} used).
         </p>
+        {/* (on a phone the match rules and the recording notice fold away under one line, so your rank and the way into a match
+            are on the first screen; a wide screen shows them open, as before) */}
+        <details
+          className="pvp__more"
+          open={rulesWide || rulesShown}
+          onToggle={(e) => {
+            if (!rulesWide) setRulesShown(e.currentTarget.open);
+          }}
+        >
+          <summary>
+            <span>How a match works</span>
+          </summary>
+          <p>
+            1,000 HP each. Second player: +1 card on their first turn. Games last at most 30
+            minutes; three consecutive passes without playing a card by both players end in a draw.
+          </p>
+          <p className="pvp__balanceNotice">
+            Completed online Arena games record both decks, moves and combat positions for private
+            developer balance analysis. Your last 10 games are available in History; anyone with a
+            replay link can see both decks and hands. Human and ghost results are reviewed
+            separately.
+          </p>
+        </details>
         {/* (someone the board does not know yet starts where everyone starts) */}
-        <p>
-          1,000 HP each. Second player: +1 card on their first turn. Games last at most 30 minutes;
-          three consecutive passes without playing a card by both players end in a draw.
-        </p>
-        <p className="pvp__balanceNotice">
-          Completed online Arena games record both decks, moves and combat positions for private
-          developer balance analysis. Your last 10 games are available in History; anyone with a
-          replay link can see both decks and hands. Human and ghost results are reviewed separately.
-        </p>
         <RankPanel rank={ranked} place={ranked?.place ?? null} />
       </header>
 
@@ -425,6 +480,7 @@ export default function PvpScreen() {
               {nameProblem}
             </p>
           )}
+          {decks.length === 0 && online !== 'checking' && arenaLinks}
           {decks.length === 0 ? (
             <section className="pvp__status pvp__nodecks" aria-live="polite">
               {online === 'checking' ? (
@@ -455,11 +511,7 @@ export default function PvpScreen() {
                 All of them come to every match: once you are matched, you choose one before each
                 game, and your opponent does the same without seeing yours.
               </p>
-              <p className="pvp__deckslot">
-                {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
-                <a href="#/board">Leaderboards</a> · <a href="#/ghosts">Ghost decks</a> ·{' '}
-                <a href="#/arena-rules">What the Arena takes</a>
-              </p>
+              {arenaLinks}
               {deckList}
               {problem && (
                 <p className="pvp__error">

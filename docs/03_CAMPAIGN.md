@@ -61,7 +61,7 @@ Choose character ──► RUN at Rift Tier I (fresh 20-card starter, 2 Resolve 
    (the far realms, Gloomfen / the Hollow Crown / the Far Rifts, have no stage of their own: DECISIONS #437)
    (the four realms, Aurelion / Nexus-9 / Wyldmaw / Umbral Veil, are shuffled by the run seed)
 ──► LOOP CLEARED: choose
-      SAVE      → a copy of the deck goes to your Vault (10 slots), eligible for PvP; the run carries on (decision #173).
+      SAVE      → a copy of the deck goes to your Vault (20 slots; 10 until decision #730), eligible for PvP; the run carries on (decision #173).
       (Save is also offered at the start of the next tier, before its stage 1.)
       LEAVE     → the run is parked (you can keep up to 3 unfinished runs) and carried on later from the home page.
       CONTINUE  → Tier +1, +1 Resolve (max 3), keep deck & Boons, Stage 1 again (harder, better loot)

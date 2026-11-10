@@ -64,13 +64,21 @@ export function TotemArc(props: {
   size: number;
   /** an opponent's arc, to the right of their hero, bowing the other way */
   mirror?: boolean;
+  /**
+   * A small screen: each totem's numbers sit beside it, on the side away from the hero, not under it (where they covered the next
+   * totem and the hero's name), and no position tilts.
+   */
+  beside?: boolean;
+  /** Spirit above the front totem, not under the last one (where the hero's health bar is on a small screen) */
+  spiritAbove?: boolean;
 }) {
   const art = useTotemArt();
   const n = props.totems.length;
   if (n === 0) return null;
   // (a row longer than five shrinks so the arc keeps the height of five: the positions get smaller as more are gained, DECISIONS #459)
   const tight = n > 5;
-  const s = tight ? Math.round((props.size * 5) / n) : props.size;
+  // (a small screen's row is already sized to the figure by its count: not shrunk twice)
+  const s = tight && !props.beside ? Math.round((props.size * 5) / n) : props.size;
   const gap = s * 1.02;
   const dir = props.mirror ? 1 : -1;
   // (each position on the arc: the middle bows out away from the hero, the ends curl back towards him)
@@ -79,14 +87,14 @@ export function TotemArc(props: {
     return {
       left: props.x + dir * (1 - t * t) * s * 0.45,
       top: props.cy + (i - (n - 1) / 2) * gap,
-      tilt: -dir * t * 10,
+      tilt: props.beside ? 0 : -dir * t * 10,
     };
   };
   const help = Math.floor(props.spirit / 2);
   const spot = props.summon ? at(props.summon.totem) : null;
   return (
     <div
-      className={`totemarc${props.mirror ? ' totemarc--mirror' : ''}${tight ? ' totemarc--tight' : ''}`}
+      className={`totemarc${props.mirror ? ' totemarc--mirror' : ''}${tight ? ' totemarc--tight' : ''}${props.beside ? ' totemarc--beside' : ''}`}
       aria-label="Totems, in order"
     >
       {props.totems.map((kind, i) => {
@@ -179,8 +187,12 @@ export function TotemArc(props: {
         </span>
       )}
       <div
-        className={`totemarc__spiritBadge${props.spirit > 0 ? ' is-lit' : ''}`}
-        style={{ left: at(n - 1).left, top: at(n - 1).top + s * 0.78 }}
+        className={`totemarc__spiritBadge${props.spirit > 0 ? ' is-lit' : ''}${props.spiritAbove ? ' is-above' : ''}`}
+        style={
+          props.spiritAbove
+            ? { left: at(0).left, top: at(0).top - s * 0.5 - 14 }
+            : { left: at(n - 1).left, top: at(n - 1).top + s * 0.78 }
+        }
         aria-label={`Spirit ${props.spirit}: every totem number +${props.spirit}`}
         {...tipAttrs({
           kicker: 'Spirit',

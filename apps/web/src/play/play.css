@@ -2470,6 +2470,12 @@
   flex-direction: column;
   gap: 0.6rem;
   min-height: 0;
+  /* (never wider than its room: the realms' row slides sideways inside it rather than widening the page, as it did in the Sanctum) */
+  min-width: 0;
+  max-width: 100%;
+}
+.grim--phone > .grim__chips {
+  max-width: 100%;
 }
 .grim--phone.grim--fill {
   height: 100%;
@@ -2528,4 +2534,13 @@
 .grim--phone .grim__empty {
   margin: 2rem 0;
   color: var(--c-text-dim);
+}
+
+/* Phones (mobile review, 2026-11-10): a page's side margins are a thumb's edge wide (16 px, the mobile norm), not 8: text and
+   tiles no longer run to the glass, and a notch held sideways is cleared. */
+@media (max-width: 32rem) {
+  .setup {
+    padding-inline: max(1.2rem, env(safe-area-inset-left, 0px))
+      max(1.2rem, env(safe-area-inset-right, 0px));
+  }
 }

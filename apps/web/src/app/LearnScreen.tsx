@@ -22,7 +22,8 @@ import {
   heroesByRealm,
 } from '@sr/content/v2';
 import { KEYWORD_INFO, STATUS_INFO } from '../fight/info';
-import { TIP_RULES } from '../fight/tips';
+import { TIP_RULES, tipText } from '../fight/tips';
+import { touchScreen } from '../ui/touch';
 import { STATUS_ICONS } from '../art/gameIcons';
 import { GameIcon } from '../ui/GameIcon';
 import { LearnOdds } from './LearnOdds';
@@ -292,6 +293,8 @@ function BoonList() {
 export function LearnScreen() {
   const [tab, setTab] = useState<Tab>('start');
   const basics = TIP_RULES.find((t) => t.id === 'basics');
+  // (a phone's words: tap and hold, no keys)
+  const touch = touchScreen();
   // (the Shaman's spirits, DECISIONS #418)
   const runes = Object.values(COMBAT_DB.totems ?? {});
   // (the old totems' Focus left every live card with the Shaman's rework: not taught, still defined; the Monk's stances are back, #428)
@@ -349,16 +352,20 @@ export function LearnScreen() {
               ['Look at the enemies.', 'The icon above each one shows what it will do next turn.'],
               [
                 'Play cards.',
-                'Drag a card up, click it, or press 1-9. You have 3 Mana a turn and every card shows its cost.',
+                touch
+                  ? 'Tap a card to read it and tap it again to play it, or drag it up onto the field. You have 3 Mana a turn and every card shows its cost.'
+                  : 'Drag a card up, click it, or press 1-9. You have 3 Mana a turn and every card shows its cost.',
               ],
               [
                 'End your turn.',
-                'Press E. Your companions act, then the enemies do what their icons showed.',
+                touch
+                  ? 'Tap End turn. Your companions act, then the enemies do what their icons showed.'
+                  : 'Press E. Your companions act, then the enemies do what their icons showed.',
               ],
               ['Repeat', 'until every enemy is down. Lose all your HP and the fight is lost.'],
             ]}
           />
-          <p className="learn__note">{basics?.text}</p>
+          <p className="learn__note">{basics ? tipText(basics, touch) : ''}</p>
           <h3>Where to go next</h3>
           <ul>
             <li>
@@ -524,7 +531,10 @@ export function LearnScreen() {
       {tab === 'cards' && (
         <section>
           <h2>Card words</h2>
-          <p>Short words on a card. Hover one in a fight to see it again.</p>
+          <p>
+            Short words on a card. {touch ? 'Hold a card' : 'Hover one'} in a fight to see{' '}
+            {touch ? 'them' : 'it'} again.
+          </p>
           <Words ids={CARD_WORDS} />
         </section>
       )}

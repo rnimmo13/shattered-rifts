@@ -150,7 +150,7 @@ export function PlayStatus() {
   if (access.phase !== 'playing') return null;
   if (window.location.hash === '#/run')
     return (
-      <aside className="play-status" role="status">
+      <aside className="play-status" role="status" data-sync={sync}>
         {sync === 'saved'
           ? 'Saved to account'
           : sync === 'saving'

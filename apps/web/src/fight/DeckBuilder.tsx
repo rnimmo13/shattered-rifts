@@ -194,9 +194,7 @@ export function DeckBuilder(props: {
             {visible.map((p, i) => (
               <section key={i} className="grim__page">
                 <h4 className="grim__pagehead">
-                  {searching
-                    ? 'Search results'
-                    : p.heroes.join(' · ') || tabName}
+                  {searching ? 'Search results' : p.heroes.join(' · ') || tabName}
                 </h4>
                 <ul
                   className="grim__cards"
@@ -286,7 +284,7 @@ export function DeckBuilder(props: {
         {props.deckNote}
         {total === 0 && (
           <p className="db__empty">
-            Click cards in the book to add them. A deck needs at least one.
+            Pick cards in the book to add them. A deck needs at least one.
           </p>
         )}
         <ul className="db__deckrows">

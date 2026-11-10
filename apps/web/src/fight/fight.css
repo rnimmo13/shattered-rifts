@@ -3758,6 +3758,18 @@ button.totem:disabled {
   width: min(15rem, 62vw);
   font-size: 1rem;
 }
+/* (a phone: no battle log at all, held upright or on its side, so the board has the room; the log of a fight is still in its recap
+   at the end. Robert, 2026-11-10. A small laptop window, laid out compact too, keeps its log: only a touch screen loses it) */
+.fight.fight--portrait .fight__log,
+.fight.fight--portrait .fight__logCards {
+  display: none;
+}
+@media (pointer: coarse) {
+  .fight.fight--compact .fight__log,
+  .fight.fight--compact .fight__logCards {
+    display: none;
+  }
+}
 /* the teaching tip: across the screen over the floor, clear of the enemies and their next moves */
 .fight--portrait .fight__tip {
   left: 0.4rem;
@@ -4304,4 +4316,228 @@ button.totem:disabled {
   bottom: auto;
   left: 3rem;
   right: 3rem;
+}
+
+/* ==== A small screen's totems (mobile review, 2026-11-10): each totem's numbers beside it, on the side away from the hero, so
+   they never lie on the next totem or on the hero's name and health bar; its order number on the corner nearest the hero ==== */
+.totemarc--beside .totemarc__nums {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 2px);
+  margin: 0;
+  align-items: flex-start;
+  translate: 0 -50%;
+  font-size: 0.82rem;
+}
+.totemarc--beside:not(.totemarc--mirror) .totemarc__nums {
+  left: auto;
+  right: calc(100% + 2px);
+  align-items: flex-end;
+}
+.totemarc--beside .totemarc__order {
+  top: -0.3rem;
+  left: 0;
+  transform: translateX(-35%);
+  min-width: 1.25rem;
+  padding: 0 0.28rem;
+  font-size: 0.7rem;
+}
+.totemarc--beside:not(.totemarc--mirror) .totemarc__order {
+  left: auto;
+  right: 0;
+  transform: translateX(35%);
+}
+.totemarc--beside .totemarc__spot.is-next .totemarc__order {
+  top: -0.55rem;
+}
+.totemarc__spiritBadge.is-above {
+  transform: translate(-50%, -100%);
+}
+.totemarc--beside .totemarc__spiritBadge {
+  padding: 0.08rem 0.4rem 0.08rem 0.1rem;
+  font-size: 0.8rem;
+}
+.totemarc--beside .totemarc__orb {
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 0.95rem;
+}
+
+/* ==== Touch screens (mobile review, 2026-11-10): controls a finger can hit, no key names, and the teaching tip as a sheet over
+   the hand, so the board it talks about stays in view. A mouse keeps everything above as it was. ==== */
+@media (pointer: coarse) {
+  /* no keyboard on a phone: End turn loses its key in every layout */
+  .fight__end kbd {
+    display: none;
+  }
+  /* the one button pressed every turn: a full finger tall */
+  .fight--portrait .fight__end {
+    min-height: 44px;
+    bottom: calc(var(--ctl-bottom) + 0.1rem);
+  }
+  /* (wider and bigger only where the row has the room: the narrowest phones keep their own fit, between the piles) */
+  @media (min-width: 341px) {
+    .fight--portrait .fight__end {
+      min-width: 8.5rem;
+      padding: 0.4rem 1rem;
+      font-size: 1rem;
+    }
+  }
+  /* the bigger potion belt: Arcana and Reserves after it, and the Traps row above it, move clear */
+  @media (min-width: 341px) {
+    .fight--portrait .fight__lumen {
+      left: 11.6rem;
+    }
+    .fight--portrait .fight__snares {
+      bottom: calc(var(--strip-bottom) + 3.7rem);
+    }
+  }
+  /* your Boons and Auras at a glance: tall enough to tap, and on the narrowest phones narrow enough to leave the enemies' next
+     moves alone */
+  .fight__glance {
+    min-height: 34px;
+    align-content: center;
+    padding: 0.4rem 0.6rem;
+  }
+  @media (max-width: 340px) {
+    .fight__glance {
+      width: min(30vw, 12rem);
+      font-size: 0.66rem;
+    }
+  }
+  /* small controls keep their look and take a finger's worth of touch around them (the menu button's ::after is its shine) */
+  .fight__menuBtn::before,
+  .fight__sideToggle::after {
+    content: '';
+    position: absolute;
+    inset: -8px -6px;
+  }
+  .fight__menu .btn--small,
+  .fight__tip .btn,
+  .fight__aimbar .btn {
+    min-height: 44px;
+  }
+  /* the potion belt: a little bigger, within its strip */
+  @media (min-width: 341px) {
+    .fight--portrait .fight__potions {
+      padding: 0.15rem 0.3rem;
+    }
+    .fight--portrait .fight__potions .potionbtn,
+    .fight--portrait .fight__potions .potionslot {
+      width: 3.05rem;
+      height: 3.05rem;
+    }
+  }
+  /* the teaching tip: a sheet at the bottom, over the hand (which waits for "Got it"), never over your hero or the enemies */
+  .fight--portrait .fight__tip {
+    bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.7rem 0.85rem 0.75rem;
+    gap: 0.4rem;
+    z-index: 60;
+    box-shadow:
+      var(--glow-gold),
+      0 -18px 40px 12px rgb(4 5 11 / 0.72);
+  }
+  .fight--portrait .fight__tip p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+  .fight--compact .fight__tip {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    width: min(36rem, 64vw);
+    translate: -50% 0;
+    z-index: 60;
+    box-shadow:
+      var(--glow-gold),
+      0 -14px 34px 10px rgb(4 5 11 / 0.7);
+  }
+  .fight--compact .fight__tip p {
+    font-size: 0.92rem;
+  }
+}
+
+/* Held upright, a companion stands just under the enemies' health bars: what it will do is one short line over its head (its
+   picture and its number; the words are in its tip, a long press), not a tall badge lying on the enemy above it. */
+.fight--portrait .intent--ally {
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.08rem 0.5rem 0.1rem 0.35rem;
+  border-radius: 999px;
+}
+.fight--portrait .intent--ally .intent__name,
+.fight--portrait .intent--ally .intent__area {
+  display: none;
+}
+.fight--portrait .intent--ally img.intent__pic {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ==== A touch screen's two taps (mobile review, 2026-11-10): the card a finger lifted waits, shown big, and says what a second
+   tap will do. The big card takes that tap too. ==== */
+.fight__peek.is-armed {
+  pointer-events: auto;
+  cursor: pointer;
+  animation: peek-arm 0.22s var(--ease-out) both;
+}
+@keyframes peek-arm {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+  }
+}
+.fight__armHint {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  padding: 0.2rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(8 10 22 / 0.94);
+  color: var(--c-ivory);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fight__armHint.is-go {
+  border-color: var(--c-gold);
+  background: linear-gradient(180deg, #4a2fa8, #24124f);
+  color: var(--c-gold-pale);
+  box-shadow:
+    0 0 0 1px rgb(255 224 138 / 0.25),
+    0 0 18px rgb(143 91 255 / 0.65);
+  animation: arm-pulse 1.3s ease-in-out infinite alternate;
+}
+@keyframes arm-pulse {
+  to {
+    box-shadow:
+      0 0 0 1px rgb(255 224 138 / 0.45),
+      0 0 26px rgb(143 91 255 / 0.95);
+  }
+}
+.fight__armHint--float {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--cw, 154px) * 1.4 + 1.6rem);
+  translate: -50% 0;
+  z-index: 211;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fight__peek.is-armed,
+  .fight__armHint.is-go {
+    animation: none;
+  }
+}
+
+/* A crowded upright board (two rows of enemies and companions of your own): an enemy's name folds away, its health bar stays
+   (the name is on its tip, a long press, and on the plate while it is aimed at). */
+.fight--crowd .unit-group.is-enemy .plate:not(.is-target, .is-hover) .plate__name {
+  display: none;
 }

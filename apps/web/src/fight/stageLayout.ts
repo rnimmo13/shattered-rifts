@@ -116,3 +116,20 @@ export const PORTRAIT_CONTROLS = 58;
 export const PORTRAIT_STRIP = 50;
 /** ...and how much your hero's plate needs under the feet (px) */
 export const PORTRAIT_PLATE = 85;
+
+/**
+ * Held upright with two rows of enemies AND companions of your own (mobile review, 2026-11-10): three rows share the board, so the
+ * enemies' rows close up (their names fold away, the health bars stay) and a companion's next move sits on its shoulder, which
+ * leaves your companions their own strip of floor under the enemies' front row.
+ */
+export function portraitCrowd(
+  mode: StageMode,
+  pvp: boolean,
+  foes: number,
+  bosses: number,
+  companions: number,
+): boolean {
+  return mode === 'portrait' && !pvp && bosses === 0 && foes > 3 && companions > 0;
+}
+/** ...and how far apart the enemies' two rows stand then (stage px; 355 when the board is theirs alone). */
+export const PORTRAIT_CROWD_ROW = 310;
