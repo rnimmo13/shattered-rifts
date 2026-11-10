@@ -1548,8 +1548,9 @@ export interface Pending {
   x: number;
   /** 'topdeck': the cards are chosen from the draw pile, not the hand */
   from?: 'draw';
-  /** the card is played a second time when it finishes (a Reverb attack or Mirrored skill) */
-  again?: 'twinned' | 'mirrored' | 'boosted' | 'twinspell' | 'echo' | null;
+  /** the card is played once more for each of these when it finishes (a Reverb attack, a Mirrored skill, a Boosted Aura, the first card under
+   * Echoing Spirit...): each that applies adds its own play (DECISIONS #717) */
+  again?: AgainSource[] | null;
   /** what the card cost when it was played (a "costs 2 or more" Aura reads it when the card finishes) */
   paid?: number;
 }
@@ -1711,6 +1712,9 @@ export interface SideState {
 }
 
 export type Winner = Side | 'draw';
+
+/** What can play a card one more time as it finishes (DECISIONS #717). */
+export type AgainSource = 'twinned' | 'mirrored' | 'boosted' | 'twinspell' | 'echo';
 
 export interface CombatState {
   seed: string;

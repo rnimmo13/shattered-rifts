@@ -695,7 +695,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still
 | All-Seeing | 2 | skill | rare | Add 2 random cards from your pool to your hand (they cost 0 the next time you play them). Consume. |
 | Serenity Incarnate | 3 | aura | rare | At the end of your turn: Heal 3 and gain 6 Barrier. |
 | Gentle Return | 1 | aura | rare | Whenever you enter Serene: Heal 1 and gain 3 Barrier. |
-| Tide of Peace | X | skill | rare | Spends at most 6 Mana. Gain Barrier equal to 4 times the Mana spent. Draw 2 cards. Enter Serene. |
+| Tide of Peace | X | skill | rare | Spends at most 6 Mana. Heal HP equal to 3 times the Mana spent. Draw 2 cards. Enter Serene. Consume. |
 | Litany | 1 | aura | rare | Whenever you play a Skill: Gain 1 Fervor. |
 | Rise Radiant | 2 | skill | rare | Enter Radiant. Consume. |
 | Perfect Balance | 2 | aura | rare | Whenever you enter a stance: Draw 1 card and gain 2 Barrier. |

@@ -46,6 +46,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.238.0",
+    date: "2026-11-09",
+    title: "Extra plays add up, Tide of Peace heals, a tidier Grimoire",
+    summary: "Effects that play a card an extra time now stack, Tide of Peace heals, the Grimoire fills from the top left, and the animated heroes stand centred and the same size.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "Extra plays add up",
+        text: "Every effect that plays a card an extra time now gives its own play. An Aura boosted by Doubled Vow that is also your first card under Echoing Spirit is played three times; before, only one of them counted and the boost was lost. The same goes for Mirrored Skills and Reverb Attacks."
+      },
+      {
+        kind: "balance",
+        title: "Tide of Peace",
+        text: "Now heals 3 HP for each Mana spent (was Barrier 4 per Mana), still draws 2 and enters Serene, and Consumes."
+      },
+      {
+        kind: "changed",
+        title: "Grimoire",
+        text: "Cards fill each page from the top left, row by row, and the next page only starts when one is full. A short pile and a long deck share the same layout and card size."
+      },
+      {
+        kind: "fixed",
+        title: "2D animated models (beta)",
+        text: "Heroes stand centred on their feet and the same size as each other, whatever weapon they hold out."
+      }
+    ],
+    heads: "Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept."
+  },
+  {
     version: "0.237.0",
     date: "2026-11-09",
     title: "2D animated heroes (beta)",

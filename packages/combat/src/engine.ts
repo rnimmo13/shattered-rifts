@@ -66,6 +66,7 @@ import {
   type CardDef,
   type CardId,
   type CardInst,
+  type AgainSource,
   type CombatDb,
   type HeroDef,
   type HeroTrait,
@@ -5973,18 +5974,21 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     return;
   }
   // Reverb attacks and Mirrored skills happen twice (the second time without asking for choices). Whether this card is
-  // doubled is decided before it runs, so a card that gives the status does not spend it on itself.
-  const again =
-    (cd.kind === 'attack' && stacks(hero, 'twinned') > 0 && 'twinned') ||
-    (cd.kind === 'skill' && stacks(hero, 'mirrored') > 0 && 'mirrored') ||
-    // (Signal Boost: the next Aura; Echo Form: the first card of each turn, which spends nothing)
-    (cd.kind === 'power' && stacks(hero, 'boosted') > 0 && 'boosted') ||
-    (sd.played < stacks(hero, 'echoing') && 'echo') ||
-    // (the Moon Owl's command, DECISIONS #430: the next elemental spell, whatever its kind)
-    ((cd.tags?.some((t) => (ELEMENTS as readonly string[]).includes(t)) ?? false) &&
-      stacks(hero, 'twinspell') > 0 &&
-      'twinspell') ||
-    null;
+  // doubled is decided before it runs, so a card that gives the status does not spend it on itself. Every source that applies adds
+  // its own play: a Boosted Aura that is also the first card under Echoing Spirit is played three times (DECISIONS #717).
+  const sources: AgainSource[] = [];
+  if (cd.kind === 'attack' && stacks(hero, 'twinned') > 0) sources.push('twinned');
+  if (cd.kind === 'skill' && stacks(hero, 'mirrored') > 0) sources.push('mirrored');
+  // (Signal Boost: the next Aura; Echo Form: the first card of each turn, which spends nothing)
+  if (cd.kind === 'power' && stacks(hero, 'boosted') > 0) sources.push('boosted');
+  if (sd.played < stacks(hero, 'echoing')) sources.push('echo');
+  // (the Moon Owl's command, DECISIONS #430: the next elemental spell, whatever its kind)
+  if (
+    (cd.tags?.some((t) => (ELEMENTS as readonly string[]).includes(t)) ?? false) &&
+    stacks(hero, 'twinspell') > 0
+  )
+    sources.push('twinspell');
+  const again = sources.length ? sources : null;
   // (the Shaman) the totems' boost for the first spell of its element this turn
   let boost = sd.totems ? spellBoost(r, sd, cd) : 0;
   let spellBonus = 0;
@@ -6023,10 +6027,7 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     r.s.pending.paid = cd.x ? x : paid;
     return;
   }
-  if (again && !r.s.winner) {
-    if (again !== 'echo') addStatus(r, hero, again, -1);
-    runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
-  }
+  playAgain(r, hero, cd, inst, target, x, again);
   extraPlays(r, hero, cd, inst, target, x);
   const asked = r.s.pending as CombatState['pending'];
   if (asked) {
@@ -6035,6 +6036,26 @@ function playCard(r: Run, action: Extract<Action, { type: 'play' }>): void {
     return;
   }
   finishCard(r, sd, inst, cd, target, cd.x ? x : paid);
+}
+
+/** The card again, once for each source that doubles it (a Reverb, a Mirror, a Boost, Echoing Spirit...), each spending its own stack
+ * (Echoing Spirit spends nothing), without asking for choices (DECISIONS #717). */
+function playAgain(
+  r: Run,
+  hero: Unit,
+  cd: CardDef,
+  inst: CardInst | null,
+  target: Unit | null,
+  x: number | undefined,
+  again: readonly AgainSource[] | null,
+): void {
+  // (a list only: an unfinished fight saved under older rules restarts, but a stray value is never looped over letter by letter)
+  const list: readonly AgainSource[] = Array.isArray(again) ? again : [];
+  for (const source of list) {
+    if (r.s.winner || r.s.pending) return;
+    if (source !== 'echo') addStatus(r, hero, source, -1);
+    runOps(r, mkAct(hero, { target, card: cd, inst, ...(x !== undefined ? { x } : {}) }), cd.effects);
+  }
 }
 
 /** The plays a card gets on top of its own, without asking for choices: Replay (Transfigure: that many more times). They run once the
@@ -6184,14 +6205,7 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     if (p.paid !== undefined) more.paid = p.paid;
     return;
   }
-  if (p.again && hero && cd && !r.s.winner) {
-    if (p.again !== 'echo') addStatus(r, hero, p.again, -1);
-    runOps(
-      r,
-      mkAct(hero, { target: findUnit(r.s, p.target) ?? null, card: cd, inst: fin, x: p.x }),
-      cd.effects,
-    );
-  }
+  if (hero && cd) playAgain(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x, p.again ?? null);
   if (fin && cd && hero && !r.s.winner)
     extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
   // (an extra play cannot ask: it never sets a choice, so the card always finishes here)

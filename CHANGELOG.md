@@ -1,3 +1,10 @@
+## 0.238.0 - 2026-11-09
+
+- Every "played an extra time" adds its own play (DECISIONS #717; rules 103): a Boosted Aura under Echoing Spirit is played three times, likewise Mirrored and Twinned cards.
+- Tide of Peace heals 3 per Mana spent and Consumes (#720; was Barrier 4 per Mana).
+- Grimoire fills from the top left, one page at a time, with one layout for any number of cards (#719).
+- 2D animated models (beta) placed by the legs and sized by the body (#718).
+
 ## 0.237.0 - 2026-11-09
 
 - 2D animated hero models from video (DECISIONS #715, #716), a beta setting in Settings > Graphics, off by default: idle, attack (Drunkard hammer or shotgun by card) and death clips for all ten heroes, keyed out in a WebGL2 shader, measured impact moments, game-speed playback; clips with no video use stand-in motion. Desktop serves MP4 in byte ranges. No rules change.

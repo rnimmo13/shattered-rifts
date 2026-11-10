@@ -105,7 +105,8 @@ export interface Entry {
 // 102: Bloodstorm X times, draw 2 (#702); every X card spends at most 6 Mana and its hits carry half the Might and Primed (#709, #711);
 // Auras that give Mana every turn cost 1 more, and Mana cards that pay back more than they cost are consumed (#710). #706-#708 reverted (#712);
 // Arena HP costs x5 and Shatters +5 a threshold, spreading from 50 Fracture (#713).
-export const RULES_VERSION = 102;
+// 103: every source that plays a card again adds its own play (a Boosted Aura that Echoing Spirit also echoes is played three times, #717).
+export const RULES_VERSION = 103;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

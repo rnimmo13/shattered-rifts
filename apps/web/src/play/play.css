@@ -1885,6 +1885,8 @@
 .grim--view .grim__cards {
   gap: 12px 14px;
   align-content: start;
+  /* (cards start at the page's left edge and fill row by row, never a few centred in the middle) */
+  justify-content: start;
 }
 /* a phone (DECISIONS #443): slimmer edges and page-turn buttons (NARROW_BOOK_SIDES, NARROW_PAGE_SIDES in grimoireData.ts) */
 .grim--view.grim--narrow .grim__book {

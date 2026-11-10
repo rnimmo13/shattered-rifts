@@ -127,11 +127,51 @@ function measure(
       y1 = Math.max(y1, y);
     }
   if (x1 < 0) return null;
+  // (the feet stand under the body, not under everything in the frame: a spear, staff or drone held out to one side would pull the
+  // box's middle its way. The middle of what stands in the box's bottom strip, the legs, is where they are)
+  const band = Math.max(2, Math.round((y1 - y0 + 1) * 0.12));
+  let sum = 0;
+  let count = 0;
+  for (let y = y1 - band + 1; y <= y1; y++)
+    for (let x = x0; x <= x1; x++) {
+      const [r, gr, b] = at(x, y);
+      if (Math.abs(r - key[0]) + Math.abs(gr - key[1]) + Math.abs(b - key[2]) < 150) continue;
+      sum += x;
+      count++;
+    }
+  const feetX = count ? sum / count : (x0 + x1) / 2;
+  const solid = (x: number, y: number): boolean => {
+    const [r, gr, b] = at(x, y);
+    return Math.abs(r - key[0]) + Math.abs(gr - key[1]) + Math.abs(b - key[2]) >= 150;
+  };
+  // (the body's size, so every hero stands as tall as the next whatever they hold: its height up a strip over the feet, to the top of
+  // the head (a staff raised to one side, a hawk overhead or a cape is not counted), and its stance, how wide the feet stand)
+  const half = Math.max(2, Math.round((y1 - y0 + 1) * 0.1));
+  let top = y1;
+  for (let y = y0; y <= y1; y++) {
+    let n = 0;
+    for (let x = Math.max(x0, Math.round(feetX) - half); x <= Math.min(x1, Math.round(feetX) + half); x++)
+      if (solid(x, y)) n++;
+    if (n >= 2) {
+      top = y;
+      break;
+    }
+  }
+  let s0 = x1;
+  let s1 = x0;
+  for (let y = y1 - band + 1; y <= y1; y++)
+    for (let x = x0; x <= x1; x++)
+      if (solid(x, y)) {
+        s0 = Math.min(s0, x);
+        s1 = Math.max(s1, x);
+      }
+  const bodyH = Math.max(1, y1 - top + 1);
   return {
     key: [key[0] / 255, key[1] / 255, key[2] / 255],
-    feet: [(x0 + x1) / 2 / scale, (y1 + 1) / scale],
-    bodyH: Math.max(1, (y1 - y0 + 1) / scale),
-    bodyW: Math.max(1, (x1 - x0 + 1) / scale),
+    feet: [feetX / scale, (y1 + 1) / scale],
+    bodyH: bodyH / scale,
+    // (at least half its height: a figure standing with its feet together still takes its room in the line)
+    bodyW: Math.max(bodyH * 0.5, s1 - s0 + 1) / scale,
   };
 }
 
@@ -202,6 +242,9 @@ const MADE: Record<Exclude<VideoClip, 'idle'>, { dur: number; event: string; at:
 const MAX_SIDE = 2048;
 /** the widest a model may stand, as a share of the height it is given: a wide stance is drawn smaller to fit, as a painting would be */
 const MAX_WIDTH = 0.85;
+/** how much of the height a figure is given its body fills: a painting's height takes in its hat, weapon and cape too, so the body alone
+ * is drawn a little shorter than it, the same share for every hero */
+const BODY_SHARE = 0.78;
 
 export class VideoHeroSprite {
   readonly canvas: HTMLCanvasElement;
@@ -314,7 +357,7 @@ export class VideoHeroSprite {
 
   /** the body's size the given height is for: its own height, or more for a stance wider than MAX_WIDTH of it */
   private get fitH(): number {
-    return Math.max(this.a.bodyH, this.a.bodyW / MAX_WIDTH);
+    return Math.max(this.a.bodyH / BODY_SHARE, this.a.bodyW / MAX_WIDTH);
   }
 
   widthFor(height: number): number {

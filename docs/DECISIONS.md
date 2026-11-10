@@ -1674,3 +1674,30 @@ Robert added a basic attack and a death clip for every hero (`assets-src/heroes/
 - **Impact**: where a strike lands in its clip is measured once from its frames (the frame the body reaches furthest forward), so the damage shows as the blow lands; the board waits for it (at least its old 0.6s, else the measured moment and 0.2s). A death clip's landing is at 75% of it.
 - **Game speed**: a clip's video plays at the game's pace (the speed setting, and the hold after a heavy blow), so the video and the board's timers agree.
 - **Desktop**: the local protocol now serves MP4 in byte ranges, as it did music: without them the videos could not seek, so every measured frame was the first and a clip could not start again from its beginning.
+
+## 717 - Every "played an extra time" adds its own play (2026-11-09)
+
+A player (sacagweeda, via Robert) found that Echoing Spirit and Doubled Vow did not add up: an Aura that was both Boosted (Doubled Vow) and the first card of the turn under Echoing Spirit was played twice, not three times, and the Boost was spent for nothing. The engine took only the first source that applied. Robert: "yes fix it".
+
+- Every source that applies adds its own play, each spending its own stack (Echoing Spirit spends nothing): Twinned (Reverb) Attacks, Mirrored Skills, Boosted Auras, the first card under Echoing Spirit, and Twinspell's next elemental card. A Boosted Aura echoed is played three times; a Mirrored Skill echoed likewise.
+- Unchanged: two Doubled Vows (or one echoed) are two Boosts, so the next two Auras are each played twice, not one Aura three times. The 2-copy Aura limit stays a deck limit (#498); plays in a fight are not capped.
+- Rules 103: older unfinished fights restart from their checkpoint.
+
+## 718 - Video models placed and sized by the body, not by everything in the frame (2026-11-09)
+
+Robert: "some of the characters with the 2d animations are not centered like some of the others" and "the sizes of characters is not consistent".
+
+- The feet stand at the middle of what is in the figure's bottom strip (the legs), not the middle of the whole box, so a spear, staff or drone held out to one side no longer pulls the body off its spot.
+- Size comes from the body: its height up a strip over the feet to the top of the head (a raised staff, a hawk overhead or a cape not counted), drawn at 78% of the height a painting would be given (a painting's height takes in its hat and weapon), and its stance width at the feet, capped at 0.85 of that. Every hero now stands the same size; the Knight is as big as he was.
+
+## 719 - The Grimoire fills from the top left, one page at a time (2026-11-09)
+
+Robert: "can you update the grimoire to have a more consistent layout of cards. i want them to always start from left to right. i dont want the centered card look anymore. it should fill left to right, one page at a time"
+
+- A Grimoire that fills its box (pile and deck views, card pickers) is laid out as if it held at least 24 cards, so a short pile and a long deck share one layout and card size, instead of a few big cards in the middle. Cards start at each page's left edge and fill row by row; the next page starts only when one is full. A two-page spread always draws both pages (an empty right page included). The Card library keeps its own fixed layout (every card), and a book that grows with its cards (the starter preview) is unchanged.
+
+## 720 - Tide of Peace heals (2026-11-09)
+
+Robert: "update Tide Of Peace to heal instead of barrier. its just such a low chance anyone would take it as barrier"
+
+- Tide of Peace (Monk rare, X): Heal HP equal to 3 times the Mana spent, draw 2, enter Serene, Consume (was Barrier 4 times the Mana spent, no Consume). Upgraded: X is 1 higher; at most 6 Mana (#709). Priced by the costing guide: heal is 1.5 a point to Barrier's 1, so 3 HP a Mana is a little over the old 4 Barrier, and a heal a deck could loop every reshuffle Consumes. At X = 3: heal 9.

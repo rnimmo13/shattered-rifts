@@ -1,3 +1,7 @@
+# Release approved 0.238.0 / rules 103 (2026-11-09; decisions 717-720)
+
+Robert explicitly approves pushing/deploying ("lets push what we have"): extra plays that add up (Echoing Spirit with Doubled Vow, Mirrored, Twinned), Tide of Peace healing 3 per Mana with Consume, the Grimoire filling from the top left one page at a time, and the video models placed and sized by the body. The X-cost cards stay as they are. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.237.0 / rules 102 (2026-11-09; decisions 715-716)
 
 Robert explicitly approves pushing/deploying ("push") the beta 2D animated hero models from video (Settings > Graphics, off by default: idle, attack and death clips, weapon variants, measured impacts) and the desktop's MP4 byte-range serving. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.

@@ -274,8 +274,10 @@ export const MONK: CardDef[] = [
     'skill',
     0,
     'none',
-    [scaled(barrier(0), per('x', 4)), draw(2), stance('calm')],
-    { x: true },
+    // (heals 3 per Mana spent since #720, Robert: "its just such a low chance anyone would take it as barrier"; was Barrier 4 per Mana.
+    // Heal is 1.5 a point to Barrier's 1, so 3 HP a Mana is a little over the old 4 Barrier, and a heal a deck could loop Consumes)
+    [scaled(heal(0), per('x', 3)), draw(2), stance('calm')],
+    { x: true, exhaust: true },
   ),
 
   // --- Radiant ---

@@ -11,6 +11,9 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { CardHover, type Anchor } from './CardHover';
 import { FightCard } from './FightCard';
 import { NARROW_BELOW, fitBook, useSize, type CardSize, type GrimoireCard } from './grimoireData';
+
+/** A book that fills its box is laid out as if it held at least this many cards (one layout for a short pile and a long deck). */
+const LAYOUT_CARDS = 24;
 import { TABS, paginate, poolOf, sortCards, tabOf, type CatalogCard } from './deckCatalog';
 
 export interface GrimoireProps {
@@ -59,10 +62,12 @@ export function Grimoire(props: GrimoireProps) {
   // sized for every card in the book (not just the open ribbon's), so turning to another realm never resizes the cards
   // (a phone: the book's edges are slimmer, so two cards fit across a page, DECISIONS #443)
   const narrow = window.innerWidth < NARROW_BELOW;
+  // (a book that fills its box is always laid out as if it held a good handful of cards, so a short pile and a long deck share one
+  // layout: the cards keep their size and fill the left page row by row, then the right, never a few big cards in the middle)
   const { spread, cols, rows, cardWidth } = fitBook(
     box.w,
     grow ? Infinity : box.h,
-    Math.max(entries.length, props.fitCount ?? 0),
+    Math.max(entries.length, props.fitCount ?? 0, grow ? 0 : LAYOUT_CARDS),
     props.size ?? 'read',
     {
       ...(props.spread ? { spread: props.spread } : {}),
@@ -85,6 +90,8 @@ export function Grimoire(props: GrimoireProps) {
   const spreads = Math.max(1, Math.ceil(pages.length / spread));
   const at = Math.min(leaf, spreads - 1);
   const visible = pages.slice(at * spread, at * spread + spread);
+  // (both pages of a spread are always drawn, an empty right page included, so the book never changes shape)
+  const blanks = grow ? 0 : Math.max(0, spread - Math.max(1, visible.length));
   const turn = (by: number): void => {
     setDir(by > 0 ? 'next' : 'prev');
     setLeaf(Math.max(0, Math.min(spreads - 1, at + by)));
@@ -221,6 +228,11 @@ export function Grimoire(props: GrimoireProps) {
                   })}
                 </ul>
                 <span className="grim__folio">{at * spread + i + 1}</span>
+              </section>
+            ))}
+            {Array.from({ length: blanks }, (_, i) => (
+              <section key={`blank-${i}`} className="grim__page" aria-hidden="true">
+                <span className="grim__folio">{at * spread + Math.max(1, visible.length) + i + 1}</span>
               </section>
             ))}
           </div>
