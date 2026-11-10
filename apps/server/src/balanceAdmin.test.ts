@@ -1,37 +1,25 @@
 import { expect, it, vi } from 'vitest';
 import { balanceAdmin } from './balanceAdmin';
 import type { Env } from './env';
-it('keeps deck exports private and uncached, requiring a configured owner secret', async () => {
+
+// (DECISIONS #723) the player-data export is public: no key, kept at the edge for 5 minutes
+it('answers with no key, a public short-cached page, and checks its query', async () => {
   const fetch = vi.fn(() =>
     Promise.resolve(Response.json({ schema: 1, games: [], next: 0, more: false })),
   );
-  const env = {
-    BALANCE_ADMIN_TOKEN: 'a'.repeat(40),
-    BOARD: { idFromName: () => '', get: () => ({ fetch }) },
-  } as unknown as Env;
-  for (const token of ['', 'wrong', 'a'.repeat(40) + 'x']) {
-    expect(
-      (
-        await balanceAdmin(
-          new Request('https://example.test/admin/balance', {
-            headers: { authorization: 'Bearer ' + token },
-          }),
-          env,
-        )
-      ).status,
-    ).toBe(401);
-  }
-  expect(fetch).not.toHaveBeenCalled();
-  const request = new Request('https://example.test/admin/balance?after=12', {
-    headers: { authorization: 'Bearer ' + env.BALANCE_ADMIN_TOKEN },
-  });
-  const res = await balanceAdmin(request, env);
+  const env = { BOARD: { idFromName: () => '', get: () => ({ fetch }) } } as unknown as Env;
+  const res = await balanceAdmin(new Request('https://example.test/admin/balance?after=12'), env);
   expect(res.status).toBe(200);
-  expect(res.headers.get('cache-control')).toBe('no-store');
-  expect(res.headers.has('access-control-allow-origin')).toBe(false);
+  expect(res.headers.get('cache-control')).toBe('public, max-age=300');
+  expect(res.headers.get('access-control-allow-origin')).toBe('*');
   expect(fetch).toHaveBeenCalledOnce();
+  for (const bad of ['?after=x', '?kind=secrets', '?after=1234567890123456'])
+    expect(
+      (await balanceAdmin(new Request('https://example.test/admin/balance' + bad), env)).status,
+    ).toBe(400);
   expect(
-    (await balanceAdmin(request, { ...env, BALANCE_ADMIN_TOKEN: undefined } as unknown as Env))
+    (await balanceAdmin(new Request('https://example.test/admin/balance', { method: 'POST' }), env))
       .status,
-  ).toBe(401);
+  ).toBe(405);
+  expect(fetch).toHaveBeenCalledOnce();
 });

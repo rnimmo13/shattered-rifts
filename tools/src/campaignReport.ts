@@ -1,6 +1,7 @@
 /** Private observed Campaign deck snapshots. Never runs games or estimates player skill. */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { LIVE_SERVER } from './adminAccess';
 
 const arg = (name: string) => {
   const i = process.argv.indexOf('--' + name);
@@ -48,10 +49,7 @@ function accept(raw: unknown) {
 }
 if (arg('input')) accept(JSON.parse(readFileSync(resolve(arg('input')!), 'utf8')) as unknown);
 else {
-  const server = arg('server'),
-    token = process.env.BALANCE_ADMIN_TOKEN;
-  if (!server || !token)
-    throw Error('Use --server with BALANCE_ADMIN_TOKEN, or --input snapshots.json');
+  const server = arg('server') ?? LIVE_SERVER;
   const url = new URL('/admin/balance', server);
   if (url.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(url.hostname))
     throw Error('Use HTTPS');
@@ -60,7 +58,6 @@ else {
   for (let page = 0; page < 100; page++) {
     url.searchParams.set('after', String(after));
     const res = await fetch(url, {
-      headers: { authorization: `Bearer ${token}` },
       redirect: 'error',
       signal: AbortSignal.timeout(15000),
     });

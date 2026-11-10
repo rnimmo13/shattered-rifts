@@ -457,7 +457,7 @@ export function SettingsPanel() {
             {/* (DECISIONS #714: what online play keeps for the developer's balance review) */}
             <Row
               label="Game data"
-              hint="When you play online, your decks, card choices, Campaign fights (every move) and Arena games are kept on the server for 30 days so the developer can balance the game. They are tied to an anonymous id, never your name or email. Offline desktop play is never sent."
+              hint="When you play online, your decks, card choices, Campaign fights (every move) and Arena games are kept on the server for 30 days to balance the game, and they are public: your saved decks can be looked up by your username, and fights and games carry an anonymous id, never your name or email. Offline desktop play is never sent."
             >
               {null}
             </Row>

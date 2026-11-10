@@ -28,6 +28,8 @@ export function HeroModel(props: {
 }) {
   const box = useRef<HTMLSpanElement>(null);
   const [live, setLive] = useState(false);
+  // (DECISIONS #724) the rig could not be shown, or took too long: the picture after all
+  const [fallback, setFallback] = useState(false);
   // (the beta video models are turned on or off in Settings: the model follows at once)
   const [, setModels] = useState(0);
   useSettingsChanged(
@@ -37,6 +39,9 @@ export function HeroModel(props: {
   );
   const rigId = !props.skin ? heroRigFor(props.hero) : undefined;
   const fill = props.fill ?? 0.94;
+  // (DECISIONS #724) while a rig that will be shown is loading, the crest turns in its place, never the still picture first and then a
+  // jump to the rig
+  const loading = !!rigId && !live && !fallback && !still();
 
   useEffect(() => {
     const el = box.current;
@@ -46,6 +51,9 @@ export function HeroModel(props: {
     let gone = false;
     let last = performance.now();
     let size = { w: 0, h: 0 };
+    setFallback(false);
+    // (a slow download: the picture after 8 seconds, and the rig over it when it comes)
+    const slow = window.setTimeout(() => setFallback(true), 8000);
 
     // (the canvas: the body `fill` of the box tall, feet on the bottom edge in the middle; a wider stance may reach past the sides)
     const place = (): void => {
@@ -102,34 +110,54 @@ export function HeroModel(props: {
       setLive(false);
     };
 
-    void import('../fight/heroSprite').then(async (rigs) => {
-      const assets = await rigs.loadRig(rigId);
-      if (gone || !assets || still()) return;
-      sprite = rigs.HeroSprite.create(rigId, assets, 'right');
-      if (!sprite) return;
-      sprite.onLost(stop);
-      sprite.canvas.className = 'hero-model__rig';
-      sprite.canvas.setAttribute('aria-hidden', 'true');
-      el.appendChild(sprite.canvas);
-      const r = el.getBoundingClientRect();
-      size = { w: r.width, h: r.height };
-      place();
-      sprite.render();
-      resize.observe(el);
-      el.addEventListener('pointerenter', aura);
-      setLive(true);
-      raf = requestAnimationFrame(frame);
-    });
+    // (the rig could not be made: the picture, at once)
+    const fail = (): void => {
+      if (!gone) setFallback(true);
+    };
+    void import('../fight/heroSprite')
+      .then(async (rigs) => {
+        const assets = await rigs.loadRig(rigId);
+        if (gone) return;
+        if (!assets || still()) return fail();
+        sprite = rigs.HeroSprite.create(rigId, assets, 'right');
+        if (!sprite) return fail();
+        sprite.onLost(() => {
+          stop();
+          fail();
+        });
+        sprite.canvas.className = 'hero-model__rig';
+        sprite.canvas.setAttribute('aria-hidden', 'true');
+        el.appendChild(sprite.canvas);
+        const r = el.getBoundingClientRect();
+        size = { w: r.width, h: r.height };
+        place();
+        sprite.render();
+        resize.observe(el);
+        el.addEventListener('pointerenter', aura);
+        window.clearTimeout(slow);
+        setLive(true);
+        raf = requestAnimationFrame(frame);
+      })
+      .catch(fail);
 
     return () => {
       gone = true;
+      window.clearTimeout(slow);
       stop();
     };
   }, [rigId, fill]);
 
   return (
-    <span ref={box} className={`hero-model${live ? ' is-live' : ''} ${props.className ?? ''}`}>
+    <span
+      ref={box}
+      className={`hero-model${live ? ' is-live' : ''}${loading ? ' is-loading' : ''} ${props.className ?? ''}`}
+    >
       {props.children}
+      {loading && (
+        <span className="hero-model__loader" aria-hidden="true">
+          <img src={`${import.meta.env.BASE_URL}branding/logo-192.png`} alt="" />
+        </span>
+      )}
     </span>
   );
 }

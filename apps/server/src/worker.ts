@@ -27,6 +27,7 @@ export { Vault } from './vault';
 export { Identity } from './identity';
 export { Leaderboard } from './board';
 import { balanceAdmin } from './balanceAdmin';
+import { edgeCached } from './edgeCache';
 import { sharedReports } from './sharedReports';
 
 const json = (body: unknown, status = 200): Response =>
@@ -194,6 +195,22 @@ async function boardRoute(request: Request, env: Env, what: string, url: URL): P
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS_POST });
   const stub = env.BOARD.get(env.BOARD.idFromName('main'));
   try {
+    // (DECISIONS #723) a player's saved decks by username: public, from an unlisted page; kept at the edge for a minute, so a page
+    // asked for again and again reaches the board once a minute at most
+    if (request.method === 'GET' && what === 'decks') {
+      const name = (url.searchParams.get('name') ?? '').trim().slice(0, 40);
+      // (awaited, so a failure reaches the catch below and answers 503 like the rest)
+      return await edgeCached(
+        `${url.origin}/pvp/board/decks-cache?name=${encodeURIComponent(name.toLowerCase())}`,
+        60,
+        async () => {
+          const res = await stub.fetch(
+            new Request(`https://board.invalid/decks?name=${encodeURIComponent(name)}`),
+          );
+          return new Response(await res.text(), { status: res.status });
+        },
+      );
+    }
     if (
       request.method === 'GET' &&
       (what === 'pvp' ||

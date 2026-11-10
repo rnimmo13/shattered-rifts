@@ -779,8 +779,10 @@ export const ASSASSIN: CardDef[] = [
     up: { cost: 0 },
   }),
   // (Murder. 8 + 1 per card drawn since #692: ~101% before; ~131%; upgraded 16, +26%)
-  q('rare', 'slow-murder', 'Slow Murder', 'attack', 2, 'foe', [scaled(dmg(8), per('drawn'))], {
-    up: { effects: [scaled(dmg(16), per('drawn'))] },
+  // (#722: full to 28 cards drawn, about turn 5, 36 damage; half after, at most +44: 52 by turn 10, the 2x ceiling of a 2-Mana rare
+  // you can play again. It was 68 by turn 10 and still growing.)
+  q('rare', 'slow-murder', 'Slow Murder', 'attack', 2, 'foe', [scaled(dmg(8), { ...per('drawn'), half: 28, max: 44 })], {
+    up: { effects: [scaled(dmg(16), { ...per('drawn'), half: 28, max: 44 })] },
   }),
   // (Nightmare)
   q(

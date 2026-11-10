@@ -194,6 +194,11 @@ export class Leaderboard extends DurableObject<Env> {
          first_at INTEGER NOT NULL, last_at INTEGER NOT NULL
        )`,
     );
+    // (DECISIONS #723) the deck lookup finds a player's decks by owner, or by the name they were saved under
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghosts_owner ON ghosts (owner)');
+    ctx.storage.sql.exec(
+      'CREATE INDEX IF NOT EXISTS ghosts_owner_name ON ghosts (owner_name COLLATE NOCASE)',
+    );
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS ghost_games (
          id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1168,6 +1173,65 @@ export class Leaderboard extends DurableObject<Env> {
     };
   }
 
+  /**
+   * (DECISIONS #723) A player's saved decks, by their username: public (Robert: "i want player decks to be public"), reached from an
+   * unlisted page. Every deck they have saved that cleared Tier 3 (one per run; earlier ones are not kept, #235), with its cards, Boons and how far it went, and their runs on the board.
+   */
+  private playerDecks(name: string | null): Record<string, unknown> {
+    if (!name || name.length > 40) return { ok: false, error: 'bad-name' };
+    const checked = checkUsername(name);
+    const player = checked.ok
+      ? this.ctx.storage.sql
+          .exec<{ player: string; name: string }>(
+            'SELECT player, name FROM names WHERE key = ?',
+            checked.key,
+          )
+          .toArray()[0]
+      : undefined;
+    // (a claimed name is that player's decks only; a name nobody holds now finds the decks saved under it, so a player who changed
+    // name is still found by the old one, and someone who takes a freed name never shows the old holder's decks as theirs)
+    const cols = `id, owner, owner_name, hero, deck, boons, ascendancy, max_hp, tier, stage, wins, losses, ghost_wins, ghost_losses, last_at`;
+    const rows = (
+      player
+        ? this.ctx.storage.sql.exec<GhostSql>(
+            `SELECT ${cols} FROM ghosts WHERE owner = ? ORDER BY last_at DESC LIMIT 60`,
+            player.player,
+          )
+        : this.ctx.storage.sql.exec<GhostSql>(
+            `SELECT ${cols} FROM ghosts WHERE owner_name = ? COLLATE NOCASE ORDER BY last_at DESC LIMIT 60`,
+            name.trim(),
+          )
+    ).toArray();
+    const runs = player
+      ? this.ctx.storage.sql
+          .exec<{ hero: string; tier: number; stage: number; at: number }>(
+            'SELECT hero, tier, stage, at FROM runs WHERE player = ? ORDER BY at DESC LIMIT 20',
+            player.player,
+          )
+          .toArray()
+      : [];
+    return {
+      ok: true,
+      name: player?.name ?? rows[0]?.owner_name ?? name.trim(),
+      found: !!player || rows.length > 0,
+      decks: rows.map((r) => ({
+        hero: storedHero(r.hero),
+        ...(r.ascendancy ? { ascendancy: r.ascendancy } : {}),
+        tier: r.tier,
+        stage: r.stage,
+        maxHp: r.max_hp ?? null,
+        cards: parseList(r.deck),
+        boons: parseList(r.boons),
+        wins: r.wins,
+        losses: r.losses,
+        ghostWins: r.ghost_wins,
+        ghostLosses: r.ghost_losses,
+        savedAt: r.last_at,
+      })),
+      runs: runs.map((r) => ({ hero: storedHero(r.hero), tier: r.tier, stage: r.stage, at: r.at })),
+    };
+  }
+
   /** Where `player` stands in a full ranking: their place and their line, whether or not they are in the part that is shown. */
   private placeOf<T extends { player: string }>(
     all: readonly T[],
@@ -1643,6 +1707,7 @@ export class Leaderboard extends DurableObject<Env> {
       if (url.pathname === '/runs') return json(this.runBoard(period, now));
       if (url.pathname === '/ghosts') return json(this.ghostBoard(period, now));
       if (url.pathname === '/ghostdecks') return json(this.ghostDecks(now));
+      if (url.pathname === '/decks') return json(this.playerDecks(url.searchParams.get('name')));
       if (url.pathname === '/ranks') return json(this.rankBoard(now));
       if (url.pathname === '/replay') return this.replay(url.searchParams.get('id'));
       if (url.pathname === '/fight') return this.fight(url.searchParams.get('id'));

@@ -133,10 +133,14 @@ export function withRolls(cards: Record<string, CardDef>): Record<string, CardDe
     // upgraded card itself (an event judges the card as it is: Thunder Memory+ drops the Consume its base has, so it can take
     // Flare, and a run holding "flare^thunder-memory+" could not be read, 2026-11-07)
     const unupgraded = realId.endsWith('+') ? cards[realId.slice(0, -1)] : real;
+    // (an upgrade that has since got its Consume back keeps reading the Flared copies cut while it had none: Thunder Memory+
+    // Consumes again since #722, and a deck may hold "flare^thunder-memory+"; it is never offered Flare again, canMark decides that)
+    const upgradeCould = (c: CardDef): boolean =>
+      canMark(c, mark!) || (mark === 'flare' && canMark({ ...c, exhaust: false }, mark));
     if (
       mark &&
       !(unupgraded && canMark(unupgraded, mark)) &&
-      !(realId.endsWith('+') && canMark(real, mark))
+      !(realId.endsWith('+') && upgradeCould(real))
     )
       return undefined;
     const base = mark ? markedVariant(real, mark) : real;

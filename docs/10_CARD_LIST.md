@@ -498,7 +498,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Hobbling Jab, Duck and 
 | Stilled Time | 2 | skill | rare | Draw 2 cards. You cannot draw more cards this turn. Every card in your hand costs 0 this turn. |
 | Double Trick | 0 | skill | rare | Gain 1 Mirrored. |
 | Grand Scheme | 1 | aura | rare | On play: Gain Planner. Opening hand. |
-| Slow Murder | 2 | attack | rare | Deal 8 (+1 per card drawn this fight) damage. |
+| Slow Murder | 2 | attack | rare | Deal 8 (+1 per card drawn this fight, half as much past +28, at most +44) damage. |
 | Recurring Dream | 2 | skill | rare | Choose a card in your hand. Next turn, add 3 copies of it to your hand. Consume. |
 | Mantle of Night | 1 | skill | rare | Gain Meld until the end of your turn. Draw 1 card. |
 | Nimble Routine | 1 | aura | rare | At the start of your turn: Draw 2 cards and discard 1 random card. |
@@ -612,7 +612,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost
 | Salvage Spirit | 1 | aura | rare | Whenever you create a Status card: Plant a random totem. |
 | Ward of the Spirits | 2 | aura | rare | On play: The next time you would lose HP, you lose none instead. |
 | Fresh Start | 0 | skill | rare | Shuffle your hand and discard pile into your draw pile. Draw 4 cards. Consume. |
-| Thunder Memory | 3 | skill | rare | Plant a Thunderbird, plus one for each Thunderbird you have planted this fight. Consume. |
+| Thunder Memory | 3 | skill | rare | Plant a Thunderbird, plus one for each Thunderbird you have planted this fight (half as many past 5). Thunderbirds this card plants are not counted. Consume. |
 | Spirit Pact | 2 | aura | rare | The first time on your turn you finish an ordered totem command: Gain 1 Spirit and gain 3 Barrier. |
 
 Tokens (made by other cards):
@@ -673,7 +673,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still
 | Hymn of Embers | 2 | skill | uncommon | Gain 5 Fervor. Gain 8 Barrier. |
 | Morning Prayer | 1 | aura | uncommon | At the start of your turn: Gain 1 Fervor and gain 2 Barrier. |
 | Foretold Flame | 1 | attack | uncommon | Deal 5 (+1 per 3 Fervor gained this fight) damage. Foresee 2. |
-| Mantra Engine | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to your Fervor. |
+| Mantra Engine | 1 | aura | uncommon | At the end of your turn: Gain Barrier equal to the Fervor gained this turn. |
 | Inner Sight | 1 | skill | uncommon | Gain 5 Barrier. Foresee 4. |
 | Held Breath | 1 | skill | uncommon | Gain 1 Holdfast. |
 | Rending Hands | 1 | attack | uncommon | Deal 6 damage 2 times. Lose 1 HP. |
@@ -703,7 +703,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Kindle Fury, Kindle Fury, Still
 | Flood of Visions | 1 | skill | rare | Draw 5 cards. Gain 2 Fervor. Consume. |
 | Last Rites of the Flame | 3 | attack | rare | Deal 16 damage to ALL enemies. Gain 5 Fervor. |
 | Radiant Heart | 1 | aura | rare | Whenever you enter Radiant: Draw 3 cards. |
-| Burning Litany | 3 | skill | rare | Deal damage equal to your Fervor to ALL enemies. Enter Radiant. Consume. |
+| Burning Litany | 3 | skill | rare | Deal damage equal to half the Fervor gained this fight to ALL enemies. Enter Radiant. Consume. |
 | Unwavering | 2 | aura | rare | Whenever you discard a card: Gain 4 Barrier and gain 1 Fervor. Whenever a card is consumed: Gain 4 Barrier and gain 1 Fervor. |
 | Mountain's Stillness | 2 | skill | rare | Gain 6 (+3 per card in hand) Barrier. |
 | Breath Between Blows | 1 | aura | rare | Whenever you play a Skill: Gain 2 Barrier. |

@@ -1701,3 +1701,40 @@ Robert: "can you update the grimoire to have a more consistent layout of cards. 
 Robert: "update Tide Of Peace to heal instead of barrier. its just such a low chance anyone would take it as barrier"
 
 - Tide of Peace (Monk rare, X): Heal HP equal to 3 times the Mana spent, draw 2, enter Serene, Consume (was Barrier 4 times the Mana spent, no Consume). Upgraded: X is 1 higher; at most 6 Mana (#709). Priced by the costing guide: heal is 1.5 a point to Barrier's 1, so 3 HP a Mana is a little over the old 4 Barrier, and a heal a deck could loop every reshuffle Consumes. At X = 3: heal 9.
+
+## 721 - Fervor payoffs read the Fervor gained (2026-11-09)
+
+Robert: "are these cards that deal damage based on fervour actually good? as i udnerstand it, doesnt fervour reset once you hit 10?" Then: "yes please improve of those".
+
+Reaching 10 Fervor spends it on Radiant, so the Fervor you hold is always 0-9, and 0 on the turn you reached 10. Two cards read it:
+
+- **Burning Litany** (Monk rare, 3 Mana, Consume): damage to ALL equal to **half the Fervor gained this fight**, then enter Radiant (was: equal to your Fervor, at most 9). Upgraded: 4 + 1 per 2 Fervor gained (was +3). It is Rise Radiant (2 Mana) plus 1 Mana, so the damage prices that 1 Mana: a Fervor deck gains about 4 a turn, about 25 by turn 6, so about 12 AoE (15.6 points for 9, A). At a full rate it would be about 25 AoE (over 3x a Mana), so half. It is a Skill, so Radiant never triples it (#376).
+- **Mantra Engine** (Monk uncommon Aura, 1 Mana, 0 upgraded): at the end of your turn, Barrier equal to **the Fervor gained this turn** (was: your Fervor, which is 0 on the turn you reach Radiant). About 4 Barrier a turn in a Fervor deck, twice Devotion's Barrier without its Fervor: a B.
+- New metric `fervorGainedTurn` beside `fervorGained`, reset at the start of the side's turn like the Spell Power gained this turn. Fervor gained after the end-of-turn Auras (hand cleanup, the enemy's turn) does not count for Mantra Engine; it still counts for Burning Litany. Foretold Flame already read the Fervor gained this fight and is unchanged.
+
+## 722 - Growth ceilings: full to turn 5, half after, a stop at turn 10 (2026-11-09)
+
+Robert: "im thinking its important to know how much damage we are looking at. im open to diminishing returns for things but id just like some kind of general rule for determining a fair amount." Approved ("yep go ahead"), and for Thunder Memory: "lets just make sure it always has consume and the totems it creates dont contribute to thunderbird count or only half as much you can decide".
+
+- **The rule** (costing guide §8.6): a card that grows with a count kept all fight is priced at the count a deck built for it reaches by turn 5 (on its grade's budget), grows at half the rate after that, and stops at the turn-10 ceiling: about 2x its budget if it can be played again, about 3x for a Consume finisher (about 15% of Arena HP at most). It never feeds its own count. It joins the existing caps (X cards at 6 Mana, Rending Fury at +45) and Grave Chill's and Shatter's diminishing shapes.
+- **Saved decks:** engraved Flare copies of Thunder Memory+ (cut while it had no Consume) still read back as they were; it is not offered Flare again.
+- **Engine:** two generic options (validated: `half` a whole number at or above 0, below `max`, never on hit counts). A scale's `half` (past this much, the scaled part grows at half the rate, before `max`; card text "half as much past +28"), and a plant's `uncounted` (those totems do not add to the planted-this-fight count).
+- **Thunder Memory** (Shaman rare, 3): plants 1 + the Thunderbirds planted this fight, full to 5, half after, **no cap** (Robert: "i dont want the cap on thunderbird totems it can place. it should be able to place a lot but it should have diminising returns at some point"); its own Thunderbirds are not counted (chosen over counting them half: simpler, and no copy feeds another); always Consumes. Upgraded: 3 to start (was: no Consume, so each cast doubled the count: about 130, 260, then 500+ to all). About 60 to all by turn 5, 8 plants by turn 10; 25 planted before gives 16.
+- **Slow Murder** (Rogue rare, 2): 8 + cards drawn this fight, full to 28, half after, at most +44: 36 by turn 5, 52 by turn 10 (was 68 by turn 10 and still growing). Upgraded 16 + the same.
+- Held for the player data (`pnpm balance:players`, a few days of fights): Death Grip, Drag Under, Spray and Pray. Others that read a fight-long count grow slowly (Swarm Tactics, Gleeful Trapsmith, Masquerade, Foretold Flame), Consume (Burning Litany) or only lower a cost (Mourning, Wailing Cry).
+
+## 723 - Player decks and the balance export are public; an unlisted deck lookup (2026-11-09)
+
+Robert: "i want player decks to be public, thats not really something that should need a key ... i dont think you should add a page that a plyaer would know how to get to it", then "basically a page where you can search a player and pull up their saved decks. then you could even scan leaderboards and do the search on all of those names", and "im not doing no key thing, just make that data public unless its really that dangerious".
+
+- **Deck lookup** (`#/deck-lookup`, linked from nothing): a username search shows that player's saved decks (every run that cleared Tier 3: cards, Boons, Ascendancy, max HP, Arena and ghost records, when saved) and their Campaign runs on the board; **Scan the leaderboards** looks up every name on the week's and month's Campaign and Arena boards (at most 60). Server: `GET /pvp/board/decks?name=` (Leaderboard DO `playerDecks`), matched on the claimed name or the name a deck was saved under, any case. Unlisted is not secret: anyone with the address can use it, which is what "public" means here.
+- **The export `/admin/balance` needs no key** (was the BALANCE_ADMIN_TOKEN owner secret, which nobody had on hand). Judged not dangerous: no names, emails or passwords, one-way hashed player ids, Arena replays nameless. The report tools read the live server by default (`pnpm balance:players`).
+- **Cost guard** (the 2026-11-06 Durable Object outage): both answers are kept at Cloudflare's edge, decks for 60 seconds and export pages for 5 minutes, so repeated requests do not reach the board each time.
+- Decks from runs that never cleared Tier 3 were never kept on the server (#235) and are not shown.
+
+## 724 - A loading crest instead of the still picture before an animated model (2026-11-09)
+
+Robert: "the 2d animation models on the homescreen flash the non-animated model before rendering the animation one. can we smooth this out? id even be ok with a loading icon like the S|R logo with a radiating light going around the circle".
+
+- While an animated model that will be shown is loading (home stage, picker, Vault, Models and lore pages: `HeroModel`), its still picture is hidden and the S|R crest stands in its place, breathing, with a gold-and-violet light running round its rim.
+- The still picture shows instead if the rig cannot load or be drawn (no WebGL2, a lost context), after 8 seconds of loading (the rig still replaces it when it arrives), with a skin, on Low graphics or with reduced motion (no loader then: the picture at once, as before).

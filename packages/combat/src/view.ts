@@ -759,6 +759,7 @@ const METRIC_WORDS: Record<Metric, { per: string; equal: string }> = {
   },
   snaresSprung: { per: 'Trap sprung this fight', equal: 'the Traps sprung this fight' },
   fervorGained: { per: 'Fervor gained this fight', equal: 'the Fervor gained this fight' },
+  fervorGainedTurn: { per: 'Fervor gained this turn', equal: 'the Fervor gained this turn' },
   tagExhaustedBeforePlay: {
     per: 'previously consumed card of that kind',
     equal: 'the previously consumed cards of that kind',
@@ -905,10 +906,12 @@ function amountText(
   // (half of a number, rounded down: "equal to half your Spell Power")
   if (sc.step === 2 && n === 0 && (sc.mult ?? 1) === 1 && !sc.of)
     return { num: `half ${METRIC_WORDS[sc.by].equal}`, equal: true };
+  // (DECISIONS #722) diminishing returns and a cap, said after the rate: ", half as much past +28, at most +44"
+  const tail = `${sc.half !== undefined ? `, half as much past +${sc.half}` : ''}${sc.max !== undefined ? `, at most +${sc.max}` : ''}`;
   // (a count in steps: "+5 per 10 Fate on the target")
   if (sc.step && n > 0)
     return {
-      num: `${n} (+${sc.mult ?? 1} per ${sc.step} ${w.per}${sc.of === 'target' ? ' on the target' : ''})`,
+      num: `${n} (+${sc.mult ?? 1} per ${sc.step} ${w.per}${sc.of === 'target' ? ' on the target' : ''}${tail})`,
       equal: false,
     };
   const m = sc.mult ?? 1;
@@ -921,7 +924,7 @@ function amountText(
         : 'your '
     : '';
   // (DECISIONS #434) a capped count says its cap
-  const capped = `${sc.round === 'ceil' ? ', rounded up' : ''}${sc.min !== undefined ? ` (at least ${sc.min})` : ''}${sc.max !== undefined ? ` (at most ${sc.max})` : ''}`;
+  const capped = `${sc.round === 'ceil' ? ', rounded up' : ''}${sc.min !== undefined ? ` (at least ${sc.min})` : ''}${sc.half !== undefined ? ` (half as much past ${sc.half})` : ''}${sc.max !== undefined ? ` (at most ${sc.max})` : ''}`;
   if (n === 0) {
     const mult =
       m === 1
@@ -953,7 +956,7 @@ function amountText(
           ? `+1 per ${step}${w.per}`
           : `+${frac(m).a} per ${frac(m).b} ${PLURAL[sc.by] ?? w.per}`;
   return {
-    num: `${n} (${per}${on}${sc.max !== undefined ? `, at most +${sc.max}` : ''})`,
+    num: `${n} (${per}${on}${tail})`,
     equal: false,
   };
 }
@@ -2154,10 +2157,18 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale?.by === 'foes') return `Plant ${article(nm)} ${nm} for each enemy.`;
       if (o.scale?.by === 'channeledOf') {
         const k = db.totems?.[o.scale.rune ?? '']?.name ?? 'totem';
+        // (DECISIONS #722) diminishing returns and a cap on the count, and plants that do not add to it
+        const sc = o.scale;
+        const limits = [
+          sc.half !== undefined ? `half as many past ${sc.half}` : '',
+          sc.max !== undefined ? `at most ${sc.max} more` : '',
+        ].filter(Boolean);
+        const note = limits.length ? ` (${limits.join(', ')})` : '';
+        const own = o.uncounted ? ` ${plural(nm)} this card plants are not counted.` : '';
         // (a base to start from: `times` planted, then one more for each)
         return o.times
-          ? `Plant ${o.times === 1 ? `${article(nm)} ${nm}` : `${o.times} ${plural(nm)}`}, plus one for each ${k} you have planted this fight.`
-          : `Plant ${article(nm)} ${nm} for each ${k} you have planted this fight.`;
+          ? `Plant ${o.times === 1 ? `${article(nm)} ${nm}` : `${o.times} ${plural(nm)}`}, plus one for each ${k} you have planted this fight${note}.${own}`
+          : `Plant ${article(nm)} ${nm} for each ${k} you have planted this fight${note}.${own}`;
       }
       return `Plant ${article(nm)} ${nm}.`;
     }

@@ -1049,6 +1049,9 @@ export const SHAMAN: CardDef[] = [
     up: { effects: [reshuffle, draw(6)] },
   }),
   // One plus prior Thunderbird plants; includes the starting Thunderbird restored in decision 670.
+  // (#722: its own Thunderbirds are not counted, it always Consumes, and the count is full to 5, then half, with no cap (Robert: it
+  // should be able to place a lot): the upgrade used to drop Consume, and each cast doubled the count, 130 then 260 then 500+ to all.
+  // 6 plants by turn 5, about 60 to all; 8 by turn 10. Upgraded: 2 more to start, about +30%.)
   i(
     'rare',
     'thunder-memory',
@@ -1061,12 +1064,23 @@ export const SHAMAN: CardDef[] = [
         op: 'plant',
         spirit: 'thunderbird',
         times: 1,
-        scale: { by: 'channeledOf', rune: 'thunderbird' },
+        scale: { by: 'channeledOf', rune: 'thunderbird', half: 5 },
+        uncounted: true,
       },
     ],
     {
       exhaust: true,
-      up: { exhaust: false },
+      up: {
+        effects: [
+          {
+            op: 'plant',
+            spirit: 'thunderbird',
+            times: 3,
+            scale: { by: 'channeledOf', rune: 'thunderbird', half: 5 },
+            uncounted: true,
+          },
+        ],
+      },
     },
   ),
   // (the supply: three Wounds into your discard pile, and a hand to play them with; each one is a Status card for the payoffs, and Ash Chant, Salvage Spirit and Bitter Lesson answer every one)

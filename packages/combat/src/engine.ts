@@ -380,6 +380,7 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number, sourceSide?: S
   if (st === 'mantra' && amount > 0 && u.kind === 'hero') {
     const sd = r.s.sides[u.side];
     sd.fervorGained = (sd.fervorGained ?? 0) + amount;
+    sd.fervorGainedTurn = (sd.fervorGainedTurn ?? 0) + amount;
   }
   if (st === 'mantra' && total >= MANTRA_GOAL) {
     // one Radiant per goal reached; anything left over stays as Mantra
@@ -1138,7 +1139,7 @@ function packTotems(side: SideState): void {
  * position; with every position taken, the front totem is pushed out first (its spirit acts as it goes) and the rest move up.
  * '*': a random kind that is not rare.
  */
-function plant(r: Run, a: Act, side: SideState, spirit: string): void {
+function plant(r: Run, a: Act, side: SideState, spirit: string, counted = true): void {
   if (!side.totems) return;
   if (spirit === '*') {
     // (a rare totem is only planted by a card that names it, DECISIONS #420)
@@ -1146,7 +1147,7 @@ function plant(r: Run, a: Act, side: SideState, spirit: string): void {
       .filter((k) => !r.db.totems?.[k]?.rare)
       .sort();
     if (!kinds.length) return;
-    plant(r, a, side, kinds[nextInt(r.s.rng, kinds.length)] as string);
+    plant(r, a, side, kinds[nextInt(r.s.rng, kinds.length)] as string, counted);
     return;
   }
   totemDef(r, spirit);
@@ -1160,15 +1161,22 @@ function plant(r: Run, a: Act, side: SideState, spirit: string): void {
   const list = side.totems;
   const at = list.indexOf(null);
   if (at < 0) return;
-  placeTotem(r, a, side, at, spirit);
+  placeTotem(r, a, side, at, spirit, counted);
 }
 
 /** A totem of `spirit` stands in position `at` now. */
-function placeTotem(r: Run, a: Act, side: SideState, at: number, spirit: string): void {
+function placeTotem(
+  r: Run,
+  a: Act,
+  side: SideState,
+  at: number,
+  spirit: string,
+  counted = true,
+): void {
   const list = side.totems;
   if (!list || at < 0 || at >= list.length) return;
   list[at] = spirit;
-  (side.channeledBy ??= {})[spirit] = (side.channeledBy[spirit] ?? 0) + 1;
+  if (counted) (side.channeledBy ??= {})[spirit] = (side.channeledBy[spirit] ?? 0) + 1;
   r.ev.push({ type: 'totems', side: side.id, totems: [...list], at });
   const def = r.db.totems?.[spirit];
   if (def?.onPlant?.length) runOps(r, mkAct(a.actor), def.onPlant);
@@ -1730,6 +1738,8 @@ function metricValue(
       return sd.snaresSprung ?? 0;
     case 'fervorGained':
       return sd.fervorGained ?? 0;
+    case 'fervorGainedTurn':
+      return sd.fervorGainedTurn ?? 0;
     case 'fullTrickTurn':
       return sd.fullTrickTurn ? 1 : 0;
     case 'tagPlayed':
@@ -1933,7 +1943,9 @@ function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   // (a step counts whole steps only: "5 more for every 10 Fate")
   const counted = sc.step ? Math.floor(v / sc.step) : v;
   const raw = (sc.mult ?? 1) * counted;
-  return sc.round === 'ceil' ? Math.ceil(raw - 1e-9) : Math.floor(raw + 1e-9);
+  const whole = sc.round === 'ceil' ? Math.ceil(raw - 1e-9) : Math.floor(raw + 1e-9);
+  // (DECISIONS #722) diminishing returns: past `half`, each more counts half (rounded down)
+  return sc.half !== undefined && whole > sc.half ? sc.half + Math.floor((whole - sc.half) / 2) : whole;
 }
 
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
@@ -3558,7 +3570,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       const n = op.scale
         ? Math.max(0, amountOf(r, a, op.times ?? 0, op.scale, null))
         : Math.max(1, op.times ?? 1);
-      for (let k = 0; k < n && !r.s.winner; k++) plant(r, a, side, op.spirit);
+      for (let k = 0; k < n && !r.s.winner; k++) plant(r, a, side, op.spirit, !op.uncounted);
       return;
     }
     // --- the Monk's Martial Forms (DECISIONS #419)
@@ -4901,6 +4913,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   sd.drawLocked = false;
   sd.barrierDoubled = false;
   sd.starsGainedTurn = 0;
+  sd.fervorGainedTurn = 0;
   for (const u of [...r.s.sides.a.units, ...r.s.sides.b.units]) delete u.hitsTaken;
   // (the Necrobinder copy's counters for the turn)
   sd.allyStrikes = 0;

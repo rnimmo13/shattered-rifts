@@ -28,9 +28,15 @@ describe('engraved card tags', () => {
 
   it('Flare on an upgrade that dropped its Consume reads back (Thunder Memory+: a run would not load, 2026-11-07)', () => {
     expect(db.cards['thunder-memory']!.exhaust).toBe(true);
-    expect(db.cards['thunder-memory+']!.exhaust).toBeFalsy();
+    // (Thunder Memory+ Consumes again since #722: the Flared copies cut before still read back, as they were, and none are offered)
     const up = db.cards['thunder-memory+']!;
+    expect(up.exhaust).toBe(true);
+    expect(canMark(up, 'flare')).toBe(false);
     expect(db.cards['flare^thunder-memory+']).toMatchObject({ exhaust: true, cost: up.cost - 1 });
+    // (an upgrade that still drops its Consume: Echo of the Dead+)
+    expect(db.cards['echo-of-the-dead']!.exhaust).toBe(true);
+    expect(db.cards['echo-of-the-dead+']!.exhaust).toBeFalsy();
+    expect(db.cards['flare^echo-of-the-dead+']).toMatchObject({ exhaust: true });
     // (its base already has Consume: Flare there would change nothing, so it stays unknown)
     expect(db.cards['flare^thunder-memory']).toBeUndefined();
     // every card any version of which can take a tag reads back with it

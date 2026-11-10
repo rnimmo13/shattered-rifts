@@ -46,6 +46,44 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.240.0",
+    date: "2026-11-09",
+    title: "Fervor payoffs, growth limits, and a smoother hero",
+    summary: "The Monk's Fervor cards count the Fervor you gained, Thunder Memory and Slow Murder grow more slowly late in a fight, and animated heroes no longer flash their painting first.",
+    notes: [
+      {
+        kind: "balance",
+        title: "Burning Litany",
+        text: "Deals damage to ALL enemies equal to half the Fervor you gained this fight, then enters Radiant (was your current Fervor, which never passes 9 as reaching 10 spends it). Upgraded: 4 more."
+      },
+      {
+        kind: "balance",
+        title: "Mantra Engine",
+        text: "At the end of your turn, gain Barrier equal to the Fervor you gained this turn, including Fervor spent entering Radiant (was your current Fervor)."
+      },
+      {
+        kind: "balance",
+        title: "Thunder Memory",
+        text: "Plants a Thunderbird plus one for each Thunderbird planted this fight, at half the rate past 5. Its own Thunderbirds are not counted, and it always Consumes, upgraded too (upgraded: 3 to start). Before, the upgrade could be played again and again, doubling each time."
+      },
+      {
+        kind: "balance",
+        title: "Slow Murder",
+        text: "Deals 8 (+1 per card drawn this fight, half as much past +28, at most +44). Upgraded 16 + the same."
+      },
+      {
+        kind: "changed",
+        title: "Animated heroes load smoothly",
+        text: "With the beta animated models on, the S|R crest turns where the hero will stand while it loads, instead of the painting showing first."
+      },
+      {
+        kind: "changed",
+        title: "Game data is public",
+        text: "Saved decks can be looked up by username, and the game data kept for balancing is public. Settings > Game data says so."
+      }
+    ]
+  },
+  {
     version: "0.239.0",
     date: "2026-11-09",
     title: "Grimoire cards no longer cut off",

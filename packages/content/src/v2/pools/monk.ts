@@ -387,8 +387,9 @@ export const MONK: CardDef[] = [
     retain: true,
     onExhaust: [status('mantra', 3)],
   }),
+  // (the Fervor gained this turn since #721, Robert: it read your Fervor, always 0-9 and 0 on the turn it reached 10 and was spent)
   s('uncommon', 'mantra-engine', 'Mantra Engine', 'power', 1, 'none', [
-    on('turnEnd', [scaled(barrier(0), per('mantra', 1))]),
+    on('turnEnd', [scaled(barrier(0), per('fervorGainedTurn', 1))]),
   ]),
   s(
     'rare',
@@ -397,8 +398,10 @@ export const MONK: CardDef[] = [
     'skill',
     3,
     'none',
-    [scaled(dmg(0, 'allFoes'), per('mantra', 1)), stance('radiant')],
-    { exhaust: true },
+    // (half the Fervor gained this fight since #721: it read your Fervor, never more than 9, as reaching 10 spends it on Radiant;
+    // it is Rise Radiant plus 1 Mana, so half keeps that Mana near a rare's rate: about 12 AoE by turn 6; a Skill, so Radiant never triples it)
+    [scaled(dmg(0, 'allFoes'), { by: 'fervorGained', step: 2 }), stance('radiant')],
+    { exhaust: true, up: { effects: [scaled(dmg(4, 'allFoes'), { by: 'fervorGained', step: 2 }), stance('radiant')] } },
   ),
   s(
     'rare',

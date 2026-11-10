@@ -420,3 +420,42 @@ export async function fetchRecentReplays(): Promise<
     return replay ? [{ ...replay, viewerSeat }] : [];
   });
 }
+
+/** (DECISIONS #723) One saved deck of a player, as the deck lookup shows it. */
+export interface PlayerDeck {
+  hero: string;
+  ascendancy?: string;
+  tier: number;
+  stage: number | null;
+  maxHp: number | null;
+  cards: string[];
+  boons: string[];
+  wins: number;
+  losses: number;
+  ghostWins: number;
+  ghostLosses: number;
+  savedAt: number;
+}
+export interface PlayerDecks {
+  name: string;
+  found: boolean;
+  decks: PlayerDeck[];
+  runs: { hero: string; tier: number; stage: number; at: number }[];
+}
+
+/** A player's saved decks by their username (public; null when the server cannot be reached). */
+export async function lookupDecks(name: string): Promise<PlayerDecks | null> {
+  try {
+    const res = await fetch(`${httpBase()}/pvp/board/decks?name=${encodeURIComponent(name.trim())}`);
+    const d = (await res.json()) as Partial<PlayerDecks> & { ok?: unknown };
+    if (d.ok !== true || !Array.isArray(d.decks)) return null;
+    return {
+      name: typeof d.name === 'string' ? d.name : name,
+      found: d.found === true,
+      decks: d.decks,
+      runs: Array.isArray(d.runs) ? d.runs : [],
+    };
+  } catch {
+    return null;
+  }
+}

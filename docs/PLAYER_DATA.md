@@ -19,7 +19,7 @@ Limits: 300 fights a day per account, 400 per network address; a fight's replay 
 ## Reading it
 
 ```
-BALANCE_ADMIN_TOKEN=<owner secret> pnpm balance:players -- --server https://<worker> --out player-report
+pnpm balance:players -- --out player-report                         # the live server, no key (public since #723)
 pnpm balance:players -- --input player-report --out player-report   # again, from the saved pull
 ```
 
@@ -36,6 +36,12 @@ It writes `fights.json`, `arena.json` and `campaign.json` (the pull) and `report
 A fight under older rules cannot be replayed, but its numbers sent with it still count. The older tools still work: `pnpm balance:arena`, `pnpm balance:campaign` (exact decks), `pnpm fight:check <link>` (one fight hit by hit).
 
 To try the report without players: `pnpm --filter @sr/tools exec tsx src/playerReportSample.ts <dir>` makes a bot-played sample in the export's shape.
+
+## Public since #723
+
+The export (`/admin/balance`) needs no key: Robert, "just make that data public unless its really that dangerious". It holds no names, emails or passwords (players are a one-way hashed id; Arena replays have their names taken out). Each page is kept at Cloudflare's edge for 5 minutes, so reading it again and again reaches the board at most once per page per 5 minutes.
+
+**Deck lookup**, `#/deck-lookup` (unlisted: nothing in the game links to it): search a player by username for their saved decks (every deck whose run cleared Tier 3, the cards, Boons, Ascendancy, max HP, Arena and ghost records), or **Scan the leaderboards** to look up every name on this week's and this month's Campaign and Arena boards. The server route is `GET /pvp/board/decks?name=<username>`, public and kept at the edge for a minute.
 
 ## Known gaps
 

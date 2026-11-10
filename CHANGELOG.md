@@ -1,3 +1,10 @@
+## 0.240.0 - 2026-11-09
+
+- Fervor payoffs read the Fervor gained (DECISIONS #721): Burning Litany half the Fervor gained this fight to ALL; Mantra Engine Barrier equal to the Fervor gained this turn (new `fervorGainedTurn` metric).
+- Growth ceilings (#722; rules 105): the costing guide's rule (priced at turn 5, half rate after, a stop at the turn-10 ceiling, never feeding itself); scale `half` and plant `uncounted`. Thunder Memory: own Thunderbirds uncounted, always Consumes, full to 5 then half, no cap (upgraded 3 to start). Slow Murder: half past +28, at most +44. Flared Thunder Memory+ copies still read back.
+- Public player data (#723): unlisted deck lookup `#/deck-lookup` (search a username, or scan the leaderboards), `GET /pvp/board/decks?name=`; the balance export needs no key; both edge-cached; Settings "Game data" says it is public.
+- Animated models load behind the turning S|R crest instead of flashing the still picture (#724).
+
 ## 0.239.0 - 2026-11-09
 
 - Fixed: Grimoire cards were clipped on the right of each page since 0.238.0 (the card list kept the browser's 40px list indent once cards filled from the left). No rules change.

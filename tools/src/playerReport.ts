@@ -2,7 +2,7 @@
 // fight with its numbers and replay, Arena games with their replays, Campaign deck snapshots with their deck choices), or reads a saved
 // pull, and writes a report: what is strong, what players use for their biggest turns, where runs die and which builds lack damage.
 //
-// Usage: BALANCE_ADMIN_TOKEN=... pnpm balance:players -- --server https://<worker> --out <dir>
+// Usage: pnpm balance:players -- --out <dir>   (the live server by default; --server for another)
 //        pnpm balance:players -- --input <dir with fights.json, arena.json, campaign.json> --out <dir>
 // The pull is saved to <out> as fights.json, arena.json and campaign.json, so a report can be made again without the server.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -17,6 +17,7 @@ import {
   type FightStats,
 } from '@sr/pvp';
 import type { CombatSetup, Side } from '@sr/combat';
+import { LIVE_SERVER } from './adminAccess';
 
 const arg = (name: string): string | undefined => {
   const i = process.argv.indexOf('--' + name);
@@ -32,17 +33,14 @@ async function pull(kind: 'fights' | 'arena' | 'campaign'): Promise<Row[]> {
     const f = join(resolve(input), `${kind}.json`);
     return existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as Row[]) : [];
   }
-  const server = arg('server');
-  const token = process.env.BALANCE_ADMIN_TOKEN;
-  if (!server || !token)
-    throw Error('Use --server https://your-worker with BALANCE_ADMIN_TOKEN set, or --input <dir>');
+  const server = arg('server') ?? LIVE_SERVER;
   const rows: Row[] = [];
   let after = 0;
   for (let page = 0; page < 10_000; page++) {
     const url = new URL('/admin/balance', server);
     url.searchParams.set('kind', kind);
     url.searchParams.set('after', String(after));
-    const res = await fetch(url, { headers: { authorization: `Bearer ${token}` } });
+    const res = await fetch(url);
     if (!res.ok)
       throw Error(`Export of ${kind} failed (${res.status}): check the server and secret`);
     const d = (await res.json()) as {

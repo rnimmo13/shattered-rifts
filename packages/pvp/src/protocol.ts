@@ -106,7 +106,10 @@ export interface Entry {
 // Auras that give Mana every turn cost 1 more, and Mana cards that pay back more than they cost are consumed (#710). #706-#708 reverted (#712);
 // Arena HP costs x5 and Shatters +5 a threshold, spreading from 50 Fracture (#713).
 // 103: every source that plays a card again adds its own play (a Boosted Aura that Echoing Spirit also echoes is played three times, #717).
-export const RULES_VERSION = 103;
+// 104: Burning Litany deals half the Fervor gained this fight, Mantra Engine Barriers the Fervor gained this turn (#721).
+// 105: growth ceilings (#722): Thunder Memory counts no Thunderbirds of its own, always Consumes, full to 5 then half (no cap);
+// Slow Murder full to 28 cards drawn then half, at most +44.
+export const RULES_VERSION = 105;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

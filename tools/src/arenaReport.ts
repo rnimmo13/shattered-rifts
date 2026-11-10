@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { isArenaBalanceGame, type ArenaBalanceGame } from '@sr/pvp';
 import { COMBAT_DB } from '@sr/content/v2';
+import { LIVE_SERVER } from './adminAccess';
 
 const arg = (name: string) => {
   const i = process.argv.indexOf('--' + name);
@@ -18,12 +19,7 @@ if (input) {
     throw Error('Invalid Arena export');
   games = data.games;
 } else {
-  const server = arg('server');
-  const token = process.env.BALANCE_ADMIN_TOKEN;
-  if (!server || !token)
-    throw Error(
-      'Use --server https://your-worker with BALANCE_ADMIN_TOKEN in the environment, or --input export.json',
-    );
+  const server = arg('server') ?? LIVE_SERVER;
   const url = new URL('/admin/balance', server);
   if (url.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(url.hostname))
     throw Error('Use HTTPS');
@@ -31,7 +27,6 @@ if (input) {
   for (let page = 0; page < 100; page++) {
     url.searchParams.set('after', String(cursor));
     const res = await fetch(url, {
-      headers: { authorization: `Bearer ${token}` },
       redirect: 'error',
       signal: AbortSignal.timeout(15000),
     });

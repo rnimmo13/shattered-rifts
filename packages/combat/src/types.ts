@@ -381,6 +381,7 @@ export type Metric =
   | 'summonedFight' // successful non-starting companion summons by this side
   | 'snaresSprung' // this side's Traps sprung this fight
   | 'fervorGained' // positive Fervor gained by this side's hero this fight
+  | 'fervorGainedTurn' // positive Fervor gained by this side's hero this turn (DECISIONS #721)
   | 'tagExhaustedBeforePlay' // tagged consumed cards, excluding the card whose play triggered this effect
   | 'spent' // in an 'arcana' trigger: the Arcana just spent
   // (the Defect copy, shaman)
@@ -479,6 +480,8 @@ export interface Scale {
   rune?: string;
   /** (DECISIONS #434) the scaled part is at most this much ("+1 per HP you lost, at most 6") */
   max?: number;
+  /** (DECISIONS #722) past this much, the scaled part grows at half the rate ("half as much past +28"), before `max` */
+  half?: number;
   /** Lower bound and rounding of the scaled contribution. Defaults to floor with no minimum. */
   min?: number;
   round?: 'ceil';
@@ -1013,7 +1016,15 @@ export type Op =
    * first free position; with all taken, the front totem is pushed out (its spirit acts as it goes) and the rest move up.
    * (`anywhere` is retired: nothing chooses a position.)
    */
-  | { op: 'plant'; spirit: string; anywhere?: boolean; times?: number; scale?: Scale }
+  | {
+      op: 'plant';
+      spirit: string;
+      anywhere?: boolean;
+      times?: number;
+      scale?: Scale;
+      /** (DECISIONS #722) these totems are not counted as planted this fight (the `channeledOf` metric), so a card that reads the count cannot feed itself */
+      uncounted?: boolean;
+    }
   /** uproot every totem you have (the `uprooted` metric counts them) */
   | { op: 'uproot' }
   /** (DECISIONS #420) one more totem position (at most TOTEM_SLOTS), empty */
@@ -1621,6 +1632,8 @@ export interface SideState {
   /** Trap slots above MAX_SNARES (the Trapmaster's two) */
   snareSlots?: number;
   fervorGained?: number;
+  /** Fervor gained this turn (DECISIONS #721: Mantra Engine) */
+  fervorGainedTurn?: number;
   discarded: number;
   /** times your hero lost HP this turn / this fight, cards consumed this turn */
   lostHpTurn?: number;

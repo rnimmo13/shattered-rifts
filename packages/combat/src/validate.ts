@@ -32,6 +32,14 @@ export function validateDb(db: CombatDb): string[] {
           errs.push(`${where}: scale minimum must be nonnegative and finite`);
         if (o.scale.min !== undefined && o.scale.max !== undefined && o.scale.min > o.scale.max)
           errs.push(`${where}: scale minimum exceeds maximum`);
+        // (DECISIONS #722) diminishing returns: a whole number at or above 0, below the cap if there is one, and not on hit counts
+        if (o.scale.half !== undefined) {
+          if (!Number.isInteger(o.scale.half) || o.scale.half < 0)
+            errs.push(`${where}: scale half must be a nonnegative whole number`);
+          if (o.scale.max !== undefined && o.scale.half >= o.scale.max)
+            errs.push(`${where}: scale half must be below its maximum`);
+          if (o.scale.into === 'hits') errs.push(`${where}: scale half does not apply to hit counts`);
+        }
       }
       if (o.op === 'power') {
         for (const limit of [o.perTurnLimit, o.perRoundLimit, o.barrierCap])

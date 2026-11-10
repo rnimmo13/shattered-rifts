@@ -7,6 +7,7 @@ import { SettingsPanel } from '../ui/SettingsPanel';
 import { PerfRecorder } from '../ui/PerfRecorder';
 import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
+import { DeckLookup } from './DeckLookup';
 import { CreditsScreen } from './CreditsScreen';
 import { StoreScreen } from './StoreScreen';
 import { CosmeticsScreen } from './CosmeticsScreen';
@@ -103,6 +104,8 @@ function Screens({ hash }: { hash: string }) {
   if (hash === '#/store') return <StoreScreen />;
   if (hash === '#/cosmetics') return <CosmeticsScreen />;
   if (hash === '#/cards') return <CardLibrary />;
+  // (DECISIONS #723) unlisted: nothing links here
+  if (hash === '#/deck-lookup') return <DeckLookup />;
   if (hash === '#/models') return <Bestiary />;
   // the PvP mode is called the Arena (#/pvp keeps working for links already shared)
   if (hash === '#/arena' || hash === '#/pvp') {

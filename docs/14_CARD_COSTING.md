@@ -213,6 +213,21 @@ For "whenever X" triggers, count how often X happens per turn in the deck that w
 4. **The tier test.** Flat numbers (Sapped, Thorns, Bleed, Fate, Barrier) shrink against Tier X enemies; percentages grow. A card on
    budget at Tier I may be weak or strong at Tier X.
 5. **The upgrade check.** Price the "+" version too (§12).
+6. **The growth ceiling (DECISIONS #722).** A card that grows with a count kept all fight (cards drawn, totems planted, Fervor gained,
+   Commands played...) follows one shape, set against the Arena's goal of a kill in about 10 own turns at 1000 HP:
+   - **Turn 5 prices it.** At the count a deck built for it reaches by turn 5, the card lands on its grade's budget (A for a rare, B
+     for an uncommon).
+   - **Half rate after that** (`half` on the scale: "half as much past +28"). It keeps growing, slower.
+   - **A hard stop at the turn-10 ceiling** (`max`): a card you can play again stops at about **2x its budget** (about 55 for a
+     2-Mana rare); a **Consume** finisher at about **3x** (about 150 for a 3-Mana rare, about 115 if it hits ALL enemies). One card is
+     never most of a turn's damage, and a finisher is at most about 15% of Arena HP.
+   - **It never feeds itself.** What the card makes does not add to the count it reads (`uncounted` on a plant), and a card that
+     reads a count of its own kind always Consumes, upgraded too.
+   - Growth adds damage to each hit, never hits (§2). Use real counts from the player data (`pnpm balance:players`) when there are
+     enough fights; until then, estimate them for a deck built around the card.
+   - Robert may leave a Consume finisher uncapped, with only the half rate, when placing a lot is the fun of it (Thunder Memory).
+   - Thunder Memory: 1 + Thunderbirds planted, full to 5, half after, no cap (6 plants by turn 5, about 60 to all; 8 by turn 10).
+     Slow Murder: 8 + cards drawn, full to 28, half after, at most +44 (36 by turn 5, 52 by turn 10).
 
 ---
 
