@@ -1,0 +1,89 @@
+/* ArenaRules.tsx: why a deck is not valid for the Arena, and the rules */
+.arenaprob {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 70ch;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  text-align: left;
+  color: var(--c-ivory);
+  background: rgb(120 20 30 / 0.22);
+  border: 1px solid rgb(255 110 110 / 0.45);
+}
+.arenaprob__head {
+  color: #ff9a9a;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+.arenaprob__list {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.4;
+}
+.arenaprob__rules {
+  justify-self: start;
+  font-size: 0.9rem;
+  color: var(--c-gold-light);
+}
+
+/* (on a saved deck: under its header) */
+.deckrep__arena {
+  margin: 0.2rem 0 0.6rem;
+}
+.deckrep__ok {
+  width: fit-content;
+  margin: 0.2rem 0 0.6rem;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #9ff0b8;
+  background: rgb(40 140 80 / 0.18);
+  border: 1px solid rgb(110 220 150 / 0.4);
+}
+/* (on the Arena screen: under a deck it would leave out) */
+.pvp__decks li {
+  flex-wrap: wrap;
+}
+.pvp__deckprob {
+  flex: 1 0 100%;
+  margin-top: 0.4rem;
+  font-size: 0.92rem;
+}
+.run__arenaNotice {
+  max-width: 72ch;
+  margin: 0.4rem auto 0;
+}
+.arenarules__links {
+  text-align: center;
+}
+.arenarules {
+  max-width: 70ch;
+  margin: 1.2rem auto;
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  text-align: left;
+  background: rgb(10 12 30 / 0.7);
+  border: 1px solid rgb(212 168 75 / 0.3);
+}
+.arenarules__title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--c-gold-light);
+}
+.arenarules__lead {
+  margin: 0 0 0.6rem;
+  color: var(--c-text-dim);
+}
+.arenarules__list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.45;
+}
+.arenarules__list b {
+  color: var(--c-ivory);
+}

@@ -1568,6 +1568,61 @@
     border-color 0.18s ease,
     box-shadow 0.18s ease;
 }
+/* (in a book to read, the bar holds the realms' own list and the search after it) */
+.grim__tabs:has(> .grim__find, > .grim__tablist) {
+  align-items: center;
+}
+.grim__tablist {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+/* the search: a pill with a magnifier, at the end of the bar (on a phone, a row of its own above the realms) */
+.grim__find {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 16rem;
+  min-width: 10rem;
+  margin-left: auto;
+}
+.grim__find svg {
+  position: absolute;
+  left: 10px;
+  fill: none;
+  stroke: rgb(226 222 255 / 0.6);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.grim__find input {
+  width: 100%;
+  min-height: 2.1rem;
+  padding: 0.3rem 0.8rem 0.3rem 2rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: rgb(0 0 0 / 0.35);
+  color: var(--c-ivory);
+  font: inherit;
+  font-size: 0.9rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.grim__find input::placeholder {
+  color: rgb(226 222 255 / 0.45);
+}
+.grim__find input:focus {
+  outline: none;
+  border-color: rgb(241 216 143 / 0.7);
+  box-shadow: 0 0 12px -3px rgb(241 216 143 / 0.6);
+}
+.grim--phone > .grim__find {
+  flex: none;
+  margin: 0;
+}
 /* (the realm's dot) */
 .grim__ribbon::before {
   content: '';
@@ -2053,9 +2108,15 @@
 }
 .grim__who {
   display: inline-flex;
+  flex: 1 1 auto;
   align-items: center;
   gap: 0.45rem;
   min-width: 0;
+  /* (many characters' icons on one page give way to the counts rather than running under them) */
+  overflow: hidden;
+}
+.grim__who .heroicon {
+  flex: none;
 }
 .grim__whoname {
   min-width: 0;
@@ -2065,10 +2126,10 @@
 .grim__stats {
   display: inline-flex;
   flex: none;
-  gap: 6px;
+  gap: 7px;
   font-family: var(--font-body, inherit);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-size: 0.86rem;
+  letter-spacing: 0.03em;
   text-transform: none;
   text-shadow: none;
 }
@@ -2076,17 +2137,17 @@
   --dot: #b6b0d8;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 9px 2px 7px;
+  gap: 6px;
+  padding: 3px 11px 3px 9px;
   border-radius: 999px;
-  color: rgb(226 222 255 / 0.72);
+  color: rgb(226 222 255 / 0.82);
   background: rgb(255 255 255 / 0.05);
   border: 1px solid rgb(255 255 255 / 0.07);
 }
 .grim__stat::before {
   content: '';
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--dot);
   box-shadow: 0 0 6px var(--dot);
@@ -2117,7 +2178,7 @@
   --dot: #4fd8ff;
 }
 /* (a narrower book keeps the total and drops the breakdown, then the rest) */
-@container grim-page (max-width: 760px) {
+@container grim-page (max-width: 860px) {
   .grim__stat:not(.grim__stat--total, .grim__stat--mana) {
     display: none;
   }
@@ -2263,6 +2324,61 @@
 .grimmodal__body {
   flex: 1 1 0;
   min-height: 0;
+}
+/* the Card library: exactly the window's height, the heading and filters at the top and the book filling the rest, so the book's
+   foot is always in view; only the book scrolls (Robert, 2026-11-10) */
+.setup.lib {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.7rem;
+  height: 100dvh;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.lib__head {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.1rem;
+  text-align: left;
+}
+.lib__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  letter-spacing: 0.06em;
+  color: var(--c-gold-light);
+}
+.lib__lead {
+  margin: 0;
+  color: var(--c-text-dim);
+}
+.setup.lib .lib__filters {
+  flex: none;
+  margin: 0;
+  justify-content: flex-start;
+  text-align: left;
+}
+.setup.lib .lib__book {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+}
+/* (a window too short for a book worth reading under the filters: the page scrolls again, and the book keeps a usable height) */
+@media (max-height: 34rem) {
+  .setup.lib {
+    height: auto;
+    overflow: visible;
+  }
+  .setup.lib .lib__book {
+    flex: none;
+    height: 30rem;
+  }
 }
 /* the Card library's book: a full screen tall (the page scrolls to it) */
 .lib__book {

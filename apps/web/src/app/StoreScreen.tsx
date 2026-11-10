@@ -82,7 +82,7 @@ export function StoreScreen() {
                     <a
                       className="btn btn--small btn--ghost"
                       href="#/cosmetics"
-                      aria-label={`Wearing ${skinName(s)}: change looks in your Cosmetics Vault`}
+                      aria-label={`Wearing ${skinName(s)}: change looks in your Collection`}
                     >
                       <span>Wearing</span>
                     </a>

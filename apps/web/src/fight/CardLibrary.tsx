@@ -76,15 +76,16 @@ export function CardLibrary() {
   const bookKey = `${text}|${pool}|${kind}|${rarity}|${show}`;
 
   return (
-    <main className="setup setup--wide">
-      <a className="btn btn--small setup__back" href="#/">
-        <span>Back</span>
-      </a>
-      <header className="setup__head">
-        <h1 className="setup__title">Card library</h1>
-        <p className="setup__lead">
-          Every card in the game. {cards.length} card{cards.length === 1 ? '' : 's'} shown. Hover a
-          card for a big preview; pages are grouped by realm, then character, then rarity.
+    // (the page is the window's height: the heading and filters above, the book below them down to the window's foot, and only the
+    // book scrolls)
+    <main className="setup setup--wide lib">
+      <header className="lib__head">
+        <a className="btn btn--small" href="#/">
+          <span>Back</span>
+        </a>
+        <h1 className="lib__title">Card library</h1>
+        <p className="lib__lead">
+          {cards.length} card{cards.length === 1 ? '' : 's'} shown. Hover a card for a big preview.
         </p>
       </header>
       <div className="grim__filters lib__filters">
@@ -142,6 +143,8 @@ export function CardLibrary() {
           cards={cards}
           size="browse"
           fitCount={fitCount}
+          // (the page's own search, with the other filters, is above the book)
+          search={false}
           emptyText="No cards match those filters."
         />
       </div>

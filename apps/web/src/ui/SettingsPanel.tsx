@@ -2,7 +2,7 @@
 // mounted once, at the app's root; a change is saved where that preference has always lived, and announced, so a fight in
 // progress applies it at once.
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import { getSound, setSound } from '../audio/sfx';
 import { getMusic, setMusic } from '../audio/music';
 import {
@@ -34,13 +34,56 @@ import {
   type DesktopSteamStatus,
 } from '../desktopBridge';
 
-/** Two or more choices side by side, one of them chosen (pressed buttons: each is reached with Tab and chosen with Enter). */
+/**
+ * An On/Off setting: a switch, green and on the right when on, red and on the left when off, with a tick or a cross in it and the
+ * word beside it (Robert, 2026-11-10: the glow alone was hard for some to see; the colour is never the only sign, for players who
+ * cannot tell red from green).
+ */
+function Toggle(props: { label: string; on: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={props.on}
+      aria-label={props.label}
+      className={`settings__switch ${props.on ? 'is-on' : 'is-off'}`}
+      onClick={() => props.onChange(!props.on)}
+    >
+      <span className="settings__switchTrack" aria-hidden="true">
+        <span className="settings__switchKnob">
+          <svg viewBox="0 0 16 16" width="12" height="12">
+            {props.on ? (
+              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" />
+            ) : (
+              <path d="M4.5 4.5 11.5 11.5M11.5 4.5 4.5 11.5" />
+            )}
+          </svg>
+        </span>
+      </span>
+      <span className="settings__switchText">{props.on ? 'On' : 'Off'}</span>
+    </button>
+  );
+}
+
+/**
+ * Two or more choices side by side, one of them chosen (a segmented control of pressed buttons: each is reached with Tab and
+ * chosen with Enter). A plain On/Off is a switch (Toggle).
+ */
 function Choice<T extends string>(props: {
   label: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (v: T) => void;
 }) {
+  const values = props.options.map((o) => o.value as string);
+  if (values.length === 2 && values.includes('on') && values.includes('off'))
+    return (
+      <Toggle
+        label={props.label}
+        on={props.value === 'on'}
+        onChange={(on) => props.onChange((on ? 'on' : 'off') as T)}
+      />
+    );
   return (
     <div className="settings__choice" role="group" aria-label={props.label}>
       {props.options.map((o) => (
@@ -48,7 +91,7 @@ function Choice<T extends string>(props: {
           key={o.value}
           type="button"
           aria-pressed={props.value === o.value}
-          className={`btn btn--small${props.value === o.value ? ' is-on' : ' btn--ghost'}`}
+          className={`settings__seg${props.value === o.value ? ' is-on' : ''}`}
           onClick={() => props.onChange(o.value)}
         >
           <span>{o.label}</span>
@@ -300,6 +343,7 @@ export function SettingsPanel() {
                   step={5}
                   value={Math.round(sound.volume * 100)}
                   disabled={!sound.on}
+                  style={{ '--fill': `${Math.round(sound.volume * 100)}%` } as CSSProperties}
                   aria-label="Effects volume"
                   onChange={(e) => changeSound({ volume: Number(e.target.value) / 100 })}
                 />
@@ -326,6 +370,7 @@ export function SettingsPanel() {
                   step={5}
                   value={Math.round(music.volume * 100)}
                   disabled={!music.on}
+                  style={{ '--fill': `${Math.round(music.volume * 100)}%` } as CSSProperties}
                   aria-label="Music volume"
                   onChange={(e) => changeMusic({ volume: Number(e.target.value) / 100 })}
                 />

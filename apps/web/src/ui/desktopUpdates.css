@@ -4,34 +4,88 @@
   gap: 0.45rem;
   justify-items: start;
 }
+/* "Download" in the home header, and its menu of desktop apps (Windows; Mac coming soon) */
 .desktop-download {
+  position: relative;
   margin: 0;
 }
-.desktop-download a {
+.desktop-download > .btn > span {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  max-width: 100%;
-  text-align: left;
+  gap: 0.5rem;
 }
 .desktop-download img {
   flex-shrink: 0;
   object-fit: contain;
 }
-.desktop-download__short {
-  display: none;
+.desktop-download__caret {
+  font-size: 0.8em;
+  opacity: 0.75;
+}
+.desktop-download__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  display: grid;
+  gap: 4px;
+  min-width: 16rem;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(165deg, #141a3a, #0a0c1d) padding-box,
+    linear-gradient(135deg, rgb(241 216 143 / 0.7), rgb(140 100 255 / 0.5)) border-box;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.6);
+  text-align: left;
+}
+.desktop-download__item {
+  display: grid;
+  gap: 2px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  color: var(--c-ivory);
+  text-decoration: none;
+}
+.desktop-download__item b {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+}
+a.desktop-download__item:hover,
+a.desktop-download__item:focus-visible {
+  background: rgb(241 216 143 / 0.12);
+  outline: none;
+}
+.desktop-download__item.is-soon {
+  cursor: default;
+  opacity: 0.7;
+}
+.desktop-download__soon {
+  margin-left: 0.4rem;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.7rem;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  color: #ffd48a;
+  background: rgb(255 180 60 / 0.14);
+  border: 1px solid rgb(255 180 60 / 0.4);
+  vertical-align: middle;
 }
 @media (max-width: 52rem) {
-  .desktop-download__full {
+  .desktop-download > .btn {
+    padding-inline: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+}
+/* (a phone: the logo and the arrow, like the icon buttons beside it, so the account keeps its room) */
+@media (max-width: 30rem) {
+  .desktop-download__word {
     display: none;
   }
-  .desktop-download__short {
-    display: inline;
-  }
-  .desktop-download a {
-    padding-inline: 0.65rem;
-    gap: 0.4rem;
-    letter-spacing: 0.1em;
+  .desktop-download > .btn > span {
+    gap: 0.25rem;
   }
 }
 .desktop-download small,

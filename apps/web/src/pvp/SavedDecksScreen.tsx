@@ -96,7 +96,8 @@ export default function SavedDecksScreen() {
           old one.
         </p>
         <p className="decks__links">
-          <a href="#/arena">Take a deck into the Arena</a>
+          <a href="#/arena">Take a deck into the Arena</a> ·{' '}
+          <a href="#/arena-rules">What the Arena takes</a>
         </p>
         <p className={`decks__sync decks__sync--${sync.kind}`} role="status">
           {syncLine(sync)}{' '}

@@ -31,10 +31,10 @@ export function ShopFrame(props: {
         </a>
         <StoreIcon size={44} className="store__mark" />
         <div className="shop__title">
-          <h1>{page === 'store' ? 'Store' : 'Cosmetics Vault'}</h1>
+          <h1>{page === 'store' ? 'Store' : 'Collection'}</h1>
           <p>{props.lead}</p>
         </div>
-        <nav className="shop__switch" aria-label="Store or Vault">
+        <nav className="shop__switch" aria-label="Store or your Collection">
           <a
             href="#/store"
             className={page === 'store' ? 'is-on' : ''}
@@ -47,7 +47,7 @@ export function ShopFrame(props: {
             className={page === 'vault' ? 'is-on' : ''}
             aria-current={page === 'vault' ? 'page' : undefined}
           >
-            Vault
+            Collection
           </a>
         </nav>
       </header>

@@ -110,6 +110,6 @@ describe('the deck limits in the Arena (DECISIONS #238)', () => {
       tier: 4,
     });
     expect(r.ok).toBe(false);
-    expect(!r.ok && r.message).toMatch(/1 Legendary card/);
+    expect(!r.ok && r.message).toMatch(/2 Legendary cards .*the Arena takes at most 1/);
   });
 });

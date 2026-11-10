@@ -226,6 +226,11 @@ export function LearnOdds() {
         A few events only come up in the right state (a buried map you kept, low HP, a lot of
         shards, a Boon to give up), so the real share you meet can differ a little.
       </p>
+      <p>
+        To see how an Elite Event&apos;s reel and a chance spin play out before you meet one,{' '}
+        <a href="#/trials">try them in the Sandbox&apos;s Elite Events</a>: nothing there is kept or
+        costs anything.
+      </p>
 
       <h3>Sanctification</h3>
       <p>
@@ -235,11 +240,12 @@ export function LearnOdds() {
       </p>
       <ul>
         <li>
-          <b>The white-fire basin</b> (an event; once per run, and only for a deck with no sanctified
-          card yet) rolls every card with numbers on its own: {SANCTIFY_SAME_PCT}% are left as they
-          were, {Math.round(((100 - SANCTIFY_SAME_PCT) * SANCTIFY_UP_PCT) / 100)}% become 25%
-          stronger and {Math.round(((100 - SANCTIFY_SAME_PCT) * (100 - SANCTIFY_UP_PCT)) / 100)}%
-          become 25% weaker. You do not choose which cards.
+          <b>The white-fire basin</b> (an event; once per run, and only for a deck with no
+          sanctified card yet) rolls every card with numbers on its own: {SANCTIFY_SAME_PCT}% are
+          left as they were, {Math.round(((100 - SANCTIFY_SAME_PCT) * SANCTIFY_UP_PCT) / 100)}%
+          become 25% stronger and{' '}
+          {Math.round(((100 - SANCTIFY_SAME_PCT) * (100 - SANCTIFY_UP_PCT)) / 100)}% become 25%
+          weaker. You do not choose which cards.
         </li>
         <li>
           <b>Loaded Dice</b> (a Gambler&apos;s Shrine blessing, from Tier {GAMBLER_TIER}) roll one

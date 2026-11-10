@@ -349,7 +349,7 @@ describe('the decks a player brings to a match (DECISIONS #307)', () => {
   it('refuses a deck of fewer than 15 cards, and says so', () => {
     const small = checkArenaDecks([entryOf('knight', 'Ann')]);
     expect(small.ok).toBe(false);
-    expect(!small.ok && small.message).toMatch(/at least 15 cards; this one holds 10/);
+    expect(!small.ok && small.message).toMatch(/It has 10 cards, and the Arena needs at least 15/);
     const fifteen = { ...entryOf('knight', 'Ann') };
     fifteen.deck = [
       ...fifteen.deck,

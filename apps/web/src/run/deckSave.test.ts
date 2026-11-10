@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { RunState } from '@sr/campaign';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { arenaProblem, loseSavedDecks, shouldAutoSave } from './deckSave';
+import { arenaProblemsOf, loseSavedDecks, shouldAutoSave } from './deckSave';
 import { loadVault, saveVault } from '../pvp/vault';
 
 const stepped = (nodes: number, phase = 'map', seed = 's'): RunState =>
@@ -72,6 +72,10 @@ describe('a run that collapses takes its saved deck out of the Vault (its ghost 
 });
 
 describe("the map's Arena button says whether the deck as it stands would pass the Arena's check (DECISIONS #442)", () => {
+  const arenaProblem = (r: RunState): string | null =>
+    arenaProblemsOf(r)
+      .map((p) => p.text)
+      .join(' ') || null;
   const run = (deck: string[]): RunState =>
     ({
       seed: 's',
@@ -84,12 +88,21 @@ describe("the map's Arena button says whether the deck as it stands would pass t
     }) as unknown as RunState;
   it('a deck of 15 cards passes, and a starter deck of ten does not: the Arena wants 15 (DECISIONS #460)', () => {
     const starter = [...RIFTWALKERS.knight.starter];
-    expect(arenaProblem(run([...starter, ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave']]))).toBeNull();
-    expect(arenaProblem(run(starter))).toMatch(/at least 15 cards; this one holds 10/);
+    expect(
+      arenaProblem(
+        run([
+          ...starter,
+          ...['alarm-bell', 'catch-breath', 'glimpse-ahead', 'haft-strike', 'heave'],
+        ]),
+      ),
+    ).toBeNull();
+    expect(arenaProblem(run(starter))).toMatch(
+      /It has 10 cards, and the Arena needs at least 15/,
+    );
   });
   it('a deck too small or too big does not, and says why', () => {
-    expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(/A deck holds/);
+    expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(/It has 3 cards, and the Arena needs at least 15/);
     const huge = Array.from({ length: 81 }, () => [...RIFTWALKERS.knight.starter]).flat();
-    expect(arenaProblem(run(huge))).toMatch(/A deck holds/);
+    expect(arenaProblem(run(huge))).toMatch(/a deck holds at most 80/);
   });
 });

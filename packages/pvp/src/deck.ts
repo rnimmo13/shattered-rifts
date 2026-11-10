@@ -34,6 +34,11 @@ export interface Rejected {
 }
 
 const isCardId = (id: string): boolean => isDeckCard(id);
+/** a status card a run picked up (Static, Haze...): unplayable, and nothing for discarding it */
+const isJunk = (id: string): boolean => {
+  const c = COMBAT_DB.cards[id];
+  return !!c && !!c.unplayable && !c.onDiscard;
+};
 
 // Names are shown to other players, so abusive ones are replaced. Letters are compared after folding look-alikes (f u c k, f*ck,
 // sh1t, Fuuuck) so the usual disguises do not work. Strong stems match anywhere in the name; short or ambiguous words only
@@ -207,8 +212,9 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     const limit = COMBAT_DB.cards[base]?.kind === 'power' ? MAX_AURA_COPIES : MAX_COPIES;
     if (n > limit && COMBAT_DB.cards[base]?.rarity !== 'legendary') continue;
     copies.set(base, n);
-    // (the Legendary and Ancestral limits are the Arena's, checkArenaEntry)
-    if (!canAdd(held, id, false))
+    // (the Legendary and Ancestral limits are the Arena's, checkArenaEntry. Junk a run picked up comes along: it only holds its
+    // own deck back, and it is how that deck played; DECISIONS #729. A reward still never offers it: canAdd)
+    if (!isJunk(id) && !canAdd(held, id, false))
       return {
         ok: false,
         message: `The deck breaks the deck rules at "${COMBAT_DB.cards[id]?.name ?? id}".`,
@@ -265,6 +271,13 @@ export function checkEntry(raw: unknown): Checked | Rejected {
  * (DECISIONS #238). Only the Arena's doors use this: a Vault keeps a deck built before the limits, and a ghost plays as it was saved.
  */
 export function checkArenaEntry(raw: unknown): Checked | Rejected {
+  const r = arenaCheck(raw);
+  // (this check alone decides; a refusal is told in the player's words, every reason, arenaProblems)
+  return r.ok ? r : { ok: false, message: problemsText(raw) ?? r.message };
+}
+
+/** The Arena's own decision, with its plain message: what arenaProblems must agree with (arenaProblems.test.ts). */
+function arenaCheck(raw: unknown): Checked | Rejected {
   const checked = checkEntry(raw);
   if (!checked.ok) return checked;
   if (checked.entry.deck.length < ARENA_MIN_DECK)
@@ -290,6 +303,145 @@ export function checkArenaEntry(raw: unknown): Checked | Rejected {
     };
   return checked;
 }
+
+/** One reason a deck cannot go into the Arena, in the player's words, with what fixes it. */
+export interface ArenaProblem {
+  kind: 'deck' | 'unknown' | 'unique' | 'size' | 'legendary' | 'ancestral';
+  text: string;
+  /** a deck still growing to the size the Arena needs, as every run's deck starts out: worth a tip, not an alarm */
+  growing?: boolean;
+}
+
+/** A list of card names, a repeated one once with its count ("Wound ×2, Static"). */
+function namesOf(ids: readonly string[]): string {
+  const counts = new Map<string, number>();
+  for (const id of ids) {
+    const name = COMBAT_DB.cards[id]?.name ?? COMBAT_DB.cards[stripRoll(id)]?.name ?? id;
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  return [...counts].map(([n, k]) => (k > 1 ? `${n} ×${k}` : n)).join(', ');
+}
+
+const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`;
+
+/**
+ * Every reason this deck cannot go into the Arena, each in words a player can act on, or none when it can. It walks the deck as
+ * checkEntry and checkArenaEntry do, but carries on past the first problem, so a deck with several hears them all
+ * (arenaProblems(x).length === 0 exactly when checkArenaEntry(x).ok: arenaProblems.test.ts holds the two together, against the
+ * Arena's own check, which alone decides).
+ */
+export function arenaProblems(raw: unknown): ArenaProblem[] {
+  if (typeof raw !== 'object' || raw === null)
+    return [{ kind: 'deck', text: 'No deck was found to check.' }];
+  const e = raw as Record<string, unknown>;
+  const sent = e['hero'];
+  const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
+  if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero))
+    return [{ kind: 'deck', text: 'This deck belongs to a Riftwalker the game no longer has.' }];
+  const sentDeck = e['deck'];
+  if (!Array.isArray(sentDeck) || !sentDeck.every((c) => typeof c === 'string'))
+    return [{ kind: 'deck', text: 'This deck could not be read.' }];
+  const problems: ArenaProblem[] = [];
+  // (as checkEntry: a card taken out of the game becomes its replacement, left out where that would break a limit)
+  const deck: string[] = [];
+  {
+    const seen = new Map<string, number>();
+    for (const s of sentDeck) {
+      const id = canonicalCard(s);
+      if (id !== s && (!canAdd(deck, id, false) || (seen.get(id) ?? 0) >= MAX_COPIES)) continue;
+      seen.set(id, (seen.get(id) ?? 0) + 1);
+      deck.push(id);
+    }
+  }
+  if (deck.length > MAX_DECK)
+    problems.push({
+      kind: 'size',
+      text: `It has ${deck.length} cards, and a deck holds at most ${MAX_DECK}. Remove some at a shrine or a shop.`,
+    });
+  const unknown: string[] = [];
+  const twice: string[] = [];
+  const extra: string[] = [];
+  const held: string[] = [];
+  const copies = new Map<string, number>();
+  for (const id of deck) {
+    if (!isCardId(id)) {
+      unknown.push(id);
+      continue;
+    }
+    const base = stripRoll(id).replace(/[+]$/, '');
+    const n = (copies.get(base) ?? 0) + 1;
+    const limit = COMBAT_DB.cards[base]?.kind === 'power' ? MAX_AURA_COPIES : MAX_COPIES;
+    // (a copy past the limit is not counted: not a problem by itself, but it can leave the deck too small)
+    if (n > limit && COMBAT_DB.cards[base]?.rarity !== 'legendary') {
+      extra.push(id);
+      continue;
+    }
+    copies.set(base, n);
+    if (!isJunk(id) && !canAdd(held, id, false)) {
+      // (a known card the rules refuse at this point is a second copy of a one-of-a-kind card)
+      twice.push(id);
+      continue;
+    }
+    held.push(id);
+  }
+  if (unknown.length > 0)
+    problems.push({
+      kind: 'unknown',
+      text: `It holds ${plural(unknown.length, 'card')} that ${unknown.length === 1 ? 'is' : 'are'} no longer in the game (${unknown
+        .map((u) => u.slice(0, 40))
+        .join(', ')}).`,
+    });
+  if (twice.length > 0)
+    problems.push({
+      kind: 'unique',
+      text: `It holds a second copy of ${namesOf(twice)}. A Legendary or Ancestral card is one of a kind: a deck may hold one copy (its upgrade counts as the same card).`,
+    });
+  // (the size the Arena counts, after the extra copies are left out)
+  const counted = held.length;
+  if (counted < ARENA_MIN_DECK && deck.length <= MAX_DECK) {
+    const left = extra.length
+      ? ` ${plural(extra.length, 'card')} of yours ${extra.length === 1 ? 'is an extra copy' : 'are extra copies'} the Arena does not count (${namesOf(extra)}): it counts at most ${MAX_COPIES} copies of a card and ${MAX_AURA_COPIES} of an Aura.`
+      : '';
+    problems.push({
+      kind: 'size',
+      text: extra.length
+        ? `It has ${plural(counted, 'card')} that count, and the Arena needs at least ${ARENA_MIN_DECK}.${left} Add cards from fights, shops or events.`
+        : `It has ${plural(counted, 'card')}, and the Arena needs at least ${ARENA_MIN_DECK}. Add cards from fights, shops or events.`,
+      ...(extra.length ? {} : { growing: true }),
+    });
+  }
+  const rarity = (r: string): string[] =>
+    held.filter((id) => COMBAT_DB.cards[stripRoll(id).replace(/\+$/, '')]?.rarity === r);
+  const legends = rarity('legendary');
+  const ancestral = rarity('ancestral');
+  if (legends.length > V2_DECK_RULES.maxLegendary)
+    problems.push({
+      kind: 'legendary',
+      text: `It holds ${legends.length} Legendary cards (${namesOf(legends)}), and the Arena takes at most ${V2_DECK_RULES.maxLegendary}. Remove one at a shrine or a shop.`,
+    });
+  if (ancestral.length > V2_DECK_RULES.maxAncestral)
+    problems.push({
+      kind: 'ancestral',
+      text: `It holds ${ancestral.length} Ancestral cards (${namesOf(ancestral)}), and the Arena takes at most ${V2_DECK_RULES.maxAncestral}. Remove some at a shrine or a shop.`,
+    });
+  return problems;
+}
+
+/** All of a deck's Arena problems as one message (null: none found). */
+function problemsText(raw: unknown): string | null {
+  const p = arenaProblems(raw);
+  return p.length ? p.map((x) => x.text).join(' ') : null;
+}
+
+/** The rules a deck must meet to go into the Arena, for the screens that show them (ArenaRules). */
+export const ARENA_RULES = {
+  minCards: ARENA_MIN_DECK,
+  maxCards: MAX_DECK,
+  maxCopies: MAX_COPIES,
+  maxAuraCopies: MAX_AURA_COPIES,
+  maxLegendary: V2_DECK_RULES.maxLegendary,
+  maxAncestral: V2_DECK_RULES.maxAncestral,
+} as const;
 
 /**
  * Check the decks a player brings to a match (DECISIONS #307): 1 to MAX_MATCH_DECKS, each one fit for the Arena. They are one player's,

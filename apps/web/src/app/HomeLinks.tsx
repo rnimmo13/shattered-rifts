@@ -1,10 +1,17 @@
-// The home page's smaller destinations, as a tidy grid of icon tiles under the big menu buttons: what is yours (decks, runs,
-// trophies), the Arena's boards and ghosts, and reading (cards, how to play, patch notes). Credits is in Settings > About.
+// The home page's smaller destinations, as a tidy grid of icon tiles under the big menu buttons: your collection (decks, looks,
+// trophies, runs), the Card library and the leaderboards (Robert, 2026-11-10). How to play and the patch notes are in the header
+// (HomeHeaderLinks); the ghost decks are the Arena's, linked from its page; Credits is in Settings > About.
 
 import type { ReactNode } from 'react';
 
 /** Line icons on a 24-unit grid, drawn in the tile's colour. */
 const ICON: Record<string, ReactNode> = {
+  skins: (
+    <>
+      <path d="M9 4 12 6l3-2 5 3.5-2.5 3.5L16 10v10H8V10l-1.5 1L4 7.5z" />
+      <path d="M12 6v3" />
+    </>
+  ),
   decks: (
     <>
       <rect x="4" y="6" width="11" height="15" rx="2" />
@@ -57,18 +64,64 @@ const ICON: Record<string, ReactNode> = {
   ),
 };
 
+/** One of the line icons above, at a size. */
+export function LineIcon(props: { name: keyof typeof ICON; size?: number }) {
+  const s = props.size ?? 22;
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={s}
+      height={s}
+      aria-hidden
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {ICON[props.name]}
+    </svg>
+  );
+}
+
+// (two rows of three: what is yours, then the library and the boards)
 const LINKS: { href: string; label: string; icon: keyof typeof ICON }[] = [
   { href: '#/decks', label: 'Saved decks', icon: 'decks' },
-  { href: '#/history', label: 'Run history', icon: 'history' },
+  { href: '#/cosmetics', label: 'Collection', icon: 'skins' },
   { href: '#/trophies', label: 'Trophy case', icon: 'trophies' },
-  { href: '#/board', label: 'Leaderboards', icon: 'boards' },
-  { href: '#/ghosts', label: 'Ghost decks', icon: 'ghosts' },
+  { href: '#/history', label: 'Run history', icon: 'history' },
   { href: '#/cards', label: 'Card library', icon: 'cards' },
-  { href: '#/learn', label: 'How to play', icon: 'learn' },
-  { href: '#/patch-notes', label: 'Patch notes', icon: 'notes' },
+  { href: '#/board', label: 'Leaderboards', icon: 'boards' },
 ];
 
-export function HomeLinks(props: { unreadNotes: boolean }) {
+/** How to play and the patch notes, as small buttons in the home page's header beside Settings (the notes with their "new" dot). */
+export function HomeHeaderLinks(props: { unreadNotes: boolean }) {
+  return (
+    <>
+      <a className="btn btn--small btn--ghost home__headlink" href="#/learn" title="How to play">
+        <span>
+          <LineIcon name="learn" size={18} />
+          <span className="home__headlabel">How to play</span>
+        </span>
+      </a>
+      <a
+        className="btn btn--small btn--ghost home__headlink"
+        href="#/patch-notes"
+        title={props.unreadNotes ? 'Patch notes: something new' : 'Patch notes'}
+        aria-label={props.unreadNotes ? 'Patch notes (new)' : 'Patch notes'}
+      >
+        <span>
+          <LineIcon name="notes" size={18} />
+          <span className="home__headlabel">Patch notes</span>
+        </span>
+        {props.unreadNotes && <i className="home__dot" aria-hidden />}
+      </a>
+    </>
+  );
+}
+
+export function HomeLinks() {
   return (
     <nav className="home__links" aria-label="More">
       <a className="home__story" href="#/lore">
@@ -84,31 +137,12 @@ export function HomeLinks(props: { unreadNotes: boolean }) {
         </span>
         <span aria-hidden>→</span>
       </a>
-      {LINKS.map((l) => {
-        const fresh = l.icon === 'notes' && props.unreadNotes;
-        return (
-          <a key={l.href} className="home__link" href={l.href}>
-            <svg
-              viewBox="0 0 24 24"
-              width="22"
-              height="22"
-              aria-hidden
-              focusable="false"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              {ICON[l.icon]}
-            </svg>
-            <span>{l.label}</span>
-            {fresh && (
-              <i className="home__dot" role="img" aria-label="new" title="New patch notes" />
-            )}
-          </a>
-        );
-      })}
+      {LINKS.map((l) => (
+        <a key={l.href} className="home__link" href={l.href}>
+          <LineIcon name={l.icon} />
+          <span>{l.label}</span>
+        </a>
+      ))}
     </nav>
   );
 }

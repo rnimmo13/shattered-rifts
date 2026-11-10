@@ -10,20 +10,44 @@
   padding: 1rem;
   background: rgb(4 5 11 / 0.8);
 }
+/* the panel: the obsidian of the Grimoire, its edge a seam of gold running into the rift's violet and blue */
 .settings__panel {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  width: min(36rem, 100%);
+  width: min(38rem, 100%);
   max-height: calc(100dvh - 2rem);
   overflow: hidden;
-  padding: 1.2rem 1.4rem 1.4rem;
-  border-radius: 16px;
-  border: 1px solid transparent;
+  padding: 1.3rem 1.4rem 1.4rem;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
   background:
-    linear-gradient(160deg, rgb(20 32 74 / 0.98), rgb(8 10 20 / 0.99)) padding-box,
-    linear-gradient(160deg, var(--c-gold-light), var(--c-gold-dark) 55%, var(--c-violet)) border-box;
-  box-shadow: 0 18px 48px rgb(0 0 0 / 0.6);
+    radial-gradient(70% 40% at 50% -8%, rgb(130 100 255 / 0.2), transparent 70%) padding-box,
+    radial-gradient(50% 35% at 100% 105%, rgb(60 200 255 / 0.1), transparent 70%) padding-box,
+    linear-gradient(165deg, #141a3a, #0a0c1d 58%, #100b22) padding-box,
+    linear-gradient(
+        135deg,
+        rgb(241 216 143 / 0.75),
+        rgb(140 100 255 / 0.5) 40%,
+        rgb(70 200 255 / 0.4) 72%,
+        rgb(241 216 143 / 0.55)
+      )
+      border-box;
+  box-shadow:
+    0 24px 64px -10px rgb(0 0 0 / 0.75),
+    0 0 60px -20px rgb(130 100 255 / 0.55);
+  animation: settings-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes settings-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings__panel {
+    animation: none;
+  }
 }
 .settings__head {
   flex-shrink: 0;
@@ -94,20 +118,182 @@
   font-weight: 900;
   letter-spacing: 0.1em;
   color: var(--c-gold-light);
+  background: linear-gradient(180deg, #fff3c9, #e2b851);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgb(241 216 143 / 0.25));
 }
+/* each section is a card of dark glass, its heading a small gold label with a hairline running out of it */
 .settings__group {
   display: grid;
-  gap: 1rem;
+  gap: 0.2rem;
   min-width: 0;
+  padding: 0.85rem 1rem 0.6rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  border: 1px solid rgb(180 170 255 / 0.12);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
 }
 .settings__group h3 {
-  margin: 0;
-  padding-bottom: 0.3rem;
-  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.35rem;
+  padding: 0;
+  border: 0;
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--c-gold-light);
+}
+.settings__group h3::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(241 216 143 / 0.45), transparent);
+}
+/* (rows in a card are parted by a faint line) */
+.settings__group > .settings__row {
+  padding: 0.6rem 0;
+}
+.settings__group > .settings__row + .settings__row {
+  border-top: 1px solid rgb(255 255 255 / 0.06);
+}
+
+/* an On/Off switch (SettingsPanel Toggle): green with the knob on the right when on, red with it on the left when off, a tick or
+   a cross on the knob and the word beside it, so the colour is never the only sign */
+.settings__switch {
+  --sw-w: 3.4rem;
+  --sw-h: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.15rem;
+  border: 0;
+  background: none;
+  color: var(--c-ivory);
+  font: inherit;
+  cursor: pointer;
+}
+.settings__switchTrack {
+  position: relative;
+  flex: none;
+  width: var(--sw-w);
+  height: var(--sw-h);
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.settings__switch.is-on .settings__switchTrack {
+  background: linear-gradient(180deg, #3ccf72, #1f9a4f);
+  border-color: #7ef0a6;
+  box-shadow:
+    0 0 12px -2px rgb(60 207 114 / 0.65),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+.settings__switch.is-off .settings__switchTrack {
+  background: linear-gradient(180deg, #d9434e, #a12632);
+  border-color: #ff8a92;
+  box-shadow:
+    0 0 12px -4px rgb(217 67 78 / 0.55),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+.settings__switchKnob {
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  display: grid;
+  place-items: center;
+  width: calc(var(--sw-h) - 6px);
+  height: calc(var(--sw-h) - 6px);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffffff, #dcdbe8);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.45);
+  translate: 0 -50%;
+  transition: left 0.22s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.settings__switch.is-on .settings__switchKnob {
+  left: calc(var(--sw-w) - var(--sw-h) + 1px);
+}
+.settings__switchKnob svg {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.settings__switch.is-on .settings__switchKnob svg {
+  stroke: #1f9a4f;
+}
+.settings__switch.is-off .settings__switchKnob svg {
+  stroke: #a12632;
+}
+.settings__switchText {
+  min-width: 2.2em;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+}
+.settings__switch.is-on .settings__switchText {
+  color: #8ff5b4;
+}
+.settings__switch.is-off .settings__switchText {
+  color: #ff9aa2;
+}
+.settings__switch:hover .settings__switchTrack {
+  filter: brightness(1.1);
+}
+.settings__switch:focus-visible {
+  outline: none;
+}
+.settings__switch:focus-visible .settings__switchTrack {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .settings__switchKnob,
+  .settings__switchTrack {
+    transition: none;
+  }
+}
+
+/* two or more choices (High / Low, Full / Reduced): a segmented control, the chosen one lit in gold */
+.settings__seg {
+  min-height: 2.2rem;
+  padding: 0.3rem 0.95rem;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: rgb(226 222 255 / 0.7);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.settings__seg:hover:not(.is-on) {
+  color: var(--c-ivory);
+  background: rgb(255 255 255 / 0.06);
+}
+.settings__seg.is-on {
+  color: #1c1406;
+  background: linear-gradient(180deg, #fbe7a6, #e2b851);
+  box-shadow: 0 0 14px -4px rgb(241 200 90 / 0.8);
+}
+.settings__seg:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 2px;
 }
 .settings__version {
   margin: 0;
@@ -201,21 +387,60 @@
 }
 .settings__choice {
   display: inline-flex;
-  gap: 0.35rem;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.1);
 }
 .settings__range {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
 }
+/* a volume: a slim track filled in gold up to the thumb (--fill, set from the value), a round thumb */
 .settings__range input {
+  --fill: 50%;
   width: 10rem;
-  accent-color: var(--c-gold-light);
+  height: 6px;
+  border-radius: 999px;
+  appearance: none;
+  -webkit-appearance: none;
+  background:
+    linear-gradient(90deg, #e2b851, #fbe7a6) 0 0 / var(--fill) 100% no-repeat,
+    rgb(255 255 255 / 0.12);
+  cursor: pointer;
+}
+.settings__range input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff, #e6e2f2);
+  border: 2px solid #e2b851;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+}
+.settings__range input::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #e2b851;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+}
+.settings__range input:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.settings__range input:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 4px;
 }
 .settings__range output {
-  min-width: 3ch;
+  min-width: 4ch;
   font-variant-numeric: tabular-nums;
-  color: var(--c-text-dim);
+  color: var(--c-ivory);
+  font-weight: 700;
 }
 /* a phone: a full-screen sheet, with Close and Quit above the scrolling preferences */
 @media (max-width: 40rem) {
@@ -232,7 +457,9 @@
     padding: 0 1rem calc(1.25rem + env(safe-area-inset-bottom));
     border-radius: 0;
     border: 0;
-    background: linear-gradient(170deg, rgb(20 32 74), rgb(8 10 20));
+    background:
+      radial-gradient(90% 30% at 50% 0%, rgb(130 100 255 / 0.2), transparent 70%),
+      linear-gradient(170deg, #141a3a, #0a0c1d 60%, #100b22);
     box-shadow: none;
     overscroll-behavior: contain;
   }

@@ -1,3 +1,12 @@
+## 0.244.0 - 2026-11-10
+
+- The home screen: How to play and Patch notes (with its "new" dot) move up beside Settings; the tiles below are your collection and the boards, two rows of three: Saved decks, Collection, Trophy case, Run history, Card library, Leaderboards. Ghost decks are on the Arena page. The Cosmetics Vault is now called your Collection and has its own tile. "Download" opens a menu: Windows, and Mac marked as coming soon. How to play's odds page links to the Elite Event reels in the Sandbox.
+
+- A new look for Settings: the obsidian panel of the Grimoire, each section a card, a segmented control for High/Low and Full/Reduced, gold volume sliders, and On/Off as a real switch, green with a tick when on and red with a cross when off, with the word beside it (the glow alone was hard for some to see; colour is never the only sign).
+- The Grimoire: a search box (names and rules text) wherever a deck or pile is opened; the Card library fits the window, its filters above and the book down to the window's foot, so only the book scrolls; bigger counts in the page header.
+
+- A deck that is not valid for the Arena now says every reason, in plain words with how to fix it: in the map's Arena tip and a notice on the map, on each saved deck, and under each deck the Arena screen leaves out. A new page, What the Arena takes (#/arena-rules), lists the rules. Status cards a run picked up (Static, Haze, Scorch...) no longer keep a deck out of the Arena: they come along and count (DECISIONS #729).
+
 ## 0.243.0 - 2026-11-10
 
 - A new look for the Grimoire (decks, piles, the Card library and the practice deck builder): an obsidian tome with a seam of gold, violet and blue in place of the leather and parchment; the realms are a bar of pills with glowing realm dots and counts, wrapping instead of trimming names; a frosted header that stays put while the cards scroll, showing what is on the page (cards, Attacks, Skills, Auras, Summons, Traps, average Mana); cards rise into place when a realm opens and lift with a glow of their realm's colour when pointed at. Phone chips match. No rules change.

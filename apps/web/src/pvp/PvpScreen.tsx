@@ -3,12 +3,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
-  ARENA_MIN_DECK,
   MAX_MATCH_DECKS,
   QUEUE_WIDEN_MS,
+  arenaProblems,
   checkArenaEntry,
   type Entry,
 } from '@sr/pvp';
+import { ArenaProblems } from './ArenaRules';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
 import { arenaFor } from './arenaVenue';
@@ -151,6 +152,8 @@ export default function PvpScreen() {
   const checks = decks.map((d) =>
     checkArenaEntry({ ...entryFor(d, playerName), ...(who ? { who } : {}) }),
   );
+  // (every reason each deck the Arena would not take, shown on the deck itself: DECISIONS #729)
+  const problemsOf = decks.map((d) => arenaProblems(entryFor(d, playerName)));
   const usable = checks.flatMap((c) => (c.ok ? [c.entry] : [])).slice(0, MAX_MATCH_DECKS);
   const firstProblem = checks.find((c) => !c.ok);
   const problem =
@@ -278,7 +281,7 @@ export default function PvpScreen() {
 
   const deckList = (
     <ul className="pvp__decks" aria-label="Your decks">
-      {decks.map((d) => (
+      {decks.map((d, i) => (
         <li key={d.id}>
           <div className="pvp__deck">
             <HeroIcon hero={d.hero} size={36} />
@@ -294,6 +297,7 @@ export default function PvpScreen() {
               </span>
             </span>
           </div>
+          <ArenaProblems problems={problemsOf[i] ?? []} className="pvp__deckprob" />
           {!busy && (
             <a className="pvp__viewdeck" href="#/decks">
               <span>View</span>
@@ -453,15 +457,21 @@ export default function PvpScreen() {
               </p>
               <p className="pvp__deckslot">
                 {decks.length} of {VAULT_SLOTS} saved decks · <a href="#/decks">Saved decks</a> ·{' '}
-                <a href="#/board">Leaderboards</a> · <a href="#/ghosts">Ghost decks</a>
+                <a href="#/board">Leaderboards</a> · <a href="#/ghosts">Ghost decks</a> ·{' '}
+                <a href="#/arena-rules">What the Arena takes</a>
               </p>
               {deckList}
-              {problem && <p className="pvp__error">{problem}</p>}
+              {problem && (
+                <p className="pvp__error">
+                  None of your saved decks can go into the Arena yet: each one says why above.{' '}
+                  <a href="#/arena-rules">What the Arena takes</a>
+                </p>
+              )}
               {!problem && skipped > 0 && usable.length > 0 && (
                 <p className="pvp__hint">
-                  {skipped} of your saved decks {skipped === 1 ? 'does' : 'do'} not pass the
-                  Arena&apos;s check (a deck needs at least {ARENA_MIN_DECK} cards) and{' '}
-                  {skipped === 1 ? 'is' : 'are'} left out.
+                  {skipped} of your saved decks {skipped === 1 ? 'is' : 'are'} left out of matches:{' '}
+                  {skipped === 1 ? 'it says' : 'each says'} why above.{' '}
+                  <a href="#/arena-rules">What the Arena takes</a>
                 </p>
               )}
               <div className="pvp__actions">

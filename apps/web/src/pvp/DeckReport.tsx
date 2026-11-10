@@ -1,14 +1,16 @@
 // One saved deck laid out like a post-game report: who it is for, when it was saved, and its cards by rarity, best
 // first, as small cards (repeats stacked with a count). Hover a card for a large copy.
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { COMBAT_DB } from '@sr/content/v2';
 import type { CardDef } from '@sr/combat';
+import { arenaProblems } from '@sr/pvp';
+import { ArenaProblems } from './ArenaRules';
 import { CardHover, type Anchor } from '../fight/CardHover';
 import { FightCard } from '../fight/FightCard';
 import { HeroIcon } from '../ui/HeroIcon';
 import { dateLabel, heroName, progressLabel, rarityCounts, reportCards } from './deckLayout';
-import type { VaultDeck } from './vault';
+import { entryFor, type VaultDeck } from './vault';
 
 export const CARD_WIDTH = 112;
 
@@ -28,10 +30,14 @@ export function RarityTally(props: { deck: readonly string[] }) {
 export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
   const { deck } = props;
   const cards = reportCards(deck.deck);
+  const problems = useMemo(() => arenaProblems(entryFor(deck, 'Riftwalker')), [deck]);
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
   const [confirm, setConfirm] = useState(false);
   return (
-    <article className="deckrep" aria-label={`${heroName(deck.hero, deck.ascendancy)}, ${dateLabel(deck.bankedAt)}`}>
+    <article
+      className="deckrep"
+      aria-label={`${heroName(deck.hero, deck.ascendancy)}, ${dateLabel(deck.bankedAt)}`}
+    >
       <header className="deckrep__head">
         <HeroIcon hero={deck.hero} size={44} />
         <div className="deckrep__who">
@@ -74,6 +80,12 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
             </button>
           ))}
       </header>
+      {/* whether the Arena takes it as it is, and if not every reason why (DECISIONS #729) */}
+      {problems.length > 0 ? (
+        <ArenaProblems problems={problems} className="deckrep__arena" />
+      ) : (
+        <p className="deckrep__ok">Ready for the Arena</p>
+      )}
       {/* (no Boons: an Arena match is cards only, DECISIONS #236) */}
       <ul className="deckrep__cards">
         {cards.map(({ def, n }) => (

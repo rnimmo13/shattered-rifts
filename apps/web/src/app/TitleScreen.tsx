@@ -18,7 +18,7 @@ import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
 import { StoreIcon } from './StoreIcon';
-import { HomeLinks } from './HomeLinks';
+import { HomeHeaderLinks, HomeLinks } from './HomeLinks';
 import { PlayerChip } from './PlayerChip';
 import { SettingsButton } from '../ui/SettingsButton';
 import { HERO_COLOR } from '../art/emblems';
@@ -95,6 +95,7 @@ export function TitleScreen() {
         <PlayerChip me={me} onSignedOut={() => setMe({ signedIn: false, available: true })} />
         <div className="home__actions">
           <DesktopDownload />
+          <HomeHeaderLinks unreadNotes={unread} />
           <SettingsButton />
         </div>
       </header>
@@ -273,11 +274,11 @@ export function TitleScreen() {
             <StoreIcon size={36} />
             <b>Store</b>
             <small>
-              New looks for your Riftwalkers, free for now. What you own is in your Cosmetics Vault.
+              New looks for your Riftwalkers, free for now. The ones you own are in your Collection.
             </small>
           </a>
 
-          <HomeLinks unreadNotes={unread} />
+          <HomeLinks />
         </section>
 
         <HeroShowcase picked={picked} onPick={pick} />

@@ -4,7 +4,7 @@
 // can no longer bring it to the Arena), but the ghost made from it stays on the server for others to face (DECISIONS #231).
 
 import type { RunState } from '@sr/campaign';
-import { RUN_PREFIX, checkArenaEntry, safeId } from '@sr/pvp';
+import { RUN_PREFIX, arenaProblems, safeId, type ArenaProblem } from '@sr/pvp';
 import {
   bankInto,
   deckSnapshot,
@@ -41,14 +41,14 @@ export function savedArenaLabel(run: Pick<RunState, 'seed'>): string | null {
 }
 
 /**
- * Why the run's deck as it stands now could not be brought to the Arena (too few or too many cards, a deck rule, the Legendary limit),
- * by the same check the Arena makes; null when it could (DECISIONS #442).
+ * Every reason the run's deck as it stands now could not be brought to the Arena (too few cards that count, junk, a second copy of a
+ * one-of-a-kind card, the Legendary and Ancestral limits), in the player's words; none when it could. The same reasons the Arena
+ * itself gives (arenaProblems agrees with its check; DECISIONS #442).
  */
-export function arenaProblem(
+export function arenaProblemsOf(
   run: Pick<RunState, 'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons'>,
-): string | null {
-  const c = checkArenaEntry(entryFor(deckSnapshot(run, 0), 'Riftwalker'));
-  return c.ok ? null : c.message;
+): ArenaProblem[] {
+  return arenaProblems(entryFor(deckSnapshot(run, 0), 'Riftwalker'));
 }
 
 /** Whether the step from `before` to `after` finished a stop on the map (a fight and its reward, a shop, a shrine, an event): time to save. */

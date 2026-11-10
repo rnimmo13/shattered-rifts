@@ -17,7 +17,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
-import type { CardDef } from '@sr/combat';
+import { cardText, type CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
 import { CardHover, type Anchor } from './CardHover';
@@ -58,6 +58,8 @@ export interface GrimoireProps {
    * makes the cards jump in size (DECISIONS #446). Default: the cards it holds.
    */
   fitCount?: number;
+  /** a search box over the cards (names and rules text): on unless the page has its own (the Card library) or the deck is a glance */
+  search?: boolean;
 }
 
 /** the kinds of card, in the order the page's header counts them, and what the player calls them (one, many) */
@@ -129,7 +131,19 @@ export function Grimoire(props: GrimoireProps) {
   const [tab, setTab] = useState<string | 'all'>('all');
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
 
-  const shown = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
+  const [query, setQuery] = useState('');
+  const searchable = props.search !== false;
+  const q = query.trim().toLowerCase();
+  // (a card's words, for the search: its name and rules text, worked out once per deck)
+  const words = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const e of entries)
+      if (!m.has(e.def.id))
+        m.set(e.def.id, `${e.def.name} ${cardText(COMBAT_DB, e.def)}`.toLowerCase());
+    return m;
+  }, [entries]);
+  const inTab = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
+  const shown = q ? inTab.filter((e) => words.get(e.def.id)?.includes(q)) : inTab;
   // the page's heading: the characters whose cards are on it
   const head = useMemo(() => paginate(shown, Math.max(1, shown.length), true)[0], [shown]);
   const total = entries.length;
@@ -154,6 +168,31 @@ export function Grimoire(props: GrimoireProps) {
       avg: playable ? mana / playable : 0,
     };
   }, [shown]);
+  const searchBox = searchable && (
+    <label className="grim__find">
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5" />
+        <path d="M13 13l4.5 4.5" />
+      </svg>
+      <input
+        type="search"
+        placeholder="Search cards"
+        aria-label="Search these cards by name or rules text"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          scrollRef.current?.scrollTo({ top: 0 });
+        }}
+        onKeyDown={(e) => {
+          // (Escape clears the search first; only an empty one lets the book close)
+          if (e.key === 'Escape' && query) {
+            e.stopPropagation();
+            setQuery('');
+          }
+        }}
+      />
+    </label>
+  );
   const realmTabs = (cls: string) => (
     <div className={cls} role="tablist" aria-label="Realms">
       {[{ id: 'all', name: 'Everything' }, ...tabs].map((t) => (
@@ -174,9 +213,18 @@ export function Grimoire(props: GrimoireProps) {
       ))}
     </div>
   );
+  // (above the book: the realms, and the search at the end of the same bar)
+  const toolbar = (tabs.length > 1 || searchable) && (
+    <div className="grim__tabs">
+      {tabs.length > 1 && realmTabs('grim__tablist')}
+      {searchBox}
+    </div>
+  );
   const cardList = (hoverable: boolean, listClass: string) =>
     shown.length === 0 ? (
-      <p className="grim__empty">{props.emptyText ?? 'Empty.'}</p>
+      <p className="grim__empty">
+        {q ? `No card here matches “${query.trim()}”.` : (props.emptyText ?? 'Empty.')}
+      </p>
     ) : (
       <ul
         // (a realm opened afresh: its cards rise into place again)
@@ -222,6 +270,7 @@ export function Grimoire(props: GrimoireProps) {
   if (narrow) {
     return (
       <div className={`grim grim--phone grim--${grow ? 'grow' : 'fill'}`} ref={pageRef}>
+        {searchBox}
         {tabs.length > 1 && realmTabs('grim__chips')}
         {cardList(false, 'grim__list')}
       </div>
@@ -230,7 +279,7 @@ export function Grimoire(props: GrimoireProps) {
   return (
     <div className={`grim grim--view grim--scroll grim--${grow ? 'grow' : 'fill'}`}>
       <div className="grim__main">
-        {tabs.length > 1 && realmTabs('grim__tabs')}
+        {toolbar}
         <div className="grim__book grim__book--1">
           <section
             className="grim__page"

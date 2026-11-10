@@ -46,6 +46,39 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.244.0",
+    date: "2026-11-10",
+    title: "Clearer Arena checks, a new menu",
+    summary: "Every reason a deck is not valid for the Arena is shown, status cards come along, and the home screen, Settings and deck views are easier to use.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Why a deck is not valid for the Arena",
+        text: "A deck the Arena would not take now says every reason, in plain words with what fixes it: in the map's Arena tip and a notice on the map, on each saved deck, and under each deck the Arena screen leaves out. A new page, What the Arena takes, lists the rules."
+      },
+      {
+        kind: "changed",
+        title: "Status cards come along",
+        text: "Status cards a run picked up (Static, Haze, Scorch, Void Drain, Blight, Smudge) no longer keep a deck out of the Arena: they come with it and count towards the 15. A Wound is still left behind."
+      },
+      {
+        kind: "changed",
+        title: "A new home screen menu",
+        text: "How to play and Patch notes are beside Settings. The tiles below are your Collection (the Cosmetics Vault, renamed), Saved decks, Trophy case, Run history, Card library and Leaderboards; Ghost decks are on the Arena page. Download opens a menu: Windows now, Mac coming soon."
+      },
+      {
+        kind: "changed",
+        title: "A new look for Settings",
+        text: "On and Off are a switch: green with a tick when on, red with a cross when off, with the word beside it. High/Low and Full/Reduced are a segmented control, and the volume sliders fill in gold."
+      },
+      {
+        kind: "changed",
+        title: "Search your deck",
+        text: "Every deck and pile view has a search box for card names and rules text. The Card library fits the window, with only the book scrolling, and the counts in the page header are bigger."
+      }
+    ]
+  },
+  {
     version: "0.243.0",
     date: "2026-11-10",
     title: "A new Grimoire, faster loading",

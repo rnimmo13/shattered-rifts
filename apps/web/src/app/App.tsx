@@ -27,6 +27,7 @@ const PvpScreen = lazy(() => import('../pvp/PvpScreen'));
 const GhostDecksScreen = lazy(() => import('../pvp/GhostDecksScreen'));
 const TrophyCaseScreen = lazy(() => import('../pvp/TrophyCaseScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
+const ArenaRulesScreen = lazy(() => import('../pvp/ArenaRulesScreen'));
 const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
 const PatchNotesScreen = lazy(() => import('./PatchNotesScreen'));
 const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
@@ -142,6 +143,14 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <SavedDecksScreen />
+      </Suspense>
+    );
+  }
+  // what makes a deck one the Arena takes (linked from every "not valid for the Arena" message)
+  if (hash === '#/arena-rules') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <ArenaRulesScreen />
       </Suspense>
     );
   }

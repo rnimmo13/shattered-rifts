@@ -51,9 +51,23 @@
     min-width: 44px;
     padding-inline: 0.5rem;
   }
-  .home__actions .settings-button__label {
+  .home__actions .settings-button__label,
+  .home__actions .home__headlabel {
     display: none;
   }
+}
+/* How to play and Patch notes in the header (HomeHeaderLinks): an icon and a word, the word dropped on a narrow screen */
+.home__headlink {
+  position: relative;
+}
+.home__headlink > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.home__headlink .home__dot {
+  top: 0.3rem;
+  right: 0.3rem;
 }
 .home__bar .playerchip {
   min-width: 0;
@@ -182,7 +196,8 @@
 /* the smaller destinations: a grid of icon tiles, quieter than the big buttons above but of the same make */
 .home__links {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* (six tiles: two rows of three, your collection then the library and boards) */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.4rem;
   margin-top: 0.3rem;
 }

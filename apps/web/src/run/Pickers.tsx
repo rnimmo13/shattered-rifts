@@ -134,7 +134,15 @@ function Pickable(props: {
 /** A compact, readable list of a deck's cards (grouped, with counts). Hover any card to read it. */
 export function DeckStrip(props: { deck: readonly string[] }) {
   // a starting deck is ten or so cards: show them all on one page, as many across as fit (the book grows to hold them)
-  return <Grimoire cards={tally(props.deck, COMBAT_DB)} spread={1} size="small" height="grow" />;
+  return (
+    <Grimoire
+      cards={tally(props.deck, COMBAT_DB)}
+      spread={1}
+      size="small"
+      height="grow"
+      search={false}
+    />
+  );
 }
 
 export function CardOffer(props: {

@@ -69,15 +69,17 @@ import { SceneBackdrop } from './SceneBackdrop';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { tipAttrs } from '../ui/tip';
 import { SettingsButton } from '../ui/SettingsButton';
-import { Toast } from '../ui/Toast';
+import { Notice, Toast } from '../ui/Toast';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
 import { ChanceReel, type Flip } from './ChanceReel';
 import { PotionChip } from '../fight/PotionChip';
 import { BankedPanel, DeckSaved } from './BankedPanel';
 import { canPlay, localOnly } from '../playAccess';
+import { ArenaProblems } from '../pvp/ArenaRules';
+import type { ArenaProblem } from '@sr/pvp';
 import {
-  arenaProblem,
+  arenaProblemsOf,
   autoSaveForArena,
   loseSavedDecks,
   savedArenaLabel,
@@ -751,6 +753,9 @@ export default function RunScreen() {
     }
   }
 
+  // (a plain call: this sits after the screen's early returns, where a hook may not go, and the check is a pass over at most 80
+  // cards)
+  const arenaProblems = arenaProblemsOf(run);
   return (
     <main
       className={`run${run.phase === 'map' ? ' run--map' : ''}`}
@@ -761,10 +766,21 @@ export default function RunScreen() {
         clock={runClock}
         onDeck={() => setShowDeck(true)}
         arenaLabel={arena?.seed === run.seed ? arena.label : savedArenaLabel(run)}
-        arenaProblem={arenaProblem(run)}
+        arenaProblems={arenaProblems}
         onHome={goHome}
         onAbandon={() => setConfirmAbandon(true)}
       />
+      {/* the deck would not pass the Arena's check: why, in full, on the map (dismissed, it comes back when the reasons change) */}
+      {/* (a deck still growing to 15 cards, as every run's starts out, has only the button's tip: no alarm on every new run) */}
+      {run.phase === 'map' && arenaProblems.some((p) => !p.growing) && (
+        <Notice
+          tone="bad"
+          className="run__arenaNotice"
+          showAgain={arenaProblems.map((p) => p.kind).join('|')}
+        >
+          <ArenaProblems problems={arenaProblems} />
+        </Notice>
+      )}
       {run.phase === 'map' && (
         <p className="run__balanceNotice">
           Online Campaign saves contribute private deck and progression snapshots for developer
@@ -1001,12 +1017,13 @@ function RunBar(props: {
   onDeck: () => void;
   /** where the deck stands in the Arena (null: nothing saved yet) */
   arenaLabel: string | null;
-  /** why the deck as it stands could not be brought to the Arena (null: it could) */
-  arenaProblem: string | null;
+  /** every reason the deck as it stands could not be brought to the Arena (none: it could) */
+  arenaProblems: readonly ArenaProblem[];
   onHome: () => void;
   onAbandon: () => void;
 }) {
   const { run } = props;
+  const problems = props.arenaProblems;
   return (
     <header className="runbar">
       <RunTimer clock={props.clock} />
@@ -1092,21 +1109,30 @@ function RunBar(props: {
         {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it, or while
             the deck as it stands would not pass the Arena's check (DECISIONS #442); the details in its tip (DECISIONS #345) */}
         <a
-          className={`runbar__arena ${props.arenaLabel && !props.arenaProblem ? 'is-in' : 'is-out'}`}
-          href="#/decks"
+          className={`runbar__arena ${props.arenaLabel && problems.length === 0 ? 'is-in' : 'is-out'}`}
+          href={problems.length > 0 ? '#/arena-rules' : '#/decks'}
           aria-label={
-            props.arenaProblem
-              ? `Not valid for the Arena: ${props.arenaProblem}`
+            problems.length > 0
+              ? `Not valid for the Arena: ${problems.map((p) => p.text).join(' ')}`
               : props.arenaLabel
                 ? `In the Arena: ${props.arenaLabel}`
                 : 'Not in the Arena yet: saved after your first fight'
           }
           {...tipAttrs(
-            props.arenaProblem
+            problems.length > 0
               ? {
                   kicker: 'Not valid for the Arena',
-                  title: props.arenaProblem,
-                  text: 'The Arena checks every deck before a match, and this deck as it stands would not pass. Fix it on the way (add or remove cards at a shop or shrine) and it is entered again after your next fight. Click to see your saved decks.',
+                  tone: 'bad',
+                  // (every reason, not only the first: DECISIONS #729)
+                  title:
+                    problems.length === 1
+                      ? (problems[0]?.text ?? '')
+                      : `${problems.length} things keep this deck out of the Arena`,
+                  ...(problems.length > 1
+                    ? { lines: problems.map((p, i) => ({ title: `${i + 1}.`, text: p.text })) }
+                    : {}),
+                  text: 'The Arena checks every deck before a match. Fix these on the way and the deck is entered again after your next fight.',
+                  hint: 'Click to see what the Arena takes.',
                 }
               : {
                   kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
