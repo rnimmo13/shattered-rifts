@@ -281,7 +281,7 @@ export function TitleScreen() {
           <HomeLinks />
         </section>
 
-        <HeroShowcase picked={picked} onPick={pick} />
+        <HeroShowcase picked={picked} onPick={pick} mastery />
       </div>
     </main>
   );

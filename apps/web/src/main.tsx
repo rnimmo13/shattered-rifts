@@ -13,6 +13,7 @@ import { App } from './app/App';
 import { loadSkin, preloadArt, observeArtProgress } from './art/assets';
 import { startupSplash, showStartupError } from './startup';
 import { claimSeasonRewards, cosmetics, syncCosmetics } from './cosmetics/cosmetics';
+import { syncMastery } from './cosmetics/mastery';
 import { markGraphicsQuality } from './duel/effects';
 import { installPlayAccess } from './playAccess';
 import { flagChangedAssets } from './appUpdates';
@@ -66,5 +67,9 @@ void Promise.race([preloadArt().then(wornSkins), splash.skip])
 void syncCosmetics().then((ok) => {
   if (ok) for (const w of Object.values(cosmetics().worn)) if (w.skin) void loadSkin(w.skin);
   // (DECISIONS #737) season rewards earned since the last visit are given now (nothing is asked while no season has rewards)
-  if (ok) void claimSeasonRewards();
+  // (hero mastery is asked after them, so its reply carries the earned log with them in it)
+  const claimed = ok ? claimSeasonRewards() : Promise.resolve([]);
+  // (DECISIONS #739) hero mastery follows you too, and what it has earned is given without asking (one request; an offline profile
+  // sends nothing)
+  void claimed.then(() => syncMastery());
 });

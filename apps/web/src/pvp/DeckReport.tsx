@@ -27,7 +27,13 @@ export function RarityTally(props: { deck: readonly string[] }) {
   );
 }
 
-export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
+export function DeckReport(props: {
+  deck: VaultDeck;
+  onRemove?: () => void;
+  /** its run cleared the campaign (DECISIONS #739): it is marked, and its ending can be opened again */
+  completed?: boolean;
+  onEnding?: () => void;
+}) {
   const { deck } = props;
   const cards = reportCards(deck.deck);
   const problems = useMemo(() => arenaProblems(entryFor(deck, 'Riftwalker')), [deck]);
@@ -35,16 +41,36 @@ export function DeckReport(props: { deck: VaultDeck; onRemove?: () => void }) {
   const [confirm, setConfirm] = useState(false);
   return (
     <article
-      className="deckrep"
-      aria-label={`${heroName(deck.hero, deck.ascendancy)}, ${dateLabel(deck.bankedAt)}`}
+      className={props.completed ? 'deckrep deckrep--complete' : 'deckrep'}
+      aria-label={`${heroName(deck.hero, deck.ascendancy)}, ${dateLabel(deck.bankedAt)}${props.completed ? ', campaign complete' : ''}`}
     >
+      {props.completed && (
+        <p className="deckrep__crown">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden focusable="false">
+            <path
+              d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"
+              fill="currentColor"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <b>Campaign complete</b>
+          <span>This deck sealed the Rifts.</span>
+          {props.onEnding && (
+            <button type="button" className="btn btn--small" onClick={props.onEnding}>
+              <span>See the ending again</span>
+            </button>
+          )}
+        </p>
+      )}
       <header className="deckrep__head">
         <HeroIcon hero={deck.hero} size={44} />
         <div className="deckrep__who">
           <b>{heroName(deck.hero, deck.ascendancy)}</b>
           <span>
-            {progressLabel(deck.tier, deck.stage)} · {dateLabel(deck.bankedAt)} · {deck.deck.length}{' '}
-            cards
+            {props.completed ? 'Campaign complete' : progressLabel(deck.tier, deck.stage)} ·{' '}
+            {dateLabel(deck.bankedAt)} · {deck.deck.length} cards
           </span>
         </div>
         <RarityTally deck={deck.deck} />

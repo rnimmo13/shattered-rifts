@@ -20,7 +20,7 @@ import {
   type RunRecord,
 } from './history';
 import { serverBase } from '../pvp/config';
-import { vaultKey, whoAmI } from '../pvp/vaultSync';
+import { masteryRose, vaultKey, whoAmI } from '../pvp/vaultSync';
 import { adoptSharedRuns, adoptSharedReplays, runCopies, sharedReplays } from './saves';
 import {
   canPlay,
@@ -85,8 +85,15 @@ async function syncList(
       }),
       signal: AbortSignal.timeout(10_000),
     });
-    const data = (await res.json()) as { ok?: unknown; items?: unknown; removed?: unknown };
+    const data = (await res.json()) as {
+      ok?: unknown;
+      items?: unknown;
+      removed?: unknown;
+      mastery?: unknown;
+    };
     if (data.ok !== true) return null;
+    // (DECISIONS #741) the run history just sent raised a mastery number (a campaign cleared before mastery was counted)
+    if (data.mastery === true) masteryRose();
     return {
       items: cleanListItems(name, data.items),
       removed: Array.isArray(data.removed)

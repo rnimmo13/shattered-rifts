@@ -46,6 +46,9 @@ const KEYS = new Set([
   'sr.balanceSalt.v1',
   'sr.pendingDrops',
   'sr-cosmetics',
+  // (DECISIONS #739) hero mastery and the earned log: for an offline profile the save file is their only lasting copy
+  'sr-mastery',
+  'sr-earned',
   'sr.hero',
   'sr.sound',
   'sr.effects',

@@ -1,3 +1,14 @@
+## 0.249.0 - 2026-11-11
+
+- Hero mastery (DECISIONS #739, #741): a Riftwalker's mastery is how many times you have cleared the campaign with it. On the home screen each icon wears a ring of 12 segments, one per Rift Tier cleared, and its mastery under it (how far it has got, until the first clear). Under the row, a snapshot of the picked Riftwalker: Mastery, Furthest, Arena matches won, ghosts beaten. The server counts the campaign from the decks a run saves and from your run history, so clears already in your history count. A best of three is one Arena win.
+- A card back for every Riftwalker mastered: its class crest on the draw pile and on the flying card, in place of the S|R crest. The Collection's Card backs tab chooses one and shows how the others are earned.
+- Rewards are given the moment they are earned, with a popup to acknowledge (never over a fight), and listed for good under Earned (home screen header, `#/earned`).
+- Saved decks: a deck whose run cleared the campaign has a gold frame and a Campaign complete banner. "See the ending again" opens the victory screen from that deck or from the completed run in Run history.
+- An enemy's Fracture marker says what its next Shatter will deal and how much more Fracture sets it off (DECISIONS #742).
+- Reverb's icon is a plain x2 on the red Attack gem, not two swords (DECISIONS #743).
+- The Store and the Collection look like two places: gold on violet with the satchel, and teal on deep green with an open chest, each with a line saying what the page is for (DECISIONS #744).
+- Fixed (DECISIONS #740): cards that set off a Shatter without showing it now end with "Shatter now: N": every Sword or Spell with no Fracture of its own while Fault Lines is in play (the Obsidian Blade and about twenty others), and Crack the Shell, Breaking Point, Carry the Fault and Falling Shards. Display only.
+
 ## 0.248.0 - 2026-11-10
 
 - Aiming a card (DECISIONS #738): a card that needs a target glides to the bottom centre of the screen and waits there, and the rest of the hand drops and dims, so nothing of the hand stands over the board. Before, the card stayed lifted in the fan, and on a short laptop screen it covered the enemy; a click on the enemy through it let the card go. Click the waiting card, right-click or press Esc to put it back. On a short window the "Click a glowing target" bar sits under the title, clear of the enemies' next moves. Phones held upright are unchanged.

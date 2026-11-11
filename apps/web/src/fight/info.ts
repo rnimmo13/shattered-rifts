@@ -1074,8 +1074,21 @@ export const UI_TIPS = {
 };
 
 /** The tooltip for a status chip: buff or debuff, with what it does. */
-export function statusTip(id: StatusId, n: number): TipContent {
+export function statusTip(
+  id: StatusId,
+  n: number,
+  /** (Fracture on an enemy) its next Shatter, were you to set it off now */
+  shatter?: { need: number; damage: number },
+): TipContent {
   const s = STATUS_INFO[id];
+  // (DECISIONS #742) what the next Shatter would deal, before the rule: the number a player is looking for
+  if (id === 'fracture' && shatter)
+    return {
+      kicker: 'Debuff',
+      title: `${s.name} ${n}`,
+      tone: s.tone,
+      text: `${shatter.need} more Fracture Shatters it for ${shatter.damage} damage, as things stand (Barrier takes it first). ${s.text}`,
+    };
   // (DECISIONS #432) Clutch Genes reads as the exact bonus, not a bare number
   if (id === 'clutch')
     return {

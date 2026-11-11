@@ -152,6 +152,10 @@ const PROJECTABLE = new Set<Op['op']>([
   'mana',
   'stars',
   'fracture',
+  // (these three read only what both sides can see, and decide nothing by chance: a card that opens with one can be played ahead)
+  'carryFracture',
+  'shatterBlast',
+  'strip',
   'shatterUp',
   'allyPct',
   'attackAura',
@@ -882,7 +886,12 @@ function attackHit(
   )
     fireTriggers(r, r.s.sides[a.actor.side], 'hitFoe', { target: t });
   // (the Reaver's Bloodlust, #693: low on HP, his Attacks heal him)
-  if (lostHere > 0 && a.actor.kind === 'hero' && a.card?.kind === 'attack' && t.side !== a.actor.side) {
+  if (
+    lostHere > 0 &&
+    a.actor.kind === 'hero' &&
+    a.card?.kind === 'attack' &&
+    t.side !== a.actor.side
+  ) {
     const back = disciplineLifesteal(r.s.sides[a.actor.side], lostHere);
     if (back > 0) healUnit(r, a.actor, back);
   }
@@ -1958,7 +1967,9 @@ function scaleValue(r: Run, a: Act, sc: Scale, t: Unit | null): number {
   const raw = (sc.mult ?? 1) * counted;
   const whole = sc.round === 'ceil' ? Math.ceil(raw - 1e-9) : Math.floor(raw + 1e-9);
   // (DECISIONS #722) diminishing returns: past `half`, each more counts half (rounded down)
-  return sc.half !== undefined && whole > sc.half ? sc.half + Math.floor((whole - sc.half) / 2) : whole;
+  return sc.half !== undefined && whole > sc.half
+    ? sc.half + Math.floor((whole - sc.half) / 2)
+    : whole;
 }
 
 function amountOf(r: Run, a: Act, base: number, sc: Scale | undefined, t: Unit | null): number {
@@ -3912,6 +3923,23 @@ function shatterDamage(sd: SideState, k: number): number {
   return sd.shatterPct ? Math.floor((n * (100 + sd.shatterPct)) / 100) : n;
 }
 
+/**
+ * The next Shatter on a unit, as things stand: how much more Fracture sets it off, and what it would deal if `by` applied it now
+ * (their Spell Power, Deepening and Shatterer bonus, the difficulty, and Shielded or Ghostly on the unit; Barrier still takes it
+ * first). For a unit's Fracture to say so before a card is played (DECISIONS #742).
+ */
+export function nextShatter(s: CombatState, t: Unit, by: Side): { need: number; damage: number } {
+  const owner = s.sides[by];
+  const have = stacks(t, 'fracture');
+  const k = Math.floor(have / SHATTER_AT) + 1;
+  const dmg = shatterDamage(owner, k);
+  const hero = heroOf(owner) ?? null;
+  let damage = hero ? modifiedDamage(dmg, hero, t, false) : dmg;
+  if (stacks(t, 'shielded') > 0) damage = 0;
+  else if (stacks(t, 'ghostly') > 0 && damage > 1) damage = 1;
+  return { need: k * SHATTER_AT - have, damage };
+}
+
 /** While a card is previewed: note the Shatter its Fracture would set off on an enemy, with how the number is made. */
 function projectShatter(
   r: Run,
@@ -4823,7 +4851,8 @@ function startOfTurn(r: Run, side: Side): void {
   // Burn ticks while last turn's Barrier still stands: once that falls away there would be nothing for it to get through (#501)
   const lastTurns = new Map(sd.units.map((u) => [u.id, u.barrier]));
   const tickFrom = r.ev.length;
-  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) burnTick(r, u, i >= TICK_EXTRA_FROM);
+  for (const u of [...sd.units])
+    for (let i = 0; i < ticks; i++) burnTick(r, u, i >= TICK_EXTRA_FROM);
   for (const e of r.ev.slice(tickFrom))
     if (e.type === 'damage' && e.blocked > 0)
       lastTurns.set(e.target, Math.max(0, (lastTurns.get(e.target) ?? 0) - e.blocked));
@@ -4845,7 +4874,8 @@ function startOfTurn(r: Run, side: Side): void {
     }
   }
   // Seared (Bleed) burns
-  for (const u of [...sd.units]) for (let i = 0; i < ticks; i++) searedTick(r, u, i >= TICK_EXTRA_FROM);
+  for (const u of [...sd.units])
+    for (let i = 0; i < ticks; i++) searedTick(r, u, i >= TICK_EXTRA_FROM);
   // the morning after: each Hangover costs 1% of Max HP, rounded up on the whole, but never the last one, and it clears (DECISIONS #354, #502)
   for (const u of [...sd.units]) {
     const owed = stacks(u, 'hangover');
@@ -5621,8 +5651,7 @@ export function slotsUsed(db: CombatDb, sd: SideState): number {
 /** The slots a card's summons need (all of them must fit), at most the side's cap. */
 function roomNeeded(db: CombatDb, sd: SideState, cd: CardDef): number {
   const need = cd.effects.reduce(
-    (n, o) =>
-      o.op === 'summon' || (o.op === 'raise' && o.same) ? n + slotsOf(db, o.unit) : n,
+    (n, o) => (o.op === 'summon' || (o.op === 'raise' && o.same) ? n + slotsOf(db, o.unit) : n),
     0,
   );
   return Math.min(need, allyCap(db, sd));
@@ -5748,8 +5777,7 @@ export function legalActions(db: CombatDb, s: CombatState): Action[] {
         for (const set of sets)
           out.push({ ...p, release: set.length === 1 ? (set[0] as UnitId) : set });
       // ... or, for Raise Colossus, grow a Colossus standing instead (#700)
-      for (const p of plays)
-        for (const u of growable(db, sd, cd)) out.push({ ...p, grow: u.id });
+      for (const p of plays) for (const u of growable(db, sd, cd)) out.push({ ...p, grow: u.id });
     }
     // ... and as it is, last: what fits is summoned, the rest is not (DECISIONS #405)
     out.push(...plays);
@@ -6089,7 +6117,11 @@ function playAgain(
   for (const source of list) {
     if (r.s.winner || r.s.pending) return;
     if (source !== 'echo') addStatus(r, hero, source, -1);
-    runOps(r, mkAct(hero, { target, card: cd, inst, ...(x !== undefined ? { x } : {}) }), cd.effects);
+    runOps(
+      r,
+      mkAct(hero, { target, card: cd, inst, ...(x !== undefined ? { x } : {}) }),
+      cd.effects,
+    );
   }
 }
 
@@ -6240,7 +6272,8 @@ function pickCards(r: Run, action: Extract<Action, { type: 'pick' }>): void {
     if (p.paid !== undefined) more.paid = p.paid;
     return;
   }
-  if (hero && cd) playAgain(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x, p.again ?? null);
+  if (hero && cd)
+    playAgain(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x, p.again ?? null);
   if (fin && cd && hero && !r.s.winner)
     extraPlays(r, hero, cd, fin, findUnit(r.s, p.target) ?? null, p.x);
   // (an extra play cannot ask: it never sets a choice, so the card always finishes here)
@@ -6346,7 +6379,9 @@ const containsDamage = (op: Op): boolean =>
   ('ops' in op && op.op !== 'power' && op.ops.some(containsDamage));
 
 const containsFracture = (op: Op): boolean =>
-  op.op === 'fracture' || ('ops' in op && op.op !== 'power' && op.ops.some(containsFracture));
+  op.op === 'fracture' ||
+  op.op === 'carryFracture' ||
+  ('ops' in op && op.op !== 'power' && op.ops.some(containsFracture));
 /** The effect puts Fracture on every enemy (so the preview is "each", and an enemy it does not Shatter counts as 0). */
 const fractureSpread = (op: Op): boolean =>
   (op.op === 'fracture' && op.to === 'allFoes') ||
@@ -6486,6 +6521,35 @@ function resolvedDamage(
         ...(count > 1 ? { hits: count } : {}),
         ...(how.length ? { how } : {}),
         ...(spread ? { each: true } : {}),
+      });
+    }
+    // Shatters that no Fracture line of the card carries get an entry of their own, under AFTER_PLAY: the one an Aura sets off once
+    // the card is played (Fault Lines, on a Sword or Spell with no Fracture of its own), and one set off inside another effect (the
+    // Fracture a kill applies). Without it the card showed no Shatter at all, though playing it dealt one. Every variant that played
+    // gets the entry, a 0 too, so the range over targets is right; an entry that is 0 everywhere is dropped below.
+    if (!stoppedBeforePlay) {
+      const carried = new Set([...preview].filter(([, l]) => l.shatter).map(([i]) => i));
+      const loose = [...(projection.shatters ?? [])]
+        .filter(([i]) => (i === AFTER_PLAY ? !carried.has(lastFracture) : !carried.has(i)))
+        .flatMap(([, h]) => h);
+      const reach = new Set([...loose.map((h) => h.target), ...(target ? [target] : [])]);
+      const totals = [...reach].map((t) =>
+        loose.filter((h) => h.target === t).reduce((n, h) => n + h.amount, 0),
+      );
+      if (!totals.length) totals.push(0);
+      const count = Math.max(
+        0,
+        ...[...reach].map((t) => loose.filter((h) => h.target === t).length),
+      );
+      const best = [...loose].sort((x, y) => y.amount - x.amount)[0];
+      preview.set(AFTER_PLAY, {
+        lo: Math.min(...totals),
+        hi: Math.max(...totals),
+        printed: 0,
+        calc: true,
+        shatter: true,
+        ...(count > 1 ? { hits: count } : {}),
+        ...(best ? { how: best.how } : {}),
       });
     }
     if (

@@ -14,6 +14,7 @@ import { MatchHistory } from '../pvp/MatchList';
 import { RecentFights } from './RecentFights';
 import { BUILD } from '../build';
 import { showSeed } from './runSeed';
+import { VictoryAgain } from './VictoryPanel';
 import './history.css';
 
 const ReplayPlayer = lazy(() => import('../fight/ReplayPlayer'));
@@ -52,6 +53,8 @@ export default function HistoryScreen() {
   const [recap, setRecap] = useState<FightReplay | null>(null);
   const [watching, setWatching] = useState<FightReplay | null>(null);
   const [confirmClear, setConfirmClear] = useState(false);
+  /** a completed run whose ending is open again (DECISIONS #739) */
+  const [ending, setEnding] = useState<RunRecord | null>(null);
   /** bumped when the player's other devices brought something new (DECISIONS #318), so the lists are read again */
   const [synced, setSynced] = useState(0);
   useEffect(() => {
@@ -128,6 +131,7 @@ export default function HistoryScreen() {
                 onToggle={() => setOpen(open === r.id ? null : r.id)}
                 onRecap={setRecap}
                 onWatch={setWatching}
+                onEnding={() => setEnding(r)}
                 onForget={() => {
                   void gameplayAction(() => {
                     forgetRun(r.id);
@@ -168,6 +172,17 @@ export default function HistoryScreen() {
         </>
       )}
       {recap && <FightRecap db={COMBAT_DB} replay={recap} onClose={() => setRecap(null)} />}
+      {ending && (
+        <VictoryAgain
+          record={{
+            hero: ending.hero,
+            ascendancy: ending.ascendancy,
+            victories: ending.duelsWon,
+            cards: ending.deck.length,
+          }}
+          onClose={() => setEnding(null)}
+        />
+      )}
     </main>
   );
 }
@@ -178,6 +193,7 @@ function RunRow(props: {
   onToggle: () => void;
   onRecap: (r: FightReplay) => void;
   onWatch: (r: FightReplay) => void;
+  onEnding: () => void;
   onForget: () => void;
 }) {
   const { run } = props;
@@ -206,6 +222,14 @@ function RunRow(props: {
       </button>
       {props.open && (
         <div className="history__runBody">
+          {run.won && (
+            <div className="history__fight">
+              <span>This run cleared the campaign.</span>
+              <button className="btn btn--small" onClick={props.onEnding}>
+                <span>See the ending again</span>
+              </button>
+            </div>
+          )}
           {fight && (
             <div className="history__fight">
               <span>

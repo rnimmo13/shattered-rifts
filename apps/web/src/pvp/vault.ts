@@ -35,7 +35,7 @@ const KEY = 'sr-vault-v1';
 /** The deck a banked run leaves in the Vault. */
 export function deckFromRun(
   run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons' | 'ascendancy'> &
-    Partial<Pick<RunState, 'maxHp'>>,
+    Partial<Pick<RunState, 'maxHp' | 'won'>>,
   now: number,
 ): VaultDeck {
   return {
@@ -51,6 +51,8 @@ export function deckFromRun(
     ...(run.ascendancy ? { ascendancy: run.ascendancy } : {}),
     // (its ghost Warden starts from the Max HP the run had gained, DECISIONS #538)
     ...(run.maxHp ? { maxHp: run.maxHp } : {}),
+    // (its run cleared the campaign: the Saved decks page marks it, DECISIONS #739)
+    ...(run.won ? { won: true as const } : {}),
     bankedAt: now,
     // (its deck is the run's, weapon and all: DECISIONS #436)
     weaponCards: true,
@@ -75,7 +77,7 @@ export function stagesCleared(
 /** A copy of the deck as it stood after stage `after` (0 = the start of the tier). Like every save, it replaces the run's earlier one. */
 export function deckFromStage(
   run: Pick<RunState, 'seed' | 'tier' | 'character' | 'deck' | 'boons' | 'ascendancy'> &
-    Partial<Pick<RunState, 'maxHp'>>,
+    Partial<Pick<RunState, 'maxHp' | 'won'>>,
   now: number,
   after: number,
 ): VaultDeck {
@@ -88,7 +90,7 @@ export function deckSnapshot(
     RunState,
     'seed' | 'tier' | 'phase' | 'stage' | 'character' | 'deck' | 'boons' | 'ascendancy'
   > &
-    Partial<Pick<RunState, 'maxHp'>>,
+    Partial<Pick<RunState, 'maxHp' | 'won'>>,
   now: number,
 ): VaultDeck {
   return { ...deckFromRun(run, now), stage: stagesCleared(run) };

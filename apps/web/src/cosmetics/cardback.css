@@ -1,0 +1,235 @@
+/* One face-down card of a card back, and the earned popup and log (DECISIONS #739). */
+.cardback {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 7rem;
+  aspect-ratio: 5 / 7;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 3px solid var(--c-gold);
+  background: radial-gradient(circle at 50% 45%, #3b2f63, #14101f 70%);
+  box-shadow:
+    inset 0 0 0 2px rgb(8 10 20 / 0.7),
+    0 6px 14px rgb(0 0 0 / 0.55);
+  overflow: hidden;
+}
+.cardback__crest {
+  width: 84%;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.6));
+}
+.cardback__face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cardback.is-locked {
+  border-color: #6d6243;
+}
+.cardback.is-locked .cardback__crest,
+.cardback.is-locked .cardback__face {
+  filter: grayscale(1) brightness(0.45);
+}
+
+/* ---- the popup: what you just earned, to acknowledge ---- */
+.earnedpop {
+  position: fixed;
+  inset: 0;
+  /* (over Settings and the update prompt, so it is never acknowledged unseen; under the play gate) */
+  z-index: 970;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(4 5 12 / 0.78);
+  animation: earnedpop-in 0.25s ease-out both;
+}
+.earnedpop__panel {
+  width: min(100%, 30rem);
+  max-height: 100%;
+  overflow: auto;
+  padding: 1.4rem 1.4rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid var(--c-gold);
+  background: linear-gradient(170deg, rgb(28 36 82 / 0.98), rgb(8 10 20 / 0.99));
+  box-shadow:
+    0 0 0 1px rgb(255 211 106 / 0.25),
+    0 0 40px rgb(255 211 106 / 0.22),
+    0 18px 50px rgb(0 0 0 / 0.7);
+  text-align: center;
+}
+.earnedpop__kicker {
+  margin: 0;
+  color: var(--c-gold-light);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.78rem;
+}
+.earnedpop__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0.9rem 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.earnedpop__item {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+}
+.earnedpop__item h2 {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--c-gold-light);
+}
+.earnedpop__item p {
+  margin: 0;
+  max-width: 24rem;
+  color: var(--c-text);
+  line-height: 1.45;
+}
+.earnedpop__list--many .earnedpop__item {
+  grid-template-columns: auto minmax(0, 1fr);
+  justify-items: start;
+  align-items: center;
+  column-gap: 0.9rem;
+  text-align: left;
+}
+.earnedpop__list--many .cardback {
+  grid-row: span 2;
+  width: 3.6rem;
+  border-width: 2px;
+}
+.earnedpop__list--many h2 {
+  font-size: 1.1rem;
+  align-self: end;
+}
+.earnedpop__list--many p {
+  align-self: start;
+  font-size: 0.92rem;
+}
+.earnedpop__acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.earnedpop__more {
+  margin: 0.9rem 0 0;
+  font-size: 0.85rem;
+  color: var(--c-text-dim);
+}
+@keyframes earnedpop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .earnedpop {
+    animation: none;
+  }
+}
+
+/* ---- #/earned: the log ---- */
+.earned__list {
+  display: grid;
+  gap: 0.7rem;
+  width: min(100%, 46rem);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.earned__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.3rem 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(212 168 75 / 0.3);
+  background: linear-gradient(170deg, rgb(24 34 78 / 0.9), rgb(8 10 20 / 0.95));
+}
+.earned__item .cardback {
+  width: 3.4rem;
+  border-width: 2px;
+  grid-row: span 2;
+}
+.earned__item b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--c-gold-light);
+  align-self: end;
+}
+.earned__item time {
+  color: var(--c-text-dim);
+  font-size: 0.85rem;
+  align-self: end;
+  white-space: nowrap;
+}
+.earned__item p {
+  grid-column: 2 / -1;
+  margin: 0;
+  align-self: start;
+  color: var(--c-text);
+  line-height: 1.4;
+}
+.earned__note {
+  width: min(100%, 46rem);
+  margin: 1.2rem auto 0;
+  color: var(--c-text-dim);
+  text-align: center;
+}
+@media (max-width: 520px) {
+  .earned__item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .earned__item time {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+  }
+  .earned__item .cardback {
+    grid-row: span 3;
+  }
+  .earned__item p {
+    grid-column: 2;
+  }
+}
+
+/* ---- the Collection's card backs ---- */
+.look__stage--back {
+  align-items: center;
+  padding: 0.8rem 0;
+}
+.look__stage--back .cardback {
+  width: auto;
+  height: 100%;
+}
+.look__stage--back .cardback img {
+  height: auto;
+  max-width: none;
+  filter: none;
+}
+.look__stage--back .cardback .cardback__crest {
+  width: 84%;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.6));
+}
+.look__stage--back .cardback.is-locked img {
+  filter: grayscale(1) brightness(0.45);
+}
+.look__stage--back .cardback .cardback__face {
+  width: 100%;
+  height: 100%;
+}
+.look.is-locked {
+  align-content: start;
+}
+.look.is-locked .look__name {
+  color: var(--c-text-dim);
+}

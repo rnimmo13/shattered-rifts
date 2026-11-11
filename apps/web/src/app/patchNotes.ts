@@ -46,6 +46,57 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.249.0",
+    date: "2026-11-11",
+    title: "Hero mastery",
+    summary: "Track how far you have got with each Riftwalker, master one by clearing the campaign with it, and earn its card back. Rewards are given the moment you earn them.",
+    notes: [
+      {
+        kind: "new",
+        title: "Hero mastery on the home screen",
+        text: "A Riftwalker's mastery is how many times you have cleared the campaign with it. Each icon on the home screen wears a ring of 12 segments, one for every Rift Tier cleared, and its mastery under it once you have a clear (before that, how far you have got). Under the row is a snapshot of the Riftwalker you picked: Mastery, Furthest, Arena matches won and ghosts beaten. A best of three counts as one win.",
+      },
+      {
+        kind: "new",
+        title: "A card back for every Riftwalker you master",
+        text: "Mastering a Riftwalker gives you its card back: its class crest on your draw pile and on every card you draw, in place of the S|R crest. Choose your card back in your Collection, under Card backs. Like every cosmetic, it is never wiped.",
+      },
+      {
+        kind: "new",
+        title: "Rewards arrive by themselves",
+        text: "Nothing needs claiming. When you earn a reward you get it at once, with a note to acknowledge. Everything you have earned is listed under Earned, in the home screen's header.",
+      },
+      {
+        kind: "new",
+        title: "Completed campaigns stand out, and the ending can be seen again",
+        text: "In Saved decks, a deck whose run cleared the campaign has a gold frame and a Campaign complete banner. Open the ending again from that deck, or from the completed run in Run history.",
+      },
+      {
+        kind: "changed",
+        title: "An enemy's Fracture tells you its next Shatter",
+        hero: "spellblade",
+        text: "Point at the Fracture on an enemy: it now starts with how much more Fracture Shatters it and how much damage that Shatter will deal, with your Spell Power and everything else counted.",
+      },
+      {
+        kind: "changed",
+        title: "Reverb has a clearer icon",
+        text: "Reverb (your next Attack is played twice) is now a plain x2 on a red gem, in place of two crossed swords.",
+      },
+      {
+        kind: "changed",
+        title: "The Store and your Collection look different",
+        text: "The Store is gold and violet; your Collection is teal and green, with its own mark. Each says at the top what it is for: the Store is where you get things, the Collection is what is already yours.",
+      },
+      {
+        kind: "fixed",
+        title: "Every card that sets off a Shatter says so",
+        hero: "spellblade",
+        text: "With Fault Lines in play, a Sword or Spell with no Fracture of its own (the Obsidian Blade and many others) set off a Shatter without showing it on the card. Those cards now end with \"Shatter now\" and the damage. Crack the Shell, Breaking Point and Carry the Fault show their Shatter too. Nothing about the damage itself has changed.",
+      },
+    ],
+    heads: "Campaigns you cleared before this update count if the run is still in your Run history (it keeps your last 40 ended runs): the mastery and the card back are yours the next time you open the game online. A run you are in the middle of counts from its next stop. Arena wins are counted from now on.",
+  },
+  {
     version: "0.248.0",
     date: "2026-11-10",
     title: "Aiming a card, and seasons",

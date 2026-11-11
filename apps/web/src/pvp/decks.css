@@ -55,6 +55,40 @@
   background: linear-gradient(180deg, rgb(20 32 74 / 0.7), rgb(8 10 20 / 0.9));
   text-align: left;
 }
+/* a deck whose run cleared the campaign (DECISIONS #739): a gold frame and a banner across its top */
+.deckrep--complete {
+  border: 2px solid var(--c-gold-light);
+  background:
+    linear-gradient(180deg, rgb(255 211 106 / 0.13), transparent 7rem),
+    linear-gradient(180deg, rgb(20 32 74 / 0.7), rgb(8 10 20 / 0.9));
+  box-shadow:
+    0 0 0 1px rgb(255 211 106 / 0.3),
+    0 0 26px rgb(255 211 106 / 0.2);
+}
+.deckrep__crown {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  width: 100%;
+  max-width: none;
+  margin: -0.2rem 0 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgb(255 211 106 / 0.35);
+  color: var(--c-gold-light);
+}
+.deckrep__crown b {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.deckrep__crown > span {
+  color: var(--c-text);
+}
+.deckrep__crown .btn {
+  margin-left: auto;
+}
 .deckrep__head {
   display: flex;
   flex-wrap: wrap;

@@ -1078,6 +1078,8 @@ export {
   SKINS,
   CARD_BACKS,
   PLATES,
+  MASTERY_HEROES,
+  heroCardBack,
   currentSkinId,
   skinDef,
   cosmeticDef,

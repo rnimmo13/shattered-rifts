@@ -11,6 +11,7 @@ import {
   legalActions,
   previewCardDamage,
   validateDb,
+  viewFor,
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB as db, RETIRED_CARDS, RIFTWALKERS, canonicalCard } from './index';
@@ -327,6 +328,69 @@ describe('Fracture and Shatter', () => {
     const hex = s.sides.a.hand.find((c) => c.card === 'faultline-hex')!.id;
     expect(previewCardDamage(db, s, hex).get(0)).toMatchObject({ lo: 23, hi: 23, shatter: true });
     expect(lost(play(s, 'faultline-hex'))).toBe(23);
+  });
+
+  it('a Sword or Spell with no Fracture of its own shows the Shatter Fault Lines sets off when it is played', () => {
+    const s = play(fight(['fault-lines', BLADE], { stars: 0 }), 'fault-lines');
+    s.sides.a.mana = 9;
+    const blade = s.sides.a.hand.find((c) => c.card === BLADE)!.id;
+    // (nothing to Shatter yet: no line about it)
+    expect(previewCardDamage(db, s, blade).get(-2)).toBeUndefined();
+    expect(cardText(db, db.cards[BLADE]!, previewCardDamage(db, s, blade))).not.toContain(
+      'Shatter now',
+    );
+    // (19 + Fault Lines' 1 = 20: the second Shatter)
+    foe(s).statuses.fracture = 19;
+    const live = previewCardDamage(db, s, blade);
+    const shatter = live.get(-2)!;
+    expect(shatter).toMatchObject({ shatter: true, calc: true });
+    expect(shatter.lo).toBe(shatter.hi);
+    expect(cardText(db, db.cards[BLADE]!, live)).toContain(
+      `Shatter now: [[live:calc:${shatter.lo}]].`,
+    );
+    // what playing it really deals: its own hit, and that Shatter
+    const hit = live.get(0)!;
+    expect(lost(play(s, BLADE))).toBe(hit.lo + shatter.lo);
+  });
+
+  it('cards that open with a strip, a carried Fracture or a blast are played ahead, so their Shatters show', () => {
+    for (const card of ['crack-the-shell', 'breaking-point-hex', 'carry-the-fault']) {
+      expect(db.cards[card], card).toBeTruthy();
+      const s = fight([card], { stars: 0, foes: 2 });
+      // (one enemy a point short of a Shatter, the other well into the next ten)
+      foe(s, 0).statuses.fracture = 19;
+      foe(s, 1).statuses.fracture = 16;
+      const def = db.cards[card]!;
+      const target = def.target === 'foe' ? foe(s, 0).id : undefined;
+      const live = previewCardDamage(db, s, 'T0', target);
+      const shown = [...live.values()].filter((l) => l.shatter);
+      const before = s.sides.b.units.map((u) => u.hp);
+      const after = applyAction(db, s, {
+        type: 'play',
+        card: 'T0',
+        ...(target ? { target } : {}),
+      }).state;
+      const dealt = after.sides.b.units.reduce((n, u, i) => n + before[i]! - u.hp, 0);
+      expect(dealt, `${card} Shatters`).toBeGreaterThan(0);
+      expect(shown.length, `${card} shows its Shatter`).toBeGreaterThan(0);
+      expect(Math.max(...shown.map((l) => l.hi)), `${card} shows a number`).toBeGreaterThan(0);
+    }
+  });
+
+  it("an enemy's Fracture says what its next Shatter would deal, and how much more sets it off", () => {
+    const s = fight(['faultline-hex']);
+    // (no Fracture: nothing to say)
+    expect(viewFor(db, s, 'a').sides.b.units[0]!.nextShatter).toBeUndefined();
+    foe(s).statuses.fracture = 15;
+    const told = viewFor(db, s, 'a').sides.b.units[0]!.nextShatter!;
+    // (5 more reaches 20: the second Shatter, 23, + Spell Power 8), which is what the Hex then deals
+    expect(told).toEqual({ need: 5, damage: 31 });
+    expect(lost(play(s, 'faultline-hex'))).toBe(told.damage);
+    // Shielded cancels it, and it says so
+    foe(s).statuses.shielded = 1;
+    expect(viewFor(db, s, 'a').sides.b.units[0]!.nextShatter).toEqual({ need: 5, damage: 0 });
+    // (your own units' Fracture is the other side's to Shatter: not told to you)
+    expect(viewFor(db, s, 'b').sides.b.units[0]!.nextShatter).toBeUndefined();
   });
 
   it('Fault Reader answering the Shatter does not hide it', () => {

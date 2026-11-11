@@ -442,6 +442,133 @@
     transform var(--t-base) var(--ease-pop),
     opacity var(--t-base) var(--ease-out);
 }
+/* ---- hero mastery (DECISIONS #739): a ring of Rift Tiers around each icon, a number under it, and a switch for what is counted ---- */
+.home__roster--mastery {
+  gap: 1.3rem 0.85rem;
+  padding: 0.4rem 0 0.9rem;
+}
+.home__roster--mastery .home__pick {
+  position: relative;
+  opacity: 0.9;
+}
+.home__ring {
+  position: absolute;
+  inset: -7px;
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.home__ring circle {
+  fill: none;
+  stroke-width: 2.4;
+}
+.home__ringTrack {
+  stroke: rgb(255 255 255 / 0.16);
+}
+.home__ringLit {
+  stroke: #8fd3ff;
+  filter: drop-shadow(0 0 2px rgb(143 211 255 / 0.7));
+}
+.home__ring.is-mastered .home__ringLit {
+  stroke: var(--c-gold-light);
+  filter: drop-shadow(0 0 3px rgb(255 211 106 / 0.85));
+}
+.home__stat {
+  position: absolute;
+  left: 50%;
+  bottom: -1.05rem;
+  translate: -50% 0;
+  min-width: 1.6rem;
+  padding: 0.02rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(8 10 20 / 0.92);
+  color: var(--c-text);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+}
+.home__stat.is-mastered {
+  border-color: var(--c-gold);
+  color: var(--c-gold-light);
+}
+.home__mastery {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: center;
+  width: min(100%, 38rem);
+  margin: 0 auto 0.3rem;
+}
+.home__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+}
+.home__statBox {
+  display: grid;
+  justify-items: center;
+  gap: 0.05rem;
+  padding: 0.45rem 0.3rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: rgb(8 10 20 / 0.6);
+  text-align: center;
+}
+.home__statBox dt {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-text-dim);
+}
+.home__statBox dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text);
+}
+.home__statBox small {
+  font-size: 0.72rem;
+  color: var(--c-text-dim);
+}
+.home__statBox.is-mastered {
+  border-color: var(--c-gold);
+  background: linear-gradient(180deg, rgb(255 211 106 / 0.14), rgb(8 10 20 / 0.6));
+  box-shadow: 0 0 14px rgb(255 211 106 / 0.18);
+}
+.home__statBox.is-mastered dt,
+.home__statBox.is-mastered dd {
+  color: var(--c-gold-light);
+}
+.home__masteryMine {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--c-text);
+}
+.home__masteryDone {
+  color: var(--c-gold-light);
+}
+.home__masteryTotal {
+  color: var(--c-text-dim);
+  font-size: 0.82rem;
+}
+@media (max-width: 30rem) {
+  .home__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .home__pick:hover,
 .home__pick:focus-visible {
   opacity: 1;

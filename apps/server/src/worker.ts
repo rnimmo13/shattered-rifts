@@ -57,6 +57,8 @@ const VAULT_ACTIONS = new Set([
   // own action for giving cosmetics and is deliberately not here: no request from outside may name it)
   'pastdecks',
   'seasonclaim',
+  // (DECISIONS #739) hero mastery and the log of what the player has earned
+  'mastery',
 ]);
 /** The biggest Vault request: a deck is small; a device's runs go up together (DECISIONS #309). */
 const VAULT_MAX_BYTES = 20_000;
@@ -157,7 +159,10 @@ async function seasonClaim(
     });
     if (ids.length === 0) return json({ ok: true, granted: [] });
     const given = await vaultStub.fetch(
-      new Request('https://vault.invalid/grant', { method: 'POST', body: JSON.stringify({ ids }) }),
+      new Request('https://vault.invalid/grant', {
+        method: 'POST',
+        body: JSON.stringify({ ids, why: 'season' }),
+      }),
     );
     return json(await given.json(), given.status);
   } catch {

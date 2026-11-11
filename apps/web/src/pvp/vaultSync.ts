@@ -74,6 +74,14 @@ export type Remote =
 /** The server's web address: the same host as the game's socket. */
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
 
+// The server counts hero mastery from what it is sent (a run's deck, the run history) and says in its reply when a number rose
+// (DECISIONS #741). The mastery store asks to hear of it here, rather than this file knowing that store.
+let onRose: (() => void) | null = null;
+export const onMasteryRose = (listener: () => void): void => {
+  onRose = listener;
+};
+export const masteryRose = (): void => onRose?.();
+
 async function call(action: string, body: Record<string, unknown>): Promise<Remote> {
   try {
     const res = await fetch(`${httpBase()}/pvp/vault/${action}`, {
@@ -88,6 +96,8 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
       expired?: unknown;
     };
     const decks = cleanVault(data.decks);
+    // (DECISIONS #741) the deck just sent raised one of the player's mastery numbers: whoever keeps them is told
+    if ((data as { mastery?: unknown }).mastery === true) masteryRose();
     if (data.ok) return { ok: true, decks };
     const e = data.error;
     if (e === 'signin') {

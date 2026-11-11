@@ -10,6 +10,51 @@ import { StoreIcon } from './StoreIcon';
 import { HeroModel } from '../art/HeroModel';
 import './store.css';
 
+/** The Collection's mark: an open chest with what is yours inside (the Store's is a satchel: StoreIcon). */
+function CollectionIcon(props: { size?: number; className?: string }) {
+  const size = props.size ?? 28;
+  return (
+    <svg
+      className={props.className}
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      aria-hidden
+      focusable="false"
+    >
+      {/* the lid, thrown back */}
+      <path
+        d="M6 13 L8 5.5 H24 L26 13"
+        fill="#12352f"
+        stroke="#5fe0c8"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      {/* what is inside: a gem */}
+      <path d="M16 7.5 L20 11 L16 15.5 L12 11 Z" fill="#bffff2" stroke="#5fe0c8" strokeWidth="1" />
+      {/* the box */}
+      <path
+        d="M5 13 H27 V25 C27 26.1 26.1 27 25 27 H7 C5.9 27 5 26.1 5 25 Z"
+        fill="#123a34"
+        stroke="#5fe0c8"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path d="M5 18 H27" stroke="#5fe0c8" strokeWidth="1.4" />
+      <rect
+        x="14"
+        y="16"
+        width="4"
+        height="5"
+        rx="1"
+        fill="#ffd36a"
+        stroke="#0a1f1c"
+        strokeWidth="0.8"
+      />
+    </svg>
+  );
+}
+
 /** The page around a shop: header, the sticky bar, then what the chosen tab shows. */
 export function ShopFrame(props: {
   page: 'store' | 'vault';
@@ -24,12 +69,18 @@ export function ShopFrame(props: {
 }) {
   const { page, tab, hero } = props;
   return (
-    <main className="shop">
+    // (DECISIONS #744) the two pages share a layout but must never be mistaken for each other: each has its own colour, mark and
+    // a line across the top saying where you are and what the page is for
+    <main className={`shop shop--${page}`}>
       <header className="shop__head">
         <a className="btn btn--small" href="#/">
           <span>Back</span>
         </a>
-        <StoreIcon size={44} className="store__mark" />
+        {page === 'store' ? (
+          <StoreIcon size={44} className="store__mark" />
+        ) : (
+          <CollectionIcon size={44} className="store__mark" />
+        )}
         <div className="shop__title">
           <h1>{page === 'store' ? 'Store' : 'Collection'}</h1>
           <p>{props.lead}</p>
@@ -51,6 +102,25 @@ export function ShopFrame(props: {
           </a>
         </nav>
       </header>
+      <p className="shop__where">
+        {page === 'store' ? (
+          <>
+            <b>The Store</b>
+            <span>
+              Things to get. Whatever you get here goes into your{' '}
+              <a href="#/cosmetics">Collection</a>, where you put it on.
+            </span>
+          </>
+        ) : (
+          <>
+            <b>Yours</b>
+            <span>
+              Everything here is already yours: choose what you wear and use. To get more, visit the{' '}
+              <a href="#/store">Store</a> or earn it by playing.
+            </span>
+          </>
+        )}
+      </p>
       <div className="shop__bar">
         <div className="shop__tabs" role="tablist" aria-label="Kinds of cosmetics">
           {SHOP_TABS.map((t) => (

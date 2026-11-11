@@ -4,11 +4,12 @@
 // fights (never on an opponent's). Presentation only: nothing here changes how a hero plays.
 
 import { useEffect, useMemo, useState } from 'react';
-import { RIFTWALKERS, SKINS, type HeroId } from '@sr/content/v2';
-import { wornSkin } from '@sr/pvp';
+import { CARD_BACKS, RIFTWALKERS, SKINS, type HeroId } from '@sr/content/v2';
+import { inUse, wornSkin } from '@sr/pvp';
 import { preloadArt, realSkins } from '../art/assets';
 import { skinName } from '../art/skins';
-import { useCosmetics, wear } from '../cosmetics/cosmetics';
+import { choose, useCosmetics, wear } from '../cosmetics/cosmetics';
+import { CardBackFace } from '../cosmetics/CardBackFace';
 import { heroFigure } from '../fight/art';
 import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
 import { HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
@@ -49,8 +50,70 @@ export function CosmeticsScreen() {
   const ownedLooks = SKINS.filter((s) => mine.owned.includes(s.id) && art.has(s.id));
   const name = (h: HeroId): string => RIFTWALKERS[h].hero.name;
 
+  const ownedBacks = CARD_BACKS.filter((b) => mine.owned.includes(b.id));
+  const backInUse = inUse(mine, 'cardBack') ?? null;
+
   let body;
-  if (tab !== 'looks') body = <SoonPanel tab={tab} text="Nothing of this kind in the Store yet." />;
+  if (tab === 'backs') {
+    // the card back everyone starts with, then every card back there is: the ones you own to use, the rest with how they are earned
+    const backs: { id: string | null; label: string; sub: string; owned: boolean }[] = [
+      { id: null, label: 'S|R crest', sub: 'The card back everyone starts with', owned: true },
+      ...CARD_BACKS.map((b) => ({
+        id: b.id,
+        label: b.crest ? `${name(b.crest)} card back` : b.name,
+        sub: b.crest
+          ? mine.owned.includes(b.id)
+            ? `Mastery: campaign cleared as the ${name(b.crest)}`
+            : `Clear the campaign as the ${name(b.crest)}`
+          : b.name,
+        owned: mine.owned.includes(b.id),
+      })),
+    ];
+    body = (
+      <>
+        <ul className="shop__grid" role="radiogroup" aria-label="Your card back">
+          {backs.map((b) => {
+            const on = b.owned && b.id === backInUse;
+            return (
+              <li
+                key={b.id ?? 'crest'}
+                className={`look${on ? ' is-on' : ''}${b.owned ? '' : ' is-locked'}`}
+              >
+                <div className="look__stage look__stage--back">
+                  <CardBackFace back={b.id ?? undefined} locked={!b.owned} />
+                  {(on || !b.owned) && <i className="look__tag">{on ? 'In use' : 'Not earned'}</i>}
+                </div>
+                <b className="look__name">{b.label}</b>
+                <span className="look__sub">{b.sub}</span>
+                <div className="look__act">
+                  {b.owned && (
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      aria-label={b.label}
+                      className={`btn btn--small${on ? ' btn--ghost' : ''}`}
+                      onClick={() => {
+                        if (!on) choose('cardBack', b.id);
+                      }}
+                    >
+                      <span>{on ? 'In use' : 'Use'}</span>
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="shop__note">
+          Your card back is on your draw pile and on every card you draw. Master a Riftwalker by
+          clearing the campaign with it to earn its card back; what you have earned is listed under{' '}
+          <a href="#/earned">Earned</a>.
+        </p>
+      </>
+    );
+  } else if (tab !== 'looks')
+    body = <SoonPanel tab={tab} text="Nothing of this kind in the Store yet." />;
   else if (hero === 'all')
     // every Riftwalker in the look it wears now: pick one to change it
     body = (
@@ -141,7 +204,7 @@ export function CosmeticsScreen() {
       tab={tab}
       onTab={pickTab}
       hero={{ value: hero, onPick: pickHero, all: true }}
-      counts={{ looks: ownedLooks.length }}
+      counts={{ looks: ownedLooks.length, backs: ownedBacks.length }}
     >
       {body}
     </ShopFrame>

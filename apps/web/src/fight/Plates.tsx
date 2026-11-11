@@ -335,7 +335,7 @@ export function UnitPlates({
                       key={id}
                       data-status={id}
                       className={`chip chip--${info.tone}${id === 'opening' ? ' chip--open' : ''}`}
-                      {...tipAttrs(statusTip(id, n))}
+                      {...tipAttrs(statusTip(id, n, u.nextShatter))}
                     >
                       <GameIcon art={STATUS_ICONS[id]} pic={id} />
                       {/* (an Opening is on or off: it reads "Open", not a count, DECISIONS #415) */}

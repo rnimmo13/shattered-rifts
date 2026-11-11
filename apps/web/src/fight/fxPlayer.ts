@@ -6,7 +6,7 @@ import { getBaseSpeed } from '../duel/scene/timescale';
 import { loadEffectsMode, markEffectsMode, prefersReducedMotion } from '../duel/effects';
 import { stripRoll } from '@sr/content/v2';
 import { FX_IDS, type FxId } from './fxMoments';
-import { cardBackFaceUrl, crestUrl } from '../cosmetics/cardBack';
+import { cardBackCrestUrl, cardBackFaceUrl } from '../cosmetics/cardBack';
 import { myCardBack } from '../cosmetics/cosmetics';
 import './fx.css';
 
@@ -106,7 +106,8 @@ const CARD_FX_DIRS = ['rare', 'uncommon'] as const;
 const cardFx: Record<string, { at: CardFxAt; dir: string }> = {};
 const cardFxRead = new Set<string>();
 let cardFxLoading: Promise<void> | null = null;
-const cardFxUrl = (id: string): string => `${import.meta.env.BASE_URL}art/fx/${cardFx[id]?.dir ?? 'rare'}/${id}.png`;
+const cardFxUrl = (id: string): string =>
+  `${import.meta.env.BASE_URL}art/fx/${cardFx[id]?.dir ?? 'rare'}/${id}.png`;
 
 /** Reads which cards have their own effect (safe to call again; a list that does not come lets the next fight try again). */
 export function loadCardFx(): Promise<void> {
@@ -115,7 +116,9 @@ export function loadCardFx(): Promise<void> {
     const done = await Promise.all(
       left.map(async (dir) => {
         try {
-          const res = await fetch(`${import.meta.env.BASE_URL}art/fx/${dir}/index.json`, { cache: 'no-cache' });
+          const res = await fetch(`${import.meta.env.BASE_URL}art/fx/${dir}/index.json`, {
+            cache: 'no-cache',
+          });
           if (!res.ok) throw new Error(String(res.status));
           const index = (await res.json()) as Record<string, CardFxAt>;
           for (const [id, at] of Object.entries(index)) cardFx[id] = { at, dir };
@@ -271,12 +274,13 @@ export function flyCard(from: Spot, to: Spot, o: FlightOpts = {}): void {
   const el = document.createElement('i');
   el.className = 'fxcard';
   el.style.width = `${o.size ?? 44}px`;
-  // (DECISIONS #735, #737) the player's card back: the one they chose, or the default with the S|R crest on it
-  const face = cardBackFaceUrl(myCardBack());
+  // (DECISIONS #735, #737) the player's card back: a painted one they chose, or the drawn one with a crest on it (a mastered Riftwalker's, or the S|R crest: #739)
+  const back = myCardBack();
+  const face = cardBackFaceUrl(back);
   if (face) {
     el.classList.add('fxcard--face');
     el.style.setProperty('--fxcard-face', `url("${face}")`);
-  } else el.style.setProperty('--fxcard-crest', `url("${crestUrl()}")`);
+  } else el.style.setProperty('--fxcard-crest', `url("${cardBackCrestUrl(back)}")`);
   fly(el, from, to, o);
 }
 

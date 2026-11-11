@@ -1910,3 +1910,99 @@ Robert: a friend on a Mac laptop "couldnt target an enemy ... because hovering o
 - **Unchanged:** hovering to read a card (it still lifts and grows; it has to, a resting card's text runs off the bottom of the screen), cards with no target or one target (they play at once), and the grid a phone held upright uses.
 - **Checked** in a real fight at 1280 x 680 with a mouse: click to aim and click the enemy, drag to aim and let go on the enemy, click the waiting card to put it back.
 - **Left for later:** a hovered card still covers what is right above it while it is read. Shrinking the lift on short screens would make the card harder to read, so it stays; moving the pointer off the card puts it back at once.
+
+## 739 - Hero mastery, card backs with a Riftwalker's crest, rewards given without claiming, and the earned log (2026-11-11)
+
+Robert: "we need to add hero mastery that shows a tracker for how far the player has gotten with each hero, but also need a tracker to switch to how many times theyve cleared the game or won arena matches ... players will want to see some kind of indication on the homescreen. and decks in Saved Decks shold clearly show in a special way that they are completed campaigns. i also had a request to allow a player to see the victory screen again ... id like hero mastery to come with a new card back that has the hero icon instead of the S|R logo ... i dont want them to have to claim them, i want them to get them automatically and they can just ackowledge the notification ... we probably should have a notification log of what players have earned". He left how it looks to Claude; the choices below are Claude's unless marked.
+
+**What mastery is**
+- **(Changed the same day by #741: mastery is the number of campaigns cleared, the server counts it, a best of three is one win, and wins against ghosts are counted apart.)**
+- **Three numbers for each Riftwalker** (`packages/pvp/src/mastery.ts`): the highest Rift Tier cleared (0 to 12), campaigns cleared, and Arena matches won (ghost matches count: they are Arena matches).
+- **A Riftwalker is mastered when the campaign has been cleared with it** (Claude's choice, for Robert to confirm). It is the one goal every player understands, the tracker's 12 segments lead straight to it, and it makes ten rewards worth a run each. Arena wins are tracked but give nothing yet: a reward for wins would favour whoever plays most, and the Arena has its own season rewards planned (#737).
+- **The last tier counts only when Drago falls.** Tier XII's Wardens fall one by one before him, so a run standing in Tier XII has cleared 11 tiers until it is won. A run of the older, longer campaign also stops at 11 unless it was won.
+- **The numbers only grow.** Two copies (another device's, the server's) are brought together by taking the larger of each. No wipe touches them, like cosmetics. The play lease (#579) means one device plays at a time, so the larger number is the right one.
+- **Counting:** a run tells mastery where it stands after every step (cheap; the server is asked only when a number rises). A campaign cleared is counted once per run (the browser remembers the last 400 runs it counted). An Arena win is counted when the game is first recorded in the match history.
+- **Players who were here before:** the first time, the numbers start from what the browser already knows: run history, runs in progress, saved decks and match history. They are a floor, not a full record (the history keeps 40 runs and 60 matches).
+- **It rests on the browser's word**, as campaign progress on the boards does (12_STEAM_READINESS §6). Server-verified runs should come before mastery gives anything worth cheating for; a card back is not.
+
+**The card backs**
+- **Ten card backs, one per Riftwalker** (`back-<class>`, `CARD_BACKS`): the default card back with that Riftwalker's painted class crest in place of the S|R crest. Earned, so only the server gives them (#737); a device cannot claim one.
+- **No new pictures.** A crest card back is put together when it is shown: the plain draw pile paintings (now also in `public/art/cardbacks/plain`) with the crest laid on the top card at the stack's slant, on a dark gold-rimmed plate (the same placement numbers as `tools/src/cardBackCrest.ts`); the flying card shows the crest on its violet face. Painted card backs with their own folder (#737) still work for season rewards later.
+- **Choosing one:** the Collection's Card backs tab, which was "coming soon": the S|R crest, the ones you own to use, and the rest greyed with how each is earned.
+
+**Given, never claimed**
+- **The Vault gives a mastered Riftwalker's card back the moment it hears of the clear** (`POST /pvp/vault/mastery`: the device's numbers in, and the merged numbers, the player's cosmetics and the earned log back). One request when the game opens, and one when a number rises or something is acknowledged. Season rewards (#737) were already given without asking; they now go into the same log.
+- **The popup:** what was just earned is shown once, on whatever page the player is on, but never over a fight. For a single card back it offers "Use this card back"; OK only acknowledges. Acknowledging on one device acknowledges it on every device.
+- **The earned log** (`#/earned`, "Earned" in the home screen's header, with a dot while something is unacknowledged): every cosmetic the server has given, when and why (a Riftwalker mastered, a season's reward, a gift), newest first, kept on the Vault (the newest 300). Arena trophies are not in it yet; they have their own page.
+- **An offline desktop profile** (#579) tracks mastery on the device and earns nothing: rewards belong to the online account, as Steam unlocks do.
+
+**Where it shows**
+- **The home screen:** each Riftwalker's icon wears a ring of 12 segments, one per Rift Tier cleared (blue, gold once mastered), and a number under it. A switch chooses what the number counts: Progress (7/12), Clears (×2) or Arena wins (14), with the total beside it. Under the row, the picked Riftwalker's mastery in words. The Sandbox's picker is unchanged.
+- **Saved decks:** a deck whose run cleared the campaign has a gold frame and a "Campaign complete" banner. A saved deck now says so itself (`won`, a new column on the server); a deck saved before this is spoken for by the run history.
+- **The ending again:** "See the ending again" on a completed deck in Saved decks and on a completed run in Run history opens the same picture, words and music over the page; Esc or Close goes back.
+
+**Left for later:** mastery ranks beyond the first clear (a title or a foil crest at 3, 5, 10 clears); a reward for Arena wins; showing an opponent your card back; trophies in the earned log.
+
+**From the review, built in:**
+- **Two players on one browser.** The browser keeps one copy of mastery. It remembers which Vault that copy was last brought together with (a mark the server sends), and sends the mark back; a Vault that sees another's mark takes none of the numbers or acknowledgements and tells the browser to start again from the Vault's own numbers and the browser's records. So signing in to a second account does not hand it the first one's card backs. (The desktop app already clears its storage on an account switch.)
+- **A sync that fails is tried again** when the connection or the window comes back, never on a timer. Until the card back has really been given, the home screen says it "arrives the next time you are online" instead of saying it is yours.
+- **Only the popup's own buttons acknowledge.** It sits above Settings and the update prompt, and Esc does nothing to it, so a reward is never acknowledged unseen.
+- **A deck stays marked complete** when a build that does not know the mark saves the same run again.
+- **The desktop save file** now holds mastery and the earned log (for an offline profile it is their only lasting copy).
+
+**Known limits, accepted:** the ending opened again does not trap keyboard focus. (What mastery is, who counts it and what a win is were changed the same day: #741.)
+
+## 741 - Mastery is campaigns cleared, counted by the server; the rest is a snapshot (2026-11-11)
+
+Robert, on #739: "what mastery is: its how many times they cleared the campaign with that riftwalker. the other trackign stuff for arena wins and wins vs ghosts or any other data are just tracker data we can show in a snapshot of their stats for that character"; "best of three: this should could as 1 win for the player in arena. ranked should be driven off of who won the series"; "id rather have the game server be the source of truth but i know part of that relies on data it gets from the browser or desktop app"; and, after first saying only going forward, "i want mastery to count historical clears as well actually". This replaces the parts of #739 it touches.
+
+- **Mastery is a number: the campaigns cleared with that Riftwalker.** Mastery 1 is the first clear and gives the card back (unchanged); it goes on counting. The home screen shows it under the icon as a star and the number; a Riftwalker with no clear yet shows how far it has got (7/12). The Progress / Clears / Arena wins switch is gone.
+- **The rest is a snapshot** of the player's time with the picked Riftwalker, four boxes under the row: Mastery, Furthest (Rift Tiers cleared), Arena (matches won against players) and Ghosts (ghosts beaten). Wins against ghosts are now counted apart (`ghostWins`). None of these earns anything. More numbers can be added to the snapshot later.
+- **A best of three is one win.** A match is counted when it is decided, not each game of it. **Ranked was already driven by the series**: the room tells the leaderboard only when the match is decided (`finish` calls `record` once `decided`), with the winner of the deciding game, who is the winner of the match. Nothing changed there; only mastery had been counting games.
+- **The server counts the campaign.** A player's Vault raises the numbers itself, from two things it is already sent: the deck a run saves after every stop (how far the run has got; a deck marked won is a clear), and the run history. Each run is counted once, whichever of the two tells of it and from whichever device (the Vault keeps the runs it has counted). A device's own copy of the campaign numbers is not taken at all, so a browser cannot simply say "12 clears". The count is made before anything can turn the deck away, so a full Vault or a turned month never costs a clear. This also ends the two counting faults the review found (#739): two devices can no longer undercount or double count a clear.
+- **What still rests on the device:** the deck and the history record are the device's word (a run is played in the browser), as campaign progress on the boards is. Match counts are sent by the device and the Vault takes the larger; they earn nothing. Server-verified runs (12_STEAM_READINESS section 6) would close the first; having the match room tell the Vault would close the second.
+- **Historical clears count.** The run history kept on the Vault (the last 40 ended runs) is counted once, the first time mastery is asked for, and again whenever a device brings history: a completed run there is a clear, and gives the card back. A run recorded before runs said they were won is read from its last fight (a win against Drago). Clears older than the history are not known to anyone and cannot be counted.
+- **No other backfill.** The browser no longer starts mastery from its own records (#739 did). A run in progress shows up as it is played on: its next stop saves its deck, and the Vault counts where it stands.
+- **The browser** shows the Vault's numbers and keeps a copy to draw at once. The Vault says in its reply to a deck or history save when a number rose, and only then does the browser fetch mastery again (no request per stop). An offline desktop profile has no server, so it counts its own runs on the device, as before.
+
+## 742 - An enemy's Fracture says what its next Shatter will deal (2026-11-11)
+
+Robert, on #740: "there just needs to be a way to see how much shatter will do if you apply that amount of fracture onto the enemy. it needs to be shown to the player somewhere."
+
+- **The Fracture marker on an enemy now starts with it:** "4 more Fracture Shatters it for 31 damage, as things stand (Barrier takes it first)", then the rule as before. The number is the engine's (`nextShatter`, carried on the unit in `viewFor`): your Spell Power, Deepening and the Shatterer's bonus, the difficulty, and Shielded or Ghostly on that enemy. It is the same number the card then deals (tested against a real play).
+- With #740 that makes two places: the enemy says what the next Shatter is worth and how far off it is, and a card that would set one off says so on the card.
+- Display only; RULES_VERSION stays 107.
+
+## 743 - Reverb's icon is a plain x2 (2026-11-11)
+
+Robert: "reverb: id like the icon changed away from 2 swords, it just not clear enough ... something like x2 or a better icon would be great."
+
+- Two crossed swords said "an attack" and nothing about twice. The icon is now **x2 on the red gem the free-Attack icon uses** (red is the Attack family): "your next Attack, twice". Drawn by `tools/src/reverbIcon.ts` (`pnpm --filter @sr/tools icon:reverb`), so it can be redrawn; the painted swords are in git history. Mirrored (the next Skill twice) keeps its card and reflection for now; it could take a green x2 the same way if it turns out unclear too.
+
+## 744 - The Store and the Collection look like two places (2026-11-11)
+
+Robert: "we need to make sure the store and vault are clearly different, sometimes its hard for players to understand it since they look so similar."
+
+- They share one layout (#409), and both were gold on blue with the same satchel mark. Now: **the Store is gold on violet** with the satchel; **the Collection is teal on deep green** with an open chest, and its tabs, tiles and "in use" marks are teal too. Each page has a line across the top saying where you are and what it is for: "The Store: things to get. Whatever you get here goes into your Collection, where you put it on." and "Yours: everything here is already yours: choose what you wear and use."
+- The layout, the tabs and the Store / Collection switch are unchanged, so nothing has moved.
+- Painted backgrounds for the two would finish the job (a market and a vault: #745).
+
+## 745 - Menu backgrounds: seven places, prompts written (2026-11-11)
+
+Robert: "do you think we need more background images for things like the homepage, store pages, arena pages, etc? if we do, please create some prompts ... i am undecided for the homepage but im open to what you think is the most modern look for a premium polished game for steam and app."
+
+- **Claude's view: yes, a few, one per place and not one per page.** Seven pictures cover every menu: the Sanctum (home), the Rift Market (Store), the Vault (Collection, Earned), the Crossing Gate (Arena pages), the Archive (Saved decks, Card library, Run history), the Hall of Champions (Leaderboards, Trophy case) and the Chronicle (How to play, Patch notes, Credits; optional).
+- **The home page should be a place, not a poster:** a dim, deep hall with an empty lit dais where the picked Riftwalker's model stands, darkest behind the menu, with slow motes and a little parallax. The loading screen's key art is too bright and detailed to sit behind buttons.
+- Prompts, the order to make them in and how they will be cut and used are in `docs/background-prompts.md`. Nothing is built: a page keeps today's look until its picture exists.
+
+## 740 - Every card that sets off a Shatter says so on the card (2026-11-11)
+
+Robert: "there are still some shatter cards that dont show how much damage playing that card will do, its just not showing it on the card but plyaing the card does the damage on the target." Display only: no rule, card or number changes, so RULES_VERSION stays 107.
+
+- **What was missing** (found by playing all 56 Fracture cards, base and upgraded, against the preview):
+  - **With Fault Lines in play, every Sword or Spell with no Fracture of its own** (the Obsidian Blade above all, and about twenty others). Fault Lines adds its Fracture once the card is played, and the preview only showed that Shatter on a card that had a Fracture line to hang it on. The card showed its hit and nothing else, and playing it Shattered.
+  - **Crack the Shell, Breaking Point and Carry the Fault.** Each opens with an effect the preview did not know how to play ahead (strip Barrier, the blast, carry Fracture over), so it stopped before the Fracture.
+  - **Falling Shards**, whose Fracture comes only when its hit kills.
+- **The fix (engine, `resolvedDamage`):** Shatters that no Fracture line of the card carries get a line of their own at the end of the card, "Shatter now: N." (a range when it depends on the target, "2 Shatters, N total" for several), worked out by really playing the card ahead as before. `strip`, `carryFracture` and `shatterBlast` are played ahead too: they read only what both sides can see and leave nothing to chance.
+- **Already right, checked:** the 3- and 4-hit Swords and the four Spells that gained Fracture in #728, and every card whose Fracture is a line of its own.
+- **Still not shown, on purpose:** with Fault Lines, a card that draws first (Glint, Controlled Release, Glass Veil). What it draws is hidden, so the preview stops there and says further damage can depend on drawn cards. Breaking Point's blast itself still has no live number (its Shatter does).

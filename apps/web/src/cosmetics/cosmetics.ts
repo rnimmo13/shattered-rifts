@@ -64,6 +64,12 @@ export function useCosmetics(): Cosmetics {
 
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
 
+/** Take the Vault's copy as another request brought it back (hero mastery's reply carries it: DECISIONS #739). */
+export function takeCosmetics(raw: unknown): void {
+  const merged = mergeCosmetics(state, cleanCosmetics(raw));
+  if (JSON.stringify(merged) !== JSON.stringify(state)) set(merged);
+}
+
 /** Send this browser's copy to the Vault and keep the merged result. False when the server could not be reached. */
 export async function syncCosmetics(): Promise<boolean> {
   try {

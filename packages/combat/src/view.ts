@@ -2,6 +2,7 @@
 
 import {
   modifiedDamage,
+  nextShatter,
   activePattern,
   formProgress,
   previewAllyDamage,
@@ -63,6 +64,11 @@ export interface UnitView extends Unit {
   intentView: IntentView | null;
   /** a companion's frame: the companion slots it takes (1 Light, 2 Heavy, 3 Colossal), shown as pips (DECISIONS #383) */
   slots?: number;
+  /**
+   * (a unit of the other side with Fracture on it) its next Shatter, were the viewer to set it off now: how much more Fracture it
+   * takes, and what it would deal (DECISIONS #742)
+   */
+  nextShatter?: { need: number; damage: number };
 }
 
 export interface SideView {
@@ -355,6 +361,10 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       id,
       units: sd.units.map((u) => {
         const slots = u.kind === 'ally' ? (db.units[u.def]?.slots ?? 1) : 1;
+        const shatter =
+          !own && u.hp > 0 && (u.statuses.fracture ?? 0) > 0
+            ? { nextShatter: nextShatter(s, u, me) }
+            : {};
         // (Nyxara's rule, DECISIONS #546) a Veiled unit's intent is hidden from the other side until it is hit
         if (!own && (u.statuses.veiled ?? 0) > 0) {
           // (nor does what it last did, or where it is in its loop)
@@ -367,12 +377,14 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
             moveCount: 0,
             intentView: { ...VEILED_INTENT, icons: [...VEILED_INTENT.icons] },
             ...(u.kind === 'ally' ? { slots } : {}),
+            ...shatter,
           };
         }
         return {
           ...clone(u),
           intentView: describeIntent(db, s, u),
           ...(u.kind === 'ally' ? { slots } : {}),
+          ...shatter,
         };
       }),
       hand: own ? clone(sd.hand) : null,
@@ -390,7 +402,10 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       potionCount: sd.potions.length,
       stars: sd.stars,
       ...(sd.discipline
-        ? { disciplineText: disciplineText(sd, s.mode) ?? '', disciplineLabel: disciplineLabel(sd, s) }
+        ? {
+            disciplineText: disciplineText(sd, s.mode) ?? '',
+            disciplineLabel: disciplineLabel(sd, s),
+          }
         : attackAuraProgress(sd)
           ? { disciplineLabel: attackAuraProgress(sd) ?? '' }
           : {}),
@@ -936,9 +951,9 @@ function amountText(
             ? 'a quarter '
             : Math.abs(m - 2 / 3) < 1e-9
               ? 'two thirds '
-            : m > 1
-              ? `${m} times `
-              : `${Math.round(m * 100)}% of `;
+              : m > 1
+                ? `${m} times `
+                : `${Math.round(m * 100)}% of `;
     return {
       num: `${mult}${mult && !/ of $/.test(mult) && m < 1 ? 'of ' : ''}${whose}${w.equal}${capped}`,
       equal: true,
@@ -1838,7 +1853,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       if (o.scale && (o.count ?? 1) === 0)
         return `Add a random card from your pool to your hand for each ${METRIC_WORDS[o.scale.by].per}.`;
       const thisTurn = many ? ' (they cost 0 this turn)' : ' (it costs 0 this turn)';
-      const less = o.cheaper ? ` (${many ? 'they cost' : 'it costs'} ${o.cheaper} less until played)` : '';
+      const less = o.cheaper
+        ? ` (${many ? 'they cost' : 'it costs'} ${o.cheaper} less until played)`
+        : '';
       return `Add ${what} from your pool to your hand${o.free ? free : o.turn ? thisTurn : less}${o.ethereal ? `, ${many ? 'all ' : ''}Fleeting` : ''}.`;
     }
     case 'upgrade':
@@ -2579,6 +2596,16 @@ export function cardText(
     parts.push(
       `Whenever you create ${article(TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate)} ${TAG_NAMES[c.cheaperOnCreate] ?? c.cheaperOnCreate}, this costs 1 less until played.`,
     );
+  // (-2: Shatters no Fracture line of this card carries, such as the one Fault Lines sets off once a Sword or Spell is played)
+  const after = live?.get(-2);
+  if (after?.shatter) {
+    const num = after.lo === after.hi ? String(after.lo) : `${after.lo}-${after.hi}`;
+    late.push(
+      (after.hits ?? 1) > 1
+        ? `Shatter now: ${after.hits} Shatters, [[live:calc:${num}]] total.`
+        : `Shatter now: [[live:calc:${num}]].`,
+    );
+  }
   if (live?.get(-1)?.uncertain)
     late.push('Further damage can depend on random effects, drawn cards or unresolved choices.');
   const text = [...parts, ...late].join(' ');

@@ -11,6 +11,7 @@ export * from './seasons';
 export * from './replays';
 export * from './sharedReport';
 export * from './cosmetics';
+export * from './mastery';
 export {
   checkEntry,
   checkArenaEntry,

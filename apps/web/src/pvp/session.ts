@@ -17,6 +17,7 @@ import {
 } from '@sr/pvp';
 import { MoveFeed, type PvpLink } from './link';
 import { recordMatch } from './matchHistory';
+import { noteArenaWin } from '../cosmetics/mastery';
 import { balanceFighter, recordBalance } from '../app/balanceJournal';
 import { soonSyncRuns } from '../run/runCloud';
 import { playSocketUrl } from '../playAccess';
@@ -486,12 +487,23 @@ export class PvpSession {
         if (m.seq > match.replay) this.setMatch({ deadline: m.deadline, skew: m.now - Date.now() });
         return;
       }
-      case 'end':
+      case 'end': {
         this.setMatch({
           end: { winner: m.winner, reason: m.reason },
           series: m.series ?? this.snap.match?.series ?? null,
         });
+        // (DECISIONS #741) a match won with this Riftwalker goes into its numbers: the match, not each game of it (a best of three
+        // is one win, and the game that decides it is won by whoever wins the match), against a player or against a ghost. Counted
+        // here, when the match ends, and once per match (a rejoin hears the end again)
+        const done = this.snap.match;
+        if (done && m.winner === done.seat && (!done.series || done.series.over))
+          noteArenaWin(
+            done.heroes[done.seat],
+            done.ghost !== null,
+            `${done.room}:${done.setup.seed}`,
+          );
         return;
+      }
       case 'replay': {
         const match = this.snap.match;
         if (!match?.end) return;

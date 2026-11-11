@@ -1,8 +1,11 @@
 // #/decks: every saved deck in full, as a report (see DeckReport). The Arena lists the same decks in short.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { RUN_PREFIX, safeId } from '@sr/pvp';
 import { DeckReport } from './DeckReport';
-import { VAULT_SLOTS, dropFrom, loadVault, saveVault, type VaultDeck } from './vault';
+import { VAULT_SLOTS, dropFrom, loadVault, runOf, saveVault, type VaultDeck } from './vault';
+import { runHistory, type RunRecord } from '../run/history';
+import { VictoryAgain } from '../run/VictoryPanel';
 import { gameplayAction } from '../playAccess';
 import { remoteVault, syncVault, vaultKey, whoAmI } from './vaultSync';
 import { deckWipeLine } from './seasonText';
@@ -83,6 +86,14 @@ export default function SavedDecksScreen() {
     };
   }, []);
 
+  // (DECISIONS #739) a deck whose run cleared the campaign is marked. A deck saved before decks said so is spoken for by the run
+  // history, which also knows how many fights the run won (for the ending, opened again)
+  const wonRuns = useMemo(() => {
+    const by = new Map<string, RunRecord>();
+    for (const r of runHistory()) if (r.won) by.set(runOf(safeId(RUN_PREFIX + r.id)), r);
+    return by;
+  }, []);
+  const [ending, setEnding] = useState<VaultDeck | null>(null);
   const newestFirst = [...decks].sort((a, b) => b.bankedAt - a.bankedAt);
   return (
     <main className="setup setup--wide decks">
@@ -133,6 +144,8 @@ export default function SavedDecksScreen() {
             <DeckReport
               key={d.id}
               deck={d}
+              completed={d.won === true || wonRuns.has(runOf(d.id))}
+              onEnding={() => setEnding(d)}
               onRemove={() => {
                 void gameplayAction(() => {
                   touched.current = true;
@@ -145,6 +158,17 @@ export default function SavedDecksScreen() {
             />
           ))}
         </div>
+      )}
+      {ending && (
+        <VictoryAgain
+          record={{
+            hero: ending.hero,
+            ascendancy: ending.ascendancy,
+            victories: wonRuns.get(runOf(ending.id))?.duelsWon,
+            cards: ending.deck.length,
+          }}
+          onClose={() => setEnding(null)}
+        />
       )}
     </main>
   );

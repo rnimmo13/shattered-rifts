@@ -25,6 +25,21 @@ import {
   dropFrom,
   grantCosmetics,
   selfClaimed,
+  cleanEarned,
+  cleanMastery,
+  countRuns,
+  deckRunFacts,
+  historyRunFacts,
+  matchCountsOnly,
+  masteryRewards,
+  type RunFacts,
+  mergeMastery,
+  sameMastery,
+  withEarned,
+  withSeen,
+  type Earned,
+  type EarnedWhy,
+  type Mastery,
   BANK_CLOCK_SLACK_MS,
   isListName,
   keepRunCopies,
@@ -49,8 +64,12 @@ interface Row extends Record<string, SqlStorageValue> {
   boons: string;
   ascendancy: string | null;
   max_hp: number | null;
+  won: number | null;
   banked_at: number;
 }
+
+/** The most records of a history a device brings that are counted for mastery in one request (a history keeps 40). */
+const HISTORY_COUNTED_AT_ONCE = 80;
 
 const json = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -108,6 +127,9 @@ export class Vault extends DurableObject<Env> {
     // ... and the run's Max HP (DECISIONS #538)
     if (!columns.some((c) => c.name === 'max_hp'))
       ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN max_hp INTEGER');
+    // ... and whether its run cleared the campaign (DECISIONS #739)
+    if (!columns.some((c) => c.name === 'won'))
+      ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN won INTEGER');
     // the player's synced lists (run history, Arena matches): one JSON row each (DECISIONS #318)
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS lists (
@@ -119,6 +141,10 @@ export class Vault extends DurableObject<Env> {
     // the player's cosmetics (DECISIONS #406): one JSON row, the skins they own and the look each Riftwalker wears
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS cosmetics (k TEXT PRIMARY KEY, data TEXT NOT NULL)',
+    );
+    // hero mastery and the log of what the player has earned (DECISIONS #739): one JSON row each. Like cosmetics, no wipe touches them
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS mastery (k TEXT PRIMARY KEY, data TEXT NOT NULL)',
     );
     // the player's runs: the newest copy of each (text is empty on a run that ended: gone = 1)
     ctx.storage.sql.exec(
@@ -152,6 +178,92 @@ export class Vault extends DurableObject<Env> {
       .exec<{ data: string }>("SELECT data FROM cosmetics WHERE k = 'me'")
       .toArray()[0];
     return cleanCosmetics(row ? parseJson(row.data) : null);
+  }
+
+  private mastery(): Mastery {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>("SELECT data FROM mastery WHERE k = 'me'")
+      .toArray()[0];
+    return cleanMastery(row ? parseJson(row.data) : null);
+  }
+
+  /** The runs whose campaign clear has been counted (the newest kept), so no run is counted twice, whichever device or record says it. */
+  private countedRuns(): string[] {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>("SELECT data FROM mastery WHERE k = 'runs'")
+      .toArray()[0];
+    const v = row ? parseJson(row.data) : null;
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  }
+
+  /**
+   * Count runs into this player's mastery (DECISIONS #741): the server does the counting, from the decks a run saves and from the
+   * run history. What the count earns (a mastered Riftwalker's card back) is given at once. True when a number rose.
+   */
+  private countMastery(runs: readonly RunFacts[]): boolean {
+    if (runs.length === 0) return false;
+    const before = this.mastery();
+    const counted = this.countedRuns();
+    const { mastery, newlyCounted } = countRuns(before, counted, runs);
+    if (mastery === before && newlyCounted.length === 0) return false;
+    this.ctx.storage.transactionSync(() => {
+      this.ctx.storage.sql.exec(
+        "INSERT OR REPLACE INTO mastery (k, data) VALUES ('me', ?)",
+        JSON.stringify(mastery),
+      );
+      if (newlyCounted.length)
+        this.ctx.storage.sql.exec(
+          "INSERT OR REPLACE INTO mastery (k, data) VALUES ('runs', ?)",
+          JSON.stringify([...counted, ...newlyCounted].slice(-5000)),
+        );
+    });
+    const rewards = masteryRewards(mastery);
+    if (rewards.length) this.give(rewards, 'mastery');
+    return !sameMastery(before, mastery);
+  }
+
+  /** The runs the run history tells of. */
+  private historyRuns(items: readonly unknown[]): RunFacts[] {
+    return items.flatMap((x) => {
+      const f = historyRunFacts(x);
+      return f ? [f] : [];
+    });
+  }
+
+  private earned(): Earned[] {
+    const row = this.ctx.storage.sql
+      .exec<{ data: string }>("SELECT data FROM mastery WHERE k = 'earned'")
+      .toArray()[0];
+    return cleanEarned(row ? parseJson(row.data) : null);
+  }
+
+  private setEarned(log: Earned[]): void {
+    this.ctx.storage.sql.exec(
+      "INSERT OR REPLACE INTO mastery (k, data) VALUES ('earned', ?)",
+      JSON.stringify(log),
+    );
+  }
+
+  /**
+   * Give cosmetics (DECISIONS #737, #739): they are added to what the player owns, and each one that is new goes into the log of
+   * what they have earned, for a device to show them. Returns the ones that were new.
+   */
+  private give(
+    ids: readonly string[],
+    why: EarnedWhy,
+  ): { cosmetics: Cosmetics; granted: string[] } {
+    const before = this.cosmetics();
+    const after = grantCosmetics(before, ids);
+    const granted = after.owned.filter((id) => !before.owned.includes(id));
+    if (granted.length)
+      this.ctx.storage.transactionSync(() => {
+        this.ctx.storage.sql.exec(
+          "INSERT OR REPLACE INTO cosmetics (k, data) VALUES ('me', ?)",
+          JSON.stringify(after),
+        );
+        this.setEarned(withEarned(this.earned(), granted, why, Date.now()));
+      });
+    return { cosmetics: after, granted };
   }
 
   private runs(): RunCopy[] {
@@ -206,7 +318,7 @@ export class Vault extends DurableObject<Env> {
   private list(): VaultDeck[] {
     const rows = this.ctx.storage.sql
       .exec<Row>(
-        'SELECT id, hero, tier, stage, deck, boons, ascendancy, max_hp, banked_at FROM decks ORDER BY banked_at, id',
+        'SELECT id, hero, tier, stage, deck, boons, ascendancy, max_hp, won, banked_at FROM decks ORDER BY banked_at, id',
       )
       .toArray();
     // a row that cannot be read is left out rather than failing the whole Vault
@@ -220,6 +332,7 @@ export class Vault extends DurableObject<Env> {
         boons: parseJson(r.boons),
         ascendancy: r.ascendancy ?? undefined,
         maxHp: r.max_hp ?? undefined,
+        won: r.won === 1,
         bankedAt: r.banked_at,
       });
       return d ? [d] : [];
@@ -228,7 +341,7 @@ export class Vault extends DurableObject<Env> {
 
   private put(d: VaultDeck): void {
     this.ctx.storage.sql.exec(
-      'INSERT OR REPLACE INTO decks (id, hero, tier, stage, deck, boons, ascendancy, max_hp, banked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT OR REPLACE INTO decks (id, hero, tier, stage, deck, boons, ascendancy, max_hp, won, banked_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       d.id,
       d.hero,
       d.tier,
@@ -237,6 +350,7 @@ export class Vault extends DurableObject<Env> {
       JSON.stringify(d.boons),
       d.ascendancy ?? null,
       d.maxHp ?? null,
+      d.won ? 1 : null,
       d.bankedAt,
     );
   }
@@ -302,6 +416,7 @@ export class Vault extends DurableObject<Env> {
         this.list().length ||
         this.list_('history').items.length ||
         this.list_('matches').items.length ||
+        Object.keys(this.mastery()).length ||
         cosmetics.owned.length
       )
         return json({ error: 'existing-progress' }, 409);
@@ -397,19 +512,25 @@ export class Vault extends DurableObject<Env> {
         if (Math.abs(off) > BANK_CLOCK_SLACK_MS) deck.bankedAt += off;
       }
       if (deck.bankedAt > now + BANK_CLOCK_SLACK_MS) deck.bankedAt = now;
+      // (DECISIONS #741) hero mastery is counted here, from what the run's deck says: how far it has got, and the campaign cleared.
+      // Before anything can turn the deck away, so a full Vault or a turned month never costs a clear. `mastery` in the reply tells
+      // the device a number rose.
+      const mastery = this.countMastery([deckRunFacts(deck)]);
       // a deck of a season that has ended is not taken back (DECISIONS #736): a device that was offline over the turn of the month
-      if (deckExpired(deck, now)) return json({ ok: false, error: 'bad-deck', expired: true }, 400);
+      if (deckExpired(deck, now))
+        return json({ ok: false, error: 'bad-deck', expired: true, mastery }, 400);
       const replaceId = typeof body['replaceId'] === 'string' ? body['replaceId'] : undefined;
       const before = this.list();
       const result = bankInto(before, deck, replaceId);
-      if (!result.ok) return json({ ok: false, error: 'full', decks: result.list }, 409);
+      if (!result.ok) return json({ ok: false, error: 'full', decks: result.list, mastery }, 409);
       if (!result.already) {
         // whatever the new list no longer holds (the deck this one replaces, or a deck given up) goes
         const keep = new Set(result.list.map((x) => x.id));
         for (const old of before) if (!keep.has(old.id)) this.remove(old.id);
-        this.put(deck);
+        // (as the list holds it: a run that cleared the campaign stays marked so)
+        this.put(result.list.find((x) => x.id === deck.id) ?? deck);
       }
-      return json({ ok: true, decks: this.list() });
+      return json({ ok: true, decks: this.list(), mastery });
     }
 
     if (action === 'listsync') {
@@ -418,14 +539,26 @@ export class Vault extends DurableObject<Env> {
       const have = this.list_(name);
       if (body['readOnly'] === true) return json({ ok: true, ...have });
       const removed = cleanRemoved([...have.removed, ...cleanRemoved(body['removed'])]);
-      const items = mergeList(name, have.items, cleanListItems(name, body['items']), removed);
+      const brought = cleanListItems(name, body['items']);
+      const items = mergeList(name, have.items, brought, removed);
       this.ctx.storage.sql.exec(
         'INSERT OR REPLACE INTO lists (name, items, removed) VALUES (?, ?, ?)',
         name,
         JSON.stringify(items),
         JSON.stringify(removed),
       );
-      return json({ ok: true, items, removed });
+      // (DECISIONS #741) campaigns the run history says were cleared count toward mastery, each run once: what this device brought
+      // (its copy may know a run was won where the kept copy does not) and what is kept
+      const mastery =
+        name === 'history'
+          ? this.countMastery(
+              this.historyRuns([
+                ...[...brought].sort((a, b) => b.at - a.at).slice(0, HISTORY_COUNTED_AT_ONCE),
+                ...items,
+              ]),
+            )
+          : false;
+      return json({ ok: true, items, removed, mastery });
     }
 
     // what a device has, merged with what is kept here (owning only grows; the newest choice of look wins), and the result back.
@@ -448,17 +581,62 @@ export class Vault extends DurableObject<Env> {
       const ids = Array.isArray(body['ids'])
         ? (body['ids'] as unknown[]).filter((x): x is string => typeof x === 'string').slice(0, 50)
         : [];
-      const before = this.cosmetics();
-      const after = grantCosmetics(before, ids);
-      if (after.owned.length !== before.owned.length)
+      const why = body['why'] === 'season' ? 'season' : 'gift';
+      return json({ ok: true, ...this.give(ids, why), earned: this.earned() });
+    }
+
+    // Hero mastery (DECISIONS #739, #741). The campaign numbers (the highest tier, the clears) are counted here, from the decks a
+    // run saves and from the run history: a device's copy of them is not taken. Its match counts (wins against players and ghosts)
+    // are, the larger of each: they are a snapshot, and earn nothing. A Riftwalker's first clear gives its card back at once:
+    // nothing is claimed. `seen` names entries of the earned log the player has acknowledged. The reply carries mastery, cosmetics
+    // and the log.
+    if (action === 'mastery') {
+      // A browser keeps one copy of mastery, whoever is signed in. It says which Vault its copy was last brought together with; if
+      // that was another player's (another account on the same browser), its numbers and acknowledgements are not taken, and it is
+      // told to start again from this Vault's. (a short mark of this object's id; a browser that has never asked sends none)
+      const owner = String(this.ctx.id ?? 'vault').slice(0, 16);
+      const foreign = typeof body['owner'] === 'string' && body['owner'] !== owner;
+      // (once: the campaigns the run history kept here already tells of, from before mastery was counted)
+      const scanned = this.ctx.storage.sql
+        .exec("SELECT k FROM mastery WHERE k = 'historyCounted'")
+        .toArray().length;
+      if (!scanned) {
+        this.countMastery(this.historyRuns(this.list_('history').items));
         this.ctx.storage.sql.exec(
-          "INSERT OR REPLACE INTO cosmetics (k, data) VALUES ('me', ?)",
-          JSON.stringify(after),
+          "INSERT OR REPLACE INTO mastery (k, data) VALUES ('historyCounted', '1')",
         );
+      }
+      const before = this.mastery();
+      const merged = foreign
+        ? before
+        : mergeMastery(before, matchCountsOnly(cleanMastery(body['mastery'])));
+      if (!sameMastery(before, merged))
+        this.ctx.storage.sql.exec(
+          "INSERT OR REPLACE INTO mastery (k, data) VALUES ('me', ?)",
+          JSON.stringify(merged),
+        );
+      const rewards = masteryRewards(merged);
+      const { cosmetics } = rewards.length
+        ? this.give(rewards, 'mastery')
+        : { cosmetics: this.cosmetics() };
+      const seen =
+        !foreign && Array.isArray(body['seen'])
+          ? (body['seen'] as unknown[])
+              .filter((x): x is string => typeof x === 'string')
+              .slice(0, 400)
+          : [];
+      let earned = this.earned();
+      if (seen.length && earned.some((e) => !e.seen && seen.includes(e.id))) {
+        earned = withSeen(earned, seen);
+        this.setEarned(earned);
+      }
       return json({
         ok: true,
-        cosmetics: after,
-        granted: after.owned.filter((id) => !before.owned.includes(id)),
+        mastery: merged,
+        cosmetics,
+        earned,
+        owner,
+        ...(foreign ? { reset: true } : {}),
       });
     }
 

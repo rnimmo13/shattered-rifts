@@ -44,14 +44,16 @@ export function matchHistory(): MatchRecord[] {
   }
 }
 
-/** Keep a game that has ended (once: the same replay again changes nothing). */
-export function recordMatch(rec: MatchRecord): void {
+/** Keep a game that has ended (once: the same replay again changes nothing). True when it was new here. */
+export function recordMatch(rec: MatchRecord): boolean {
   try {
     const list = matchHistory();
-    if (list.some((r) => r.id === rec.id)) return;
+    if (list.some((r) => r.id === rec.id)) return false;
     localStorage.setItem(KEY, JSON.stringify([rec, ...list].slice(0, KEEP)));
+    return true;
   } catch {
     /* storage full or blocked: no history */
+    return false;
   }
 }
 

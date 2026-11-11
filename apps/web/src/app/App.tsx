@@ -17,6 +17,7 @@ import { LearnScreen } from './LearnScreen';
 import { TitleScreen } from './TitleScreen';
 import { PlayGate, PlayStatus } from '../PlayGate';
 import { BUILD } from '../build';
+import { EarnedPopup } from '../cosmetics/EarnedPopup';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
@@ -29,6 +30,7 @@ const TrophyCaseScreen = lazy(() => import('../pvp/TrophyCaseScreen'));
 const SavedDecksScreen = lazy(() => import('../pvp/SavedDecksScreen'));
 const ArenaRulesScreen = lazy(() => import('../pvp/ArenaRulesScreen'));
 const HistoryScreen = lazy(() => import('../run/HistoryScreen'));
+const EarnedScreen = lazy(() => import('../cosmetics/EarnedScreen'));
 const PatchNotesScreen = lazy(() => import('./PatchNotesScreen'));
 const ReplayScreen = lazy(() => import('../pvp/ReplayScreen'));
 const CampaignFightScreen = lazy(() => import('../run/CampaignFightScreen'));
@@ -68,6 +70,8 @@ export function App() {
         <Screens key={atHome ? artVersion : 0} hash={hash} />
       </ScreenErrorBoundary>
       <PlayStatus />
+      {/* (DECISIONS #739) what the player has just earned, to acknowledge: on any page, once no fight is on screen */}
+      <EarnedPopup />
       <UpdatePrompt />
       <TooltipLayer />
       {/* (one Settings menu for every screen, opened by a Settings button: DECISIONS #571) */}
@@ -174,6 +178,14 @@ function Screens({ hash }: { hash: string }) {
     return (
       <Suspense fallback={<div className="loading">Opening the rift…</div>}>
         <HistoryScreen />
+      </Suspense>
+    );
+  }
+  // (DECISIONS #739) everything the player has earned by playing
+  if (hash === '#/earned') {
+    return (
+      <Suspense fallback={<div className="loading">Opening the rift…</div>}>
+        <EarnedScreen />
       </Suspense>
     );
   }

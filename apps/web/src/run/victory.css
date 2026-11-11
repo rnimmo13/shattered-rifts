@@ -1,0 +1,86 @@
+/* The campaign's ending (VictoryPanel), and the same ending opened again over another page (VictoryAgain: DECISIONS #739). */
+.campaign-victory {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 100rem);
+  min-height: 75dvh;
+  margin: auto;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  border: 1px solid var(--c-gold-dark);
+  border-radius: 1rem;
+  background: #080b19;
+}
+.campaign-victory__art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 43%;
+  animation: victory-reveal 2s ease-out both;
+}
+.campaign-victory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, transparent 15%, #080b1933 35%, #080b19ed 78%);
+}
+.campaign-victory__story {
+  padding: clamp(1.2rem, 4vw, 4rem);
+  padding-top: clamp(14rem, 35vh, 28rem);
+  max-width: 56rem;
+  margin: auto;
+  text-align: center;
+}
+.campaign-victory__story h1 {
+  font-family: var(--font-display);
+  color: var(--c-gold-light);
+  font-size: clamp(2.2rem, 4vw, 4.2rem);
+  line-height: 1.08;
+  margin: 0.4rem 0 1rem;
+}
+.campaign-victory__eyebrow {
+  color: var(--c-gold-light);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.campaign-victory__record {
+  color: var(--c-text-dim);
+  margin: 1.3rem 0;
+}
+@keyframes victory-reveal {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-victory__art {
+    animation: none;
+  }
+}
+
+.victory-again {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  display: grid;
+  overflow: auto;
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  background: rgb(4 5 12 / 0.94);
+}
+.victory-again .campaign-victory__story p {
+  margin-inline: auto;
+}
+.victory-again .choices-row {
+  display: flex;
+  justify-content: center;
+}

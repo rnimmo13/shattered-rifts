@@ -19,6 +19,8 @@ export interface VaultDeck {
   ascendancy?: string;
   /** the run's Max HP when it was saved: its ghost Warden starts from it (DECISIONS #538); absent on older decks */
   maxHp?: number;
+  /** its run cleared the campaign (DECISIONS #739); absent on decks saved before, which the run history speaks for */
+  won?: true;
   bankedAt: number;
   /** (DECISIONS #436) its deck holds the starting weapon as a card (missing: saved before; the weapon is added once) */
   weaponCards?: true;
@@ -68,14 +70,17 @@ const sameDeck = (a: VaultDeck, b: VaultDeck): boolean =>
   a.boons.length === b.boons.length &&
   a.boons.every((c, i) => c === b.boons[i]) &&
   a.ascendancy === b.ascendancy &&
-  a.maxHp === b.maxHp;
+  a.maxHp === b.maxHp &&
+  a.won === b.won;
 
 /**
  * Put a deck in the Vault. One run keeps one deck: saving the same run again replaces its earlier save (as it stood then) rather than
  * adding a second one. The same deck again is left as it is; a full Vault says so unless `replaceId` names a deck to give up.
  */
-export function bankInto(list: readonly VaultDeck[], d: VaultDeck, replaceId?: string): Banked {
-  const earlier = list.filter((x) => runOf(x.id) === runOf(d.id));
+export function bankInto(list: readonly VaultDeck[], saved: VaultDeck, replaceId?: string): Banked {
+  const earlier = list.filter((x) => runOf(x.id) === runOf(saved.id));
+  // (a run that cleared the campaign stays marked so, whatever saves it again: an older build does not know the mark, DECISIONS #739)
+  const d: VaultDeck = !saved.won && earlier.some((x) => x.won) ? { ...saved, won: true } : saved;
   const [only] = earlier;
   if (earlier.length === 1 && only && sameDeck(only, d))
     return { ok: true, list: [...list], already: true };
@@ -137,6 +142,7 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
       ? { ascendancy: (ascendancyOf(checked.entry.hero, o['ascendancy']) as { id: string }).id }
       : {}),
     ...(cleanMaxHp(o['maxHp']) === null ? {} : { maxHp: cleanMaxHp(o['maxHp']) as number }),
+    ...(o['won'] === true ? { won: true as const } : {}),
     bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
     weaponCards: true,
   };

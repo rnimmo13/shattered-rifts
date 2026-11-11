@@ -100,7 +100,8 @@ import { Picture } from '../ui/Picture';
 import { CharacterPicker } from './CharacterPicker';
 import { MapLegend, MapView } from './MapView';
 import { useHorizontalMap } from './useHorizontalMap';
-import { VictoryPanel } from './VictoryPanel';
+import { VictoryPanel, victoryOf } from './VictoryPanel';
+import { noteRun } from '../cosmetics/mastery';
 import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
@@ -235,6 +236,8 @@ export default function RunScreen() {
     if (!run) return;
     const id = slotRef.current;
     if (!id || run === loadedRef.current) return;
+    // (DECISIONS #739) hero mastery: the highest tier this Riftwalker has cleared, and the campaign cleared (once per run)
+    noteRun(run);
     // a collapsed run is gone, and a banked one (an older save) is finished: neither is kept as a parked run
     if (run.phase === 'collapsed' || run.phase === 'banked') {
       clearSavedRun(id);
@@ -1385,7 +1388,7 @@ function Body(props: {
       return <PreludeView run={run} onChoose={(id) => act((r) => choosePrelude(r, id))} />;
     case 'loopCleared':
       // (only for a moment: a won run banks itself, #701)
-      if (run.won) return <VictoryPanel run={run} onHome={() => act(bank)} />;
+      if (run.won) return <VictoryPanel record={victoryOf(run)} onHome={() => act(bank)} />;
       return (
         <section className="stage-panel" aria-label="Tier cleared">
           <h2 className="stage-panel__title">
@@ -1462,7 +1465,7 @@ function Body(props: {
       );
     case 'banked':
       return run.won ? (
-        <VictoryPanel run={run} onHome={props.onLeave}>
+        <VictoryPanel record={victoryOf(run)} onHome={props.onLeave}>
           <DeckSaved run={run} />
         </VictoryPanel>
       ) : (

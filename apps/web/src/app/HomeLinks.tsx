@@ -3,6 +3,8 @@
 // (HomeHeaderLinks); the ghost decks are the Arena's, linked from its page; Credits is in Settings > About.
 
 import type { ReactNode } from 'react';
+import { unseenEarned } from '@sr/pvp';
+import { useEarned } from '../cosmetics/mastery';
 
 /** Line icons on a 24-unit grid, drawn in the tile's colour. */
 const ICON: Record<string, ReactNode> = {
@@ -56,6 +58,12 @@ const ICON: Record<string, ReactNode> = {
       <path d="M4 19V5M9 8h6M9 11h4" />
     </>
   ),
+  earned: (
+    <>
+      <circle cx="12" cy="9" r="5" />
+      <path d="M9 13.5 7.5 21l4.5-2.5 4.5 2.5-1.5-7.5" />
+    </>
+  ),
   notes: (
     <>
       <path d="M7 3h7l4 4v14H7z" />
@@ -97,8 +105,22 @@ const LINKS: { href: string; label: string; icon: keyof typeof ICON }[] = [
 
 /** How to play and the patch notes, as small buttons in the home page's header beside Settings (the notes with their "new" dot). */
 export function HomeHeaderLinks(props: { unreadNotes: boolean }) {
+  // (DECISIONS #739) what you have earned by playing; the dot says something has not been acknowledged yet
+  const unseen = unseenEarned(useEarned()).length > 0;
   return (
     <>
+      <a
+        className="btn btn--small btn--ghost home__headlink"
+        href="#/earned"
+        title={unseen ? 'Earned: something new' : 'What you have earned'}
+        aria-label={unseen ? 'Earned (new)' : 'Earned'}
+      >
+        <span>
+          <LineIcon name="earned" size={18} />
+          <span className="home__headlabel">Earned</span>
+        </span>
+        {unseen && <i className="home__dot" aria-hidden />}
+      </a>
       <a className="btn btn--small btn--ghost home__headlink" href="#/learn" title="How to play">
         <span>
           <LineIcon name="learn" size={18} />

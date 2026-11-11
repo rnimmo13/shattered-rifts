@@ -12,7 +12,7 @@ import {
   saveVault,
   type VaultDeck,
 } from '../pvp/vault';
-import { remoteVault, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
+import { masteryRose, remoteVault, syncVault, vaultKey, whoAmI } from '../pvp/vaultSync';
 
 /** Puts the run's deck in the Vault when it mounts, and says where it went (or, with a full Vault, asks which deck to give up). */
 export function DeckSaved(props: { run: RunState }) {
@@ -38,6 +38,9 @@ export function DeckSaved(props: { run: RunState }) {
     void whoAmI()
       .then(() => syncVault(vaultKey(), state.list))
       .then((r) => {
+        // (DECISIONS #741) a campaign cleared: its mastery and what it earned are fetched now. The server says when a number
+        // rises, but one lost reply must not leave the card back unannounced until the game is next opened
+        if (run.won) masteryRose();
         if (live) setOnline(r.ok ? (r.complete ? 'saved' : 'partial') : 'offline');
       });
     return () => {
@@ -68,8 +71,8 @@ export function DeckSaved(props: { run: RunState }) {
   ) : (
     <>
       <p className="stage-panel__hint">
-        Your Vault is full: it holds {VAULT_SLOTS} decks. Give one up to keep this{' '}
-        {run.deck.length}-card deck, or leave without saving it.
+        Your Vault is full: it holds {VAULT_SLOTS} decks. Give one up to keep this {run.deck.length}
+        -card deck, or leave without saving it.
       </p>
       <ul className="vaultlist">
         {state.list.map((d) => (
