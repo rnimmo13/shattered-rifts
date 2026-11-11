@@ -91,6 +91,26 @@ export function weaponFor(hero: string, card?: CardDef | null): WeaponId | null 
   return def;
 }
 
+/** a card that works the Spellblade's magic: Spell Power (stars), Fracture or a Shatter anywhere in its effects */
+const MAGIC = /"by":"stars"|"op":"(fracture|shatterBlast|shatterUp)"/;
+
+/**
+ * The strike a hero's animated model plays for a card (DECISIONS #756): its weapon (KP's hammer or shotgun...), except that the
+ * Spellblade casts her left-hand spell for a Spell card, or any card of hers that uses Spell Power, Fracture or a Shatter; a Sword
+ * card keeps the blade, Fracture or not. A model with no clip of its own for a strike plays its plain one.
+ */
+export function strikeVariant(hero: string, card?: CardDef | null): string | undefined {
+  if (hero === 'spellblade' && card) {
+    const tags = card.tags ?? [];
+    if (
+      !tags.includes('sword') &&
+      (tags.includes('spell') || MAGIC.test(JSON.stringify(card.effects)))
+    )
+      return 'spell';
+  }
+  return weaponFor(hero, card) ?? undefined;
+}
+
 interface Loaded {
   weapons: Map<string, Texture>;
   fx: Map<string, Texture[]>;

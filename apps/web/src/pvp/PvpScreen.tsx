@@ -13,6 +13,7 @@ import { ArenaProblems } from './ArenaRules';
 import { LineIcon } from '../app/HomeLinks';
 import { COMBAT_DB } from '@sr/content/v2';
 import { FightView } from '../fight/FightView';
+import { ARENA, ARENA_GHOST } from '../fight/fightKind';
 import { arenaFor } from './arenaVenue';
 import { ShareLink } from './ShareLink';
 import { replayLink, watchLink } from './matchHistory';
@@ -235,7 +236,13 @@ export default function PvpScreen() {
             key={`${match.room}:${match.setup.seed}`}
             db={COMBAT_DB}
             setup={match.setup}
-            title={`${match.names.a} vs ${match.names.b}${match.series && !match.series.over ? ` · Game ${match.series.game} of 3 (${match.series.wins.a}–${match.series.wins.b})` : ''}`}
+            title={`${match.names.a} vs ${match.names.b}`}
+            kind={match.ghost ? ARENA_GHOST : ARENA}
+            subtitle={
+              match.series && !match.series.over
+                ? `Game ${match.series.game} of 3 (${match.series.wins.a}–${match.series.wins.b})`
+                : undefined
+            }
             venue={arenaFor(match.setup.seed)}
             pvp={link}
             topExtra={

@@ -145,11 +145,16 @@ export function HeroModel(props: {
     });
     // (a mouse over the model, or a click or a tap on it, plays its attack: each weapon's clip in turn for a model with more than one.
     // A touch only counts as a tap, so a finger scrolling the page past the model does not set it off)
+    // (a pose-sheet model with a second attack alternates with it: the Drunkard's shotgun, the Spellblade's spell, DECISIONS #756)
     const variants = rigId.startsWith(VIDEO_PREFIX)
       ? Object.keys(HERO_VIDEOS[rigId.slice(VIDEO_PREFIX.length)] ?? {})
           .filter((c) => c.startsWith('strike:'))
           .map((c) => c.slice('strike:'.length))
-      : [];
+      : rigId === `${SHEET_PREFIX}drunkard`
+        ? ['hammer', 'shotgun']
+        : rigId === `${SHEET_PREFIX}spellblade`
+          ? ['blade', 'spell']
+          : [];
     let swings = 0;
     const attack = (): void => {
       if (!sprite || sprite.clip !== 'idle') return;

@@ -48,9 +48,22 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
 }
+/* (every block of the story centred under the title: a paragraph's reading width, the deck-saved notice, the record. Each sat
+   on the left of the column with its lines centred inside it) */
+.campaign-victory .campaign-victory__story > * {
+  margin-inline: auto;
+}
+.campaign-victory__story p {
+  max-width: 44rem;
+}
 .campaign-victory__record {
   color: var(--c-text-dim);
-  margin: 1.3rem 0;
+  margin: 1.3rem auto;
+}
+/* (the way home stands clear of the words above it) */
+.campaign-victory__story .choices-row {
+  justify-content: center;
+  margin-top: clamp(1.75rem, 4vh, 2.75rem);
 }
 @keyframes victory-reveal {
   from {
@@ -76,11 +89,4 @@
   overflow: auto;
   padding: clamp(0.5rem, 2vw, 1.5rem);
   background: rgb(4 5 12 / 0.94);
-}
-.victory-again .campaign-victory__story p {
-  margin-inline: auto;
-}
-.victory-again .choices-row {
-  display: flex;
-  justify-content: center;
 }

@@ -184,7 +184,8 @@ export class SheetHeroSprite {
   private sheetFor(clip: Clip, variant?: string): string {
     const c = this.a.man.clips;
     if (clip !== 'strike') return c[clip] ? clip : 'idle';
-    if (variant === 'shotgun' && c['attack2']) return 'attack2';
+    // (the second attack: the Drunkard's shotgun, the Spellblade's spell, DECISIONS #756)
+    if ((variant === 'shotgun' || variant === 'spell') && c['attack2']) return 'attack2';
     return c['attack'] ? 'attack' : c['slash'] ? 'slash' : 'idle';
   }
 

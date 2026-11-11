@@ -9,9 +9,11 @@ import {
   TRAINING_ENCOUNTERS,
   encounter,
   classNameOf,
+  type EncounterKind,
   type HeroId,
 } from '@sr/content/v2';
 import type { CombatSetup } from '@sr/combat';
+import { kindOfEncounter } from './fightKind';
 import { ARENA_START_HP as ARENA_HP } from '@sr/pvp';
 import { DeckBuilder } from './DeckBuilder';
 import { countsOf, flatten } from './deckCatalog';
@@ -62,7 +64,11 @@ export default function FightScreen() {
   const [testHp, setTestHp] = useState<{ hp: number; maxHp: number } | null>(null);
   const [campaignTier, setCampaignTier] = useState<number | null>(null);
   const [enc, setEnc] = useState<string>(ENCOUNTERS[0]?.id ?? '');
-  const [setup, setSetup] = useState<{ cfg: CombatSetup; title: string } | null>(null);
+  const [setup, setSetup] = useState<{
+    cfg: CombatSetup;
+    title: string;
+    kind: EncounterKind;
+  } | null>(null);
 
   if (setup) {
     return (
@@ -71,6 +77,8 @@ export default function FightScreen() {
         db={COMBAT_DB}
         setup={setup.cfg}
         title={setup.title}
+        kind={kindOfEncounter(setup.kind)}
+        subtitle="Sandbox"
         venue={venueFor(encounter(enc), setup.cfg.seed)}
         onExit={() => setSetup(null)}
         onDone={() => setSetup(null)}
@@ -204,7 +212,8 @@ export default function FightScreen() {
           checked={testHp?.maxHp === ARENA_HP}
           onChange={(e) => setTestHp(e.target.checked ? { hp: ARENA_HP, maxHp: ARENA_HP } : null)}
         />{' '}
-        Arena-size HP ({ARENA_HP}) for your hero. HP costs stay at the card's number here; only real Arena fights multiply them by 5
+        Arena-size HP ({ARENA_HP}) for your hero. HP costs stay at the card's number here; only real
+        Arena fights multiply them by 5
       </label>
       {campaignTier !== null && (
         <div>
@@ -237,6 +246,7 @@ export default function FightScreen() {
           const elite = campaignTier !== null && e.kind === 'elite';
           setSetup({
             title: e.name,
+            kind: e.kind,
             cfg: {
               seed: newSeed(),
               a: {

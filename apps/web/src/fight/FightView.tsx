@@ -74,6 +74,7 @@ import {
   unitHeight,
 } from './art';
 import { FigureSession } from './figureSession';
+import type { FightKind } from './fightKind';
 import { FightHand, type HandCard } from './FightHand';
 import { WardenRule } from './WardenRule';
 import { playAnywayHelps, raisesColossus, scrapChoices } from './scrapChoices';
@@ -471,6 +472,10 @@ export function FightView(props: {
   db: CombatDb;
   setup: CombatSetup;
   title: string;
+  /** (DECISIONS #757) the kind of fight, as a badge before the title: Duel, Elite, Warden, Arena... */
+  kind?: FightKind | undefined;
+  /** a small line with the turn: where the fight is (the campaign's Tier and floor, Sandbox) */
+  subtitle?: string | undefined;
   onDone: (r: FightResult) => void;
   onExit: () => void;
   exitLabel?: string;
@@ -752,12 +757,12 @@ export function FightView(props: {
     (): FightReplay => ({
       setup,
       moves: [...movesRef.current],
-      title: props.title,
+      title: `${props.kind?.tone === 'ghost' ? `${props.kind.label}: ` : ''}${props.title}${props.subtitle ? ` · ${props.subtitle}` : ''}`,
       me: mySide,
       ...(pvp ? { names: pvp.names, progress: pvp.progress } : {}),
       ...(props.venue ? { venue: props.venue } : {}),
     }),
-    [setup, props.title, mySide, pvp, props.venue],
+    [setup, props.title, props.subtitle, props.kind, mySide, pvp, props.venue],
   );
 
   // --- replaying events ---------------------------------------------------------------------------
@@ -2497,9 +2502,17 @@ export function FightView(props: {
             ) : (
               fightMenu
             )}
-            <div className="fight__title">
+            <div className={`fight__title${props.kind ? ` fight__title--${props.kind.tone}` : ''}`}>
+              {props.kind && (
+                <span className={`fight__kind fight__kind--${props.kind.tone}`}>
+                  {props.kind.label}
+                </span>
+              )}
               <b>{props.title}</b>
-              <span>Turn {Math.max(1, Math.ceil(view.turn / 2))}</span>
+              <span className="fight__turn">
+                {props.subtitle && <>{props.subtitle} · </>}Turn{' '}
+                {Math.max(1, Math.ceil(view.turn / 2))}
+              </span>
               {/* (what is at stake and the Warden's rule share one line under the title, clear of the intents: DECISIONS #562) */}
               {(props.rule || props.stakes) && (
                 <span className="fight__notes">

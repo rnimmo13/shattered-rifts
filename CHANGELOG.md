@@ -1,3 +1,9 @@
+## Unreleased
+
+- The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter; her Swords still swing the blade (DECISIONS #756).
+- The fight's title at the top of the battle screen is a plaque with a badge for the kind of fight: Duel, Elite, Warden, Final battle, Echo, Ghost Warden, Arena or Arena ghost, with the Tier, floor and turn on a small line under the name (DECISIONS #757).
+- Fixed: the campaign's ending had its words off to the left and the Return to the Sanctum button close under them; both are centred now, with room between them.
+
 ## 0.254.0 - 2026-11-11
 
 - Every Riftwalker has a new animated look (DECISIONS #755): hand-drawn 2D animation for standing ready, each attack, being hit, a power-up of their own and falling. Each power-up is different: the Spellblade calls a ring of stars, the Rogue gathers shadows and ghost daggers, the Monk roots a fire shockwave into the ground, the Necromancer draws souls into his lantern, the Shaman's spirit hawk circles him, the Trickster takes a bow as the four suits fly out, the Engineer tunes his drone, the Hunter howls and rakes claw marks, and the Drunkard has a drink. The "2D animated models (beta)" setting still switches to the video-clip animations.

@@ -13,6 +13,7 @@ import {
   WEAPON_LOOK,
   fxFrames,
   weaponFor,
+  strikeVariant,
   weaponTexture,
   type FxId,
   type WeaponId,
@@ -598,7 +599,7 @@ export class Fighters {
         dir,
         onHit,
         spread,
-        f.spec.hero ? (weaponFor(f.spec.hero, card) ?? undefined) : undefined,
+        f.spec.hero ? strikeVariant(f.spec.hero, card) : undefined,
       );
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
     const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;

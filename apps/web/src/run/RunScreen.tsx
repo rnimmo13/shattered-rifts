@@ -63,6 +63,7 @@ import {
   type RunState,
 } from '@sr/campaign';
 import { FightView } from '../fight/FightView';
+import { ECHO, GHOST_WARDEN, kindOfNode } from '../fight/fightKind';
 import { recordCampaignFight, recordBalanceAscendancy } from '../app/balanceJournal';
 import { venueFor } from '../duel/scene/venue';
 import { SceneBackdrop } from './SceneBackdrop';
@@ -587,7 +588,19 @@ export default function RunScreen() {
                   mods: plan.mods,
                 },
           }}
-          title={`${plan.ghost ? `${atNode?.kind === 'echo' ? 'Echo' : 'Ghost Warden'}: ${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'an' : 'a'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck` : encounter(plan.encounterId).name} · Tier ${run.tier}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
+          title={
+            plan.ghost
+              ? `${/^[AEIOU]/.test(classNameOf(plan.ghost.hero, plan.ghost.ascendancy)) ? 'An' : 'A'} ${classNameOf(plan.ghost.hero, plan.ghost.ascendancy)} deck`
+              : encounter(plan.encounterId).name
+          }
+          kind={
+            plan.ghost
+              ? atNode?.kind === 'echo'
+                ? ECHO
+                : GHOST_WARDEN
+              : kindOfNode(atNode?.kind, encounter(plan.encounterId).kind)
+          }
+          subtitle={`Tier ${run.tier}${floorLabel(run) && ` · ${floorLabel(run)}`}`}
           exitLabel="Forfeit"
           topFirst={
             <button className="btn btn--small btn--ghost" onClick={() => setShowMap(true)}>
