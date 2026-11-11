@@ -2035,3 +2035,20 @@ Robert, on #746: "for the ghost board i do want to keep them consistent with the
 - Both ghost tables gain the same **Battles** column as the Arena board, and the same headings (Matches, Lost, Win %, Battles): the ghosts' table counts each ghost's battles won and lost, and "People against ghosts" each person's. Places on both still go by matches won.
 - Kept the same way: the room tells the leaderboard of each battle against a ghost as it ends (`POST /ghost/game`, a new `ghost_battles` table), under the same rules as a battle between players (barely played or given up early does not count; a match ended by leaving adds none). A person's battles won against ghosts in a day are capped at three times the match cap; their losses always count.
 - Battles against ghosts from before this are not known, so an earlier match shows none.
+
+## 749 - The Sanctum's dais is placed under the Riftwalker, on every screen (2026-11-11)
+
+Robert, on 0.250.0: "regarding the homescreen circular platform, does it look off to you with the character not on the platform?" It did. In #747 the painting was placed by the window (a fixed size and corner), which put the dais under the Riftwalker only at the window size it was tried at; on another size, or once the page scrolled, the Riftwalker stood beside it or in front of it.
+
+- **The painting is now placed by the Riftwalker.** The home page already draws a floor shadow under the picked Riftwalker's feet; the painting is sized and slid so the middle of its dais is exactly there (`PageBackdrop`, `useDaisUnderFeet`), and placed again when the window changes size or the layout changes.
+- **It lies on the page, not on the window**, so it scrolls with the Riftwalker and never has to chase them.
+- **It grows only as much as it must:** a little larger than the screen, and larger still only where the dais could not otherwise reach the feet without the painting's edge showing (a short window, where the Riftwalker stands high; a phone, where the menu comes first and the Riftwalker stands below it). It covers the first screen and a little below the Riftwalker; under that the page is its own dark colour, and the wash fades into it.
+- **Measured** at 1920 x 1080, 2560 x 1080, 1366 x 700, 1280 x 1024, 1024 x 768 and 820 x 1100, scrolled and not: the dais is within a pixel of the feet in every case.
+
+## 750 - The Sanctum page has the hall behind it, and "the Sanctum" means that page (2026-11-11)
+
+Robert: "ok you just said the sanctum and iwas talking about the homepage. then i also noticed teh page for The Sanctum doesnt have a background either."
+
+- **A name used for two things.** In #745 Claude called the home page's painting "the Sanctum". The game already has a page of that name: the Sanctum is where a Riftwalker is chosen and a run begins (`#/run` before a run starts). From here on **"the Sanctum" means that page only**; the painting is "the hall" in what players read (the 0.250.0 patch note now says so). Its file and place id stay `sanctum`, which fits: it is the Sanctum's hall, and the home page looks into it.
+- **The Sanctum page had no background** because backgrounds were chosen by address and `#/run` is also the whole run (the map, shops, events). The Sanctum now places the painting itself (`StillBackdrop`), so it shows there and nowhere else in a run. It is still (not slid under a figure, as on the home page) and washed like the other pages of words and tiles.
+- #749's fix is the home page's: the dais under the picked Riftwalker's feet.

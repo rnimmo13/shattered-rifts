@@ -16,22 +16,26 @@
   background: linear-gradient(180deg, rgb(5 6 14 / 0.62), rgb(5 6 14 / 0.74));
 }
 /* the home page shows its picture most: the menu's side is already dark in the painting, and the Riftwalker stands on the dais */
-/* (a little larger than the screen and set low and left, so the lit dais lies under the Riftwalker's feet and not behind the
-   words below them) */
-.backdrop--sanctum {
-  background-size: max(120vw, 213.4vh) auto;
-  background-position: 36% 100%;
+/* (PageBackdrop sizes and places it so the lit dais is under the Riftwalker's feet, wherever they are on this screen; this is
+   only what shows for the instant before it has) */
+.backdrop--home {
+  /* (on the page, not the window: it scrolls with the Riftwalker who stands on its dais) */
+  position: absolute;
+  inset: 0 0 auto;
+  height: 100vh;
+  background-position: 62% center;
 }
-@media (max-width: 52rem) {
-  .backdrop--sanctum {
-    background-size: cover;
-    background-position: 62% center;
-  }
-}
-.backdrop--sanctum::after {
+.backdrop--home::after {
   background:
     linear-gradient(90deg, rgb(5 6 14 / 0.5), rgb(5 6 14 / 0.12) 48%, rgb(5 6 14 / 0.22)),
-    linear-gradient(180deg, rgb(5 6 14 / 0.28), transparent 30%, transparent 62%, rgb(5 6 14 / 0.6));
+    linear-gradient(
+      180deg,
+      rgb(5 6 14 / 0.28),
+      transparent 30%,
+      transparent 58%,
+      rgb(5 6 14 / 0.6) 80%,
+      var(--c-void)
+    );
 }
 /* the two shops are frames around a plain middle: they can show a little more */
 .backdrop--market::after,
@@ -98,4 +102,9 @@ body:has(.backdrop) .home {
     color-mix(in srgb, var(--accent) 22%, transparent),
     transparent 70%
   );
+}
+
+/* The same hall behind the Sanctum (where a run begins): still, and washed like any page of words and tiles */
+.backdrop--still.backdrop--sanctum {
+  background-position: 60% center;
 }

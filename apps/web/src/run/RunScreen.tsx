@@ -102,6 +102,7 @@ import { MapLegend, MapView } from './MapView';
 import { useHorizontalMap } from './useHorizontalMap';
 import { VictoryPanel, victoryOf } from './VictoryPanel';
 import { noteRun } from '../cosmetics/mastery';
+import { StillBackdrop } from '../app/PageBackdrop';
 import { CardOffer, DeckModal, EventView, MerchantView, PreludeView, ShrineView } from './Pickers';
 import { appendFightMove, clearFightLog, loadFightLog } from './fightLog';
 import { addToHistory, recordOf } from './history';
@@ -905,6 +906,8 @@ function Sanctum(props: {
   const seed = seedOpen && seedText.trim() ? readSeed(seedText) : undefined;
   return (
     <main className="setup setup--wide">
+      {/* (DECISIONS #750) the Sanctum is the hall the home page shows: the same painting stands behind it */}
+      <StillBackdrop place="sanctum" />
       <a className="btn btn--small setup__back" href="#/">
         <span>Back</span>
       </a>

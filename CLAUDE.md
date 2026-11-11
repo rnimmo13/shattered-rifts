@@ -1,3 +1,7 @@
+# Release approved 0.251.0 / rules 107 (2026-11-11; decisions 749-750)
+
+Robert explicitly approves pushing ("lets just push what we have for now"). Website/server and matching Windows updater. Future changes need fresh release approval. Fix: the home page's Sanctum painting is placed by the Riftwalker, not the window (`useDaisUnderFeet` in PageBackdrop): the dais sits under the picked Riftwalker's feet on every screen size and scrolls with the page. The Sanctum page (`#/run` before a run begins) now has that hall behind it (`StillBackdrop`); "the Sanctum" means that page, never the home page (#750). No rules change.
+
 # Release approved 0.250.0 / rules 107 (2026-11-11; decisions 746-748)
 
 Robert explicitly approves committing and pushing everything ("lets commit and push everything"). Website/server and matching Windows updater. Future changes need fresh release approval. The seven painted menu backgrounds are in (Sanctum home, Rift Market Store, Vault Collection/Earned, Crossing Gate Arena pages, Archive decks/cards/history, Hall of Champions boards/trophies, Chronicle learn/patch notes/credits; `PageBackdrop`, cut by `pnpm --filter @sr/tools backgrounds`). The Arena board keeps its places by matches (best of three) won and gains a Battles column (every game, kept in `pvp_games`, told by the room at each game's end; the two ghost boards the same, in `ghost_battles`, #748); the home snapshot's Arena and Ghosts boxes count battles won. Words: a match is a best of three, a battle is one game of it. No rules change.

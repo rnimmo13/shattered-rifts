@@ -1,3 +1,8 @@
+## 0.251.0 - 2026-11-11
+
+- Fixed (DECISIONS #750): the Sanctum (where a run begins) has the painted hall behind it; it was left plain.
+- Fixed (DECISIONS #749): on the home page the Riftwalker now stands on the hall's dais on every screen size, and stays on it when the page scrolls. The painting was placed by the window, so on most screens the Riftwalker stood beside the dais.
+
 ## 0.250.0 - 2026-11-11
 
 - Painted backgrounds for the menus (DECISIONS #747): the Sanctum on the home page (the picked Riftwalker stands on its dais), the Rift Market in the Store, the Vault in the Collection and Earned, the Crossing Gate on the Arena pages, the Archive behind Saved decks, the Card library and Run history, the Hall of Champions behind the leaderboards and Trophy case, and the Chronicle behind How to play, Patch notes and Credits.

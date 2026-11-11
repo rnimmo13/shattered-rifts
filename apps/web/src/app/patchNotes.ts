@@ -46,6 +46,24 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.251.0",
+    date: "2026-11-11",
+    title: "On the dais",
+    summary: "On the home page your Riftwalker now stands on the dais on every screen, and the Sanctum has its painted hall too.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "The Riftwalker stands on the dais",
+        text: "On the home page the lit dais is now placed under your Riftwalker's feet whatever the size of your window, and stays there when the page scrolls. Before, on most screens they stood beside it.",
+      },
+      {
+        kind: "fixed",
+        title: "The Sanctum has its background",
+        text: "The Sanctum, where you choose a Riftwalker and begin a run, now has the same painted hall behind it as the home page. It was left plain.",
+      },
+    ],
+  },
+  {
     version: "0.250.0",
     date: "2026-11-11",
     title: "Painted menus, and battles on the board",
@@ -54,7 +72,7 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: "new",
         title: "A place behind every menu",
-        text: "The home page is the Sanctum, with your Riftwalker standing on its dais. The Store is a market stall, your Collection is a vault, the Arena waits behind its gate, your decks and cards are kept in an archive, and the leaderboards hang in a hall of champions.",
+        text: "The home page is a great hall, with your Riftwalker standing on its dais. The Store is a market stall, your Collection is a vault, the Arena waits behind its gate, your decks and cards are kept in an archive, and the leaderboards hang in a hall of champions.",
       },
       {
         kind: "changed",
