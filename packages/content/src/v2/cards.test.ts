@@ -17,7 +17,8 @@ import {
 import { COMBAT_DB as db, ENCOUNTERS, RIFTWALKERS, rewardPool, type HeroId } from './index';
 
 const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
-const cards = Object.values(db.cards).filter((c) => c.hero !== 'junk');
+// (an enemy's Trap is no one's card, DECISIONS #751: the pool rules here are for cards a player can hold)
+const cards = Object.values(db.cards).filter((c) => c.hero !== 'junk' && c.source !== 'enemy');
 
 /** A fight where a Rivet-like board exists (an ally, a few enemies) and the hand is exactly `card` plus fodder. */
 function setup(card: CardDef, hero: HeroId): CombatState {

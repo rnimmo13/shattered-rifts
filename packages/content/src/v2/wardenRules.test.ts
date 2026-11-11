@@ -347,8 +347,15 @@ describe('Event Horizon Regent: Gravity', () => {
 });
 
 describe('Nyxara: the Veil', () => {
+  /** her first move, Weave the Web, sets the Veiled Web (DECISIONS #751): these tests are about the Veil, so it is cleared */
+  const unwebbed = (s: CombatState): CombatState => {
+    const t = clone(s);
+    t.sides.b.snares = [];
+    return t;
+  };
+
   it('her intent is hidden from you until you hit her', () => {
-    const s = endTurn(fight('nyxara'));
+    const s = unwebbed(endTurn(fight('nyxara')));
     const n = unit(s, 'nyxara')!;
     expect(n.statuses.veiled ?? 0).toBeGreaterThan(0);
     const seen = viewFor(db, s, 'a').sides.b.units.find((u) => u.id === n.id)!;
@@ -371,12 +378,23 @@ describe('Nyxara: the Veil', () => {
   });
 
   it('a hit that is blocked still lifts the Veil', () => {
-    const s = clone(endTurn(fight('nyxara')));
+    const s = unwebbed(endTurn(fight('nyxara')));
     const n = unit(s, 'nyxara')!;
     n.statuses.shielded = 1;
     const hit = strike(s, n);
     expect(unit(hit, 'nyxara')!.hp).toBe(n.hp);
     expect(unit(hit, 'nyxara')!.statuses.veiled ?? 0).toBe(0);
+  });
+
+  it('a hit her Veiled Web cancels never reached her: the Veil holds until the next (DECISIONS #751)', () => {
+    const s = endTurn(fight('nyxara'));
+    expect(s.sides.b.snares.map((x) => x.card)).toEqual(['enemy-veiled-web']);
+    const n = unit(s, 'nyxara')!;
+    const first = strike(s, n);
+    expect(unit(first, 'nyxara')!.statuses.veiled ?? 0).toBeGreaterThan(0);
+    expect(first.sides.b.snares).toHaveLength(0);
+    const second = strike(first, unit(first, 'nyxara')!);
+    expect(unit(second, 'nyxara')!.statuses.veiled ?? 0).toBe(0);
   });
 });
 

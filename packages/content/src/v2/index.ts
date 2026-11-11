@@ -35,6 +35,7 @@ import {
 } from './ascendancies';
 import { BOONS, HEARTS } from './boons';
 import { V2_CARDS } from './cards';
+import { ENEMY_TRAPS } from './enemyTraps';
 import { TOTEMS } from './pools/shaman';
 import { POTIONS } from './potions';
 import { isVariant, stripRoll, withRolls } from './sanctify';
@@ -963,7 +964,8 @@ export const COMBAT_DB: CombatDb = {
   // (the Shaman's spirits, DECISIONS #418; the old totem runes of his Defect copy are archived, not loaded)
   totems: Object.fromEntries(TOTEMS.map((t) => [t.id, t])),
   // (also answers for sanctified ids like "hi~strike": derived on demand, never listed)
-  cards: withRolls(Object.fromEntries(V2_CARDS.map((c) => [c.id, c]))),
+  // (enemies' Traps are cards the engine springs, never anyone's to hold: kept out of V2_CARDS and isDeckCard, DECISIONS #751)
+  cards: withRolls(Object.fromEntries([...V2_CARDS, ...ENEMY_TRAPS].map((c) => [c.id, c]))),
   boons: Object.fromEntries([...BOONS, ...HEARTS].map((b) => [b.id, b])),
   potions: Object.fromEntries(POTIONS.map((p) => [p.id, p])),
   units: Object.fromEntries(
@@ -992,7 +994,9 @@ export function rewardPool(hero: HeroId): string[] {
  */
 export const isDeckCard = (id: unknown): id is string =>
   typeof id === 'string' &&
-  (Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined));
+  (Object.hasOwn(COMBAT_DB.cards, id) || (isVariant(id) && COMBAT_DB.cards[id] !== undefined)) &&
+  // (an enemy's Trap is never a deck's card, whatever a save or an Arena deck claims: DECISIONS #751)
+  COMBAT_DB.cards[id]?.source !== 'enemy';
 
 /** The pool a card belongs to (a Riftwalker id, or 'neutral'). */
 export const poolOf = (cardId: string): string => COMBAT_DB.cards[cardId]?.hero ?? 'neutral';

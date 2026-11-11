@@ -46,6 +46,8 @@ import {
   type HeroSetup,
   type Op,
   type Side,
+  type SideView,
+  type UnitView,
   type Winner,
 } from '@sr/combat';
 import { COMBAT_DB, RIFTWALKERS, classTrait } from '@sr/content/v2';
@@ -1183,7 +1185,8 @@ export function FightView(props: {
           }
           {
             const trap = db.cards[e.card];
-            if (trap) {
+            // (an enemy's Trap lay face up already, and its card text is written for whoever holds it: no flip, DECISIONS #751)
+            if (trap && trap.source !== 'enemy') {
               const id = flourishId.current++;
               setFlourishes((list) => [
                 ...list.slice(-3),
@@ -1197,7 +1200,8 @@ export function FightView(props: {
           return;
         }
         case 'prevented':
-          float(e.unit, 'Prevented!', 'good');
+          // (the hit of the unit named was cancelled: good news unless it was yours, as when an enemy's Trap does it)
+          float(e.unit, 'Prevented!', unitOf(e.unit)?.side === mySide ? 'bad' : 'good');
           await wait(220);
           return;
         case 'phase': {
@@ -2129,6 +2133,11 @@ export function FightView(props: {
   const heroPlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === mySide) ?? null;
   const foeSide: Side = mySide === 'a' ? 'b' : 'a';
   const foePlaced = placed.find((p) => p.unit.kind === 'hero' && p.unit.side === foeSide) ?? null;
+  // (the standing enemy nearest the middle of the board: their Traps are laid in front of it, DECISIONS #751)
+  const foeFront =
+    placed
+      .filter((p) => p.unit.side === foeSide && p.unit.hp > 0)
+      .reduce<Placed | null>((m, p) => (!m || p.x < m.x ? p : m), null) ?? null;
   const them = view?.sides[foeSide];
   // (two rows of enemies and companions of yours, held upright: the board closes up, see stageLayout's portraitCrowd)
   const crowd = portraitCrowd(
@@ -3173,7 +3182,21 @@ export function FightView(props: {
               top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
               // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
               dx={showRunes ? 245 : 118}
-              tip={(card) => snareTip(db, card, hpCostMult)}
+              tip={(sn) => snareTip(db, sn.card, hpCostMult)}
+            />
+          )}
+          {!pvp && foeFront && view.sides[foeSide].snares.length > 0 && (
+            // the enemies' Traps (DECISIONS #751): face up, laid in front of the enemy nearest the middle, toward you
+            <SnareRow
+              db={db}
+              me={view.sides[foeSide]}
+              foe
+              label="Enemy Traps"
+              // (kept on the board on a narrow screen: the row runs left of its anchor, three tiles at most)
+              cx={Math.max(foeFront.x - foeFront.w / 2, 40 + 3 * 66 + 8)}
+              top={Math.max(30, foeFront.y - 44)}
+              dx={40}
+              tip={(sn) => enemySnareTip(db, sn, view.sides[foeSide].units)}
             />
           )}
           {pvp && foePlaced && (
@@ -3417,6 +3440,24 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
 function snareTip(db: CombatDb, card: string | null, hpCostMult = 1): TipContent {
   const def = card ? db.cards[card] : undefined;
   return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def, undefined, { hpCostMult }) : undefined);
+}
+
+/** An enemy's Trap (DECISIONS #751): what sets it off and what it does to you, at this tier, and who set it. */
+function enemySnareTip(
+  db: CombatDb,
+  sn: SideView['snares'][number],
+  units: readonly UnitView[],
+): TipContent {
+  const def = sn.card ? db.cards[sn.card] : undefined;
+  const by = units.find((u) => u.id === sn.owner);
+  return {
+    kicker: 'Enemy Trap',
+    title: def?.name ?? 'A Trap',
+    text: sn.text ?? '',
+    hint: by
+      ? `Set by ${by.name}. It breaks if ${by.name} falls before it is set off.`
+      : 'It breaks if the enemy that set it falls first.',
+  };
 }
 
 /** What the result line says when watching someone's match. */

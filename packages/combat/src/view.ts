@@ -42,7 +42,7 @@ import {
   type UnitId,
 } from './types';
 
-export type IntentIcon = 'attack' | 'defend' | 'buff' | 'debuff' | 'summon' | 'special';
+export type IntentIcon = 'attack' | 'defend' | 'buff' | 'debuff' | 'summon' | 'trap' | 'special';
 
 export interface IntentView {
   /** Public current-board calculation for a summoned companion acting now. */
@@ -85,8 +85,11 @@ export interface SideView {
   discard: CardInst[] | null;
   mana: number;
   maxMana: number;
-  /** a Trap's card is only known to its owner */
-  snares: { id: string; card: CardId | null }[];
+  /**
+   * a Trap's card is only known to its owner, except an enemy's (DECISIONS #751): its move said what it set, so it is face up, with
+   * the enemy that set it and what it does to you at this tier
+   */
+  snares: { id: string; card: CardId | null; owner?: UnitId; text?: string }[];
   /** how many Traps this side can have set at once */
   snareCap: number;
   hero: string | null;
@@ -178,6 +181,7 @@ function opIcons(ops: readonly Op[]): IntentIcon[] {
     if (o.op === 'damage' || o.op === 'loseHp') out.add('attack');
     else if (o.op === 'barrier') out.add('defend');
     else if (o.op === 'summon') out.add('summon');
+    else if (o.op === 'setTrap') out.add('trap');
     else if (o.op === 'status') out.add(foeSel(o.to) ? 'debuff' : 'buff');
     else if (o.op === 'heal' || o.op === 'attackAura') out.add('buff');
     else if (o.op === 'addCard') out.add('debuff');
@@ -285,10 +289,17 @@ export function describeIntent(db: CombatDb, s: CombatState, u: Unit): IntentVie
         : o.op === 'devour'
           ? { ...o, heal: Math.round(o.heal * f) }
           : o;
+  // (a Trap it sets is written out, with what it will deal at this tier: DECISIONS #751)
+  const said = (o: Op): string => {
+    const trap = o.op === 'setTrap' ? db.cards[o.card] : undefined;
+    return trap
+      ? `Set a Trap, ${trap.name}. ${enemyTrapText(db, trap, u.dmgPct, f)}`
+      : opText(db, shown(o), WHO_ENEMY);
+  };
   return {
     move: mv.id,
     name: mv.name,
-    text: mv.effects.map((o) => opText(db, shown(o), WHO_ENEMY)).join(' '),
+    text: mv.effects.map(said).join(' '),
     icons: opIcons(mv.effects),
     // (an enemy's Vigor adds to its next attack: the intent counts it)
     damage: first
@@ -395,7 +406,22 @@ export function viewFor(db: CombatDb, s: CombatState, me: Side): CombatView {
       discard: own ? clone(sd.discard) : null,
       mana: sd.mana,
       maxMana: sd.maxMana,
-      snares: sd.snares.map((sn) => ({ id: sn.id, card: own ? sn.card : null })),
+      // (an enemy's Trap whose setter has left the board is broken, though the engine clears it only at its next look: not shown)
+      snares: sd.snares
+        .filter((sn) => !sn.owner || sd.units.some((u) => u.id === sn.owner && u.hp > 0))
+        .map((sn) => {
+        if (!sn.owner) return { id: sn.id, card: own ? sn.card : null };
+        // (an enemy's Trap: face up, its numbers as they will land, DECISIONS #751)
+        const by = sd.units.find((u) => u.id === sn.owner);
+        const def = db.cards[sn.card];
+        const guard = sd.hero === null ? enemyGuardFactor(s.tier, s.enemyHpPct) : 1;
+        return {
+          id: sn.id,
+          card: sn.card,
+          owner: sn.owner,
+          ...(def ? { text: enemyTrapText(db, def, by?.dmgPct ?? 100, guard) } : {}),
+        };
+      }),
       snareCap: snareCap(sd),
       hero: sd.hero,
       potions: own ? [...sd.potions] : null,
@@ -1611,6 +1637,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'prevent':
       // (it stops the one hit that sprang it, like Shielded; a move's other hits still land)
       return 'Cancel that hit.';
+    case 'setTrap':
+      // (an enemy's move: describeIntent writes out what the Trap does, with its numbers at this tier)
+      return `Set a Trap: ${db.cards[o.card]?.name ?? 'a Trap'}.`;
     case 'discard':
       if (o.amount >= 9 && !o.random && !o.any) return 'Discard your hand.';
       return o.random
@@ -2614,6 +2643,43 @@ export function cardText(
   return c.kind === 'snare' && (c.trigger?.on === 'foeSummons' || c.trigger?.on === 'foeDefends')
     ? text.replace(/the attacker/g, 'that enemy')
     : text;
+}
+
+/** the selectors that pick from the actor's own side (an enemy's own Barrier and healing grow with the tier, DECISIONS #548) */
+const ownSide = (to: Sel): boolean =>
+  to === 'self' || to === 'allFriends' || to === 'allAllies' || to === 'biggestAlly';
+
+/**
+ * An enemy's Trap as the player reads it (DECISIONS #751): what sets it off from your side, and what it does to you, with its numbers
+ * as they will land: its damage times the enemy's damage percent (flat, as the engine deals it), its own Barrier and healing grown
+ * with the tier (`guard`).
+ */
+export function enemyTrapText(db: CombatDb, c: CardDef, dmgPct = 100, guard = 1): string {
+  const on = c.trigger?.on;
+  const opening =
+    on === 'attacked'
+      ? 'When you attack one of them:'
+      : on === 'foeDefends'
+        ? 'When you or a companion gains Barrier:'
+        : on === 'foeSummons'
+          ? 'When you summon a companion:'
+          : on === 'foeTurn'
+            ? 'As your turn begins:'
+            : 'When it is set off:';
+  const shown = (o: Op): Op => {
+    if (o.op === 'damage' && !ownSide(o.to) && dmgPct !== 100 && o.amount > 0)
+      return { ...o, amount: Math.max(1, Math.floor((o.amount * dmgPct) / 100)) };
+    if ((o.op === 'barrier' || o.op === 'heal') && !o.scale && ownSide(o.to) && guard !== 1)
+      return { ...o, amount: Math.round(o.amount * guard) };
+    return o;
+  };
+  const text = `${opening} ${joinClause(c.effects.map((o) => opText(db, shown(o), WHO_ENEMY)))}`;
+  // (only an attack has an attacker: a Barrier or summon Trap answers the unit that did it)
+  return on === 'foeSummons'
+    ? text.replace(/the attacker/g, 'that companion')
+    : on === 'foeDefends'
+      ? text.replace(/the attacker/g, 'that unit')
+      : text;
 }
 
 /**

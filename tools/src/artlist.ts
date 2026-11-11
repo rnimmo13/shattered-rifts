@@ -64,7 +64,8 @@ for (const [id, d] of Object.entries(db.units)) {
 
 lines.push('', '## Cards (art windows, `cards/<id>`)', '');
 for (const c of Object.values(db.cards)) {
-  if (c.id.endsWith('+') || c.unplayable) continue;
+  // (an enemy's Trap has no card art: it is a tile on the board, DECISIONS #751)
+  if (c.id.endsWith('+') || c.unplayable || c.source === 'enemy') continue;
   const realm = c.realm ?? 'neutral';
   lines.push(
     `- **${c.name}** (\`${c.id}\`, ${c.kind}, ${realm}): ${cardText(db, c)} Prompt: "${c.name}: ${cardText(db, c).replace(/\*\*/g, '')} ${REALM_STYLE[realm] ?? ''}, ${STYLE}, 4:3"`,

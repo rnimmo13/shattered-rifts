@@ -550,6 +550,8 @@ export const INTENT_GLYPH: Record<IntentIcon, string> = {
   buff: '↑',
   debuff: '↓',
   summon: '✚',
+  // (Plates draws the web emblem instead; this is for anywhere that wants a letter)
+  trap: '⌗',
   special: '?',
 };
 
@@ -643,7 +645,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   mana: { name: 'Mana', text: 'What you spend to play cards. It refills every turn.' },
   snare: {
     name: 'Trap',
-    text: 'Played face down. It triggers on its own when its trigger happens, then returns to your discard pile.',
+    text: 'Played face down. It triggers on its own when its trigger happens, then returns to your discard pile. Some enemies set Traps too: theirs lie face up in front of them, and break if the enemy that set one falls first.',
   },
   companion: {
     name: 'Companion',

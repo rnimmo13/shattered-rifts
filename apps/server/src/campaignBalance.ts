@@ -36,7 +36,8 @@ export function campaignDeckFacts(raw: unknown) {
     typeof r['character'] !== 'string' ||
     !COMBAT_DB.heroes[r['character']] ||
     !strings(r['deck'], 250) ||
-    !r['deck'].every((c) => !!COMBAT_DB.cards[c]) ||
+    // (a real deck card: never an enemy's Trap, DECISIONS #751)
+    !r['deck'].every((c) => isDeckCard(c)) ||
     !strings(r['boons'], 100) ||
     !r['boons'].every((b) => !!COMBAT_DB.boons[b]) ||
     !Number.isInteger(r['tier']) ||

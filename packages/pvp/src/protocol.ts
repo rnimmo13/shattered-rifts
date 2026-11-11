@@ -115,7 +115,8 @@ export interface Entry {
 // Also (#727): Showstopper 26/34, Card Fan +4 a suit, Gleeful Trapsmith +1 per 2 Traps sprung (half past +8), Metronome Trap 5/7; the Swords
 // that hit 3 or 4 times apply 2 Fracture a hit (the two commons 1, Fault Piercer 8 flat); Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb apply Fracture.
 // And (#728): Bloodburst Consumes; Rending Fury half past +21, at most +36 (upgraded +24, +45).
-export const RULES_VERSION = 107;
+// 108 (#751): enemies set Traps (the setTrap move op; nine Umbral Veil enemies and four elsewhere), and the moves that set them changed.
+export const RULES_VERSION = 108;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

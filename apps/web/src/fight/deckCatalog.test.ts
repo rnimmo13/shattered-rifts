@@ -36,9 +36,13 @@ describe('the practice deck builder', () => {
   it('lists every card in the game exactly once, each under one pool (a switched-off card not at all)', () => {
     const all = catalog(db);
     const off = Object.values(db.cards).filter((c) => c.source === 'disabled');
+    // (nor an enemy's Trap: never a card of yours, DECISIONS #751)
+    const enemy = Object.values(db.cards).filter((c) => c.source === 'enemy');
     expect(off.map((c) => c.id)).toContain('fell-the-prey');
-    expect(all).toHaveLength(Object.keys(db.cards).length - off.length);
+    expect(enemy.length).toBeGreaterThan(0);
+    expect(all).toHaveLength(Object.keys(db.cards).length - off.length - enemy.length);
     expect(all.some((c) => c.def.id === 'fell-the-prey')).toBe(false);
+    expect(all.some((c) => c.def.source === 'enemy')).toBe(false);
     expect(new Set(all.map((c) => c.def.id)).size).toBe(all.length);
     const pools = new Set(all.map((c) => c.pool));
     for (const h of HEROES) expect(pools.has(h), h).toBe(true);

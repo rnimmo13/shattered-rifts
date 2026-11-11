@@ -196,6 +196,11 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     }
     case 'snareSet': {
       const sd = s.sides[e.side];
+      // (an enemy's Trap is set by a move, from no pile: the event names it, DECISIONS #751)
+      if (e.owner) {
+        sd.snares.push({ id: e.snare, card: e.card ?? '', owner: e.owner });
+        return;
+      }
       const i = sd.discard.findIndex((c) => c.id === e.snare);
       const inst = i >= 0 ? sd.discard.splice(i, 1)[0] : undefined;
       sd.snares.push({ id: e.snare, card: inst?.card ?? '' });
@@ -203,8 +208,14 @@ export function reduceEvent(db: CombatDb, s: CombatState, e: CombatEvent): void 
     }
     case 'snareSprung': {
       const sd = s.sides[e.side];
+      const owned = sd.snares.some((x) => x.id === e.snare && x.owner);
       sd.snares = sd.snares.filter((x) => x.id !== e.snare);
-      sd.discard.push({ id: e.snare, card: e.card });
+      if (!owned) sd.discard.push({ id: e.snare, card: e.card });
+      return;
+    }
+    case 'snareBroken': {
+      const sd = s.sides[e.side];
+      sd.snares = sd.snares.filter((x) => x.id !== e.snare);
       return;
     }
     case 'damage': {

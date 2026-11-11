@@ -28,6 +28,7 @@ export {
   eventsFor,
   describeIntent,
   cardText,
+  enemyTrapText,
   opText,
   ON_OR_OFF,
   forgeWord,

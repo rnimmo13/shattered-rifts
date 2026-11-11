@@ -46,6 +46,30 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.252.0",
+    date: "2026-11-11",
+    title: "Enemy Traps",
+    summary: "Enemies set Traps now, most of all in the Umbral Veil, and the last tier no longer leaves a Wound.",
+    notes: [
+      {
+        kind: "new",
+        title: "Enemies set Traps",
+        text: "Nine of the Umbral Veil's fifteen enemies set Traps, and one each in Wyldmaw, Nexus-9, the Gloomfen and the Hollow Crown (Orchid Maw, Clockwork Guillotine, Lantern Angler, Ember Chessman). An enemy's intent says which Trap it sets and what it will do. Their Traps lie face up in front of them under Enemy Traps: hover one to see what sets it off and what it does to you at this tier. They answer your attacks, your Barrier or your summons: damage back, Faltering, Exposed, a Wound in your hand, Fate, a cancelled hit, or a strike at all your units. A Trap breaks if the enemy that set it falls first.",
+      },
+      {
+        kind: "balance",
+        title: "What the Trap setters gave up",
+        text: "The moves that set a Trap are a little weaker to pay for it: less Barrier (Lock Up, Open Canopy, Ink Cloak, Wear the Mask, Wind the Spring, Castle, Weave the Web), less healing (Drink Deep), 2 Bleed instead of 3 (Mindrot), 4 Fate instead of 6 (The Lure), one junk card instead of two (Stitch In). The Lost Courtier has a new move, Masquerade, that only sets its Trap.",
+      },
+      {
+        kind: "changed",
+        title: "No Wound at the last tier",
+        text: "Rift Scars no longer adds a Wound to your deck when you reach Tier XII.",
+      },
+    ],
+    heads: "Rules changed: a fight left unfinished on an older version starts again from its checkpoint.",
+  },
+  {
     version: "0.251.0",
     date: "2026-11-11",
     title: "On the dais",

@@ -358,8 +358,19 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
             }
           : null;
       case 'snareSet':
+        // (an enemy's Trap is face up: who set it, and which, DECISIONS #751)
+        if (e.owner && e.card)
+          return {
+            text: `${c.nameOf(e.owner)} sets a Trap: ${cardName(c.db, e.card)}`,
+            tone: tone(e.side),
+          };
         return {
           text: `${c.who(e.side)} ${e.side === c.me ? 'set' : 'sets'} a Trap`,
+          tone: tone(e.side),
+        };
+      case 'snareBroken':
+        return {
+          text: `${cardName(c.db, e.card)} breaks without springing`,
           tone: tone(e.side),
         };
       case 'snareSprung': {
@@ -368,7 +379,8 @@ export function createDescriber(c: LogContext): (e: CombatEvent) => Omit<LogLine
         return {
           text: `${e.side === c.me ? 'Your' : `${c.who(e.side)}'s`} Trap triggered: ${name}`,
           tone: tone(e.side),
-          card: e.card,
+          // (an enemy's Trap has no card to show: its card text is written for whoever holds it, DECISIONS #751)
+          ...(c.db.cards[e.card]?.source === 'enemy' ? {} : { card: e.card }),
         };
       }
       case 'power':

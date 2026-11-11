@@ -218,6 +218,8 @@ interface Act {
   card: CardDef | null;
   /** The card owning an Aura, Trap or movement callback, without treating it as a card play. */
   sourceCard: CardDef | null;
+  /** an enemy's Trap springing (DECISIONS #751): its damage is flat, as a hero's Trap's is, though an enemy is acting */
+  trap?: boolean;
   /** Shared with the owning Power, including nested operations and reactive triggers. */
   barrierPower: PowerState | null;
   inst: CardInst | null;
@@ -725,6 +727,7 @@ function riseUp(r: Run, t: Unit, rise: Rise): void {
  * leave it alone, Thorns and Reflect do not answer it, and "when attacked" Traps do not spring (DECISIONS #376).
  */
 function isAttackAct(a: Act): boolean {
+  if (a.trap) return false;
   return a.actor.kind !== 'hero' || a.card?.kind === 'attack';
 }
 
@@ -1427,12 +1430,24 @@ type Trig =
   | { on: 'foeDefends'; unit: Unit }
   | { on: 'foeTurn' };
 
+/** An enemy's Traps whose setter has fallen (or left the board) break, unsprung (DECISIONS #751). */
+function breakOrphanSnares(r: Run, sd: SideState): void {
+  if (!sd.snares.some((sn) => sn.owner)) return;
+  const standing = (id: UnitId): boolean => sd.units.some((u) => u.id === id && u.hp > 0);
+  for (const sn of sd.snares.filter((x) => x.owner && !standing(x.owner)))
+    r.ev.push({ type: 'snareBroken', side: sd.id, snare: sn.id, card: sn.card });
+  sd.snares = sd.snares.filter((x) => !x.owner || standing(x.owner));
+}
+
 /** The oldest matching Trap on `side` springs (at most one per event). */
 function fireSnare(r: Run, side: Side, t: Trig): void {
   const sd = r.s.sides[side];
+  breakOrphanSnares(r, sd);
   const hero = heroOf(sd);
-  if (!hero || hero.hp <= 0) return;
+  // (a hero's Traps need the hero standing; an enemy's need only the enemy that set it, which breakOrphanSnares made sure of)
+  const heroUp = !!hero && hero.hp > 0;
   const i = sd.snares.findIndex((sn) => {
+    if (!sn.owner && !heroUp) return false;
     const tr = cardDef(r.db, sn.card).trigger;
     if (!tr || tr.on !== t.on) return false;
     if (tr.on === 'hpLost' && t.on === 'hpLost') return t.lost >= tr.min;
@@ -1441,6 +1456,9 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
   if (i < 0) return;
   const sn = sd.snares.splice(i, 1)[0];
   if (!sn) return;
+  const owner = sn.owner ? sd.units.find((u) => u.id === sn.owner) : undefined;
+  const actor = owner ?? hero;
+  if (!actor) return;
   const cd = cardDef(r.db, sn.card);
   const attacker =
     t.on === 'foeSummons'
@@ -1460,14 +1478,17 @@ function fireSnare(r: Run, side: Side, t: Trig): void {
   });
   runOps(
     r,
-    mkAct(hero, {
+    mkAct(actor, {
       sourceCard: cd,
       target: attacker,
       attacker,
       hit: t.on === 'attacked' ? t.hit : null,
+      ...(owner ? { trap: true } : {}),
     }),
     cd.effects,
   );
+  // (an enemy's Trap came from no deck, and enemies have no Auras to hear it)
+  if (owner) return;
   sd.discard.push({ id: sn.id, card: sn.card });
   sd.snaresSprung = (sd.snaresSprung ?? 0) + 1;
   fireTriggers(r, sd, 'snare');
@@ -2559,6 +2580,23 @@ function execOp(r: Run, a: Act, op: Op): void {
     case 'prevent':
       if (a.hit) a.hit.prevented = true;
       return;
+    case 'setTrap': {
+      // (an enemy's Trap, DECISIONS #751: a hero's are played from the hand, never set by an effect)
+      if (a.actor.kind === 'hero' || a.actor.hp <= 0) return;
+      if (cardDef(r.db, op.card).kind !== 'snare') return;
+      // a full row loses its oldest enemy Trap, so an old one nothing will set off never blocks a new one (a hero's own Trap, on a
+      // side that has both, is never pushed out: then the new one is not set)
+      while (side.snares.length >= snareCap(side)) {
+        const i = side.snares.findIndex((sn) => sn.owner);
+        if (i < 0) return;
+        const old = side.snares.splice(i, 1)[0]!;
+        r.ev.push({ type: 'snareBroken', side: side.id, snare: old.id, card: old.card });
+      }
+      const sn = { id: newId(r.s, 'c'), card: op.card, owner: a.actor.id };
+      side.snares.push(sn);
+      r.ev.push({ type: 'snareSet', side: side.id, snare: sn.id, card: sn.card, owner: sn.owner });
+      return;
+    }
     case 'discard':
     case 'exhaustCards': {
       const kind = op.op === 'discard' ? 'discard' : 'exhaust';
@@ -4648,6 +4686,8 @@ function reap(r: Run): void {
     if (sd.hero === null && sd.units.some((u) => u.hp <= 0 && r.db.units[u.def]?.leader))
       for (const u of sd.units) u.hp = 0;
     const dead = sd.units.filter((u) => u.hp <= 0);
+    // (an enemy's Traps break when it falls, or when it leaves the board some other way: DECISIONS #751)
+    breakOrphanSnares(r, sd);
     if (!dead.length) continue;
     sd.units = sd.units.filter((u) => u.hp > 0);
     for (const u of dead) r.ev.push({ type: 'died', unit: u.id });
@@ -6409,8 +6449,8 @@ function resolvedDamage(
   const variants: Map<number, LiveDamage>[] = [];
   for (const target of candidates) {
     const copy = clone(s);
-    // Face-down traps must not be used to disclose an opponent's hidden response.
-    copy.sides[other(side.id)].snares = [];
+    // Face-down traps must not be used to disclose an opponent's hidden response (an enemy's lie face up and count: #751).
+    copy.sides[other(side.id)].snares = copy.sides[other(side.id)].snares.filter((sn) => sn.owner);
     const foesAtStart = copy.sides[other(side.id)].units.filter((u) => u.hp > 0).map((u) => u.id);
     const projection: DamageProjection = {
       remaining: 512,
@@ -6594,7 +6634,8 @@ export function previewAllyDamage(db: CombatDb, s: CombatState, id: string): Liv
   if (!unit || unit.kind !== 'ally' || unit.hp <= 0) return null;
   const def = db.units[unit.def];
   if (def?.brain.kind !== 'ally' || !def.brain.act.some(containsDamage)) return null;
-  copy.sides[other(unit.side)].snares = [];
+  // (face-down Traps are hidden; an enemy's face-up ones count, DECISIONS #751)
+  copy.sides[other(unit.side)].snares = copy.sides[other(unit.side)].snares.filter((sn) => sn.owner);
   const front = copy.sides[other(unit.side)].units.find((u) => u.hp > 0) ?? null;
   const act = mkAct(unit, { target: front });
   const projection: DamageProjection = {
@@ -6705,7 +6746,8 @@ export function previewCardDamage(
     sd.discipline?.rule.kind === 'desperation' || sd.powers.some((p) => p.when === 'playStart');
   if (beforePlay) {
     after = clone(after);
-    after.sides[other(sd.id)].snares = [];
+    // (face-down Traps are hidden; an enemy's face-up ones count, DECISIONS #751)
+    after.sides[other(sd.id)].snares = after.sides[other(sd.id)].snares.filter((sn) => sn.owner);
   }
   const r: Run = { db, s: after, ev: [], depth: 0 };
   if (beforePlay) {

@@ -164,10 +164,13 @@ export function SnareRow(props: {
   dx?: number;
   /** the opponent's Traps (Arena): face-down tiles, set out toward the middle of the board from their hero */
   foe?: boolean;
-  tip: (card: string | null) => TipContent;
+  /** the row's label in place of "Traps" / "Opponent's Traps" (the enemies' Traps in a run, DECISIONS #751) */
+  label?: string;
+  tip: (snare: SideView['snares'][number]) => TipContent;
 }) {
   const { db, me } = props;
   if (me.snares.length === 0) return null;
+  const label = props.label ?? (props.foe ? "Opponent's Traps" : 'Traps');
   const gap = 66;
   // yours stand to the right of your hero, the opponent's to the left of theirs: both on the middle side
   const x0 = props.foe ? props.cx - (props.dx ?? 118) : props.cx + (props.dx ?? 118);
@@ -175,31 +178,34 @@ export function SnareRow(props: {
   return (
     <div
       className="snarerow"
-      aria-label={props.foe ? "Your opponent's Traps (face down)" : 'Your Traps'}
+      aria-label={props.label ?? (props.foe ? "Your opponent's Traps (face down)" : 'Your Traps')}
     >
       <span
         className="snarerow__label"
         style={{ left: props.foe ? x0 - me.snares.length * gap : x0, top: props.top - 22 }}
       >
-        {props.foe ? "Opponent's Traps" : 'Traps'} {me.snares.length}/{me.snareCap}
+        {label} {me.snares.length}/{me.snareCap}
       </span>
       {me.snares.map((s, i) => {
         const def = s.card ? db.cards[s.card] : undefined;
         const on = def?.trigger?.on;
+        // (an enemy's Trap is read from your side: it springs as YOUR turn begins, DECISIONS #751)
+        const word =
+          s.owner && on === 'foeTurn' ? 'your turn' : on ? (TRIGGER_LABEL[on] ?? on) : 'trap';
         return (
           <span
             key={s.id}
             className="snaretile"
             tabIndex={0}
             style={{ left: at(i), top: props.top }}
-            {...tipAttrs(props.tip(s.card))}
+            {...tipAttrs(props.tip(s))}
           >
             <svg
               viewBox="0 0 64 64"
               aria-hidden
               dangerouslySetInnerHTML={{ __html: emblemSvg('web', '#e6d8ff') }}
             />
-            <small>{on ? (TRIGGER_LABEL[on] ?? on) : 'trap'}</small>
+            <small>{word}</small>
           </span>
         );
       })}

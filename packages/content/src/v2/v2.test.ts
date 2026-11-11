@@ -25,8 +25,8 @@ describe('Combat v2 content', () => {
     for (const c of Object.values(db.cards)) {
       if (c.unplayable) continue;
       expect(cardText(db, c).length, c.id).toBeGreaterThan(3);
-      // tokens (a Shiv, the Sovereign Blade) are made mid-fight and have no "+"
-      if (!c.id.endsWith('+') && c.source !== 'token')
+      // tokens (a Shiv, the Sovereign Blade) are made mid-fight and have no "+"; nor has an enemy's Trap (DECISIONS #751)
+      if (!c.id.endsWith('+') && c.source !== 'token' && c.source !== 'enemy')
         expect(c.upgrade && db.cards[c.upgrade], c.id).toBeTruthy();
     }
   });

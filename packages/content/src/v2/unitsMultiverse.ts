@@ -18,6 +18,7 @@ import {
   summon,
   wound,
 } from './build';
+import { setTrap } from './enemyTraps';
 
 const hit = (n: number, times?: number) => dmg(n, 'target', times);
 const weak = (n = 1) => status('faltering', n, 'target');
@@ -219,7 +220,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     'Clockwork Guillotine',
     105,
     [
-      move('wind', 'Wind the Spring', barrier(12)),
+      move('wind', 'Wind the Spring', barrier(8), setTrap('enemy-tripwire-blade')),
       move('drop', 'The Drop', hit(22)),
       move('chop', 'Chop Chop', hit(8, 2)),
     ],
@@ -271,7 +272,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     49,
     [
       move('snap', 'Snap', hit(9)),
-      move('drink', 'Drink Deep', heal(5)),
+      move('drink', 'Drink Deep', heal(3), setTrap('enemy-snapping-bloom')),
       move('devour', 'Devour', hit(12)),
     ],
     cycle('snap', 'drink', 'devour'),
@@ -377,7 +378,8 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     49,
     [
       move('grab', 'Grabby Hands', hit(7)),
-      move('lock', 'Lock Up', barrier(8)),
+      // (the Traps, DECISIONS #751: each gave up a little of its move for one)
+      move('lock', 'Lock Up', barrier(6), setTrap('enemy-lockjaw')),
       move('bite', 'Keyhole Bite', hit(10)),
     ],
     cycle('grab', 'lock', 'bite'),
@@ -387,7 +389,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     'Umbrella Widow',
     56,
     [
-      move('open', 'Open Canopy', barrier(10)),
+      move('open', 'Open Canopy', barrier(7), setTrap('enemy-silk-line')),
       move('spike', 'Ferrule Spike', hit(11)),
       move('legs', 'Rib Legs', hit(4, 2)),
     ],
@@ -410,7 +412,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     42,
     [
       move('ticket', 'Your Ticket', hit(7), junk()),
-      move('cloak', 'Ink Cloak', barrier(8)),
+      move('cloak', 'Ink Cloak', barrier(6), setTrap('enemy-no-admittance')),
       move('show', 'Show You Out', hit(11)),
     ],
     cycle('ticket', 'cloak', 'show'),
@@ -421,7 +423,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     49,
     [
       move('jerk', 'Jerky Strikes', hit(5, 2)),
-      move('tighten', 'Tighten the Strings', might()),
+      move('tighten', 'Tighten the Strings', might(), setTrap('enemy-cut-strings')),
       move('snap', 'Snap Back', hit(12)),
     ],
     cycle('jerk', 'tighten', 'snap'),
@@ -432,7 +434,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     105,
     [
       move('stare', 'Borrowed Stare', hit(12), weak()),
-      move('mask', 'Wear the Mask', barrier(14)),
+      move('mask', 'Wear the Mask', barrier(10), setTrap('enemy-borrowed-pain')),
       move('grin', 'Cracked Grin', hit(21)),
     ],
     cycle('stare', 'mask', 'grin'),
@@ -443,7 +445,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     114,
     [
       move('snip', 'Snip Snip', hit(8, 2)),
-      move('stitch', 'Stitch In', junk(), junk()),
+      move('stitch', 'Stitch In', junk(), setTrap('enemy-pinned-hem')),
       move('shear', 'Shear', hit(19)),
     ],
     cycle('snip', 'stitch', 'shear'),
@@ -525,7 +527,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     49,
     [
       move('chomp', 'Chomp', hit(8)),
-      move('lure', 'The Lure', fate(6)),
+      move('lure', 'The Lure', fate(4), setTrap('enemy-glowing-lure')),
       move('gnash', 'Gnash', hit(12)),
     ],
     cycle('chomp', 'lure', 'gnash'),
@@ -597,7 +599,7 @@ export const MULTIVERSE_UNITS: UnitDef[] = [
     56,
     [
       move('advance', 'Rook Advance', hit(12)),
-      move('castle', 'Castle', barrier(9)),
+      move('castle', 'Castle', barrier(6), setTrap('enemy-chess-fork')),
       move('check', 'Check', hit(8)),
     ],
     cycle('advance', 'castle', 'check'),

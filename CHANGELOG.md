@@ -1,3 +1,8 @@
+## 0.252.0 - 2026-11-11
+
+- Enemies set Traps (DECISIONS #751). Nine of the Umbral Veil's fifteen enemies do, and one each in Wyldmaw, Nexus-9, the Gloomfen and the Hollow Crown: Orchid Maw, Clockwork Guillotine, Lantern Angler and Ember Chessman. Their intent says what they set and what it will do. Their Traps lie face up in front of them ("Enemy Traps"); hover one to see what sets it off and what it does to you at this tier. Each breaks if the enemy that set it falls first. They answer your attacks, your Barrier or your summons, and they vary: damage back, Faltering, Exposed, a Wound in your hand, Fate, a hit cancelled, a strike at every one of your units. The moves that set them gave up a little Barrier, healing, Bleed, Fate or a junk card to pay for them. Card damage previews count an enemy's Trap (a hit Masquerade or Veiled Web will cancel shows as cancelled).
+- Rift Scars no longer adds a Wound when you reach Tier XII, the last tier (DECISIONS #752).
+
 ## 0.251.0 - 2026-11-11
 
 - Fixed (DECISIONS #750): the Sanctum (where a run begins) has the painted hall behind it; it was left plain.

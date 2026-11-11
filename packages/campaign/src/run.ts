@@ -1351,6 +1351,8 @@ export function chooseCard(run: RunState, cardId: string | null): RunState {
 export const MAX_SCARS = 6;
 /** The Omen of Rift Scars: each new act leaves its Wounds in the deck, and the Waymark says so (DECISIONS #515). Call after opening it. */
 function scarDeck(r: RunState): void {
+  // (the last tier leaves no Wound of its own: the climb is nearly over, DECISIONS #752)
+  if (r.tier >= MAX_TIER) return;
   let added = 0;
   const held = r.deck.filter((id) => id === 'wound').length;
   for (

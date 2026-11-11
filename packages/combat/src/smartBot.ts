@@ -42,7 +42,8 @@ export function botPlanningState(db: CombatDb, state: CombatState): CombatState 
     }));
   theirs.hand = hidden(theirs.hand, 'hand');
   theirs.draw = hidden(theirs.draw, 'draw');
-  theirs.snares = [];
+  // (an enemy's Traps lie face up, DECISIONS #751: the bot may know them as the player does)
+  theirs.snares = theirs.snares.filter((sn) => sn.owner);
   return s;
 }
 

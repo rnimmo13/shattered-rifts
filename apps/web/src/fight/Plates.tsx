@@ -16,6 +16,7 @@ import { HeroIcon } from '../ui/HeroIcon';
 import { tipAttrs } from '../ui/tip';
 import { INTENT_GLYPH, STATUS_INFO, UI_TIPS, fateBarPct, statusTip } from './info';
 import { Arrow } from '../ui/Arrow';
+import { emblemSvg } from '../art/emblems';
 import { GameIcon } from '../ui/GameIcon';
 import { STATUS_ICONS, TAUNT_ICON } from '../art/gameIcons';
 
@@ -148,6 +149,13 @@ export function UnitPlates({
                         <Arrow dir="up" />
                       ) : i === 'debuff' ? (
                         <Arrow dir="down" />
+                      ) : i === 'trap' ? (
+                        // (it sets a Trap: the web on the Trap tiles it will lie among, DECISIONS #751)
+                        <span
+                          className="intent__trap"
+                          aria-hidden
+                          dangerouslySetInnerHTML={{ __html: emblemSvg('web', '#e6d8ff') }}
+                        />
                       ) : (
                         <span>{INTENT_GLYPH[i]}</span>
                       )}

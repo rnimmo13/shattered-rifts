@@ -69,6 +69,14 @@ describe('Rift Omens', () => {
     expect(continueLoop(full).deck.filter((c) => c === 'wound')).toHaveLength(6);
   });
 
+  it('Rift Scars: the last tier leaves no Wound (DECISIONS #752)', () => {
+    const run = { ...newRun('knight', 'scars'), tier: MAX_TIER - 1, phase: 'loopCleared' as const };
+    const after = continueLoop(run);
+    expect(after.tier).toBe(MAX_TIER);
+    expect(after.deck.filter((c) => c === 'wound')).toHaveLength(0);
+    expect(after.context?.prelude?.text ?? '').not.toContain('Rift Scars');
+  });
+
   it('stack, and grow with the tier', () => {
     const two = omenEffects(2);
     expect(two.bossRise).toHaveLength(1);

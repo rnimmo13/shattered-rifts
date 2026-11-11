@@ -32,6 +32,7 @@ import {
   wound,
 } from './build';
 import { MULTIVERSE_UNITS } from './unitsMultiverse';
+import { setTrap } from './enemyTraps';
 
 /** Nyxara's rule: her intent is hidden until you hit her (DECISIONS #546) */
 const veil = () => status('veiled', 1);
@@ -419,7 +420,8 @@ export const ENEMY_UNITS: UnitDef[] = [
     59,
     [
       move('whisper', 'Whisper', dmg(8), wound('foe')),
-      move('rot', 'Mindrot', status('seared', 3, 'target')),
+      // (Bleed 2, was 3, and a Trap: DECISIONS #751)
+      move('rot', 'Mindrot', status('seared', 2, 'target'), setTrap('enemy-whispered-doubt')),
       move('stab', 'Shadowstab', dmg(14)),
     ],
     cycle('whisper', 'rot', 'stab'),
@@ -432,8 +434,10 @@ export const ENEMY_UNITS: UnitDef[] = [
       move('waltz', 'Waltz', dmg(12)),
       move('veil', 'Veil', barrier(10), status('faltering', 1, 'target')),
       move('fan', 'Fan of Knives', dmg(6, 'target', 2)),
+      // (a dodge set for later, DECISIONS #751)
+      move('masque', 'Masquerade', setTrap('enemy-masquerade')),
     ],
-    weighted(['waltz', 3], ['veil', 2], ['fan', 2]),
+    weighted(['waltz', 3], ['veil', 2], ['fan', 2], ['masque', 2]),
   ),
   foe(
     'lamplighter',
@@ -465,7 +469,15 @@ export const ENEMY_UNITS: UnitDef[] = [
     // (260, was 278: her rule, DECISIONS #546, every move leaves her Veiled, her intent hidden until you hit her)
     260,
     [
-      move('web', 'Weave the Web', barrier(8), status('shielded', 1), veil()),
+      // (6 Barrier, was 8, and the web is a Trap: DECISIONS #751)
+      move(
+        'web',
+        'Weave the Web',
+        barrier(6),
+        status('shielded', 1),
+        setTrap('enemy-veiled-web'),
+        veil(),
+      ),
       move('whisper', 'She Whispers', status('exposed', 2, 'target'), wound('foe'), veil()),
       move('strike', 'Strike from the Dark', dmg(20), veil()),
       move(

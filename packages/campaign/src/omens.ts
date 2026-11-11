@@ -157,7 +157,7 @@ function buildOmens(T: typeof OMEN_TUNING): Omen[] {
       name: 'Rift Scars',
       text: (t) => {
         const n = at(t, T.riftScars.tier, T.riftScars.wounds);
-        return `Each new tier leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all.`;
+        return `Each new tier leaves ${n === 1 ? 'a Wound' : `${n} Wounds`} in your deck, until you remove ${n === 1 ? 'it' : 'them'}, up to 6 in all. The last tier leaves none.`;
       },
       apply: (e, t) => void (e.actWounds += at(t, T.riftScars.tier, T.riftScars.wounds)),
     },

@@ -1041,6 +1041,12 @@ export type Op =
   | { op: 'totemSlot'; amount?: number }
   /** this many more Traps can be set at once for the rest of the fight */
   | { op: 'snareSlot'; amount: number }
+  /**
+   * (an enemy's move, DECISIONS #751) set this Trap card for the actor's side, owned by the actor: it springs with the actor acting
+   * (flat damage, scaled by the enemy's difficulty, never an attack), and breaks when the actor falls. A full row loses its oldest.
+   * A hero never uses it: a hero's Traps are played from the hand.
+   */
+  | { op: 'setTrap'; card: CardId }
   /** (the Defect's Loop) the oldest totem's passive fires now, `times` times, whatever its timing */
   | { op: 'totemPulse'; times?: number }
   /** for the rest of the fight, a commanded (or pushed-out) totem of this kind does `amount` more in each of its damage and Barrier numbers (its end-of-turn effect is not changed) */
@@ -1579,6 +1585,8 @@ export interface Pending {
 export interface SnareState {
   id: string;
   card: CardId;
+  /** (an enemy's Trap, DECISIONS #751) the unit that set it: it acts when the Trap springs, and the Trap breaks when it falls */
+  owner?: UnitId;
 }
 
 export interface SideState {
@@ -1908,7 +1916,10 @@ export type CombatEvent =
       /** it left to make room for another companion: not a death */ released?: boolean;
     }
   | { type: 'intent'; unit: UnitId; move: string; target: UnitId | null }
-  | { type: 'snareSet'; side: Side; snare: string }
+  /** `card` and `owner`: an enemy's Trap (DECISIONS #751), set by a move rather than played from a hand */
+  | { type: 'snareSet'; side: Side; snare: string; card?: CardId; owner?: UnitId }
+  /** a Trap gone without springing: its enemy fell, or a newer one pushed it out of a full row */
+  | { type: 'snareBroken'; side: Side; snare: string; card: CardId }
   /** the suits showing this turn changed (`full`: all four, a Full Trick) */
   | { type: 'suits'; side: Side; suits: Suit[]; full: boolean }
   /** `caught`: the unit that set the Trap off (none when it springs as the foe's turn begins); display only */

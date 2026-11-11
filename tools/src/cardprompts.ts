@@ -36,6 +36,7 @@ const cards = Object.values(db.cards).filter(
     !c.id.includes('~') &&
     !c.unplayable &&
     c.hero !== 'junk' &&
+    c.source !== 'enemy' &&
     ART_RARITIES.has(c.rarity ?? 'common'),
 );
 const groups = new Map<string, typeof cards>();

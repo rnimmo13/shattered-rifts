@@ -31,7 +31,12 @@ const fx = JSON.parse(readFileSync(DATA, 'utf8')) as Record<string, Fx>;
 
 // every card of this rarity a player can meet: no upgrades or rolls (they play their base card's effect)
 const cards = Object.values(db.cards).filter(
-  (c) => c.rarity === RARITY && !c.id.endsWith('+') && !c.id.includes('~') && !c.id.includes('^'),
+  (c) =>
+    c.rarity === RARITY &&
+    !c.id.endsWith('+') &&
+    !c.id.includes('~') &&
+    !c.id.includes('^') &&
+    c.source !== 'enemy',
 );
 const ORDER = [...Object.keys(RIFTWALKERS), 'neutral'];
 const heroOf = (c: (typeof cards)[number]): string => c.hero ?? 'neutral';

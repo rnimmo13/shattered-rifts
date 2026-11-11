@@ -109,6 +109,8 @@ export function validateDb(db: CombatDb): string[] {
       if (o.op === 'addCard' && !db.cards[o.card])
         errs.push(`${where}: adds unknown card "${o.card}"`);
       if (o.op === 'prevent' && !opts.snare) errs.push(`${where}: "prevent" only works in a Trap`);
+      if (o.op === 'setTrap' && (opts.card || opts.snare || opts.rune))
+        errs.push(`${where}: "setTrap" is an enemy's move only`);
       if ('to' in o && o.to === 'attacker' && !opts.snare && !opts.attacker)
         errs.push(
           `${where}: "attacker" only works in a Trap, or an Aura that answers an ally dying`,
@@ -370,6 +372,18 @@ export function validateDb(db: CombatDb): string[] {
       for (const [mid, m] of Object.entries(b.moves)) {
         if (m.id !== mid) errs.push(`${id}: move key "${mid}" does not match its id`);
         checkOps(`${id}.${mid}`, m.effects, { aimed: true, snare: false });
+        // (an enemy's Trap, DECISIONS #751: a real Trap card, kept out of every deck, and one an enemy can be set off by)
+        for (const o of m.effects) {
+          if (o.op !== 'setTrap') continue;
+          const t = db.cards[o.card];
+          if (!t) errs.push(`${id}.${mid}: sets unknown Trap "${o.card}"`);
+          else if (t.kind !== 'snare') errs.push(`${id}.${mid}: "${o.card}" is not a Trap`);
+          else if (t.source !== 'enemy')
+            errs.push(`${id}.${mid}: "${o.card}" needs source "enemy"`);
+          // (an enemy has no hero to lose HP: an "HP lost" Trap would never spring)
+          else if (t.trigger?.on === 'hpLost')
+            errs.push(`${id}.${mid}: an enemy's Trap cannot wait for HP lost`);
+        }
       }
     }
   }

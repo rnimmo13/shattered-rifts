@@ -5,7 +5,10 @@ import { writeFileSync } from 'node:fs';
 import { cardText } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
 
-const cards = Object.values(db.cards).filter((c) => !c.id.endsWith('+') && c.hero !== 'junk');
+// (an enemy's Trap is no one's card: DECISIONS #751)
+const cards = Object.values(db.cards).filter(
+  (c) => !c.id.endsWith('+') && c.hero !== 'junk' && c.source !== 'enemy',
+);
 const order = { basic: 0, common: 1, uncommon: 2, rare: 3, legendary: 4, ancestral: 5 } as const;
 
 const row = (c: (typeof cards)[number]): string => {

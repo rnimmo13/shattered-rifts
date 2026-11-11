@@ -47,8 +47,8 @@ export function catalog(db: CombatDb): CatalogCard[] {
         : 200 + ['wardens', 'tokens', 'other'].indexOf(p);
   return (
     Object.values(db.cards)
-      // (a card switched off for now is not shown: DECISIONS #317)
-      .filter((def) => def.source !== 'disabled')
+      // (a card switched off for now is not shown: DECISIONS #317; nor an enemy's Trap, never a card of yours: #751)
+      .filter((def) => def.source !== 'disabled' && def.source !== 'enemy')
       .map((def) => ({ def, pool: poolOf(def), upgraded: def.id.endsWith('+') }))
       .sort(
         (a, b) =>
@@ -104,7 +104,7 @@ export function countsOf(deck: readonly string[]): Record<string, number> {
 export function randomDeck(db: CombatDb, size: number, seed: string): string[] {
   const rng = seedRng(`deck:${seed}`);
   const pool = Object.values(db.cards)
-    .filter((c) => !c.unplayable || c.onDiscard)
+    .filter((c) => (!c.unplayable || c.onDiscard) && c.source !== 'enemy')
     .map((c) => c.id)
     .sort();
   return Array.from({ length: size }, () => pool[nextInt(rng, pool.length)] as string);

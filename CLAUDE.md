@@ -1,3 +1,7 @@
+# Release approved 0.252.0 / rules 108 (2026-11-11; decisions 751-752)
+
+Robert explicitly approves pushing ("looks good to me, lets push"). Website/server and matching Windows updater. Future changes need fresh release approval. Enemies set Traps (`setTrap` move op; owned by the setter, flat damage scaled by its dmgPct, face up, broken when the setter falls; `source: 'enemy'` cards kept out of every player pool and `isDeckCard`): nine Umbral Veil enemies and Orchid Maw, Clockwork Guillotine, Lantern Angler, Ember Chessman (#751). Rift Scars adds no Wound on reaching Tier XII (#752). RULES_VERSION 108.
+
 # Release approved 0.251.0 / rules 107 (2026-11-11; decisions 749-750)
 
 Robert explicitly approves pushing ("lets just push what we have for now"). Website/server and matching Windows updater. Future changes need fresh release approval. Fix: the home page's Sanctum painting is placed by the Riftwalker, not the window (`useDaisUnderFeet` in PageBackdrop): the dais sits under the picked Riftwalker's feet on every screen size and scrolls with the page. The Sanctum page (`#/run` before a run begins) now has that hall behind it (`StillBackdrop`); "the Sanctum" means that page, never the home page (#750). No rules change.
