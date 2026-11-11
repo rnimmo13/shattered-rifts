@@ -1,3 +1,7 @@
+# Release approved 0.248.0 / rules 107 (2026-11-10; decisions 734-738)
+
+Robert explicitly approves pushing ("when you are done, can you please push"): aiming a card docks it at the bottom centre with the rest of the hand dropped (a short laptop screen hid the enemy under the lifted card); the monthly deck wipe (first on 1 December 2026; a run still played keeps its deck; a one-season safety copy; device-clock correction) with the plumbing for seasonal cosmetics (card backs and name plates, server-only grants, season records, the claim; no season has rewards yet); the S|R crest on the default card back; the roadmap and docs rewritten to the paid-Steam plan. No rules change. Website/server and matching Windows updater. Future changes need fresh release approval.
+
 # Release approved 0.247.0 / rules 107 (2026-11-10; decisions 732-733)
 
 Robert explicitly approves pushing ("push"): every Sanctified or engraved copy is the same card (baseCardId: Gathering Storm and every card that grows itself or is Sharpened grow on all copies, no plain copy made when only decorated ones are held; same card played this turn; the Monk's Form steps), and Tier XII's Refinement Shrines gain a free Sanctify of one card at the dice odds (72%) and a Walk away tile. RULES_VERSION 107. Website/server and matching Windows updater. Future changes need fresh release approval.
@@ -160,8 +164,17 @@ Arena composition/atmosphere and targeting pass; Campaign100/93baseline,+40/+5pp
 
 **Local0.203 follow-up, decisions #619–622:** unique Warden order shuffled per run; independent finale permutation; existing Resolve retry reseeding verified. Elite promotion reaches100% atXI, reward fade19 remains separate. Omens startI and introduce at least one each tier; Fraying Ward halves automatic victory recovery atXII (Warden30→15%), preserving full-HP Resolve and combat healing. Campaign board uses unspent shards per ranked run as progress tiebreak; flexible campaign/lore wording. Preserve active legacy tier profiles. No release approval; final append-only assessment0.203.0-campaign-review-1 supersedes earlier local assumptions.
 
-A deep, combo-heavy, **trap-driven** card-dueling game (working title). Web campaign first (free,
-Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
+A deep, combo-heavy, **trap-driven** card-dueling game (working title). Owner: Robert.
+
+**Business plan (Robert, 2026-11-10; DECISIONS #734):** a paid game on Steam (phone app stores after, if possible). Free testing
+through Steam Playtest, then paid Early Access with a cosmetic keepsake; everyone starts fresh at release. Cosmetics are earned by
+playing and sold in an in-game store through Steam's Microtransaction API (no DLC packs, no Steam Inventory Service). The web version is
+free during testing and later becomes a cut-down demo; never promise it stays free. No keys sold from the website. Seasons are a month
+(#736): saved decks are wiped when the monthly leaderboard rolls over, ranked soft resets, Early Access progress is wiped too, and each
+season has its own cosmetic rewards for Campaign and for Arena play. Players never lose a cosmetic, to any wipe. Built locally (#737,
+unreleased): the deck wipe (first on 1 December 2026; move `FIRST_DECK_WIPE` if the release slips past it), card backs and name plates
+as cosmetics, server-only grants, season records and the claim; no season has rewards yet. No pay-to-win, ever. The old free, Ko-fi-funded
+plan is superseded; do not build Ko-fi, supporter codes or donation prompts.
 
 ## Two AI assistants share this repo (Robert, 2026-11-06)
 
@@ -188,7 +201,7 @@ Ko-fi-funded) → Steam full game ($7.99–$9.99) with PvP later. Owner: Robert.
 | `docs/BALANCE.md` | Sim results (first-player advantage, starter matrix, tier model, enemy difficulty) and open balance questions |
 | `docs/04_VISUALS_AND_ANIMATION.md` | Card frame spec, tokens, board layout, **animation catalog** with timings |
 | `docs/05_ART_PIPELINE.md` | AI art style bible, prompts, files, per-card art briefs |
-| `docs/06_WEB_PLATFORM.md` | Ko-fi donations, supporter codes, roadmap page, saves, hosting |
+| `docs/06_WEB_PLATFORM.md` | Mostly LEGACY: the old Ko-fi/supporter-code plan (superseded, #734), early notes on saves and hosting |
 | `docs/07_TECH_ARCHITECTURE.md` | Stack, repo layout, engine API, testing, **milestones M0–M7** |
 | `ROADMAP.md` | Player-facing roadmap |
 

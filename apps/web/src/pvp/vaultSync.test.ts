@@ -24,6 +24,8 @@ let playBlocked = false;
 let offline = false;
 
 beforeEach(() => {
+  // (these decks carry made-up save times: the day is held before the first season wipe, so none of them has expired, #736)
+  vi.setSystemTime(new Date('2026-11-10T12:00:00Z'));
   vi.resetModules();
   const store = new Map<string, string>();
   vi.stubGlobal('localStorage', {

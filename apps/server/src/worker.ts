@@ -14,7 +14,15 @@
 //   /auth/*                         sign in with Google (auth.ts)
 
 import type { Env } from './env';
-import { normaliseCode, runKey } from '@sr/pvp';
+import {
+  NO_SEASON_RECORD,
+  SEASON_REWARDS,
+  normaliseCode,
+  rewardSeasons,
+  rewardsEarned,
+  runKey,
+  type SeasonRecord,
+} from '@sr/pvp';
 import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 import { allowedOrigin } from './origins';
@@ -45,6 +53,10 @@ const VAULT_ACTIONS = new Set([
   'runbackups',
   'listsync',
   'cosmetics',
+  // (DECISIONS #737) the decks the last season's end wiped, and the season rewards this player has earned ('grant' is the Vault's
+  // own action for giving cosmetics and is deliberately not here: no request from outside may name it)
+  'pastdecks',
+  'seasonclaim',
 ]);
 /** The biggest Vault request: a deck is small; a device's runs go up together (DECISIONS #309). */
 const VAULT_MAX_BYTES = 20_000;
@@ -92,6 +104,7 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
     !(action === 'listsync' && body['readOnly'] === true);
   if (writes && leaseName !== name) return json({ ok: false, error: 'play-required' }, 409);
   const stub = env.VAULT.get(env.VAULT.idFromName(name));
+  if (action === 'seasonclaim') return seasonClaim(request, env, body, stub);
   try {
     const res = await stub.fetch(
       new Request(`https://vault.invalid/${action}`, {
@@ -104,6 +117,49 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
     // a deck that was just saved can be met as a ghost (the player's Arena name comes with it)
     if (action === 'bank' && res.ok && data.ok) await registerSavedGhost(request, env, body);
     return json(data, res.status);
+  } catch {
+    return json({ ok: false, error: 'unavailable' }, 503);
+  }
+}
+
+/**
+ * POST /pvp/vault/seasonclaim {code?}: give this player the season rewards they have earned (DECISIONS #737). The leaderboard says
+ * what they did in this season and the last (the highest Rift Tier cleared, the peak rank); the rewards those earn are added to the
+ * cosmetics on their Vault, for good. Asking again gives nothing twice. While no season has rewards, nothing is asked of anyone.
+ */
+async function seasonClaim(
+  request: Request,
+  env: Env,
+  body: Record<string, unknown>,
+  vaultStub: DurableObjectStub,
+): Promise<Response> {
+  const seasons = rewardSeasons(Date.now()).filter((s) => SEASON_REWARDS[s.key]);
+  if (seasons.length === 0) return json({ ok: true, granted: [] });
+  const player = await boardId(request, env, body);
+  if (!player) return json({ ok: false, error: 'signin' }, 401);
+  try {
+    const res = await env.BOARD.get(env.BOARD.idFromName('main')).fetch(
+      new Request('https://board.invalid/season/record', {
+        method: 'POST',
+        body: JSON.stringify({ player, seasons: seasons.map((s) => s.id) }),
+      }),
+    );
+    const data = await res.json<{ records?: Record<string, Partial<SeasonRecord>> }>();
+    const count = (x: unknown): number => (typeof x === 'number' && Number.isFinite(x) ? x : 0);
+    const ids = seasons.flatMap((s) => {
+      const r = data.records?.[String(s.id)];
+      return rewardsEarned(SEASON_REWARDS[s.key], {
+        ...NO_SEASON_RECORD,
+        tierCleared: count(r?.tierCleared),
+        peak: count(r?.peak),
+        games: count(r?.games),
+      });
+    });
+    if (ids.length === 0) return json({ ok: true, granted: [] });
+    const given = await vaultStub.fetch(
+      new Request('https://vault.invalid/grant', { method: 'POST', body: JSON.stringify({ ids }) }),
+    );
+    return json(await given.json(), given.status);
   } catch {
     return json({ ok: false, error: 'unavailable' }, 503);
   }

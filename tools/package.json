@@ -11,6 +11,7 @@
     "balance:report": "tsx src/balanceReport.ts",
     "balance:history": "tsx src/balanceHistory.ts",
     "lore:art": "tsx src/loreArt.ts",
+    "cardback:crest": "tsx src/cardBackCrest.ts",
     "fight": "tsx src/fight.ts",
     "fight:check": "tsx src/fightCheck.ts",
     "typecheck": "tsc -p tsconfig.json",

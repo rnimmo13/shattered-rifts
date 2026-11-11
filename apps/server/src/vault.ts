@@ -21,7 +21,11 @@ import {
   cleanRemoved,
   cleanCosmetics,
   cleanRunCopies,
+  deckExpired,
   dropFrom,
+  grantCosmetics,
+  selfClaimed,
+  BANK_CLOCK_SLACK_MS,
   isListName,
   keepRunCopies,
   regressesRun,
@@ -33,7 +37,7 @@ import {
   type VaultDeck,
 } from '@sr/pvp';
 import type { Env } from './env';
-import { RULES_VERSION } from '@sr/pvp';
+import { RULES_VERSION, periodStart } from '@sr/pvp';
 import { campaignDeckFacts } from './campaignBalance';
 
 interface Row extends Record<string, SqlStorageValue> {
@@ -60,8 +64,16 @@ const parseJson = (text: string): unknown => {
 };
 
 export class Vault extends DurableObject<Env> {
+  /** the season (its start) this object last checked its decks against, so the check runs once a season and not on every request */
+  private seasonChecked = 0;
+
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
+    // the decks the last season's end wiped (DECISIONS #737): kept until the next wipe, so a wipe can be looked at and, if it was
+    // wrong, undone
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS past_decks (id TEXT PRIMARY KEY, wiped INTEGER NOT NULL, data TEXT NOT NULL)',
+    );
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS identity_redirect (k INTEGER PRIMARY KEY, account TEXT NOT NULL)',
     );
@@ -233,8 +245,48 @@ export class Vault extends DurableObject<Env> {
     this.ctx.storage.sql.exec('DELETE FROM decks WHERE id = ?', id);
   }
 
+  /**
+   * The season has turned (DECISIONS #736): every deck last saved before it began is wiped. They are set aside in past_decks until
+   * the next wipe replaces them. Cosmetics, runs and history are untouched.
+   */
+  private endSeason(now: number): void {
+    const season = periodStart(now, 'month');
+    if (this.seasonChecked === season) return;
+    const gone = this.list().filter((d) => deckExpired(d, now));
+    if (gone.length)
+      this.ctx.storage.transactionSync(() => {
+        this.ctx.storage.sql.exec('DELETE FROM past_decks');
+        for (const d of gone) {
+          this.ctx.storage.sql.exec(
+            'INSERT OR REPLACE INTO past_decks (id, wiped, data) VALUES (?, ?, ?)',
+            d.id,
+            now,
+            JSON.stringify(d),
+          );
+          this.remove(d.id);
+        }
+      });
+    this.seasonChecked = season;
+  }
+
+  /** The decks the last wipe took, newest first (nothing plays with them: they are there to be looked at). */
+  private pastDecks(): { wiped: number | null; decks: VaultDeck[] } {
+    const rows = this.ctx.storage.sql
+      .exec<{ wiped: number; data: string }>('SELECT wiped, data FROM past_decks')
+      .toArray();
+    const decks = rows.flatMap((r): VaultDeck[] => {
+      const d = cleanDeck(parseJson(r.data));
+      return d ? [d] : [];
+    });
+    return {
+      wiped: rows[0]?.wiped ?? null,
+      decks: decks.sort((a, b) => b.bankedAt - a.bankedAt),
+    };
+  }
+
   override async fetch(request: Request): Promise<Response> {
     const action = new URL(request.url).pathname.replace(/^\/+/, '');
+    this.endSeason(Date.now());
     const sealed = this.ctx.storage.sql
       .exec<{ account: string }>('SELECT account FROM identity_redirect WHERE k = 1')
       .toArray()[0]?.account;
@@ -261,6 +313,7 @@ export class Vault extends DurableObject<Env> {
     }
     if (sealed) return json({ error: 'account-linked-reconnect' }, 409);
     if (action === 'list') return json({ ok: true, decks: this.list() });
+    if (action === 'pastdecks') return json({ ok: true, ...this.pastDecks() });
     if (action === 'runbackups')
       return json({
         ok: true,
@@ -335,6 +388,17 @@ export class Vault extends DurableObject<Env> {
     if (action === 'bank') {
       const deck = cleanDeck(body['deck']);
       if (!deck) return json({ ok: false, error: 'bad-deck' }, 400);
+      // The save time is the device's. A device says what its clock reads now, and a clock that is off by more than a little has its
+      // save times moved by as much, so a slow clock does not lose a deck saved just after the month turned and a fast one does not
+      // get a deck that outlasts the season. Never later than now.
+      const deviceNow = body['now'];
+      if (typeof deviceNow === 'number' && Number.isFinite(deviceNow)) {
+        const off = now - deviceNow;
+        if (Math.abs(off) > BANK_CLOCK_SLACK_MS) deck.bankedAt += off;
+      }
+      if (deck.bankedAt > now + BANK_CLOCK_SLACK_MS) deck.bankedAt = now;
+      // a deck of a season that has ended is not taken back (DECISIONS #736): a device that was offline over the turn of the month
+      if (deckExpired(deck, now)) return json({ ok: false, error: 'bad-deck', expired: true }, 400);
       const replaceId = typeof body['replaceId'] === 'string' ? body['replaceId'] : undefined;
       const before = this.list();
       const result = bankInto(before, deck, replaceId);
@@ -365,14 +429,37 @@ export class Vault extends DurableObject<Env> {
     }
 
     // what a device has, merged with what is kept here (owning only grows; the newest choice of look wins), and the result back.
-    // (every skin is free for now, so a device may claim any skin it names; a priced skin will need the server to grant it)
+    // (a device may claim what is free to take; what is earned or sold is only ever given here, by `grant`: DECISIONS #737)
     if (action === 'cosmetics') {
-      const merged = mergeCosmetics(this.cosmetics(), cleanCosmetics(body['cosmetics']));
+      const merged = mergeCosmetics(
+        this.cosmetics(),
+        selfClaimed(cleanCosmetics(body['cosmetics'])),
+      );
       this.ctx.storage.sql.exec(
         "INSERT OR REPLACE INTO cosmetics (k, data) VALUES ('me', ?)",
         JSON.stringify(merged),
       );
       return json({ ok: true, cosmetics: merged });
+    }
+
+    // Give this player cosmetics (a season's rewards, a keepsake). Only the Worker asks this, never a device: it is not among the
+    // actions a request from outside may name (VAULT_ACTIONS in worker.ts).
+    if (action === 'grant') {
+      const ids = Array.isArray(body['ids'])
+        ? (body['ids'] as unknown[]).filter((x): x is string => typeof x === 'string').slice(0, 50)
+        : [];
+      const before = this.cosmetics();
+      const after = grantCosmetics(before, ids);
+      if (after.owned.length !== before.owned.length)
+        this.ctx.storage.sql.exec(
+          "INSERT OR REPLACE INTO cosmetics (k, data) VALUES ('me', ?)",
+          JSON.stringify(after),
+        );
+      return json({
+        ok: true,
+        cosmetics: after,
+        granted: after.owned.filter((id) => !before.owned.includes(id)),
+      });
     }
 
     if (action === 'runsave') {

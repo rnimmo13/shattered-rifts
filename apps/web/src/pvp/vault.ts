@@ -11,6 +11,7 @@ import {
   oneEach,
   RUN_PREFIX,
   dropFrom,
+  inSeason,
   safeId,
   VAULT_SLOTS,
   type Banked,
@@ -127,9 +128,13 @@ export function parseVault(raw: string | null): VaultDeck[] {
   }
 }
 
+/**
+ * This device's saved decks. A deck of a season that has ended is left out (DECISIONS #736): saved decks are wiped when the monthly
+ * leaderboard rolls over. It is only passed over here, by this device's clock; the server does the wiping by its own.
+ */
 export function loadVault(): VaultDeck[] {
   try {
-    return parseVault(localStorage.getItem(KEY));
+    return inSeason(parseVault(localStorage.getItem(KEY)), Date.now());
   } catch {
     return [];
   }

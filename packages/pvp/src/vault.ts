@@ -3,6 +3,7 @@
 
 import { V2_DECK_RULES, ascendancyOf, withStartingWeapons } from '@sr/content/v2';
 import { checkEntry, cleanMaxHp } from './deck';
+import { periodStart } from './board';
 
 export interface VaultDeck {
   /** one per cleared loop: the run's seed and Rift Tier */
@@ -194,3 +195,29 @@ export function normaliseCode(raw: string): string | null {
 }
 
 export const showCode = (code: string): string => code.replace(/(.{4})(?=.)/g, '$1-');
+
+// ---- seasons (DECISIONS #736, #737) ----
+
+/**
+ * The first season that begins with a wipe: December 2026 (the 1st, midnight Pacific). Decks saved before the rule was announced are
+ * kept until then, so nobody loses a deck without having been told.
+ */
+export const FIRST_DECK_WIPE = 1_796_112_000_000;
+
+/**
+ * A saved deck lasts the season it was last saved in: when the monthly leaderboard rolls over, it is wiped. (A run still going saves
+ * its deck again as it plays on, so its deck is the new season's.)
+ */
+export function deckExpired(d: Pick<VaultDeck, 'bankedAt'>, now: number): boolean {
+  const season = periodStart(now, 'month');
+  return season >= FIRST_DECK_WIPE && d.bankedAt < season;
+}
+
+/** The decks of the list that are still this season's. */
+export const inSeason = <T extends Pick<VaultDeck, 'bankedAt'>>(
+  list: readonly T[],
+  now: number,
+): T[] => list.filter((d) => !deckExpired(d, now));
+
+/** How far ahead of the server's clock a deck's save time may be before it is taken as saved now (a device whose clock is wrong). */
+export const BANK_CLOCK_SLACK_MS = 10 * 60_000;

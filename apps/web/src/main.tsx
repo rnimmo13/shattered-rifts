@@ -12,7 +12,7 @@ import './duel/duel.css';
 import { App } from './app/App';
 import { loadSkin, preloadArt, observeArtProgress } from './art/assets';
 import { startupSplash, showStartupError } from './startup';
-import { cosmetics, syncCosmetics } from './cosmetics/cosmetics';
+import { claimSeasonRewards, cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 import { markGraphicsQuality } from './duel/effects';
 import { installPlayAccess } from './playAccess';
 import { flagChangedAssets } from './appUpdates';
@@ -65,4 +65,6 @@ void Promise.race([preloadArt().then(wornSkins), splash.skip])
 // your cosmetics follow you from device to device: this browser's copy is merged with your Vault's (and the skins that arrive load)
 void syncCosmetics().then((ok) => {
   if (ok) for (const w of Object.values(cosmetics().worn)) if (w.skin) void loadSkin(w.skin);
+  // (DECISIONS #737) season rewards earned since the last visit are given now (nothing is asked while no season has rewards)
+  if (ok) void claimSeasonRewards();
 });

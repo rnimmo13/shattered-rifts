@@ -1,7 +1,7 @@
 # Shattered Rifts: Core Game Design
 
 *Working title. Deep, combo-heavy, trap-driven card dueling across shattered worlds.*
-Web campaign first (free, donation-funded) → Steam full game ($7.99–$9.99) with PvP.
+A paid game on Steam, tested free first; cosmetics earned by playing and sold in a store (DECISIONS #734).
 
 ---
 
@@ -26,15 +26,15 @@ These come first. When a design question is unclear, pick the option that best s
 4. **Respect the player's time.** Regular duels take ~4 minutes, Wardens and PvP 6–12, and a full
    campaign loop 60–90 minutes. Animation speed controls and smart auto-pass throughout.
 5. **Decks are seasonal, progress is permanent.** A run deck can be lost (that's the risk you chose), and
-   Vault decks are wiped weekly. Characters, unlocks, cosmetics, finishes, ranks and the Hall of Fame
+   Vault decks are wiped each month with the leaderboard (DECISIONS #736). Characters, unlocks, cosmetics, finishes, ranks and the Hall of Fame
    are never taken away.
 6. **Bosses with personality.** Every boss has a voice (taunts, reactions), a signature mechanic,
    and visible **Omens** that telegraph their powers, so players outplay bosses instead of being
    ambushed by hidden rules.
 7. **Deck-building joy.** Every pick shapes a deck that is yours. Reward reveals, rarity tells, foils
    and alternate art. Finding a Legendary should feel like an event. Finishes unlock permanently.
-8. **Fair forever.** No pay-to-win in the web version or on Steam. Money only buys the game,
-   cosmetics, or supporter perks.
+8. **Fair forever.** No pay-to-win, anywhere the game is sold. Money only buys the game and
+   cosmetics (DECISIONS #734).
 9. **Any deck can win.** A deck banked after one clear must be able to beat a deck that looped five
    times. Depth buys refinement and choice, not unbeatable power (`03_CAMPAIGN.md §3`).
 

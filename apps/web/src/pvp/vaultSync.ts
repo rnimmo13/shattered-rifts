@@ -4,6 +4,7 @@
 
 import {
   cleanVault,
+  inSeason,
   mergeVaults,
   normaliseCode,
   runOf,
@@ -67,7 +68,8 @@ export type RemoteError = 'full' | 'offline' | 'bad-deck' | 'bad-code' | 'play' 
 
 export type Remote =
   | { ok: true; decks: VaultDeck[] }
-  | { ok: false; error: RemoteError; decks: VaultDeck[] };
+  /** `expired`: the deck is of a season that has ended, so the server will not take it (DECISIONS #736) */
+  | { ok: false; error: RemoteError; decks: VaultDeck[]; expired?: true };
 
 /** The server's web address: the same host as the game's socket. */
 const httpBase = (): string => serverBase().replace(/^ws/i, 'http');
@@ -79,7 +81,12 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     });
-    const data = (await res.json()) as { ok?: boolean; error?: string; decks?: unknown };
+    const data = (await res.json()) as {
+      ok?: boolean;
+      error?: string;
+      decks?: unknown;
+      expired?: unknown;
+    };
     const decks = cleanVault(data.decks);
     if (data.ok) return { ok: true, decks };
     const e = data.error;
@@ -102,6 +109,7 @@ async function call(action: string, body: Record<string, unknown>): Promise<Remo
             ? 'play'
             : 'offline',
       decks,
+      ...(data.expired === true ? { expired: true as const } : {}),
     };
   } catch {
     return { ok: false, error: 'offline', decks: [] };
@@ -123,6 +131,8 @@ export const remoteVault = {
         deck,
         // (the name the deck will have as a ghost)
         name: getName(),
+        // (what this device's clock reads, so the server can tell a wrong clock from an old save: DECISIONS #737)
+        now: Date.now(),
         ...(replaceId === undefined ? {} : { replaceId }),
       }),
     ),
@@ -294,7 +304,8 @@ export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Prom
   // runs that collapsed while the server could not be reached: finish dropping their decks before anything is merged back
   for (const run of pendingRuns()) await forgetRun(code, run);
   const gone = new Set(pendingRuns());
-  const local = localAll.filter((d) => !gone.has(runOf(d.id)));
+  // (a deck of a season that has ended is not sent back up, nor kept beside the server's list: DECISIONS #736)
+  const local = inSeason(localAll, Date.now()).filter((d) => !gone.has(runOf(d.id)));
   let r = await remoteVault.list(code);
   if (!r.ok) return { ok: false, error: r.error, decks: [...local] };
   const seen = seenFor(code);
@@ -310,9 +321,15 @@ export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Prom
     return onServer || seenAt === undefined || d.bankedAt > seenAt;
   });
   let waiting: 'play' | 'full' | 'offline' | undefined;
+  // (decks the server has answered for: taken, so its copy stands for this device's whatever their save times say; or refused as a
+  // past season's, so it leaves this device's list too)
+  const settled = new Set<string>();
   for (const d of toSend) {
     const next = await remoteVault.bank(code, d);
-    if (next.ok) r = next;
+    if (next.ok) {
+      r = next;
+      settled.add(runOf(d.id));
+    } else if (next.expired) settled.add(runOf(d.id));
     // (a deck the server will not take is skipped; the rest still go up)
     else if (next.error === 'bad-deck' || next.error === 'bad-code') continue;
     else {
@@ -328,7 +345,7 @@ export async function syncVault(code: Key, localAll: readonly VaultDeck[]): Prom
   }
   rememberSeen(code, seen);
   // what did not get online yet stays in this device's list, in front, beside everything the server holds
-  const left = toSend.filter((d) => newer(d, server));
+  const left = toSend.filter((d) => !settled.has(runOf(d.id)) && newer(d, server));
   return {
     ok: true,
     complete: left.length === 0,

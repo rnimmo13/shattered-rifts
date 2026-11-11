@@ -18,8 +18,8 @@ The Steam build is the web client wrapped in a desktop shell, talking to the sam
   uses its CSP-compatible shader helpers in the desktop build. Run pnpm desktop:smoke for an isolated offline/restart check.
 - [x] Bundle the compiled game and artwork under a local srgame://app origin. The campaign can start offline without claiming a username. Account-bound save files and previous-revision backups are implemented (#578); actual Steam Auto-Cloud setup/testing remains pending.
 - [ ] Steam-aware settings: fullscreen/windowed and window-size persistence implemented (F11 / Alt+Enter); resolution presets, controllers and Steam Deck testing remain.
-- [ ] Remove or hide web-only things in the desktop build: Ko-fi links, supporter codes, the Pages/Cloudflare deploy notes. Decide what
-  replaces them (see §5).
+- [ ] Remove or hide web-only things in the desktop build (the Pages/Cloudflare deploy notes, the Windows download menu). Ko-fi links and
+  supporter codes were never built and are no longer planned (§5).
 - [ ] Auto-update comes from Steam, not from the web deploy: keep the client and server **protocol versions** compatible (see §3).
 
 ## 2. What runs where
@@ -60,12 +60,37 @@ Today a player is a **Vault code** (a guest) or a **Google sign-in**. Steam play
 
 ## 5. Monetisation and the web build
 
-The plan is a **paid game ($7.99–$9.99)**, with the web campaign free and funded by Ko-fi. Robert must decide before M8:
+Decided by Robert on 2026-11-10 (DECISIONS #734):
 
-- [?] What is free on the web vs paid on Steam (campaign length, Arena access, characters, Rift Tiers).
-- [?] Whether Ko-fi supporter codes carry over to Steam, and whether any supporter benefit survives (no pay-to-win, ever: pillars).
-- [?] Whether the web build keeps the Arena, or Arena is Steam-only.
-- [ ] Price, regional pricing, launch discount, and Early Access vs full release.
+- [x] **A paid game on Steam**, with phone app stores after it if possible. The old Ko-fi-funded free web game is no longer the plan.
+- [x] **Free testing through Steam Playtest**, then **paid Early Access** with a cosmetic keepsake for early supporters.
+- [x] **A fresh start for everyone at release.** Progress from testing does not carry over. Players must be told beforehand.
+- [x] **Cosmetics are earned by playing and sold in a store in the game**, through Steam's Microtransaction API. No DLC packs, no
+  Steam Inventory Service. Looks only, never power (no pay-to-win, ever: pillars).
+- [x] **The web build becomes a cut-down demo later** (a few characters, a smaller game). Until then it stays as it is.
+
+Still to decide or build:
+
+- [?] What the web demo holds (which characters, how many Rift Tiers, whether it keeps the Arena).
+- [x] **Early Access progress is wiped too**, and **no keys are sold from the website** (DECISIONS #736).
+- [x] **Monthly seasons** (#736): saved decks are wiped when the monthly leaderboard rolls over, ranked soft resets, and each season
+  has its own cosmetic rewards for Campaign play and for Arena play.
+- [x] **Cosmetics survive every wipe**, Early Access included: players never lose a cosmetic (#737).
+- [x] The monthly deck wipe (first on 1 December 2026) and the plumbing for seasonal rewards: card backs and name plates as
+  cosmetics, server-only grants, each season's records on the leaderboard, the claim (#737).
+- [ ] The first season's rewards and their art; the Collection pages to choose a card back or name plate; showing a name plate to an
+  Arena opponent; telling a player what they earned.
+- [?] Whether ghost decks should go with the monthly wipe (today they stay until they age out).
+- [ ] A bought cosmetic is granted the same way as an earned one (the Vault's `grant`), after the Microtransaction API confirms it.
+- [?] What the Early Access keepsake is, and how it is granted.
+- [ ] Price, regional pricing and launch discount (the old $7.99–$9.99 is not a commitment).
+- [ ] **The store.** The Microtransaction API needs a secure server holding the publisher Web API key (`apps/server` can do it): start
+  the purchase, let the Steam overlay confirm it, finalise it, then record what the account owns. Also: taking an item back after a
+  refund, the sandbox for testing, and a record of ownership on our server so a phone build can show what was bought on Steam.
+  Purchases inside the Steam build must go through Steam.
+- [ ] **Phone stores** need Apple's and Google's own purchase systems for the same cosmetics.
+- [ ] Read Valve's current Steamworks documents on the revenue share, refunds, Playtest and keys before building; none of the above
+  was checked against them.
 
 ## 6. Cheating and fairness
 
@@ -135,8 +160,8 @@ The plan is a **paid game ($7.99–$9.99)**, with the web campaign free and fund
 - [ ] Final **title** and name check (the current name is a working title).
 - [ ] Capsule art in the required sizes, 5+ screenshots, a trailer (30–60 s of real gameplay), short and long descriptions, tags.
 - [ ] Store page up early (Steam wants it public for a while before release) and a wishlist push.
-- [ ] A **demo** (the web campaign's first Rift Tier is a natural one) and a Steam Next Fest slot.
-- [ ] Playtest through Steam (a closed beta branch) with the build that will ship.
+- [ ] A **demo**: the cut-down web version (§5), with a link to the Steam page, and a Steam Next Fest slot.
+- [ ] **Steam Playtest** (free; §5) before paid Early Access. Say plainly that progress is wiped at release.
 - [ ] Support plan: where bugs are reported, a Discord or Steam discussions, a patch cadence.
 
 ## 10. Quality bar before launch
@@ -150,7 +175,7 @@ The plan is a **paid game ($7.99–$9.99)**, with the web campaign free and fund
 
 ## Suggested order
 
-1. Decide §5 (what is free vs paid) and the shell (§1): they shape everything else.
+1. §5 is decided in outline (#734) and the shell (§1) is built; settle what the web demo holds.
 2. Server-verified runs (§6) and the version handshake (§3): these are the biggest technical items and also help the web build.
 3. Steam sign-in and account linking (§4).
 4. Achievements and cloud saves (§7).

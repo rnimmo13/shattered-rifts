@@ -59,7 +59,7 @@ import { LowGraphicsHint } from '../ui/LowGraphicsHint';
 import { getBaseSpeed, setBaseSpeed } from '../duel/scene/timescale';
 import { play } from '../audio/sfx';
 import { DEFAULT_SPEED } from '../play/prefs';
-import { handCardWidth, portraitHandBand } from '../hand/fanLayout';
+import { aimDock, handCardWidth, portraitHandBand } from '../hand/fanLayout';
 import { reduceEvent, startingDisplay } from './display';
 import {
   figureId,
@@ -2912,7 +2912,11 @@ export function FightView(props: {
           {(selectedCard || releasing) && (!touch || touchAimAt) && (
             <AimArrow
               className="fight__arrow"
-              from={{ x: window.innerWidth / 2, y: window.innerHeight - cw * 1.1 }}
+              // (from the top of the card where it waits at the bottom centre; held upright the card stays in its grid)
+              from={{
+                x: window.innerWidth / 2,
+                y: window.innerHeight - (mode === 'portrait' ? cw * 1.1 : aimDock(cw).top - 8),
+              }}
               to={touchAimAt ?? pointer}
               lock={touch ? null : lockAt}
             />

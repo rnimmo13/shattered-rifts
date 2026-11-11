@@ -565,7 +565,8 @@ img.intent__pic {
   position: absolute;
   left: -14%;
   right: -14%;
-  top: -70%;
+  /* (as high as the lifted card's own top, no higher: the board above it is not the card's) */
+  top: -56%;
   bottom: 100%;
   pointer-events: auto;
 }
@@ -575,6 +576,17 @@ img.intent__pic {
 }
 .fhand__slot.is-selected {
   filter: drop-shadow(0 0 14px var(--c-gold));
+}
+/* choosing a target (2026-11-10): the card glides to the bottom centre and waits there, and the rest of the hand drops and dims,
+   so the board is clear from edge to edge */
+.fhand__slot.is-docked {
+  transition:
+    transform 0.16s var(--ease-out),
+    opacity 0.2s,
+    z-index 0s;
+}
+.fhand__slot.is-benched {
+  opacity: 0.55;
 }
 @keyframes draw-in {
   from {
@@ -728,6 +740,12 @@ img.intent__pic {
   border: 1px solid var(--c-gold);
   z-index: 30;
   pointer-events: auto;
+}
+/* (a short window, a laptop's: under the title, clear of what the enemies mean to do next) */
+@media (max-height: 760px) and (orientation: landscape) {
+  .fight__aimbar:not(.fight__aimbar--pick) {
+    top: 3.5rem;
+  }
 }
 .fight__hint {
   display: none;

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { RunState } from '@sr/campaign';
 import { RIFTWALKERS } from '@sr/content/v2';
 import { arenaProblemsOf, loseSavedDecks, shouldAutoSave } from './deckSave';
@@ -29,6 +29,8 @@ describe('when the deck is saved for the Arena by itself', () => {
 
 describe('a run that collapses takes its saved deck out of the Vault (its ghost stays)', () => {
   it('removes every saved copy of that run and nothing else', async () => {
+    // (these decks carry made-up save times: the day is held before the first season wipe, so none has expired, #736)
+    vi.setSystemTime(new Date('2026-11-10T12:00:00Z'));
     const store = new Map<string, string>();
     (globalThis as { localStorage?: unknown }).localStorage = {
       getItem: (k: string) => store.get(k) ?? null,
@@ -96,12 +98,12 @@ describe("the map's Arena button says whether the deck as it stands would pass t
         ]),
       ),
     ).toBeNull();
-    expect(arenaProblem(run(starter))).toMatch(
-      /It has 10 cards, and the Arena needs at least 15/,
-    );
+    expect(arenaProblem(run(starter))).toMatch(/It has 10 cards, and the Arena needs at least 15/);
   });
   it('a deck too small or too big does not, and says why', () => {
-    expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(/It has 3 cards, and the Arena needs at least 15/);
+    expect(arenaProblem(run(RIFTWALKERS.knight.starter.slice(0, 3)))).toMatch(
+      /It has 3 cards, and the Arena needs at least 15/,
+    );
     const huge = Array.from({ length: 81 }, () => [...RIFTWALKERS.knight.starter]).flat();
     expect(arenaProblem(run(huge))).toMatch(/a deck holds at most 80/);
   });

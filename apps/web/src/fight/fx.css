@@ -35,10 +35,20 @@
   aspect-ratio: 5 / 7;
   border-radius: 4px;
   border: 2px solid var(--c-gold);
-  background: radial-gradient(circle at 50% 45%, #3b2f63, #14101f 70%);
+  /* (DECISIONS #735) the default card back: the S|R crest in the middle (fxPlayer sets the picture, as its address depends on the build) */
+  background:
+    var(--fxcard-crest, none) center / 84% auto no-repeat,
+    radial-gradient(circle at 50% 45%, #3b2f63, #14101f 70%);
   box-shadow:
     0 0 10px rgb(255 214 120 / 0.55),
     0 3px 8px rgb(0 0 0 / 0.6);
+}
+/* (DECISIONS #737) a card back the player chose: its own picture, edge to edge (the gradient shows through if it fails to load) */
+.fxcard--face {
+  border: 0;
+  background:
+    var(--fxcard-face, none) center / cover no-repeat,
+    radial-gradient(circle at 50% 45%, #3b2f63, #14101f 70%);
 }
 /* a Trap's jaws (trapJaws): the top jaw meets the bottom one, turned over, in the middle */
 .fxjaws {

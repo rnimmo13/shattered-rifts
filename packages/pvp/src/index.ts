@@ -101,6 +101,10 @@ export {
   VAULT_CODE_ALPHABET,
   VAULT_CODE_LENGTH,
   VAULT_SLOTS,
+  FIRST_DECK_WIPE,
+  BANK_CLOCK_SLACK_MS,
+  deckExpired,
+  inSeason,
   type Banked,
   type VaultDeck,
 } from './vault';

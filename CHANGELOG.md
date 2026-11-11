@@ -1,3 +1,10 @@
+## 0.248.0 - 2026-11-10
+
+- Aiming a card (DECISIONS #738): a card that needs a target glides to the bottom centre of the screen and waits there, and the rest of the hand drops and dims, so nothing of the hand stands over the board. Before, the card stayed lifted in the fan, and on a short laptop screen it covered the enemy; a click on the enemy through it let the card go. Click the waiting card, right-click or press Esc to put it back. On a short window the "Click a glowing target" bar sits under the title, clear of the enemies' next moves. Phones held upright are unchanged.
+- The card back carries the S|R crest: on the draw pile, and on a card as it flies to or from your hand (DECISIONS #735).
+- Saved decks last one season (DECISIONS #736, #737): they are wiped when the monthly leaderboard rolls over, for the first time on 1 December 2026. The deck of a run you are still playing is saved again as you play on, so it stays. The Saved decks page says when the next wipe is. Cosmetics are never wiped.
+- Behind the scenes, for seasons to come: card backs and name plates as cosmetics you can own and choose, season rewards for Campaign play (the highest Rift Tier cleared) and Arena play (the highest rank reached) that only the server can give, and the leaderboard remembering each season's records. No season has rewards yet.
+
 ## 0.247.0 - 2026-11-10
 
 - Tier XII's Refinement Shrines: a new choice, Sanctify one card (72% it rises 25%, otherwise it falls 25%), and Walk away is a choice beside Upgrade and Let one go (DECISIONS #733).

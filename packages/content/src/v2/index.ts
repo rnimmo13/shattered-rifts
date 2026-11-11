@@ -1074,7 +1074,18 @@ export function classNameOf(hero: string, ascendancy?: string): string {
   );
 }
 export { SHELVED_LEGENDARIES, lendLegendaries } from './shelved';
-export { SKINS, currentSkinId, skinDef, type SkinDef } from './cosmetics';
+export {
+  SKINS,
+  CARD_BACKS,
+  PLATES,
+  currentSkinId,
+  skinDef,
+  cosmeticDef,
+  type SkinDef,
+  type ItemDef,
+  type CosmeticDef,
+  type CosmeticKind,
+} from './cosmetics';
 
 /**
  * The Riftwalker ids before they were named for their class (DECISIONS #190, 2026-10-25). A run save, a Vault deck, a remembered

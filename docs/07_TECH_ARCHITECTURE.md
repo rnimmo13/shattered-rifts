@@ -130,5 +130,5 @@ Each milestone ends with something playable/verifiable and a commit tag.
 | **M4** | **Run v1:** Sanctum, character pick, stage map, nodes, card rewards/skip, Shards & Merchant, Shrine, Resolve, Stage 1 + its Warden, Warden's Gift, local saves + export | **Friends alpha** (single-player) |
 | **M5** | All 5 stages + Valerion, Bank/Continue, Vault (5 slots), Rift Tiers I–X, Boons, Events, Tempering, permanent unlocks & Codex | A full loop completes; Tier II plays differently; a deck can be banked |
 | **M6** | **Online beta:** accounts, ghost upload + ghost matches, live casual PvP (authoritative server), weekly season + wipe, Weekend Tournament, leaderboard (live + ghost wins), Hall of Fame | **Friends PvP beta**: a full weekly cycle runs |
-| **M7** | Polish: full animation catalog, realm overlays, audio, AI art integration, tutorial, accessibility. Public web launch (Ko-fi, roadmap, server-verified runs) | Public beta; the store-trailer-worthy build |
+| **M7** | Polish: full animation catalog, realm overlays, audio, AI art integration, tutorial, accessibility. Public web launch (roadmap, server-verified runs; Ko-fi dropped, DECISIONS #734) | Public beta; the store-trailer-worthy build |
 | **M8** | Steam prep: Electron + steamworks.js, achievements, cloud saves, store page | Steam Early Access candidate |

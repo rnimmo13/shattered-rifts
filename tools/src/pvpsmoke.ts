@@ -396,7 +396,8 @@ async function vault(): Promise<void> {
     stage: 2,
     deck: [...RIFTWALKERS.knight.starter],
     boons: ['iron-sigil'],
-    bankedAt: 1,
+    // (saved now: a deck of a season that has ended is not taken, DECISIONS #736)
+    bankedAt: Date.now(),
   });
   const need = (c: boolean, what: string) => {
     if (!c) throw new Error(`vault: ${what}`);

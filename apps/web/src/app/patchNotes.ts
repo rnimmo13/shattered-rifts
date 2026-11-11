@@ -46,6 +46,30 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.248.0",
+    date: "2026-11-10",
+    title: "Aiming a card, and seasons",
+    summary: "A card you are aiming waits at the bottom of the screen, clear of the enemies. Saved decks now last one season, and the card back wears the S|R crest.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "A card you aim no longer covers the enemy",
+        text: "On a small laptop screen, a card picked for aiming stayed lifted over the enemies, and clicking the enemy through it let the card go. Now, when a card needs a target, it glides to the bottom centre of the screen and the rest of your hand drops out of the way, so the whole board is clear. Click or drag as before; click the waiting card, right-click or press Esc to put it back.",
+      },
+      {
+        kind: "changed",
+        title: "Saved decks last one season",
+        text: "Saved decks are wiped when the monthly leaderboard rolls over, for the first time on 1 December 2026. The deck of a run you are still playing is saved again as you play on, so it stays. The Saved decks page says when the next wipe is. Your cosmetics are never wiped.",
+      },
+      {
+        kind: "new",
+        title: "The S|R crest on the card back",
+        text: "The card back carries the S|R crest: on your draw pile, and on a card as it flies to or from your hand.",
+      },
+    ],
+    heads: "Saved decks from before December are wiped on 1 December 2026, when the leaderboard rolls over. A run you are still playing keeps its deck.",
+  },
+  {
     version: "0.247.0",
     date: "2026-11-10",
     title: "Every copy grows, and a last Sanctify",

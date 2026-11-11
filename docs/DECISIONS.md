@@ -1828,3 +1828,85 @@ Robert: "for the shrines at tier 12, lets add a walk away option and a sanctifie
 - **Walk away:** a choice tile beside the others (the button under the choices is gone at these shrines), leaving the deck as it is.
 - **Still no** healing, wagers or engraving at these shrines.
 - Loaded Dice at a Gambler's Shrine is unchanged: the roll is the same function (`rollCard`), its sentence now says "The roll comes up high/low" for both.
+
+## 734 - The business plan: a paid game on Steam, a cosmetic store, a free playtest first (2026-11-10)
+
+Robert, over one conversation about the public roadmap. This replaces the older plan of a free web game funded by Ko-fi donations (#15, `06_WEB_PLATFORM.md` §1-2, `12_STEAM_READINESS.md` §5 as it stood).
+
+- **Paid on Steam.** "lets do a paid release on steam". Steam is the main release; phone app stores after it "if possible". No price is promised yet (the old $7.99-$9.99 is not a commitment).
+- **Testing is free, through Steam Playtest.** "it will be free using steam playtests". Until then the web and Windows builds stay free as they are.
+- **Paid Early Access comes with a keepsake:** "an early support cosmetic of some sort". What it is has not been chosen.
+- **A fresh start at release.** "progress will not carry over, the release of the game comes with fresh starts for everyone". Players must be told this before release, on the roadmap and in the game. Claude's reading: the wipe is at the paid release; whether Early Access progress is wiped again at 1.0 has not been said.
+- **Cosmetics, two ways:** earned by playing, and bought in a store in the game. The store uses Steam's Microtransaction API. **No DLC packs and no Steam Inventory Service** ("i dont want dlc or an inventory service"). Looks only, never power.
+- **No pay-to-win, ever.** "100% staying true". The only promise carried over from the old roadmap.
+- **The web version is not promised to stay free or whole.** "cant promise the web version". Later it becomes a cut-down demo: "only a few characters to play from and ... a stripped down version of the game in some way". What is cut has not been chosen. Until then it stays as it is.
+- **Selling from the website:** no (settled in #736).
+- **Animated hero models are off the roadmap.** "i want to do them eventually but its hard for me to do manually". The beta setting stays; nothing more is promised.
+- **Campaign direction:** a smoother start for new players, and a campaign that is a real challenge ("actually fun with a challenge not too easy").
+- **The roadmap's shape:** Playable now, Working on (broad themes, no dates), Planned, Ideas we're exploring, Good to know. `ROADMAP.md` is rewritten to it. No roadmap page exists in the game yet (the `content/roadmap.ts` the old file named was never there); building one waits on Robert.
+- **Left open:** Ko-fi and supporter codes (never built into the client; the old perk tiers are no longer a plan), the price, and what the demo holds. Seasons and the second wipe are settled in #736.
+- **Not checked against Valve's documents:** Claude's account of the Steam cut, refunds, Playtest and key rules came from general knowledge. Read the Steamworks documentation before building on any of it.
+
+## 736 - Monthly seasons: decks wiped, ranked soft reset, seasonal cosmetic rewards (2026-11-10)
+
+Robert, answering what #734 left open.
+
+- **No keys sold from the website.** "no selling keys from website". Sales go through the stores.
+- **A season is a month, and saved decks are wiped when it ends.** "decks are seasonal in that they will be wiped each month when the leaderboard rolls over". This replaces the old weekly wipe in `03_CAMPAIGN.md` §7 and pillar 5.
+- **Ranked has a soft reset each month.** Already built: `carryOver` (`packages/pvp/src/ranks.ts`) pulls a rating halfway back to the start at a new season.
+- **Early Access progress is wiped too.** "early access progress is wiped, thats part of the game concept". Starting over is the game: "players play the game every month and maybe decide to play ranked for ranked rewards".
+- **Seasonal rewards, for both modes.** "there are different seasonal rewards for each season of campaign and arena play. id like to have some kind of cosmetics for each." So each season has a Campaign reward track and an Arena (ranked) reward track, each giving cosmetics. What they are and how they are earned has not been designed.
+- **Cosmetics survive every wipe** (confirmed by Robert the same day: "players never lose access to the cosmetics", Early Access included).
+- **Built in #737:** the monthly wipe of saved decks and the plumbing for seasonal rewards. `SEASON_THEMES` (#241) is still empty.
+
+## 735 - The default card back carries the S|R crest (2026-11-10)
+
+Robert: "id also like the default card back skin to have the S|R logo on it. we will have custom card backs at some point but this is it for now". One card back for everyone until custom ones are made.
+
+- **Where a card back is seen:** the draw pile's four paintings (`pile-draw-1..4`) and the face-down card that flies between a pile and the hand (`.fxcard`). Nothing else draws one today (the Arena shows the opponent's hand as a count).
+- **The draw pile:** the crest from `assets-src/icons/shattered-rifts-logo.png` is laid over the centre gem of each painting, slanted to the top card's face. The plain paintings are kept in `assets-src/icons/pile-draw-plain` (that folder is not in git, like the logo's source; the plain ones are also the `pile-draw-*.png` of release 0.247.0 in git history); `pnpm --filter @sr/tools cardback:crest` writes the crested ones (`tools/src/cardBackCrest.ts`, placement numbers set by eye).
+- **The flying card:** the crest on its violet face, through a CSS variable set in `flyCard` (the picture's address depends on the build's base path).
+- Custom card backs later will need the pile paintings and the flying card to follow the chosen back (built in #737).
+
+## 737 - The monthly deck wipe, and the plumbing for seasonal cosmetics (2026-11-10)
+
+Robert, after #736: "yes cosmetics survive every wipe even in early access. players never lose access to the cosmetics. i like your ideas for the seasonal cosmetics ... id like you to build the plumbing for that stuff and the monthly deck wipe". The ideas he liked, kept for the roadmap: a Campaign card back each season for the highest Rift Tier cleared (a better one for Tier XII), and an Arena name plate or title in the colour of the highest rank reached, shown to opponents; neither earnable again once the season is over.
+
+**The deck wipe**
+- **The rule (`deckExpired`, packages/pvp/src/vault.ts):** a saved deck lasts the season it was last saved in. When the monthly leaderboard rolls over (the 1st, midnight Pacific, the same moment ranks reset), every deck saved before that moment is wiped.
+- **A run still going keeps its deck.** A run saves its deck again after every stop, so a run played on into the new season has a deck of the new season. Only decks of runs no longer played go. (Claude's choice, following the old design's "runs in progress carry over".)
+- **The first wipe is 1 December 2026 (`FIRST_DECK_WIPE`).** Until then nothing is wiped, however old. Without this, decks saved in October would have vanished the moment the update went out, with no warning. **If the release slips past 1 December, move this date**, or everything saved before the current month goes at once.
+- **The server does the wiping** (the player's Vault object, by the server's clock, the first time it is asked anything in a new season). A device only leaves expired decks out of what it shows and never asks for one to be removed, so a device with a wrong clock cannot wipe anything.
+- **A safety copy:** the decks a wipe takes are set aside (`past_decks`) until the next wipe replaces them, and can be read back (`POST /pvp/vault/pastdecks`). Nothing plays with them and no page shows them yet. It is there so a wrong wipe can be undone, and could become a "last season's decks" page.
+- **A deck of a season that has ended is not taken back** from a device that was offline over the turn of the month; the server says so (`expired`) and the deck leaves that device's list.
+- **Wrong device clocks (from the review):** a deck's save time is the device's. A device now sends what its clock reads, and when that is more than ten minutes off the server's, the save time is moved by the difference. So a slow clock does not lose a deck saved just after the month turned, and a fast one cannot bring back a deck the wipe took. A save time is never later than the server's now. Once the server has taken a deck, its copy stands for the device's.
+- **The Saved decks page says it:** when the next wipe is, how long is left, and that cosmetics are never wiped.
+- **Not wiped:** cosmetics, runs in progress, run history, match history, trophies. **Ghost decks are also left as they are** (Claude's choice, for Robert to confirm): a wiped deck can still be met as a ghost and still shows on the deck lookup until it ages out as before (70 days unplayed). Wiping ghosts with the decks would leave the Arena with no ghosts to meet on the 1st of each month.
+
+**Cosmetics never go away**
+- Owning only ever grows; no wipe touches the cosmetics table (tested with a wipe in between).
+- **Card backs and name plates exist as kinds of cosmetic** (packages/content/src/v2/cosmetics.ts: `CARD_BACKS`, `PLATES`, both empty; ids start `back-` and `plate-`). The S|R crest back (#735) is not an item: choosing none shows it.
+- **A player's cosmetics gain "in use" slots** (`using.cardBack`, `using.plate`), merged between devices like a worn skin: the newest choice wins, and only something owned can be in use. Older clients ignore the new field and lose nothing.
+- **Earned and sold cosmetics are given only by the server.** A card back or name plate is earned unless it is marked `free`, so a reward cannot be left free to take by a slip. An earned or priced item that a device claims to own is dropped (`selfClaimed`); the Vault's `grant` action adds it, and no request from outside can name that action. Skins stay free to take, as before.
+- **A chosen card back is shown** on the draw pile and the flying card, from `public/art/cardbacks/<id>/` (`pile-draw-1..4.png`, `face.png`); a picture that fails to load falls back to the crest.
+
+**Season rewards**
+- **Where a season's rewards go:** `SEASON_REWARDS` (packages/pvp/src/seasons.ts), by season key: Campaign rewards by Rift Tier cleared, Arena rewards by rank. **It is empty: no season has rewards yet**, and while it is empty the game asks the server nothing extra.
+- **What the leaderboard now remembers:** the highest Rift Tier each player cleared in each season (`season_tiers`; the run table could not say, as a run played into the next season moves there). A tier counts in the season it was cleared in: only the report that clears it is credited, and only for a run the board already knew (a run it first hears of far along is not taken at its word). The Arena side uses the season's peak rating, already kept, and needs the 3 ranked games that put a player on the season's board.
+- **Giving them:** when the game opens, and again when a run clears a tier, it asks (`POST /pvp/vault/seasonclaim`); the server looks up this season and the last, works out what was earned and adds it to the player's cosmetics. Asking again gives nothing twice. A reward can be collected until its season's records are pruned (70 days), so a player who earned one in their last sitting of a season gets it when they come back the next month.
+- **Campaign rewards rest on the browser's word** for now: campaign progress on the boards is trusted from the client (12_STEAM_READINESS §6). Server-verified runs should come before a seasonal reward is worth cheating for.
+
+**Not built, on purpose (nothing exists to show yet):** the Collection's pages for card backs and name plates and the buttons to choose one (the state and `choose()` are there); showing a name plate to an Arena opponent (the match would have to carry it and the server check it is owned); telling a player what they just earned; the first season's art and rewards. An opponent's flying cards show your own card back.
+
+## 738 - A card being aimed waits at the bottom centre, clear of the board (2026-11-10)
+
+Robert: a friend on a Mac laptop "couldnt target an enemy ... because hovering on the card in their hand covered up the enemy"; "re-assess how card selection should work and find a solution that is polished and as players would expect of a top notch game".
+
+- **What was wrong:** a card clicked for aiming stayed where it was in the fan, lifted and grown to 1.28. On a short window (a 13-inch laptop's browser is about 680 px tall) that card reaches more than half way up the screen and stands over the enemies' feet, names and health bars. Worse, the invisible area that keeps a hovered card lifted lay over the enemy too, so a click meant for the enemy landed on the card and let it go. Dragging had the same fault: the card waited, raised, above its place in the hand.
+- **The rule now, as the best games of the kind do it:** the hand is for reading and choosing; the board is for aiming. The moment a card needs a target (clicked, picked by its number key, tapped, or dragged up out of the hand), it glides to the bottom centre of the screen and waits there upright at its resting size, the rest of the hand drops and dims, and the arrow runs from the top of that card. Nothing of the hand stands over the board, and the hand does not answer the pointer until the target is chosen.
+- **Letting go:** click the waiting card, right-click, Esc, or Cancel. Clicking another card in the dropped hand plays it or aims it instead.
+- **A carried card glides, never jumps:** a dragged card is now placed the same way as every other card in the fan, so it slides to the dock and back.
+- **Smaller things:** the area that keeps a hovered card lifted stops at the card's own top (it reached a quarter of a card higher, over the board); on a short window the "Click a glowing target" bar sits under the title, where it does not cover what the enemies will do next.
+- **Unchanged:** hovering to read a card (it still lifts and grows; it has to, a resting card's text runs off the bottom of the screen), cards with no target or one target (they play at once), and the grid a phone held upright uses.
+- **Checked** in a real fight at 1280 x 680 with a mouse: click to aim and click the enemy, drag to aim and let go on the enemy, click the waiting card to put it back.
+- **Left for later:** a hovered card still covers what is right above it while it is read. Shrinking the lift on short screens would make the card harder to read, so it stays; moving the pointer off the card puts it back at once.

@@ -3,8 +3,17 @@
 // it follows them from device to device. Getting a skin is free for now.
 
 import { useSyncExternalStore } from 'react';
-import { cleanCosmetics, mergeCosmetics, wornSkin, type Cosmetics } from '@sr/pvp';
-import { skinDef } from '@sr/content/v2';
+import {
+  SEASON_REWARDS,
+  cleanCosmetics,
+  inUse,
+  mergeCosmetics,
+  rewardSeasons,
+  wornSkin,
+  type Cosmetics,
+  type Slot,
+} from '@sr/pvp';
+import { cosmeticDef, skinDef } from '@sr/content/v2';
 import { serverBase } from '../pvp/config';
 import { getVaultCode, vaultKey, whoAmI } from '../pvp/vaultSync';
 import { loadSkin } from '../art/assets';
@@ -38,6 +47,9 @@ export const cosmetics = (): Cosmetics => state;
 
 /** The skin this player's Riftwalker wears, if any: only ever theirs (an opponent of the same class keeps their own look). */
 export const mySkin = (hero: string): string | undefined => wornSkin(state, hero);
+
+/** The card back this player has chosen, if any (none: the S|R crest everyone starts with). */
+export const myCardBack = (): string | undefined => inUse(state, 'cardBack');
 
 const subscribe = (l: () => void): (() => void) => {
   listeners.add(l);
@@ -91,4 +103,40 @@ export function wear(hero: string, skin: string | null): void {
   set({ ...state, worn: { ...state.worn, [hero]: { skin, at } } });
   if (skin) void loadSkin(skin);
   void syncCosmetics();
+}
+
+/** Use a card back or a name plate the player owns, or null for the one everyone starts with (DECISIONS #737). */
+export function choose(slot: Slot, id: string | null): void {
+  if (id !== null && (cosmeticDef(id)?.kind !== slot || !state.owned.includes(id))) return;
+  // (a clock that went backwards still makes this the newest choice)
+  const at = Math.max(Date.now(), (state.using?.[slot]?.at ?? 0) + 1);
+  set({ ...state, using: { ...state.using, [slot]: { id, at } } });
+  void syncCosmetics();
+}
+
+/**
+ * Ask the server for the season rewards this player has earned (DECISIONS #737): it works them out from the leaderboard (the highest
+ * Rift Tier cleared, the peak rank) and adds them to the Vault's cosmetics, for good. While no season has rewards nothing is sent.
+ * Returns the cosmetics that were new, for whoever wants to say so.
+ */
+export async function claimSeasonRewards(): Promise<string[]> {
+  if (!rewardSeasons(Date.now()).some((s) => SEASON_REWARDS[s.key])) return [];
+  try {
+    const me = await whoAmI();
+    // (a guest who has never had a Vault code has played nothing the leaderboard knows of)
+    if (!me.signedIn && getVaultCode() === null) return [];
+    const key = vaultKey();
+    const res = await fetch(`${httpBase()}/pvp/vault/seasonclaim`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(key === null ? {} : { code: key }),
+    });
+    const data = (await res.json()) as { ok?: boolean; cosmetics?: unknown; granted?: unknown };
+    if (!data.ok || data.cosmetics === undefined) return [];
+    const before = state.owned;
+    set(mergeCosmetics(state, cleanCosmetics(data.cosmetics)));
+    return state.owned.filter((id) => !before.includes(id));
+  } catch {
+    return [];
+  }
 }

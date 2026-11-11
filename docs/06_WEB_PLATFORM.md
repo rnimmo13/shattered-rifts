@@ -1,16 +1,22 @@
 # Shattered Rifts: Web Version Platform (donations, roadmap, saves, hosting)
 
-The web version is **free to play**, funded by **Ko-fi donations**, and is the proving ground for the
-Steam game. It has to answer, in plain sight: *what is this, what will it become, and what does my
-money pay for?*
+> **The plan changed on 2026-11-10 (DECISIONS #734).** Shattered Rifts will be a **paid game on Steam** (phone app
+> stores after, if possible) with cosmetics earned by playing and a cosmetic store using Steam's Microtransaction
+> API. Testing is free, through Steam Playtest; paid Early Access comes with a cosmetic keepsake; everyone starts
+> fresh at release. The web version is free while the game is in testing and later becomes a cut-down demo (a few
+> characters, a smaller game); it is **not** promised to stay free or whole. No pay-to-win, ever.
+>
+> **§1 (Ko-fi, supporter perks and codes) and §2 (the funding roadmap) below are the old plan, kept for the
+> record. Do not build from them.** None of it was ever built into the client. The roadmap's current text and shape
+> are in `ROADMAP.md`. §3-§5 were written for the first web build and are out of date in places (saves are on the
+> server, export/import is gone, hosting is Cloudflare); the newer docs and DECISIONS are right where they differ.
 
-> **Current phase (2026-10-22): private beta.** For now the web build is for Robert and friends, to test the run
-> and PvP loop and gather feedback. Ko-fi, supporter codes, analytics and public hosting (§1, §4) switch on at
-> the public launch. Until then, keep them designed but turned off.
+*The old opening, for the record:* the web version was to be free to play, funded by Ko-fi donations, and the
+proving ground for the Steam game.
 
 ---
 
-## 1. Donations: Ko-fi
+## 1. Donations: Ko-fi *(old plan, superseded by DECISIONS #734)*
 ### 1.1 Placement (visible but never nagging)
 - The **Support & Roadmap** tile in the Sanctum (always there).
 - A small heart button in the top bar of the Sanctum and map screens (never on the duel screen).
@@ -54,7 +60,7 @@ money pay for?*
   data needed.
 - At Steam launch, codes redeem once against an account, which moves perks into the Steam version.
 
-## 2. Public roadmap
+## 2. Public roadmap *(old plan, superseded by DECISIONS #734; see `ROADMAP.md`)*
 Players should see exactly what they're funding. The roadmap lives **in the game** (Sanctum → Support &
 Roadmap) and at **`/roadmap`** on the site, both rendered from `apps/web/src/content/roadmap.ts`.
 

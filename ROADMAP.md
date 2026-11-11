@@ -1,50 +1,46 @@
 # Shattered Rifts: Public Roadmap
 
-*This is what players see on the in-game Support & Roadmap screen and at `/roadmap`. Keep it honest, plain
-and up to date. The source of truth for the game is `apps/web/src/content/roadmap.ts`. Keep the two in sync.*
+*The player-facing roadmap (DECISIONS #734). Keep it honest, plain and up to date. It has no dates on purpose: the
+game changes almost daily, and the patch notes carry the detail. There is no roadmap page in the game yet; when one
+is built it should show this text.*
 
 **Shattered Rifts** is a deep, trap-filled card-dueling game. Walk between shattered worlds, defeat their
-Wardens, and bind their power into your Grimoire. The web version is free and always will be. Your
-support funds the full game on Steam.
+Wardens, and take the decks you build into the Arena.
+
+The game is in testing and changes almost daily. See the patch notes for what is new.
 
 ---
 
-## 🟢 Phase 1: Friends Alpha *(in progress)*
-- The core duel: units, spells, **traps**, and the Chain
-- Three characters: **Ser Maren** (Aurelion), **Rivet** (Nexus-9), **Kesh** (Wyldmaw)
-- The first Rift Tier and its Warden, card rewards, shops and shrines
-- Save export/import
+## Playable now *(free while the game is in testing)*
+- Ten Riftwalkers, each with three Ascendancies
+- A twelve-tier campaign across eleven realms, ending with Drago
+- The Arena: bring your campaign decks against other players and their ghosts
+- In the browser, on phones, and as a Windows app
 
-## 🔵 Phase 2: The Full Run & PvP Beta
-- All 20 Rift Tiers, including the Umbral Veil (the trap realm), and the final boss **Valerion**
-- Unlock a fourth character: **Vesper Nightlace**
-- **Stop or Continue:** your deck is saved for PvP as you go; push one Rift Tier deeper and a fall takes it out of the Arena
-- **Rift Tiers I–X**, Boons, events, Tempering, foil and alternate-art drops
-- **PvP:** casual matches, ghost duels against other players' decks, the **Weekend Rift Tournament** and a
-  weekly leaderboard
+## Working on
+- Balance, so every class has several ways to win
+- A campaign that stays a real challenge
+- A smoother start for new players
 
-## 🟣 Phase 3: Polish *(funding goal)*
-- Full animations and effects for every card and realm
-- Original music and sound design
-- Commissioned hero art for every Legendary and Mythic card
-- Tutorial and accessibility options
+## Planned
+- A free playtest on Steam
+- Paid Early Access on Steam, with a cosmetic keepsake for early supporters
+- Phone app stores, if possible
+- Monthly seasons: saved decks and ranks start over each month, with new cosmetic rewards each season: a card back
+  for how far you climb in the Campaign, and a name plate for the Arena rank you reach. What you earn is yours for good
+- Cosmetics you earn by playing, and a cosmetic store (looks only, never power)
+- Original music
+- Unique art for every card
 
-## 🟠 Phase 4: Steam Early Access *(funding goal)*
-- Desktop release on Steam (planned price $7.99–$9.99)
-- Achievements, cloud saves, import your web progress
-- PvP and **Weekly Rift Tournaments** with cosmetic prizes, for everyone
-
-## ⚪ Phase 5: 1.0 and beyond
-- New Realms: *Ashen Necropolis* (undead) and *Tidebreak* (deep sea)
-- ~250 cards, new Wardens, seasonal events
+## Ideas we're exploring
+*Maybes, not promises.*
+- Enemies that set Traps
+- A daily challenge on a shared seed
+- Mastery rewards for each Riftwalker
 
 ---
 
-### Where your support goes
-Hero art commissions · music & SFX · Steam fees and store assets · PvP servers · playtesting
-
-### Our promises
+### Good to know
+- **This is a test version.** Everyone starts fresh when the full game releases; progress made now does not carry over.
+- **The full game will be a paid game.** The web version will become a smaller demo of it.
 - **No pay-to-win. Ever.** Every deck is built by playing.
-- Decks are seasonal, but your characters, unlocks and cosmetics are yours forever.
-- The web version stays free.
-- Supporter rewards are cosmetic and carry over to Steam.

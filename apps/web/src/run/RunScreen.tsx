@@ -90,6 +90,7 @@ import { stagesInAll } from '@sr/pvp';
 import { stagesCleared } from '../pvp/vault';
 import { progressLabel } from '../pvp/deckLayout';
 import { reportRun } from '../pvp/boardApi';
+import { claimSeasonRewards } from '../cosmetics/cosmetics';
 import { syncSavedRuns } from './syncRuns';
 import { getName, hasUsername } from '../pvp/config';
 import { AscendReveal } from './AscendReveal';
@@ -273,6 +274,9 @@ export default function RunScreen() {
       stage: done,
       name: getName() || 'Riftwalker',
       playMs: r.elapsedMs,
+    }).then(() => {
+      // (DECISIONS #737) a tier just cleared may have earned the season's Campaign reward (nothing is asked while no season has any)
+      if (done === 3) void claimSeasonRewards();
     });
   }, [resumedSeed]);
 

@@ -61,6 +61,7 @@ import {
   carryOver,
   rateMatch,
   seasonOf,
+  type SeasonRecord,
   type RankBadge,
   type RankedStanding,
   isArenaBalanceGame,
@@ -310,6 +311,14 @@ export class Leaderboard extends DurableObject<Env> {
        )`,
     );
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ratings_board ON ratings (season, rating)');
+    // the highest Rift Tier each player cleared in each season (DECISIONS #737): what a season's Campaign rewards are given for.
+    // (The runs table cannot say: a run played on into the next season moves there with its newest progress.)
+    ctx.storage.sql.exec(
+      `CREATE TABLE IF NOT EXISTS season_tiers (
+         player TEXT NOT NULL, season INTEGER NOT NULL, tier INTEGER NOT NULL, at INTEGER NOT NULL,
+         PRIMARY KEY (player, season)
+       )`,
+    );
     // Arena replays (DECISIONS #239): each finished game, kept a while so it can be watched again from a link
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS replays (
@@ -508,6 +517,49 @@ export class Leaderboard extends DurableObject<Env> {
     this.ctx.storage.sql.exec('DELETE FROM limits WHERE window < ?', Math.floor(before / DAY));
     // (ratings: a season is only ever carried over from the one before, so older ones can go)
     this.ctx.storage.sql.exec('DELETE FROM ratings WHERE season < ?', before);
+    // (a season's rewards can be given until its records go: rewardSeasons)
+    this.ctx.storage.sql.exec('DELETE FROM season_tiers WHERE season < ?', before);
+  }
+
+  // ---- a season's records (DECISIONS #737) ----
+
+  /** A run has just cleared this Rift Tier: the season it happened in remembers the highest. */
+  private noteTierCleared(player: string, cleared: number, now: number): void {
+    this.ctx.storage.sql.exec(
+      `INSERT INTO season_tiers (player, season, tier, at) VALUES (?, ?, ?, ?)
+       ON CONFLICT (player, season) DO UPDATE SET tier = excluded.tier, at = excluded.at WHERE excluded.tier > season_tiers.tier`,
+      player,
+      seasonOf(now),
+      cleared,
+      now,
+    );
+  }
+
+  /** What a player did in each of the seasons asked about: the highest Rift Tier cleared, the peak rating and the ranked games. */
+  private seasonRecords(player: string, seasons: readonly number[]): Record<string, SeasonRecord> {
+    const out: Record<string, SeasonRecord> = {};
+    for (const season of seasons) {
+      const tier = this.ctx.storage.sql
+        .exec<{ tier: number }>(
+          'SELECT tier FROM season_tiers WHERE player = ? AND season = ?',
+          player,
+          season,
+        )
+        .toArray()[0];
+      const rating = this.ctx.storage.sql
+        .exec<{ games: number; peak: number }>(
+          'SELECT games, peak FROM ratings WHERE player = ? AND season = ?',
+          player,
+          season,
+        )
+        .toArray()[0];
+      out[String(season)] = {
+        tierCleared: tier?.tier ?? 0,
+        peak: rating?.peak ?? 0,
+        games: rating?.games ?? 0,
+      };
+    }
+    return out;
   }
 
   // ---- Arena ranks ----
@@ -1517,6 +1569,8 @@ export class Leaderboard extends DurableObject<Env> {
         b['player'],
         run,
       );
+      // (only the report that clears a tier: stepping into the next tier is the same clear told again, perhaps a season later)
+      if (stage === 3) this.noteTierCleared(b['player'], tier, now);
       return json({ ok: true, counted: true });
     }
     // a run the board has not heard of is taken where it says it is (DECISIONS #232): runs played before the board, before a
@@ -1550,6 +1604,8 @@ export class Leaderboard extends DurableObject<Env> {
       completed ? 'completed' : null,
       playMs,
     );
+    // (a run the board has only now heard of is not credited with a cleared tier for the season: it may have cleared it some other
+    // time, and a made-up first report would otherwise be taken at its word. Its next clear counts.)
     this.prune(now);
     return json({ ok: true, counted: true });
   }
@@ -1838,6 +1894,16 @@ export class Leaderboard extends DurableObject<Env> {
     }
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
+    // (asked by the Worker when a player's season rewards are worked out: DECISIONS #737)
+    if (url.pathname === '/season/record') {
+      const seasons = Array.isArray(body['seasons'])
+        ? (body['seasons'] as unknown[])
+            .filter((x): x is number => typeof x === 'number' && Number.isSafeInteger(x))
+            .slice(0, 4)
+        : [];
+      if (!isId(body['player'])) return json({ ok: false, error: 'bad-player' }, 400);
+      return json({ ok: true, records: this.seasonRecords(body['player'], seasons) });
+    }
     if (url.pathname === '/name/claim') return this.claimName(body, now);
     if (url.pathname === '/name/of')
       return json({

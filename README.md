@@ -3,8 +3,9 @@
 *Working title.* A deep, combo-heavy, trap-driven card-dueling game. Walk between shattered worlds,
 defeat their Wardens, and bind their power into your Grimoire.
 
-- **Now:** a free web campaign (funded by Ko-fi donations)
-- **Goal:** a full game on Steam with PvP and weekly tournaments
+- **Now:** in testing, free in the browser and as a Windows app
+- **Goal:** a paid game on Steam (free Steam Playtest first, then Early Access), with cosmetics earned by playing and a
+  cosmetic store. No pay-to-win, ever. The web version later becomes a smaller demo (DECISIONS #734)
 
 ## Start here
 - `CLAUDE.md`: guide for AI coding agents (and humans)

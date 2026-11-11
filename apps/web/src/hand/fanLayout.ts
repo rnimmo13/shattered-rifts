@@ -132,5 +132,30 @@ export function handReserve(cardWidth: number): number {
   return Math.round(cardWidth * 1.4 + 6);
 }
 
+/** How far the lifted card of a fan reaches up from the bottom of the screen (px): it grows to 1.28 and rises 0.4 of its width. */
+export function liftedTop(cardWidth: number): number {
+  return cardWidth * 1.4 * 1.28 + cardWidth * (0.4 - HAND_SINK);
+}
+
+/**
+ * Where a card waits while its target is chosen (2026-11-10): upright at the bottom centre of the screen, at its resting size and
+ * barely raised, so it never stands over the board. `top` is how far its top edge is from the bottom of the screen; the aiming arrow
+ * starts there. `bench` is how far the rest of the hand drops while it waits.
+ */
+export function aimDock(cardWidth: number): {
+  lift: number;
+  scale: number;
+  top: number;
+  bench: number;
+} {
+  const lift = Math.round(cardWidth * 0.08);
+  return {
+    lift,
+    scale: 1,
+    top: Math.round(cardWidth * 1.4 + lift),
+    bench: Math.round(cardWidth * 1.4 * 0.4),
+  };
+}
+
 /** Resting cards sink this far (fraction of card width) below the screen edge; hovering lifts them clear. */
 export const HAND_SINK = 0.03;

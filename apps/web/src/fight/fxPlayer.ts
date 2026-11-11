@@ -6,6 +6,8 @@ import { getBaseSpeed } from '../duel/scene/timescale';
 import { loadEffectsMode, markEffectsMode, prefersReducedMotion } from '../duel/effects';
 import { stripRoll } from '@sr/content/v2';
 import { FX_IDS, type FxId } from './fxMoments';
+import { cardBackFaceUrl, crestUrl } from '../cosmetics/cardBack';
+import { myCardBack } from '../cosmetics/cosmetics';
 import './fx.css';
 
 export interface Spot {
@@ -269,6 +271,12 @@ export function flyCard(from: Spot, to: Spot, o: FlightOpts = {}): void {
   const el = document.createElement('i');
   el.className = 'fxcard';
   el.style.width = `${o.size ?? 44}px`;
+  // (DECISIONS #735, #737) the player's card back: the one they chose, or the default with the S|R crest on it
+  const face = cardBackFaceUrl(myCardBack());
+  if (face) {
+    el.classList.add('fxcard--face');
+    el.style.setProperty('--fxcard-face', `url("${face}")`);
+  } else el.style.setProperty('--fxcard-crest', `url("${crestUrl()}")`);
   fly(el, from, to, o);
 }
 

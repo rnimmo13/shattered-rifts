@@ -5,6 +5,7 @@ import { DeckReport } from './DeckReport';
 import { VAULT_SLOTS, dropFrom, loadVault, saveVault, type VaultDeck } from './vault';
 import { gameplayAction } from '../playAccess';
 import { remoteVault, syncVault, vaultKey, whoAmI } from './vaultSync';
+import { deckWipeLine } from './seasonText';
 import '../play/play.css';
 import './decks.css';
 
@@ -34,6 +35,8 @@ export default function SavedDecksScreen() {
   const [decks, setDecks] = useState<VaultDeck[]>(loadVault);
   const [sync, setSync] = useState<SyncState>({ kind: 'checking' });
   const checking = sync.kind === 'checking';
+  // (DECISIONS #736) when the season ends and the saved decks with it, said as the page opens
+  const [wipeLine] = useState(() => deckWipeLine(Date.now()));
   /** a deck was removed by hand, so a sync still on its way must not bring it back */
   const touched = useRef(false);
   const live = useRef(true);
@@ -95,6 +98,7 @@ export default function SavedDecksScreen() {
           saved. Playing in the Arena never costs you a deck. To make room for a new one, remove an
           old one.
         </p>
+        <p className="setup__lead decks__season">{wipeLine}</p>
         <p className="decks__links">
           <a href="#/arena">Take a deck into the Arena</a> ·{' '}
           <a href="#/arena-rules">What the Arena takes</a>

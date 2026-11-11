@@ -3,6 +3,7 @@
 // cosmetic); a season without one is named for its month. Nothing is themed yet: SEASON_THEMES is where the first one goes.
 
 import { civilMonth, periodEnd, periodStart } from './board';
+import { RANKED_MIN_GAMES, RANKS, rankOf, type RankName } from './ranks';
 
 export interface SeasonTheme {
   /** "The Frozen Rift" */
@@ -60,4 +61,53 @@ export function seasonAt(now: number): Season {
     ...(theme ? { theme } : {}),
     ends: periodEnd(now, 'month'),
   };
+}
+
+// ---- a season's rewards (DECISIONS #737) ----
+//
+// Each season gives cosmetics of its own, one set for Campaign play and one for Arena play. They are earned in that season only and
+// kept for good. Nothing is made yet: SEASON_REWARDS is where a season's rewards go, by season key, naming cosmetics from
+// packages/content/src/v2/cosmetics.ts (marked `earned`, so only the server can give them).
+
+export interface SeasonRewards {
+  /** Campaign: clearing this Rift Tier, or a higher one, during the season gives the cosmetic */
+  campaign: readonly { tier: number; cosmetic: string }[];
+  /** Arena: standing at this rank, or a higher one, at any time in the season (by the season's peak rating) gives the cosmetic */
+  arena: readonly { rank: RankName; cosmetic: string }[];
+}
+
+/** Rewards by season key ("2026-12"). */
+export const SEASON_REWARDS: Readonly<Record<string, SeasonRewards>> = {};
+
+/** What a player did in one season, as the leaderboard knows it. */
+export interface SeasonRecord {
+  /** the highest Rift Tier cleared (0: none) */
+  tierCleared: number;
+  /** the highest rating reached */
+  peak: number;
+  /** ranked games played */
+  games: number;
+}
+
+export const NO_SEASON_RECORD: SeasonRecord = { tierCleared: 0, peak: 0, games: 0 };
+
+/** The cosmetics a season's record has earned. A rank counts only with enough ranked games to be on the season's board. */
+export function rewardsEarned(rewards: SeasonRewards | undefined, record: SeasonRecord): string[] {
+  if (!rewards) return [];
+  const out: string[] = [];
+  for (const r of rewards.campaign) if (record.tierCleared >= r.tier) out.push(r.cosmetic);
+  if (record.games >= RANKED_MIN_GAMES) {
+    const reached = rankOf(record.peak).tier;
+    for (const r of rewards.arena) if (reached >= RANKS.indexOf(r.rank)) out.push(r.cosmetic);
+  }
+  return [...new Set(out)];
+}
+
+/**
+ * The seasons whose rewards can still be given: this one, and the one before (a reward earned in a player's last sitting of a season
+ * is given when they next come back; the leaderboard keeps a finished season's records for BOARD_KEEP_DAYS).
+ */
+export function rewardSeasons(now: number): Season[] {
+  const current = seasonAt(now);
+  return [current, seasonAt(current.id - 1)];
 }
