@@ -46,6 +46,28 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.253.0",
+    date: "2026-11-11",
+    title: "No monthly wipe",
+    summary: "Saved decks are kept from month to month. The wipe planned for 1 December will not happen.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Saved decks are kept",
+        text: "Saved decks are no longer wiped when the monthly leaderboard rolls over, and the wipe announced for 1 December 2026 will not happen. You keep your decks and everything else from month to month. Only your Arena rank resets each month, part of the way, as before.",
+      },
+      {
+        kind: "changed",
+        text: "The one wipe still planned is when the game is released: everyone starts fresh then. Your cosmetics are never wiped.",
+      },
+      {
+        kind: "new",
+        title: "Decks an update leaves unplayable",
+        text: "If an update ever leaves one of your saved decks unplayable (a card it holds is no longer in the game, say), the Saved decks page now tells you which deck and why, instead of the deck quietly disappearing. Press Got it and the deck is set to inactive: it stays in a short list at the foot of the page and takes none of your deck slots. If a later update makes it playable again it comes back by itself. Only you can remove it.",
+      },
+    ],
+  },
+  {
     version: "0.252.0",
     date: "2026-11-11",
     title: "Enemy Traps",
@@ -184,7 +206,7 @@ export const PATCH_NOTES: PatchNote[] = [
         text: "The card back carries the S|R crest: on your draw pile, and on a card as it flies to or from your hand.",
       },
     ],
-    heads: "Saved decks from before December are wiped on 1 December 2026, when the leaderboard rolls over. A run you are still playing keeps its deck.",
+    heads: "Cancelled in 0.253.0: saved decks are not wiped. (This patch had announced a wipe of saved decks on 1 December 2026.)",
   },
   {
     version: "0.247.0",

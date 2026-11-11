@@ -1,6 +1,6 @@
 /// <reference types="node" />
-// Seasons on the server (DECISIONS #736, #737): saved decks are wiped when the month turns, cosmetics never are, earned cosmetics are
-// only ever given by the server, and the leaderboard remembers what each player did in a season.
+// Seasons on the server (DECISIONS #736, #737, #753): saved decks are kept when the month turns, earned cosmetics are only ever
+// given by the server, and the leaderboard remembers what each player did in a season.
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DatabaseSync, type SQLInputValue } from 'node:sqlite';
@@ -21,7 +21,7 @@ vi.mock('@sr/content/v2', async (original) => {
 });
 
 import { RIFTWALKERS } from '@sr/content/v2';
-import { FIRST_DECK_WIPE, RATING_START, seasonOf } from '@sr/pvp';
+import { RATING_START, seasonOf } from '@sr/pvp';
 import { Vault } from './vault';
 import { Leaderboard } from './board';
 
@@ -111,8 +111,8 @@ const deck = (id: string, bankedAt: number) => ({
 const ids = (data: Record<string, unknown>): string[] =>
   (data['decks'] as { id: string }[]).map((d) => d.id);
 
-describe('saved decks are wiped when the season ends (DECISIONS #736)', () => {
-  it('keeps every deck until the first wipe, then wipes what was saved before the month turned', async () => {
+describe('saved decks are kept when a season ends (DECISIONS #753)', () => {
+  it('keeps every deck across the turn of a month, however old', async () => {
     vi.setSystemTime(NOV_10);
     const v = vault();
     const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
@@ -120,118 +120,121 @@ describe('saved decks are wiped when the season ends (DECISIONS #736)', () => {
       (await v.ask('bank', { deck: deck('r~october', Date.UTC(2026, 9, 3)) }, token)).status,
     ).toBe(200);
     expect((await v.ask('bank', { deck: deck('r~november', NOV_10) }, token)).status).toBe(200);
-    vi.setSystemTime(NOV_28);
-    expect(ids((await v.ask('list')).data)).toEqual(['r~october', 'r~november']);
-
-    vi.setSystemTime(FIRST_DECK_WIPE - 1000);
-    expect(ids((await v.ask('list')).data)).toHaveLength(2);
-    vi.setSystemTime(FIRST_DECK_WIPE);
-    expect(ids((await v.ask('list')).data)).toEqual([]);
-  });
-
-  it('a run played on into the new season keeps its deck, and the wiped ones are set aside until the next wipe', async () => {
-    vi.setSystemTime(NOV_28);
-    const v = vault();
-    let token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
-    await v.ask('bank', { deck: deck('r~finished', NOV_10) }, token);
-    await v.ask('bank', { deck: deck('r~going', NOV_28) }, token);
 
     vi.setSystemTime(DEC_2);
     v.wake();
-    // (the play claim hands back the decks: they are already this season's)
-    const claimed = await v.ask('play/takeover', { holder: 'pc' });
-    token = claimed.data['token'] as string;
-    expect(ids(claimed.data)).toEqual([]);
-    // the run still going saves again after its next stop, and that deck is December's
-    expect((await v.ask('bank', { deck: deck('r~going', DEC_2) }, token)).status).toBe(200);
-    expect(ids((await v.ask('list')).data)).toEqual(['r~going']);
-
-    const past = (await v.ask('pastdecks')).data;
-    expect(ids(past).sort()).toEqual(['r~finished', 'r~going']);
-    expect(past['wiped']).toBe(DEC_2);
-
-    // nothing more is wiped within the season, and the copy set aside stays
-    vi.setSystemTime(DEC_2 + 20 * DAY);
-    v.wake();
-    expect(ids((await v.ask('list')).data)).toEqual(['r~going']);
-    expect(ids((await v.ask('pastdecks')).data)).toHaveLength(2);
-
-    // the next wipe replaces it
+    expect(ids((await v.ask('list')).data)).toEqual(['r~october', 'r~november']);
     vi.setSystemTime(JAN_2);
-    expect(ids((await v.ask('list')).data)).toEqual([]);
-    expect(ids((await v.ask('pastdecks')).data)).toEqual(['r~going']);
+    v.wake();
+    expect(ids((await v.ask('list')).data)).toEqual(['r~october', 'r~november']);
   });
 
-  it('does not take back a deck of a season that has ended, or let a wrong clock outlast the season', async () => {
+  it('takes a deck saved in an earlier month from a device that was offline', async () => {
     vi.setSystemTime(DEC_2);
     const v = vault();
     const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
-    const late = await v.ask('bank', { deck: deck('r~offline', NOV_28) }, token);
-    expect(late.status).toBe(400);
-    expect(late.data['error']).toBe('bad-deck');
+    expect((await v.ask('bank', { deck: deck('r~offline', NOV_28) }, token)).status).toBe(200);
+    expect(ids((await v.ask('list')).data)).toEqual(['r~offline']);
+  });
+
+  it('a save time is never later than now, and a wrong device clock is corrected', async () => {
+    const HOUR = 3_600_000;
+    vi.setSystemTime(DEC_2);
+    const v = vault();
+    const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
     // a device whose clock is a year ahead: the deck is taken as saved now
     await v.ask('bank', { deck: deck('r~future', DEC_2 + 365 * DAY) }, token);
+    // a device whose clock reads an hour behind, and says so: its save time is moved by the hour
+    const slow = DEC_2 - HOUR;
+    await v.ask('bank', { deck: deck('r~slow-clock', slow), now: slow }, token);
     const kept = (await v.ask('list')).data['decks'] as { id: string; bankedAt: number }[];
-    expect(kept).toEqual([expect.objectContaining({ id: 'r~future', bankedAt: DEC_2 })]);
-    vi.setSystemTime(JAN_2);
-    expect(ids((await v.ask('list')).data)).toEqual([]);
+    expect(kept).toEqual([
+      expect.objectContaining({ id: 'r~future', bankedAt: DEC_2 }),
+      expect.objectContaining({ id: 'r~slow-clock', bankedAt: DEC_2 }),
+    ]);
   });
 
-  it('a device whose clock is slow does not lose a deck saved just after the month turned', async () => {
-    const HOUR = 3_600_000;
-    vi.setSystemTime(FIRST_DECK_WIPE + HOUR / 2);
-    const v = vault();
-    const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
-    // its clock reads an hour behind, so the save time it sends is still November's
-    const slow = Date.now() - HOUR;
-    const saved = await v.ask('bank', { deck: deck('r~slow-clock', slow), now: slow }, token);
-    expect(saved.status).toBe(200);
-    const kept = (await v.ask('list')).data['decks'] as { id: string; bankedAt: number }[];
-    expect(kept).toEqual([expect.objectContaining({ id: 'r~slow-clock', bankedAt: Date.now() })]);
-    // ... and a deck it really saved a week ago is a week old, and so last season's: refused, and said to be expired
-    const old = await v.ask('bank', { deck: deck('r~old', slow - 7 * DAY), now: slow }, token);
-    expect(old.data).toEqual(
-      expect.objectContaining({ ok: false, error: 'bad-deck', expired: true }),
-    );
-  });
-
-  it('a device whose clock is fast cannot bring back a deck the wipe took', async () => {
+  it('no request can ask for wiped decks: there are none', async () => {
     vi.setSystemTime(DEC_2);
     const v = vault();
-    const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
-    // its clock is three days ahead: a deck it saved on 29 November carries a December save time
-    const fast = Date.now() + 3 * DAY;
-    const back = await v.ask(
-      'bank',
-      { deck: deck('r~fast-clock', fast - 3 * DAY), now: fast },
-      token,
-    );
-    expect(back.data['expired']).toBe(true);
-    expect(ids((await v.ask('list')).data)).toEqual([]);
+    expect((await v.ask('pastdecks')).data['ok']).not.toBe(true);
   });
+});
 
-  it('never touches cosmetics, runs or history', async () => {
-    vi.setSystemTime(NOV_28);
+describe('a saved deck an update left unplayable is kept, shown and acknowledged (DECISIONS #754)', () => {
+  /** a deck as an older version saved it, holding a card the game no longer has */
+  const breakDeck = (v: ReturnType<typeof vault>, id: string): void => {
+    v.db
+      .prepare('UPDATE decks SET deck = ? WHERE id = ?')
+      .run(JSON.stringify([...RIFTWALKERS.knight.starter, 'a-card-taken-out']), id);
+  };
+  const broken = (data: Record<string, unknown>) =>
+    data['broken'] as { id: string; fault: string; inactive: boolean }[];
+
+  it('leaves the list, takes no slot, and is told of with why', async () => {
+    vi.setSystemTime(NOV_10);
     const v = vault();
     const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
-    await v.ask('bank', { deck: deck('r~one', NOV_28) }, token);
-    await v.ask('cosmetics', { cosmetics: { owned: ['knight-sunwarden'] } });
-    await v.ask('grant', { ids: ['back-season'] });
-    await v.ask(
-      'runsave',
-      { runs: [{ id: 'run', updated: 1, text: 'a run in progress' }], revision: 0, replays: {} },
-      token,
-    );
-    vi.setSystemTime(JAN_2);
+    await v.ask('bank', { deck: deck('r~old', NOV_10) }, token);
+    await v.ask('bank', { deck: deck('r~fine', NOV_10) }, token);
+    expect(broken((await v.ask('list')).data)).toEqual([]);
+
+    breakDeck(v, 'r~old');
     v.wake();
-    expect(ids((await v.ask('list')).data)).toEqual([]);
-    const cosmetics = (await v.ask('cosmetics', { cosmetics: {} })).data['cosmetics'];
-    expect(cosmetics).toEqual(
-      expect.objectContaining({ owned: ['knight-sunwarden', 'back-season'] }),
-    );
-    expect((await v.ask('runs')).data['runs']).toEqual([
-      expect.objectContaining({ id: 'run', text: 'a run in progress' }),
+    const listed = (await v.ask('list')).data;
+    expect(ids(listed)).toEqual(['r~fine']);
+    expect(broken(listed)).toEqual([
+      expect.objectContaining({ id: 'r~old', hero: 'knight', fault: 'card', inactive: false }),
     ]);
+  });
+
+  it('is inactive once acknowledged, and only a broken deck can be', async () => {
+    vi.setSystemTime(NOV_10);
+    const v = vault();
+    const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
+    await v.ask('bank', { deck: deck('r~old', NOV_10) }, token);
+    await v.ask('bank', { deck: deck('r~fine', NOV_10) }, token);
+    breakDeck(v, 'r~old');
+
+    // (a playable deck cannot be put aside this way)
+    await v.ask('deckack', { id: 'r~fine' });
+    expect(ids((await v.ask('list')).data)).toEqual(['r~fine']);
+    expect(v.db.prepare('SELECT inactive FROM decks WHERE id = ?').get('r~fine')).toEqual({
+      inactive: null,
+    });
+
+    const acked = await v.ask('deckack', { id: 'r~old' });
+    expect(broken(acked.data)).toEqual([expect.objectContaining({ id: 'r~old', inactive: true })]);
+    v.wake();
+    expect(broken((await v.ask('list')).data)[0]?.inactive).toBe(true);
+  });
+
+  it('comes back by itself when a later update makes it playable again, and can be removed', async () => {
+    vi.setSystemTime(NOV_10);
+    const v = vault();
+    const token = (await v.ask('play/claim', { holder: 'pc' })).data['token'] as string;
+    await v.ask('bank', { deck: deck('r~old', NOV_10) }, token);
+    await v.ask('bank', { deck: deck('r~other', NOV_10) }, token);
+    breakDeck(v, 'r~old');
+    breakDeck(v, 'r~other');
+    await v.ask('deckack', { id: 'r~old' });
+
+    v.db
+      .prepare('UPDATE decks SET deck = ? WHERE id = ?')
+      .run(JSON.stringify([...RIFTWALKERS.knight.starter]), 'r~old');
+    const again = (await v.ask('list')).data;
+    expect(ids(again)).toEqual(['r~old']);
+    expect(broken(again).map((b) => b.id)).toEqual(['r~other']);
+    // ... and it is not inactive any more: an update that breaks it again is told of again
+    breakDeck(v, 'r~old');
+    expect(broken((await v.ask('list')).data).find((b) => b.id === 'r~old')?.inactive).toBe(false);
+    v.db
+      .prepare('UPDATE decks SET deck = ? WHERE id = ?')
+      .run(JSON.stringify([...RIFTWALKERS.knight.starter]), 'r~old');
+
+    const dropped = await v.ask('drop', { id: 'r~other' }, token);
+    expect(broken(dropped.data)).toEqual([]);
+    expect(v.db.prepare('SELECT COUNT(*) AS n FROM decks').get()).toEqual({ n: 1 });
   });
 });
 

@@ -1,3 +1,8 @@
+## 0.253.0 - 2026-11-11
+
+- Saved decks are no longer wiped each month (DECISIONS #753). The wipe announced for 1 December 2026 will not happen: decks and all other progress are kept from month to month, and only the Arena rank soft resets when the monthly leaderboard rolls over. The one wipe still planned is at release, when everyone starts fresh. No rules change.
+- A saved deck an update leaves unplayable is no longer dropped without a word (DECISIONS #754). It stays saved and the Saved decks page shows a notice saying why (a card or Riftwalker no longer in the game, a deck rule that changed). "Got it" sets it to inactive: listed under Inactive decks at the foot of the page, taking no deck slot. It comes back by itself if a later update makes it playable again, and is only ever removed by the player.
+
 ## 0.252.0 - 2026-11-11
 
 - Enemies set Traps (DECISIONS #751). Nine of the Umbral Veil's fifteen enemies do, and one each in Wyldmaw, Nexus-9, the Gloomfen and the Hollow Crown: Orchid Maw, Clockwork Guillotine, Lantern Angler and Ember Chessman. Their intent says what they set and what it will do. Their Traps lie face up in front of them ("Enemy Traps"); hover one to see what sets it off and what it does to you at this tier. Each breaks if the enemy that set it falls first. They answer your attacks, your Barrier or your summons, and they vary: damage back, Faltering, Exposed, a Wound in your hand, Fate, a hit cancelled, a strike at every one of your units. The moves that set them gave up a little Barrier, healing, Bleed, Fate or a junk card to pay for them. Card damage previews count an enemy's Trap (a hit Masquerade or Veiled Web will cancel shows as cancelled).

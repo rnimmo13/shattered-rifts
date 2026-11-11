@@ -29,7 +29,6 @@ describe('when the deck is saved for the Arena by itself', () => {
 
 describe('a run that collapses takes its saved deck out of the Vault (its ghost stays)', () => {
   it('removes every saved copy of that run and nothing else', async () => {
-    // (these decks carry made-up save times: the day is held before the first season wipe, so none has expired, #736)
     vi.setSystemTime(new Date('2026-11-10T12:00:00Z'));
     const store = new Map<string, string>();
     (globalThis as { localStorage?: unknown }).localStorage = {

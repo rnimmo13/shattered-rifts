@@ -22,9 +22,9 @@ let server: VaultDeck[] = [];
 let banked: string[] = [];
 let playBlocked = false;
 let offline = false;
+let serverBroken: unknown[] | undefined;
 
 beforeEach(() => {
-  // (these decks carry made-up save times: the day is held before the first season wipe, so none of them has expired, #736)
   vi.setSystemTime(new Date('2026-11-10T12:00:00Z'));
   vi.resetModules();
   const store = new Map<string, string>();
@@ -37,11 +37,13 @@ beforeEach(() => {
   banked = [];
   playBlocked = false;
   offline = false;
+  serverBroken = undefined;
   vi.stubGlobal('fetch', (url: string, init: { body: string }) => {
     if (offline) return Promise.reject(new Error('offline'));
     const body = JSON.parse(init.body) as { deck?: VaultDeck };
     const answer = (data: unknown) => Promise.resolve({ json: () => Promise.resolve(data) });
-    if (url.endsWith('/list')) return answer({ ok: true, decks: server });
+    if (url.endsWith('/list'))
+      return answer({ ok: true, decks: server, ...(serverBroken ? { broken: serverBroken } : {}) });
     if (url.endsWith('/bank')) {
       if (playBlocked) return answer({ ok: false, error: 'play-required' });
       const d = body.deck!;
@@ -128,5 +130,29 @@ describe('a run played on after its deck was removed elsewhere (review, 2026-11-
     const r = await sync([later]);
     expect(banked).toEqual([runOf(a.id)]);
     expect(r.ok && r.decks.map((d) => d.bankedAt)).toEqual([9000]);
+  });
+});
+
+describe('saved decks an update left unplayable (DECISIONS #754)', () => {
+  it('are passed on as the server tells of them, and an older server tells of none', async () => {
+    const a = deck('a', 1000);
+    server = [a];
+    expect(await sync([a])).toMatchObject({ ok: true, broken: [] });
+
+    const old = {
+      id: 'r~old',
+      hero: 'knight',
+      tier: 4,
+      cards: 31,
+      bankedAt: 900,
+      fault: 'card',
+      inactive: false,
+    };
+    serverBroken = [old, { id: 'not a deck' }];
+    const r = await sync([a]);
+    expect(r).toMatchObject({ ok: true, broken: [old] });
+    // (it is not a deck: it is neither listed with the decks nor sent anywhere)
+    expect(r.decks.map((d) => d.id)).toEqual([a.id]);
+    expect(banked).toEqual([]);
   });
 });

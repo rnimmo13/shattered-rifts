@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
 import {
   bankInto,
+  brokenDeck,
   checkEntry,
+  cleanBroken,
   cleanDeck,
   cleanVault,
   mergeVaults,
@@ -127,5 +129,79 @@ describe('the starting weapons are cards of the deck (DECISIONS #436)', () => {
     expect(cleanDeck(base)!.deck).toContain('old-twelve-gauge');
     expect(cleanDeck({ ...base, weaponCards: true })!.deck).not.toContain('old-twelve-gauge');
     expect(cleanDeck({ ...base, hero: 'constructor' })).toBeNull();
+  });
+});
+
+describe('a saved deck an update left unplayable (DECISIONS #754)', () => {
+  it('a deck that still plays is not broken, and neither is something that was never a deck', () => {
+    expect(brokenDeck(deck('fine'))).toBeNull();
+    expect(brokenDeck(null)).toBeNull();
+    expect(brokenDeck({ hero: 'knight', deck: ['gone-card'] })).toBeNull();
+  });
+
+  it('says what is left of one and why it no longer plays', () => {
+    const card = { ...deck('r~card'), deck: [...deck('x').deck, 'a-card-taken-out'], tier: 7 };
+    expect(cleanDeck(card)).toBeNull();
+    expect(brokenDeck(card)).toEqual({
+      id: 'r~card',
+      hero: 'knight',
+      tier: 7,
+      cards: card.deck.length,
+      bankedAt: 5,
+      fault: 'card',
+      inactive: false,
+    });
+    expect(brokenDeck({ ...deck('r~hero'), hero: 'retired-class' })).toMatchObject({
+      hero: 'retired-class',
+      fault: 'hero',
+    });
+    expect(brokenDeck({ ...deck('r~small'), deck: ['strike'] }, true)).toMatchObject({
+      fault: 'size',
+      cards: 1,
+      inactive: true,
+    });
+    expect(brokenDeck({ ...deck('r~odd'), deck: 'nope' })).toMatchObject({
+      fault: 'unreadable',
+      cards: 0,
+    });
+    // (nothing unsafe is carried from what was saved)
+    expect(brokenDeck({ ...deck('r~x'), hero: '<b>x</b>', tier: 1e9 })).toMatchObject({
+      hero: '',
+      tier: 99,
+    });
+  });
+
+  it('cleans what the server says of them', () => {
+    const one = brokenDeck({ ...deck('r~hero'), hero: 'retired-class' }, true)!;
+    expect(
+      cleanBroken([one, one, { ...one, id: 'bad id' }, { ...one, id: 'b', fault: 'x' }, 7]),
+    ).toEqual([one]);
+    expect(cleanBroken('nope')).toEqual([]);
+  });
+});
+
+describe('a Vault holding more than its slots (DECISIONS #754: an unplayable deck that plays again)', () => {
+  const at = (id: string, bankedAt: number): VaultDeck => ({ ...deck(id), bankedAt });
+  const over = Array.from({ length: VAULT_SLOTS + 1 }, (_, i) => at(`r~d${i}`, 100 + i));
+
+  it('a run already in it saves its deck again, and a new run is still refused', () => {
+    const again = bankInto(over, { ...at('r~d3', 999), tier: 2 });
+    expect(again).toMatchObject({ ok: true, already: false });
+    expect(again.list).toHaveLength(VAULT_SLOTS + 1);
+    expect(bankInto(over, at('r~new', 999))).toMatchObject({ ok: false, reason: 'full' });
+  });
+
+  it('a device keeps the newest of them, in the order they came', () => {
+    const kept = cleanVault(over).map((d) => d.id);
+    expect(kept).toHaveLength(VAULT_SLOTS);
+    expect(kept).not.toContain('r~d0');
+    expect(kept[0]).toBe('r~d1');
+    expect(kept.at(-1)).toBe(`r~d${VAULT_SLOTS}`);
+  });
+
+  it('cards that are not text are refused, not read as ids', () => {
+    const odd = { ...deck('r~odd'), hero: 'spellblade', deck: [5, null] };
+    expect(cleanDeck(odd)).toBeNull();
+    expect(brokenDeck(odd)).toMatchObject({ fault: 'unreadable' });
   });
 });

@@ -28,9 +28,14 @@ export interface Checked {
   ok: true;
   entry: Entry;
 }
+/** What kind of fault a deck was refused for (DECISIONS #754): the Saved decks page says it in plain words. */
+export type DeckFault = 'hero' | 'card' | 'size' | 'rules' | 'unreadable';
+
 export interface Rejected {
   ok: false;
   message: string;
+  /** set by checkEntry */
+  fault?: DeckFault;
 }
 
 const isCardId = (id: string): boolean => isDeckCard(id);
@@ -172,16 +177,17 @@ export function cleanMaxHp(raw: unknown): number | null {
 
 /** Check an entry that arrived over the wire (it can be anything) and return a clean copy, or why it is refused. */
 export function checkEntry(raw: unknown): Checked | Rejected {
-  if (typeof raw !== 'object' || raw === null) return { ok: false, message: 'No deck was sent.' };
+  if (typeof raw !== 'object' || raw === null)
+    return { ok: false, message: 'No deck was sent.', fault: 'unreadable' };
   const e = raw as Record<string, unknown>;
   const sent = e['hero'];
   // (an old id from before the Riftwalkers were named for their class is read as the class)
   const hero = typeof sent === 'string' ? canonicalHero(sent) : sent;
   if (typeof hero !== 'string' || !Object.hasOwn(RIFTWALKERS, hero))
-    return { ok: false, message: 'Unknown Riftwalker.' };
+    return { ok: false, message: 'Unknown Riftwalker.', fault: 'hero' };
   const sentDeck = e['deck'];
   if (!Array.isArray(sentDeck) || !sentDeck.every((c) => typeof c === 'string'))
-    return { ok: false, message: 'The deck is not a list of cards.' };
+    return { ok: false, message: 'The deck is not a list of cards.', fault: 'unreadable' };
   // (a card taken out of the game becomes its replacement, so a deck saved before still plays: DECISIONS #312)
   // (a replacement that would break a copy limit is left out rather than the whole deck refused)
   const deck: string[] = [];
@@ -198,13 +204,15 @@ export function checkEntry(raw: unknown): Checked | Rejected {
     return {
       ok: false,
       message: `A deck holds ${V2_DECK_RULES.minSize} to ${MAX_DECK} cards (this has ${deck.length}).`,
+      fault: 'size',
     };
   const cards: string[] = deck;
   const held: string[] = [];
   const copies = new Map<string, number>();
   for (const id of cards) {
     // (a Sanctum-rolled copy like "hi~strike" is derived on demand; nothing else off the table is a card)
-    if (!isCardId(id)) return { ok: false, message: `Unknown card "${id.slice(0, 40)}".` };
+    if (!isCardId(id))
+      return { ok: false, message: `Unknown card "${id.slice(0, 40)}".`, fault: 'card' };
     // a copy past the 5-copy cap is left out, not the whole deck refused: a deck banked before the cap (DECISIONS #337) keeps working
     const base = stripRoll(id).replace(/[+]$/, '');
     const n = (copies.get(base) ?? 0) + 1;
@@ -218,12 +226,17 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       return {
         ok: false,
         message: `The deck breaks the deck rules at "${COMBAT_DB.cards[id]?.name ?? id}".`,
+        fault: 'rules',
       };
     held.push(id);
   }
   // (with its extra copies left out, a deck must still be big enough)
   if (held.length < V2_DECK_RULES.minSize)
-    return { ok: false, message: `A deck holds at least ${V2_DECK_RULES.minSize} cards.` };
+    return {
+      ok: false,
+      message: `A deck holds at least ${V2_DECK_RULES.minSize} cards.`,
+      fault: 'size',
+    };
   // Boons that are not in the game (a retired one, a made-up id) are left out rather than refusing the deck
   const boons: string[] = [];
   if (Array.isArray(e['boons']))

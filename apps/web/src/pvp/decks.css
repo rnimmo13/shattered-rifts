@@ -226,3 +226,76 @@
 .pvp__status p {
   margin-inline: auto;
 }
+
+/* ---- saved decks an update left unplayable (DECISIONS #754) ---- */
+.decks > .decks__broken {
+  display: grid;
+  gap: 0.8rem;
+  width: min(100%, 72rem);
+}
+.deckbroken {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(240 150 90 / 0.7);
+  background: linear-gradient(180deg, rgb(70 30 14 / 0.75), rgb(14 8 8 / 0.92));
+  text-align: left;
+}
+.deckbroken p {
+  margin: 0;
+  max-width: 70ch;
+}
+.deckbroken__head {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: rgb(255 190 140);
+}
+.deckbroken__who b,
+.deckinactive__who b {
+  color: var(--c-gold-pale);
+}
+.deckbroken__who span,
+.deckinactive__who span,
+.deckinactive__why {
+  color: var(--c-text-dim);
+}
+.deckbroken__acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.8rem;
+  margin-top: 0.2rem;
+}
+.decks__inactive {
+  width: min(100%, 72rem);
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: rgb(8 10 20 / 0.7);
+  text-align: left;
+  color: var(--c-text-dim);
+}
+.decks__inactive summary {
+  cursor: pointer;
+}
+.decks__inactivelist {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.deckinactive {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+}
+.deckinactive .btn,
+.deckinactive .deckrep__confirm {
+  margin-left: auto;
+}

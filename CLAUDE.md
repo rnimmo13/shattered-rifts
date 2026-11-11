@@ -1,3 +1,9 @@
+# Local 0.253.0 / rules 108 (2026-11-11; decisions 753-754)
+
+Also local, not released (#754): a saved deck an update leaves unplayable (fails `cleanDeck`) is no longer silently left out. The Vault lists it as `broken` (`brokenDeck`, packages/pvp), the Saved decks page shows a notice with the reason, "Got it" (`deckack`) sets it inactive (folded list at the foot, no slot taken), it returns by itself if it plays again, and only the player removes it. Server-held decks only; the desktop offline profile still drops such a deck.
+
+Not released; needs fresh release approval. Robert: no monthly wipe. Saved decks and all progress are kept from month to month; only the Arena rank soft resets. The monthly deck wipe (#736/#737, first due 1 December 2026) is taken out of server and client before it ever ran (`FIRST_DECK_WIPE`, `deckExpired`, `inSeason`, the `pastdecks` request gone; the `past_decks` table is left in place, unread). The only wipe is at release, when everyone starts fresh (not built). **This must be released before 1 December 2026**, or the live server wipes decks on that date. No rules change.
+
 # Release approved 0.252.0 / rules 108 (2026-11-11; decisions 751-752)
 
 Robert explicitly approves pushing ("looks good to me, lets push"). Website/server and matching Windows updater. Future changes need fresh release approval. Enemies set Traps (`setTrap` move op; owned by the setter, flat damage scaled by its dmgPct, face up, broken when the setter falls; `source: 'enemy'` cards kept out of every player pool and `isDeckCard`): nine Umbral Veil enemies and Orchid Maw, Clockwork Guillotine, Lantern Angler, Ember Chessman (#751). Rift Scars adds no Wound on reaching Tier XII (#752). RULES_VERSION 108.
@@ -186,10 +192,9 @@ A deep, combo-heavy, **trap-driven** card-dueling game (working title). Owner: R
 through Steam Playtest, then paid Early Access with a cosmetic keepsake; everyone starts fresh at release. Cosmetics are earned by
 playing and sold in an in-game store through Steam's Microtransaction API (no DLC packs, no Steam Inventory Service). The web version is
 free during testing and later becomes a cut-down demo; never promise it stays free. No keys sold from the website. Seasons are a month
-(#736): saved decks are wiped when the monthly leaderboard rolls over, ranked soft resets, Early Access progress is wiped too, and each
-season has its own cosmetic rewards for Campaign and for Arena play. Players never lose a cosmetic, to any wipe. Built locally (#737,
-unreleased): the deck wipe (first on 1 December 2026; move `FIRST_DECK_WIPE` if the release slips past it), card backs and name plates
-as cosmetics, server-only grants, season records and the claim; no season has rewards yet. No pay-to-win, ever. The old free, Ko-fi-funded
+(#736): ranked soft resets each month and nothing else is taken. **No monthly wipe (#753, 2026-11-11):** saved decks and all progress
+are kept; the only wipe is at release, when everyone starts fresh (not built, no date). Players never lose a cosmetic, to any wipe.
+Built (#737): card backs and name plates as cosmetics, server-only grants, season records and the claim; no season has rewards yet. No pay-to-win, ever. The old free, Ko-fi-funded
 plan is superseded; do not build Ko-fi, supporter codes or donation prompts.
 
 ## Two AI assistants share this repo (Robert, 2026-11-06)

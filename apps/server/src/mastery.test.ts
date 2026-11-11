@@ -6,7 +6,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DatabaseSync, type SQLInputValue } from 'node:sqlite';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { FIRST_DECK_WIPE, VAULT_SLOTS, type Earned } from '@sr/pvp';
+import { VAULT_SLOTS, type Earned } from '@sr/pvp';
 import { Vault } from './vault';
 
 const NOV_10 = Date.UTC(2026, 10, 10, 12);
@@ -297,16 +297,16 @@ describe('hero mastery on the Vault (DECISIONS #739, #741)', () => {
     ]);
   });
 
-  it('is not touched by the wipe that ends a season', async () => {
+  it('is kept, with the deck, when a season ends', async () => {
     vi.setSystemTime(NOV_10);
     const v = vault();
     await v.play();
     await v.ask('bank', { deck: deck('r~won', 'knight', 12, 3, true) });
     await v.ask('mastery', { mastery: { knight: { arenaWins: 4 } } });
 
-    vi.setSystemTime(FIRST_DECK_WIPE + 1000);
+    vi.setSystemTime(Date.UTC(2026, 11, 2, 12));
     v.wake();
-    expect((await v.ask('list')).data['decks']).toEqual([]);
+    expect((await v.ask('list')).data['decks']).toHaveLength(1);
     const after = await v.ask('mastery', {});
     expect(after.data['mastery']).toEqual({
       knight: { best: 12, clears: 1, arenaWins: 4, ghostWins: 0 },

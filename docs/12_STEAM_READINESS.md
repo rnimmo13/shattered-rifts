@@ -72,15 +72,15 @@ Decided by Robert on 2026-11-10 (DECISIONS #734):
 Still to decide or build:
 
 - [?] What the web demo holds (which characters, how many Rift Tiers, whether it keeps the Arena).
-- [x] **Early Access progress is wiped too**, and **no keys are sold from the website** (DECISIONS #736).
-- [x] **Monthly seasons** (#736): saved decks are wiped when the monthly leaderboard rolls over, ranked soft resets, and each season
-  has its own cosmetic rewards for Campaign play and for Arena play.
+- [x] **Everyone starts fresh at release** (Early Access progress included), and **no keys are sold from the website** (DECISIONS #736).
+- [x] **Monthly seasons** (#736, #753): ranked soft resets each month and nothing else is taken. Saved decks are **not** wiped
+  monthly (#753); the release wipe is the only one.
+- [ ] The release wipe itself (nothing built, no date).
 - [x] **Cosmetics survive every wipe**, Early Access included: players never lose a cosmetic (#737).
-- [x] The monthly deck wipe (first on 1 December 2026) and the plumbing for seasonal rewards: card backs and name plates as
+- [x] The plumbing for seasonal rewards (the monthly deck wipe built with it was taken out, #753): card backs and name plates as
   cosmetics, server-only grants, each season's records on the leaderboard, the claim (#737).
 - [ ] The first season's rewards and their art; the Collection pages to choose a card back or name plate; showing a name plate to an
   Arena opponent; telling a player what they earned.
-- [?] Whether ghost decks should go with the monthly wipe (today they stay until they age out).
 - [ ] A bought cosmetic is granted the same way as an earned one (the Vault's `grant`), after the Microtransaction API confirms it.
 - [?] What the Early Access keepsake is, and how it is granted.
 - [ ] Price, regional pricing and launch discount (the old $7.99–$9.99 is not a commitment).

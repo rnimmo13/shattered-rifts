@@ -48,14 +48,15 @@ const VAULT_ACTIONS = new Set([
   'list',
   'bank',
   'drop',
+  // (DECISIONS #754) acknowledging a saved deck an update left unplayable
+  'deckack',
   'runs',
   'runsave',
   'runbackups',
   'listsync',
   'cosmetics',
-  // (DECISIONS #737) the decks the last season's end wiped, and the season rewards this player has earned ('grant' is the Vault's
-  // own action for giving cosmetics and is deliberately not here: no request from outside may name it)
-  'pastdecks',
+  // (DECISIONS #737) the season rewards this player has earned ('grant' is the Vault's own action for giving cosmetics and is
+  // deliberately not here: no request from outside may name it)
   'seasonclaim',
   // (DECISIONS #739) hero mastery and the log of what the player has earned
   'mastery',

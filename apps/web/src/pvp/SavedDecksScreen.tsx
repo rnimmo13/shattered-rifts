@@ -1,14 +1,14 @@
 // #/decks: every saved deck in full, as a report (see DeckReport). The Arena lists the same decks in short.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { RUN_PREFIX, safeId } from '@sr/pvp';
+import { RUN_PREFIX, safeId, type BrokenDeck } from '@sr/pvp';
+import { BrokenNotices, InactiveDecks } from './BrokenDecks';
 import { DeckReport } from './DeckReport';
 import { VAULT_SLOTS, dropFrom, loadVault, runOf, saveVault, type VaultDeck } from './vault';
 import { runHistory, type RunRecord } from '../run/history';
 import { VictoryAgain } from '../run/VictoryPanel';
 import { gameplayAction } from '../playAccess';
-import { remoteVault, syncVault, vaultKey, whoAmI } from './vaultSync';
-import { deckWipeLine } from './seasonText';
+import { remoteVault, syncVault, vaultKey, whoAmI, type Remote } from './vaultSync';
 import '../play/play.css';
 import './decks.css';
 
@@ -37,9 +37,13 @@ function syncLine(s: SyncState): string {
 export default function SavedDecksScreen() {
   const [decks, setDecks] = useState<VaultDeck[]>(loadVault);
   const [sync, setSync] = useState<SyncState>({ kind: 'checking' });
+  /** saved decks an update left unplayable, as the server holds them (DECISIONS #754) */
+  const [broken, setBroken] = useState<BrokenDeck[]>([]);
+  /** why the last Got it or Remove on one of them did not go through */
+  const [brokenNote, setBrokenNote] = useState<string | null>(null);
+  /** counts those presses, so a sync that was asked before one cannot put the older list back */
+  const brokenEdits = useRef(0);
   const checking = sync.kind === 'checking';
-  // (DECISIONS #736) when the season ends and the saved decks with it, said as the page opens
-  const [wipeLine] = useState(() => deckWipeLine(Date.now()));
   /** a deck was removed by hand, so a sync still on its way must not bring it back */
   const touched = useRef(false);
   const live = useRef(true);
@@ -53,6 +57,7 @@ export default function SavedDecksScreen() {
     try {
       await whoAmI();
       const key = vaultKey();
+      const edits = brokenEdits.current;
       const r = await syncVault(key, loadVault());
       if (!live.current || vaultKey() !== key || touched.current) {
         touched.current = false;
@@ -60,6 +65,7 @@ export default function SavedDecksScreen() {
       }
       if (r.ok) {
         setDecks(r.decks);
+        if (edits === brokenEdits.current) setBroken(r.broken);
         saveVault(r.decks);
         setSync({ kind: 'synced', at: Date.now(), ...(r.waiting ? { waiting: r.waiting } : {}) });
       } else
@@ -94,6 +100,43 @@ export default function SavedDecksScreen() {
     return by;
   }, []);
   const [ending, setEnding] = useState<VaultDeck | null>(null);
+  // (the page shows at once what was asked for. The server's answer then stands; if it refuses, the list goes back as it was and
+  // the page says why)
+  const settle = (was: BrokenDeck[], r: Remote): void => {
+    if (!live.current) return;
+    brokenEdits.current++;
+    if (r.ok) {
+      if (r.broken) setBroken(r.broken);
+      setBrokenNote(null);
+      return;
+    }
+    setBroken(was);
+    setBrokenNote(
+      r.error === 'play'
+        ? 'That did not go through: you are playing on another device. Try again from there, or once you play here.'
+        : r.error === 'signin'
+          ? 'That did not go through: your sign-in has ended. Reconnect in Settings > Account and try again.'
+          : 'That did not go through: your online decks could not be reached. Try again in a moment.',
+    );
+  };
+  const acknowledge = (d: BrokenDeck): void => {
+    const was = broken;
+    brokenEdits.current++;
+    setBroken(was.map((x) => (x.id === d.id ? { ...x, inactive: true } : x)));
+    void whoAmI()
+      .then(() => remoteVault.acknowledge(vaultKey(), d.id))
+      .then((r) => settle(was, r));
+  };
+  const removeBroken = (d: BrokenDeck): void => {
+    void gameplayAction(() => {
+      const was = broken;
+      brokenEdits.current++;
+      setBroken(was.filter((x) => x.id !== d.id));
+      void whoAmI()
+        .then(() => remoteVault.drop(vaultKey(), d.id))
+        .then((r) => settle(was, r));
+    });
+  };
   const newestFirst = [...decks].sort((a, b) => b.bankedAt - a.bankedAt);
   return (
     <main className="setup setup--wide decks">
@@ -109,7 +152,9 @@ export default function SavedDecksScreen() {
           saved. Playing in the Arena never costs you a deck. To make room for a new one, remove an
           old one.
         </p>
-        <p className="setup__lead decks__season">{wipeLine}</p>
+        <p className="setup__lead decks__season">
+          Saved decks are kept from month to month. Only your Arena rank resets each month.
+        </p>
         <p className="decks__links">
           <a href="#/arena">Take a deck into the Arena</a> ·{' '}
           <a href="#/arena-rules">What the Arena takes</a>
@@ -123,6 +168,12 @@ export default function SavedDecksScreen() {
           )}
         </p>
       </header>
+      {brokenNote && (
+        <p className="decks__sync decks__sync--failed" role="alert">
+          {brokenNote}
+        </p>
+      )}
+      <BrokenNotices decks={broken} onAcknowledge={acknowledge} onRemove={removeBroken} />
       {newestFirst.length === 0 ? (
         <section className="pvp__status">
           <h2>{checking ? 'Looking for your saved decks…' : 'No saved decks yet'}</h2>
@@ -159,6 +210,7 @@ export default function SavedDecksScreen() {
           ))}
         </div>
       )}
+      <InactiveDecks decks={broken} onRemove={removeBroken} />
       {ending && (
         <VictoryAgain
           record={{

@@ -312,10 +312,10 @@ future deck.
 
 ## 7. The Vault & Seasons (PvP-facing; full PvP rules in `01_GAME_DESIGN.md §6`)
 - **Vault:** 10 deck slots. Saving into a full Vault asks the player to remove a deck first (on the Saved decks page).
-- **Season = 1 month (DECISIONS #736; was a week).** Saved decks are wiped when the monthly leaderboard rolls over, and ranked
-  ratings soft reset (`carryOver`). The deck of a run still being played is saved again as it goes on, so it stays; the first wipe is
-  1 December 2026. Each season has its own cosmetic rewards for Campaign play and for Arena play: the plumbing is built (#737), no
-  season has rewards yet. Cosmetics are never wiped. The weekly lines below are the older design.
+- **Season = 1 month (DECISIONS #736; was a week).** When the monthly leaderboard rolls over, ranked ratings soft reset
+  (`carryOver`) and nothing else is taken: saved decks are kept (DECISIONS #753; the monthly deck wipe was taken out before it ran).
+  The only wipe is at release, when everyone starts fresh. The plumbing for seasonal cosmetic rewards is built (#737), no season has
+  rewards yet. Cosmetics are never wiped. The weekly lines below are the older design.
 - **PvP unlocks** after your first loop clear (your first Bank, or your first Continue).
 - **Casual** (all week): live matchmaking, plus **ghost matches** against other players' Vault decks played by the AI.
 - **Weekend Rift Tournament** (Fri 18:00 – Sun 23:59 UTC): register one Vault deck (it's locked for the weekend), and

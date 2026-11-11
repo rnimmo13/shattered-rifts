@@ -1858,6 +1858,7 @@ Robert, answering what #734 left open.
 - **Seasonal rewards, for both modes.** "there are different seasonal rewards for each season of campaign and arena play. id like to have some kind of cosmetics for each." So each season has a Campaign reward track and an Arena (ranked) reward track, each giving cosmetics. What they are and how they are earned has not been designed.
 - **Cosmetics survive every wipe** (confirmed by Robert the same day: "players never lose access to the cosmetics", Early Access included).
 - **Built in #737:** the monthly wipe of saved decks and the plumbing for seasonal rewards. `SEASON_THEMES` (#241) is still empty.
+- **Superseded in part by #753:** saved decks are no longer wiped each month. The only wipe is at release.
 
 ## 735 - The default card back carries the S|R crest (2026-11-10)
 
@@ -1872,7 +1873,7 @@ Robert: "id also like the default card back skin to have the S|R logo on it. we 
 
 Robert, after #736: "yes cosmetics survive every wipe even in early access. players never lose access to the cosmetics. i like your ideas for the seasonal cosmetics ... id like you to build the plumbing for that stuff and the monthly deck wipe". The ideas he liked, kept for the roadmap: a Campaign card back each season for the highest Rift Tier cleared (a better one for Tier XII), and an Arena name plate or title in the colour of the highest rank reached, shown to opponents; neither earnable again once the season is over.
 
-**The deck wipe**
+**The deck wipe** (taken out by #753 before it ever ran; kept here as the record)
 - **The rule (`deckExpired`, packages/pvp/src/vault.ts):** a saved deck lasts the season it was last saved in. When the monthly leaderboard rolls over (the 1st, midnight Pacific, the same moment ranks reset), every deck saved before that moment is wiped.
 - **A run still going keeps its deck.** A run saves its deck again after every stop, so a run played on into the new season has a deck of the new season. Only decks of runs no longer played go. (Claude's choice, following the old design's "runs in progress carry over".)
 - **The first wipe is 1 December 2026 (`FIRST_DECK_WIPE`).** Until then nothing is wiped, however old. Without this, decks saved in October would have vanished the moment the update went out, with no warning. **If the release slips past 1 December, move this date**, or everything saved before the current month goes at once.
@@ -2071,3 +2072,31 @@ Robert: "please add traps to enemies. not all enemies. definitely enemies in umb
 Robert: "we need to update tier 12 to not give another wound card."
 
 - The Omen of Rift Scars (from Tier IV) adds a Wound to the deck as each new tier opens, up to 6. Opening Tier XII, the last (`MAX_TIER`), no longer adds one; the Omen's text says "The last tier leaves none." Wounds already in the deck stay, and Tiers IV to XI are unchanged. Events and offers that add Wounds as a price are untouched: only the Omen's free one is gone.
+
+## 753 - No monthly wipe: the only wipe is at release (2026-11-11)
+
+Robert: "i dont want to wipe anymore on each month. i want players to keep all progress through the month except that rank in arena soft resets every month. the only wipe i really want is when the game goes live and everyone starts fresh."
+
+- **Saved decks are kept from month to month.** The monthly deck wipe of #736/#737 is taken out. It never ran: its first date was 1 December 2026.
+- **What still happens each month:** the monthly leaderboards roll over as before, and the Arena rank soft resets (`carryOver`, unchanged). Nothing a player holds is taken.
+- **The one wipe is at release** (#734): everyone starts fresh when the game goes live. Nothing is built for it yet, and no date is set. Cosmetics are still never lost (#736), that wipe included.
+- **Taken out of the code:** `FIRST_DECK_WIPE`, `deckExpired`, `inSeason` (packages/pvp), the Vault's season check, the `past_decks` safety copy and its `pastdecks` request (the table itself is left alone and never read, so if an older server ever ran past 1 December and wiped, its copy would still be there to restore from), the server's refusal of a past season's deck, the device leaving such decks out of its list, and the Saved decks page's line about the next wipe (it now says decks are kept and only the Arena rank resets).
+- **Kept:** the correction of a wrong device clock on a deck's save time (it still puts saves from two devices in the right order), and all of #737's plumbing for cosmetics and season rewards.
+- **Season rewards are untouched** as plumbing (`SEASON_REWARDS` is still empty). Whether seasons should still give Campaign rewards now that nothing resets on the Campaign side is open, for Robert.
+- **Ghost decks:** the open question in #737 (should ghosts go with the wipe) no longer applies.
+
+## 754 - A saved deck an update leaves unplayable is shown, acknowledged, then inactive (2026-11-11)
+
+Robert, after #753 (decks now live long enough for an update to break one): "we need to have some kind of display on them noting that its invalid ... and the player can acknowledge it before it is set to inactive."
+
+- **What "unplayable" means here:** the deck is no longer a legal deck at all (`cleanDeck` refuses it): a card it holds is no longer in the game and has no replacement (#312), its Riftwalker is gone, a deck rule changed under it, or too few cards are left. Before this, such a deck was silently left out of every list. This is not the same as a deck the Arena will not take (#729): that one is still a deck, and is already shown with its reasons.
+- **It stays saved.** The server never deleted these rows; it only stopped listing them. Now the Vault lists them apart (`broken` in the `list` reply: `brokenDeck`, packages/pvp): the id, whose it was, the tier, how many cards, when it was saved and the kind of fault (`DeckFault`, which `checkEntry` now names). The cards themselves are not sent: nothing can show or play them.
+- **The notice.** The Saved decks page shows each one at the top: "An update left this deck unplayable", why in plain words, and two buttons, **Got it** and **Remove**.
+- **Got it sets it to inactive** (`POST /pvp/vault/deckack`, the `inactive` column). An inactive deck has no notice any more; it is in a folded "Inactive decks" list at the foot of the page, where it can be removed. Acknowledging needs no play claim (it changes nothing a game uses), and only a deck that is broken can be acknowledged, so the request can never put a playable deck aside.
+- **Claude's choices, for Robert to confirm:**
+  - An unplayable deck takes **no deck slot** (it never did: the 20 are counted over playable decks), acknowledged or not.
+  - It **comes back by itself** if a later update makes it playable again (the next save of that deck clears the mark). If the Vault is full by then the server holds it over the 20 until a deck is removed: no new run's deck is saved meanwhile, a run already saved still saves again (`bankInto`), and a device shows the newest 20 (`cleanVault`). Coming back also clears the inactive mark, so a later update that breaks it again is told of again.
+  - It is **never removed automatically.** Only the player removes it.
+  - The notice is on the Saved decks page only. Nothing on the home page or the Arena page points to it yet.
+- **From the review:** a Got it or Remove the server refuses (playing elsewhere, signed out, unreachable) puts the list back and says why; a sync asked before the press cannot put the older list back; a collapsed run takes its unplayable deck with it; a deck whose cards are not text is refused instead of failing the request.
+- **Not covered:** a deck that exists only on a device (the desktop app's offline profile, or a deck that never went online) is still left out without a word when it stops being legal: only the server's copy is kept as saved. Old clients ignore the new `broken` field.

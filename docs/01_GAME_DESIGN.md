@@ -26,7 +26,7 @@ These come first. When a design question is unclear, pick the option that best s
 4. **Respect the player's time.** Regular duels take ~4 minutes, Wardens and PvP 6–12, and a full
    campaign loop 60–90 minutes. Animation speed controls and smart auto-pass throughout.
 5. **Decks are seasonal, progress is permanent.** A run deck can be lost (that's the risk you chose), and
-   Vault decks are wiped each month with the leaderboard (DECISIONS #736). Characters, unlocks, cosmetics, finishes, ranks and the Hall of Fame
+   Vault decks are kept from month to month (DECISIONS #753; only the Arena rank soft resets), and everyone starts fresh once, at release. Characters, unlocks, cosmetics, finishes, ranks and the Hall of Fame
    are never taken away.
 6. **Bosses with personality.** Every boss has a voice (taunts, reactions), a signature mechanic,
    and visible **Omens** that telegraph their powers, so players outplay bosses instead of being

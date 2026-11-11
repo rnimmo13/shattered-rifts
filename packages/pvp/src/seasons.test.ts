@@ -19,57 +19,22 @@ vi.mock('@sr/content/v2', async (original) => {
 });
 
 import {
-  FIRST_DECK_WIPE,
   RANK_FLOORS,
   RANKED_MIN_GAMES,
   SEASON_REWARDS,
   cleanCosmetics,
-  deckExpired,
   grantCosmetics,
-  inSeason,
   inUse,
   mergeCosmetics,
-  periodStart,
   rewardSeasons,
   rewardsEarned,
-  seasonAt,
   selfClaimed,
   wornSkin,
   type SeasonRewards,
 } from './index';
 
-const DAY = 86_400_000;
-const NOV_10 = Date.UTC(2026, 10, 10, 12);
 const DEC_10 = Date.UTC(2026, 11, 10, 12);
 const JAN_10 = Date.UTC(2027, 0, 10, 12);
-
-describe('saved decks last one season (DECISIONS #736)', () => {
-  it('the first wipe is the turn of December 2026, at midnight Pacific', () => {
-    expect(FIRST_DECK_WIPE).toBe(periodStart(DEC_10, 'month'));
-    expect(FIRST_DECK_WIPE).toBe(seasonAt(NOV_10).ends);
-  });
-
-  it('nothing expires before the first wipe, however old', () => {
-    expect(deckExpired({ bankedAt: 5 }, NOV_10)).toBe(false);
-    expect(deckExpired({ bankedAt: Date.UTC(2026, 8, 1) }, FIRST_DECK_WIPE - 1)).toBe(false);
-  });
-
-  it('at the turn of the month every deck saved before it is gone, and one saved after it stays', () => {
-    expect(deckExpired({ bankedAt: NOV_10 }, FIRST_DECK_WIPE)).toBe(true);
-    expect(deckExpired({ bankedAt: FIRST_DECK_WIPE - 1 }, FIRST_DECK_WIPE)).toBe(true);
-    expect(deckExpired({ bankedAt: FIRST_DECK_WIPE }, FIRST_DECK_WIPE)).toBe(false);
-    expect(deckExpired({ bankedAt: DEC_10 }, DEC_10 + 5 * DAY)).toBe(false);
-    expect(deckExpired({ bankedAt: DEC_10 }, JAN_10)).toBe(true);
-  });
-
-  it("a run played on into the new season saves its deck again, and that deck is the new season's", () => {
-    const list = [
-      { id: 'finished', bankedAt: NOV_10 },
-      { id: 'still-going', bankedAt: DEC_10 - DAY },
-    ];
-    expect(inSeason(list, DEC_10).map((d) => d.id)).toEqual(['still-going']);
-  });
-});
 
 describe("a season's rewards (DECISIONS #737)", () => {
   const rewards: SeasonRewards = {

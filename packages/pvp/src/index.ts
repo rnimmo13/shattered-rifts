@@ -27,6 +27,7 @@ export {
   MAX_NAME,
   type Checked,
   type Rejected,
+  type DeckFault,
 } from './deck';
 export { enqueue, leave, pairUp, type Pairing, type Waiting } from './queue';
 export { decideOrder, seatsFor, type Arrival, type Order } from './order';
@@ -102,11 +103,11 @@ export {
   VAULT_CODE_ALPHABET,
   VAULT_CODE_LENGTH,
   VAULT_SLOTS,
-  FIRST_DECK_WIPE,
   BANK_CLOCK_SLACK_MS,
-  deckExpired,
-  inSeason,
+  brokenDeck,
+  cleanBroken,
   type Banked,
+  type BrokenDeck,
   type VaultDeck,
 } from './vault';
 export { deckToPlay, picksDone } from './picks';

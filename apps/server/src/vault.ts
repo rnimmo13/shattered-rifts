@@ -16,12 +16,13 @@ import {
 import { PLAY_HEADER } from './playAccess';
 import {
   bankInto,
+  brokenDeck,
   cleanDeck,
+  type BrokenDeck,
   cleanListItems,
   cleanRemoved,
   cleanCosmetics,
   cleanRunCopies,
-  deckExpired,
   dropFrom,
   grantCosmetics,
   selfClaimed,
@@ -52,7 +53,7 @@ import {
   type VaultDeck,
 } from '@sr/pvp';
 import type { Env } from './env';
-import { RULES_VERSION, periodStart } from '@sr/pvp';
+import { RULES_VERSION } from '@sr/pvp';
 import { campaignDeckFacts } from './campaignBalance';
 
 interface Row extends Record<string, SqlStorageValue> {
@@ -66,6 +67,7 @@ interface Row extends Record<string, SqlStorageValue> {
   max_hp: number | null;
   won: number | null;
   banked_at: number;
+  inactive: number | null;
 }
 
 /** The most records of a history a device brings that are counted for mastery in one request (a history keeps 40). */
@@ -83,16 +85,10 @@ const parseJson = (text: string): unknown => {
 };
 
 export class Vault extends DurableObject<Env> {
-  /** the season (its start) this object last checked its decks against, so the check runs once a season and not on every request */
-  private seasonChecked = 0;
-
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
-    // the decks the last season's end wiped (DECISIONS #737): kept until the next wipe, so a wipe can be looked at and, if it was
-    // wrong, undone
-    ctx.storage.sql.exec(
-      'CREATE TABLE IF NOT EXISTS past_decks (id TEXT PRIMARY KEY, wiped INTEGER NOT NULL, data TEXT NOT NULL)',
-    );
+    // (DECISIONS #753) saved decks are no longer wiped when a season ends. The `past_decks` table an older build made (a wipe's
+    // safety copy) is left as it is and never read: should an older build ever run past 1 December 2026 and wipe, its copy survives
     ctx.storage.sql.exec(
       'CREATE TABLE IF NOT EXISTS identity_redirect (k INTEGER PRIMARY KEY, account TEXT NOT NULL)',
     );
@@ -130,6 +126,9 @@ export class Vault extends DurableObject<Env> {
     // ... and whether its run cleared the campaign (DECISIONS #739)
     if (!columns.some((c) => c.name === 'won'))
       ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN won INTEGER');
+    // ... and whether the player has acknowledged that an update left it unplayable (DECISIONS #754)
+    if (!columns.some((c) => c.name === 'inactive'))
+      ctx.storage.sql.exec('ALTER TABLE decks ADD COLUMN inactive INTEGER');
     // the player's synced lists (run history, Arena matches): one JSON row each (DECISIONS #318)
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS lists (
@@ -315,27 +314,49 @@ export class Vault extends DurableObject<Env> {
     }
   }
 
-  private list(): VaultDeck[] {
-    const rows = this.ctx.storage.sql
+  /** Every saved row as it was saved (whether it is still a legal deck is for whoever reads it to say). */
+  private rows(): { raw: Record<string, unknown>; inactive: boolean }[] {
+    return this.ctx.storage.sql
       .exec<Row>(
-        'SELECT id, hero, tier, stage, deck, boons, ascendancy, max_hp, won, banked_at FROM decks ORDER BY banked_at, id',
+        'SELECT id, hero, tier, stage, deck, boons, ascendancy, max_hp, won, banked_at, inactive FROM decks ORDER BY banked_at, id',
       )
-      .toArray();
-    // a row that cannot be read is left out rather than failing the whole Vault
-    return rows.flatMap((r): VaultDeck[] => {
-      const d = cleanDeck({
-        id: r.id,
-        hero: r.hero,
-        tier: r.tier,
-        stage: r.stage ?? undefined,
-        deck: parseJson(r.deck),
-        boons: parseJson(r.boons),
-        ascendancy: r.ascendancy ?? undefined,
-        maxHp: r.max_hp ?? undefined,
-        won: r.won === 1,
-        bankedAt: r.banked_at,
-      });
+      .toArray()
+      .map((r) => ({
+        raw: {
+          id: r.id,
+          hero: r.hero,
+          tier: r.tier,
+          stage: r.stage ?? undefined,
+          deck: parseJson(r.deck),
+          boons: parseJson(r.boons),
+          ascendancy: r.ascendancy ?? undefined,
+          maxHp: r.max_hp ?? undefined,
+          won: r.won === 1,
+          bankedAt: r.banked_at,
+        },
+        inactive: r.inactive === 1,
+      }));
+  }
+
+  private list(): VaultDeck[] {
+    // a row that is no longer a legal deck is left out rather than failing the whole Vault (it is told of in `broken`)
+    return this.rows().flatMap(({ raw, inactive }): VaultDeck[] => {
+      const d = cleanDeck(raw);
+      // (a deck a later update made playable again is no longer inactive: should it break once more, the player is told again)
+      if (d && inactive)
+        this.ctx.storage.sql.exec('UPDATE decks SET inactive = NULL WHERE id = ?', raw['id']);
       return d ? [d] : [];
+    });
+  }
+
+  /**
+   * The saved decks an update left unplayable (DECISIONS #754). They stay saved, take no slot and enter nothing; the player is told
+   * of each and acknowledges it (`inactive`), or removes it. One that plays again after a later update is back in `list`.
+   */
+  private broken(): BrokenDeck[] {
+    return this.rows().flatMap(({ raw, inactive }): BrokenDeck[] => {
+      const b = brokenDeck(raw, inactive);
+      return b ? [b] : [];
     });
   }
 
@@ -359,48 +380,8 @@ export class Vault extends DurableObject<Env> {
     this.ctx.storage.sql.exec('DELETE FROM decks WHERE id = ?', id);
   }
 
-  /**
-   * The season has turned (DECISIONS #736): every deck last saved before it began is wiped. They are set aside in past_decks until
-   * the next wipe replaces them. Cosmetics, runs and history are untouched.
-   */
-  private endSeason(now: number): void {
-    const season = periodStart(now, 'month');
-    if (this.seasonChecked === season) return;
-    const gone = this.list().filter((d) => deckExpired(d, now));
-    if (gone.length)
-      this.ctx.storage.transactionSync(() => {
-        this.ctx.storage.sql.exec('DELETE FROM past_decks');
-        for (const d of gone) {
-          this.ctx.storage.sql.exec(
-            'INSERT OR REPLACE INTO past_decks (id, wiped, data) VALUES (?, ?, ?)',
-            d.id,
-            now,
-            JSON.stringify(d),
-          );
-          this.remove(d.id);
-        }
-      });
-    this.seasonChecked = season;
-  }
-
-  /** The decks the last wipe took, newest first (nothing plays with them: they are there to be looked at). */
-  private pastDecks(): { wiped: number | null; decks: VaultDeck[] } {
-    const rows = this.ctx.storage.sql
-      .exec<{ wiped: number; data: string }>('SELECT wiped, data FROM past_decks')
-      .toArray();
-    const decks = rows.flatMap((r): VaultDeck[] => {
-      const d = cleanDeck(parseJson(r.data));
-      return d ? [d] : [];
-    });
-    return {
-      wiped: rows[0]?.wiped ?? null,
-      decks: decks.sort((a, b) => b.bankedAt - a.bankedAt),
-    };
-  }
-
   override async fetch(request: Request): Promise<Response> {
     const action = new URL(request.url).pathname.replace(/^\/+/, '');
-    this.endSeason(Date.now());
     const sealed = this.ctx.storage.sql
       .exec<{ account: string }>('SELECT account FROM identity_redirect WHERE k = 1')
       .toArray()[0]?.account;
@@ -427,8 +408,7 @@ export class Vault extends DurableObject<Env> {
       return json({ ok: true });
     }
     if (sealed) return json({ error: 'account-linked-reconnect' }, 409);
-    if (action === 'list') return json({ ok: true, decks: this.list() });
-    if (action === 'pastdecks') return json({ ok: true, ...this.pastDecks() });
+    if (action === 'list') return json({ ok: true, decks: this.list(), broken: this.broken() });
     if (action === 'runbackups')
       return json({
         ok: true,
@@ -504,8 +484,7 @@ export class Vault extends DurableObject<Env> {
       const deck = cleanDeck(body['deck']);
       if (!deck) return json({ ok: false, error: 'bad-deck' }, 400);
       // The save time is the device's. A device says what its clock reads now, and a clock that is off by more than a little has its
-      // save times moved by as much, so a slow clock does not lose a deck saved just after the month turned and a fast one does not
-      // get a deck that outlasts the season. Never later than now.
+      // save times moved by as much, so decks saved on two devices are put in the right order. Never later than now.
       const deviceNow = body['now'];
       if (typeof deviceNow === 'number' && Number.isFinite(deviceNow)) {
         const off = now - deviceNow;
@@ -513,12 +492,9 @@ export class Vault extends DurableObject<Env> {
       }
       if (deck.bankedAt > now + BANK_CLOCK_SLACK_MS) deck.bankedAt = now;
       // (DECISIONS #741) hero mastery is counted here, from what the run's deck says: how far it has got, and the campaign cleared.
-      // Before anything can turn the deck away, so a full Vault or a turned month never costs a clear. `mastery` in the reply tells
-      // the device a number rose.
+      // Before anything can turn the deck away, so a full Vault never costs a clear. `mastery` in the reply tells the device a
+      // number rose.
       const mastery = this.countMastery([deckRunFacts(deck)]);
-      // a deck of a season that has ended is not taken back (DECISIONS #736): a device that was offline over the turn of the month
-      if (deckExpired(deck, now))
-        return json({ ok: false, error: 'bad-deck', expired: true, mastery }, 400);
       const replaceId = typeof body['replaceId'] === 'string' ? body['replaceId'] : undefined;
       const before = this.list();
       const result = bankInto(before, deck, replaceId);
@@ -696,7 +672,16 @@ export class Vault extends DurableObject<Env> {
     if (action === 'drop') {
       const id = typeof body['id'] === 'string' ? body['id'] : '';
       if (id) this.remove(id);
-      return json({ ok: true, decks: dropFrom(this.list(), id) });
+      return json({ ok: true, decks: dropFrom(this.list(), id), broken: this.broken() });
+    }
+
+    // (DECISIONS #754) the player has read that an update left this deck unplayable: it is inactive from here on. Only a deck that
+    // is broken can be acknowledged, so this can never put a playable deck aside.
+    if (action === 'deckack') {
+      const id = typeof body['id'] === 'string' ? body['id'] : '';
+      if (this.broken().some((b) => b.id === id))
+        this.ctx.storage.sql.exec('UPDATE decks SET inactive = 1 WHERE id = ?', id);
+      return json({ ok: true, decks: this.list(), broken: this.broken() });
     }
 
     return json({ ok: false, error: 'not-found' }, 404);

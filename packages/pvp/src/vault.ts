@@ -2,8 +2,7 @@
 // how many it holds, banking into it, and cleaning what arrives from outside. Where it is kept is not decided here.
 
 import { V2_DECK_RULES, ascendancyOf, withStartingWeapons } from '@sr/content/v2';
-import { checkEntry, cleanMaxHp } from './deck';
-import { periodStart } from './board';
+import { checkEntry, cleanMaxHp, type DeckFault } from './deck';
 
 export interface VaultDeck {
   /** one per cleared loop: the run's seed and Rift Tier */
@@ -88,7 +87,10 @@ export function bankInto(list: readonly VaultDeck[], saved: VaultDeck, replaceId
   if (earlier.some((x) => x.bankedAt > d.bankedAt))
     return { ok: true, list: [...list], already: true };
   const rest = list.filter((x) => runOf(x.id) !== runOf(d.id) && x.id !== replaceId);
-  if (rest.length >= VAULT_SLOTS) return { ok: false, reason: 'full', list: [...list] };
+  // (full means the list would grow past the slots. A Vault can hold more than its slots when an update makes an unplayable deck
+  // playable again, DECISIONS #754: a run already in it still saves its deck again, since that adds nothing)
+  if (rest.length >= VAULT_SLOTS && rest.length + 1 > list.length)
+    return { ok: false, reason: 'full', list: [...list] };
   return { ok: true, list: [...rest, d], already: false };
 }
 
@@ -111,6 +113,9 @@ function cleanBoons(raw: unknown): string[] {
   return out.slice(0, 40);
 }
 
+const isCardList = (raw: unknown): raw is string[] =>
+  Array.isArray(raw) && raw.every((c) => typeof c === 'string');
+
 /** One deck as it arrives from outside (a browser's saved list, a request): a clean copy if it is a legal deck, else null. */
 export function cleanDeck(raw: unknown): VaultDeck | null {
   if (typeof raw !== 'object' || raw === null) return null;
@@ -120,8 +125,8 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
   const at = o['bankedAt'];
   // (a deck saved before the weapons were cards of the deck gets its weapon once, DECISIONS #436)
   const rawDeck =
-    o['weaponCards'] !== true && Array.isArray(o['deck']) && typeof o['hero'] === 'string'
-      ? withStartingWeapons(o['hero'], o['deck'] as string[])
+    o['weaponCards'] !== true && isCardList(o['deck']) && typeof o['hero'] === 'string'
+      ? withStartingWeapons(o['hero'], o['deck'])
       : o['deck'];
   const checked = checkEntry({
     name: 'x',
@@ -148,6 +153,82 @@ export function cleanDeck(raw: unknown): VaultDeck | null {
   };
 }
 
+/**
+ * A saved deck an update left unplayable (DECISIONS #754): a card or Riftwalker it needs is no longer in the game, or a deck rule
+ * changed under it. It is not a deck any more (nothing can play it), so only what can still be said of it is kept: whose it was, how
+ * far it had got, when it was saved and why it no longer plays. `inactive`: the player has been told and has acknowledged it.
+ */
+export interface BrokenDeck {
+  id: string;
+  /** as saved; it may name a Riftwalker the game no longer has */
+  hero: string;
+  tier: number;
+  cards: number;
+  bankedAt: number;
+  fault: DeckFault;
+  inactive: boolean;
+}
+
+const FAULTS: readonly DeckFault[] = ['hero', 'card', 'size', 'rules', 'unreadable'];
+const HERO_TEXT = /^[\w-]{1,40}$/;
+
+/**
+ * What is left of a saved deck that is no longer a legal one, or null: for a deck that still plays (it is not broken), and for
+ * something that was never a saved deck (no id).
+ */
+export function brokenDeck(raw: unknown, inactive = false): BrokenDeck | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const o = raw as Record<string, unknown>;
+  if (typeof o['id'] !== 'string' || o['id'] === '') return null;
+  if (cleanDeck(raw)) return null;
+  const rawDeck =
+    o['weaponCards'] !== true && isCardList(o['deck']) && typeof o['hero'] === 'string'
+      ? withStartingWeapons(o['hero'], o['deck'])
+      : o['deck'];
+  const checked = checkEntry({ name: 'x', hero: o['hero'], deck: rawDeck, tier: o['tier'] });
+  const hero = o['hero'];
+  const tier = o['tier'];
+  const at = o['bankedAt'];
+  return {
+    id: safeId(o['id']),
+    hero: typeof hero === 'string' && HERO_TEXT.test(hero) ? hero : '',
+    tier: typeof tier === 'number' && Number.isInteger(tier) ? Math.min(99, Math.max(1, tier)) : 1,
+    cards: Array.isArray(o['deck']) ? Math.min(999, o['deck'].length) : 0,
+    bankedAt: typeof at === 'number' && Number.isFinite(at) ? at : 0,
+    fault: checked.ok ? 'unreadable' : (checked.fault ?? 'unreadable'),
+    inactive,
+  };
+}
+
+/** Broken decks as they arrive from the server: anything malformed is left out. */
+export function cleanBroken(raw: unknown): BrokenDeck[] {
+  if (!Array.isArray(raw)) return [];
+  const out: BrokenDeck[] = [];
+  for (const v of raw as unknown[]) {
+    if (typeof v !== 'object' || v === null) continue;
+    const o = v as Record<string, unknown>;
+    const { id, hero, tier, cards, bankedAt, fault } = o;
+    if (typeof id !== 'string' || id === '' || id !== safeId(id)) continue;
+    if (typeof hero !== 'string' || (hero !== '' && !HERO_TEXT.test(hero))) continue;
+    if (typeof tier !== 'number' || !Number.isInteger(tier) || tier < 1 || tier > 99) continue;
+    if (typeof cards !== 'number' || !Number.isInteger(cards) || cards < 0 || cards > 999) continue;
+    if (typeof bankedAt !== 'number' || !Number.isFinite(bankedAt)) continue;
+    if (!FAULTS.includes(fault as DeckFault)) continue;
+    if (out.some((x) => x.id === id)) continue;
+    out.push({
+      id,
+      hero,
+      tier,
+      cards,
+      bankedAt,
+      fault: fault as DeckFault,
+      inactive: o['inactive'] === true,
+    });
+    if (out.length >= 100) break;
+  }
+  return out;
+}
+
 /** A whole saved list: every deck cleaned, anything that is not a legal deck dropped, no more than the slots. */
 export function cleanVault(raw: unknown): VaultDeck[] {
   if (!Array.isArray(raw)) return [];
@@ -156,7 +237,17 @@ export function cleanVault(raw: unknown): VaultDeck[] {
     const d = cleanDeck(x);
     if (d) out.push(d);
   }
-  return oneEach(out).slice(0, VAULT_SLOTS);
+  const all = oneEach(out);
+  if (all.length <= VAULT_SLOTS) return all;
+  // (more than the slots: the newest are the ones kept, in the order they came, so the deck of a run being played is never the one
+  // left out)
+  const keep = new Set(
+    [...all]
+      .sort((a, b) => b.bankedAt - a.bankedAt)
+      .slice(0, VAULT_SLOTS)
+      .map((d) => d.id),
+  );
+  return all.filter((d) => keep.has(d.id)).slice(0, VAULT_SLOTS);
 }
 
 /** One deck per run: of several saves of the same run (older builds kept one per tier or stage) the newest stays, in the place of the first. */
@@ -202,28 +293,7 @@ export function normaliseCode(raw: string): string | null {
 
 export const showCode = (code: string): string => code.replace(/(.{4})(?=.)/g, '$1-');
 
-// ---- seasons (DECISIONS #736, #737) ----
-
-/**
- * The first season that begins with a wipe: December 2026 (the 1st, midnight Pacific). Decks saved before the rule was announced are
- * kept until then, so nobody loses a deck without having been told.
- */
-export const FIRST_DECK_WIPE = 1_796_112_000_000;
-
-/**
- * A saved deck lasts the season it was last saved in: when the monthly leaderboard rolls over, it is wiped. (A run still going saves
- * its deck again as it plays on, so its deck is the new season's.)
- */
-export function deckExpired(d: Pick<VaultDeck, 'bankedAt'>, now: number): boolean {
-  const season = periodStart(now, 'month');
-  return season >= FIRST_DECK_WIPE && d.bankedAt < season;
-}
-
-/** The decks of the list that are still this season's. */
-export const inSeason = <T extends Pick<VaultDeck, 'bankedAt'>>(
-  list: readonly T[],
-  now: number,
-): T[] => list.filter((d) => !deckExpired(d, now));
+// (DECISIONS #753: saved decks are not wiped when a season ends. The monthly wipe of #736/#737 was taken out before it ever ran.)
 
 /** How far ahead of the server's clock a deck's save time may be before it is taken as saved now (a device whose clock is wrong). */
 export const BANK_CLOCK_SLACK_MS = 10 * 60_000;
