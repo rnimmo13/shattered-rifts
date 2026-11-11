@@ -1,8 +1,12 @@
-# Local 0.253.0 / rules 108 (2026-11-11; decisions 753-754)
+# Release approved 0.254.0 / rules 108 (2026-11-11; decision 755)
 
-Also local, not released (#754): a saved deck an update leaves unplayable (fails `cleanDeck`) is no longer silently left out. The Vault lists it as `broken` (`brokenDeck`, packages/pvp), the Saved decks page shows a notice with the reason, "Got it" (`deckack`) sets it inactive (folded list at the foot, no slot taken), it returns by itself if it plays again, and only the player removes it. Server-held decks only; the desktop offline profile still drops such a deck.
+Robert explicitly approves pushing ("push for now"), together with the unpushed 0.253.0 below. Website/server and matching Windows updater. Future changes need fresh release approval. Two hero model modes. The default is the new pose-sheet models (`HERO_SHEETS`, `src/fight/heroSheet.ts`; atlases in `public/art/heroes-sheets/<id>/`, packed from assets-src/heroes-pose-sheets by `_pipeline/pack_for_game.py`); the "2D animated models (beta)" setting stays the video clips. Skins are hidden, not deleted (`SKINS_SHOWN = false` in `src/cosmetics/cosmetics.ts`): never empty `SKINS`, or `cleanCosmetics` drops everyone's owned skins and the Vault keeps the loss. No rules change.
 
-Not released; needs fresh release approval. Robert: no monthly wipe. Saved decks and all progress are kept from month to month; only the Arena rank soft resets. The monthly deck wipe (#736/#737, first due 1 December 2026) is taken out of server and client before it ever ran (`FIRST_DECK_WIPE`, `deckExpired`, `inSeason`, the `pastdecks` request gone; the `past_decks` table is left in place, unread). The only wipe is at release, when everyone starts fresh (not built). **This must be released before 1 December 2026**, or the live server wipes decks on that date. No rules change.
+# Released with 0.254.0: 0.253.0 / rules 108 (2026-11-11; decisions 753-754)
+
+Also in this release (#754): a saved deck an update leaves unplayable (fails `cleanDeck`) is no longer silently left out. The Vault lists it as `broken` (`brokenDeck`, packages/pvp), the Saved decks page shows a notice with the reason, "Got it" (`deckack`) sets it inactive (folded list at the foot, no slot taken), it returns by itself if it plays again, and only the player removes it. Server-held decks only; the desktop offline profile still drops such a deck.
+
+Released with 0.254.0 (Robert, "push for now"). Robert: no monthly wipe. Saved decks and all progress are kept from month to month; only the Arena rank soft resets. The monthly deck wipe (#736/#737, first due 1 December 2026) is taken out of server and client before it ever ran (`FIRST_DECK_WIPE`, `deckExpired`, `inSeason`, the `pastdecks` request gone; the `past_decks` table is left in place, unread). The only wipe is at release, when everyone starts fresh (not built). Released before 1 December 2026, so the live server never runs the wipe. No rules change.
 
 # Release approved 0.252.0 / rules 108 (2026-11-11; decisions 751-752)
 

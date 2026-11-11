@@ -10,7 +10,7 @@ import { preloadArt, realSkins } from '../art/assets';
 import { skinName } from '../art/skins';
 import { getSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
 import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
-import { HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
+import { FIRST_TAB, HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
 
 const isTab = (v: string): boolean => SHOP_TABS.some((t) => t.id === v);
 const isHeroOrAll = (v: string): boolean => v === 'all' || (HEROES as string[]).includes(v);
@@ -29,7 +29,7 @@ export function StoreScreen() {
       live = false;
     };
   }, []);
-  const [tab, setTab] = useState<ShopTab>(() => remembered('sr-store-tab', 'looks', isTab));
+  const [tab, setTab] = useState<ShopTab>(() => remembered('sr-store-tab', FIRST_TAB, isTab));
   const [hero, setHero] = useState<string>(() => remembered('sr-store-hero', 'all', isHeroOrAll));
   const pickTab = (t: ShopTab): void => {
     setTab(t);
@@ -45,7 +45,7 @@ export function StoreScreen() {
   return (
     <ShopFrame
       page="store"
-      lead="Cosmetics only: nothing here ever makes a deck stronger. Riftwalker looks are free for now."
+      lead="Cosmetics only: nothing here ever makes a deck stronger."
       tab={tab}
       onTab={pickTab}
       hero={{ value: hero, onPick: pickHero, all: true }}

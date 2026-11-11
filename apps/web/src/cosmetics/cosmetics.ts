@@ -45,8 +45,20 @@ function set(next: Cosmetics): void {
 /** This browser's cosmetics, now. */
 export const cosmetics = (): Cosmetics => state;
 
+/**
+ * (DECISIONS #755) Riftwalker looks (skins) are hidden for now: every hero is drawn in its default look, the pose-sheet model, until the
+ * looks have animated versions. Only the showing stops: what a player owns and the look they chose stay stored, here and on the Vault,
+ * and come back when this is true again. (Never empty SKINS for this: cleanCosmetics drops ids it does not know, and the Vault would then
+ * keep the loss.)
+ */
+export const SKINS_SHOWN = false;
+
+/** The look a Riftwalker is drawn in from these cosmetics: its worn skin while skins are shown, else its default look. */
+export const shownSkin = (c: Cosmetics, hero: string): string | undefined =>
+  SKINS_SHOWN ? wornSkin(c, hero) : undefined;
+
 /** The skin this player's Riftwalker wears, if any: only ever theirs (an opponent of the same class keeps their own look). */
-export const mySkin = (hero: string): string | undefined => wornSkin(state, hero);
+export const mySkin = (hero: string): string | undefined => shownSkin(state, hero);
 
 /** The card back this player has chosen, if any (none: the S|R crest everyone starts with). */
 export const myCardBack = (): string | undefined => inUse(state, 'cardBack');
@@ -94,7 +106,7 @@ export async function syncCosmetics(): Promise<boolean> {
 
 /** Get a skin (free for now): owned at once here, then on the Vault. */
 export function getSkin(id: string): void {
-  if (!skinDef(id) || state.owned.includes(id)) return;
+  if (!SKINS_SHOWN || !skinDef(id) || state.owned.includes(id)) return;
   set({ ...state, owned: [...state.owned, id] });
   // (its figure starts loading now, so it is in before the next fight: a fight never swaps a figure halfway)
   void loadSkin(id);
@@ -103,6 +115,8 @@ export function getSkin(id: string): void {
 
 /** Wear a skin on its Riftwalker, or null for the Riftwalker's own look. */
 export function wear(hero: string, skin: string | null): void {
+  // (no choice changes while looks are hidden: the one a player made is kept for when they return)
+  if (!SKINS_SHOWN) return;
   if (skin !== null && (skinDef(skin)?.hero !== hero || !state.owned.includes(skin))) return;
   // (a clock that went backwards still makes this the newest choice)
   const at = Math.max(Date.now(), (state.worn[hero]?.at ?? 0) + 1);

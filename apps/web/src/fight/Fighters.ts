@@ -34,6 +34,7 @@ import {
   type Pt,
 } from './attackFx';
 import { HeroSprite, loadRig, type Facing } from './heroSprite';
+import { SHEET_PREFIX } from '../art/heroRigs';
 
 export type FighterSide = 'a' | 'b';
 export type { Facing } from './heroSprite';
@@ -389,7 +390,10 @@ export class Fighters {
       rig: null,
     };
     this.all.set(spec.id, f);
-    if (spec.rig) this.loadRigFor(f, spec.rig.id, spec.rig.facing);
+    // (a pose-sheet model is not loaded on a board that holds still, Low graphics or reduced motion: it would only ever show its
+    // first pose, at the cost of its whole atlas in memory; the picture stands in, as it does outside battle. DECISIONS #755)
+    if (spec.rig && !(spec.rig.id.startsWith(SHEET_PREFIX) && this.h.profile().still))
+      this.loadRigFor(f, spec.rig.id, spec.rig.facing);
     if (animate && !this.h.profile().still) {
       root.alpha = 0;
       this.track(gsap.to(root, { alpha: 1, duration: 0.25 }));

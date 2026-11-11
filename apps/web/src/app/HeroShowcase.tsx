@@ -15,15 +15,8 @@ import { crestPic } from '../fight/fxMoments';
 import { Picture } from '../ui/Picture';
 import { heroFigure } from '../fight/art';
 import { ART_READY_EVENT } from '../art/assets';
-import {
-  MASTERY_TIERS,
-  heroMastery,
-  isMastered,
-  masteryTotals,
-  wornSkin,
-  type HeroMastery,
-} from '@sr/pvp';
-import { useCosmetics } from '../cosmetics/cosmetics';
+import { MASTERY_TIERS, heroMastery, isMastered, masteryTotals, type HeroMastery } from '@sr/pvp';
+import { shownSkin, useCosmetics } from '../cosmetics/cosmetics';
 import { useMastery } from '../cosmetics/mastery';
 import { HeroIcon } from '../ui/HeroIcon';
 import { HERO_COLOR } from '../art/emblems';
@@ -35,7 +28,7 @@ import './home.css';
 function HeroStage(props: { hero: HeroId }) {
   const ref = useRef<HTMLCanvasElement>(null);
   // the look you chose for this Riftwalker (DECISIONS #406), drawn again when its figure arrives
-  const skin = wornSkin(useCosmetics(), props.hero);
+  const skin = shownSkin(useCosmetics(), props.hero);
   const [art, setArt] = useState(0);
   useEffect(() => {
     const on = (): void => setArt((v) => v + 1);

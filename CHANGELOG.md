@@ -1,3 +1,8 @@
+## 0.254.0 - 2026-11-11
+
+- Every Riftwalker has a new animated look (DECISIONS #755): hand-drawn 2D animation for standing ready, each attack, being hit, a power-up of their own and falling. Each power-up is different: the Spellblade calls a ring of stars, the Rogue gathers shadows and ghost daggers, the Monk roots a fire shockwave into the ground, the Necromancer draws souls into his lantern, the Shaman's spirit hawk circles him, the Trickster takes a bow as the four suits fly out, the Engineer tunes his drone, the Hunter howls and rakes claw marks, and the Drunkard has a drink. The "2D animated models (beta)" setting still switches to the video-clip animations.
+- Riftwalker looks (skins) are put away for now while they get animated versions: every Riftwalker appears in its own look. The looks you own and the one you chose are kept, and come back with them.
+
 ## 0.253.0 - 2026-11-11
 
 - Saved decks are no longer wiped each month (DECISIONS #753). The wipe announced for 1 December 2026 will not happen: decks and all other progress are kept from month to month, and only the Arena rank soft resets when the monthly leaderboard rolls over. The one wipe still planned is at release, when everyone starts fresh. No rules change.

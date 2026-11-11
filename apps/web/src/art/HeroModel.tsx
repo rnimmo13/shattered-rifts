@@ -5,7 +5,7 @@
 // the model with a mouse, or clicking or tapping it, plays its attack. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { VIDEO_PREFIX, heroRigFor } from './heroRigs';
+import { SHEET_PREFIX, VIDEO_PREFIX, heroRigFor } from './heroRigs';
 import { HERO_VIDEOS } from './heroVideos';
 import { useSettingsChanged, type SettingKind } from '../app/settings';
 // (a type only: the rig code itself is loaded on demand below)
@@ -15,6 +15,16 @@ import './heroModel.css';
 const still = (): boolean =>
   (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) ||
   document.documentElement.dataset['graphics'] === 'low';
+
+// (DECISIONS #755) A pose-sheet model holds its whole atlas, about 100 MB decoded: a page showing every Riftwalker (the Models page,
+// the lore page) animates at most this many at once, the ones nearest the screen; the rest show their picture until one is let go.
+const SHEET_SLOTS = 3;
+let sheetsLive = 0;
+const slotWaiters = new Set<() => void>();
+function freeSheetSlot(): void {
+  sheetsLive = Math.max(0, sheetsLive - 1);
+  for (const w of [...slotWaiters]) w();
+}
 
 export function HeroModel(props: {
   hero: string;
@@ -40,19 +50,59 @@ export function HeroModel(props: {
   );
   const rigId = !props.skin ? heroRigFor(props.hero) : undefined;
   const fill = props.fill ?? 0.94;
+  // (DECISIONS #755) a model is only loaded while it is on screen or near it, and let go when it scrolls well away
+  const [near, setNear] = useState(() => typeof IntersectionObserver !== 'function');
+  // (no pose-sheet slot free: the picture, until one is; `slot` counts the times one was freed, to try again)
+  const [waiting, setWaiting] = useState(false);
+  const [slot, setSlot] = useState(0);
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof IntersectionObserver !== 'function') return;
+    const io = new IntersectionObserver(([e]) => setNear(!!e?.isIntersecting), {
+      rootMargin: '200px',
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   // (DECISIONS #724) while a rig that will be shown is loading, the crest turns in its place, never the still picture first and then a
   // jump to the rig
-  const loading = !!rigId && !live && !fallback && !still();
+  const loading = !!rigId && near && !waiting && !live && !fallback && !still();
 
   useEffect(() => {
     const el = box.current;
-    if (!rigId || !el || still()) return;
+    if (!rigId || !el || still() || !near) return;
+    const sheet = rigId.startsWith(SHEET_PREFIX);
+    if (sheet && sheetsLive >= SHEET_SLOTS) {
+      // (the picture meanwhile, not the loading crest; tried again each time a slot is freed)
+      let on = true;
+      queueMicrotask(() => {
+        if (on) setWaiting(true);
+      });
+      const retry = (): void => setSlot((n) => n + 1);
+      slotWaiters.add(retry);
+      return () => {
+        on = false;
+        slotWaiters.delete(retry);
+      };
+    }
+    let holds = sheet;
+    if (holds) sheetsLive++;
+    const release = (): void => {
+      if (!holds) return;
+      holds = false;
+      freeSheetSlot();
+    };
     let sprite: HeroSprite | null = null;
     let raf = 0;
     let gone = false;
     let last = performance.now();
     let size = { w: 0, h: 0 };
-    setFallback(false);
+    // (a slot of its own now, and a fresh try: not the picture of an earlier failure)
+    queueMicrotask(() => {
+      if (gone) return;
+      setWaiting(false);
+      setFallback(false);
+    });
     // (a slow download: the picture after 8 seconds, and the rig over it when it comes)
     const slow = window.setTimeout(() => setFallback(true), 8000);
 
@@ -125,12 +175,14 @@ export function HeroModel(props: {
         s.canvas.remove();
         s.dispose();
       }
+      release();
       // (always, the cleanup included: switching to a hero with no rig keeps this component, and its picture must show again)
       setLive(false);
     };
 
     // (the rig could not be made: the picture, at once)
     const fail = (): void => {
+      release();
       if (!gone) setFallback(true);
     };
     void import('../fight/heroSprite')
@@ -164,8 +216,9 @@ export function HeroModel(props: {
       gone = true;
       window.clearTimeout(slow);
       stop();
+      release();
     };
-  }, [rigId, fill]);
+  }, [rigId, fill, near, slot]);
 
   return (
     <span

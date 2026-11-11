@@ -7,8 +7,7 @@ import { RIFTWALKERS, ascendanciesOf, heroesByRealm, type HeroId } from '@sr/con
 import { crestPic } from '../fight/fxMoments';
 import { Picture } from '../ui/Picture';
 import { heroFigure } from '../fight/art';
-import { wornSkin } from '@sr/pvp';
-import { useCosmetics } from '../cosmetics/cosmetics';
+import { shownSkin, useCosmetics } from '../cosmetics/cosmetics';
 import { HeroIcon } from '../ui/HeroIcon';
 import { DeckStrip } from './Pickers';
 import { HeroModel } from '../art/HeroModel';
@@ -18,7 +17,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
   const c = RIFTWALKERS[props.value];
   // the chosen Riftwalker, standing beside the tiles
   // (in the look you chose for them, DECISIONS #406)
-  const skin = wornSkin(useCosmetics(), props.value);
+  const skin = shownSkin(useCosmetics(), props.value);
   // (drawn again when a skin's figure arrives after the picker opened)
   const [art, setArt] = useState(0);
   useEffect(() => {

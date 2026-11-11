@@ -46,6 +46,33 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.254.0",
+    date: "2026-11-11",
+    title: "Animated Riftwalkers",
+    summary: "Every Riftwalker moves now: standing ready, attacking, taking a hit, powering up and falling, each with a power-up of their own.",
+    notes: [
+      {
+        kind: "new",
+        title: "Animated Riftwalkers",
+        text: "Every Riftwalker has a new hand-drawn 2D animated look, at home, in the picker and in every fight: they breathe while they wait, swing, stab, shoot or cast with each attack, flinch when hit and fall when beaten. The hit lands at the moment the blow connects.",
+      },
+      {
+        kind: "new",
+        title: "A power-up of their own",
+        text: "Each Riftwalker powers up differently: the Spellblade calls a ring of stars, the Rogue gathers shadows and ghost daggers, the Monk sends a fire shockwave through the ground, the Necromancer draws souls into his lantern, the Shaman's spirit hawk circles him, the Trickster takes a bow as the four suits fly out, the Engineer tunes his drone, the Hunter howls and rakes claw marks, and the Drunkard has a drink.",
+      },
+      {
+        kind: "changed",
+        text: "The 2D animated models (beta) setting in Settings now switches to the video-clip animations instead. On Low graphics or with reduced motion, Riftwalkers show their painting.",
+      },
+      {
+        kind: "changed",
+        title: "Riftwalker looks put away for now",
+        text: "Riftwalker looks (skins) are put away while they get animated versions, so every Riftwalker appears in its own look and the Store and Collection have no looks tab for now. The looks you own and the one you chose are kept, and come back with them.",
+      },
+    ],
+  },
+  {
     version: "0.253.0",
     date: "2026-11-11",
     title: "No monthly wipe",

@@ -1,10 +1,11 @@
 // The kinds of cosmetics the Store and the Cosmetics Vault show as tabs, and the tab a page was left on (DECISIONS #409).
 
 import { RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { SKINS_SHOWN } from '../cosmetics/cosmetics';
 
 export type ShopTab = 'looks' | 'backs' | 'fields' | 'frames' | 'titles' | 'emotes';
 
-export const SHOP_TABS: { id: ShopTab; name: string; text: string }[] = [
+const ALL_TABS: { id: ShopTab; name: string; text: string }[] = [
   { id: 'looks', name: 'Riftwalker looks', text: 'Other outfits for your Riftwalkers.' },
   { id: 'backs', name: 'Card backs', text: 'New designs for the back of every card you draw.' },
   {
@@ -21,9 +22,15 @@ export const SHOP_TABS: { id: ShopTab; name: string; text: string }[] = [
   { id: 'emotes', name: 'Emotes', text: 'Something to say to your opponent in the Arena.' },
 ];
 
+/** The tabs shown: Riftwalker looks only while skins are shown (DECISIONS #755: hidden for now). */
+export const SHOP_TABS = ALL_TABS.filter((t) => SKINS_SHOWN || t.id !== 'looks');
+
+/** The tab a page opens on when none was remembered. */
+export const FIRST_TAB: ShopTab = SHOP_TABS[0]!.id;
+
 export const HEROES = Object.keys(RIFTWALKERS) as HeroId[];
 
-/** The tab and class a page was left on, remembered in this browser (a convenience: it starts on looks when storage is blocked). */
+/** The tab and class a page was left on, remembered in this browser (a convenience: it starts on FIRST_TAB when storage is blocked). */
 export function remembered<T extends string>(
   key: string,
   fallback: T,

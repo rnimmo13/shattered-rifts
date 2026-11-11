@@ -12,7 +12,7 @@ import { choose, useCosmetics, wear } from '../cosmetics/cosmetics';
 import { CardBackFace } from '../cosmetics/CardBackFace';
 import { heroFigure } from '../fight/art';
 import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
-import { HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
+import { FIRST_TAB, HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
 
 const isTab = (v: string): boolean => SHOP_TABS.some((t) => t.id === v);
 const isHeroOrAll = (v: string): boolean => v === 'all' || (HEROES as string[]).includes(v);
@@ -37,7 +37,7 @@ export function CosmeticsScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [art],
   );
-  const [tab, setTab] = useState<ShopTab>(() => remembered('sr-vault-tab', 'looks', isTab));
+  const [tab, setTab] = useState<ShopTab>(() => remembered('sr-vault-tab', FIRST_TAB, isTab));
   const [hero, setHero] = useState<string>(() => remembered('sr-vault-hero', 'all', isHeroOrAll));
   const pickTab = (t: ShopTab): void => {
     setTab(t);

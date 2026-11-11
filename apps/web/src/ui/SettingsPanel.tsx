@@ -417,10 +417,11 @@ export function SettingsPanel() {
                 }}
               />
             </Row>
-            {/* (DECISIONS #715: video models, off unless a player opts in while they are built) */}
+            {/* (DECISIONS #715, #755: the video models, off unless a player opts in while they are built; the default is the
+                pose-sheet models) */}
             <Row
               label="2D animated models (beta)"
-              hint="Under construction: heroes move in animated 2D models instead of their still paintings. Some moves still use stand-in motion, and a fight already under way keeps its look until the next one."
+              hint="Under construction: heroes move in video-clip animations instead of their standard animated models. Some moves still use stand-in motion, and a fight already under way keeps its look until the next one."
             >
               <Choice
                 label="2D animated models (beta)"

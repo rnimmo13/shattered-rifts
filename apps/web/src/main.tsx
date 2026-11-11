@@ -12,7 +12,7 @@ import './duel/duel.css';
 import { App } from './app/App';
 import { loadSkin, preloadArt, observeArtProgress } from './art/assets';
 import { startupSplash, showStartupError } from './startup';
-import { claimSeasonRewards, cosmetics, syncCosmetics } from './cosmetics/cosmetics';
+import { SKINS_SHOWN, claimSeasonRewards, cosmetics, syncCosmetics } from './cosmetics/cosmetics';
 import { syncMastery } from './cosmetics/mastery';
 import { markGraphicsQuality } from './duel/effects';
 import { installPlayAccess } from './playAccess';
@@ -39,7 +39,11 @@ if (!root) throw new Error('Missing #root element');
 // (with the skins your Riftwalkers wear, DECISIONS #406: a slow one shows the hero's own look until it arrives)
 const wornSkins = (): Promise<unknown> =>
   Promise.race([
-    Promise.all(Object.values(cosmetics().worn).flatMap((w) => (w.skin ? [loadSkin(w.skin)] : []))),
+    Promise.all(
+      Object.values(cosmetics().worn).flatMap((w) =>
+        SKINS_SHOWN && w.skin ? [loadSkin(w.skin)] : [],
+      ),
+    ),
     new Promise((resolve) => window.setTimeout(resolve, 3000)),
   ]);
 const splash = startupSplash();
@@ -65,7 +69,8 @@ void Promise.race([preloadArt().then(wornSkins), splash.skip])
 
 // your cosmetics follow you from device to device: this browser's copy is merged with your Vault's (and the skins that arrive load)
 void syncCosmetics().then((ok) => {
-  if (ok) for (const w of Object.values(cosmetics().worn)) if (w.skin) void loadSkin(w.skin);
+  if (ok && SKINS_SHOWN)
+    for (const w of Object.values(cosmetics().worn)) if (w.skin) void loadSkin(w.skin);
   // (DECISIONS #737) season rewards earned since the last visit are given now (nothing is asked while no season has rewards)
   // (hero mastery is asked after them, so its reply carries the earned log with them in it)
   const claimed = ok ? claimSeasonRewards() : Promise.resolve([]);

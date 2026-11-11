@@ -14,7 +14,8 @@ import {
 import { KNIGHT_CLIPS } from '../art/hero2d/knight_anims';
 import { ROGUE_CLIPS } from '../art/hero2d/rogue_anims';
 
-import { VIDEO_PREFIX } from '../art/heroRigs';
+import { SHEET_PREFIX, VIDEO_PREFIX } from '../art/heroRigs';
+import { SheetHeroSprite, loadHeroSheet, type SheetAssets } from './heroSheet';
 import { VideoHeroSprite, loadHeroVideo, type VideoAssets } from './heroVideo';
 
 export { HERO_RIGS, heroRigFor } from '../art/heroRigs';
@@ -98,8 +99,8 @@ interface RigAssets {
   atlas: HTMLImageElement;
 }
 
-/** A loaded model: a skeletal rig's skeleton and atlas, or a video model's clips (DECISIONS #715). */
-export type LoadedRig = RigAssets | VideoAssets;
+/** A loaded model: a skeletal rig's skeleton and atlas, a video model's clips (DECISIONS #715), or a pose-sheet atlas (DECISIONS #755). */
+export type LoadedRig = RigAssets | VideoAssets | SheetAssets;
 
 const loads = new Map<string, Promise<RigAssets | null>>();
 
@@ -109,6 +110,7 @@ const loads = new Map<string, Promise<RigAssets | null>>();
  */
 export function loadRig(id: string): Promise<LoadedRig | null> {
   if (id.startsWith(VIDEO_PREFIX)) return loadHeroVideo(id.slice(VIDEO_PREFIX.length));
+  if (id.startsWith(SHEET_PREFIX)) return loadHeroSheet(id.slice(SHEET_PREFIX.length));
   let p = loads.get(id);
   if (!p) {
     const dir = `${import.meta.env.BASE_URL}art/heroes2d/${id}/`;
@@ -184,6 +186,7 @@ export interface HeroSprite {
 export const HeroSprite = {
   create(id: string, assets: LoadedRig, facing: Facing): HeroSprite | null {
     if (assets.kind === 'video') return VideoHeroSprite.create(assets, facing);
+    if (assets.kind === 'sheet') return SheetHeroSprite.create(assets, facing);
     return RigSprite.create(id, assets, facing);
   },
 };
