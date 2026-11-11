@@ -18,6 +18,7 @@ import { TitleScreen } from './TitleScreen';
 import { PlayGate, PlayStatus } from '../PlayGate';
 import { BUILD } from '../build';
 import { EarnedPopup } from '../cosmetics/EarnedPopup';
+import { PageBackdrop } from './PageBackdrop';
 
 // The duel screen pulls in the whole Pixi renderer, so it loads on demand.
 const RunScreen = lazy(() => import('../run/RunScreen'));
@@ -66,6 +67,8 @@ export function App() {
   const atHome = hash === '' || hash === '#' || hash === '#/';
   return (
     <>
+      {/* (DECISIONS #747) the painted place behind a menu page */}
+      <PageBackdrop hash={hash} />
       <ScreenErrorBoundary key={hash}>
         <Screens key={atHome ? artVersion : 0} hash={hash} />
       </ScreenErrorBoundary>

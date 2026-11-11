@@ -46,6 +46,30 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.250.0",
+    date: "2026-11-11",
+    title: "Painted menus, and battles on the board",
+    summary: "Every menu now has a painted place behind it, and the Arena leaderboard shows battles won as well as matches.",
+    notes: [
+      {
+        kind: "new",
+        title: "A place behind every menu",
+        text: "The home page is the Sanctum, with your Riftwalker standing on its dais. The Store is a market stall, your Collection is a vault, the Arena waits behind its gate, your decks and cards are kept in an archive, and the leaderboards hang in a hall of champions.",
+      },
+      {
+        kind: "changed",
+        title: "The Arena leaderboard shows battles as well as matches",
+        text: "A match is a best of three; a battle is one game of it. Places on the board still go by matches won, and a new Battles column shows the battles you won and lost. The ghost leaderboards show the same.",
+      },
+      {
+        kind: "changed",
+        title: "Your Riftwalker's snapshot counts battles",
+        text: "On the home screen, Arena and Ghosts now count battles won with that Riftwalker: every game of a best of three counts.",
+      },
+    ],
+    heads: "Battles are counted from this update on, so a match played before it shows none.",
+  },
+  {
     version: "0.249.0",
     date: "2026-11-11",
     title: "Hero mastery",

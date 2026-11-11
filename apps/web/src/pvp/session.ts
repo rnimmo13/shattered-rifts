@@ -492,11 +492,12 @@ export class PvpSession {
           end: { winner: m.winner, reason: m.reason },
           series: m.series ?? this.snap.match?.series ?? null,
         });
-        // (DECISIONS #741) a match won with this Riftwalker goes into its numbers: the match, not each game of it (a best of three
-        // is one win, and the game that decides it is won by whoever wins the match), against a player or against a ghost. Counted
-        // here, when the match ends, and once per match (a rejoin hears the end again)
+        // (DECISIONS #746) a battle won with this Riftwalker goes into its numbers: every game of a best of three counts, so the
+        // number never has to be read against the match score. Against a player, or against a ghost. Once per battle (a rejoin
+        // hears the end again)
         const done = this.snap.match;
-        if (done && m.winner === done.seat && (!done.series || done.series.over))
+        // (a match ended by someone leaving, or by both sitting idle, is no battle won: the board counts none either)
+        if (done && m.winner === done.seat && m.reason !== 'disconnect' && m.reason !== 'passes')
           noteArenaWin(
             done.heroes[done.seat],
             done.ghost !== null,

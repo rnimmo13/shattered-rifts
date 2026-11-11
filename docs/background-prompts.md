@@ -1,6 +1,6 @@
 # Menu background prompts: the home page, the Store, the Collection, the Arena and the record pages
 
-Backgrounds for the pages that are not fights. Robert generates them in ChatGPT; Claude cuts and wires them (written 2026-11-11, DECISIONS #745). Nothing here is built yet: every page keeps the look it has now until its picture exists.
+Backgrounds for the pages that are not fights. Robert generates them in ChatGPT; Claude cuts and wires them (written 2026-11-11, DECISIONS #745). All seven were made on 2026-11-11 and are in the game (DECISIONS #747); none needed redoing. To replace one, save the new PNG under the same name and run `pnpm --filter @sr/tools backgrounds`.
 
 ## What I recommend, and why
 

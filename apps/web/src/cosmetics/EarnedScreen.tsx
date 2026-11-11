@@ -30,8 +30,7 @@ export default function EarnedScreen() {
           What you have earned by playing. Rewards are given the moment you earn them and are never
           wiped. {totals.mastered} of {MASTERY_HEROES.length} Riftwalkers mastered · {totals.clears}{' '}
           {totals.clears === 1 ? 'campaign' : 'campaigns'} cleared · {totals.arenaWins} Arena{' '}
-          {totals.arenaWins === 1 ? 'match' : 'matches'} won · {totals.ghostWins}{' '}
-          {totals.ghostWins === 1 ? 'ghost' : 'ghosts'} beaten.
+          {totals.arenaWins === 1 ? 'battle' : 'battles'} won · {totals.ghostWins} against ghosts.
         </p>
       </header>
       {log.length === 0 ? (

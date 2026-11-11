@@ -144,8 +144,8 @@ export function noteRun(
 }
 
 /**
- * A match won with this Riftwalker (a best of three is one match): against another player, or against a ghost. `match` names the
- * match, so hearing of its end again (a rejoin) does not count it twice.
+ * A battle won with this Riftwalker (each game of a best of three is one: DECISIONS #746): against another player, or against a
+ * ghost. `match` names the battle, so hearing of its end again (a rejoin) does not count it twice.
  */
 export function noteArenaWin(hero: string, ghost: boolean, match: string): void {
   if (state.matches?.includes(match)) return;

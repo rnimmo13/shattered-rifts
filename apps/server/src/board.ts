@@ -174,6 +174,17 @@ export class Leaderboard extends DurableObject<Env> {
        )`,
     );
     ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS pvp_at ON pvp (at)');
+    // each battle of a match between two players (DECISIONS #746): the board shows battles won beside matches won. Kept apart from
+    // `pvp`, which is one row per decided match and is what ranks, trophies and ratings are worked out from
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS pvp_games (id INTEGER PRIMARY KEY AUTOINCREMENT, at INTEGER NOT NULL, winner TEXT NOT NULL, loser TEXT NOT NULL)',
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS pvp_games_at ON pvp_games (at)');
+    // ... and each battle of a match against a ghost (DECISIONS #748), beside `ghost_games`, which is one row per decided match
+    ctx.storage.sql.exec(
+      'CREATE TABLE IF NOT EXISTS ghost_battles (id INTEGER PRIMARY KEY AUTOINCREMENT, at INTEGER NOT NULL, ghost TEXT NOT NULL, human TEXT NOT NULL, ghost_won INTEGER NOT NULL)',
+    );
+    ctx.storage.sql.exec('CREATE INDEX IF NOT EXISTS ghost_battles_at ON ghost_battles (at)');
     ctx.storage.sql.exec(
       `CREATE TABLE IF NOT EXISTS runs (
          player TEXT NOT NULL, run TEXT NOT NULL,
@@ -511,8 +522,10 @@ export class Leaderboard extends DurableObject<Env> {
   private prune(now: number): void {
     const before = now - BOARD_KEEP_DAYS * DAY;
     this.ctx.storage.sql.exec('DELETE FROM pvp WHERE at < ?', before);
+    this.ctx.storage.sql.exec('DELETE FROM pvp_games WHERE at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM runs WHERE at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM ghost_games WHERE at < ?', before);
+    this.ctx.storage.sql.exec('DELETE FROM ghost_battles WHERE at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM ghosts WHERE last_at < ?', before);
     this.ctx.storage.sql.exec('DELETE FROM limits WHERE window < ?', Math.floor(before / DAY));
     // (ratings: a season is only ever carried over from the one before, so older ones can go)
@@ -1144,6 +1157,67 @@ export class Leaderboard extends DurableObject<Env> {
     return json({ ok: true, counted: true });
   }
 
+  /**
+   * One battle of a match against a ghost has been won, by the person or by the ghost (DECISIONS #748). Only for the Battles
+   * column of the two ghost boards: their places go by matches (ghostResult). A person's battles won in a day are capped as their
+   * matches are, three times over (their losses always count), and the ghost must be one the board knows.
+   */
+  private ghostBattle(b: Record<string, unknown>, now: number): Response {
+    if (typeof b['ghost'] !== 'string' || !isId(b['human']) || typeof b['ghostWon'] !== 'boolean')
+      return json({ ok: false, error: 'bad-result' }, 400);
+    if (!this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', b['ghost']))
+      return json({ ok: true, counted: false });
+    if (
+      b['ghostWon'] === false &&
+      this.count(
+        'SELECT COUNT(*) AS n FROM ghost_battles WHERE human = ? AND ghost_won = 0 AND at > ?',
+        b['human'],
+        now - DAY,
+      ) >=
+        GHOST_WINS_PER_DAY * 3
+    )
+      return json({ ok: true, counted: false });
+    this.ctx.storage.sql.exec(
+      'INSERT INTO ghost_battles (at, ghost, human, ghost_won) VALUES (?, ?, ?, ?)',
+      now,
+      b['ghost'],
+      b['human'],
+      b['ghostWon'] ? 1 : 0,
+    );
+    return json({ ok: true, counted: true });
+  }
+
+  /** Battles against ghosts since `from`: each ghost's, and each person's (won and lost are from their own side). */
+  private ghostBattles(from: number): {
+    ghosts: Map<string, { won: number; lost: number }>;
+    people: Map<string, { won: number; lost: number }>;
+  } {
+    const ghosts = new Map<string, { won: number; lost: number }>();
+    const people = new Map<string, { won: number; lost: number }>();
+    const at = (m: Map<string, { won: number; lost: number }>, id: string) => {
+      let x = m.get(id);
+      if (!x) m.set(id, (x = { won: 0, lost: 0 }));
+      return x;
+    };
+    for (const r of this.ctx.storage.sql
+      .exec<{ ghost: string; human: string; ghost_won: number; n: number }>(
+        'SELECT ghost, human, ghost_won, COUNT(*) AS n FROM ghost_battles WHERE at >= ? GROUP BY ghost, human, ghost_won',
+        from,
+      )
+      .toArray()) {
+      const g = at(ghosts, r.ghost);
+      const h = at(people, r.human);
+      if (r.ghost_won) {
+        g.won += r.n;
+        h.lost += r.n;
+      } else {
+        g.lost += r.n;
+        h.won += r.n;
+      }
+    }
+    return { ghosts, people };
+  }
+
   private ghostBoard(period: Period, now: number, player?: string): unknown {
     const from = periodStart(now, period);
     const rows = this.ctx.storage.sql
@@ -1184,13 +1258,18 @@ export class Leaderboard extends DurableObject<Env> {
       'SELECT COUNT(*) AS n FROM current_ghosts WHERE last_at >= ?',
       now - 31 * DAY,
     );
-    const all = standingsVsGhosts(games);
+    // (places are by matches won, as before; each place also says its battles: DECISIONS #748)
+    const battles = this.ghostBattles(from);
+    const all = standingsVsGhosts(games).map((s) => {
+      const b = battles.people.get(s.player);
+      return b ? { ...s, battles: b } : s;
+    });
     return {
       ok: true,
       period,
       from,
       decks,
-      ghosts: rankGhosts(games),
+      ghosts: rankGhosts(games, BOARD_SIZE, battles.ghosts),
       players: all.slice(0, BOARD_SIZE).map(withoutPlayer),
       you: this.placeOf(all, player),
     };
@@ -1364,6 +1443,63 @@ export class Leaderboard extends DurableObject<Env> {
     );
     this.prune(now);
     return json({ ok: true, counted: true });
+  }
+
+  /**
+   * One battle of a match between two players has been won (DECISIONS #746). It is only counted for the board's Battles column:
+   * ranks, ratings and trophies are worked out from decided matches (recordPvp). The same limits as a match, three times over (a
+   * match is at most three battles): nobody plays themselves, and a pair, or one winner, counts only so often in a day.
+   */
+  private recordPvpGame(b: Record<string, unknown>, now: number): Response {
+    const wid = b['winner'];
+    const lid = b['loser'];
+    if (!isId(wid) || !isId(lid)) return json({ ok: false, error: 'bad-result' }, 400);
+    if (wid === lid) return json({ ok: true, counted: false });
+    const pair = this.count(
+      'SELECT COUNT(*) AS n FROM pvp_games WHERE winner = ? AND loser = ? AND at > ?',
+      wid,
+      lid,
+      now - DAY,
+    );
+    const won = this.count(
+      'SELECT COUNT(*) AS n FROM pvp_games WHERE winner = ? AND at > ?',
+      wid,
+      now - DAY,
+    );
+    if (pair >= SAME_FOE_PER_DAY * 3 || won >= WINS_PER_DAY * 3)
+      return json({ ok: true, counted: false });
+    this.ctx.storage.sql.exec(
+      'INSERT INTO pvp_games (at, winner, loser) VALUES (?, ?, ?)',
+      now,
+      wid,
+      lid,
+    );
+    return json({ ok: true, counted: true });
+  }
+
+  /** Each player's battles won and lost since `from`. */
+  private battles(from: number): Map<string, { won: number; lost: number }> {
+    const out = new Map<string, { won: number; lost: number }>();
+    const at = (id: string): { won: number; lost: number } => {
+      let x = out.get(id);
+      if (!x) out.set(id, (x = { won: 0, lost: 0 }));
+      return x;
+    };
+    for (const r of this.ctx.storage.sql
+      .exec<{ winner: string; n: number }>(
+        'SELECT winner, COUNT(*) AS n FROM pvp_games WHERE at >= ? GROUP BY winner',
+        from,
+      )
+      .toArray())
+      at(r.winner).won = r.n;
+    for (const r of this.ctx.storage.sql
+      .exec<{ loser: string; n: number }>(
+        'SELECT loser, COUNT(*) AS n FROM pvp_games WHERE at >= ? GROUP BY loser',
+        from,
+      )
+      .toArray())
+      at(r.loser).lost = r.n;
+    return out;
   }
 
   /** The username this player has claimed, if any (it is what the boards show for them). */
@@ -1612,7 +1748,12 @@ export class Leaderboard extends DurableObject<Env> {
 
   private pvpBoard(period: Period, now: number, player?: string): unknown {
     const from = periodStart(now, period);
-    const all = standingsPvp(this.pvpRows(from));
+    // (places are by matches won, as before; each place also says its battles: DECISIONS #746)
+    const battles = this.battles(from);
+    const all = standingsPvp(this.pvpRows(from)).map((s) => {
+      const b = battles.get(s.player);
+      return b ? { ...s, battles: b } : s;
+    });
     // each place shows the trophies its player holds
     const top = all.slice(0, BOARD_SIZE);
     const held = this.trophyCounts([...top.map((s) => s.player), ...(player ? [player] : [])]);
@@ -1893,6 +2034,7 @@ export class Leaderboard extends DurableObject<Env> {
       return json({ ok: false, error: 'not-found' }, 404);
     }
     if (url.pathname === '/pvp') return this.recordPvp(body, now);
+    if (url.pathname === '/pvp/game') return this.recordPvpGame(body, now);
     if (url.pathname === '/run') return this.recordRun(body, now);
     // (asked by the Worker when a player's season rewards are worked out: DECISIONS #737)
     if (url.pathname === '/season/record') {
@@ -1914,6 +2056,7 @@ export class Leaderboard extends DurableObject<Env> {
     if (url.pathname === '/ghost/boss') return this.ghostBoss(body, now);
     if (url.pathname === '/ghost/register') return this.registerSaved(body, now);
     if (url.pathname === '/ghost/result') return this.ghostResult(body, now);
+    if (url.pathname === '/ghost/game') return this.ghostBattle(body, now);
     if (url.pathname === '/trophies') {
       // the Trophy case: one player's trophies (the worker has worked out who they are)
       if (!isId(body['player'])) return json({ ok: true, trophies: [] });

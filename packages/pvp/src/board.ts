@@ -188,6 +188,11 @@ export interface PvpStanding {
   losses: number;
   /** the Arena trophies they hold (the server adds them to a board it shows) */
   trophies?: TrophyCount;
+  /**
+   * battles won and lost: each game of a best of three, where `wins` and `losses` are whole matches (the server adds them to the
+   * Arena board: DECISIONS #746)
+   */
+  battles?: { won: number; lost: number };
   /** the Riftwalkers they played, most played first, each with its own record (one Riftwalker with an Ascendancy and without is two) */
   heroes: { hero: string; ascendancy?: string; wins: number; losses: number }[];
 }
@@ -519,10 +524,17 @@ export interface GhostStanding {
   /** how it did as a ghost in the period */
   wins: number;
   losses: number;
+  /** battles won and lost: each game of a best of three, where `wins` and `losses` are whole matches (DECISIONS #748) */
+  battles?: { won: number; lost: number };
 }
 
 /** The ghosts ranked by their wins in the period (then fewer losses). */
-export function rankGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): GhostStanding[] {
+export function rankGhosts(
+  games: readonly GhostGame[],
+  limit = BOARD_SIZE,
+  /** each ghost's battles in the period, by ghost id (the board adds them: places are by matches) */
+  battles?: ReadonlyMap<string, { won: number; lost: number }>,
+): GhostStanding[] {
   const by = new Map<string, GhostStanding & { latest: number }>();
   for (const g of games) {
     let s = by.get(g.ghost);
@@ -546,18 +558,22 @@ export function rankGhosts(games: readonly GhostGame[], limit = BOARD_SIZE): Gho
     if (g.ghostWon) s.wins++;
     else s.losses++;
   }
-  return [...by.values()]
-    .sort((x, y) => y.wins - x.wins || x.losses - y.losses || x.name.localeCompare(y.name))
+  return [...by.entries()]
+    .sort(([, x], [, y]) => y.wins - x.wins || x.losses - y.losses || x.name.localeCompare(y.name))
     .slice(0, limit)
-    .map(({ name, hero, ascendancy, tier, stage, wins, losses }) => ({
-      name,
-      hero,
-      ...(ascendancy ? { ascendancy } : {}),
-      tier,
-      stage,
-      wins,
-      losses,
-    }));
+    .map(([id, { name, hero, ascendancy, tier, stage, wins, losses }]) => {
+      const b = battles?.get(id);
+      return {
+        name,
+        hero,
+        ...(ascendancy ? { ascendancy } : {}),
+        tier,
+        stage,
+        wins,
+        losses,
+        ...(b ? { battles: b } : {}),
+      };
+    });
 }
 
 /** Every person's place by wins against ghosts in the period (the same shape as the Arena board). */

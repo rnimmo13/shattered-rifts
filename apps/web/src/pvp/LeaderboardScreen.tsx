@@ -45,10 +45,10 @@ const BOARDS: { id: BoardKind; name: string; blurb: string }[] = [
 const HOW: Record<BoardKind | 'ranks', string> = {
   ranks:
     'Every Arena match against another player moves your rating: up for a win, down for a loss, further when the other player is rated higher. Bronze, Silver, Gold and Platinum have three divisions each; Diamond is the top. A season is a month, and a new season pulls every rating halfway back to the start. Matches against ghosts never count. The board lists players with at least 3 Arena matches this season.',
-  pvp: 'Arena wins against other players this week or this month. When a week or month closes, its top 100 each win a trophy: silver for a week, gold for a month (see your Trophy case). Weeks start on Monday and months on the 1st, at midnight Pacific time.',
+  pvp: 'Arena matches won against other players this week or this month. A match is a best of three, and places go by matches won; Battles counts the games you won and lost against other players (a game that was barely played does not count). When a week or month closes, its top 100 each win a trophy: silver for a week, gold for a month (see your Trophy case). Weeks start on Monday and months on the 1st, at midnight Pacific time.',
   runs: 'Every run that made progress this week or month, at how far it has got in all, one place per player and Riftwalker. Runs are ranked by Tier, then status (Completed, Live, Dead, Abandoned), then unspent shards held by that run, then who reached that point first. Spending lowers the total; historical balances not yet reported show —. A run counts from its first fight; you need a username to be on it.',
   ghosts:
-    'Ghosts are decks that have played in the Arena, piloted by the computer. The first table ranks the ghosts by their wins, the second the people who beat them. Ghost matches never count toward Arena ranks or the Arena board.',
+    'Ghosts are decks that have played in the Arena, piloted by the computer. The first table ranks the ghosts by the matches they won, the second the people who beat them; a match is a best of three, and Battles counts the games won and lost. Ghost matches never count toward Arena ranks or the Arena board.',
 };
 
 const percent = (wins: number, losses: number): string =>
@@ -302,9 +302,9 @@ export function LeaderboardScreen() {
                 played={`You have not played a counted Arena match this ${period}.`}
               />
               <Table<PvpStanding>
-                caption={`Arena wins this ${period}`}
-                head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
-                numeric={[1, 2, 3]}
+                caption={`Arena matches and battles won this ${period}`}
+                head={['Player', 'Matches', 'Lost', 'Win %', 'Battles', 'Characters']}
+                numeric={[1, 2, 3, 4]}
                 rows={view.board as PvpStanding[]}
                 you={view.you as (PvpStanding & { rank: number }) | null}
                 empty={`No matches yet this ${period}. Be the first.`}
@@ -315,6 +315,8 @@ export function LeaderboardScreen() {
                   <b key="w">{s.wins}</b>,
                   s.losses,
                   percent(s.wins, s.losses),
+                  // (battles: each game of a best of three, won and lost; a match from before they were kept shows none)
+                  s.battles ? `${s.battles.won}–${s.battles.lost}` : '',
                   <Characters key="c" heroes={s.heroes} />,
                 ]}
               />
@@ -374,7 +376,11 @@ export function LeaderboardScreen() {
                       {formatRunTime(s.playMs)}
                     </span>
                   ) : (
-                    <span key="time" className="board__none" title="Shown once a run beats the campaign">
+                    <span
+                      key="time"
+                      className="board__none"
+                      title="Shown once a run beats the campaign"
+                    >
                       <span aria-hidden>&mdash;</span>
                       <span className="sr-only">No time</span>
                     </span>
@@ -392,9 +398,9 @@ export function LeaderboardScreen() {
               </p>
               <h2 className="board__h">Ghosts</h2>
               <Table<GhostStanding>
-                caption={`Ghost decks by wins this ${period}`}
-                head={['Deck of', 'Character', 'Rift Tier', 'Wins', 'Losses', 'Win %']}
-                numeric={[2, 3, 4, 5]}
+                caption={`Ghost decks by matches won this ${period}`}
+                head={['Deck of', 'Character', 'Rift Tier', 'Matches', 'Lost', 'Win %', 'Battles']}
+                numeric={[2, 3, 4, 5, 6]}
                 rows={view.ghosts}
                 you={null}
                 empty={`No ghost has been fought yet this ${period}.`}
@@ -410,6 +416,7 @@ export function LeaderboardScreen() {
                   <b key="w">{g.wins}</b>,
                   g.losses,
                   percent(g.wins, g.losses),
+                  g.battles ? `${g.battles.won}–${g.battles.lost}` : '',
                 ]}
               />
               <h2 className="board__h">People against ghosts</h2>
@@ -418,9 +425,9 @@ export function LeaderboardScreen() {
                 played={`You have not fought a ghost this ${period}.`}
               />
               <Table<PvpStanding>
-                caption={`Wins against ghosts this ${period}`}
-                head={['Player', 'Wins', 'Losses', 'Win %', 'Characters']}
-                numeric={[1, 2, 3]}
+                caption={`Matches and battles won against ghosts this ${period}`}
+                head={['Player', 'Matches', 'Lost', 'Win %', 'Battles', 'Characters']}
+                numeric={[1, 2, 3, 4]}
                 rows={view.players}
                 you={view.you}
                 empty={`Nobody has fought a ghost yet this ${period}.`}
@@ -431,6 +438,7 @@ export function LeaderboardScreen() {
                   <b key="w">{s.wins}</b>,
                   s.losses,
                   percent(s.wins, s.losses),
+                  s.battles ? `${s.battles.won}–${s.battles.lost}` : '',
                   <Characters key="c" heroes={s.heroes} />,
                 ]}
               />

@@ -282,17 +282,6 @@
   --shop-accent: 95 224 200;
   --shop-wash: 20 110 96;
 }
-.shop--store::before,
-.shop--vault::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 60% at 50% 0%, rgb(var(--shop-wash) / 0.32), transparent 70%),
-    linear-gradient(180deg, rgb(var(--shop-wash) / 0.1), transparent 60%);
-}
 .shop--store .shop__title h1,
 .shop--vault .shop__title h1 {
   color: rgb(var(--shop-accent));

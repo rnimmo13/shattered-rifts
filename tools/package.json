@@ -13,6 +13,7 @@
     "lore:art": "tsx src/loreArt.ts",
     "cardback:crest": "tsx src/cardBackCrest.ts",
     "icon:reverb": "tsx src/reverbIcon.ts",
+    "backgrounds": "tsx src/backgrounds.ts",
     "fight": "tsx src/fight.ts",
     "fight:check": "tsx src/fightCheck.ts",
     "typecheck": "tsc -p tsconfig.json",

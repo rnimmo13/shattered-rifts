@@ -15,9 +15,9 @@ export interface HeroMastery {
   best: number;
   /** campaigns cleared: the Riftwalker's mastery */
   clears: number;
-  /** Arena matches (a best of three is one match) won against another player */
+  /** Arena battles won against another player: every game of a best of three counts (DECISIONS #746) */
   arenaWins: number;
-  /** matches won against a ghost */
+  /** battles won against a ghost */
   ghostWins: number;
 }
 

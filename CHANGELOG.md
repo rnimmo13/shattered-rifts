@@ -1,3 +1,9 @@
+## 0.250.0 - 2026-11-11
+
+- Painted backgrounds for the menus (DECISIONS #747): the Sanctum on the home page (the picked Riftwalker stands on its dais), the Rift Market in the Store, the Vault in the Collection and Earned, the Crossing Gate on the Arena pages, the Archive behind Saved decks, the Card library and Run history, the Hall of Champions behind the leaderboards and Trophy case, and the Chronicle behind How to play, Patch notes and Credits.
+- The Arena leaderboard shows battles beside matches (DECISIONS #746): places still go by matches (best of three) won, and a new Battles column counts the games won and lost. The two ghost boards show the same (DECISIONS #748).
+- The home screen's snapshot counts battles won, against players and against ghosts: every game of a best of three counts.
+
 ## 0.249.0 - 2026-11-11
 
 - Hero mastery (DECISIONS #739, #741): a Riftwalker's mastery is how many times you have cleared the campaign with it. On the home screen each icon wears a ring of 12 segments, one per Rift Tier cleared, and its mastery under it (how far it has got, until the first clear). Under the row, a snapshot of the picked Riftwalker: Mastery, Furthest, Arena matches won, ghosts beaten. The server counts the campaign from the decks a run saves and from your run history, so clears already in your history count. A best of three is one Arena win.

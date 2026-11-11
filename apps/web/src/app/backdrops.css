@@ -1,0 +1,101 @@
+/* The painted place behind a menu page (PageBackdrop: DECISIONS #747). The picture is fixed behind the page, under a dark wash; the
+   pages that painted their own flat background let it through. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--c-void) center / cover no-repeat;
+  animation: backdrop-in 0.5s ease-out both;
+}
+/* the wash: enough that text and panels on top read as they did on the plain page */
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(5 6 14 / 0.62), rgb(5 6 14 / 0.74));
+}
+/* the home page shows its picture most: the menu's side is already dark in the painting, and the Riftwalker stands on the dais */
+/* (a little larger than the screen and set low and left, so the lit dais lies under the Riftwalker's feet and not behind the
+   words below them) */
+.backdrop--sanctum {
+  background-size: max(120vw, 213.4vh) auto;
+  background-position: 36% 100%;
+}
+@media (max-width: 52rem) {
+  .backdrop--sanctum {
+    background-size: cover;
+    background-position: 62% center;
+  }
+}
+.backdrop--sanctum::after {
+  background:
+    linear-gradient(90deg, rgb(5 6 14 / 0.5), rgb(5 6 14 / 0.12) 48%, rgb(5 6 14 / 0.22)),
+    linear-gradient(180deg, rgb(5 6 14 / 0.28), transparent 30%, transparent 62%, rgb(5 6 14 / 0.6));
+}
+/* the two shops are frames around a plain middle: they can show a little more */
+.backdrop--market::after,
+.backdrop--vault::after {
+  background: linear-gradient(180deg, rgb(5 6 14 / 0.5), rgb(5 6 14 / 0.66));
+}
+/* pages of long text: darker still */
+.backdrop--chronicle::after,
+.backdrop--archive::after {
+  background: linear-gradient(180deg, rgb(5 6 14 / 0.68), rgb(5 6 14 / 0.8));
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
+}
+
+/* the pages that painted a flat background of their own let the place show */
+/* (the picture sits behind the page, so the body's own colour would hide it: the page's colour is then the document's) */
+body:has(.backdrop) {
+  background: transparent;
+}
+/* (and the "opening" screen a page shows while it loads, so the place does not blink out and back) */
+body:has(.backdrop) .setup,
+body:has(.backdrop) .patch,
+body:has(.backdrop) .loading {
+  background: none;
+}
+/* the words under the Riftwalker stand on the painting's floor: a soft shadow behind them keeps them as easy to read as before */
+body:has(.backdrop) .home__info,
+body:has(.backdrop) .home__mastery {
+  position: relative;
+}
+body:has(.backdrop) .home__info::before,
+body:has(.backdrop) .home__mastery::before {
+  content: '';
+  position: absolute;
+  inset: -1.2rem -2.5rem;
+  z-index: -1;
+  border-radius: 2rem;
+  background: radial-gradient(
+    ellipse at center,
+    rgb(5 6 14 / 0.78),
+    rgb(5 6 14 / 0.6) 55%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+body:has(.backdrop) .home__hero {
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.9);
+}
+/* (the home page keeps the glow in the picked Riftwalker's colour, and nothing else) */
+body:has(.backdrop) .home {
+  background: radial-gradient(
+    ellipse 50% 55% at 74% 48%,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    transparent 70%
+  );
+}

@@ -919,6 +919,7 @@ export class MatchRoom extends DurableObject<Env> {
     if (gameOnly) {
       const winnerId = outcome.winner === 'draw' ? null : (d.ids[outcome.winner] ?? null);
       d.series = scoreGame(d.series, winnerId);
+      this.ctx.waitUntil(this.recordBattle(outcome, d.log.length));
     }
     d.decided = !gameOnly || seriesWinner(d.series) !== null;
     const over = this.endMessage(outcome);
@@ -1004,6 +1005,43 @@ export class MatchRoom extends DurableObject<Env> {
       );
     } catch {
       /* the board is a nicety: a match never fails because it could not be recorded */
+    }
+  }
+
+  /**
+   * A battle (one game of the match) was won, against a player or a ghost: the board counts it for its Battles column (DECISIONS #746, #748).
+   * Like a match, a battle that was barely played does not count, nor does one given up or timed out in its first few moves.
+   * Never in the way of the match.
+   */
+  private async recordBattle(outcome: Outcome, moves: number): Promise<void> {
+    const d = this.data;
+    if (outcome.winner === 'draw' || moves < MIN_RECORDED_MOVES) return;
+    if (outcome.reason !== 'win' && moves < MIN_FORFEIT_MOVES) return;
+    // (against a ghost it goes to the ghost boards, which keep their battles apart: DECISIONS #748)
+    let path: string;
+    let body: Record<string, unknown>;
+    if (d.ghost) {
+      const human = d.who?.[other(d.ghost.seat)];
+      if (!human) return;
+      path = '/ghost/game';
+      body = { ghost: d.ghost.id, human, ghostWon: outcome.winner === d.ghost.seat };
+    } else {
+      const winner = d.who?.[outcome.winner];
+      const loser = d.who?.[other(outcome.winner)];
+      if (!winner || !loser) return;
+      path = '/pvp/game';
+      body = { winner, loser };
+    }
+    try {
+      await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
+        new Request(`https://board.invalid${path}`, {
+          method: 'POST',
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(3000),
+        }),
+      );
+    } catch {
+      /* the board is a nicety */
     }
   }
 

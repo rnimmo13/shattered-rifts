@@ -2006,3 +2006,32 @@ Robert: "there are still some shatter cards that dont show how much damage playi
 - **The fix (engine, `resolvedDamage`):** Shatters that no Fracture line of the card carries get a line of their own at the end of the card, "Shatter now: N." (a range when it depends on the target, "2 Shatters, N total" for several), worked out by really playing the card ahead as before. `strip`, `carryFracture` and `shatterBlast` are played ahead too: they read only what both sides can see and leave nothing to chance.
 - **Already right, checked:** the 3- and 4-hit Swords and the four Spells that gained Fracture in #728, and every card whose Fracture is a line of its own.
 - **Still not shown, on purpose:** with Fault Lines, a card that draws first (Glint, Controlled Release, Glass Veil). What it draws is hidden, so the preview stops there and says further damage can depend on drawn cards. Breaking Point's blast itself still has no live number (its Shatter does).
+
+## 746 - The Arena board shows battles beside matches, and the home snapshot counts battles (2026-11-11)
+
+Robert, after 0.249.0: "lets revert the arena leaderboard to actually show the individual wins in each battle as well as the series won. so on the homepage stats it can show battles won in arena for that character and it doesnt get confused with the best of 3 stuff." This replaces the "a best of three is one win" part of #741 for the snapshot; ranked is untouched.
+
+- **Two words, kept apart everywhere:** a **match** is a best of three; a **battle** is one game of it.
+- **The Arena board** keeps its places by matches won (so ranks, ratings and trophies are exactly as before) and gains a **Battles** column: every game inside those matches, won and lost ("5-3"). The columns are now Matches, Lost, Win %, Battles, Characters, and "How this board works" says what each counts.
+- **How battles are kept:** the room tells the leaderboard of every battle won between two players as it ends (`POST /pvp/game`, a new `pvp_games` table). The same limits as a match, three times over, since a match is at most three battles: nobody plays themselves, and a pair, or one winner, counts only so often in a day. A battle that was barely played does not count, nor one given up or timed out in its first few moves; a match ended by someone leaving adds no battle. Battles from before this are not known, so a match played earlier shows none.
+- **The home snapshot counts battles.** Arena is "battles won" against players and Ghosts is "battles won" against ghosts: every game counts, so the number never has to be read against a match score. Counted when each battle ends, once per battle.
+- **The two columns are counted apart**, so they can differ at the edges: a battle is judged on its own moves and a match on all of its games together, and each has its own daily limits. Places, ratings and trophies only ever read matches. The home snapshot, like the board, counts no battle for a match that ends by someone leaving.
+- **The ghost boards follow** (#748).
+
+## 747 - The seven menu backgrounds are in (2026-11-11)
+
+Robert made the seven paintings from the prompts of #745 ("the artwork for background prompts is ready. let me know if we need to have chatgpt re-do any of them").
+
+- **None needs redoing.** Each follows its layout: the Sanctum is dark on the menu's side with an empty lit dais; the Market and the Vault frame a plain middle; the Crossing Gate, the Archive, the Hall of Champions and the Chronicle keep their detail at the edges. No figures or writing in any of them.
+- **Where each shows:** the Sanctum on the home page; the Rift Market in the Store; the Vault in the Collection and Earned; the Crossing Gate on the Arena, Arena rules and Ghost decks pages; the Archive behind Saved decks, the Card library and Run history; the Hall of Champions behind the leaderboards and the Trophy case; the Chronicle behind How to play, Patch notes and Credits. Fights, runs, replays and the lore keep their own pictures.
+- **How:** `pnpm --filter @sr/tools backgrounds` cuts `assets-src/backgrounds/*.png` to 1920 x 1080 WebP (60 to 135 KB each) in `public/art/backgrounds`. One component (`PageBackdrop`) fixes the page's picture behind it under a dark wash, so text contrast is as before; it is hidden while a fight is on screen. A page fetches only its own picture.
+- **The home page:** the picture is set a little larger and low, so the lit dais lies under the picked Riftwalker's feet, and the words under the Riftwalker have a soft shadow behind them. The glow in the Riftwalker's colour stays.
+- **Not built yet:** drifting motes and parallax on the home page, and a tint of the Sanctum by the Riftwalker's realm. Worth seeing the still picture in play first.
+
+## 748 - The ghost boards show battles too (2026-11-11)
+
+Robert, on #746: "for the ghost board i do want to keep them consistent with the arena board."
+
+- Both ghost tables gain the same **Battles** column as the Arena board, and the same headings (Matches, Lost, Win %, Battles): the ghosts' table counts each ghost's battles won and lost, and "People against ghosts" each person's. Places on both still go by matches won.
+- Kept the same way: the room tells the leaderboard of each battle against a ghost as it ends (`POST /ghost/game`, a new `ghost_battles` table), under the same rules as a battle between players (barely played or given up early does not count; a match ended by leaving adds none). A person's battles won against ghosts in a day are capped at three times the match cap; their losses always count.
+- Battles against ghosts from before this are not known, so an earlier match shows none.

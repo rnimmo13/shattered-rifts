@@ -225,12 +225,12 @@ export function HeroShowcase(props: {
             <div className="home__statBox">
               <dt>Arena</dt>
               <dd>{mine.arenaWins}</dd>
-              <small>{mine.arenaWins === 1 ? 'match won' : 'matches won'}</small>
+              <small>{mine.arenaWins === 1 ? 'battle won' : 'battles won'}</small>
             </div>
             <div className="home__statBox">
               <dt>Ghosts</dt>
               <dd>{mine.ghostWins}</dd>
-              <small>{mine.ghostWins === 1 ? 'ghost beaten' : 'ghosts beaten'}</small>
+              <small>{mine.ghostWins === 1 ? 'battle won' : 'battles won'}</small>
             </div>
           </dl>
           <p className="home__masteryMine">
