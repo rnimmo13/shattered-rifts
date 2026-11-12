@@ -83,6 +83,8 @@ import {
   offerCards,
   priceOf,
   deadElsewhere,
+  crossedOffers,
+  crossedPool,
 } from './rewards';
 import type {
   DealStep,
@@ -1305,6 +1307,19 @@ export function rerollReward(run: RunState): RunState {
           count,
           heartCrossedChance(r),
         );
+  // a Rift-crossed card offered keeps its place across the reroll: its slot is Rift-crossed again, at the rarity rolled for the
+  // slot, so a reroll is another shot at a Rift-crossed card rather than a way to lose it (Robert, 2026-11-12)
+  const crossed = new Set(crossedPool(r.character));
+  const was = run.context?.offers ?? [];
+  was.forEach((id, i) => {
+    const now = c.offers![i];
+    if (!crossed.has(id) || now === undefined || crossed.has(now)) return;
+    const rarity = COMBAT_DB.cards[now]?.rarity ?? 'common';
+    const pick = crossedOffers(r.rng, r.character, r.deck, [rarity, rarity, rarity], 3).find(
+      (x) => !c.offers!.includes(x),
+    );
+    if (pick) c.offers![i] = pick;
+  });
   r.rewardRerollTier = r.tier;
   return r;
 }

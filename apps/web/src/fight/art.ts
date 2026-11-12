@@ -191,19 +191,39 @@ export function hoverOf(defId: string): number {
   return HOVER[base(defId)] ?? 0;
 }
 
+/** Companions that stand bigger than the small ones (280): the big machines and beasts, and the two giants of the dead. */
+const ALLY_HEIGHT: Record<string, number> = {
+  'grave-colossus': 470,
+  'drowned-king': 450,
+  dreadnought: 380,
+  'war-engine': 380,
+  'scrap-golem': 360,
+  'siege-engine': 340,
+  'bulwark-walker': 340,
+  enforcer: 330,
+  'gilded-guard': 340,
+  'pack-alpha': 360,
+  'dire-wolf': 340,
+  'maw-hatchling': 300,
+  hound: 300,
+  'micro-drone': 230,
+  'patrol-drone': 250,
+  gnashling: 250,
+};
+
 /** How tall a unit stands on the stage (stage px): companions are small, bosses are big. */
 export function unitHeight(
   d: UnitDef | undefined,
   kind: 'ally' | 'enemy' | 'hero',
-  /** the unit's max HP now, when it differs from its def's (a raised Thrall) */
-  maxHp?: number,
+  /** the unit's max HP now: no longer changes its size (a size is kept all fight, 2026-11-12), kept for the callers */
+  _maxHp?: number,
 ): number {
   if (kind === 'hero') return 520;
   if (d?.id === 'vorthax') return 720;
   if (kind === 'ally') {
-    const hp = base(d?.id ?? '') === 'bone-thrall' ? (maxHp ?? d?.maxHp ?? 0) : (d?.maxHp ?? 0);
-    // (a grown Thrall towers over the rest: the Grave Colossus)
-    return hp >= 30 ? 400 : hp >= 18 ? 340 : 280;
+    // (by what the companion is, never by its HP now, so none changes size mid-fight: Robert 2026-11-12, "i dont think its good to see
+    // character sizes change in the middle of a fight", "the colussus ... should be big". A growing Thrall no longer grows, #445)
+    return ALLY_HEIGHT[base(d?.id ?? '')] ?? 280;
   }
   const hp = d?.maxHp ?? 30;
   return hp >= 120 ? 600 : hp >= 55 ? 470 : hp >= 20 ? 390 : 300;

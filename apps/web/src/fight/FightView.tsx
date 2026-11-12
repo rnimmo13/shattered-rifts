@@ -89,7 +89,7 @@ import { FormPanel } from './FormPanel';
 import { PileArt } from './PileArt';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
-import { selectionFormation } from './lineLayout';
+import { fixedFormation, selectionFormation } from './lineLayout';
 import {
   COMPACT,
   PORTRAIT,
@@ -210,11 +210,18 @@ const sleep = (ms: number): Promise<void> =>
   new Promise((r) => window.setTimeout(r, Math.max(0, ms)));
 
 /** Ordinary figures keep the same width cap at every population size; bosses retain their full scale. */
-function fitHeight(canvas: HTMLCanvasElement, height: number, compactFigure: boolean): number {
-  return !compactFigure ? height : Math.min(height, (MAX_FIGURE_W * canvas.height) / canvas.width);
+function fitHeight(
+  canvas: HTMLCanvasElement,
+  height: number,
+  compactFigure: boolean,
+  maxW = MAX_FIGURE_W,
+): number {
+  return !compactFigure ? height : Math.min(height, (maxW * canvas.height) / canvas.width);
 }
 
 const MAX_FIGURE_W = 300;
+/** a wide screen lets a long creature be long (Robert, 2026-11-12: a centipede truck was drawn tiny by the 300 px cap) */
+const MAX_FIGURE_W_WIDE = 600;
 /** how far above the floor the top of a flyer's head may be (stage px) */
 const MAX_TOP = 640;
 /** where a side's line starts (nearest the middle) and the furthest it may reach, stage px */
@@ -294,6 +301,7 @@ function specsFrom(
           canvas,
           unitHeight(db.units[u.def], u.kind, u.maxHp),
           !hero && u.def !== 'vorthax' && !isWardenFigure(u.def),
+          mode === 'wide' ? MAX_FIGURE_W_WIDE : MAX_FIGURE_W,
         ) * k;
       // Rows handle crowds; each flyer keeps its own altitude as others join or leave.
       const tier = flies ? 1 : 0;
@@ -332,13 +340,20 @@ function specsFrom(
               bosses.length ? Math.max(P.foeNear + 200, escortEdge) : P.foeFar,
             )
         : selectionFormation(line, P.allyNear, P.allyFar)
-      : ds === 'b'
-        ? selectionFormation(
-            line,
-            FOE_NEAR,
-            pvp ? FOE_FAR_PVP : bosses.length ? Math.max(FOE_NEAR + 200, escortEdge) : FOE_FAR,
-          )
-        : selectionFormation(line, ALLY_NEAR, mode === 'compact' ? COMPACT.allyFar : ALLY_FAR);
+      : // (a wide screen: every figure keeps its size all fight, a crowd stands in ranks; a phone held sideways still shrinks to fit)
+        (mode === 'wide' ? fixedFormation : selectionFormation)(
+          line,
+          ds === 'b' ? FOE_NEAR : ALLY_NEAR,
+          ds === 'b'
+            ? pvp
+              ? FOE_FAR_PVP
+              : bosses.length
+                ? Math.max(FOE_NEAR + 200, escortEdge)
+                : FOE_FAR
+            : mode === 'compact'
+              ? COMPACT.allyFar
+              : ALLY_FAR,
+        );
     let n = 0;
     const foeRows = Math.max(0, ...fit.rows) + 1;
     // (your companions need the floor under the enemies' front row: see portraitCrowd)

@@ -77,6 +77,52 @@ export function stableFormation(
   return { xs, rows };
 }
 
+/**
+ * A wide screen (Robert, 2026-11-12: "keep a consistent model size", "bigger units that dont need to shrink or resize"): every
+ * figure keeps its own size all fight. A rank takes figures in order while their widths fit the span (a little give allowed); the
+ * next goes into the rank behind. Each rank is centred in the span; a rank of one too-wide figure overlaps its edge rather than
+ * shrinking. The scale is always 1, so nothing on the stage changes size when a summon joins or a foe falls.
+ */
+export function fixedFormation(
+  items: LineItem[],
+  near: number,
+  far: number,
+): {
+  xs: number[];
+  rows: number[];
+  scale: number;
+} {
+  const room = Math.abs(far - near);
+  const dir = far >= near ? 1 : -1;
+  const gap = 24;
+  const xs: number[] = [],
+    rows: number[] = [];
+  let start = 0;
+  for (let row = 0; start < items.length; row++) {
+    // (at most three to a rank, and only as many as fit standing a little into each other: the allies' side is narrow, 470 px,
+    // and a rank of one each would stack a tower of companions)
+    let end = start + 1;
+    let used = (items[start] as LineItem).fw;
+    while (end < items.length && end - start < 3) {
+      const w = used + gap + (items[end] as LineItem).fw;
+      if (w > room * 1.6) break;
+      used = w;
+      end++;
+    }
+    // (if they still overrun, the gaps close up: positions only, never the size)
+    const over = used > room ? room / used : 1;
+    let edge = (near + far) / 2 - (dir * Math.min(used, room)) / 2;
+    for (let i = start; i < end; i++) {
+      const w = (items[i] as LineItem).fw * over;
+      xs.push(edge + (dir * w) / 2);
+      rows.push(row);
+      edge += dir * (w + gap * over);
+    }
+    start = end;
+  }
+  return { xs, rows, scale: 1 };
+}
+
 /** Use the whole side for selectable silhouettes, with a real gutter even for flyers.
  * Three figures fit across before another rank is needed. Every rank shares a scale;
  * callers must apply it to the models as well as their positions.

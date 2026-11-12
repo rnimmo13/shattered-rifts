@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   MIN_SCALE,
   centredLine,
+  fixedFormation,
   packLine,
   stableFormation,
   selectionFormation,
@@ -153,5 +154,36 @@ describe('centredLine (the upright layout, DECISIONS #443)', () => {
     expect(r.scale).toBeLessThan(1);
     expect(r.xs[0]! - (250 * r.scale) / 2).toBeCloseTo(500, 0);
     expect(centredLine([], 500, 1300)).toEqual({ xs: [], scale: 1 });
+  });
+});
+
+describe('a wide screen keeps every figure its own size (Robert, 2026-11-12)', () => {
+  const item = (fw: number) => ({ fw, tier: 0 });
+  it('never scales, however many join', () => {
+    for (let n = 1; n <= 7; n++) {
+      const fit = fixedFormation(
+        Array.from({ length: n }, () => item(260)),
+        990,
+        1840,
+      );
+      expect(fit.scale).toBe(1);
+      expect(fit.xs).toHaveLength(n);
+    }
+  });
+  it('a figure already standing keeps its place when a summon joins behind it', () => {
+    const before = fixedFormation([item(260), item(260), item(260)], 990, 1840);
+    const after = fixedFormation([item(260), item(260), item(260), item(300)], 990, 1840);
+    expect(after.xs.slice(0, 3)).toEqual(before.xs);
+    expect(after.rows[3]).toBe(1);
+  });
+  it('wide figures take ranks of their own rather than shrinking', () => {
+    const fit = fixedFormation([item(600), item(600), item(600), item(300)], 990, 1840);
+    expect(fit.rows).toEqual([0, 0, 1, 1]);
+    expect(fit.scale).toBe(1);
+  });
+  it('runs from right to left on the narrow allies side, two to a rank there', () => {
+    const fit = fixedFormation([item(250), item(250), item(250), item(250)], 910, 440);
+    expect(fit.xs[0]!).toBeGreaterThan(fit.xs[1]!);
+    expect(fit.rows).toEqual([0, 0, 1, 1]);
   });
 });

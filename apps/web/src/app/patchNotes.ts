@@ -46,6 +46,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.258.0",
+    date: "2026-11-12",
+    title: "Steadier figures",
+    summary: "The Riftwalkers breathe gently again, creatures keep one size all fight, and Rift-crossed cards survive a reroll.",
+    notes: [
+      {
+        kind: "fixed",
+        text: "The Riftwalkers' breathing while they stand was far too strong after the redraw; it is back to the gentle breathing they had before.",
+      },
+      {
+        kind: "changed",
+        title: "One size all fight",
+        text: "On a computer screen, creatures keep their size all fight: nothing shrinks when a summon joins (a crowd stands in ranks instead), long creatures such as the Scrapyard Centipede are drawn at full size, and companions are sized by what they are, so the Grave Colossus and the Drowned King stand big from the start. Phones still fit a crowd to the screen.",
+      },
+      {
+        kind: "fixed",
+        text: "Animated creatures were drawn smaller than their pictures, wide ones much smaller.",
+      },
+      {
+        kind: "changed",
+        text: "Rerolling a campaign card reward keeps a Rift-crossed card Rift-crossed: its slot rolls another Rift-crossed card, a second shot at one.",
+      },
+      {
+        kind: "fixed",
+        text: "A visiting merchant's Leave the shop button stands in the same place as at every other shop.",
+      },
+    ],
+  },
+  {
     version: "0.257.0",
     date: "2026-11-12",
     title: "Everyone comes to life",

@@ -9,6 +9,7 @@ import {
   giftOffers,
 } from './index';
 import { clone } from '@sr/combat';
+import { crossedPool } from './rewards';
 function reward(gift = false) {
   const r = newRun('engineer', 'reroll-fixture');
   const node = r.map.nodes[0]!;
@@ -58,5 +59,25 @@ describe('one optional card reward reroll per Rift Tier', () => {
     r.phase = 'reward';
     r.context!.offers = [];
     expect(canRerollReward(r)).toBe(false);
+  });
+});
+
+describe('a Rift-crossed card keeps its slot through the reroll (Robert, 2026-11-12)', () => {
+  it('rerolls a Rift-crossed slot into another Rift-crossed card, the other slots as usual', () => {
+    const crossed = new Set(crossedPool('engineer'));
+    const pool = [...crossed];
+    for (let seed = 0; seed < 25; seed++) {
+      const r = newRun('engineer', `reroll-crossed-${seed}`);
+      const node = r.map.nodes[0]!;
+      node.kind = 'duel';
+      r.phase = 'reward';
+      r.at = node.id;
+      const was = pool[seed % pool.length]!;
+      r.context = { nodeId: node.id, offers: ['deploy-drone', was, 'reactor'] };
+      const offers = rerollReward(r).context!.offers!;
+      expect(offers).toHaveLength(3);
+      expect(crossed.has(offers[1]!), `seed ${seed}: ${offers[1]}`).toBe(true);
+      expect(new Set(offers).size).toBe(3);
+    }
   });
 });

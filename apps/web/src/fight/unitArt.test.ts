@@ -24,10 +24,11 @@ describe('a Thrall grows taller, but stays a Thrall (DECISIONS #445, #684)', () 
     expect(isWardenFigure('vorthax')).toBe(true);
     expect(isWardenFigure('morvane-incarnation')).toBe(false);
   });
-  it('a grown Thrall stands taller, by its HP now, not its def', () => {
+  it('a companion keeps one size all fight, by what it is (Robert, 2026-11-12)', () => {
     const d = COMBAT_DB.units['bone-thrall'];
-    expect(unitHeight(d, 'ally', 5)).toBe(280);
-    expect(unitHeight(d, 'ally', 20)).toBe(340);
-    expect(unitHeight(d, 'ally', 32)).toBe(400);
+    for (const hp of [5, 20, 32]) expect(unitHeight(d, 'ally', hp)).toBe(280);
+    const colossus = COMBAT_DB.units['grave-colossus'];
+    for (const hp of [1, 18, 60]) expect(unitHeight(colossus, 'ally', hp)).toBe(470);
+    expect(unitHeight(colossus, 'ally')).toBeGreaterThan(unitHeight(COMBAT_DB.units.drone, 'ally'));
   });
 });

@@ -1,3 +1,11 @@
+## 0.258.0 - 2026-11-12
+
+- Fixed: the Riftwalkers' breathing while they stand was far too strong after the redraw; it is back to the gentle breathing they had before.
+- A visiting (Rift-crossed) merchant's Leave the shop button stands in the same place as at every other shop.
+- Rerolling a campaign card reward keeps a Rift-crossed card Rift-crossed: its slot rolls another Rift-crossed card, so the reroll is a second shot at one.
+- Creatures keep one size all fight on a computer screen: nothing shrinks when a summon joins (a crowd stands in ranks instead), long creatures such as the Scrapyard Centipede are drawn at full size, and companions are sized by what they are, so the Grave Colossus and the Drowned King stand big from the start. Phones still fit a crowd to the screen.
+- Fixed: animated creatures were drawn smaller than their pictures, wide ones much smaller.
+
 ## 0.257.0 - 2026-11-12
 
 - Every Riftwalker is redrawn at a higher resolution with more poses in each animation: a smoother attack, a fuller fall, a power-up that builds, and drawn breathing while they stand. Their models are sharper in battle, and they come to life sooner: the standing pose loads first (DECISIONS #759).

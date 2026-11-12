@@ -40,6 +40,8 @@ interface Manifest {
 export interface SheetAssets {
   kind: 'sheet';
   hero: string;
+  /** a creature's model (DECISIONS #760): drawn at its picture's size, the body filling the height it is given */
+  unit?: boolean;
   man: Manifest;
   /** decoded once and kept decoded (an ImageBitmap; an image element where that is not available); null until fetched (the
    * pages after the idle's come in behind it) */
@@ -143,7 +145,15 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
               ),
         );
         const complete = Promise.all(pageReady).then((ok) => ok.every(Boolean));
-        return { kind: 'sheet' as const, hero, man, pages, pageReady, complete };
+        return {
+          kind: 'sheet' as const,
+          hero,
+          man,
+          pages,
+          pageReady,
+          complete,
+          ...(kind === 'units' ? { unit: true } : {}),
+        };
       } catch {
         return null;
       }
@@ -256,6 +266,9 @@ export class SheetHeroSprite {
   }
 
   private get fitH(): number {
+    // (a creature's picture is cut tight around it, and the board sized it for its own shape: the model fills that same height, however
+    // wide, or a long creature such as the Scrapyard Centipede came out at a third of its picture's size)
+    if (this.a.unit) return this.bodyH;
     return Math.max(this.bodyH / BODY_SHARE, this.bodyW / MAX_WIDTH);
   }
 
