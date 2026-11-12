@@ -1,7 +1,8 @@
-## Unreleased
+## 0.255.0 - 2026-11-11
 
 - The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter; her Swords still swing the blade (DECISIONS #756).
 - The fight's title at the top of the battle screen is a plaque with a badge for the kind of fight: Duel, Elite, Warden, Final battle, Echo, Ghost Warden, Arena or Arena ghost, with the Tier, floor and turn on a small line under the name (DECISIONS #757).
+- Fixed: the Necromancer's attack no longer turns his staff through his hands (the wind-up pose is skipped until it is redrawn).
 - Fixed: the campaign's ending had its words off to the left and the Return to the Sanctum button close under them; both are centred now, with room between them.
 
 ## 0.254.0 - 2026-11-11

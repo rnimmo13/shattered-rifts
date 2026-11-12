@@ -46,6 +46,32 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.255.0",
+    date: "2026-11-11",
+    title: "Spells and fight titles",
+    summary: "The Spellblade casts her spells, the top of the battle screen says what kind of fight it is, and the campaign's ending is tidied.",
+    notes: [
+      {
+        kind: "new",
+        title: "The Spellblade casts",
+        text: "The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter. Her Swords still swing the blade. Hover her on the home screen to see both.",
+      },
+      {
+        kind: "changed",
+        title: "Fight titles",
+        text: "The title at the top of the battle screen now has a badge for the kind of fight (Duel, Elite, Warden, Final battle, Echo, Ghost Warden, Arena or Arena ghost), with the Tier, floor and turn on a small line under the encounter's name.",
+      },
+      {
+        kind: "fixed",
+        text: "The Necromancer no longer turns his staff through his hands as he winds up an attack.",
+      },
+      {
+        kind: "fixed",
+        text: "The campaign's ending had its words off to the left and the Return to the Sanctum button close under them: both are centred now, with room between them.",
+      },
+    ],
+  },
+  {
     version: "0.254.0",
     date: "2026-11-11",
     title: "Animated Riftwalkers",

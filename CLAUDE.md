@@ -1,3 +1,7 @@
+# Release approved 0.255.0 / rules 108 (2026-11-11; decisions 756-757)
+
+Robert explicitly approves pushing ("lets push what we have for now"). Website/server and matching Windows updater. Future changes need fresh release approval. The Spellblade's pose-sheet model casts her spell for Spell cards and cards using Spell Power, Fracture or a Shatter (`strikeVariant`, Swords keep the blade, #756); the fight title is a plaque with a badge for the kind of fight (`fightKind.ts`, campaign badges follow the map node, #757); the campaign ending is centred; the Necromancer's attack skips his flipped wind-up pose. No rules change. Enemy, companion and minion pose-sheet prompts are in assets-src/units-pose-sheets (CHATGPT_START.md; nothing wired into the game yet: only heroes have animated models).
+
 # Release approved 0.254.0 / rules 108 (2026-11-11; decision 755)
 
 Robert explicitly approves pushing ("push for now"), together with the unpushed 0.253.0 below. Website/server and matching Windows updater. Future changes need fresh release approval. Two hero model modes. The default is the new pose-sheet models (`HERO_SHEETS`, `src/fight/heroSheet.ts`; atlases in `public/art/heroes-sheets/<id>/`, packed from assets-src/heroes-pose-sheets by `_pipeline/pack_for_game.py`); the "2D animated models (beta)" setting stays the video clips. Skins are hidden, not deleted (`SKINS_SHOWN = false` in `src/cosmetics/cosmetics.ts`): never empty `SKINS`, or `cleanCosmetics` drops everyone's owned skins and the Vault keeps the loss. No rules change.
