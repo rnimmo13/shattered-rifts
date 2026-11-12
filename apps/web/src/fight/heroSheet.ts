@@ -1,12 +1,17 @@
 // A hero drawn from a pose-sheet atlas: every Riftwalker's default look (DECISIONS #755; the video models stay the beta setting). The
 // animations are made in assets-src/heroes-pose-sheets (ChatGPT pose sheets turned into 60 fps frames by _pipeline/pose_pipeline.py)
-// and packed for the game by _pipeline/pack_for_game.py into public/art/heroes-sheets/<id>/: sprites.json and WebP atlas pages, the
-// standing body about 300 px tall (about 5 MB a hero to download, about 90 MB once decoded).
+// and packed for the game by _pipeline/pack_for_game.py into two sets (DECISIONS #759), both from the HD redraw (<hero>_hd.json, out-hd):
+//   public/art/heroes-sheets/<id>/       High graphics: the standing body 400 px tall (--body 400; 4-9 MB a hero, 95-225 MB decoded)
+//   public/art/heroes-sheets-lite/<id>/  Medium graphics: 300 px (--body 300; about half of that)
+// sprites.json and WebP atlas pages, packed --idle-first: the idle's frames are on the first pages ("idlePages"), so the model shows
+// once those are in and its other clips are fetched after it. A clip asked for before its pages are in is skipped (the board keeps
+// its own timing); a death waits for its pages and then plays.
 //
 // Each frame of the atlas is drawn on a plain 2D canvas, feet on the anchor, mirrored when facing left. The canvas is a Pixi texture
 // exactly as a rig's or a video's is, so Fighters and HeroModel drive it through the same HeroSprite calls.
 
 import { Texture } from 'pixi.js';
+import { loadGraphicsQuality } from '../duel/effects';
 
 type Facing = 'right' | 'left';
 type Clip = 'idle' | 'strike' | 'hit' | 'aura' | 'death';
@@ -27,6 +32,8 @@ interface Manifest {
   name: string;
   displayScale?: number;
   pages: string[];
+  /** the first this many pages hold every idle frame (pack_for_game --idle-first); without it every page is needed at once */
+  idlePages?: number;
   clips: Record<string, SheetClip>;
 }
 
@@ -34,8 +41,13 @@ export interface SheetAssets {
   kind: 'sheet';
   hero: string;
   man: Manifest;
-  /** decoded once and kept decoded (an ImageBitmap; an image element where that is not available) */
-  pages: (ImageBitmap | HTMLImageElement)[];
+  /** decoded once and kept decoded (an ImageBitmap; an image element where that is not available); null until fetched (the
+   * pages after the idle's come in behind it) */
+  pages: (ImageBitmap | HTMLImageElement | null)[];
+  /** per page: resolves once it is in (false if it could not be had: the clips on it are skipped) */
+  pageReady: Promise<boolean>[];
+  /** resolves once every page has settled, true if all came in */
+  complete: Promise<boolean>;
 }
 
 /** a box in sheet px around the feet (0, 0) */
@@ -59,20 +71,43 @@ const MOMENT: Record<Exclude<Clip, 'idle'>, string> = {
   death: 'land',
 };
 
-/** loaded heroes, oldest first: only the last few are kept (each holds its decoded atlas), so browsing the Lore page or the picker
- * through every Riftwalker does not keep them all in memory. A model on show keeps its own reference while it is drawn. */
-const loads = new Map<string, Promise<SheetAssets | null>>();
-const KEEP = 3;
+/** loaded models, oldest first: only the last few are kept (each holds its decoded atlas), so browsing the Lore page or the picker
+ * through every Riftwalker does not keep them all in memory. A model on show keeps its own reference while it is drawn. Creatures
+ * have their own, larger list: a fight can show several at once (DECISIONS #760). */
+const LOADS = {
+  heroes: new Map<string, Promise<SheetAssets | null>>(),
+  units: new Map<string, Promise<SheetAssets | null>>(),
+};
+const KEEP = { heroes: 3, units: 8 };
 
 /** Fetch a hero's manifest and atlas pages. Null when they cannot be had: the hero keeps its picture (and is tried again later). */
 export function loadHeroSheet(hero: string): Promise<SheetAssets | null> {
-  let p = loads.get(hero);
+  return loadSheet('heroes', hero);
+}
+
+/** Forget every loaded creature model (a fight is over): models still drawn keep their own reference until they are disposed. */
+export function releaseUnitSheets(): void {
+  LOADS.units.clear();
+}
+
+/** A creature's pose-sheet model (public/art/units-sheets, DECISIONS #760), the same way as a hero's. */
+export function loadUnitSheet(unit: string): Promise<SheetAssets | null> {
+  return loadSheet('units', unit);
+}
+
+function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets | null> {
+  // (Medium graphics loads the lighter set; Low never gets here in a fight: its board holds still, DECISIONS #759. Kept apart by set,
+  // so a change of setting fetches the other one for the next model shown)
+  const set = `${kind}-sheets${loadGraphicsQuality() === 'medium' ? '-lite' : ''}`;
+  const key = `${set}/${hero}`;
+  const loads = LOADS[kind];
+  let p = loads.get(key);
   if (p) {
     // (most recently used last)
-    loads.delete(hero);
-    loads.set(hero, p);
+    loads.delete(key);
+    loads.set(key, p);
   } else {
-    const dir = `${import.meta.env.BASE_URL}art/heroes-sheets/${hero}/`;
+    const dir = `${import.meta.env.BASE_URL}art/${set}/${hero}/`;
     p = (async (): Promise<SheetAssets | null> => {
       try {
         const r = await fetch(`${dir}sprites.json`);
@@ -80,32 +115,45 @@ export function loadHeroSheet(hero: string): Promise<SheetAssets | null> {
         const man = (await r.json()) as Manifest;
         if (!man.clips?.['idle']) return null;
         // (an ImageBitmap stays decoded: an image element's pixels may be dropped while it is off the page and decoded again mid-strike)
-        const pages = await Promise.all(
-          man.pages.map(async (f): Promise<ImageBitmap | HTMLImageElement> => {
-            if (typeof createImageBitmap === 'function') {
-              const blob = await fetch(`${dir}${f}`).then((r) => {
-                if (!r.ok) throw new Error(`${f}: ${r.status}`);
-                return r.blob();
-              });
-              return createImageBitmap(blob);
-            }
-            const img = new Image();
-            img.src = `${dir}${f}`;
-            await img.decode();
-            return img;
-          }),
+        const page = async (f: string): Promise<ImageBitmap | HTMLImageElement> => {
+          if (typeof createImageBitmap === 'function') {
+            const blob = await fetch(`${dir}${f}`).then((r) => {
+              if (!r.ok) throw new Error(`${f}: ${r.status}`);
+              return r.blob();
+            });
+            return createImageBitmap(blob);
+          }
+          const img = new Image();
+          img.src = `${dir}${f}`;
+          await img.decode();
+          return img;
+        };
+        const first = Math.min(man.pages.length, Math.max(1, man.idlePages ?? man.pages.length));
+        const pages: SheetAssets['pages'] = man.pages.map(() => null);
+        (await Promise.all(man.pages.slice(0, first).map(page))).forEach(
+          (img, i) => (pages[i] = img),
         );
-        return { kind: 'sheet' as const, hero, man, pages };
+        // (the rest, behind the idle: the model is on show meanwhile. Each page says when it is in, so a clip waits only for its own)
+        const pageReady = man.pages.map((f, i) =>
+          i < first
+            ? Promise.resolve(true)
+            : page(f).then(
+                (img) => ((pages[i] = img), true),
+                () => false,
+              ),
+        );
+        const complete = Promise.all(pageReady).then((ok) => ok.every(Boolean));
+        return { kind: 'sheet' as const, hero, man, pages, pageReady, complete };
       } catch {
         return null;
       }
     })();
-    loads.set(hero, p);
+    loads.set(key, p);
     const mine = p;
     void p.then((a) => {
-      if (!a && loads.get(hero) === mine) loads.delete(hero);
+      if (!a && loads.get(key) === mine) loads.delete(key);
     });
-    while (loads.size > KEEP) loads.delete(loads.keys().next().value!);
+    while (loads.size > KEEP[kind]) loads.delete(loads.keys().next().value!);
   }
   return p;
 }
@@ -244,15 +292,25 @@ export class SheetHeroSprite {
     return Math.max(0, c.count / c.fps - this.t);
   }
 
+  /** every frame of a manifest clip is on a page already fetched */
+  private has(name: string): boolean {
+    const c = this.a.man.clips[name];
+    return !!c && c.frames.every((f) => !!this.a.pages[f[0]]);
+  }
+
   momentIn(clip: Clip, variant?: string): number {
     if (clip === 'idle') return 0;
-    const c = this.a.man.clips[this.sheetFor(clip, variant)];
+    const name = this.sheetFor(clip, variant);
+    if (name === 'idle' || !this.has(name)) return 0;
+    const c = this.a.man.clips[name];
     const ev = c?.events?.find((e) => e.name === MOMENT[clip]);
     return ev ? ev.frame / c!.fps : 0;
   }
 
-  ready(): boolean {
-    return true;
+  ready(clip: Clip = 'idle', variant?: string): boolean {
+    const name = this.sheetFor(clip, variant);
+    // (a clip the model does not have at all, as a creature's power-up, is never ready: the board does without it)
+    return (clip === 'idle' || name !== 'idle') && this.has(name);
   }
 
   play(
@@ -264,8 +322,27 @@ export class SheetHeroSprite {
     const was = this.onEnd;
     this.onEnd = undefined;
     if (this.clipName !== 'idle' && !this.ended) was?.();
+    const sheet = this.sheetFor(clip, opts.variant);
+    if (clip !== 'idle' && (sheet === 'idle' || !this.has(sheet))) {
+      // (its pages are still coming: the model stays at rest and the board keeps its own timing. A death cannot be skipped, or the
+      // fallen would stand: it plays as soon as its pages are in)
+      this.clipName = 'idle';
+      this.sheetClip = 'idle';
+      this.onEvent = undefined;
+      if (clip === 'death' && sheet !== 'idle')
+        void Promise.all(
+          [...new Set(this.a.man.clips[sheet]!.frames.map((f) => f[0]))].map(
+            (p) => this.a.pageReady[p] ?? Promise.resolve(false),
+          ),
+        ).then(() => {
+          if (!this.disposed && this.has(sheet) && this.clipName === 'idle')
+            this.play('death', opts);
+        });
+      else opts.onEnd?.();
+      return;
+    }
     this.clipName = clip;
-    this.sheetClip = this.sheetFor(clip, opts.variant);
+    this.sheetClip = sheet;
     this.t = 0;
     this.fired = new Set();
     this.ended = false;

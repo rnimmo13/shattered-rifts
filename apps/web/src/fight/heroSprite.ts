@@ -14,8 +14,8 @@ import {
 import { KNIGHT_CLIPS } from '../art/hero2d/knight_anims';
 import { ROGUE_CLIPS } from '../art/hero2d/rogue_anims';
 
-import { SHEET_PREFIX, VIDEO_PREFIX } from '../art/heroRigs';
-import { SheetHeroSprite, loadHeroSheet, type SheetAssets } from './heroSheet';
+import { SHEET_PREFIX, UNIT_SHEET_PREFIX, VIDEO_PREFIX } from '../art/heroRigs';
+import { SheetHeroSprite, loadHeroSheet, loadUnitSheet, type SheetAssets } from './heroSheet';
 import { VideoHeroSprite, loadHeroVideo, type VideoAssets } from './heroVideo';
 
 export { HERO_RIGS, heroRigFor } from '../art/heroRigs';
@@ -111,6 +111,7 @@ const loads = new Map<string, Promise<RigAssets | null>>();
 export function loadRig(id: string): Promise<LoadedRig | null> {
   if (id.startsWith(VIDEO_PREFIX)) return loadHeroVideo(id.slice(VIDEO_PREFIX.length));
   if (id.startsWith(SHEET_PREFIX)) return loadHeroSheet(id.slice(SHEET_PREFIX.length));
+  if (id.startsWith(UNIT_SHEET_PREFIX)) return loadUnitSheet(id.slice(UNIT_SHEET_PREFIX.length));
   let p = loads.get(id);
   if (!p) {
     const dir = `${import.meta.env.BASE_URL}art/heroes2d/${id}/`;

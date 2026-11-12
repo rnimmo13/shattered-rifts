@@ -27,7 +27,7 @@ function markSeen(): void {
 }
 
 export function LowGraphicsHint() {
-  const [show, setShow] = useState(() => !seen() && loadGraphicsQuality() === 'high' && drawsInSoftware());
+  const [show, setShow] = useState(() => !seen() && loadGraphicsQuality() !== 'low' && drawsInSoftware());
   if (!show) return null;
   const close = (): void => {
     markSeen();

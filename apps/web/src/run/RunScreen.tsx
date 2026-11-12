@@ -835,8 +835,7 @@ export default function RunScreen() {
         lostDecks={lostDecks}
         onAscended={setAscended}
       />
-      {run.phase === 'map' && run.seedCode && <SeedLine code={run.seedCode} />}
-      {/* (at the foot of the map, with the seed, out of the space between the header and the map: DECISIONS #758) */}
+      {/* (at the foot of the map, out of the space between the header and the map: DECISIONS #758) */}
       {run.phase === 'map' && (
         <p className="run__balanceNotice">
           Online Campaign saves contribute private deck and progression snapshots for developer
@@ -994,12 +993,13 @@ function Sanctum(props: {
 }
 
 /**
- * The run's seed, at the foot of the map (DECISIONS #698): small, out of the header (Robert, 2026-11-11, #758). Select it to copy it.
+ * The run's seed (DECISIONS #698): a small chip beside the tier's name above the map, out of the header (Robert, 2026-11-11, #758;
+ * moved up from the foot of the page 2026-11-12, where it went unseen). Select it to copy it.
  */
 function SeedLine({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <p className="run__seed">
+    <span className="run__seed">
       Seed{' '}
       <button
         type="button"
@@ -1022,7 +1022,7 @@ function SeedLine({ code }: { code: string }) {
         {showSeed(code)}
       </button>
       {copied && <span className="run__seedCopied"> copied</span>}
-    </p>
+    </span>
   );
 }
 
@@ -1054,15 +1054,26 @@ function RunBar(props: {
   const inArena = !!props.arenaLabel && problems.length === 0;
   return (
     <header className="runbar">
-      <button
-        type="button"
-        className="btn btn--small btn--ghost iconbtn runbar__home"
-        aria-label="Home"
-        title="Home: leave for now. This run is kept, and you can carry on from the home page."
-        onClick={props.onHome}
-      >
-        <LineIcon name="home" size={20} />
-      </button>
+      {/* (leaving, both ways, at the left: Home keeps the run, Abandon in words since no icon said it clearly; Robert, 2026-11-12) */}
+      <div className="runbar__home">
+        <button
+          type="button"
+          className="btn btn--small btn--ghost iconbtn"
+          aria-label="Home"
+          title="Home: leave for now. This run is kept, and you can carry on from the home page."
+          onClick={props.onHome}
+        >
+          <LineIcon name="home" size={20} />
+        </button>
+        <button
+          type="button"
+          className="btn btn--small btn--ghost runbar__abandon"
+          title="Abandon this run: it ends here and cannot be carried on"
+          onClick={props.onAbandon}
+        >
+          <span>Abandon</span>
+        </button>
+      </div>
       <div className="runbar__who">
         <b
           {...(run.ascendancy
@@ -1190,15 +1201,6 @@ function RunBar(props: {
           <LineIcon name="decks" size={20} />
           <span className="iconbtn__count">{run.deck.length}</span>
         </button>
-        <button
-          type="button"
-          className="btn btn--small btn--ghost iconbtn runbar__abandon"
-          aria-label="Abandon run"
-          title="Abandon this run"
-          onClick={props.onAbandon}
-        >
-          <LineIcon name="abandon" size={20} />
-        </button>
         <SettingsButton iconOnly />
       </div>
     </header>
@@ -1223,6 +1225,8 @@ function Body(props: {
         <section className="stage-panel stage-panel--map" aria-label="Tier map">
           <h2 className="stage-panel__title">
             Tier {run.tier}: {REALM_LABEL[realmOfRun(run)]}
+            {/* (beside the tier's name: at the foot of the page it went unseen; Robert, 2026-11-12) */}
+            {run.seedCode && <SeedLine code={run.seedCode} />}
           </h2>
           <p className="stage-panel__hint">
             {run.map.gauntlet ? (

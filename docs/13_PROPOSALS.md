@@ -218,6 +218,10 @@ Implemented as DECISIONS #574, with scenario coverage and standard project check
 - **A guided first fight:** one scripted fight that introduces Mana, Barrier, Traps and allies one at a time.
   *(Robert, 2026-10-27: okay, but later.)*
 - **Music:** Robert will work on it.
+- **Premium Warden animations and travelling card casts:** every Warden and Drago with drawn signature moves (breath, dives, chains,
+  an entrance, a death of its own), and card casts that fly to the target and land with their status, bespoke for rares, special
+  tokens and scaling cards. Plan and ready prompts in `docs/ANIMATION_BACKLOG.md`. *(Robert, 2026-11-12: "i dont want to do these
+  right now but just have prompts ready"; remind him if not started by 2026-11-14.)*
 - **Every late-game build at B- or better:** a 2026-11-03 audit graded each class's builds for Tier X-XX (S breaks the late
   game ... D not viable). Weakest: the Monk has nothing that grows turn to turn (best build B; Fury brawler and Serene wall C);
   Engineer Wide drones C and Traps D; Drunkard Hangover C and Stagger D; Trickster Full Trick C; Knight Consume C; Necromancer

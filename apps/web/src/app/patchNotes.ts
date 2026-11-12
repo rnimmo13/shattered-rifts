@@ -46,6 +46,38 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.257.0",
+    date: "2026-11-12",
+    title: "Everyone comes to life",
+    summary: "Enemies, Wardens and companions are animated in battle, the Riftwalkers are redrawn sharper, and five worlds are redrawn in the game's style.",
+    notes: [
+      {
+        kind: "new",
+        title: "Animated creatures",
+        text: "Enemies, Wardens, companions and summoned minions breathe, strike, flinch and fall with their own animations instead of standing as still pictures. Creatures that shoot, throw or cast send their shot flying to the target. Low graphics keeps the still pictures.",
+      },
+      {
+        kind: "changed",
+        title: "Sharper Riftwalkers",
+        text: "Every Riftwalker is redrawn at a higher resolution with more poses in each animation: a smoother attack, a fuller fall, a power-up that builds, and drawn breathing while they stand. They come to life sooner too: the standing pose loads first. The Necromancer's attack has its wind-up again.",
+      },
+      {
+        kind: "new",
+        title: "Medium graphics",
+        text: "Graphics quality has a new Medium setting: the same look with lighter models, for less to download and about half the memory. Phones and computers with little memory start on it; anyone can change it in Settings.",
+      },
+      {
+        kind: "changed",
+        title: "Five worlds redrawn",
+        text: "The creatures of Cindervault, Thalassar, Vespera, the Hourglass Expanse and the First Ruin are redrawn in the game's cartoon style, and those that borrowed another creature's picture now have their own.",
+      },
+      {
+        kind: "changed",
+        text: "On the campaign map, the Abandon button says Abandon and sits beside Home, and the run's seed is a small chip beside the tier's name.",
+      },
+    ],
+  },
+  {
     version: "0.256.0",
     date: "2026-11-11",
     title: "A cleaner map and header",

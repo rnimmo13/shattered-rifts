@@ -383,13 +383,14 @@ export function SettingsPanel() {
             <h3 id="settings-graphics">Graphics</h3>
             <Row
               label="Quality"
-              hint="Low stops the drifting fog, floating motes and other motion at rest, for a computer that is slow to draw. Cards, blows and effects play the same."
+              hint="Medium uses lighter Riftwalker models: less to download and about half the memory, a little less sharp. Low also stops the drifting fog, floating motes and other motion at rest, for a computer that is slow to draw. Cards, blows and effects play the same."
             >
               <Choice
                 label="Graphics quality"
                 value={graphics}
                 options={[
                   { value: 'high', label: 'High' },
+                  { value: 'medium', label: 'Medium' },
                   { value: 'low', label: 'Low' },
                 ]}
                 onChange={(v) => {

@@ -1,3 +1,12 @@
+## 0.257.0 - 2026-11-12
+
+- Every Riftwalker is redrawn at a higher resolution with more poses in each animation: a smoother attack, a fuller fall, a power-up that builds, and drawn breathing while they stand. Their models are sharper in battle, and they come to life sooner: the standing pose loads first (DECISIONS #759).
+- Graphics quality has a new Medium setting: the same look with lighter Riftwalker models, for less to download and about half the memory. Phones and computers with little memory start on it; anyone can change it in Settings.
+- The Necromancer's attack has its wind-up again, redrawn with the staff held properly.
+- Enemies, Wardens, companions and summoned minions are animated in battle: they breathe, strike, flinch and fall with their own animations instead of standing as still pictures (Low graphics keeps the pictures).
+- The creatures of Cindervault, Thalassar, Vespera, the Hourglass Expanse and the First Ruin are redrawn in the game's cartoon style, and 25 of them that borrowed another creature's picture now have their own.
+- The campaign map's Abandon button says Abandon and sits beside Home, and the seed is a small chip beside the tier's name above the map (it was easy to miss at the foot of the page).
+
 ## 0.256.0 - 2026-11-11
 
 - Settings is always at the top right, as a gear, on the map and in battle, with the run clock beside it, larger (DECISIONS #758).

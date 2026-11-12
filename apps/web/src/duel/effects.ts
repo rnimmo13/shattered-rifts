@@ -21,20 +21,46 @@ export interface EffectsProfile {
   low: boolean;
 }
 
-/** The graphics quality setting (DECISIONS #570): High is the full look; Low keeps the board still at rest, for a machine that
- * draws without a graphics card, where anything moving makes the browser redraw the whole screen. */
-export type GraphicsQuality = 'high' | 'low';
+/** The graphics quality setting (DECISIONS #570, #759): High is the full look with the sharp hero models; Medium is the same look with
+ * lighter hero models (less to download and about half the memory: phones and small machines start on it); Low keeps the board still
+ * at rest, for a machine that draws without a graphics card, where anything moving makes the browser redraw the whole screen. */
+export type GraphicsQuality = 'high' | 'medium' | 'low';
 
 const KEY = 'sr.effects';
 const GRAPHICS_KEY = 'sr.graphics';
 
+/** A phone, or a device with little memory: it starts on Medium until the player picks (DECISIONS #759). Decided once a visit, so a
+ * 2-in-1 folded into a tablet does not switch sets mid-session. */
+let light: boolean | undefined;
+function lightDevice(): boolean {
+  return (light ??= measureLight());
+}
+/** (for the tests: decide again) */
+export function resetLightDevice(): void {
+  light = undefined;
+}
+function measureLight(): boolean {
+  try {
+    const mem = (navigator as { deviceMemory?: number }).deviceMemory;
+    if (typeof mem === 'number' && mem <= 4) return true;
+    return (
+      typeof matchMedia === 'function' &&
+      matchMedia('(pointer: coarse)').matches &&
+      Math.min(screen.width, screen.height) < 820
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function loadGraphicsQuality(): GraphicsQuality {
   try {
-    if (localStorage.getItem(GRAPHICS_KEY) === 'low') return 'low';
+    const v = localStorage.getItem(GRAPHICS_KEY);
+    if (v === 'low' || v === 'medium' || v === 'high') return v;
   } catch {
     /* storage can be unavailable (private windows): fall through */
   }
-  return 'high';
+  return lightDevice() ? 'medium' : 'high';
 }
 
 /** Lets the style sheets see it: Low stops the looping decorations. */

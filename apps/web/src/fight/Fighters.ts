@@ -35,7 +35,8 @@ import {
   type Pt,
 } from './attackFx';
 import { HeroSprite, loadRig, type Facing } from './heroSprite';
-import { SHEET_PREFIX } from '../art/heroRigs';
+import { SHEET_PREFIX, UNIT_SHEET_PREFIX } from '../art/heroRigs';
+import { releaseUnitSheets } from './heroSheet';
 
 export type FighterSide = 'a' | 'b';
 export type { Facing } from './heroSprite';
@@ -262,7 +263,12 @@ export class Fighters {
     for (const spec of list) {
       const x =
         spec.x ?? slotX(spec.side, spec.slot, spec.isHero, spec.count, (spec.hover ?? 0) > 0);
-      const f = this.all.get(spec.id);
+      let f = this.all.get(spec.id);
+      // (a creature brought back under the same id while its death is still fading: the old one goes, the new one comes in)
+      if (f && this.leaving.has(f)) {
+        this.remove(spec.id);
+        f = undefined;
+      }
       if (!f) {
         this.add(spec, x, !opts.instant);
       } else if (!f.dying) {
@@ -393,7 +399,13 @@ export class Fighters {
     this.all.set(spec.id, f);
     // (a pose-sheet model is not loaded on a board that holds still, Low graphics or reduced motion: it would only ever show its
     // first pose, at the cost of its whole atlas in memory; the picture stands in, as it does outside battle. DECISIONS #755)
-    if (spec.rig && !(spec.rig.id.startsWith(SHEET_PREFIX) && this.h.profile().still))
+    if (
+      spec.rig &&
+      !(
+        (spec.rig.id.startsWith(SHEET_PREFIX) || spec.rig.id.startsWith(UNIT_SHEET_PREFIX)) &&
+        this.h.profile().still
+      )
+    )
       this.loadRigFor(f, spec.rig.id, spec.rig.facing);
     if (animate && !this.h.profile().still) {
       root.alpha = 0;
@@ -590,17 +602,11 @@ export class Fighters {
           ? all[0]
           : undefined;
     const dir = f.spec.side === 'a' ? 1 : -1;
-    // a rigged hero strikes with its own animation: the blow (and the damage after it) lands on the clip's impact
-    if (f.rig)
-      return this.rigStrike(
-        f,
-        f.rig,
-        t,
-        dir,
-        onHit,
-        spread,
-        f.spec.hero ? strikeVariant(f.spec.hero, card) : undefined,
-      );
+    // a rigged hero strikes with its own animation: the blow (and the damage after it) lands on the clip's impact. A model with no
+    // strike to play (a training dummy, or one whose frames are still coming) moves its picture the old way instead
+    const variant = f.spec.hero ? strikeVariant(f.spec.hero, card) : undefined;
+    if (f.rig && f.rig.ready?.('strike', variant) !== false)
+      return this.rigStrike(f, f.rig, t, dir, onHit, spread, variant);
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
     const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
     const tex = wid ? weaponTexture(wid) : undefined;
@@ -798,7 +804,66 @@ export class Fighters {
             if (!f.root.destroyed) f.root.zIndex = f.y + (f.spec.hover ? 1 : 0);
           };
           this.h.sound('attackWindup');
-          const spec: AttackSpec = { ...f.spec.attack, kind: 'stab' };
+          // (a creature that slams leaves its dust where it lands; every other blow sparks on the target)
+          const spec: AttackSpec =
+            !f.spec.isHero && f.spec.attack.kind === 'smash'
+              ? f.spec.attack
+              : { ...f.spec.attack, kind: 'stab' };
+          // a creature that shoots, throws or casts lets its shot go at the clip's launch, and it flies to the target (DECISIONS #760)
+          const kind = f.spec.attack.kind;
+          if (
+            !f.spec.isHero &&
+            !spread &&
+            t &&
+            (kind === 'shoot' || kind === 'throw' || kind === 'cast')
+          ) {
+            let landed = false;
+            const land = (): void => {
+              if (landed) return;
+              landed = true;
+              try {
+                this.h.sound('attackHit');
+                if (!t.root.destroyed)
+                  burst(this.fxCtx(), this.chest(t), f.spec.attack.tint, 7, 40);
+              } finally {
+                onHit?.();
+                resolve();
+              }
+            };
+            this.rigPlay(
+              rig,
+              'strike',
+              {
+                name: 'launch',
+                within: 0.5,
+                at: () => {
+                  try {
+                    if (f.root.destroyed || t.root.destroyed || this.all.get(f.spec.id) !== f)
+                      return land();
+                    const c = this.fxCtx();
+                    const from = this.chest(f, dir * f.width * 0.3);
+                    const to = this.chest(t);
+                    const dist = Math.hypot(to.x - from.x, to.y - from.y);
+                    const tint = f.spec.attack.tint;
+                    const flight =
+                      kind === 'shoot'
+                        ? streak(c, from, to, tint, Math.max(0.1, dist / 3800), 3)
+                        : kind === 'throw'
+                          ? thrownBlade(c, from, to, tint, Math.max(0.16, dist / 2400))
+                          : orb(c, from, to, tint, Math.max(0.2, dist / 1800));
+                    void flight.then(land, land);
+                  } catch {
+                    land();
+                  }
+                  // (the blow lands whatever happens to the shot)
+                  this.track(gsap.delayedCall(1.2, land));
+                },
+              },
+              end,
+            );
+            this.track(gsap.delayedCall(1.4, end));
+            return;
+          }
           this.rigPlay(
             rig,
             'strike',
@@ -1191,7 +1256,14 @@ export class Fighters {
   cast(id: string, tintColor: string = color.goldLight): Promise<void> {
     const f = this.all.get(id);
     const rig = f?.rig;
-    if (!f || !rig || f.dying || this.h.profile().still || rig.clip === 'death') {
+    if (
+      !f ||
+      !rig ||
+      f.dying ||
+      this.h.profile().still ||
+      rig.clip === 'death' ||
+      rig.ready?.('aura') === false
+    ) {
       this.act(id, tintColor);
       return Promise.resolve();
     }
@@ -1226,7 +1298,7 @@ export class Fighters {
   hit(id: string, amount: number): void {
     const f = this.all.get(id);
     if (!f || f.dying) return;
-    if (f.rig) {
+    if (f.rig && f.rig.ready?.('hit') !== false) {
       // (it flinches behind its shield, flash and shake drawn by the rig; a strike or aura under way is not cut short)
       if (!this.h.profile().still && (f.rig.clip === 'idle' || f.rig.clip === 'hit'))
         this.rigPlay(f.rig, 'hit');
@@ -1253,6 +1325,8 @@ export class Fighters {
     if (!f) return Promise.resolve();
     // a rigged hero falls and stays down (its last frame held), and this resolves as it lands
     if (f.rig && f.spec.isHero) return this.rigFall(f, f.rig);
+    // an animated creature plays its own death, holds it a moment and fades from the stage (DECISIONS #760)
+    if (f.rig && !this.h.profile().still) return this.unitFall(f, f.rig);
     f.dying = true;
     if (this.h.profile().still) {
       this.remove(id);
@@ -1306,6 +1380,44 @@ export class Fighters {
     });
   }
 
+  /**
+   * An animated creature's death (DECISIONS #760): its clip plays (a flyer sinks to the floor as it falls), the last frame holds a
+   * moment, then it fades and leaves the stage. Resolves as it lands, as a hero's fall does, so the fight goes on while it fades.
+   */
+  private unitFall(f: Fighter, rig: HeroSprite): Promise<void> {
+    if (f.dying) return Promise.resolve();
+    f.dying = true;
+    this.leaving.add(f);
+    gsap.killTweensOf([f.body, f.body.position, f.body.scale, f.root, f.air]);
+    this.h.sound('death');
+    const land = rig.momentIn?.('death') || 0.6;
+    if (f.spec.hover) this.track(gsap.to(f.air, { y: 0, duration: land, ease: ease.in.gsap }));
+    return new Promise((resolve) => {
+      const gone = (): void => {
+        resolve();
+        this.track(
+          gsap.to(f.root, {
+            alpha: 0,
+            duration: 0.4,
+            delay: 0.35,
+            onComplete: () => {
+              this.leaving.delete(f);
+              if (this.all.get(f.spec.id) === f) this.remove(f.spec.id);
+            },
+          }),
+        );
+      };
+      this.rigPlay(rig, 'death', {
+        name: 'land',
+        within: 1.3,
+        at: () => {
+          this.h.sound('attackHit');
+          gone();
+        },
+      });
+    });
+  }
+
   /** Light a ring under the figures that can be targeted. */
   setTargetable(ids: ReadonlySet<string> | null): void {
     this.h.wake?.(150);
@@ -1348,8 +1460,9 @@ export class Fighters {
       if (still || f.dying || f.busy > 0) continue;
       const w = Math.sin(t * 1.5 + f.phase);
       const hover = f.spec.hover ?? 0;
-      if (hover) {
+      if (hover && !f.rig) {
         // a flyer rides on the air: it drifts up and down while its shadow on the floor breathes the other way
+        // (an animated one bobs in its own idle clip)
         const b = Math.sin(t * 1.3 + f.phase);
         f.air.y = -hover + b * 9;
         f.contact.alpha = 0.32 - 0.06 * b;
@@ -1366,6 +1479,8 @@ export class Fighters {
     }
   }
 
+  /** creatures whose death is fading out (DECISIONS #760): one brought back under the same id replaces it at once */
+  private readonly leaving = new WeakSet<Fighter>();
   private wasStill = false;
   private lastT: number | null = null;
   /** the fight is over (finish was called): a rig that arrives late is not put on */
@@ -1435,6 +1550,8 @@ export class Fighters {
 
   destroy(): void {
     this.destroyed = true;
+    // (the creatures' decoded models are let go with the fight: the next one fetches its own, from the browser's cache)
+    releaseUnitSheets();
     for (const x of this.live) x.kill();
     this.live.clear();
     for (const f of this.all.values())

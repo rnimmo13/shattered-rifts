@@ -127,7 +127,8 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { heroRigFor } from '../art/heroRigs';
+import { UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
+import { UNIT_SHEETS } from '../art/unitSheets';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
 import type { FeedItem, MoveFeed, PvpLink } from '../pvp/link';
@@ -302,6 +303,7 @@ function specsFrom(
         u,
         boss: !hero && isWardenFigure(u.def),
         hero,
+        form,
         canvas,
         height,
         hover,
@@ -403,7 +405,16 @@ function specsFrom(
                 facing: flip ? ('left' as const) : ('right' as const),
               },
             }
-          : {}),
+          : // (a creature with an animated model plays it, DECISIONS #760: the sheets face right, so an enemy, or the other side's
+            // companion in the Arena, plays mirrored, as its picture faces)
+            !e.hero && UNIT_SHEETS.has(e.form)
+            ? {
+                rig: {
+                  id: `${UNIT_SHEET_PREFIX}${e.form}`,
+                  facing: e.u.kind === 'enemy' || flip ? ('left' as const) : ('right' as const),
+                },
+              }
+            : {}),
       });
     }
   }

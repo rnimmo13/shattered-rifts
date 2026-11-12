@@ -48,6 +48,8 @@ export const VIDEO_PREFIX = 'video:';
 
 /** The id of a hero's pose-sheet model ("sheet:knight", heroSheet.ts). */
 export const SHEET_PREFIX = 'sheet:';
+/** a creature's pose-sheet model (public/art/units-sheets, DECISIONS #760): "unitsheet:<figure id>" */
+export const UNIT_SHEET_PREFIX = 'unitsheet:';
 
 /**
  * How this hero's default look is animated (DECISIONS #755: two modes): its video model when the beta setting is on and it has an idle
