@@ -1,3 +1,12 @@
+## Unreleased
+
+- Settings is always at the top right, as a gear, on the map and in battle, with the run clock beside it, larger (DECISIONS #758).
+- The campaign map's header is tidier: Home on its own at the left, icon buttons for the Deck and Abandon, a small Arena mark instead of a button, and the seed moved to the foot of the page. The space above the map is laid out in one row.
+- The stops you can move to on the map glow and send out rings of light.
+- The battle screen no longer lists the Omens (they are on the map), and its title is centred.
+- Fixed: the Riftwalkers' back legs no longer wobble while they stand idle.
+- Fixed: "How this board works" on the leaderboards is centred.
+
 ## 0.255.0 - 2026-11-11
 
 - The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter; her Swords still swing the blade (DECISIONS #756).

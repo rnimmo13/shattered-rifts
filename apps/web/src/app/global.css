@@ -1074,3 +1074,38 @@ html:has(.fight) body {
     display: none;
   }
 }
+
+/* (DECISIONS #758) A square icon button: the run's and the battle screen's headers (Home, Deck, Abandon, Settings). The icon is
+   the button's text colour; a count sits in a small badge at its corner. */
+.btn.iconbtn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-height: 0;
+  padding: 0;
+  flex: none;
+  border-radius: 10px;
+}
+.btn.iconbtn svg {
+  display: block;
+}
+.iconbtn__count {
+  position: absolute;
+  right: -0.35rem;
+  bottom: -0.3rem;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-family: var(--font-numeric, inherit);
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #1a1206;
+  background: var(--c-gold-light);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+}

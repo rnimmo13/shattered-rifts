@@ -2570,8 +2570,13 @@ export function FightView(props: {
                 ))}
               </div>
             )}
-            {mode !== 'portrait' && fightOpts}
+            {/* (the clock, then Settings at the far right, as on every screen: Robert 2026-11-11, DECISIONS #758) */}
             {props.runTimer && <span className="fight__runTimer">{props.runTimer}</span>}
+            {mode !== 'portrait' && (
+              <div className="fight__opts">
+                <SettingsButton iconOnly />
+              </div>
+            )}
           </header>
 
           {mode !== 'wide' && !watch && friendlyTargets.length > 0 && (

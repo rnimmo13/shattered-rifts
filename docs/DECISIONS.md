@@ -2123,3 +2123,18 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 - **Question (Robert):** the encounter's name at the top of the battle screen should look better and say whether the fight is a duel, an elite or some other kind.
 - **Decision:** the title is a plaque: a badge for the kind of fight, the encounter's name, and a small line with where it is and the turn. The badges use the map's words: Duel, Elite, Warden, Echo, plus Final battle (the finale), Ghost Warden, Arena, Arena ghost; a Sandbox fight shows its encounter's kind with "Sandbox" on the small line. Each kind has its colour, and the plaque's rim takes it (`apps/web/src/fight/fightKind.ts`, `FightView` props `kind` and `subtitle`). In the campaign the Tier and floor moved from the title to the small line (a ghost's title no longer starts "Echo:" / "Ghost Warden:": the badge says it); an Arena series' game moved there too. A shared fight keeps the whole line as its title.
 - **Also fixed:** the campaign's ending had its words in a column on the left (each paragraph's reading width sat on the left with its lines centred inside), and the Return to the Sanctum button close under them: every block of the story is centred now, and the button has room above it.
+
+## 758 - Headers: Settings always top right; the map's header tidied; where you can move glows (2026-11-11)
+
+- **Question (Robert):** the battle title was off centre; Settings should always be at the top right, with the run clock beside it, larger and without "Run time"; the map's header was cluttered (Home, the Arena status, the seed button); the space above the map was loose; the reachable stops should stand out; no Omens on the battle screen; the leaderboard's "How this board works" text was not centred; the heroes' back legs wobbled while idle.
+- **Decisions:**
+  - **Settings is a gear icon at the top right** of the run's header and the battle screen's (`SettingsButton iconOnly`), with the run clock just left of it, larger, its label gone (its title still says what it counts).
+  - **The run's header** (`RunBar`): Home alone at the left as an icon (it was "first" since 2026-11-10; it still is); the class and where the run is; the run's numbers; then the clock and icon buttons for the Deck (with its card count) and Abandon, Settings last. Icons are line icons from `LineIcon` (home, decks, abandon flag, settings, arena).
+  - **The Arena status** is a small mark on the who line (green in the Arena, red and struck through when not), no longer a glowing button; same tip and link.
+  - **The seed** is out of the header: a small "Seed XXXX-XXXX" line at the foot of the map page, select it to copy. The balance-data notice moved there too.
+  - **Above the map**, on a wide screen: the tier's name sits left with the hint and the world's line under it, the drawing tools right, slimmer and centred on them.
+  - **Reachable stops** send out rings of amber light over a halo, and the stops you cannot reach yet step back a little (a still ring on reduced motion or Low graphics).
+  - **The battle title** is centred on the screen in the campaign on a wide screen (it was centred between the uneven button groups); narrower, it stays in the flow.
+  - **Omens** are no longer shown on the battle screen (they are on the map's header).
+  - **"How this board works"** is centred.
+  - **Idle wobble:** the pose pipeline's cloth ripple now starts above the knees (`breathe` in `pose_pipeline.py`): below them it caught the back leg. Every hero re-exported and repacked; capes and robes still ripple higher up, their hems near the ground hang still.

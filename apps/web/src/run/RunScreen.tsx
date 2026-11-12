@@ -70,6 +70,7 @@ import { SceneBackdrop } from './SceneBackdrop';
 import { BoonCard, BoonChip } from '../fight/BoonChip';
 import { tipAttrs } from '../ui/tip';
 import { SettingsButton } from '../ui/SettingsButton';
+import { LineIcon } from '../app/HomeLinks';
 import { Notice, Toast } from '../ui/Toast';
 import { getHero, rememberHero } from '../app/heroChoice';
 import { BoonToast } from './BoonToast';
@@ -541,10 +542,7 @@ export default function RunScreen() {
           {...(!plan.ghost && encounter(plan.encounterId).rule
             ? { rule: encounter(plan.encounterId).rule }
             : {})}
-          omens={omensAt(run.tier, !run.campaignRoute).map((o) => ({
-            name: o.name,
-            text: o.text(run.tier),
-          }))}
+          // (no Omens on the battle screen: they are on the map's header, Robert 2026-11-11, DECISIONS #758)
           {...(link
             ? { pvp: link }
             : {
@@ -795,13 +793,6 @@ export default function RunScreen() {
           <ArenaProblems problems={arenaProblems} />
         </Notice>
       )}
-      {run.phase === 'map' && (
-        <p className="run__balanceNotice">
-          Online Campaign saves contribute private deck and progression snapshots for developer
-          balance review. Your raw save and account details are not included. Offline runs are not
-          uploaded.
-        </p>
-      )}
       {notice && (
         <Toast tone={noticeGood ? 'good' : 'bad'} onDismiss={() => say(null)}>
           {notice}
@@ -844,6 +835,15 @@ export default function RunScreen() {
         lostDecks={lostDecks}
         onAscended={setAscended}
       />
+      {run.phase === 'map' && run.seedCode && <SeedLine code={run.seedCode} />}
+      {/* (at the foot of the map, with the seed, out of the space between the header and the map: DECISIONS #758) */}
+      {run.phase === 'map' && (
+        <p className="run__balanceNotice">
+          Online Campaign saves contribute private deck and progression snapshots for developer
+          balance review. Your raw save and account details are not included. Offline runs are not
+          uploaded.
+        </p>
+      )}
       {/* (only if the rules took the choice) */}
       {ascended && run.ascendancy === ascended && (
         <AscendReveal
@@ -993,29 +993,36 @@ function Sanctum(props: {
   );
 }
 
-/** The run's seed on the run bar: a click copies it, to share (DECISIONS #698). */
-function SeedButton({ code }: { code: string }) {
+/**
+ * The run's seed, at the foot of the map (DECISIONS #698): small, out of the header (Robert, 2026-11-11, #758). Select it to copy it.
+ */
+function SeedLine({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <button
-      className="btn btn--small btn--ghost runbar__seed"
-      {...tipAttrs({
-        kicker: 'Seed',
-        title: showSeed(code),
-        text: 'Share this seed and a friend can play the same maps, Wardens and offers: they type it in the Sanctum under Play a shared seed. Select it to copy it.',
-      })}
-      onClick={() => {
-        void navigator.clipboard?.writeText(showSeed(code)).then(
-          () => {
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1500);
-          },
-          () => undefined,
-        );
-      }}
-    >
-      <span>{copied ? 'Copied' : `Seed ${showSeed(code)}`}</span>
-    </button>
+    <p className="run__seed">
+      Seed{' '}
+      <button
+        type="button"
+        className="run__seedCode"
+        {...tipAttrs({
+          kicker: 'Seed',
+          title: showSeed(code),
+          text: 'Share this seed and a friend can play the same maps, Wardens and offers: they type it in the Sanctum under Play a shared seed. Select it to copy it.',
+        })}
+        onClick={() => {
+          void navigator.clipboard?.writeText(showSeed(code)).then(
+            () => {
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 1500);
+            },
+            () => undefined,
+          );
+        }}
+      >
+        {showSeed(code)}
+      </button>
+      {copied && <span className="run__seedCopied"> copied</span>}
+    </p>
   );
 }
 
@@ -1027,6 +1034,10 @@ function floorLabel(run: RunState): string {
   return `Floor ${node.floor}/${top}`;
 }
 
+/**
+ * The run's header (Robert, 2026-11-11, DECISIONS #758): Home alone at the left; who and where, with a small mark for the Arena;
+ * the run's numbers; then the clock and the icon buttons, Settings always last, at the top right as on every screen.
+ */
 function RunBar(props: {
   run: RunState;
   clock: RunClock;
@@ -1040,9 +1051,18 @@ function RunBar(props: {
 }) {
   const { run } = props;
   const problems = props.arenaProblems;
+  const inArena = !!props.arenaLabel && problems.length === 0;
   return (
     <header className="runbar">
-      <RunTimer clock={props.clock} />
+      <button
+        type="button"
+        className="btn btn--small btn--ghost iconbtn runbar__home"
+        aria-label="Home"
+        title="Home: leave for now. This run is kept, and you can carry on from the home page."
+        onClick={props.onHome}
+      >
+        <LineIcon name="home" size={20} />
+      </button>
       <div className="runbar__who">
         <b
           {...(run.ascendancy
@@ -1064,6 +1084,43 @@ function RunBar(props: {
         <span>
           {progressLabel(run.tier, stagesCleared(run))}
           {floorLabel(run) && ` · ${floorLabel(run)}`} · {REALM_LABEL[realmOfRun(run)]}
+          {/* whether the deck is in the Arena (DECISIONS #442), small: green when it is, red and struck through when it is not
+              yet or would not pass the Arena's check; the details in its tip (DECISIONS #345, #729) */}
+          <a
+            className={`runbar__arena ${inArena ? 'is-in' : 'is-out'}`}
+            href={problems.length > 0 ? '#/arena-rules' : '#/decks'}
+            aria-label={
+              problems.length > 0
+                ? `Not valid for the Arena: ${problems.map((p) => p.text).join(' ')}`
+                : props.arenaLabel
+                  ? `In the Arena: ${props.arenaLabel}`
+                  : 'Not in the Arena yet: saved after your first fight'
+            }
+            {...tipAttrs(
+              problems.length > 0
+                ? {
+                    kicker: 'Not valid for the Arena',
+                    tone: 'bad',
+                    title:
+                      problems.length === 1
+                        ? (problems[0]?.text ?? '')
+                        : `${problems.length} things keep this deck out of the Arena`,
+                    ...(problems.length > 1
+                      ? { lines: problems.map((p, i) => ({ title: `${i + 1}.`, text: p.text })) }
+                      : {}),
+                    text: 'The Arena checks every deck before a match. Fix these on the way and the deck is entered again after your next fight.',
+                    hint: 'Select it to see what the Arena takes.',
+                  }
+                : {
+                    kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
+                    title: props.arenaLabel ?? 'Saved after your first fight',
+                    text: 'Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks.',
+                  },
+            )}
+          >
+            <LineIcon name="arena" size={14} />
+            <span>Arena</span>
+          </a>
         </span>
       </div>
       <div className="runbar__stats">
@@ -1122,59 +1179,27 @@ function RunBar(props: {
         </span>
       </div>
       <div className="runbar__actions">
-        {/* (Home always comes first, on every screen size: Robert, 2026-11-10) */}
+        <RunTimer clock={props.clock} />
         <button
-          className="btn btn--small btn--ghost runbar__home"
-          title="Leave for now. This run is kept, and you can carry on from the home page."
-          onClick={props.onHome}
+          type="button"
+          className="btn btn--small btn--ghost iconbtn runbar__deck"
+          aria-label={`Deck: ${run.deck.length} cards`}
+          title={`Deck: ${run.deck.length} cards`}
+          onClick={props.onDeck}
         >
-          <span>Home</span>
+          <LineIcon name="decks" size={20} />
+          <span className="iconbtn__count">{run.deck.length}</span>
         </button>
-        {/* whether the deck is in the Arena: green when it is, red and struck through until the first fight saves it, or while
-            the deck as it stands would not pass the Arena's check (DECISIONS #442); the details in its tip (DECISIONS #345) */}
-        <a
-          className={`runbar__arena ${props.arenaLabel && problems.length === 0 ? 'is-in' : 'is-out'}`}
-          href={problems.length > 0 ? '#/arena-rules' : '#/decks'}
-          aria-label={
-            problems.length > 0
-              ? `Not valid for the Arena: ${problems.map((p) => p.text).join(' ')}`
-              : props.arenaLabel
-                ? `In the Arena: ${props.arenaLabel}`
-                : 'Not in the Arena yet: saved after your first fight'
-          }
-          {...tipAttrs(
-            problems.length > 0
-              ? {
-                  kicker: 'Not valid for the Arena',
-                  tone: 'bad',
-                  // (every reason, not only the first: DECISIONS #729)
-                  title:
-                    problems.length === 1
-                      ? (problems[0]?.text ?? '')
-                      : `${problems.length} things keep this deck out of the Arena`,
-                  ...(problems.length > 1
-                    ? { lines: problems.map((p, i) => ({ title: `${i + 1}.`, text: p.text })) }
-                    : {}),
-                  text: 'The Arena checks every deck before a match. Fix these on the way and the deck is entered again after your next fight.',
-                  hint: 'Select it to see what the Arena takes.',
-                }
-              : {
-                  kicker: props.arenaLabel ? 'In the Arena' : 'Not in the Arena yet',
-                  title: props.arenaLabel ?? 'Saved after your first fight',
-                  text: 'Your deck is entered in the Arena by itself, and updated after every fight. Once it has cleared Tier 3, other players may face it as a ghost (the computer plays it). If this run collapses, you can no longer bring it to the Arena yourself, but a ghost stays. Click to see your saved decks.',
-                },
-          )}
+        <button
+          type="button"
+          className="btn btn--small btn--ghost iconbtn runbar__abandon"
+          aria-label="Abandon run"
+          title="Abandon this run"
+          onClick={props.onAbandon}
         >
-          <span>Arena</span>
-        </a>
-        {run.seedCode && <SeedButton code={run.seedCode} />}
-        <SettingsButton />
-        <button className="btn btn--small runbar__deck" onClick={props.onDeck}>
-          <span>Deck ({run.deck.length})</span>
+          <LineIcon name="abandon" size={20} />
         </button>
-        <button className="btn btn--small btn--ghost" onClick={props.onAbandon}>
-          <span>Abandon</span>
-        </button>
+        <SettingsButton iconOnly />
       </div>
     </header>
   );

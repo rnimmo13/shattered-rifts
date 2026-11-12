@@ -4717,3 +4717,32 @@ button.totem:disabled {
 .fight--portrait:has(.fight__runTimer) .fight__title > .fight__kind {
   font-size: 0.56rem;
 }
+
+/* (DECISIONS #758) The battle screen's top bar: the clock, then Settings (a gear) at the far right. The clock is larger and has no
+   "Run time" label. In the campaign the title is centred on the screen, not between the uneven groups of buttons either side;
+   on a narrower screen it stays in the flow, where it cannot run into the buttons. */
+.fight__runTimer .run-timer time {
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+}
+.fight__runTimer {
+  margin-right: 0.35rem;
+}
+.fight__top .fight__opts {
+  margin-left: 0;
+}
+@media (min-width: 84rem) {
+  .fight:has(.fight__runTimer) .fight__title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    margin: 0;
+    max-width: calc(100% - 66rem);
+  }
+}
+@media (min-width: 110rem) {
+  .fight:has(.fight__runTimer) .fight__title {
+    max-width: 44rem;
+  }
+}

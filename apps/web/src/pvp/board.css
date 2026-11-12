@@ -268,7 +268,8 @@
 .board__how {
   width: 100%;
   max-width: 54rem;
-  text-align: left;
+  /* (centred like the page's other introductions: Robert 2026-11-11) */
+  text-align: center;
   border-radius: 10px;
   border: 1px solid rgb(255 255 255 / 0.1);
   background: rgb(255 255 255 / 0.03);
@@ -280,7 +281,7 @@
   font-size: 0.92rem;
 }
 .board__how p {
-  margin: 0;
+  margin: 0 auto;
   padding: 0 0.9rem 0.7rem;
   color: var(--c-text-dim);
   line-height: 1.5;

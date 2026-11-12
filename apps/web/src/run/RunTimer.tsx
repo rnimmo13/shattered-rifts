@@ -16,7 +16,7 @@ export function RunTimer({ clock }: { clock: RunClock }) {
       aria-label={`Run time ${formatRunTime(elapsed)}`}
       title="Time spent in this run, including idle time"
     >
-      <small>Run time</small>
+      {/* (no "Run time" label: the clock speaks for itself, its title says what it counts; DECISIONS #758) */}
       <time>{formatRunTime(elapsed)}</time>
     </span>
   );

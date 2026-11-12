@@ -2979,3 +2979,300 @@ button.mapnode--warden {
 .bigchoice--leave b {
   color: var(--c-ivory);
 }
+
+/* ---- The run's header, 2026-11-11 (Robert, DECISIONS #758) ----
+   Home alone at the left; who and where (with a small Arena mark); the run's numbers; the clock and the icon buttons, Settings
+   last at the top right as on every screen. Replaces the grid areas above at every size. */
+.runbar {
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: 'home who stats actions';
+  gap: 0.5rem 1.4rem;
+  padding: 0.55rem 0.8rem;
+}
+.runbar__home {
+  grid-area: home;
+}
+.runbar__actions {
+  grid-area: actions;
+  gap: 0.45rem;
+}
+.runbar__actions .run-timer {
+  margin-right: 0.45rem;
+}
+.runbar__actions .run-timer time {
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+}
+.runbar__who span {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 0.35rem;
+}
+.runbar__abandon {
+  color: var(--c-text-dim);
+}
+.runbar__abandon:hover,
+.runbar__abandon:focus-visible {
+  color: #ff8a8a;
+}
+/* the Arena: a small mark on the who line, not a button (green in the Arena, red and struck through when not) */
+.runbar__arena {
+  padding: 0.05rem 0.45rem 0.05rem 0.35rem;
+  margin-left: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  font-family: var(--font-body, inherit);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-shadow: none;
+  box-shadow: none;
+  animation: none;
+  background: color-mix(in srgb, var(--glow) 12%, transparent);
+  border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+}
+.runbar__arena.is-out::after {
+  left: 6%;
+  right: 6%;
+  height: 1.5px;
+  box-shadow: none;
+}
+/* the seed, at the foot of the map */
+.run__seed {
+  margin: 1.2rem auto 0.4rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--c-text-dim);
+  letter-spacing: 0.04em;
+}
+.run__seedCode {
+  font: inherit;
+  font-family: var(--font-numeric, inherit);
+  letter-spacing: 0.08em;
+  color: var(--c-gold-light);
+  background: none;
+  border: none;
+  border-bottom: 1px dashed color-mix(in srgb, var(--c-gold-light) 50%, transparent);
+  padding: 0 0.1rem;
+  cursor: copy;
+}
+.run__seedCopied {
+  color: #7ee2a8;
+}
+@media (max-width: 78rem) {
+  .runbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'home who actions'
+      'stats stats stats';
+  }
+}
+@media (max-width: 40rem) {
+  .runbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'home who actions'
+      'stats stats stats';
+    gap: 0.35rem 0.6rem;
+  }
+  .runbar__actions {
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+  }
+  .runbar__actions .run-timer {
+    margin-right: 0.1rem;
+  }
+  .runbar__actions .run-timer time {
+    font-size: 1rem;
+  }
+  .btn.iconbtn,
+  .runbar__actions .btn--small.iconbtn {
+    width: 2.2rem;
+    height: 2.2rem;
+    min-height: 0;
+    padding: 0;
+  }
+  .runbar__who span {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ---- Above the map, 2026-11-11 (Robert, DECISIONS #758) ----
+   On a wide screen the tier's name sits left with the hint and the world's line under it, and the drawing tools sit right,
+   centred on them, slimmer (they were a tall box for no reason). The balance notice and the seed went to the foot of the page. */
+@media (min-width: 64rem) and (orientation: landscape) {
+  .run--map > .stage-panel--map {
+    column-gap: 1.5rem;
+    row-gap: 0.15rem;
+  }
+  .run--map .stage-panel__title {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    text-align: left;
+    margin: 0.3rem 0 0;
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  }
+  .run--map .stage-panel__hint {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0 0 0.35rem;
+    max-width: 62rem;
+  }
+  .run--map .mapink__dock {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}
+.run--map .mapink {
+  gap: 0.3rem;
+  padding: 0.22rem 0.4rem;
+  border-radius: 10px;
+}
+.run--map .mapink__tool {
+  min-height: 2.1rem;
+  padding: 0.1rem 0.55rem 0.1rem 0.3rem;
+  font-size: 0.86rem;
+}
+.run--map .mapink__tool .gameicon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.run--map .mapink__color {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+.run--map > .run__balanceNotice {
+  max-width: 60rem;
+  margin: 0 auto;
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+/* ---- Where you can move, 2026-11-11 (Robert, DECISIONS #758) ----
+   A stop you can go to sends out two rings of gold light, one after the other, over a soft halo; the stops you cannot reach
+   yet step back a little, so the open ones stand out. */
+.mapnode__beacon {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(255 214 120 / 0.38) 0%,
+    rgb(255 190 80 / 0.14) 55%,
+    transparent 72%
+  );
+  scale: 1.7;
+}
+.mapnode__beacon i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgb(255 220 140 / 0.9);
+  box-shadow:
+    0 0 10px rgb(255 200 90 / 0.65),
+    inset 0 0 8px rgb(255 200 90 / 0.35);
+  opacity: 0;
+  scale: 0.6;
+  animation: map-beacon 2.2s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+}
+.mapnode__beacon i + i {
+  animation-delay: 1.1s;
+}
+@keyframes map-beacon {
+  0% {
+    opacity: 0;
+    scale: 0.6;
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.15;
+  }
+}
+.mapnode.is-open {
+  z-index: 3;
+  isolation: isolate;
+}
+.mapnode.is-open .mapnode__label {
+  color: #ffe2a0;
+  text-shadow:
+    0 0 6px rgb(0 0 0 / 0.9),
+    0 0 12px rgb(255 190 80 / 0.55);
+  font-weight: 700;
+}
+.map:has(.mapnode.is-open) .mapnode:not(.is-open):not(.is-done):not(.is-here) {
+  filter: saturate(0.75) brightness(0.92);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapnode__beacon i {
+    animation: none;
+    opacity: 0.8;
+    scale: 1;
+  }
+  .mapnode__beacon i + i {
+    display: none;
+  }
+}
+:root[data-graphics='low'] .mapnode__beacon i {
+  animation: none;
+  opacity: 0.8;
+  scale: 1;
+}
+:root[data-graphics='low'] .mapnode__beacon i + i {
+  display: none;
+}
+/* (the parchment is pale: the rings are a rich amber with a dark edge, and travel well past the stop, to read on it) */
+.mapnode__beacon {
+  background: radial-gradient(
+    circle,
+    rgb(255 170 40 / 0.42) 0%,
+    rgb(200 110 10 / 0.18) 50%,
+    transparent 70%
+  );
+  scale: 1.9;
+}
+.mapnode__beacon i {
+  border: 3px solid #ffb43a;
+  box-shadow:
+    0 0 0 1px rgb(70 30 0 / 0.55),
+    inset 0 0 0 1px rgb(70 30 0 / 0.4),
+    0 0 14px rgb(255 150 30 / 0.7);
+  scale: 0.5;
+}
+@keyframes map-beacon {
+  0% {
+    opacity: 0;
+    scale: 0.5;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    scale: 1;
+  }
+}
+.mapnode.is-open .mapnode__label {
+  color: #3a1d00;
+  font-weight: 800;
+  text-shadow:
+    0 0 4px rgb(255 238 190 / 0.95),
+    0 0 8px rgb(255 214 120 / 0.8);
+}
+.mapnode__beacon {
+  background: radial-gradient(
+    circle,
+    rgb(255 165 35 / 0.6) 0%,
+    rgb(230 125 15 / 0.34) 42%,
+    rgb(200 100 10 / 0.12) 58%,
+    transparent 70%
+  );
+}

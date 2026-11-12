@@ -70,6 +70,32 @@ const ICON: Record<string, ReactNode> = {
       <path d="M14 3v4h4M10 12h5M10 15h5M10 18h3" />
     </>
   ),
+  // (the run's header and the battle screen's, 2026-11-11: icon buttons)
+  home: (
+    <>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6.5 9.5V20h4v-5.5h3V20h4V9.5" />
+    </>
+  ),
+  settings: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7" />
+      <circle cx="12" cy="12" r="6.6" />
+    </>
+  ),
+  abandon: (
+    <>
+      <path d="M6 21V4" />
+      <path d="M6 4.5c4-2 7 2 12 0v8.5c-5 2-8-2-12 0" />
+    </>
+  ),
+  arena: (
+    <>
+      <path d="M4 4l10 10M14 14l2.5 2.5M17.5 19.5l2-2M15 17l2.5-2.5" />
+      <path d="M20 4 10 14M10 14l-2.5 2.5M6.5 19.5l-2-2M9 17l-2.5-2.5" />
+    </>
+  ),
 };
 
 /** One of the line icons above, at a size. */

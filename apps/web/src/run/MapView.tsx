@@ -482,6 +482,13 @@ function MapButton(props: MapProps & { n: MapNode; p: { x: number; y: number } }
       onClick={() => props.onEnter(n.id)}
       aria-label={`${KIND_LABEL[shownKind(n)]}: ${labelOf(n)}${n.crossed ? ` (Rift-crossed: sells ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS] ? `the ${RIFTWALKERS[n.crossed as keyof typeof RIFTWALKERS].hero.name}` : 'another Riftwalker'}'s cards)` : ''}${hasGhost(n) ? " (a ghost: another player's deck from the Arena, played by the computer)" : ''}${done ? ' (cleared)' : ''}`}
     >
+      {/* (DECISIONS #758) a stop you can go to sends out rings of light, so where you can move reads at a glance */}
+      {open && (
+        <span className="mapnode__beacon" aria-hidden="true">
+          <i />
+          <i />
+        </span>
+      )}
       <NodeIcon
         kind={shownKind(n)}
         {...(n.crossed
