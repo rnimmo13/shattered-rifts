@@ -1,0 +1,1 @@
+import{_ as e,g as t}from"./vaultSync-jIcsbjsG.js";import{r as n}from"./boardApi-CDgJWtg5.js";async function r(r){let i=await n(r);return i.ok?(e(i.name),t(i.name),null):{message:i.message,unreachable:i.error===`unreachable`}}export{r as t};
