@@ -318,6 +318,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
         on('stanceLeft', [mana(CALM_EXIT_MANA)], { stance: 'calm', once: true }),
         on('stanceLeft', [status('vigor', 3)], { stance: 'wrath', once: true }),
       ],
+      stances: true,
     },
     hero: {
       id: 'monk',
@@ -343,7 +344,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire), and the first on your turn gives 1 Might; the first time each turn you leave Fury, you gain 3 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
-      'Fervor builds to 10, then you enter Radiant: triple damage until your turn ends.',
+      'Fervor builds to 10, then you enter Radiant: double damage until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
     ],
   },

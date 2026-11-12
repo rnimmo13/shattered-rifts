@@ -207,7 +207,8 @@ export const DRUNKARD: CardDef[] = [
     1,
     'none',
     // Point Blank (DECISIONS #247): against a single enemy the spread all lands, 25% more
-    [{ ...scaled(dmg(5, 'allFoes'), per('bonus')), lonePct: 25 } as Op],
+    // (Precision in full to +30, half after, at most +90, DECISIONS #762)
+    [{ ...scaled(dmg(5, 'allFoes'), { ...per('bonus'), half: 30, max: 90 }), lonePct: 25 } as Op],
     {
       retain: true,
       // (a card of his starting deck since DECISIONS #436, always in the opening hand)

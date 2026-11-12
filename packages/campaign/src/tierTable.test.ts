@@ -69,11 +69,13 @@ describe('a linear climb through every tier (DECISIONS #576)', () => {
   it('adds the same HP and damage through Tier XX without a late slope change', () => {
     const step = (t: number, k: 'hp' | 'dmg') => enemyScale(t + 1, 1)[k] - enemyScale(t, 1)[k];
     for (let t = 1; t < 20; t++) {
-      expect(step(t, 'hp')).toBe(40);
-      expect(step(t, 'dmg')).toBe(5);
+      // (50 and 9 since DECISIONS #763; 40 and 5 before)
+      expect(step(t, 'hp')).toBe(50);
+      expect(step(t, 'dmg')).toBe(9);
     }
-    expect(enemyScale(10, 1)).toEqual({ hp: 460, dmg: 138 });
-    expect(enemyScale(17, 1)).toEqual({ hp: 740, dmg: 173 });
-    expect(enemyScale(20, 1)).toEqual({ hp: 860, dmg: 188 });
+    expect(enemyScale(1, 1)).toEqual({ hp: 105, dmg: 98 });
+    expect(enemyScale(10, 1)).toEqual({ hp: 555, dmg: 179 });
+    expect(enemyScale(17, 1)).toEqual({ hp: 905, dmg: 242 });
+    expect(enemyScale(20, 1)).toEqual({ hp: 1055, dmg: 269 });
   });
 });

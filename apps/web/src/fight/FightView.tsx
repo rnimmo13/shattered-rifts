@@ -37,6 +37,8 @@ import {
   EDGE_TAG,
   type LiveDamage,
   type Action,
+  MAX_ALLIES,
+  MAX_ENEMIES,
   type CardDef,
   type CombatDb,
   type CombatEvent,
@@ -89,7 +91,7 @@ import { FormPanel } from './FormPanel';
 import { PileArt } from './PileArt';
 import { UnitPlates, type Placed } from './Plates';
 import { ErrorDetails } from '../ui/ErrorDetails';
-import { fixedFormation, selectionFormation } from './lineLayout';
+import { fixedFormation, rowScale, selectionFormation } from './lineLayout';
 import {
   COMPACT,
   PORTRAIT,
@@ -219,6 +221,30 @@ function fitHeight(
   return !compactFigure ? height : Math.min(height, (maxW * canvas.height) / canvas.width);
 }
 
+/** the room an empty companion slot keeps on a wide screen (a small companion's width), stage px */
+const ALLY_SLOT_W = 320;
+
+/** Whether a unit's moves summon (an enemy side that can grow keeps room for its crowd from the start). */
+const summonsCache = new Map<string, boolean>();
+function summons(db: CombatDb, defId: string): boolean {
+  let v = summonsCache.get(defId);
+  if (v === undefined) {
+    v = JSON.stringify(db.units[defId] ?? {}).includes('"op":"summon"');
+    summonsCache.set(defId, v);
+  }
+  return v;
+}
+
+/** The size each side's line was given in this fight (keyed by the fight's figure session): kept, only ever lowered. */
+const keptScales = new WeakMap<object, Record<string, number>>();
+function keptScale(session: object, side: string, now: number): number {
+  const kept = keptScales.get(session) ?? {};
+  const v = Math.min(kept[side] ?? 1, now);
+  kept[side] = v;
+  keptScales.set(session, kept);
+  return v;
+}
+
 const MAX_FIGURE_W = 300;
 /** a wide screen lets a long creature be long (Robert, 2026-11-12: a centipede truck was drawn tiny by the 300 px cap) */
 const MAX_FIGURE_W_WIDE = 600;
@@ -340,20 +366,46 @@ function specsFrom(
               bosses.length ? Math.max(P.foeNear + 200, escortEdge) : P.foeFar,
             )
         : selectionFormation(line, P.allyNear, P.allyFar)
-      : // (a wide screen: every figure keeps its size all fight, a crowd stands in ranks; a phone held sideways still shrinks to fit)
-        (mode === 'wide' ? fixedFormation : selectionFormation)(
-          line,
-          ds === 'b' ? FOE_NEAR : ALLY_NEAR,
-          ds === 'b'
-            ? pvp
-              ? FOE_FAR_PVP
-              : bosses.length
-                ? Math.max(FOE_NEAR + 200, escortEdge)
-                : FOE_FAR
-            : mode === 'compact'
-              ? COMPACT.allyFar
-              : ALLY_FAR,
-        );
+      : mode === 'wide'
+        ? (() => {
+            // (a wide screen, Robert 2026-11-12: one size for the whole fight and one row, never a rank behind. The side's size is
+            // set by the biggest crowd it can reach: an enemy side that summons may reach MAX_ENEMIES, a hero's side fills its
+            // companion slots; it is kept, in the fight's figure session, and only ever lowered if a bigger crowd than that comes)
+            // (a Warden's escort also starts a little nearer the middle: Drago's wings leave it little room)
+            const near = ds === 'b' ? (bosses.length && !pvp ? FOE_NEAR - 230 : FOE_NEAR) : ALLY_NEAR;
+            const far =
+              ds === 'b'
+                ? pvp
+                  ? FOE_FAR_PVP
+                  : bosses.length
+                    ? // (a Warden's escort may stand in front of the Warden's near half, short of its name under its feet)
+                      Math.max(FOE_NEAR + 200, bossX - 230)
+                    : FOE_FAR
+                : ALLY_FAR;
+            const widths = line.map((e) => e.fw);
+            const widest = Math.max(ALLY_SLOT_W, ...widths);
+            const reserve: number[] = units.some((u) => u.kind === 'hero')
+              ? Array.from(
+                  { length: Math.max(0, MAX_ALLIES - line.reduce((n, e) => n + (db.units[e.u.def]?.slots ?? 1), 0)) },
+                  () => ALLY_SLOT_W,
+                )
+              : line.some((e) => summons(db, e.u.def)) || bosses.some((e) => summons(db, e.u.def))
+                ? Array.from({ length: Math.max(0, MAX_ENEMIES - bosses.length - line.length) }, () => widest)
+                : [];
+            const scale = keptScale(figures, ds, rowScale(widths, reserve, Math.abs(far - near)));
+            return fixedFormation(line, near, far, scale);
+          })()
+        : selectionFormation(
+            line,
+            ds === 'b' ? FOE_NEAR : ALLY_NEAR,
+            ds === 'b'
+              ? pvp
+                ? FOE_FAR_PVP
+                : bosses.length
+                  ? Math.max(FOE_NEAR + 200, escortEdge)
+                  : FOE_FAR
+              : COMPACT.allyFar,
+          );
     let n = 0;
     const foeRows = Math.max(0, ...fit.rows) + 1;
     // (your companions need the floor under the enemies' front row: see portraitCrowd)
@@ -2146,16 +2198,20 @@ export function FightView(props: {
   const sc = sceneObj;
   if (view && sc) {
     for (const side of ['a', 'b'] as const) {
+      // (a Warden's flying escort keeps its plate on the floor line with the rest of the escort: hung from the flyer it met the
+      // Warden's own plate, as Drago's Rift Shards did; Robert 2026-11-12)
+      const warded = view.sides[side].units.some((x) => x.kind !== 'hero' && isWardenFigure(x.def));
       for (const u of view.sides[side].units) {
         const home = sc.fighters.home(u.id);
         if (!home) continue;
         const p = sc.stageToHost(home.x, home.y);
+        const lift = warded && !isWardenFigure(u.def) && mode === 'wide' ? 0 : home.hover;
         // a flyer's plate and intent hang from the flyer itself, not from the floor under it
         placed.push({
           unit: u,
           x: p.x,
-          y: p.y - home.hover * p.k,
-          h: (home.h - home.hover) * p.k,
+          y: p.y - lift * p.k,
+          h: (home.h - lift) * p.k,
           w: home.w * p.k,
         });
       }

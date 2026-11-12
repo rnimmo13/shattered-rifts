@@ -1,12 +1,22 @@
 // Campaign growth and bounded phase pressure (DECISIONS #576).
 
 import { describe, expect, it } from 'vitest';
-import { availableNodes, duelPlan, enterNode, ghostBossHp, newRun } from './run';
+import {
+  ELITE_DAMAGE,
+  ELITE_HP,
+  WARDEN_DAMAGE,
+  WARDEN_HP,
+  availableNodes,
+  duelPlan,
+  enterNode,
+  ghostBossHp,
+  newRun,
+} from './run';
 import { omenEffects } from './omens';
 import { enemyScale } from './tierTable';
 import type { NodeKind, RunState } from './types';
 import { applyAction, createCombat, heroOf } from '@sr/combat';
-import { COMBAT_DB, RIFTWALKERS } from '@sr/content/v2';
+import { COMBAT_DB, ENCOUNTERS, RIFTWALKERS } from '@sr/content/v2';
 
 const planAt = (tier: number, kind: NodeKind) => {
   const run: RunState = { ...newRun('knight', 'harden'), tier, phase: 'map', context: null };
@@ -17,16 +27,33 @@ const planAt = (tier: number, kind: NodeKind) => {
 };
 
 describe('linear campaign growth', () => {
-  it('applies the shared curve with the explicit Elite premium across all tiers', () => {
+  it('applies the shared curve with the Elite and Warden premiums across all tiers', () => {
+    const hp = { duel: 1, elite: ELITE_HP, warden: WARDEN_HP };
+    const dmg = { duel: 1, elite: ELITE_DAMAGE, warden: WARDEN_DAMAGE };
     for (let tier = 1; tier <= 20; tier++) {
       for (const kind of ['duel', 'elite', 'warden'] as const) {
         const plan = planAt(tier, kind);
-        expect(plan.hpPct).toBe(Math.round(enemyScale(tier, 1).hp * (kind === 'elite' ? 1.25 : 1)));
-        expect(plan.dmgPct).toBe(
-          Math.round(enemyScale(tier, 1).dmg * (kind === 'elite' ? 1.08 : 1)),
-        );
+        expect(plan.hpPct).toBe(Math.round(enemyScale(tier, 1).hp * hp[kind]));
+        expect(plan.dmgPct).toBe(Math.round(enemyScale(tier, 1).dmg * dmg[kind]));
       }
     }
+  });
+
+  it('an Elite is stronger than a common fight and a Warden stronger than any Elite (#763)', () => {
+    // (damage for the tier: common < Elite < Warden)
+    expect(ELITE_DAMAGE).toBeGreaterThan(1);
+    expect(WARDEN_DAMAGE).toBeGreaterThan(ELITE_DAMAGE);
+    expect(ELITE_HP).toBeGreaterThan(1);
+    // (HP: the written HP of the formation times its premium; any encounter can be promoted to an Elite, so all of them are counted)
+    const written = (units: readonly string[]): number =>
+      units.reduce((sum, id) => sum + (COMBAT_DB.units[id]?.maxHp ?? 0), 0);
+    const elites = ENCOUNTERS.filter((e) => e.kind === 'regular' || e.kind === 'elite');
+    const wardens = ENCOUNTERS.filter((e) => e.kind === 'warden' || e.kind === 'finale');
+    expect(elites.length).toBeGreaterThan(0);
+    expect(wardens.length).toBeGreaterThan(0);
+    const biggestElite = Math.max(...elites.map((e) => written(e.units))) * ELITE_HP;
+    const smallestWarden = Math.min(...wardens.map((e) => written(e.units))) * WARDEN_HP;
+    expect(smallestWarden).toBeGreaterThan(biggestElite);
   });
 
   it('bounds opening penalties and damage growth from Omens through Tier XX', () => {
@@ -98,7 +125,8 @@ describe('linear campaign growth', () => {
     state.sides.a.reserves = 0;
     state.sides.b.units[0]!.intent = { move: 'bell2', target: hero.id };
     const result = applyAction(COMBAT_DB, state, { type: 'endTurn' });
-    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(63);
+    // (63 before DECISIONS #763: steeper tiers, and a Warden's own 15% damage premium)
+    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(105);
   });
 });
 describe('campaign ghost scaling', () => {

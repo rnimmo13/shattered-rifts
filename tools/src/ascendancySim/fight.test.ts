@@ -18,18 +18,18 @@ const deck: Deck = {
     'overcharge+',
   ],
 };
-it('uses Arena HP and distinguishes censored results from real outcomes reproducibly', () => {
+it('uses Arena HP (1200, #767; 1000 before) and distinguishes censored results from real outcomes reproducibly', () => {
   const j = { id: 0, mode: 'arena' as const, a: deck, b: deck, seed: 'harness-repeat', budget: 30 };
   const a = fight(j),
     b = fight(j);
-  expect(a.maxHp).toEqual({ a: 1000, b: 1000 });
+  expect(a.maxHp).toEqual({ a: 1200, b: 1200 });
   expect(a.censored).toBe(a.winner === null);
   expect({ ...a, ms: 0 }).toEqual({ ...b, ms: 0 });
   expect(a.turns.a).toBeGreaterThan(0);
 });
 it('uses the actual Tier XX Normal Valerion plan and campaign Boon HP', () => {
   const r = fight({ id: 1, mode: 'boss', a: deck, seed: 'harness-boss', budget: 30 });
-  expect(r.maxHp).toEqual({ a: 88, b: 2580 }); // 300 base HP × current 860% Tier XX.
+  expect(r.maxHp).toEqual({ a: 88, b: 3798 }); // 300 base HP × current 1055% Tier XX × a Warden’s 1.2 (#763).
   expect(r.tier).toBe(20);
   expect(r.bossFraction).toBeGreaterThanOrEqual(0);
   expect(r.bossFraction).toBeLessThanOrEqual(1);
@@ -60,6 +60,6 @@ it('loads historical boss definitions with the current Campaign scaling', () => 
       ),
     ),
   });
-  expect(r.maxHp).toEqual({ a: 88, b: 3096 }); // Archived 360 base HP × current 860%.
+  expect(r.maxHp).toEqual({ a: 88, b: 4558 }); // Archived 360 base HP × current 1055% × a Warden’s 1.2 (#763).
   expect(COMBAT_DB.units.vorthax!.maxHp).toBe(300);
 });

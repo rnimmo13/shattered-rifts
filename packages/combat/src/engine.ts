@@ -52,6 +52,7 @@ import {
   MASTERY_MAX,
   DEFENSIVE_TAG,
   STRIKING_TAG,
+  RADIANT_DAMAGE,
   RADIANT_ENTER_MANA,
   MANY_HITS,
   TICK_FULL,
@@ -120,6 +121,8 @@ interface Run {
   fed?: { inst: string; hp: number };
   /** (Raise Colossus) the Colossus standing the player chose to grow with this card instead of making way for another (#700) */
   grow?: { inst: string; unit: string };
+  /** the companions are acting again this turn, not for the first extra time: their hits deal half (DECISIONS #762) */
+  actHalf?: boolean;
 }
 interface ProjectedHit {
   limited?: boolean;
@@ -380,8 +383,8 @@ function addStatus(r: Run, u: Unit, st: StatusId, amount: number, sourceSide?: S
   r.ev.push({ type: 'status', target: u.id, status: st, amount, total: Math.max(0, total) });
   // a hero whose trait shares Might: their companions gain (or lose) their share of it, rounded down (DECISIONS #285, #298)
   // (the change in the share, so a hero going 1 -> 2 at half passes on 1; a loss never takes more than a companion has)
-  const share = u.kind === 'hero' && st === 'might' ? (traitOf(r, u.side)?.shareMight ?? 0) : 0;
-  const delta = Math.floor(Math.max(0, total) * share) - Math.floor(was * share);
+  const sharing = u.kind === 'hero' && st === 'might' ? traitOf(r, u.side) : undefined;
+  const delta = sharedMight(sharing, total) - sharedMight(sharing, was);
   if (delta !== 0)
     for (const x of r.s.sides[u.side].units)
       if (x.kind === 'ally' && x.hp > 0 && (delta > 0 || stacks(x, 'might') > 0))
@@ -457,7 +460,7 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
 
 /**
  * attack damage after the attacker's Might / Faltering / stance and the target's Wrath / Exposed
- * (Radiant triples, Wrath doubles what you deal; Wrath makes you take 50% more).
+ * (Radiant and Wrath double what you deal; Wrath makes you take 50% more).
  * `attack` false: damage that is no attack (an Aura, a totem, a Trap, a potion, a Skill) is the number printed, as every one of those
  * statuses says "attacks" (DECISIONS #376); only the difficulty's damage percent still applies.
  */
@@ -499,8 +502,8 @@ export function modifiedDamage(
     note(`Faltering −${deb ? 50 : 25}%`);
   }
   if (attacker && stacks(attacker, 'radiant') > 0) {
-    n *= 3;
-    note('Radiant ×3');
+    n *= RADIANT_DAMAGE;
+    note(`Radiant ×${RADIANT_DAMAGE}`);
   } else if (attacker && stacks(attacker, 'wrath') > 0) {
     n *= 2;
     note('Fury ×2');
@@ -586,6 +589,18 @@ function scaleWord(def: CardDef, by: string | undefined): string {
 function traitOf(r: Run, side: Side): HeroTrait | undefined {
   const sd = r.s.sides[side];
   return heroDefOf(r.db, sd)?.trait;
+}
+
+/** The Might a hero's companions hold from the hero's own (rounded down). With `shareMightFull`, the hero's Might past that counts
+ * half: every point is carried by every companion hit, so a full share of a tall stack ran away (DECISIONS #762). */
+function sharedMight(tr: HeroTrait | undefined, might: number): number {
+  const share = tr?.shareMight ?? 0;
+  if (share <= 0 || might <= 0) return 0;
+  const full = tr?.shareMightFull;
+  const counted =
+    full !== undefined && might > full ? full + Math.floor((might - full) / 2) : might;
+  const shared = Math.floor(counted * share);
+  return tr?.shareMightMax !== undefined ? Math.min(tr.shareMightMax, shared) : shared;
 }
 
 /** An innate trait that depends on HP (Clutch Genes): keep the hero's `clutch` status at their missing HP (or the percent of their max
@@ -2134,6 +2149,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       const marrow = a.actor.kind === 'ally' && lead ? stacks(lead, 'marrow') : 0;
       // (the Foreman: companions' attacks by a percentage, DECISIONS #542)
       const allyPct = a.actor.kind === 'ally' ? 1 + (side.allyPct ?? 0) / 100 : 1;
+      const again = a.actor.kind === 'ally' && r.actHalf ? 0.5 : 1;
+      // (Might and Sapped go onto the hit afterwards, so the whole hit is halved here with them counted, then they are taken back off)
+      const againNet = again < 1 ? stacks(a.actor, 'might') - stacks(a.actor, 'sapped') : 0;
+      const halved = (v: number): number =>
+        again < 1 ? Math.round(Math.max(0, v + againNet) / 2) - againNet : v;
       const isAttack = a.card?.kind === 'attack';
       const leth =
         isAttack && lead && side.attacksPlayed === 0 ? 1 + stacks(lead, 'lethality') / 100 : 1;
@@ -2235,7 +2255,8 @@ function execOp(r: Run, a: Act, op: Op): void {
             r,
             a,
             t,
-            Math.round(
+            halved(
+              Math.round(
               (scaledAmount +
                 edge +
                 honed +
@@ -2254,6 +2275,7 @@ function execOp(r: Run, a: Act, op: Op): void {
                 noose *
                 fin *
                 allyPct,
+              ),
             ),
             to === 'target' || to === 'front',
             steps,
@@ -2264,8 +2286,9 @@ function execOp(r: Run, a: Act, op: Op): void {
             side.swordFoes.push(t.id);
           if (op.hitFracture && t.side !== a.actor.side && a.struck.get(t.id))
             cracked = fractureUnit(r, a, side, t, op.hitFracture) || cracked;
+          // (half the HP taken, rounded up, since DECISIONS #762: all of it doubled every Attack and Command for the kill)
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
-            addStatus(r, t, 'doom', lostHere, a.actor.side);
+            addStatus(r, t, 'doom', Math.ceil(lostHere / 2), a.actor.side);
           // Sic 'Em: a companion that hits its quarry raises another like it
           const quarry = stacks(t, 'quarry');
           if (a.actor.kind === 'ally' && quarry > 0 && t.side !== a.actor.side && !r.s.winner)
@@ -2401,7 +2424,8 @@ function execOp(r: Run, a: Act, op: Op): void {
         if (share > 0 && t.kind === 'hero') {
           const was = stacks(t, 'might');
           addStatus(r, t, 'might', n);
-          passed = Math.floor(stacks(t, 'might') * share) - Math.floor(was * share);
+          const tr = traitOf(r, side.id);
+          passed = sharedMight(tr, stacks(t, 'might')) - sharedMight(tr, was);
           if (op.temp && n > 0) side.temps.push({ unit: t.id, status: 'might', amount: n });
           continue;
         }
@@ -2531,9 +2555,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       }
       // (a hero who shares Might: the new companion arrives with it)
       const lead = heroOf(side);
-      const given = lead
-        ? Math.floor(stacks(lead, 'might') * (traitOf(r, side.id)?.shareMight ?? 0))
-        : 0;
+      const given = lead ? sharedMight(traitOf(r, side.id), stacks(lead, 'might')) : 0;
       if (u && given > 0) addStatus(r, u, 'might', given);
       // Salvage: the first companion this card builds takes what the scrapped ones left behind
       const salv = r.salvage;
@@ -2575,7 +2597,23 @@ function execOp(r: Run, a: Act, op: Op): void {
     }
     case 'actAllies':
       if (a.actor.kind === 'ally') return; // an ally cannot make everyone act again
-      for (const u of [...side.units]) if (u.kind === 'ally' && u.hp > 0) actAlly(r, u);
+      {
+        // (DECISIONS #762) acting again: the first time each turn in full, every time after that for half damage (as extra Bleed
+        // ticks are halved): each extra action multiplied everything the companions had been given
+        // (only an action somebody takes is counted: Bone Thralls have none of their own)
+        const actors = side.units.filter((u) => {
+          if (u.kind !== 'ally' || u.hp <= 0) return false;
+          const brain = def(r, u.def).brain;
+          return brain.kind === 'ally' && brain.act.length > 0;
+        });
+        if (actors.length === 0) return;
+        const before = side.extraActs ?? 0;
+        side.extraActs = before + 1;
+        const was = r.actHalf === true;
+        r.actHalf = before >= 1;
+        for (const u of actors) if (u.hp > 0) actAlly(r, u);
+        r.actHalf = was;
+      }
       return;
     case 'prevent':
       if (a.hit) a.hit.prevented = true;
@@ -3064,7 +3102,13 @@ function execOp(r: Run, a: Act, op: Op): void {
       const aim = op.aim === 'target' ? a.target : null;
       // Snapshot eligible cards in pile order, optionally capped; returned cards are not selected again.
       if (op.all && op.from === 'exhaust') {
-        const all = side.exhausted.filter((c) => fitsFree(r, op, c)).slice(0, op.limit);
+        const fitting = side.exhausted.filter((c) => fitsFree(r, op, c));
+        // (DECISIONS #762) past `halfPast` cards, only every second one is played
+        const count =
+          op.halfPast !== undefined && fitting.length > op.halfPast
+            ? op.halfPast + Math.floor((fitting.length - op.halfPast) / 2)
+            : fitting.length;
+        const all = fitting.slice(0, Math.min(count, op.limit ?? count));
         for (const inst of all) {
           if (r.s.winner) break;
           if (!side.exhausted.includes(inst)) continue;
@@ -3810,9 +3854,7 @@ function raiseAlly(
     // (the summon event carries only the def: the screen learns its real HP from this)
     r.ev.push({ type: 'heal', target: u.id, amount: 0, hp: u.hp, maxHp: u.maxHp });
     const lead = heroOf(sd);
-    const given = lead
-      ? Math.floor(stacks(lead, 'might') * (traitOf(r, sd.id)?.shareMight ?? 0))
-      : 0;
+    const given = lead ? sharedMight(traitOf(r, sd.id), stacks(lead, 'might')) : 0;
     if (given > 0) addStatus(r, u, 'might', given);
     fireSnare(r, other(sd.id), { on: 'foeSummons', summoned: u });
     if (actor.kind === 'hero') fireTriggers(r, sd, 'summon');
@@ -4960,6 +5002,14 @@ function beginHeroTurn(r: Run, side: Side): void {
   r.s.active = side;
   r.s.turn++;
   sd.turnBegan = r.s.turn;
+  // (DECISIONS #762) a hero who has no stances of their own (a Rift-crossed Swift Step) leaves Fury or Serene as their next turn
+  // begins: with no way out, one card doubled every Attack for the rest of the fight. It lasts through the enemy's turn, so Fury's
+  // 50% more damage taken is still paid.
+  {
+    const lead = heroOf(sd);
+    if (lead && !traitOf(r, side)?.stances && STANCES.some((x) => stacks(lead, x) > 0))
+      enterStance(r, lead, 'none');
+  }
   if (sd.discipline) {
     sd.discipline.roundGain = 0;
     if (sd.discipline.rule.kind === 'reserves') sd.discipline.progress = 0;
@@ -4985,6 +5035,7 @@ function beginHeroTurn(r: Run, side: Side): void {
   if (r.s.winner) return;
   sd.played = 0;
   sd.attacksPlayed = 0;
+  delete sd.extraActs;
   sd.paidAttacksTurn = 0;
   sd.skillsPlayed = 0;
   if (sd.totems) {
@@ -5608,7 +5659,9 @@ export function costOf(
   if (hero && stacks(hero, 'freeplay') > (sd.played ?? 0)) return 0;
   // (the Necrobinder copy) Veilpiercer: the next Fleeting card is free; Flatten: free once a companion has struck
   if (hero && stacks(hero, 'freeethereal') > 0 && isEthereal(cd, c)) return 0;
-  if (cd.freeIf && sideCount(sd, cd.freeIf.by) >= cd.freeIf.atLeast) return 0;
+  // (free: the card's own cost is waived, but a cost added to this copy, such as a Replay mark's, is still paid: DECISIONS #762)
+  if (cd.freeIf && sideCount(sd, cd.freeIf.by) >= cd.freeIf.atLeast)
+    return Math.max(0, (c.costUp ?? 0) - (c.costDown ?? 0));
   if (cd.kind === 'power' && hero && stacks(hero, 'freepower') > 0) return 0;
   return Math.max(
     0,
@@ -6865,7 +6918,13 @@ export function previewCardDamage(
       const sim = clone(after);
       const simSide = sim.sides[sd.id];
       const simHero = heroOf(simSide);
-      const piled = sd.exhausted.filter((c) => fitsFree(r, op, c)).slice(0, op.limit);
+      const fits = sd.exhausted.filter((c) => fitsFree(r, op, c));
+      // (the same count the play uses, DECISIONS #762)
+      const shownCount =
+        op.halfPast !== undefined && fits.length > op.halfPast
+          ? op.halfPast + Math.floor((fits.length - op.halfPast) / 2)
+          : fits.length;
+      const piled = fits.slice(0, Math.min(shownCount, op.limit ?? shownCount));
       let lo = 0;
       let hi = 0;
       let each = false;

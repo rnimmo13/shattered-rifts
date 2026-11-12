@@ -24,7 +24,7 @@ export type StatusId =
   | 'resonance' // runes: +1 to the damage/Barrier of every rune effect per stack (permanent)
   | 'calm' // stance: leaving it grants Mana
   | 'wrath' // stance: you deal double attack damage and take 50% more
-  | 'radiant' // stance: you deal triple attack damage; it ends with your turn
+  | 'radiant' // stance: you deal double attack damage (triple until #764); it ends with your turn
   | 'mantra' // builds towards Radiant: at MANTRA_GOAL you enter it
   | 'edge' // +1 damage per stack to the first EDGE_LIMIT (4) attacks tagged "knife" you play each turn (permanent; #692)
   | 'bracing' // +1 Barrier from every Barrier you gain, per stack (permanent)
@@ -267,6 +267,8 @@ export const ORBIT_STEP = 4;
  * DECISIONS #413), and on entering Radiant (the engine). */
 export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 1;
+/** What Radiant multiplies attack damage by (3 until DECISIONS #764: a Sunwalker reaches it every turn from turn 3). */
+export const RADIANT_DAMAGE = 2;
 /** A hero's card that hits this many times or more carries half the Might and Primed on each hit, as an X card does (#711, #726). */
 export const MANY_HITS = 3;
 /** A Bleed or Burn tick deals the stack in full up to this much, and half of what is past it (#726). */
@@ -595,7 +597,8 @@ export type CombatDiscipline =
   | { kind: 'volley'; tag: string; perCard: number; cap: number }
   /** the hero's card damage (Attacks and spells, not totems) +perSpirit% for each Spirit, up to cap% */
   | { kind: 'attunement'; perSpirit: number; cap: number }
-  | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number }
+  /** `grow`: what each element's bonus gains every time it triggers (1 when left out; DECISIONS #766) */
+  | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number; grow?: number }
   | { kind: 'fury'; perEntry: number; cap: number; barrier: number; perExit: number }
   | { kind: 'radiance'; first: number; step: number; cap: number }
   | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
@@ -882,6 +885,8 @@ export type Op =
       all?: boolean;
       /** Maximum fitting cards taken by an all-pile play, in existing pile order. */
       limit?: number;
+      /** an all-pile play: past this many fitting cards, only every second one is played (DECISIONS #762) */
+      halfPast?: number;
       aim?: 'target';
       upgrade?: boolean;
       /** each card taken is played this many times */
@@ -1236,6 +1241,12 @@ export interface HeroTrait {
   };
   /** the share of the hero's Might their companions hold (rounded down): 1 shares it all, 0.5 half; a new companion arrives with it */
   shareMight?: number;
+  /** with `shareMight`: the hero's Might past this counts half towards the share (DECISIONS #762) */
+  shareMightFull?: number;
+  /** with `shareMight`: the most Might the companions ever hold from the share (DECISIONS #767) */
+  shareMightMax?: number;
+  /** this hero keeps a stance from turn to turn (the Monk); any other hero leaves Fury or Serene as their next turn begins (DECISIONS #762) */
+  stances?: boolean;
   /** HP healed after every fight the hero wins (in a run) */
   healAfterFight?: number;
   /**
@@ -1635,6 +1646,8 @@ export interface SideState {
   /** counters for this turn, reset when it starts */
   played: number;
   attacksPlayed: number;
+  /** (#762) times a card or Aura has made the companions act again this turn: every time after the first deals half damage */
+  extraActs?: number;
   /** (#692) Attacks this turn that cost 1 or more Mana when played */
   paidAttacksTurn?: number;
   skillsPlayed: number;

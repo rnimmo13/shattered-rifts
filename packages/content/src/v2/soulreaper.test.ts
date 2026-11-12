@@ -66,12 +66,12 @@ const reaps = (r: ReturnType<typeof applyAction>, side: Side = 'a') =>
   r.events.filter((e) => e.type === 'damage' && e.source === hero(r.state, side).id);
 
 describe('Soulreaper: Harvest of Souls', () => {
-  it('grants three Barrier for a real Consume and one six-damage Reap at end turn', () => {
+  it('grants three Barrier for a real Consume and one seven-damage Reap at end turn (#766; six before)', () => {
     const s = consume(create());
     expect(hero(s).barrier).toBe(3);
     expect(s.sides.a.discipline?.progress).toBe(1);
     const r = end(s);
-    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 6 })]);
+    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 7 })]);
   });
   it('counts Gravesouls, without changing their draw or Mana cost', () => {
     const s = create();
@@ -97,7 +97,7 @@ describe('Soulreaper: Harvest of Souls', () => {
     const reapAt = r.events.findIndex((e) => e.type === 'damage' && e.source === hero(s).id);
     expect(reapAt).toBeGreaterThan(consumeAt);
     expect(reaps(r)).toEqual([
-      expect.objectContaining({ amount: 6, target: s.sides.b.units[1]!.id }),
+      expect.objectContaining({ amount: 7, target: s.sides.b.units[1]!.id }),
     ]);
   });
   it('does not count played Fleeting, held Fleeting, discards, or routine Aura removal', () => {
@@ -119,21 +119,21 @@ describe('Soulreaper: Harvest of Souls', () => {
     let s = create();
     for (let i = 0; i < 3; i++) s = consume(s);
     let r = end(s);
-    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 10 })]);
+    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 13 })]);
     s = r.state;
     s.sides.a.hand = [];
     r = end(s);
     expect(reaps(r)).toHaveLength(0);
     expect(r.state.sides.a.discipline?.progress).toBe(3);
     r = end(consume(r.state));
-    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 12 })]);
+    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 16 })]);
   });
-  it('matches the approved three-consumption-per-turn examples at turns four and eight', () => {
+  it('grows by 9 a turn at three consumptions a turn, through turn eight (#766; 6 a turn before)', () => {
     let s = create();
     for (let turn = 1; turn <= 8; turn++) {
       for (let i = 0; i < 3; i++) s = consume(s);
       const r = end(s);
-      expect(reaps(r)).toEqual([expect.objectContaining({ amount: 4 + 6 * turn })]);
+      expect(reaps(r)).toEqual([expect.objectContaining({ amount: 4 + 9 * turn })]);
       expect(r.state.sides.a.discipline?.progress).toBe(3 * turn);
       s = r.state;
     }
@@ -150,7 +150,7 @@ describe('Soulreaper: Harvest of Souls', () => {
     target.statuses.thorns = 100;
     const hp = hero(s).hp;
     const r = end(s);
-    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 6, blocked: 4, lost: 2 })]);
+    expect(reaps(r)).toEqual([expect.objectContaining({ amount: 7, blocked: 4, lost: 3 })]);
     expect(hero(r.state).hp).toBe(hp);
   });
   it('uses first board order on tied HP and does not spill excess damage to another enemy', () => {
@@ -162,7 +162,7 @@ describe('Soulreaper: Harvest of Souls', () => {
     const first = s.sides.b.units[0]!.id,
       second = s.sides.b.units[1]!.id;
     const r = end(s);
-    expect(reaps(r)).toEqual([expect.objectContaining({ target: first, amount: 6, lost: 2 })]);
+    expect(reaps(r)).toEqual([expect.objectContaining({ target: first, amount: 7, lost: 2 })]);
     expect(r.state.sides.b.units.find((u) => u.id === second)?.hp).toBe(2);
   });
   it('can win before the enemy phase and resets progress in a new fight', () => {
@@ -178,7 +178,7 @@ describe('Soulreaper: Harvest of Souls', () => {
     const s = consume(consume(create()));
     const restored = JSON.parse(JSON.stringify(s)) as CombatState;
     expect(end(s)).toEqual(end(restored));
-    expect(viewFor(db, s, 'a').sides.a.disciplineLabel).toContain('Reap 8 ready');
+    expect(viewFor(db, s, 'a').sides.a.disciplineLabel).toContain('Reap 10 ready');
   });
   it('works independently for both Arena seats', () => {
     let s = createCombat(db, {

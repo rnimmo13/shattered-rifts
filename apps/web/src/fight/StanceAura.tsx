@@ -1,5 +1,5 @@
 // The stance a Riftwalker is in, made impossible to miss: a coloured aura around the character and a banner above them naming it.
-// Radiant (a triple-damage stance for the turn) also burns with golden rays and rising sparks. Pure presentation: it reads the hero's
+// Radiant (a double-damage stance for the turn) also burns with golden rays and rising sparks. Pure presentation: it reads the hero's
 // statuses and draws; the rules live in the engine.
 
 import { STATUS_ICONS } from '../art/gameIcons';
@@ -20,7 +20,7 @@ function stanceOf(u: Pick<UnitView, 'statuses'>): Stance | null {
 const LINE: Record<Stance, string> = {
   wrath: 'Deal double damage, take 50% more',
   calm: 'Leave it to gain 2 Mana',
-  radiant: 'Deal triple damage this turn',
+  radiant: 'Deal double damage this turn',
 };
 
 /** The stance as a small chip, for sitting inside another label (a player's name tag in PvP) instead of floating over it. */

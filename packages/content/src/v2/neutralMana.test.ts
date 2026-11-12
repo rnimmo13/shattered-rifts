@@ -7,8 +7,8 @@ import { COMBAT_DB as db, canonicalCard } from './index';
 
 const text = (id: string): string => cardText(db, db.cards[id]!);
 const CASES: [id: string, rarity: string, cost: number, text: string, upCost: number, upText: string][] = [
-  ['rift-surge', 'common', 1, 'Gain 2 Mana. Consume.', 1, 'Gain 2 Mana. Consume. Hold.'],
-  ['nerve-surge', 'uncommon', 0, 'Draw 1 card. Gain 1 Mana. Consume.', 0, 'Draw 2 cards. Gain 1 Mana. Consume.'],
+  ['rift-surge', 'uncommon', 1, 'Gain 2 Mana. Consume.', 1, 'Gain 2 Mana. Consume. Hold.'],
+  ['nerve-surge', 'rare', 0, 'Draw 1 card. Gain 1 Mana. Consume.', 0, 'Draw 2 cards. Gain 1 Mana. Consume.'],
   ['plan-ahead', 'common', 1, 'Next turn, gain 1 extra Mana. Next turn, draw 1 extra card.', 1, 'Next turn, gain 1 extra Mana. Next turn, draw 2 extra cards.'],
   ['fever-dream', 'uncommon', 0, 'A random card in your hand costs 2 less the next time you play it. Consume.', 0, 'A random card in your hand costs 2 less the next time you play it. Consume. Hold.'],
   ['heart-of-the-rift', 'uncommon', 2, 'At the start of your turn: Draw 1 card.', 1, 'At the start of your turn: Draw 1 card.'],

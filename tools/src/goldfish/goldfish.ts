@@ -14,7 +14,7 @@ import {
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB as db, RIFTWALKERS, type HeroId } from '@sr/content/v2';
-import { ARENA_START_HP } from '@sr/pvp';
+import { BASELINE_HP } from '@sr/pvp';
 import { readFileSync } from 'node:fs';
 
 /**
@@ -132,14 +132,14 @@ export function goldfish(j: GoldfishJob): GoldfishResult {
       hero: j.deck.hero,
       deck: j.deck.deck,
       ascendancy: j.deck.id,
-      maxHp: ARENA_START_HP,
-      hp: ARENA_START_HP,
+      maxHp: BASELINE_HP,
+      hp: BASELINE_HP,
     },
     b: {
       hero: OPPONENT,
       deck: j.sparring ? Array<string>(10).fill(STRIKE) : RIFTWALKERS[OPPONENT].starter,
-      maxHp: ARENA_START_HP,
-      hp: ARENA_START_HP,
+      maxHp: BASELINE_HP,
+      hp: BASELINE_HP,
     },
   }).state;
   const foeHp = (st: CombatState): number => heroOf(st.sides.b)?.hp ?? 0;

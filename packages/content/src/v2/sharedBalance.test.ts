@@ -155,18 +155,18 @@ describe('shared balance rules 79', () => {
     s = end(end(s));
     expect(s.sides.a.discipline?.progress).toBe(60);
   });
-  it('Soulreaper caps round growth separately from Barrier and resets next own turn', () => {
+  it('Soulreaper caps round growth (4 a round, #766; 3 before) separately from Barrier and resets next own turn', () => {
     let s = fight('necromancer', 'soulreaper');
     for (let i = 0; i < 8; i++) s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(3);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     expect(hero(s).barrier).toBe(18);
     expect(s.sides.a.exhausted).toHaveLength(8);
     s = JSON.parse(JSON.stringify(s)) as CombatState;
     s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(3);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     s = end(end(s));
     s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(4);
+    expect(s.sides.a.discipline?.progress).toBe(5);
   });
   it('Fault Lines counts a Sword/Spell only once and stops after six plays', () => {
     let s = play(fight('spellblade'), 'fault-lines');
@@ -183,11 +183,11 @@ describe('shared balance rules 79', () => {
     hero(s).barrier = 0;
     const fate = hero(s, 'b').statuses.doom ?? 0;
     s = play(s, 'hit', hero(s).id);
-    expect(s.sides.a.discipline?.progress).toBe(3);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     expect(hero(s).barrier).toBe(0);
     expect(hero(s, 'b').statuses.doom).toBeGreaterThan(fate);
     s = play(end(s), 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(4);
+    expect(s.sides.a.discipline?.progress).toBe(5);
     expect(hero(s).barrier).toBe(3);
   });
   it('spends trigger counters before nested effects can reenter the same trigger', () => {

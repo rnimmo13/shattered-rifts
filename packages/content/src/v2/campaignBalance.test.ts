@@ -318,7 +318,8 @@ describe('approved campaign balance pass', () => {
     hero(s).statuses.might = 0;
     const before = foe(s).hp;
     s = play(hand(s, ['foretold-flame']), 'foretold-flame');
-    expect(before - foe(s).hp).toBe(24);
+    // (in Radiant: double since DECISIONS #764, 24 when it tripled)
+    expect(before - foe(s).hp).toBe(16);
   });
 
   it('an enemy-turn stance change grants no Monk Might and does not spend the next own-turn reward', () => {

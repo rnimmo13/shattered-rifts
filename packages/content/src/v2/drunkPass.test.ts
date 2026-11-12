@@ -73,10 +73,10 @@ describe('the Drunkard cost pass (#695)', () => {
       expect(db.cards[`${id}+`]?.tags, id).toContain('gun');
   });
 
-  it('Brewmaster: each Fermentation makes his Attacks deal 4% more, up to 8', () => {
+  it('Brewmaster: each Fermentation makes his Attacks deal 7% more, up to 8 (#766; 4% before)', () => {
     const s = fight([], 'brewmaster');
     s.sides.a.discipline!.progress = 8;
-    expect(disciplineAttack(s, s.sides.a, hero(s), db.cards.strike!, foe(s), 0)).toBe(32);
+    expect(disciplineAttack(s, s.sides.a, hero(s), db.cards.strike!, foe(s), 0)).toBe(56);
   });
 
   it('Deathwish: twice a turn, HP its own cards cost strikes a random enemy (up to 4)', () => {

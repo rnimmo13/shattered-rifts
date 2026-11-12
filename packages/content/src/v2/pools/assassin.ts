@@ -44,6 +44,8 @@ const knifeTrap = (upgrade: boolean): Op =>
   playPile('exhaust', {
     tag: 'knife',
     all: true,
+    // (the first 20 Daggers and every second one after, DECISIONS #762: all of them had no slowdown, ~450 from one card by turn 7)
+    halfPast: 20,
     aim: 'target',
     ...(upgrade ? { upgrade } : {}),
   });

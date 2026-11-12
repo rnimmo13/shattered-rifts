@@ -36,6 +36,19 @@ const REALM_NAME: Record<string, string> = {
   beyond: 'The Far Rifts',
   all: 'All realms',
 };
+/** localStorage "sr.testEnemies" = "a,b,c": the enemies a developer's layout check stands (only ids the game knows), else null */
+function testEnemies(): string[] | null {
+  try {
+    const ids = localStorage
+      .getItem('sr.testEnemies')
+      ?.split(',')
+      .filter((id) => !!COMBAT_DB.units[id]);
+    return ids && ids.length ? ids : null;
+  } catch {
+    return null;
+  }
+}
+
 const KINDS = ['regular', 'elite', 'warden', 'finale'] as const;
 const KIND_LABEL: Record<string, string> = {
   regular: 'Fights',
@@ -258,7 +271,9 @@ export default function FightScreen() {
                 ...(boons.length ? { boons } : {}),
               },
               b: {
-                enemies: e.units,
+                // (a developer's check: localStorage "sr.testEnemies" = "vorthax,rift-ward,..." stands exactly those enemies in place
+                // of the encounter's, to see a crowd a fight only reaches later, such as Drago's court. Nothing sets it in the game.)
+                enemies: testEnemies() ?? e.units,
                 hpPct: easy && !training ? 60 : Math.round(scale.hp * (elite ? 1.25 : 1)),
                 dmgPct: easy && !training ? 55 : Math.round(scale.dmg * (elite ? 1.08 : 1)),
               },

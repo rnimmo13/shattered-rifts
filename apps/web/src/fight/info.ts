@@ -82,13 +82,13 @@ export const STATUS_INFO: Record<
     name: 'Fury',
     glyph: '♦',
     tone: 'bad',
-    text: 'A stance. You deal double attack damage and take 50% more.',
+    text: 'A stance. You deal double attack damage and take 50% more. Only the Monk keeps a stance: anyone else leaves it as their next turn begins.',
   },
   radiant: {
     name: 'Radiant',
     glyph: '☀',
     tone: 'good',
-    text: 'A stance. You deal triple attack damage. Entering it gives 1 Mana, the first time each turn. It ends when your turn ends.',
+    text: 'A stance. You deal double attack damage. Entering it gives 1 Mana, the first time each turn. It ends when your turn ends.',
   },
   mantra: {
     name: 'Fervor',
@@ -205,7 +205,7 @@ export const STATUS_INFO: Record<
     name: 'Reaping',
     glyph: '☽',
     tone: 'good',
-    text: 'Whenever your Attacks take HP off an enemy, it is cursed with that much Fate.',
+    text: 'Whenever your Attacks take HP off an enemy, it is cursed with half that much Fate.',
   },
   debilitated: {
     name: 'Debilitated',

@@ -475,10 +475,11 @@ export const HUNTER: CardDef[] = [
     'skill',
     1,
     'none',
-    [doubleSt('might', 'self', 2)],
+    // (it gains at most 8, 10 upgraded, since DECISIONS #762)
+    [doubleSt('might', 'self', 2, 8)],
     // (no cap now, Robert 2026-10-30: it doubles all the Might you have; it is still consumed. 1 Mana since #693, ~81% before, ~154%;
     // upgraded Hold and draw 1)
-    { exhaust: true, up: { retain: true, effects: [doubleSt('might', 'self', 2), draw(1)] } },
+    { exhaust: true, up: { retain: true, effects: [doubleSt('might', 'self', 2, 10), draw(1)] } },
   ),
 
   // --- Predator: Mana and draw to burn through the deck, then a burst turn (replaces Feast; DECISIONS #340) ---

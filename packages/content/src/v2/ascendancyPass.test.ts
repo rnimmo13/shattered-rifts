@@ -60,14 +60,14 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(doom('necromancer:fateweaver') - doom()).toBe(2 + 4);
   });
 
-  it('Elementalist: the first Flame card each turn adds 3 Burn, the second none', () => {
+  it('Elementalist: the first Flame card each turn adds 4 Burn, the second none (#766; 3 before)', () => {
     let s = play(
       fight('shaman', 'shaman:elementalist', ['spreading-flames', 'spreading-flames']),
       'spreading-flames',
     );
-    expect(foe(s).statuses.burn).toBe(8 + 3);
+    expect(foe(s).statuses.burn).toBe(8 + 4);
     s = play(s, 'spreading-flames');
-    expect(foe(s).statuses.burn).toBe(8 + 3 + 8);
+    expect(foe(s).statuses.burn).toBe(8 + 4 + 8);
   });
 
   it('Shatterer: every Shatter 15% more', () => {

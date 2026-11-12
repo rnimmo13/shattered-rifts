@@ -219,7 +219,8 @@ export function unitHeight(
   _maxHp?: number,
 ): number {
   if (kind === 'hero') return 520;
-  if (d?.id === 'vorthax') return 720;
+  // (640, taller than any Warden's 600: at 720 his wings filled the enemy side and left his court no room, Robert 2026-11-12)
+  if (d?.id === 'vorthax') return 640;
   if (kind === 'ally') {
     // (by what the companion is, never by its HP now, so none changes size mid-fight: Robert 2026-11-12, "i dont think its good to see
     // character sizes change in the middle of a fight", "the colussus ... should be big". A growing Thrall no longer grows, #445)

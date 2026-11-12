@@ -108,5 +108,5 @@ describe('every animated creature ships in both sets (DECISIONS #760)', () => {
         for (const c of Object.values(man.clips))
           for (const f of c.frames) expect(f[0]!).toBeLessThan(man.pages.length);
       }
-  });
+  }, 60_000); // (it reads 314 manifests: slow on a busy machine)
 });

@@ -23,12 +23,12 @@ describe('equal HP Arena and opening compensation', () => {
     expect(endsSeries('win')).toBe(false);
     expect(endsSeries('time')).toBe(false);
   });
-  it('starts every class at 1000 in either seat, ignoring campaign HP', () => {
-    expect(ARENA_START_HP).toBe(1000);
+  it('starts every class at 1200 in either seat, ignoring campaign HP (#767; 1000 before)', () => {
+    expect(ARENA_START_HP).toBe(1200);
     for (const hero of Object.keys(RIFTWALKERS)) {
       const m = new Match('baseline', entry(hero), entry(hero), 0);
       for (const side of ['a', 'b'] as const)
-        expect(heroOf(m.state.sides[side])).toMatchObject({ hp: 1000, maxHp: 1000 });
+        expect(heroOf(m.state.sides[side])).toMatchObject({ hp: 1200, maxHp: 1200 });
     }
   });
   it('adds one opening card to second seat only, then returns to normal draw', () => {

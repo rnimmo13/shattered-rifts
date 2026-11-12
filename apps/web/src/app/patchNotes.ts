@@ -46,6 +46,252 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.259.0",
+    date: "2026-11-12",
+    title: "A level field",
+    summary: "The builds that grew without limit are reined in, the ones that fell behind are brought up, the Arena starts at 1,200 HP and the Campaign is harder.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Arena: 1,200 HP",
+        text: "Both players start with 1,200 HP (was 1,000). The training dummies in the Sandbox stay at 1,000."
+      },
+      {
+        kind: "balance",
+        title: "Growth slows instead of running away",
+        text: "Cards that read a number that grows all fight now read it in full up to a point and half as much after. Nothing limits what a turn can deal.",
+        changes: [
+          {
+            label: "Obsidian Blade",
+            before: "+2 per Spell Power",
+            after: "+2 to 20 Spell Power, +1 after",
+            direction: "nerf"
+          },
+          {
+            label: "Spell Power spent",
+            before: "every point in full",
+            after: "first 20 in full, the rest half",
+            direction: "nerf"
+          },
+          {
+            label: "Gathering Storm",
+            before: "all its Gather",
+            after: "full to +12, half after, at most +24",
+            direction: "nerf"
+          },
+          {
+            label: "Old Twelve Gauge",
+            before: "all its Precision",
+            after: "full to +30, half after, at most +90",
+            direction: "nerf"
+          },
+          {
+            label: "The Trickster's 1-Mana Exposed payoff",
+            before: "+2 per Exposed",
+            after: "full to +16, half after, at most +32",
+            direction: "nerf"
+          },
+          {
+            label: "Off the Leash",
+            before: "half each companion’s HP",
+            after: "half to +15, a quarter after",
+            direction: "nerf"
+          },
+          {
+            label: "Recall the Blades",
+            before: "every consumed Dagger",
+            after: "the first 20, then every second one",
+            direction: "nerf"
+          },
+          {
+            label: "Slip the Leash",
+            before: "doubles Might",
+            after: "doubles it, +8 at most (+10 upgraded)",
+            direction: "nerf"
+          },
+          {
+            label: "Reaper’s Mantle",
+            before: "Fate equal to HP taken",
+            after: "half of it",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Companions acting again",
+        text: "When a card or Aura makes your companions act again, the first time each turn is at full damage and every time after at half. Their own action at the end of your turn is not counted."
+      },
+      {
+        kind: "balance",
+        title: "Radiant",
+        hero: "monk",
+        text: "Radiant doubles your attack damage. Its Mana and Fervor are unchanged.",
+        changes: [
+          {
+            label: "Radiant",
+            before: "triple damage",
+            after: "double damage",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "The two fastest",
+        text: "The Beastmaster’s companions share the first 6 of your Might in full and half of the rest, 14 at most. The Bonelord’s companions deal 2 more damage.",
+        changes: [
+          {
+            label: "Beastmaster",
+            before: "all your Might",
+            after: "first 6, half the rest, 14 at most",
+            direction: "nerf"
+          },
+          {
+            label: "Bonelord",
+            before: "+3 damage",
+            after: "+2 damage",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Ten Ascendancies brought up",
+        text: "Each of these had nothing that kept growing late in a fight. Now each does.",
+        changes: [
+          {
+            label: "Blademaster",
+            before: "1 Keen, +1 a turn, up to 5",
+            after: "2 Keen, +2 a turn, up to 14",
+            direction: "buff"
+          },
+          {
+            label: "Cardsharp",
+            before: "2 Might a Full Trick, up to 12",
+            after: "3 Might, up to 24",
+            direction: "buff"
+          },
+          {
+            label: "Brewmaster",
+            before: "+4% per Fermentation",
+            after: "+7% per Fermentation",
+            direction: "buff"
+          },
+          {
+            label: "Predator",
+            before: "first Exposed: draw 1",
+            after: "draw 1 and 1 Might (up to 10)",
+            direction: "buff"
+          },
+          {
+            label: "Soulreaper",
+            before: "3 Harvest a round, Reap 2 each",
+            after: "4 a round, Reap 3 each",
+            direction: "buff"
+          },
+          {
+            label: "Elementalist",
+            before: "3 Burn / 3 Barrier / 2 damage, +1 each time",
+            after: "4 / 3 / 4, +2 each time",
+            direction: "buff"
+          },
+          {
+            label: "Trapmaster",
+            before: "nothing at end of turn",
+            after: "4 damage to ALL per Trap set",
+            direction: "buff"
+          },
+          {
+            label: "Paladin",
+            before: "keeps 60% Barrier",
+            after: "also 1 Might a turn (10 turns) and a quarter of its Barrier as damage each turn",
+            direction: "buff"
+          },
+          {
+            label: "Assassin",
+            before: "15% Preparation a Skill, up to 60%",
+            after: "20%, up to 100%",
+            direction: "buff"
+          },
+          {
+            label: "Artillerist",
+            before: "3 Might for 5 turns",
+            after: "3 Might for 8 turns",
+            direction: "buff"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Mana cards are rarer",
+        text: "Rift Surge is Uncommon and Nerve Surge is Rare. Cards already in a deck stay.",
+        changes: [
+          {
+            label: "Rift Surge",
+            before: "Common",
+            after: "Uncommon",
+            direction: "nerf"
+          },
+          {
+            label: "Nerve Surge",
+            before: "Uncommon",
+            after: "Rare",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Answers to curses Hold",
+        text: "Shake It Off+, Steady Nerves+ and Purging Light+ also Hold, so an answer to curses such as Fate can wait in your hand."
+      },
+      {
+        kind: "balance",
+        title: "A harder Campaign",
+        text: "Enemies have more HP and hit harder in every Rift Tier, a little at Tier I and more with each tier. Wardens have a bonus of their own, so every Warden is stronger than every Elite.",
+        changes: [
+          {
+            label: "Tier I",
+            before: "100% HP, 93% damage",
+            after: "105% HP, 98% damage",
+            direction: "nerf"
+          },
+          {
+            label: "Tier XII",
+            before: "540% HP, 148% damage",
+            after: "655% HP, 197% damage",
+            direction: "nerf"
+          },
+          {
+            label: "Wardens",
+            before: "no bonus of their own",
+            after: "20% more HP, 15% more damage",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "changed",
+        text: "Card rewards from Elites, Wardens and the merchant are a little less often Rare and a little more often Uncommon."
+      },
+      {
+        kind: "fixed",
+        text: "Bone Crush stayed free however many Replay marks Echo of the Dead put on it. Each mark’s extra Mana is now paid."
+      },
+      {
+        kind: "fixed",
+        text: "A Riftwalker other than the Monk who played Swift Step stayed in Fury for the whole fight. Fury now ends as their next turn begins."
+      },
+      {
+        kind: "fixed",
+        title: "Nobody hides behind anybody",
+        text: "Enemies could stand stacked or hidden behind each other (a Warden’s escort, a summoner’s brood, Drago’s court). Each side now stands in one row at one size for the whole fight, with room kept for its summons. Drago is a little smaller, still the tallest of all."
+      }
+    ],
+    heads: "The rules changed: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play."
+  },
+  {
     version: "0.258.0",
     date: "2026-11-12",
     title: "Steadier figures",

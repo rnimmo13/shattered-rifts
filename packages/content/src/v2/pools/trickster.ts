@@ -186,7 +186,8 @@ export const TRICKSTER: CardDef[] = [
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
   v('common', 'unmask', 'Unmask', 'skill', 1, 'none', [status('exposed', 2, 'allFoes')]),
   v('common', 'exploit-weakness', 'Exploit Weakness', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('exposed', 2, 'target')),
+    // (a ceiling like Coup de Grace's and Culling's, DECISIONS #762: Exposed has no stack limit)
+    scaled(dmg(5), { ...per('exposed', 2, 'target'), half: 16, max: 32 }),
   ]),
   v(
     'common',

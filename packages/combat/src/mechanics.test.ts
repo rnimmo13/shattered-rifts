@@ -868,7 +868,7 @@ describe('stances', () => {
     expect(s.sides.a.mana).toBe(6 - 2 + 2);
   });
 
-  it('Mantra builds to Radiant: triple damage, Mana on entry, gone at end of turn', () => {
+  it('Mantra builds to Radiant: double damage (#764), Mana on entry, gone at end of turn', () => {
     let s = start(['chant', 'chant', 'chant', 'chant', 'strike'], { mana: 6 });
     s = play(s, 'h0').state;
     expect(hero(s).statuses.mantra).toBe(3);
@@ -882,7 +882,7 @@ describe('stances', () => {
     expect(s.sides.a.mana).toBe(6 - 4 + RADIANT_ENTER_MANA);
     const hp = foe(s).hp;
     s = play(s, 'h4', foe(s).id).state;
-    expect(hp - foe(s).hp).toBe(18);
+    expect(hp - foe(s).hp).toBe(12);
     s = end(s).state;
     expect(hero(s).statuses.radiant).toBeUndefined();
   });

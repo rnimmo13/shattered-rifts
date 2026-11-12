@@ -156,7 +156,8 @@ export function crossedOffers(
 export const CARD_ODDS: Record<OfferQuality, Record<string, number>> = {
   // (no Legendary cards for now, DECISIONS #363: their 1% and 3% went to Rare; put them back when Legendary does)
   duel: { common: 55, uncommon: 35, rare: 10, legendary: 0 },
-  elite: { common: 35, uncommon: 42, rare: 23, legendary: 0 },
+  // (Rare 20 and Uncommon 45 since DECISIONS #763, 23 and 42 before: most late fights are Elites, so a finished deck came too easily)
+  elite: { common: 35, uncommon: 45, rare: 20, legendary: 0 },
 };
 
 function rollRarity(rng: RngState, quality: OfferQuality): string {

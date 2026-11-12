@@ -210,6 +210,8 @@ export function UnitPlates({
             )}
             <div
               data-unit={u.id}
+              // (a plate dropped a line to clear its neighbours: a layout check looks for it)
+              data-dropped={slot.dy > 0 ? 'true' : undefined}
               onClick={() => {
                 if (targetable.has(u.id)) onTarget?.(u.id);
               }}

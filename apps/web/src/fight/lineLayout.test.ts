@@ -4,6 +4,7 @@ import {
   centredLine,
   fixedFormation,
   packLine,
+  rowScale,
   stableFormation,
   selectionFormation,
   TUCK,
@@ -157,33 +158,42 @@ describe('centredLine (the upright layout, DECISIONS #443)', () => {
   });
 });
 
-describe('a wide screen keeps every figure its own size (Robert, 2026-11-12)', () => {
+describe('a wide screen: one size all fight, one row, nobody hidden (Robert, 2026-11-12)', () => {
   const item = (fw: number) => ({ fw, tier: 0 });
-  it('never scales, however many join', () => {
+  it('stands everyone in one row at the size it is given, whatever the crowd', () => {
     for (let n = 1; n <= 7; n++) {
       const fit = fixedFormation(
         Array.from({ length: n }, () => item(260)),
         990,
         1840,
+        0.8,
       );
-      expect(fit.scale).toBe(1);
+      expect(fit.scale).toBe(0.8);
+      expect(fit.rows.every((r) => r === 0)).toBe(true);
       expect(fit.xs).toHaveLength(n);
     }
   });
-  it('a figure already standing keeps its place when a summon joins behind it', () => {
-    const before = fixedFormation([item(260), item(260), item(260)], 990, 1840);
-    const after = fixedFormation([item(260), item(260), item(260), item(300)], 990, 1840);
-    expect(after.xs.slice(0, 3)).toEqual(before.xs);
-    expect(after.rows[3]).toBe(1);
+  it('no two figures stand at the same place, even crowded', () => {
+    const fit = fixedFormation(
+      Array.from({ length: 4 }, () => item(500)),
+      990,
+      1240,
+      0.6,
+    );
+    for (let i = 1; i < fit.xs.length; i++)
+      expect(Math.abs(fit.xs[i]! - fit.xs[i - 1]!)).toBeGreaterThan(40);
   });
-  it('wide figures take ranks of their own rather than shrinking', () => {
-    const fit = fixedFormation([item(600), item(600), item(600), item(300)], 990, 1840);
-    expect(fit.rows).toEqual([0, 0, 1, 1]);
-    expect(fit.scale).toBe(1);
+  it('sizes a side for the crowd it can reach, so a summon joining needs no resize', () => {
+    // (a summoner and room kept for three summons of its width: the size then holds when they arrive)
+    const room = 850;
+    const before = rowScale([300], [300, 300, 300], room);
+    const after = rowScale([300, 300, 300, 300], [], room);
+    expect(before).toBeCloseTo(after, 5);
+    // (no summoner: a full-size line stays full size)
+    expect(rowScale([300, 300], [], room)).toBe(1);
   });
-  it('runs from right to left on the narrow allies side, two to a rank there', () => {
-    const fit = fixedFormation([item(250), item(250), item(250), item(250)], 910, 440);
+  it('runs from right to left on the allies side', () => {
+    const fit = fixedFormation([item(250), item(250)], 910, 440, 0.7);
     expect(fit.xs[0]!).toBeGreaterThan(fit.xs[1]!);
-    expect(fit.rows).toEqual([0, 0, 1, 1]);
   });
 });

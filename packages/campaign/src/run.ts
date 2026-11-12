@@ -913,6 +913,12 @@ export function echoOffers(r: RunState, ghost: GhostBoss): string[] {
     .slice(0, ECHO_OFFERS);
 }
 
+/** An Elite's and a Warden's HP and damage over a common fight of the same tier (DECISIONS #651, #763). */
+export const ELITE_HP = 1.25;
+export const ELITE_DAMAGE = 1.08;
+export const WARDEN_HP = 1.2;
+export const WARDEN_DAMAGE = 1.15;
+
 /** What the fight at the current node is. */
 export function duelPlan(run: RunState): FightPlan | null {
   if (run.phase !== 'duel' || !run.context) return null;
@@ -926,9 +932,11 @@ export function duelPlan(run: RunState): FightPlan | null {
   const hpOf = (id: string): number => COMBAT_DB.units[id]?.maxHp ?? 0;
   const units = [...e.units];
   // Elites have a visible, fixed premium over the common curve, including promoted encounters.
-  // Wardens retain their authored kits and the ordinary tier budget.
-  const eliteHp = node.kind === 'elite' ? 1.25 : 1;
-  const eliteDamage = node.kind === 'elite' ? 1.08 : 1;
+  // (DECISIONS #763) a Warden has its own premium above an Elite's: the largest Elite formation at x1.25 (215 base HP) had passed the
+  // smallest Warden (190), and a Warden hit no harder for its tier than a common fight. Every Warden now stands above every Elite.
+  const eliteHp = node.kind === 'elite' ? ELITE_HP : node.kind === 'warden' ? WARDEN_HP : 1;
+  const eliteDamage =
+    node.kind === 'elite' ? ELITE_DAMAGE : node.kind === 'warden' ? WARDEN_DAMAGE : 1;
   const echoHp = node.kind === 'echo' ? ECHO_HP_PCT / 100 : 1;
   return {
     ...(ghost

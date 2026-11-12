@@ -77,16 +77,35 @@ export function stableFormation(
   return { xs, rows };
 }
 
+/** How much more than its span a row may take, standing a little into each other, before the board sizes the side down. */
+export const ROW_GIVE = 1.25;
+const ROW_GAP = 24;
+/** the least distance between neighbours' centres on a wide screen, stage px: a name plate's narrowest width and its gap (126 screen px)
+ * even where the camera draws the stage smallest: Drago's fight, about 0.56 */
+export const MIN_PITCH = 240;
+
 /**
- * A wide screen (Robert, 2026-11-12: "keep a consistent model size", "bigger units that dont need to shrink or resize"): every
- * figure keeps its own size all fight. A rank takes figures in order while their widths fit the span (a little give allowed); the
- * next goes into the rank behind. Each rank is centred in the span; a rank of one too-wide figure overlaps its edge rather than
- * shrinking. The scale is always 1, so nothing on the stage changes size when a summon joins or a foe falls.
+ * The one size a wide screen gives a side's line for a whole fight (Robert, 2026-11-12: "keep a consistent model size", "not
+ * stacked"): the largest it can be while the biggest crowd that side can reach still stands in one row, `room` wide with a little
+ * give. `widths` are the figures standing now (at full size); `reserve` the widths of those that may still join (the summons to
+ * come, at full size). Pure.
+ */
+export function rowScale(widths: number[], reserve: number[], room: number): number {
+  const all = [...widths, ...reserve];
+  const need = all.reduce((a, b) => a + b, 0) + ROW_GAP * Math.max(0, all.length - 1);
+  return need <= 0 ? 1 : Math.min(1, (room * ROW_GIVE) / need);
+}
+
+/**
+ * A wide screen's line: one row, every figure at the side's fixed `scale` (rowScale, kept all fight), centred in the span. If the
+ * row still overruns the span, the gaps close up and neighbours stand a little into each other: positions only, never the size,
+ * and never a rank behind, where a figure would hide.
  */
 export function fixedFormation(
   items: LineItem[],
   near: number,
   far: number,
+  scale = 1,
 ): {
   xs: number[];
   rows: number[];
@@ -94,33 +113,22 @@ export function fixedFormation(
 } {
   const room = Math.abs(far - near);
   const dir = far >= near ? 1 : -1;
-  const gap = 24;
-  const xs: number[] = [],
-    rows: number[] = [];
-  let start = 0;
-  for (let row = 0; start < items.length; row++) {
-    // (at most three to a rank, and only as many as fit standing a little into each other: the allies' side is narrow, 470 px,
-    // and a rank of one each would stack a tower of companions)
-    let end = start + 1;
-    let used = (items[start] as LineItem).fw;
-    while (end < items.length && end - start < 3) {
-      const w = used + gap + (items[end] as LineItem).fw;
-      if (w > room * 1.6) break;
-      used = w;
-      end++;
-    }
-    // (if they still overrun, the gaps close up: positions only, never the size)
-    const over = used > room ? room / used : 1;
-    let edge = (near + far) / 2 - (dir * Math.min(used, room)) / 2;
-    for (let i = start; i < end; i++) {
-      const w = (items[i] as LineItem).fw * over;
-      xs.push(edge + (dir * w) / 2);
-      rows.push(row);
-      edge += dir * (w + gap * over);
-    }
-    start = end;
+  const ws = items.map((it) => it.fw * scale);
+  const used = ws.reduce((a, b) => a + b, 0) + ROW_GAP * Math.max(0, items.length - 1);
+  const over = used > room ? room / used : 1;
+  let edge = (near + far) / 2 - (dir * Math.min(used, room)) / 2;
+  const xs: number[] = [];
+  for (const w0 of ws) {
+    const w = w0 * over;
+    xs.push(edge + (dir * w) / 2);
+    edge += dir * (w + ROW_GAP * over);
   }
-  return { xs, rows, scale: 1 };
+  // (neighbours' centres never closer than a name plate needs: closer, the plates drop a line, and a dropped plate can end up under
+  // the hand. The row then reaches a little past its near end, toward the middle of the stage, rather than crowd the plates)
+  for (let i = xs.length - 2; i >= 0; i--)
+    if (dir * ((xs[i + 1] as number) - (xs[i] as number)) < MIN_PITCH)
+      xs[i] = (xs[i + 1] as number) - dir * MIN_PITCH;
+  return { xs, rows: items.map(() => 0), scale };
 }
 
 /** Use the whole side for selectable silhouettes, with a real gutter even for flyers.

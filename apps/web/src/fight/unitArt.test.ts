@@ -19,8 +19,8 @@ describe('a Thrall grows taller, but stays a Thrall (DECISIONS #445, #684)', () 
   });
   it('Drago always has a towering boss height, independent of current health or a summoned court', () => {
     expect(figureId('vorthax', 1)).toBe('vorthax');
-    expect(unitHeight(COMBAT_DB.units.vorthax, 'enemy', 1)).toBe(720);
-    expect(unitHeight(COMBAT_DB.units.vorthax, 'enemy', 1590)).toBe(720);
+    expect(unitHeight(COMBAT_DB.units.vorthax, 'enemy', 1)).toBe(640);
+    expect(unitHeight(COMBAT_DB.units.vorthax, 'enemy', 1590)).toBe(640);
     expect(isWardenFigure('vorthax')).toBe(true);
     expect(isWardenFigure('morvane-incarnation')).toBe(false);
   });

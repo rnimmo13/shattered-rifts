@@ -134,24 +134,24 @@ const round = (s: CombatState) => end(end(s));
 const restored = (s: CombatState): CombatState => JSON.parse(JSON.stringify(s)) as CombatState;
 
 describe('long-fight balance rules81', () => {
-  it('separates three Harvest, six Barrier rewards and diminishing Fate across an owner-round', () => {
+  it('separates four Harvest (#766; three before), six Barrier rewards and diminishing Fate across an owner-round', () => {
     let s = play(fight('necromancer', 'soulreaper'), 'reactiveConsume');
     for (let i = 0; i < 8; i++) s = play(s, 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(3);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     expect(hero(s).barrier).toBe(18);
     expect(hero(s, 'b').statuses.doom).toBe(20);
     const before = hero(s, 'b').hp;
     // (the Reap alone: Grave Chill's Thrall strikes on its own since #684)
     s.sides.a.units = s.sides.a.units.filter((u) => u.kind === 'hero');
     s = end(s);
-    expect(before - hero(s, 'b').hp).toBe(10); // Reap4 + 2*3
+    expect(before - hero(s, 'b').hp).toBe(16); // Reap 4 + 3*4 (#766)
     hero(s).barrier = 0;
     s = play(restored(s), 'hit', hero(s).id);
-    expect(s.sides.a.discipline?.progress).toBe(3);
+    expect(s.sides.a.discipline?.progress).toBe(4);
     expect(hero(s).barrier).toBe(0);
     expect(hero(s, 'b').statuses.doom).toBe(21);
     s = play(end(s), 'consume');
-    expect(s.sides.a.discipline?.progress).toBe(4);
+    expect(s.sides.a.discipline?.progress).toBe(5);
     expect(hero(s).barrier).toBe(3);
     expect(hero(s, 'b').statuses.doom).toBe(24);
   });

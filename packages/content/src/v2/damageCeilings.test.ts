@@ -161,12 +161,12 @@ describe('Might that arrives over the fight', () => {
     expect(hero(s).statuses.might ?? 0).toBe(might + 1);
     expect(cardText(db, db.cards['scar-over']!)).toContain('once each turn');
   });
-  it("the Sunwalker's Dawn is 1 Might a Radiant, the Artillerist arms 3 Might a turn for 5 turns, Bloodlust 2 a turn", () => {
+  it("the Sunwalker's Dawn is 1 Might a Radiant, the Artillerist arms 3 Might a turn for 8 turns (#767; 5 before), Bloodlust 2 a turn", () => {
     expect(ascendancyOf('monk', 'monk:sunwalker')!.text).toContain(
       'the first 5 times you enter Radiant, gain 1 Might',
     );
     expect(ascendancyOf('engineer', 'engineer:artillerist')!.text).toContain(
-      'first 5 turns, gain 3 Might (up to 15)',
+      'first 8 turns, gain 3 Might (up to 24)',
     );
     expect(ascendancyOf('hunter', 'hunter:reaver')!.text).toContain('at most 2 a turn');
   });

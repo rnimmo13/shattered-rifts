@@ -1,3 +1,37 @@
+## 0.259.0 - 2026-11-12
+
+- Arena: both players start with 1,200 HP (was 1,000).
+- Beastmaster: companions hold at most 14 Might from your own. Bonelord: companions deal 2 more damage (was 3).
+- Paladin: gains 1 Might at the start of its first 10 turns, and at the end of its turn deals damage equal to a quarter of its Barrier to a random enemy.
+- Assassin: each Skill builds 20% Preparation, up to 100% (was 15%, up to 60%).
+- Artillerist: 3 Might at the start of its first 8 turns, up to 24 (was 5 turns, 15).
+- Seven Ascendancies that fell behind late in a fight are stronger:
+  - Blademaster: starts with 2 Keen and gains 2 from the first Sword each turn, up to 14 (was up to 5).
+  - Cardsharp: a Full Trick gives 3 Might, up to 24 (was 2, up to 12).
+  - Brewmaster: Attacks deal 7% more per Fermentation (was 4%).
+  - Predator: the first Exposed you apply each turn also gives 1 Might, up to 10.
+  - Soulreaper: the first 4 cards consumed each round add Harvest, and a Reap deals 3 per Harvest (was 3 cards and 2 each).
+  - Elementalist: bigger element bonuses (4 Burn, 3 Barrier, 4 damage to all) that grow by 2 each time (was 1).
+  - Trapmaster: at the end of your turn, deals 4 damage to ALL enemies for each Trap you have set.
+- Rift Surge is now Uncommon and Nerve Surge is now Rare (each one rarity up), so they are offered less often. Cards already in a deck stay.
+- Monk: Radiant doubles your attack damage (it tripled it). Its Mana and Fervor are unchanged.
+- The Campaign is harder. Every Rift Tier gives enemies more HP and damage than before, a little at Tier I and more with each tier (Tier XII: 655% HP and 197% damage, from 540% and 148%).
+- Wardens have their own bonus over a common fight of their tier (20% more HP, 15% more damage), so every Warden is stronger than every Elite. Elites keep theirs (25% and 8%).
+- Card rewards from Elite fights, Wardens and the merchant: a Rare 20% of the time (was 23%), an Uncommon 45% (was 42%).
+- Shake It Off+, Steady Nerves+ and Purging Light+ also Hold, so an answer to curses such as Fate can wait in your hand.
+- Balance, for the Arena first (rules 109): the builds that grew without limit are reined in with diminishing returns, not a cap on a turn.
+  - Obsidian Blade: +2 damage per Spell Power up to 20 Spell Power, +1 after. Cards that spend Spell Power count the first 20 points in full and the rest half.
+  - Gathering Storm reads its Gather in full to +12, half after, at most +24.
+  - Old Twelve Gauge reads Precision in full to +30, half after, at most +90.
+  - Exploit Weakness: +2 per Exposed to +16, half after, at most +32.
+  - Beastmaster: companions share the first 6 of your Might in full and half of the rest. Slip the Leash gains at most 8 Might (10 upgraded).
+  - Companions made to act again by a card or Aura deal full damage the first time each turn and half every time after.
+  - Off the Leash: each companion adds half its HP up to +15 and a quarter after. Reaper's Mantle curses with half the HP your Attacks take.
+  - Recall the Blades plays the first 20 consumed Daggers and every second one after.
+- Fixed: Bone Crush stayed free however many Replay marks Echo of the Dead put on it. Each mark's extra Mana is now paid.
+- Fixed: a Riftwalker other than the Monk who played Swift Step stayed in Fury for the whole fight. Fury now ends as their next turn begins.
+- Fixed: enemies could stand stacked or hidden behind each other (a Warden's escort, a summoner's brood, Drago's court). Each side now stands in one row at one size for the whole fight, sized when the fight opens for the biggest crowd its summons can reach, with room kept for the summons; every encounter and every summon crowd was checked for overlaps. Drago is a little smaller (still the tallest of all), so his court has room.
+
 ## 0.258.0 - 2026-11-12
 
 - Fixed: the Riftwalkers' breathing while they stand was far too strong after the redraw; it is back to the gentle breathing they had before.

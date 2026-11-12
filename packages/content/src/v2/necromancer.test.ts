@@ -126,7 +126,7 @@ describe('Dorian, the Necrobinder copy', () => {
     // (4 + half its HP, rounded down: 4 + 0 for the hurt one, 4 + 5 for the 10-HP one)
     expect(foe(after).hp).toBe(300 - (4 + 0) - (4 + 5));
     expect(cardText(db, db.cards['off-the-leash']!)).toBe(
-      'Your companions each deal 4 damage, plus half their own HP.',
+      'Your companions each deal 4 damage, plus half their own HP (half as much past +15).',
     );
     after = play(after, 'T1', foe(after).id);
     // (the 10-HP Thrall alone, not the 3-HP one too)
@@ -273,11 +273,11 @@ describe('Fate (her Doom)', () => {
     expect(foe(s).statuses.doom).toBe(8);
   });
 
-  it("Reaper's Mantle (Reaper Form): what an Attack takes off is cursed on as Fate", () => {
+  it("Reaper's Mantle (Reaper Form): half of what an Attack takes off is cursed on as Fate (#762)", () => {
     let s = fight(['reapers-mantle', 'strike']);
     s = play(s, 'T0');
     s = play(s, 'T1', foe(s).id);
-    expect(foe(s).statuses.doom).toBe(6);
+    expect(foe(s).statuses.doom).toBe(3);
   });
 
   it('Burial Shroud (Shroud) and Fleshcraft (Sleight of Flesh) answer curses on enemies', () => {
@@ -936,8 +936,9 @@ describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
 
 describe('Bonelord back to A (Robert 2026-11-08, #696)', () => {
   it('companions deal 3 more and gain 2 max HP at the start of each turn', () => {
+    // (2 Marrow since #767, 3 before)
     let s = fight([], ['squire'], 'necromancer:bonelord');
-    expect(hero(s).statuses.marrow).toBe(3);
+    expect(hero(s).statuses.marrow).toBe(2);
     const t = thralls(s)[0]!;
     t.hp = t.maxHp = 100;
     for (const u of s.sides.b.units) u.intent = null;

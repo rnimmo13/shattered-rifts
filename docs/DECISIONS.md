@@ -2175,3 +2175,70 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
   - **The visiting merchant:** the shop header is a fixed grid (title, purse, Leave), so a long title wraps in its own column and Leave stands where it does at every shop; on a phone the title takes its own row.
   - **Rift-crossed rerolls:** a reward slot that held a Rift-crossed card rolls another Rift-crossed card (at the rarity rolled for the slot, never a duplicate) when the reward is rerolled (`rerollReward`).
 - **Why:** Robert's bar is Slay the Spire 2: a still, readable board where nothing jumps in size, and big things look big.
+  - **Follow-up, 2026-11-12 (after 0.258.0):** a Warden's escort no longer gets only the strip left of the Warden (two Hollow Acolytes were stacked in 200 px): on a wide screen it may stand in front of the Warden's near half, short of its name plate (`bossX - 160`), and a rank behind is staggered by half a figure, alternately each way, so no figure stands right behind another.
+
+  - **Second follow-up, 2026-11-12:** ranks behind still hid figures (Packmother Ruhn behind her raptors, Gorrmaw's spawn and Drago's court piling up the screen). A wide screen's side is now one row at one size for the whole fight: `rowScale` sizes it, when the fight opens, for the biggest crowd it can reach (an enemy side that summons: `MAX_ENEMIES`; a hero's side: its free companion slots at `ALLY_SLOT_W`), kept in the fight's figure session (`keptScale`, only ever lowered); `fixedFormation` stands them in one row, neighbours' centres at least `MIN_PITCH` (240 stage px: a name plate's narrowest width even in Drago's zoomed-out fight) apart, reaching toward the middle if it must. A Warden's escort starts 230 px nearer the middle and stops 230 px short of the Warden's centre; a Warden's flying escort keeps its plate on the floor line. Drago stands 640 tall (was 720). A layout check opened all 134 encounters and the 15 largest summon crowds (`sr.testEnemies` in the Sandbox stands any enemies, for a developer) at 1600x900: no overlapping plates or intents, no figures at one place, no plate dropped a line or hidden by the hand. Phones keep their fit-to-screen layout.
+
+## 762 - Arena scaling: half past a threshold on every stat that ran away, and three rules closed (2026-11-12)
+
+- **Question:** Robert: "the game has massive imbalances still. my friend told me he has a card doing 2000+ damage... we need to reign these in, and i dont mean just spellblade. the game needs comparable scaling for every class... arena needs to be balanced"; then "can you please just reign in the builds with suggested diminishing returns and fix the game", "whether it means ascendency changs, card changes, or mechanics changes, im open". He rejected a cap on a turn's damage: "a cap per turn is just simply not the way i want balance to work in this game. i already approved diminishing returns on some cards and mechanics". The bar is Slay the Spire 2.
+- **Decision (rules 109, not released):** the full ledger, the numbers before and after and what was left alone are in [ARENA_SCALING_2026-11-12.md](ARENA_SCALING_2026-11-12.md).
+  - **Rules:** a card that is free by a condition still pays cost added to its copy, less any reduction on it (Bone Crush with Replay marks from Echo of the Dead was free for ever); a hero with no stances of their own leaves Fury or Serene as their next turn begins, so Fury's 50% more damage taken is still paid (`HeroTrait.stances`, the Monk keeps it: a Rift-crossed Swift Step doubled every Attack for the fight); companions made to act again deal full damage the first time each turn and half every time after (`SideState.extraActs`; the turn's own action is not counted); Reaper's Mantle curses with half the HP taken.
+  - **Beastmaster:** companions share the first 6 Might in full and half of the rest (`shareMightFull`).
+  - **Cards:** Obsidian Blade +2 per Spell Power to 20 and +1 after; every Spell Power spend counts the first 20 points in full and the rest half; Gathering Storm reads Gather in full to +12, half after, at most +24; Old Twelve Gauge reads Precision in full to +30, half after, at most +90; Exploit Weakness in full to +16, half after, at most +32; Slip the Leash gains at most 8 (10 upgraded); Off the Leash adds half a companion's HP to +15 and a quarter after; Recall the Blades plays the first 20 Daggers and every second one after (`playPile.halfPast`; this changes #641's "every Dagger", with Robert's go-ahead for the suggested diminishing returns).
+- **Why:** every runaway build had a stat with no slowdown, a cheap payoff playable every turn, and doublers on top. The goldfish bot (#726 to #728) plans one turn at a time and never builds such an engine, so it reported no kill before turn 6 while real players killed on turn 3. This pass was worked by hand for all 30 Ascendancies and checked against the week's real fights (Obsidian Blade 1,374 by hand against 1,376 recorded).
+- **Not measured:** the "after" numbers are hand estimates. The Beastmaster and the Bonelord are still the fastest. Left alone: Sunwalker, Marshal, Fateweaver, the Drunkard's low-HP bonuses, Shatter's step. The builds below the band (Blademaster, Cardsharp, Brewmaster's own cards, Predator, Soulreaper, Elementalist's trait, Trapmaster against a passive opponent) are a later pass.
+
+## 763 - A harder Campaign: steeper tiers, a Warden premium, fewer Rares from Elites; curse answers Hold (2026-11-12)
+
+- **Question:** Robert: "campaign is just too easy right now... lets just make each tier have some amount more hp and damage, include the increase from tier 1 with tier 1 being a slight increase since some builds do take damage"; "make sure elites are stronger than regular duels and make sure wardens are still stronger than elites. and i think we need to lower rare chance to 20% on elite fights and raise uncommon to compensate"; "the cards for dispelling curses should all upgrade with Hold on them to fight back against curse builds like fate".
+- **Evidence:** the week's server data (9 to 12 November): 3 players lost 6 fights in about 950; Tier XII Wardens fell in 5 to 7 turns with the player losing under a fifth of their HP.
+- **Decision (not released):**
+  - **Tiers** (`tierTable.ts`): Tier I is 105% HP and 98% damage (100 and 93 before); each tier adds 50 HP points and 9 damage points (40 and 5 before). Tier XII is 655% and 197% (540% and 148% before); Tier XX 1055% and 269%.
+  - **Wardens** (`WARDEN_HP` 1.2, `WARDEN_DAMAGE` 1.15 in `run.ts`): a premium of their own over a common fight. An Elite keeps 1.25 and 1.08. Before, a Warden had none: the largest Elite formation at x1.25 (215 written HP) stood above the smallest Warden (190), and a Warden hit no harder for its tier than a common fight. A test holds the order: common below Elite below Warden in damage, and the smallest Warden above the largest Elite in HP.
+  - **Elite card rewards** (`CARD_ODDS.elite`): Rare 20%, Uncommon 45%, Common 35% (23, 42, 35 before). The merchant's stock and a Warden's reward use the same odds.
+  - **Curse answers:** Shake It Off+, Steady Nerves+ and Purging Light+ also Hold.
+- **Why these numbers:** a first step Robert can tune from: together a Tier XII Warden has about 46% more HP and hits about 53% harder than before, a Tier XII Elite 21% and 33%. Not measured; no simulations. A run in progress keeps the fights it has already begun.
+- **Left for later:** more swarm fights (20 of the 132 encounters have three or more enemies: 12 common, 7 Elite, 1 Warden); the length of a run and healing between fights.
+
+## 764 - Radiant doubles attack damage, not triples (2026-11-12)
+
+- **Question:** the Sunwalker has no stat that runs away (#762): it reaches Radiant every turn from about turn 3 and tripled everything. Robert: "should sunwalker just not be triple damage?", then "yea lets make radiant double for now since idk what else to do".
+- **Decision (not released):** Radiant multiplies attack damage by 2 (`RADIANT_DAMAGE`; 3 before). Its Mana, its Fervor cost, the Fervor it gives back and Fury are unchanged. It applies to every Monk.
+- **Why not a higher Fervor cost:** leaving Radiant gives Fervor back by design, so a rising cost would fight the class. Why not a weaker Fury as well: the Zealot and the Sage deal their damage in Fury and already sit in the middle of the band; a Fury of +50% would put them with the weak builds.
+- **By hand** (own turn 7, a passive opponent at 1,000 HP): the Sunwalker's turn goes from about 430 to about 290, its kill from turn 6 to turn 7 or 8. Fury (double, 50% more damage taken) and Radiant (double, no cost, 1 Mana, 10 Fervor to reach) still differ. Not measured; "for now".
+
+## 765 - Rift Surge and Nerve Surge one rarity up (2026-11-12)
+
+- **Question:** Robert: "there are neutral cards that give mana that i think should have their rarities increased. for example, i stack as many rift surge, nerve surge i can get... i pretty much always take them sicne mana is so good. and forbears gift is auto take as well but idk waht to do about it".
+- **Evidence:** the week's finished decks: five Nerve Surges in the Sunwalker deck, three in a Bonelord deck, two in the Deathwish deck; Forebear's Gift in four of the eight Tier XII decks.
+- **Decision (not released):** Rift Surge is Uncommon (Common before) and Nerve Surge is Rare (Uncommon before). Their effects, costs and upgrades are unchanged, and decks that hold them keep them. With #763 a Rare is 10% of a common fight's offers and 20% of an Elite's, so a deck sees far fewer.
+- **Left alone:** Forebear's Gift. It is Ancestral already: one copy, at most two Ancestral cards in a deck, and only from the Offering event, a Warden's Gift, the merchant and one bargain. An always-take card that a deck can hold once is a treat, not an engine.
+- **Not done, for Robert to choose:** a limit of two copies of each in a deck. It would stop the stacking outright, but saved decks holding more would stop being valid for the Arena (#754), so it needs his say.
+
+## 766 - Seven Ascendancies brought up: each gets something that grows (2026-11-12)
+
+- **Question:** Robert: "ok lets bring up the weak builds with some buffs then i want to see how you grade them all out". After #762 seven builds sat below the band (a kill against a passive Arena opponent on own turn 7 to 9): none had a stat that grew past about turn 6.
+- **Decision (not released; by hand, no simulations):**
+  - **Blademaster:** starts with 2 Keen, and the first Sword each turn gives 2 more, up to 14 (1, +1, up to 5 before).
+  - **Cardsharp:** a Full Trick gives 3 Might, up to 24 (2, up to 12 before).
+  - **Brewmaster:** Attacks deal 7% more per Fermentation (4% before); still 8 Fermentation at most.
+  - **Predator:** the first Exposed applied each turn also gives 1 Might, up to 10 (nothing before).
+  - **Soulreaper:** the first 4 cards consumed a round add Harvest, and a Reap deals 4 plus 3 per Harvest (3 a round and 2 each before).
+  - **Elementalist:** 4 Burn, 3 Barrier or 4 damage to all; each bonus grows by 2 each time it triggers and switching adds 3 (3, 3, 2; growing by 1; switching 2 before). The `elements` rule takes a `grow`.
+  - **Trapmaster:** at the end of your turn, 4 damage to ALL enemies for each Trap set (new), so a Trap deck deals damage to an opponent who never attacks.
+- **Why these shapes:** each is the build's own stat growing a little faster or a little longer, not a new mechanic, so they ramp like the rest. The grades for all 30 after this pass are in [ARENA_SCALING_2026-11-12.md](ARENA_SCALING_2026-11-12.md).
+- **Not buffed, though low:** the Assassin Ascendancy and the Artillerist (both capped by design at about 160 to 220 a turn) and the Paladin (its damage is the Barrier the opponent leaves standing). Watch them first.
+
+## 767 - Closing the gap: the top two slowed, three more brought up; Arena HP 1200 with a 1000 baseline for testing (2026-11-12)
+
+- **Question:** Robert, on the grades of #766: "lets refine them some more. close the gap between the top builds and the lowest. and lets raise arena hp to 1200 but still keep our testing ground iwth the 1000 hp as a baseline."
+- **Decision (not released; by hand, no simulations):**
+  - **Beastmaster:** the companions' share of Might stops at 14 (`shareMightMax`; all of the first 6 and half of the rest, as #762). By hand its own turn 7 goes from about 600 to about 460.
+  - **Bonelord:** 2 Marrow (3 before).
+  - **Paladin:** also 1 Might at the start of its first 10 turns, and at the end of its turn damage equal to a quarter of its Barrier to a random enemy. Its only damage had been Barrier the opponent left standing.
+  - **Assassin:** Preparation is 20% a Skill up to 100% (15% up to 60% before).
+  - **Artillerist:** 3 Might a turn for its first 8 turns, up to 24 (5 turns, 15 before).
+  - **Arena HP:** `ARENA_START_HP` is 1200 (1000 before), both seats. `BASELINE_HP` stays 1000: the goldfish tool, the training dummies and every hand ledger are worked against it, so numbers stay comparable from pass to pass. In the Arena itself every kill turn in the ledgers comes about one turn later.
+- **Left as it is:** HP a hero pays for their own cards still costs five times the card's number in the Arena (#707), now against 1200.
+- **Grades after this:** the top is A (a kill against a passive 1,000 HP on own turn 6 to 7) and the bottom B- (turn 9): see [ARENA_SCALING_2026-11-12.md](ARENA_SCALING_2026-11-12.md).

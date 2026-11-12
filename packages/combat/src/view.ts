@@ -1472,7 +1472,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         if (o.status === 'lethality')
           return `For the rest of the fight, your first Attack each turn deals ${o.amount}% more damage.`;
         if (o.status === 'reaping')
-          return 'For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with that much Fate.';
+          return 'For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with half that much Fate.';
         if (o.status === 'freeethereal')
           return o.amount === 1
             ? 'Your next Fleeting card costs 0.'
@@ -1924,7 +1924,8 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           o.limit === undefined
             ? `every ${nm}`
             : `up to ${o.limit} ${nm}${o.limit === 1 ? '' : 's'}`;
-        return `${o.upgrade ? 'Upgrade and play' : 'Play'} ${quantity} in your consumed pile${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
+        const past = o.halfPast === undefined ? '' : ` (past ${o.halfPast}, every second one)`;
+        return `${o.upgrade ? 'Upgrade and play' : 'Play'} ${quantity} in your consumed pile${past}${o.aim === 'target' ? ' against the target' : ''}; they go back there.`;
       }
       if (o.from === 'exhaust')
         return 'Play a random card from your consumed pile; it goes back there.';
@@ -2088,7 +2089,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
           const share = m === 0.5 ? 'half ' : m === 1.5 ? '1.5 times ' : m === 2 ? 'twice ' : '';
           const t = opText(db, plain, who).replace(
             / damage(.*)\.$/,
-            ` damage$1, plus ${share}their own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}.`,
+            ` damage$1, plus ${share}their own ${x.scale.by === 'hp' ? 'HP' : 'max HP'}${x.scale.half !== undefined ? ` (half as much past +${x.scale.half})` : ''}${x.scale.max !== undefined ? ` (at most +${x.scale.max})` : ''}.`,
           );
           return i === 0 ? t.charAt(0).toLowerCase() + t.slice(1) : t;
         }
@@ -2517,7 +2518,16 @@ export function cardText(
       )
         continue;
       if (o.op === 'forge' && growsItself) {
-        parts.push(`Every copy of this card gains ${o.amount} damage for the rest of the fight.`);
+        // (what the card reads of its growth, when that is slowed or stopped: DECISIONS #762)
+        const read = c.effects.find((x) => 'scale' in x && x.scale?.by === 'bonus');
+        const sc = read && 'scale' in read ? read.scale : undefined;
+        const limits = [
+          sc?.half !== undefined ? `half as much past +${sc.half}` : '',
+          sc?.max !== undefined ? `at most +${sc.max}` : '',
+        ].filter(Boolean);
+        parts.push(
+          `Every copy of this card gains ${o.amount} damage for the rest of the fight${limits.length ? ` (${limits.join(', ')})` : ''}.`,
+        );
         continue;
       }
       // (its damage reads "plus all it has grown", not "per point of sharpening")
@@ -2637,6 +2647,9 @@ export function cardText(
   }
   if (live?.get(-1)?.uncertain)
     late.push('Further damage can depend on random effects, drawn cards or unresolved choices.');
+  // (DECISIONS #762) said once on a card that makes the companions act, however many times it does
+  if (parts.some((p) => p.includes('Command your companions to act now.')))
+    late.push('(When companions act again after the first time in a turn, they deal half damage.)');
   const text = [...parts, ...late].join(' ');
   // a Trap that springs on a summon or on Barrier answers an enemy that did not attack: "that enemy", not "the attacker"
   // (an "HP lost" Trap still answers whoever hit you: it keeps "the attacker")

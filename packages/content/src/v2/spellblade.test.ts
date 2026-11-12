@@ -135,9 +135,9 @@ describe('Spell Power', () => {
     expect(lost(play(fight(['devastate'], { stars: 0 }), 'devastate'))).toBe(12);
   });
 
-  it('there is no cap on spending', () => {
+  it('there is no cap on spending, but past 20 Spell Power each point counts half (#762)', () => {
     const s = play(fight(['comet'], { stars: 40 }), 'comet');
-    expect(lost(s)).toBe(20 + 7 * 40);
+    expect(lost(s)).toBe(20 + 7 * 20 + (7 * 20) / 2);
   });
 
   it('there is no choice of amount: one legal play for a target', () => {
@@ -179,12 +179,13 @@ describe('Spell Power', () => {
     expect(s.sides.a.stars).toBe(6);
   });
 
-  it('the Blade deals 2 more per Spell Power, with no cap, and spends none (DECISIONS #488)', () => {
+  it('the Blade deals 2 more per Spell Power (1 more past 20, #762), with no cap, and spends none (DECISIONS #488)', () => {
     const at = (stars: number) => lost(play(fight([BLADE], { stars }), BLADE));
     expect(at(0)).toBe(5);
     expect(at(1)).toBe(7);
     expect(at(8)).toBe(21);
-    expect(at(40)).toBe(85);
+    expect(at(20)).toBe(45);
+    expect(at(40)).toBe(65);
     expect(play(fight([BLADE], { stars: 12 }), BLADE).sides.a.stars).toBe(12);
   });
 });
@@ -460,10 +461,12 @@ describe('Fracture and Shatter', () => {
   it('the Blade says its rule, and what it comes to now', () => {
     const s = fight([BLADE], { stars: 12 });
     const text = () => cardText(db, db.cards[BLADE]!, previewCardDamage(db, s, 'T0', foe(s).id));
-    expect(text()).toContain('Deal 5 (+2 per Spell Power) damage ([[live:calc:29]]).');
+    expect(text()).toContain(
+      'Deal 5 (+2 per Spell Power, half as much past +40) damage ([[live:calc:29]]).',
+    );
     hero(s).statuses.bladeecho = 1;
     expect(text()).toContain(
-      'Deal 5 (+2 per Spell Power) damage ([[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total).',
+      'Deal 5 (+2 per Spell Power, half as much past +40) damage ([[live:calc:29]] a hit, 2 hits with Blade Echo, [[live:calc:58]] total).',
     );
   });
 

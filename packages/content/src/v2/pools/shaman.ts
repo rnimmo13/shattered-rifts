@@ -132,7 +132,8 @@ const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
 /** Flashpoint spends half the Burn it reads, so burst and ticking are a trade (DECISIONS #501) */
 const halveBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 0.5, to: 'target' };
 const gatheringStorm = (n: number, grow: number): Op[] => [
-  scaled(fork(n, 2), per('bonus')),
+  // (Gather in full to +12, half after, at most +24, DECISIONS #762: ten free casts a turn each read the whole of it)
+  scaled(fork(n, 2), { ...per('bonus'), half: 12, max: 24 }),
   forge('gathering-storm', grow),
 ];
 

@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  ARENA_START_HP,
   MAX_MATCH_DECKS,
   QUEUE_WIDEN_MS,
   arenaProblems,
@@ -382,7 +383,7 @@ export default function PvpScreen() {
             <span>How a match works</span>
           </summary>
           <p>
-            1,000 HP each. Second player: +1 card on their first turn. Games last at most 30
+            {ARENA_START_HP.toLocaleString()} HP each. Second player: +1 card on their first turn. Games last at most 30
             minutes; three consecutive passes without playing a card by both players end in a draw.
           </p>
           <p className="pvp__balanceNotice">

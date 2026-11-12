@@ -75,7 +75,7 @@ function play(s: CombatState, card: string): CombatState {
 }
 describe('Assassin Recall commitment and Shadow Echo cap', () => {
   it.each(['pve', 'pvp'] as const)(
-    'Recall base/upgraded replays the entire pile, consumes itself and has an immutable preview in %s',
+    'Recall base/upgraded replays the pile (the first 20 and every second Dagger after, #762), consumes itself and has an immutable preview in %s',
     (mode) => {
       for (const card of ['recall-the-blades', 'recall-the-blades+'])
         for (const count of [0, 14, 15, 28]) {
@@ -97,11 +97,12 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
           const played = result.events.filter(
             (e) => e.type === 'play' && e.card.startsWith('knife-'),
           );
-          expect(played).toHaveLength(count);
+          const replayed = count <= 20 ? count : 20 + Math.floor((count - 20) / 2);
+          expect(played).toHaveLength(replayed);
           const actual = 100000 - result.state.sides.b.units[0]!.hp;
           expect(shown.lo).toBe(actual);
-          expect(shown.played).toBe(count);
-          expect(actual).toBe(count * (card.includes('+') ? 6 : 4));
+          expect(shown.played).toBe(replayed);
+          expect(actual).toBe(replayed * (card.includes('+') ? 6 : 4));
           expect(result.state.sides.a.mana).toBe(96);
           expect(
             result.state.sides.a.exhausted.some((c) => c.id === 'recall' && c.card === card),
@@ -187,9 +188,9 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
     previewCardDamage(db, s, 'recall', s.sides.b.units[0]!.id);
     expect(JSON.stringify(s)).toBe(before);
     s = applyAction(db, s, { type: 'play', card: 'recall', target: s.sides.b.units[0]!.id }).state;
-    // (the two Echoes' own plays, 2 + 4, and Recall itself, 3 Mana, 2 from each copy: 10; nothing from the 28 Daggers)
+    // (the two Echoes' own plays, 2 + 4, and Recall itself, 3 Mana, 2 from each copy: 10; nothing from the Daggers; 24 of the 28 are played, #762)
     expect(hero(s).barrier).toBe(10);
-    expect(s.sides.a.attacksPlayed).toBe(28);
+    expect(s.sides.a.attacksPlayed).toBe(24);
   });
   it('a fresh turn allowance also applies to automatic off-turn plays', () => {
     let s = play(fight('pvp'), 'shadow-echo');
@@ -217,11 +218,12 @@ describe('Assassin Recall commitment and Shadow Echo cap', () => {
     const result = applyAction(db, s, action!);
     expect(
       result.events.filter((e) => e.type === 'play' && e.card.startsWith('fan-')),
-    ).toHaveLength(28);
-    expect(result.state.sides.b.units.map((u) => 100000 - u.hp)).toEqual([168, 168]);
+    ).toHaveLength(24);
+    expect(result.state.sides.b.units.map((u) => 100000 - u.hp)).toEqual([144, 144]);
   });
-  it('card text states unlimited Recall, Consume and the unchanged Echo limit', () => {
+  it('card text states Recall and its slowdown (#762), Consume and the unchanged Echo limit', () => {
     expect(cardText(db, db.cards['recall-the-blades']!)).toContain('Play every Dagger');
+    expect(cardText(db, db.cards['recall-the-blades']!)).toContain('(past 20, every second one)');
     expect(cardText(db, db.cards['recall-the-blades']!)).toContain('Consume.');
     expect(cardText(db, db.cards['recall-the-blades+']!)).toContain(
       'Upgrade and play every Dagger',

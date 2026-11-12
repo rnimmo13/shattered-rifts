@@ -150,7 +150,9 @@ export function disciplineTrigger(
       if (!ctx.card?.tags?.includes(element) || d.elementTurns?.[element] === state.turn) continue;
       const prior = d.counts?.[element] ?? 0;
       const amount =
-        r[element] + prior + (d.lastElement && d.lastElement !== element ? r.sequence : 0);
+        r[element] +
+        prior * (r.grow ?? 1) +
+        (d.lastElement && d.lastElement !== element ? r.sequence : 0);
       (d.counts ??= {})[element] = prior + 1;
       (d.elementTurns ??= {})[element] = state.turn;
       d.lastElement = element;

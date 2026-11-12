@@ -9,7 +9,7 @@ import {
   type CombatState,
 } from '@sr/combat';
 import { COMBAT_DB as db } from '@sr/content/v2';
-import { ARENA_START_HP } from '@sr/pvp';
+import { BASELINE_HP } from '@sr/pvp';
 
 const [file, name, seed = 'trace-0'] = process.argv.slice(2);
 const d = (
@@ -22,8 +22,8 @@ const d = (
 ).find((x) => x.name === name)!;
 let s: CombatState = createCombat(db, {
   seed,
-  a: { hero: d.hero, deck: d.deck, ascendancy: d.id, maxHp: ARENA_START_HP, hp: ARENA_START_HP },
-  b: { hero: 'knight', deck: [], maxHp: ARENA_START_HP, hp: ARENA_START_HP },
+  a: { hero: d.hero, deck: d.deck, ascendancy: d.id, maxHp: BASELINE_HP, hp: BASELINE_HP },
+  b: { hero: 'knight', deck: [], maxHp: BASELINE_HP, hp: BASELINE_HP },
 }).state;
 const foe = () => heroOf(s.sides.b)!.hp;
 for (let turn = 1; turn <= 8 && !s.winner; turn++) {

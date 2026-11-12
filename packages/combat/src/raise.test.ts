@@ -345,14 +345,14 @@ describe('Fate and debuffs', () => {
     expect(s.sides.a.doomedTurn).toBe(1);
   });
 
-  it('dealt is what the damage took off; Reaping curses with what Attacks take off', () => {
+  it('dealt is what the damage took off; Reaping curses with half of what Attacks take off (#762)', () => {
     let s = start(['blight', 'reaper', 'strike']);
     foe(s).barrier = 3;
     s = play(s, 'h0', foe(s).id);
     expect(foe(s).statuses.doom).toBe(5);
     s = play(s, 'h1');
     s = play(s, 'h2', foe(s).id);
-    expect(foe(s).statuses.doom).toBe(5 + 6);
+    expect(foe(s).statuses.doom).toBe(5 + 3);
   });
 
   it('noose doubles the damage of noose cards per stack; debilitated doubles Exposed and Faltering', () => {

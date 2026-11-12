@@ -3,7 +3,11 @@ import { Picture } from '../ui/Picture';
 import { useState } from 'react';
 import {
   DMG_PER_TIER,
+  ELITE_DAMAGE,
+  ELITE_HP,
   HP_PER_TIER,
+  WARDEN_DAMAGE,
+  WARDEN_HP,
   LOOP_BOON_CHANCE,
   MAX_TIER,
   OMENS,
@@ -97,7 +101,10 @@ function TierTable() {
       <p className="learn__note">
         Every Rift Tier adds {HP_PER_TIER} percentage points of enemy HP and {DMG_PER_TIER} of enemy
         damage, at the same rate through the final gauntlet, up to {enemyScale(MAX_TIER, 1).hp}% HP
-        and {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}.
+        and {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}. An Elite has{' '}
+        {Math.round((ELITE_HP - 1) * 100)}% more HP and deals {Math.round((ELITE_DAMAGE - 1) * 100)}%
+        more damage than these numbers; a Warden {Math.round((WARDEN_HP - 1) * 100)}% and{' '}
+        {Math.round((WARDEN_DAMAGE - 1) * 100)}%.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>

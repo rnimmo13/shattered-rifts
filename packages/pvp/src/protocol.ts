@@ -116,7 +116,12 @@ export interface Entry {
 // that hit 3 or 4 times apply 2 Fracture a hit (the two commons 1, Fault Piercer 8 flat); Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb apply Fracture.
 // And (#728): Bloodburst Consumes; Rending Fury half past +21, at most +36 (upgraded +24, +45).
 // 108 (#751): enemies set Traps (the setTrap move op; nine Umbral Veil enemies and four elsewhere), and the moves that set them changed.
-export const RULES_VERSION = 108;
+// 109 (#762): the Arena scaling pass. Free-by-condition cards pay added cost; a hero without stances leaves Fury as their next turn begins;
+// companions acting again deal half after the first time each turn; the Beastmaster shares 6 Might and half the rest; Reaper's Mantle half;
+// half past a threshold on Obsidian Blade, Spell Power spent, Gathering Storm, Old Twelve Gauge, Exploit Weakness, Off the Leash, Recall.
+// Also (#764 to #767): Radiant doubles; Rift Surge and Nerve Surge one rarity up; ten Ascendancies brought up; the Beastmaster shares
+// at most 14 Might; Bonelord 2 Marrow; Arena HP 1200 (BASELINE_HP 1000 for tools and ledgers).
+export const RULES_VERSION = 109;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;
@@ -227,8 +232,11 @@ export type ErrorCode =
   /** this browser plays by older rules than the server (RULES_VERSION): reload the page */
   | 'outdated';
 
-/** Equal starting current/max HP for every Arena class and both seats. */
-export const ARENA_START_HP = 1000;
+/** Equal starting current/max HP for every Arena class and both seats (1000 until DECISIONS #767). */
+export const ARENA_START_HP = 1200;
+/** The HP balance is worked out against: the goldfish tool, the training dummies and the hand ledgers all use it, so their numbers stay
+ * comparable from pass to pass whatever the Arena itself is set to (DECISIONS #767). */
+export const BASELINE_HP = 1000;
 /** No seat HP advantage. The second player's compensation is one opening card. */
 export const SECOND_PLAYER_HP = 0;
 export const SECOND_PLAYER_DRAW = 1;

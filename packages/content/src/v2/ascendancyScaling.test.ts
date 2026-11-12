@@ -63,6 +63,14 @@ const db = {
       kind: 'snare',
       trigger: { on: 'foeTurn' },
     }),
+    // (a Trap these enemies never spring: they summon nothing)
+    'probe-quiet-trap': card('probe-quiet-trap', [{ op: 'damage', amount: 10, to: 'allFoes' }], {
+      kind: 'snare',
+      trigger: { on: 'foeSummons' },
+    }),
+    'probe-expose': card('probe-expose', [{ op: 'status', status: 'exposed', amount: 1, to: 'target' }], {
+      target: 'foe',
+    }),
   },
   units: {
     ...base.units,
@@ -186,16 +194,17 @@ describe('distinct late-game Ascendancy disciplines', () => {
     expect(hero(s).statuses.edge ?? 0).toBe(0);
     for (let i = 0; i < 2; i++) s = play(s, 'probe-skill').state;
     foe(s).hp = foe(s).maxHp / 2;
+    // (two Skills are 40% since #767, 30% before, and 20% for the wounded enemy: 10 x 1.6)
     let r = play(s, 'probe-double');
-    expect(damage(r)).toEqual([15, 15]);
+    expect(damage(r)).toEqual([16, 16]);
     expect(r.state.sides.a.discipline?.progress).toBe(0);
     r = play(r.state, 'probe-hit');
     expect(damage(r)).toEqual([12]);
   });
-  it('preparation caps at 60%, and non-Attack damage does not spend it', () => {
+  it('preparation is 20% a Skill and caps at 100% (#767; 15% and 60% before), and non-Attack damage does not spend it', () => {
     let s = fight('assassin', 'assassin');
     for (let i = 0; i < 8; i++) s = play(s, 'probe-skill').state;
-    expect(s.sides.a.discipline?.progress).toBe(60);
+    expect(s.sides.a.discipline?.progress).toBe(100);
     const modified = {
       ...db,
       cards: {
@@ -205,18 +214,19 @@ describe('distinct late-game Ascendancy disciplines', () => {
     };
     s.sides.a.hand = [{ id: 'skill-hit', card: 'probe-skill-hit' }];
     s = applyAction(modified, s, { type: 'play', card: 'skill-hit', target: foe(s).id }).state;
-    expect(s.sides.a.discipline?.progress).toBe(60);
-    expect(damage(play(s, 'probe-hit'))).toEqual([16]);
+    expect(s.sides.a.discipline?.progress).toBe(100);
+    expect(damage(play(s, 'probe-hit'))).toEqual([20]);
   });
   it('prepared damage survives a choice between damage effects and save serialization', () => {
     let s = fight('assassin', 'assassin');
     s = play(play(s, 'probe-skill').state, 'probe-skill').state;
+    // (two Skills: 40% since #767, 30% before)
     const first = play(s, 'probe-choice');
-    expect(damage(first)).toEqual([13]);
+    expect(damage(first)).toEqual([14]);
     s = JSON.parse(JSON.stringify(first.state)) as CombatState;
     const pick = legalActions(db, s)[0]!;
     expect(pick.type).toBe('pick');
-    expect(damage(applyAction(db, s, pick))).toEqual([13]);
+    expect(damage(applyAction(db, s, pick))).toEqual([14]);
   });
   it('Spiritwalker cards deal 5% more per Spirit, up to 50%, Attacks and spells alike', () => {
     let s = fight('shaman', 'spiritwalker');
@@ -269,12 +279,14 @@ describe('distinct late-game Ascendancy disciplines', () => {
     s = play(s, 'probe-flame').state;
     s = play(s, 'probe-flame').state;
     expect(s.sides.a.discipline?.counts?.flame).toBe(1);
+    // (#766: Frost 3 + 3 for the switch from Flame; 3 + 2 before)
     const frost = play(s, 'probe-frost');
-    expect(frost.events.some((e) => e.type === 'barrier' && e.amount === 5)).toBe(true);
+    expect(frost.events.some((e) => e.type === 'barrier' && e.amount === 6)).toBe(true);
     s = end(frost.state);
+    // (#766: Flame 4 + 2 for its one earlier trigger + 3 for the switch from Frost; 3 + 1 + 2 before)
     const flame = play(s, 'probe-flame');
     expect(
-      flame.events.some((e) => e.type === 'status' && e.status === 'burn' && e.amount === 6),
+      flame.events.some((e) => e.type === 'status' && e.status === 'burn' && e.amount === 9),
     ).toBe(true);
   });
   it('Zealot develops Fury once per turn and rewards only the first controlled exit', () => {
@@ -457,11 +469,68 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     expect(s.sides.a.discipline?.progress).toBe(5);
     expect(hero(s).statuses.spirit ?? 0).toBeLessThanOrEqual(at);
   });
-  it('Artillerist gains 3 Might on each of its first 5 turns, 15 in all (#726; was 2 for 6 turns)', () => {
+  it('Artillerist gains 3 Might on each of its first 8 turns, 24 in all (#767; 5 turns and 15 since #726)', () => {
     let s = fight('engineer', 'artillerist');
     expect(hero(s).statuses.might).toBe(3);
     for (let k = 0; k < 9; k++) s = end(end(s));
-    expect(hero(s).statuses.might).toBe(15);
+    expect(hero(s).statuses.might).toBe(24);
+  });
+  it('Paladin gains 1 Might at the start of each of its first 10 turns and none after (#767)', () => {
+    const plain = createCombat(db, {
+      seed: 'ascendancy-scaling',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['probe-wall', 'probe-wall'] },
+    }).state;
+    const base = hero(plain).statuses.might ?? 0;
+    let s = fight('knight', 'paladin');
+    for (let turn = 1; turn <= 13; turn++) {
+      expect(s.active).toBe('a');
+      expect(hero(s).statuses.might ?? 0, `turn ${turn}`).toBe(base + Math.min(10, turn));
+      s = end(s);
+    }
+  });
+  it('Paladin deals a quarter of its Barrier, rounded down, to a random enemy as its turn ends; Might adds nothing (#767)', () => {
+    const blow = (barrier: number, might?: number, reserves = 0): number[] => {
+      const s = fight('knight', 'paladin');
+      // (no Mana left to keep: the Knight's Reserves give Barrier of their own as the turn ends)
+      s.sides.a.mana = 0;
+      s.sides.a.reserves = reserves;
+      hero(s).barrier = barrier;
+      if (might !== undefined) hero(s).statuses.might = might;
+      const before = s.sides.b.units.map((u) => u.hp);
+      const r = applyAction(db, s, { type: 'endTurn' });
+      const lost = r.state.sides.b.units.map((u, k) => before[k]! - u.hp);
+      // (every blow in the turn's events is the hero's, and it lands before the enemy phase)
+      const hits = r.events.flatMap((e) => (e.type === 'damage' ? [e] : []));
+      expect(hits.every((e) => e.source === hero(s).id)).toBe(true);
+      expect(hits.map((e) => e.lost)).toEqual(lost.filter((x) => x > 0));
+      const theirs = r.events.findIndex((e) => e.type === 'turnStart' && e.side === 'b');
+      for (const e of hits) expect(r.events.indexOf(e)).toBeLessThan(theirs);
+      return lost.sort((x, y) => x - y);
+    };
+    // (one enemy of the two takes it all)
+    expect(blow(40)).toEqual([0, 10]);
+    expect(blow(43)).toEqual([0, 10]);
+    expect(blow(10)).toEqual([0, 2]);
+    expect(blow(4)).toEqual([0, 1]);
+    // (nothing with no Barrier, or with less than 4)
+    expect(blow(0)).toEqual([0, 0]);
+    expect(blow(3)).toEqual([0, 0]);
+    // (not an Attack: Might does not change it)
+    expect(blow(40, 0)).toEqual([0, 10]);
+    expect(blow(40, 50)).toEqual([0, 10]);
+    // (the Barrier the Knight's Reserves give as the turn ends comes first and counts: 41 + 3 is 44)
+    expect(blow(41)).toEqual([0, 10]);
+    expect(blow(41, undefined, 3)).toEqual([0, 11]);
+    // (the plain Knight has none of it)
+    const plain = createCombat(db, {
+      seed: 'ascendancy-scaling',
+      a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
+      b: { enemies: ['probe-wall', 'probe-wall'] },
+    }).state;
+    hero(plain).barrier = 40;
+    const hp = plain.sides.b.units.map((u) => u.hp);
+    expect(end(plain).sides.b.units.map((u) => u.hp)).toEqual(hp);
   });
   it('Trapmaster sets up to 5 Traps, and its Traps deal 5% more per Trap sprung before, up to 50%', () => {
     const s = fight('trickster', 'trapmaster');
@@ -484,10 +553,47 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
       const hp = foe(t).hp;
       return hp - foe(end(t)).hp;
     };
-    // (10% a Trap sprung before it, up to double, since #694)
-    expect(spring(0)).toBe(10);
-    expect(spring(4)).toBe(14);
-    expect(spring(30)).toBe(20);
+    // (10% a Trap sprung before it, up to double, since #694; and since #766 the one Trap still set as the turn ends deals 4 first,
+    // which the Trap bonus does not touch)
+    expect(spring(0)).toBe(4 + 10);
+    expect(spring(4)).toBe(4 + 14);
+    expect(spring(30)).toBe(4 + 20);
+  });
+  it('Trapmaster deals 4 to every enemy for each Trap set as its turn ends, and nothing with none set (#766)', () => {
+    const lost = (traps: number, sprung = 0, might = 0): number[] => {
+      const s = fight('trickster', 'trapmaster');
+      s.sides.a.snaresSprung = sprung;
+      if (might) hero(s).statuses.might = might;
+      s.sides.a.snares = Array.from({ length: traps }, (_, k) => ({
+        id: `quiet-${k}`,
+        card: 'probe-quiet-trap',
+      }));
+      const before = s.sides.b.units.map((u) => u.hp);
+      const r = applyAction(db, s, { type: 'endTurn' });
+      // (the Traps wait for a summon that never comes: every one is still set)
+      expect(r.state.sides.a.snares).toHaveLength(traps);
+      // (it comes from the hero, as their turn ends: before the enemy phase begins)
+      const hurt = r.events.findIndex((e) => e.type === 'damage');
+      const theirs = r.events.findIndex((e) => e.type === 'turnStart' && e.side === 'b');
+      if (traps) {
+        expect(hurt).toBeGreaterThanOrEqual(0);
+        expect(hurt).toBeLessThan(theirs);
+        expect(damage(r)).toEqual(s.sides.b.units.map(() => 4 * traps));
+      } else expect(hurt).toBe(-1);
+      return r.state.sides.b.units.map((u, k) => before[k]! - u.hp);
+    };
+    expect(lost(0)).toEqual([0, 0]);
+    expect(lost(1)).toEqual([4, 4]);
+    expect(lost(3)).toEqual([12, 12]);
+    expect(lost(5)).toEqual([20, 20]);
+    // (it is not a Trap and not an Attack: Traps sprung before and Might add nothing)
+    expect(lost(2, 30)).toEqual([8, 8]);
+    expect(lost(2, 0, 7)).toEqual([8, 8]);
+    // (the plain Trickster's other Ascendancy has none of it)
+    const other = fight('trickster', 'cardsharp');
+    other.sides.a.snares = [{ id: 'quiet-0', card: 'probe-quiet-trap' }];
+    const hp = foe(other).hp;
+    expect(foe(end(other)).hp).toBe(hp);
   });
   it('Bladedancer Daggers ramp 0/10/20/30/40/50% within a turn and start over next turn', () => {
     let s = fight('assassin', 'bladedancer');
@@ -506,24 +612,57 @@ describe('the 0.228 Ascendancy pass (DECISIONS #685)', () => {
     s = end(end(s));
     expect(damage(play(s, 'probe-knife'))).toEqual([10]);
   });
-  it('Blademaster gains 1 Keen from its first Sword each turn, up to 5 Keen', () => {
+  it('Blademaster starts with 2 Keen and gains 2 from its first Sword each turn, six times, up to 14 Keen (#766; 1 and 1 up to 5 before)', () => {
     let s = fight('spellblade', 'blademaster');
-    expect(hero(s).statuses.keen).toBe(1);
-    s = play(s, 'probe-sword').state;
-    s = play(s, 'probe-sword').state;
     expect(hero(s).statuses.keen).toBe(2);
-    for (let k = 0; k < 6; k++) s = play(end(end(s)), 'probe-sword').state;
-    expect(hero(s).statuses.keen).toBe(5);
+    s = play(s, 'probe-sword').state;
+    s = play(s, 'probe-sword').state;
+    // (2 + 2: the second Sword of the turn gives none)
+    expect(hero(s).statuses.keen).toBe(4);
+    // (five more turns give 2 each, the seventh turn's Sword none: 2 + 6 x 2)
+    for (let k = 0; k < 5; k++) s = play(end(end(s)), 'probe-sword').state;
+    expect(hero(s).statuses.keen).toBe(14);
+    s = play(end(end(s)), 'probe-sword').state;
+    expect(hero(s).statuses.keen).toBe(14);
   });
-  it('Cardsharp Full Tricks give 1 Mana and 2 Might, six times a fight (#694)', () => {
+  it('Cardsharp Full Tricks give 1 Mana and 3 Might, eight times a fight (#766; 2 Might six times since #694)', () => {
     const [mana, might] = ASCENDANCIES.find((x) => x.id === 'trickster:cardsharp')?.triggers ?? [];
-    // (the Mana every Full Trick; only the Might stops after six)
+    // (the Mana every Full Trick; only the Might stops after eight)
     expect(mana?.when).toBe('allSuits');
     expect(mana?.times).toBeUndefined();
     expect(mana?.ops).toEqual([{ op: 'mana', amount: 1 }]);
     expect(might?.when).toBe('allSuits');
-    expect(might?.times).toBe(6);
-    expect(might?.ops).toEqual([{ op: 'status', status: 'might', amount: 2, to: 'self' }]);
+    expect(might?.times).toBe(8);
+    expect(might?.ops).toEqual([{ op: 'status', status: 'might', amount: 3, to: 'self' }]);
+  });
+  it('Predator gains 1 Might with the card it draws for the first Exposed it applies each turn, ten times a fight (#766)', () => {
+    let s = fight('hunter', 'predator');
+    const start = hero(s).statuses.might ?? 0;
+    const expose = (st: CombatState): CombatState => {
+      // (room in hand, so the card drawn always arrives)
+      st.sides.a.discard.push(...st.sides.a.hand);
+      st.sides.a.hand = [];
+      return play(st, 'probe-expose').state;
+    };
+    for (let turn = 1; turn <= 12; turn++) {
+      const earned = Math.min(10, turn);
+      s = expose(s);
+      expect(hero(s).statuses.might ?? 0, `turn ${turn}, first Exposed`).toBe(start + earned);
+      // (the card played left the hand; the draw goes on after the Might has stopped)
+      expect(s.sides.a.hand, `turn ${turn}, the draw`).toHaveLength(1);
+      // (a second Exposed the same turn, on the other enemy: no Might and no card)
+      s.sides.a.hand.push({ id: `second-${turn}`, card: 'probe-expose' });
+      s = applyAction(db, s, {
+        type: 'play',
+        card: `second-${turn}`,
+        target: s.sides.b.units[1]!.id,
+      }).state;
+      expect(hero(s).statuses.might ?? 0, `turn ${turn}, second Exposed`).toBe(start + earned);
+      expect(s.sides.a.hand, `turn ${turn}, no second draw`).toHaveLength(1);
+      s = end(s);
+      expect(s.active).toBe('a');
+    }
+    expect(hero(s).statuses.might ?? 0).toBe(start + 10);
   });
   it('Reaver Bloodlust (#693, #726): every 3 HP paid is 1 Might for the fight, up to 12, at most 2 a turn', () => {
     let s = fight('hunter', 'reaver');

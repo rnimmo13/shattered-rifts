@@ -43,7 +43,8 @@ const GENERATOR = 'generator';
 const GROWN = { forgeWord: 'Grown' } as const;
 
 /** an X or X/2 card reads this: the Spell Power it spent */
-const SPENT = (mult = 1): Scale => per('starSpend', mult);
+// (the first 20 Spell Power spent count in full, the rest half: DECISIONS #762)
+const SPENT = (mult = 1): Scale => ({ ...per('starSpend', mult), half: 20 * mult });
 /** gain N Spell Power, plus what this copy has grown */
 const gain = (n: number): Op => scaled(stars(n), per('bonus'));
 /** "Grows N": this copy yields N more each time it is played */
@@ -94,14 +95,23 @@ export const SPELLBLADE: CardDef[] = [
     up: { effects: [ward(10), gain(1)] },
   }),
   // (a card of her starting deck, always in the opening hand: DECISIONS #436)
-  a('common', BLADE, 'Obsidian Blade', 'attack', 2, 'foe', [scaled(dmg(5), per('stars', 2))], {
-    retain: true,
-    innate: true,
-    tags: ['blade', SWORD],
-    source: 'token',
-    weapon: true,
-    up: { effects: [scaled(dmg(8), per('stars', 2))] },
-  }),
+  a(
+    'common',
+    BLADE,
+    'Obsidian Blade',
+    'attack',
+    2,
+    'foe', // (2 a Spell Power to 20 of it, 1 after, DECISIONS #762: it spends none, so every point counted for ever)
+    [scaled(dmg(5), { ...per('stars', 2), half: 40 })],
+    {
+      retain: true,
+      innate: true,
+      tags: ['blade', SWORD],
+      source: 'token',
+      weapon: true,
+      up: { effects: [scaled(dmg(8), { ...per('stars', 2), half: 40 })] },
+    },
+  ),
   // (a card that only takes up room; nothing of hers makes it now, and old effects in other pools may)
   a('basic', 'rubble', 'Rubble', 'skill', 1, 'none', [], {
     exhaust: true,
