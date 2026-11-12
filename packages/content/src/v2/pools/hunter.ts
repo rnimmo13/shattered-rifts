@@ -6,6 +6,7 @@
 import type { CardDef } from '@sr/combat';
 import {
   ACT,
+  ACT_BARE,
   growHp,
   lifesteal,
   barrier,
@@ -242,13 +243,15 @@ export const HUNTER: CardDef[] = [
     // (0 Mana since #693: ~60-120% at 1)
     0,
     'none',
-    [on('summon', [status('might', 1)])],
+    // (the first 4 summons a fight since DECISIONS #769: no limit before, and two copies in the opening hand for nothing)
+    [on('summon', [status('might', 1)], { times: 4 })],
     { up: { innate: true } },
   ),
-  // (3 Might and the companions act twice, not consumed, since #693: ~67% before; ~143%; upgraded they act three times)
+  // (3 Might and the companions act twice, not consumed, since #693: ~67% before; ~143%)
   k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 3), ACT, ACT], {
     tags: ['command'],
-    up: { effects: [status('might', 3), ACT, ACT, ACT] },
+    // (upgraded: 4 Might and still two actions since DECISIONS #769; a third action before)
+    up: { effects: [status('might', 4), ACT, ACT] },
   }),
   // (2 Mana, Opening hand, and the companions grow 2 max HP each turn since #693: ~57% before; ~153%; upgraded it costs 1)
   k(
@@ -258,7 +261,8 @@ export const HUNTER: CardDef[] = [
     'power',
     2,
     'none',
-    [on('turnStart', [ACT, growHp(2, 'allAllies')])],
+    // (its action is without the companions' Might since DECISIONS #768: a free action a turn from the opening hand, with all of it)
+    [on('turnStart', [ACT_BARE, growHp(2, 'allAllies')])],
     { innate: true, up: { cost: 1 } },
   ),
 

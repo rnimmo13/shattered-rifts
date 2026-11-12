@@ -189,6 +189,21 @@ describe('distinct late-game Ascendancy disciplines', () => {
     expect(s.sides.a.discipline?.progress).toBe(10);
     expect(s.sides.a.discipline?.target).toBe(second);
   });
+  it('Seer grows 10% a turn on the same marked enemy to 20%, then 5% a turn, 40% at most (#768)', () => {
+    let s = fight('trickster', 'seer');
+    const first = foe(s).id;
+    const seen: number[] = [];
+    for (let turn = 0; turn < 7; turn++) {
+      expect(s.active).toBe('a');
+      s = play(s, 'probe-hit', first).state;
+      // (a second card on it the same turn adds nothing)
+      s = play(s, 'probe-hit', first).state;
+      expect(s.sides.a.discipline?.target).toBe(first);
+      seen.push(s.sides.a.discipline?.progress ?? 0);
+      s = end(s);
+    }
+    expect(seen).toEqual([10, 20, 25, 30, 35, 40, 40]);
+  });
   it('Assassin prepares through Skills and executes wounded enemies, without a Dagger passive', () => {
     let s = fight('assassin', 'assassin');
     expect(hero(s).statuses.edge ?? 0).toBe(0);
@@ -337,7 +352,7 @@ describe('distinct late-game Ascendancy disciplines', () => {
     r = play(r.state, 'probe-spell');
     expect(damage(r)).toEqual([10, 10, 10]);
     s = end(r.state);
-    expect(s.sides.a.stars).toBe(6); // refund 3, class 1 and Archmage's sustained 2
+    expect(s.sides.a.stars).toBe(5); // refund 3, class 1 and Archmage's sustained 1 (#768; 2 before)
     expect(s.sides.a.nextStars).toBe(0);
   });
   it('Archmage damage support does not also boost Barrier on a Spell Attack', () => {

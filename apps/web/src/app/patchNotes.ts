@@ -46,6 +46,151 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.260.0",
+    date: "2026-11-12",
+    title: "Closer together",
+    summary: "The strongest builds are eased down, each with a slowdown and never a limit on a turn, so every build now finishes a fight within a few turns of every other.",
+    notes: [
+      {
+        kind: "balance",
+        title: "The pack",
+        hero: "hunter",
+        text: "Companions share less of your Might, and two cards that fed the pack for nothing are slower. The Beastmaster always shares more than the Hunter does.",
+        changes: [
+          {
+            label: "Hunter: companions share",
+            before: "half your Might",
+            after: "a third of your Might",
+            direction: "nerf"
+          },
+          {
+            label: "Beastmaster: companions share",
+            before: "first 6, half the rest, 14 at most",
+            after: "first 5, half the rest, no limit",
+            direction: "neutral"
+          },
+          {
+            label: "Wild Hunt",
+            before: "its action carries Might",
+            after: "its action is without Might",
+            direction: "nerf"
+          },
+          {
+            label: "Trail of Blood",
+            before: "1 Might every summon",
+            after: "1 Might on the first 4 summons",
+            direction: "nerf"
+          },
+          {
+            label: "Pack Frenzy+",
+            before: "3 Might, three actions",
+            after: "4 Might, two actions",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "The Knight’s free Attacks",
+        hero: "knight",
+        text: "Hot Temper no longer doubles in number every time your deck comes round, and the Might behind it builds more slowly.",
+        changes: [
+          {
+            label: "Hot Temper",
+            before: "a copy every play",
+            after: "a copy only as your first Attack of the turn",
+            direction: "nerf"
+          },
+          {
+            label: "Oath Unbroken",
+            before: "3 Might a turn",
+            after: "2 Might a turn",
+            direction: "nerf"
+          },
+          {
+            label: "Vow Fulfilled",
+            before: "every Reserve in full",
+            after: "first 5 Reserves in full, the rest half",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Replays and the first Attack",
+        text: "A bonus for \"your first Attack each turn\", such as Killing Chill’s, applies to that card’s own play. Playing it again with Reverb, a Replay mark or Echoing Spirit does not carry the bonus."
+      },
+      {
+        kind: "balance",
+        title: "Shatters",
+        hero: "spellblade",
+        text: "Each Shatter still deals more than the last, but the growth halves after the tenth on an enemy, and what Deepening adds halves past +15.",
+        changes: [
+          {
+            label: "Shatter growth",
+            before: "+3 each, no slowdown",
+            after: "+3 each to the tenth, half after",
+            direction: "nerf"
+          },
+          {
+            label: "Shatterer",
+            before: "every Shatter 15% more",
+            after: "10% more",
+            direction: "nerf"
+          },
+          {
+            label: "Archmage",
+            before: "2 Spell Power a turn",
+            after: "1 Spell Power a turn",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "balance",
+        title: "Smaller steps elsewhere",
+        text: "The same idea on five more: full value up to a point, half as much after.",
+        changes: [
+          {
+            label: "Gathering Storm",
+            before: "full to +12, at most +24",
+            after: "full to +8, at most +18",
+            direction: "nerf"
+          },
+          {
+            label: "Old Twelve Gauge",
+            before: "full to +30, at most +90",
+            after: "full to +20, at most +70",
+            direction: "nerf"
+          },
+          {
+            label: "Off the Leash",
+            before: "half a companion’s HP to +15",
+            after: "to +10, a quarter after",
+            direction: "nerf"
+          },
+          {
+            label: "Seer",
+            before: "+10% a turn, up to +50%",
+            after: "+10% to +20%, then +5%, up to +40%",
+            direction: "nerf"
+          },
+          {
+            label: "Fateweaver",
+            before: "2 Fate + 2% of max HP a turn",
+            after: "2 Fate + 1%",
+            direction: "nerf"
+          }
+        ]
+      },
+      {
+        kind: "fixed",
+        text: "Trail of Blood’s text now says how often it answers: a number of summons, not a number of turns."
+      }
+    ],
+    heads: "The rules changed again: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play."
+  },
+  {
     version: "0.259.0",
     date: "2026-11-12",
     title: "A level field",

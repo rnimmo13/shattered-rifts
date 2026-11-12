@@ -169,8 +169,9 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     trait: {
       name: 'Pack Instinct',
       // (DECISIONS #285: her Might is the pack's; the heal after a won fight went in #333 and is back at 2, #381)
-      text: 'Your companions share half your Might (rounded down), and a new companion arrives with it. Heal 2 HP after every fight you win.',
-      shareMight: 0.5,
+      // (a third since DECISIONS #768, half before: every point is on every companion hit)
+      text: 'Your companions share a third of your Might (rounded down), and a new companion arrives with it. Heal 2 HP after every fight you win.',
+      shareMight: 1 / 3,
       healAfterFight: 2,
     },
     hero: {
@@ -383,7 +384,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'Spell Power lasts the whole fight. You start every fight with 4 and gain 1 more each turn; cards can make far more, and some grow every time you play them.',
       'Swords read it and spend nothing: the Obsidian Blade (2 Mana, Hold, in your opening hand) deals 2 more damage per Spell Power, and her other Swords hit harder too. Might and Primed add to every hit (half on a Sword that hits 3 or more times).',
       'Spells spend it: X on the card means all you hold, X/2 half, rounded down. The more Mana a spell costs, the more each point deals.',
-      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus 1 for each Spell Power you hold. From 50 Fracture on, each Shatter also cracks another enemy for 10. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
+      'Fracture is a mark on an enemy that only ever adds up. Every 10 it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, then half as much more each time, plus 1 for each Spell Power you hold. From 50 Fracture on, each Shatter also cracks another enemy for 10. Barrier stops a Shatter, and some cards make every Shatter hit harder.',
     ],
   },
   drunkard: {

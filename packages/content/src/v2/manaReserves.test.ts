@@ -165,7 +165,7 @@ describe('the Reserves cards', () => {
         s.sides.a.mana = 1;
         const result = endTurn(s);
         expect(result.sides.a.reserves).toBe(final);
-        expect(hero(result).statuses.might ?? 0).toBe(final >= threshold ? (oath ? 3 : 1) : 0);
+        expect(hero(result).statuses.might ?? 0).toBe(final >= threshold ? (oath ? 2 : 1) : 0); // (Oath Unbroken: 2 Might since #769, 3 before)
       }
     },
   );
@@ -210,19 +210,21 @@ describe('the Reserves cards', () => {
   );
 
   it.each([
-    ['vow-kept', 1, 3, 5],
-    ['vow-kept+', 1, 4, 6],
-    ['vow-fulfilled', 3, 18, 7],
-    ['vow-fulfilled+', 3, 22, 8],
+    ['vow-kept', 1, 3, 5, Infinity],
+    ['vow-kept+', 1, 4, 6, Infinity],
+    // (the Reserve part in full to +35, +40 upgraded, and half after, rounded down: #769)
+    ['vow-fulfilled', 3, 18, 7, 35],
+    ['vow-fulfilled+', 3, 22, 8, 40],
   ] as const)(
     '%s preview and damage use Reserves left after paying the cost',
-    (card, cost, base, multiplier) => {
+    (card, cost, base, multiplier, full) => {
       for (const mana of [0, 1, 3]) {
         for (const reserves of [3, 7, 23]) {
           const s = fight('knight', [card]);
           s.sides.a.reserves = reserves;
           s.sides.a.mana = mana;
-          const expected = base + multiplier * (reserves - Math.max(0, cost - mana));
+          const part = multiplier * (reserves - Math.max(0, cost - mana));
+          const expected = base + (part > full ? full + Math.floor((part - full) / 2) : part);
           const before = JSON.stringify(s);
           expect(previewCardDamage(db, s, 'T0', s.sides.b.units[0]!.id).get(0)?.lo).toBe(expected);
           expect(JSON.stringify(s)).toBe(before);
@@ -255,14 +257,14 @@ describe('the Reserves cards', () => {
     expect(s.sides.a.reserves).toBe(5);
   });
 
-  it('Oath Unbroken raises the Max Reserves for good, and 4 or more Reserves at the end of the turn give 3 Might', () => {
+  it('Oath Unbroken raises the Max Reserves for good, and 4 or more Reserves at the end of the turn give 2 Might (#769; 3 before)', () => {
     let s = fight('knight', ['oath-unbroken']);
     s.sides.a.mana = 3;
     s = play(s, 'oath-unbroken');
     expect(s.sides.a.maxReserves).toBe(5);
     s.sides.a.reserves = 4;
     s = endTurn(s);
-    expect(hero(s).statuses.might).toBe(3);
+    expect(hero(s).statuses.might).toBe(2);
   });
 
   it('Measured Strike: 7, and 5 more with 2 or more Reserves', () => {
@@ -288,6 +290,35 @@ describe('the Reserves cards', () => {
     const s = fight('knight', ['vow-fulfilled']);
     s.sides.a.reserves = 3;
     expect(lost(play(s, 'vow-fulfilled'))).toBe(18 + 7 * 3);
+  });
+
+  it('Vow Fulfilled: the Reserve part is in full to +35 (+40 upgraded) and half after, rounded down (#769)', () => {
+    const at = (card: string, left: number, mana = 3): number => {
+      const s = fight('knight', [card]);
+      s.sides.a.mana = mana;
+      // (what the 3 Mana does not pay comes out of the Reserves first)
+      s.sides.a.reserves = left + (3 - mana);
+      const after = play(s, card);
+      expect(after.sides.a.reserves).toBe(left);
+      return lost(after);
+    };
+    // (5 Reserves is +35 exactly; the 6th adds floor(7 / 2), ten add 35 + floor(35 / 2))
+    expect(at('vow-fulfilled', 5)).toBe(18 + 35);
+    expect(at('vow-fulfilled', 6)).toBe(18 + 35 + 3);
+    expect(at('vow-fulfilled', 10)).toBe(18 + 35 + 17);
+    // (upgraded: 5 Reserves is +40 exactly; the 6th adds 4, ten add 40 + 20)
+    expect(at('vow-fulfilled+', 5)).toBe(22 + 40);
+    expect(at('vow-fulfilled+', 6)).toBe(22 + 40 + 4);
+    expect(at('vow-fulfilled+', 10)).toBe(22 + 40 + 20);
+    // (it is the Reserves left after paying that count)
+    expect(at('vow-fulfilled', 5, 0)).toBe(18 + 35);
+    expect(at('vow-fulfilled', 6, 1)).toBe(18 + 35 + 3);
+    expect(cardText(db, db.cards['vow-fulfilled']!)).toBe(
+      'Deal 18 (+7 per Reserve, half as much past +35) damage.',
+    );
+    expect(cardText(db, db.cards['vow-fulfilled+']!)).toBe(
+      'Deal 22 (+8 per Reserve, half as much past +40) damage.',
+    );
   });
 
   it('Blood Oath: 3 HP for 3 Reserves, never past the Max Reserves', () => {

@@ -1577,7 +1577,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
     case 'shatterUp':
       return o.pct
         ? `Your Shatters deal ${o.pct}% more for the rest of the fight.`
-        : `Your Shatters deal ${o.amount} more for the rest of the fight.`;
+        : `Your Shatters deal ${o.amount} more for the rest of the fight (past +15 in all, half as much).`;
     case 'allyPct':
       return `Your companions' attacks deal ${o.amount}% more for the rest of the fight.`;
     case 'attackAura': {
@@ -1633,7 +1633,9 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       return `Add ${n > 1 ? `${n} ${plural(nm)}` : `${article(nm)} ${nm}`} to ${dest}.`;
     }
     case 'actAllies':
-      return 'Command your companions to act now.';
+      return o.bare
+        ? 'Command your companions to act now, without their Might.'
+        : 'Command your companions to act now.';
     case 'prevent':
       // (it stops the one hit that sprang it, like Shielded; a move's other hits still land)
       return 'Cancel that hit.';
@@ -1744,7 +1746,10 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
       const when = once1
         ? timing.replace(/^Whenever /, 'The next time ')
         : o.times && !nextTurn
-          ? `For the next ${o.times} turn${o.times === 1 ? '' : 's'}, ${base.charAt(0).toLowerCase()}${base.slice(1)}`
+          ? // (`times` counts answers, not turns: only a start- or end-of-turn Aura's are a number of turns. Trail of Blood, #769)
+            o.when !== 'turnStart' && o.when !== 'turnEnd' && /^Whenever /.test(timing)
+            ? timing.replace(/^Whenever /, `The next ${o.times} times `)
+            : `For the next ${o.times} turn${o.times === 1 ? '' : 's'}, ${base.charAt(0).toLowerCase()}${base.slice(1)}`
           : timing;
       // (an Aura that answers something done to an enemy aims at that enemy; an awakening's Aura strikes each enemy the totem struck)
       const inner =

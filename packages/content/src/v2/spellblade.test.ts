@@ -415,10 +415,42 @@ describe('Fracture and Shatter', () => {
     expect(lost(play(s, 'rupture-script+'))).toBe(43);
   });
 
-  it('it keeps scaling past 100, 3 a Shatter (#726)', () => {
+  it('it keeps scaling past 100, 3 a Shatter (#726), half of that after the tenth (#768)', () => {
     const s = fight(['hairline-crack'], { stars: 0 });
     foe(s).statuses.fracture = 106;
-    expect(lost(play(s, 'hairline-crack'))).toBe(50);
+    // (the 11th Shatter: 17 + 30 + floor(3 / 2); 17 + 33 before #768)
+    expect(lost(play(s, 'hairline-crack'))).toBe(48);
+  });
+
+  it('the 3 a Shatter is in full for the first ten Shatters and half after, rounded down (#768)', () => {
+    // (Hairline Crack applies 5: from 5 short, it lands on the k-th Shatter exactly)
+    const kth = (k: number): number => {
+      const s = fight(['hairline-crack'], { stars: 0 });
+      foe(s).statuses.fracture = 10 * k - 5;
+      const after = play(s, 'hairline-crack');
+      expect(foe(after).statuses.fracture).toBe(10 * k);
+      return lost(after);
+    };
+    expect(kth(1)).toBe(17 + 3);
+    expect(kth(10)).toBe(17 + 30);
+    // (past the tenth: 30 + floor(3 x (k - 10) / 2))
+    expect(kth(11)).toBe(17 + 30 + 1);
+    expect(kth(12)).toBe(17 + 30 + 3);
+    expect(kth(20)).toBe(17 + 30 + 15);
+  });
+
+  it('what Deepening adds to a Shatter is in full to 15 and half after (#768)', () => {
+    const deep = (bonus: number): number => {
+      const s = fight(['hairline-crack'], { stars: 0 });
+      s.sides.a.shatterBonus = bonus;
+      foe(s).statuses.fracture = 5;
+      return lost(play(s, 'hairline-crack'));
+    };
+    // (the first Shatter is 20 with nothing added)
+    expect(deep(0)).toBe(20);
+    expect(deep(15)).toBe(20 + 15);
+    expect(deep(16)).toBe(20 + 15);
+    expect(deep(31)).toBe(20 + 23);
   });
 
   it('a cleanse does not take Fracture off', () => {

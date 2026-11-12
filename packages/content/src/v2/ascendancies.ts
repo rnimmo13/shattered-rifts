@@ -37,7 +37,13 @@ export interface Ascendancy {
   /** fields of the base trait it replaces */
   set?: Partial<
     Pick<HeroTrait,
-      'maxReserves' | 'shareMight' | 'shareMightFull' | 'shareMightMax' | 'clutch' | 'keepBarrier'
+      | 'maxReserves'
+      | 'shareMight'
+      | 'shareMightFull'
+      | 'shareMightMax'
+      | 'shareMightRest'
+      | 'clutch'
+      | 'keepBarrier'
     >
   >;
   /** companions it starts every fight with, on top of the class's */
@@ -159,9 +165,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Beastmaster',
     'The pack',
     // (all your Might, and companions that grow every turn, so a pack can win on its own; the Might stops at 10: Robert 2026-11-08, #693)
-    'Your companions share your Might: all of the first 6, half of the rest, 14 at most. At the start of your turn, each of your companions gains 2 max HP, and in your first 10 turns you gain 1 Might.',
+    // (all of the first 5 and half of the rest, no stop, since DECISIONS #768: always ahead of the base class's third)
+    'Your companions share your Might: all of the first 5 and half of the rest. At the start of your turn, each of your companions gains 2 max HP, and in your first 10 turns you gain 1 Might.',
     {
-      set: { shareMight: 1, shareMightFull: 6, shareMightMax: 14 },
+      set: { shareMight: 1, shareMightFull: 5 },
       turnStart: [growHp(2, 'allAllies')],
       triggers: [on('turnStart', [status('might', 1)], { times: 10 })],
     },
@@ -245,10 +252,14 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Seer',
     'Marked prey',
     // (when the mark dies, the next keeps the bonus, #694)
-    'Your first damaging aimed Attack each turn marks its enemy and applies 1 Exposed. Keeping the same mark builds +10% attack damage against it each qualifying turn, up to +50%; choosing a new mark restarts at +10%, unless your marked enemy has died, when the new mark keeps the bonus.',
+    'Your first damaging aimed Attack each turn marks its enemy and applies 1 Exposed. Keeping the same mark builds +10% attack damage against it each qualifying turn up to +20%, then +5% a turn up to +40%; choosing a new mark restarts at +10%, unless your marked enemy has died, when the new mark keeps the bonus.',
     {
       fightStart: [
-        { op: 'discipline', rule: { kind: 'pursuit', perTurn: 10, cap: 50, exposed: 1 } },
+        // (half the rate past 20% and 40% at most, DECISIONS #768; 10% a turn to 50% before)
+        {
+          op: 'discipline',
+          rule: { kind: 'pursuit', perTurn: 10, cap: 40, exposed: 1, halfPast: 20 },
+        },
       ],
     },
   ),
@@ -402,18 +413,20 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'spellblade',
     'Archmage',
     'Spells',
-    'Start each fight with 3 more Spell Power and gain 2 Spell Power at the start of your turn. Your first Spell Attack each turn that spends Spell Power deals 1 extra damage per point spent on every hit. Half that expenditure, rounded down, returns next turn.',
+    'Start each fight with 3 more Spell Power and gain 1 Spell Power at the start of your turn. Your first Spell Attack each turn that spends Spell Power deals 1 extra damage per point spent on every hit. Half that expenditure, rounded down, returns next turn.',
     {
       fightStart: [
         stars(3),
         { op: 'discipline', rule: { kind: 'spellCycle', perSpent: 1, refundDivisor: 2 } },
       ],
-      turnStart: [stars(2)],
+      // (1 since DECISIONS #768, 2 before)
+      turnStart: [stars(1)],
     },
   ),
   // (15% more, not 5 more: a percentage grows as the Shatters do, DECISIONS #542)
-  a('spellblade', 'Shatterer', 'Fracture', 'Every Shatter deals 15% more damage.', {
-    fightStart: [{ op: 'shatterUp', amount: 0, pct: 15 }],
+  a('spellblade', 'Shatterer', 'Fracture', 'Every Shatter deals 10% more damage.', {
+    // (10% since DECISIONS #768, 15% before)
+    fightStart: [{ op: 'shatterUp', amount: 0, pct: 10 }],
   }),
 
   a(
@@ -501,9 +514,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Fateweaver',
     'Fate',
     // (2 and a share of the enemy's max HP: a flat 3 was nothing against Tier XX, DECISIONS #542; 5% was too much late, #544)
-    'At the start of your turn, curse a random enemy with 2 Fate, plus 2% of its max HP.',
+    // (1% since DECISIONS #768, 2% before: at Arena HP the trait alone was 26 Fate a turn)
+    'At the start of your turn, curse a random enemy with 2 Fate, plus 1% of its max HP.',
     {
-      turnStart: [scaled(status('doom', 2, 'randomFoe'), per('maxHp', 0.02, 'each'))],
+      turnStart: [scaled(status('doom', 2, 'randomFoe'), per('maxHp', 0.01, 'each'))],
     },
   ),
   a(

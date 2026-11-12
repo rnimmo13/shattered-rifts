@@ -1,3 +1,16 @@
+## 0.260.0 - 2026-11-12
+
+- Balance (rules 110): the strongest builds eased down, each with a slowdown and not a cap on a turn.
+  - Hunter: companions share a third of your Might (was half). Beastmaster: all of the first 5 and half of the rest, with no limit. Wild Hunt: its action at the start of your turn is without the companions’ Might.
+  - A "first Attack each turn" bonus (Killing Chill) applies to that card’s own play, not to its replays.
+  - Shatters: each one’s growth over the last halves after the tenth on an enemy, and what Deepening adds halves past +15. Shatterer: every Shatter 10% more (was 15%).
+  - Seer: +10% a turn up to +20%, then +5% a turn, +40% at most (was +10% up to +50%).
+  - Gathering Storm reads Gather in full to +8, half after, at most +18. Old Twelve Gauge reads Precision in full to +20, half after, at most +70. Off the Leash: half a companion’s HP up to +10, a quarter after.
+  - Fateweaver: 2 Fate plus 1% of the enemy’s max HP each turn (was 2%). Archmage: 1 Spell Power a turn (was 2).
+  - Trail of Blood gives its Might on the first 4 summons a fight (was every summon). Pack Frenzy+: 4 Might and two actions (was 3 Might and three).
+  - Hot Temper adds a copy of itself only when it is your first Attack of the turn (was every time). Oath Unbroken: 2 Might a turn (was 3). Vow Fulfilled counts the first 5 Reserves in full and the rest half.
+- Fixed: Trail of Blood’s text now says how often it answers (a number of summons, not turns).
+
 ## 0.259.0 - 2026-11-12
 
 - Arena: both players start with 1,200 HP (was 1,000).

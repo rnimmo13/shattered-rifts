@@ -163,3 +163,52 @@ Rows that changed from the table above:
 | Engineer | Artillerist | 190-260 | 8 | B | B- |
 
 The top is now seven builds at A (Beastmaster, Bonelord, Shatterer, Totemist, Deathwish, Seer, Fateweaver: a kill on own turn 6 to 7) and the bottom two at B- (Blademaster and the Brewmaster on his own cards: turn 9). Nothing is S or C by hand.
+
+## #768 (after 0.259.0, not released): the top eased down
+
+See DECISIONS #768 for every number. The chart after it, by hand on the 1,000 baseline (a passive opponent, a tight upgraded deck, about ±30%); grade by kill turn, S 5 or sooner, A 6 to 7, B 8 to 9, C 10 or later, with a kill on turn 7 to 8 counted B+.
+
+| Grade | Class | Ascendancy | Own turn 7, a turn | Kill turn |
+|---|---|---|---|---|
+| A- | Hunter | Beastmaster | about 440 | 6-7 |
+| A- | Necromancer | Bonelord | about 450 | 6-7 |
+| A- | Knight | Marshal | 450-500 on paper | 7 on paper; the slowest deck in real fights |
+| B+ | Spellblade | Shatterer | about 400 | 7-8 |
+| B+ | Shaman | Totemist | 350-390 | 7 |
+| B+ | Drunkard | Deathwish | about 350, double at low HP | 7-8 |
+| B+ | Drunkard | Gunslinger | about 350 | 7-8 |
+| B+ | Trickster | Seer | about 320 | 7 |
+| B+ | Necromancer | Fateweaver | an execute | 7-8 |
+| B+ | Spellblade | Archmage | 230-380 | 7-8 |
+| B+ | Rogue | Bloodletter | about 250 | 7-8 |
+| B+ | Shaman | Spiritwalker | about 300, one 700 turn | 7-8 |
+| B+ | Hunter | Reaver | about 260 | 7-8 |
+| B+ | Monk | Sunwalker | about 290 | 7-8 |
+| B+ | Monk | Sage | about 250 | 7-8 |
+| B+ | Rogue | Bladedancer | about 350 with Recall | 8 |
+| B+ | Engineer | Golemancer | 280-340 | 8 |
+| B | Monk | Zealot | 220-300 | 7-8 |
+| B | Knight | Blood Knight | 200-250 | 8-9 |
+| B | Engineer | Swarmwright | 250-350 | 8-9 |
+| B | Hunter | Predator | about 260 | 8 |
+| B | Necromancer | Soulreaper | about 240 | 8 |
+| B | Trickster | Cardsharp | about 245 | 8-9 |
+| B | Shaman | Elementalist | its deck plus about 80 | 8 |
+| B | Trickster | Trapmaster | 180 passive, about 250 attacked | 8 |
+| B | Knight | Paladin | 170-330 | 8 |
+| B | Rogue | Assassin | about 200 | 8-9 |
+| B | Engineer | Artillerist | 190-260 | 8 |
+| B- | Spellblade | Blademaster | 180-200 | 9 |
+| B- | Drunkard | Brewmaster | about 185 on his own cards | 9 |
+
+## #769: the Beastmaster and the Knight through their cards
+
+Trail of Blood (the first 4 summons), Pack Frenzy+ (4 Might, two actions), Hot Temper (a copy only as the first Attack of a turn), Oath Unbroken (2 Might), Vow Fulfilled (half past 5 Reserves). Rows that changed from the chart above:
+
+| Grade | Class | Ascendancy | Own turn 7, a turn | Kill turn | Was |
+|---|---|---|---|---|---|
+| B+ | Hunter | Beastmaster | about 370 | 7 | A- |
+| B+ | Knight | Marshal | about 380 on paper | 7-8 | A- |
+| B+ | Necromancer | Bonelord | about 450 | 6-7 | A- (regraded: a high B+, the strongest row, and the first to watch) |
+
+Nothing is above B+ and nothing below B-: by hand every build kills a passive 1,000 HP between own turn 7 and turn 9, about 8 to 10 in the Arena at 1,200.

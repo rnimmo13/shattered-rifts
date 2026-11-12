@@ -126,7 +126,7 @@ describe('Dorian, the Necrobinder copy', () => {
     // (4 + half its HP, rounded down: 4 + 0 for the hurt one, 4 + 5 for the 10-HP one)
     expect(foe(after).hp).toBe(300 - (4 + 0) - (4 + 5));
     expect(cardText(db, db.cards['off-the-leash']!)).toBe(
-      'Your companions each deal 4 damage, plus half their own HP (half as much past +15).',
+      'Your companions each deal 4 damage, plus half their own HP (half as much past +10).',
     );
     after = play(after, 'T1', foe(after).id);
     // (the 10-HP Thrall alone, not the 3-HP one too)

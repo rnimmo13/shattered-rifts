@@ -240,7 +240,15 @@ export function disciplineAttack(
       : undefined;
     const fell = !!d.target && (!old || old.hp <= 0);
     d.progress =
-      d.target === target.id || fell ? Math.min(r.cap, d.progress + r.perTurn) : r.perTurn;
+      d.target === target.id || fell
+        ? Math.min(
+            r.cap,
+            d.progress +
+              (r.halfPast !== undefined && d.progress >= r.halfPast
+                ? Math.floor(r.perTurn / 2)
+                : r.perTurn),
+          )
+        : r.perTurn;
     d.target = target.id;
   }
   if (r.kind === 'fury' && (actor.statuses.wrath ?? 0) > 0) return d.progress;

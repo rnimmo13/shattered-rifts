@@ -156,7 +156,7 @@ export const STATUS_INFO: Record<
     name: 'Fracture',
     glyph: '⌇',
     tone: 'bad',
-    text: 'Cracks that only ever add up. Every 10, it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus the Spell Power of whoever applied it. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy. Barrier stops a Shatter.',
+    text: 'Cracks that only ever add up. Every 10, it Shatters, 3 harder each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, then half as much more each time, plus the Spell Power of whoever applied it. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy. Barrier stops a Shatter.',
   },
   keen: {
     name: 'Keen',
@@ -719,7 +719,7 @@ export const KEYWORD_INFO: Record<string, { name: string; text: string }> = {
   },
   shatter: {
     name: 'Shatter',
-    text: 'Every 10 Fracture, the enemy takes damage, 3 more each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy (a Shatter that sets off does not spread again). Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
+    text: 'Every 10 Fracture, the enemy takes damage, 3 more each time: 20 at 10, 23 at 20, 26 at 30... 47 at 100, then half as much more each time, plus 1 for each Spell Power you hold, plus anything that has made your Shatters stronger. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy (a Shatter that sets off does not spread again). Barrier stops it. It is not an attack: Might, Primed and Exposed do nothing to it.',
   },
   grows: {
     name: 'Grows',

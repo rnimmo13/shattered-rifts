@@ -18,7 +18,9 @@ import {
   BLADE_TAG,
   SHATTER_AT,
   SHATTER_BASE,
+  SHATTER_BONUS_FULL,
   SHATTER_STEP,
+  SHATTER_STEP_FULL,
   SHATTER_SPREAD_AT,
   SHATTER_SPREAD,
   ARENA_HP_COST_MULT,
@@ -123,6 +125,11 @@ interface Run {
   grow?: { inst: string; unit: string };
   /** the companions are acting again this turn, not for the first extra time: their hits deal half (DECISIONS #762) */
   actHalf?: boolean;
+  /** the companions are acting through a bare action: their Might is left off their hits (DECISIONS #768) */
+  actBare?: boolean;
+  /** a card is being played again (Reverb, a Replay mark, Echoing Spirit): "your first Attack each turn" bonuses are for its own play
+   * only (DECISIONS #768) */
+  again?: boolean;
 }
 interface ProjectedHit {
   limited?: boolean;
@@ -598,8 +605,10 @@ function sharedMight(tr: HeroTrait | undefined, might: number): number {
   if (share <= 0 || might <= 0) return 0;
   const full = tr?.shareMightFull;
   const counted =
-    full !== undefined && might > full ? full + Math.floor((might - full) / 2) : might;
-  const shared = Math.floor(counted * share);
+    full !== undefined && might > full
+      ? full + Math.floor((might - full) * (tr?.shareMightRest ?? 0.5))
+      : might;
+  const shared = Math.floor(counted * share + 1e-9);
   return tr?.shareMightMax !== undefined ? Math.min(tr.shareMightMax, shared) : shared;
 }
 
@@ -2151,12 +2160,20 @@ function execOp(r: Run, a: Act, op: Op): void {
       const allyPct = a.actor.kind === 'ally' ? 1 + (side.allyPct ?? 0) / 100 : 1;
       const again = a.actor.kind === 'ally' && r.actHalf ? 0.5 : 1;
       // (Might and Sapped go onto the hit afterwards, so the whole hit is halved here with them counted, then they are taken back off)
-      const againNet = again < 1 ? stacks(a.actor, 'might') - stacks(a.actor, 'sapped') : 0;
-      const halved = (v: number): number =>
-        again < 1 ? Math.round(Math.max(0, v + againNet) / 2) - againNet : v;
+      // (and a bare action, Wild Hunt's, leaves the companion's Might off: DECISIONS #768)
+      const bare = a.actor.kind === 'ally' && r.actBare === true;
+      const allyMight = again < 1 || bare ? Math.max(0, stacks(a.actor, 'might')) : 0;
+      const allySapped = again < 1 || bare ? stacks(a.actor, 'sapped') : 0;
+      const halved = (v: number): number => {
+        if (again === 1 && !bare) return v;
+        const whole = Math.max(0, v + (bare ? 0 : allyMight) - allySapped);
+        return (again < 1 ? Math.round(whole / 2) : whole) - (allyMight - allySapped);
+      };
       const isAttack = a.card?.kind === 'attack';
       const leth =
-        isAttack && lead && side.attacksPlayed === 0 ? 1 + stacks(lead, 'lethality') / 100 : 1;
+        isAttack && lead && side.attacksPlayed === 0 && !r.again
+          ? 1 + stacks(lead, 'lethality') / 100
+          : 1;
       const reaping = isAttack && lead ? stacks(lead, 'reaping') > 0 : false;
       const noosed = a.card?.tags?.includes('noose') === true;
       // Riposte (the Knight): against an Open target the Opening is spent and every hit deals more (DECISIONS #415)
@@ -2610,9 +2627,12 @@ function execOp(r: Run, a: Act, op: Op): void {
         const before = side.extraActs ?? 0;
         side.extraActs = before + 1;
         const was = r.actHalf === true;
+        const wasBare = r.actBare === true;
         r.actHalf = before >= 1;
+        r.actBare = op.bare === true;
         for (const u of actors) if (u.hp > 0) actAlly(r, u);
         r.actHalf = was;
+        r.actBare = wasBare;
       }
       return;
     case 'prevent':
@@ -3053,7 +3073,11 @@ function execOp(r: Run, a: Act, op: Op): void {
       return;
     }
     case 'when': {
-      const v = metricValue(r, a, op.by, op.of, a.target, undefined, op.rune);
+      // (a card played again is not the turn's first Attack: its own play was, DECISIONS #768, #769. The count itself only goes up
+      // once every play of the card is done.)
+      const v =
+        metricValue(r, a, op.by, op.of, a.target, undefined, op.rune) +
+        (op.by === 'attacksPlayed' && r.again && a.card?.kind === 'attack' ? 1 : 0);
       if (
         (op.atLeast !== undefined && v < op.atLeast) ||
         (op.atMost !== undefined && v > op.atMost)
@@ -3996,9 +4020,20 @@ function heroDefOf(db: CombatDb, sd: Pick<SideState, 'hero' | 'ascendancy'>): He
   return (sd.ascendancy ? db.ascended?.[sd.ascendancy] : undefined) ?? db.heroes[sd.hero];
 }
 
-/** What the k-th Shatter on a unit deals: 20, 25, 30... (DECISIONS #486, #523, #713), plus its owner's Spell Power (#487) and what its Deepening adds. */
+/** What the k-th Shatter on a unit deals: 20, 23, 26... 47 at the tenth, then half that growth (DECISIONS #486, #523, #713, #726, #768), plus its owner's Spell Power (#487) and what its Deepening adds. */
+/** What the Shatters so far add to the k-th: the step in full for the first SHATTER_STEP_FULL, half after (DECISIONS #768). */
+function shatterStep(k: number): number {
+  return k <= SHATTER_STEP_FULL
+    ? SHATTER_STEP * k
+    : SHATTER_STEP * SHATTER_STEP_FULL + Math.floor((SHATTER_STEP * (k - SHATTER_STEP_FULL)) / 2);
+}
+/** What Deepening adds to a Shatter: in full to SHATTER_BONUS_FULL, half after (DECISIONS #768). */
+function shatterDeepening(sd: SideState): number {
+  const b = sd.shatterBonus ?? 0;
+  return b > SHATTER_BONUS_FULL ? SHATTER_BONUS_FULL + Math.floor((b - SHATTER_BONUS_FULL) / 2) : b;
+}
 function shatterDamage(sd: SideState, k: number): number {
-  const n = SHATTER_BASE + SHATTER_STEP * k + sd.stars + (sd.shatterBonus ?? 0);
+  const n = SHATTER_BASE + shatterStep(k) + sd.stars + shatterDeepening(sd);
   // (the Shatterer: a percentage on top, so it grows as the Shatters do, DECISIONS #542)
   return sd.shatterPct ? Math.floor((n * (100 + sd.shatterPct)) / 100) : n;
 }
@@ -4037,10 +4072,11 @@ function projectShatter(
   // (during one of the card's effects, it is that effect's; once its effects are done, it is what answers the play, such as
   // Fault Lines' extra Fracture: kept apart under AFTER_PLAY, and counted with the card's last Fracture effect)
   const index = projection.path[0] ?? AFTER_PLAY;
-  let n = SHATTER_BASE + SHATTER_STEP * k;
+  let n = SHATTER_BASE + shatterStep(k);
   const how = [`Shatter ${k}: ${n}`];
   if (owner.stars) how.push(`+${owner.stars} Spell Power = ${(n += owner.stars)}`);
-  if (owner.shatterBonus) how.push(`+${owner.shatterBonus} Deepening = ${n + owner.shatterBonus}`);
+  if (owner.shatterBonus)
+    how.push(`+${shatterDeepening(owner)} Deepening = ${n + shatterDeepening(owner)}`);
   if (owner.shatterPct) how.push(`+${owner.shatterPct}% = ${dmg}`);
   if (final !== dmg) how.push(`Difficulty = ${final}`);
   // (Shielded cancels it and Ghostly holds it to 1; a Shatter goes through Slippery)
@@ -6210,11 +6246,14 @@ function playAgain(
   for (const source of list) {
     if (r.s.winner || r.s.pending) return;
     if (source !== 'echo') addStatus(r, hero, source, -1);
+    const was = r.again === true;
+    r.again = true;
     runOps(
       r,
       mkAct(hero, { target, card: cd, inst, ...(x !== undefined ? { x } : {}) }),
       cd.effects,
     );
+    r.again = was;
   }
 }
 
@@ -6228,8 +6267,12 @@ function extraPlays(
   target: Unit | null,
   x: number,
 ): void {
-  for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++)
+  for (let k = 0; k < (inst.replay ?? 0) && !r.s.winner && !r.s.pending; k++) {
+    const was = r.again === true;
+    r.again = true;
     runOps(r, mkAct(hero, { target, card: cd, inst, x }), cd.effects);
+    r.again = was;
+  }
 }
 
 /** The answer to a pending choice: carry it out, then let the card finish. */

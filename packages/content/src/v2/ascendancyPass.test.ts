@@ -53,11 +53,11 @@ const play = (s: CombatState, card: string): CombatState => {
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
 
 describe('the Ascendancy pass (DECISIONS #542)', () => {
-  it('Fateweaver: 2 Fate plus 2% of the enemy max HP (DECISIONS #544)', () => {
+  it('Fateweaver: 2 Fate plus 1% of the enemy max HP (#768; 2% since DECISIONS #544)', () => {
     // (the class's own Fate, from its Thralls, comes on top: compared with the same fight without it)
     const doom = (asc?: string): number =>
       foe(endTurn(fight('necromancer', asc, []))).statuses.doom ?? 0;
-    expect(doom('necromancer:fateweaver') - doom()).toBe(2 + 4);
+    expect(doom('necromancer:fateweaver') - doom()).toBe(2 + 2);
   });
 
   it('Elementalist: the first Flame card each turn adds 4 Burn, the second none (#766; 3 before)', () => {
@@ -70,7 +70,7 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     expect(foe(s).statuses.burn).toBe(8 + 4 + 8);
   });
 
-  it('Shatterer: every Shatter 15% more', () => {
+  it('Shatterer: every Shatter 10% more (#768; 15% before)', () => {
     const shatter = (asc?: string): number => {
       const s = fight('spellblade', asc, ['hairline-crack']);
       foe(s).statuses.fracture = 9;
@@ -79,7 +79,7 @@ describe('the Ascendancy pass (DECISIONS #542)', () => {
     };
     const plain = shatter();
     expect(plain).toBeGreaterThan(0);
-    expect(shatter('spellblade:shatterer')).toBe(Math.floor((plain * 115) / 100));
+    expect(shatter('spellblade:shatterer')).toBe(Math.floor((plain * 110) / 100));
   });
 
   it('companion percentage damage remains supported; retired Foreman maps to Artillerist', () => {

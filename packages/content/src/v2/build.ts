@@ -65,6 +65,8 @@ export const wound = (side: 'self' | 'foe' = 'foe', card = 'wound'): Op => ({
   side,
 });
 export const ACT: Op = { op: 'actAllies' };
+/** the companions act without their Might (Wild Hunt: a free action every turn, DECISIONS #768) */
+export const ACT_BARE: Op = { op: 'actAllies', bare: true };
 export const PREVENT: Op = { op: 'prevent' };
 
 // --- ops for the class mechanics (docs/09_ROSTER.md) --------------------------------------------------------------------------

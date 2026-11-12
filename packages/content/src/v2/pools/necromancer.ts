@@ -80,9 +80,9 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    // (half its HP to +15, a quarter after, DECISIONS #762)
-    [command(scaled(dmg(4), { ...per('hp', 0.5), half: 15 }))],
-    { ...CMD, up: { effects: [command(scaled(dmg(6), { ...per('hp', 0.5), half: 15 }))] } },
+    // (half its HP to +10, a quarter after, DECISIONS #768; +15 since #762)
+    [command(scaled(dmg(4), { ...per('hp', 0.5), half: 10 }))],
+    { ...CMD, up: { effects: [command(scaled(dmg(6), { ...per('hp', 0.5), half: 10 }))] } },
   ),
   // (Soul: the token most of the Souls cards make)
   g('common', 'gravesoul', 'Gravesoul', 'skill', 0, 'none', [draw(2)], {

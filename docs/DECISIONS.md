@@ -2242,3 +2242,29 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
   - **Arena HP:** `ARENA_START_HP` is 1200 (1000 before), both seats. `BASELINE_HP` stays 1000: the goldfish tool, the training dummies and every hand ledger are worked against it, so numbers stay comparable from pass to pass. In the Arena itself every kill turn in the ledgers comes about one turn later.
 - **Left as it is:** HP a hero pays for their own cards still costs five times the card's number in the Arena (#707), now against 1200.
 - **Grades after this:** the top is A (a kill against a passive 1,000 HP on own turn 6 to 7) and the bottom B- (turn 9): see [ARENA_SCALING_2026-11-12.md](ARENA_SCALING_2026-11-12.md).
+
+## 768 - The top builds eased down with more diminishing returns; the Hunter's share; Wild Hunt without Might (2026-11-12)
+
+- **Question:** Robert, on the grades after 0.259.0: "can you bring down any from the A or A- down into the B+ and B range", "keep things inline with the diminising returns idea"; on the Beastmaster: "base hunter should be 1/3 of heros might and beast master goes to half after 5", "make wild hunt less damage somehow, maybe it shouldnt benefit from might bonus".
+- **Decision (rules 110, not released; by hand, no simulations):**
+  - **Hunter:** companions share a third of the hero's Might (half before). **Beastmaster:** all of the first 5 and half of the rest, with no stop (the first 6, half the rest and 14 at most in 0.259.0, which fell behind the base class's half from 28 Might: an Ascendancy must never be worse than its class). **Wild Hunt:** its action at the start of the turn is without the companions' Might (`actAllies.bare`).
+  - **A first-Attack bonus** (Killing Chill's `lethality`) is for the card's own play, not its replays by Reverb, a Replay mark or Echoing Spirit.
+  - **Shatter:** the step of 3 a Shatter is in full for the first 10 Shatters on a unit and half after; what Deepening adds is in full to +15 and half after. **Shatterer:** 10% (15% before).
+  - **Seer:** +10% a turn to +20%, then +5% a turn, +40% at most (`pursuit.halfPast`; +10% to +50% before).
+  - **Gathering Storm:** Gather in full to +8, half after, at most +18 (+12, +24). **Old Twelve Gauge:** Precision in full to +20, half after, at most +70 (+30, +90). **Off the Leash:** half a companion's HP to +10, a quarter after (+15).
+  - **Fateweaver:** 2 Fate plus 1% of the enemy's max HP a turn (2%). **Archmage:** 1 Spell Power a turn (2).
+- **Regraded without a change:** the Bloodletter, the Reaver, the Spiritwalker and the Archmage had the same numbers as builds graded B+ (about 250 to 300 on own turn 7, a kill on turn 7 to 8); the A- was an inconsistency in the first chart.
+- **Left alone:** the Marshal (A- only on paper; the slowest deck in real fights) and the Deathwish's low-HP bonuses (its risk).
+
+## 769 - The Beastmaster and the Knight eased through their cards, not their Ascendancies (2026-11-12)
+
+- **Question:** Robert, on the chart after #768 (Beastmaster, Bonelord and Marshal still A-): "i still think we need a nerf for beastmaster and knight but maybe the changes dont need to be to the ascendencies and maybe the cards they use ?"; then "id like you to push when ready".
+- **Decision (rules 110; by hand, no simulations):**
+  - **Trail of Blood:** 1 Might on the first 4 summons a fight, each copy (every summon before). It costs nothing and two copies open in hand.
+  - **Pack Frenzy+:** 4 Might and the companions act twice (3 Might and three times before); the base card is unchanged.
+  - **Hot Temper:** adds a copy of itself only as the first Attack of a turn (on every play before): a free Attack that carried all the Might and doubled in number each time the deck came round.
+  - **Oath Unbroken:** 2 Might at the end of a turn with 4 or more Reserves (3 before).
+  - **Vow Fulfilled:** the first 5 Reserves in full and the rest half (`half: 35`, upgraded `half: 40`); Max Reserves has no limit.
+  - **Card text:** a trigger that answers a number of times and is not a start- or end-of-turn one reads "The next N times you..." (it read "For the next N turns", which was wrong for Trail of Blood).
+- **By hand** (own turn 7, 1,000 HP, passive): Beastmaster about 440 to about 370; Marshal on paper about 475 to about 380, and its turn 10 from about 1,000 to about 550. Nothing on the chart is above B+.
+- **Caution:** the Marshal's numbers are a paper deck; the one real Marshal deck of the week was far slower. Hot Temper and Oath Unbroken are also played by the Paladin and the Blood Knight. If a tight Marshal plays flat, Oath Unbroken back to 3 Might is the first thing to return.

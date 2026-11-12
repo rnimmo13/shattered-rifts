@@ -532,7 +532,12 @@ export const KNIGHT: CardDef[] = [
     status('plating', 2),
   ]),
   // (Anger)
-  m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [dmg(6), copySelf('discard')]),
+  // (a copy only as the first Attack of a turn since DECISIONS #769: a copy on every play doubled the free Attacks in the deck each
+  // time round, and every one carries all the Might)
+  m('common', 'hot-temper', 'Hot Temper', 'attack', 0, 'foe', [
+    dmg(6),
+    when('attacksPlayed', { atMost: 0 }, [copySelf('discard')]),
+  ]),
   // (Burning Pact)
   m('uncommon', 'pact-of-embers', 'Pact of Embers', 'skill', 1, 'none', [exhaustN(1), draw(2)]),
   // (Pyre)
@@ -657,12 +662,13 @@ export const KNIGHT: CardDef[] = [
     'power',
     2,
     'none',
-    [maxReserves(2), on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])])],
+    // (2 Might since DECISIONS #769, 3 before: two copies were 6 Might a turn with no end, on Attacks that cost nothing)
+    [maxReserves(2), on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 2)])])],
     {
       up: {
         effects: [
           maxReserves(3),
-          on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 3)])]),
+          on('turnEnd', [when('reserves', { atLeast: 4 }, [status('might', 2)])]),
         ],
       },
     },
@@ -674,9 +680,10 @@ export const KNIGHT: CardDef[] = [
     'attack',
     3,
     'foe',
-    [scaled(dmg(18), per('reserves', 7))],
+    // (the first 5 Reserves in full, the rest half, DECISIONS #769: Max Reserves has no limit)
+    [scaled(dmg(18), { ...per('reserves', 7), half: 35 })],
     {
-      up: { effects: [scaled(dmg(22), per('reserves', 8))] },
+      up: { effects: [scaled(dmg(22), { ...per('reserves', 8), half: 40 })] },
     },
   ),
   m(

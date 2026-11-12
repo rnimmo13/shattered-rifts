@@ -45,7 +45,7 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
 
 describe('the Hunter cost pass (#693)', () => {
-  it('Beastmaster: companions share the first 6 Might and half the rest (#762), gain 2 max HP each turn, and its Might stops at 10', () => {
+  it('Beastmaster: companions share the first 5 Might and half the rest (#768), gain 2 max HP each turn, and its Might stops at 10', () => {
     let s = fight([], 'beastmaster');
     const hound = allies(s)[0]!;
     hound.hp = hound.maxHp = 200;
@@ -56,8 +56,8 @@ describe('the Hunter cost pass (#693)', () => {
       hero(s).hp = hero(s).maxHp;
     }
     expect(hero(s).statuses.might).toBe(10);
-    // (the Hound shares 6 + half of the other 4, and grew 2 a turn)
-    expect(allies(s)[0]!.statuses.might).toBe(8);
+    // (the Hound shares 5 + half of the other 5, rounded down, and grew 2 a turn)
+    expect(allies(s)[0]!.statuses.might).toBe(7);
     expect(allies(s)[0]!.maxHp).toBeGreaterThan(hp0 + 20);
   });
 
@@ -126,6 +126,60 @@ describe('the Hunter cost pass (#693)', () => {
       'Spends at most 6 Mana. X is 1 higher. Deal 7 damage X times. Draw 2 cards.',
     );
     expect(cardText(db, db.cards.bloodsong!)).toMatch(/first 8 turns only/);
+  });
+
+  it('Pack Frenzy+: 4 Might and still two actions, the second for half damage (#769; 3 Might and three actions before)', () => {
+    const s = fight(['pack-frenzy+']);
+    const hound = allies(s)[0]!.id;
+    const act = legalActions(db, s).find((x) => x.type === 'play' && x.card === 'T0')!;
+    const out = applyAction(db, s, act);
+    expect(hero(out.state).statuses.might).toBe(4);
+    expect(out.events.filter((e) => e.type === 'act' && e.unit === hound)).toHaveLength(2);
+    expect(out.state.sides.a.extraActs).toBe(2);
+    const hits = out.events.flatMap((e) =>
+      e.type === 'damage' && e.source === hound ? [e.amount] : [],
+    );
+    expect(hits).toHaveLength(2);
+    expect(hits[0]).toBeGreaterThan(0);
+    // (acting again: the first time each turn in full, every time after for half, #762)
+    expect(hits[1]).toBe(Math.round(hits[0]! / 2));
+    // (the base card keeps 3 Might and the same two actions)
+    const plain = fight(['pack-frenzy']);
+    const base = applyAction(
+      db,
+      plain,
+      legalActions(db, plain).find((x) => x.type === 'play' && x.card === 'T0')!,
+    );
+    expect(base.events.filter((e) => e.type === 'act' && e.unit === hound)).toHaveLength(2);
+    expect(cardText(db, db.cards['pack-frenzy+']!)).toBe(
+      'Gain 4 Might. Command your companions to act now. Command your companions to act now. (When companions act again after the first time in a turn, they deal half damage.)',
+    );
+  });
+
+  it('Trail of Blood: 1 Might for each of the first 4 summons a fight, from each copy (#769; every summon before)', () => {
+    const gains = (copies: number): number[] => {
+      let s = fight(Array<string>(copies).fill('trail-of-blood'));
+      for (let i = 0; i < copies; i++) s = play(s, `T${i}`);
+      const got: number[] = [];
+      for (let k = 0; k < 6; k++) {
+        // (room for the next one, and Mana for it; the fifth and sixth come on a later turn)
+        s.sides.a.units = s.sides.a.units.filter((u) => u.kind === 'hero');
+        if (k === 4) {
+          s = endTurn(s);
+          expect(s.active).toBe('a');
+        }
+        s.sides.a.mana = 9;
+        s.sides.a.hand = [{ id: `W${k}`, card: 'dire-wolf' }];
+        const before = hero(s).statuses.might ?? 0;
+        s = play(s, `W${k}`);
+        expect(allies(s)).toHaveLength(1);
+        got.push((hero(s).statuses.might ?? 0) - before);
+      }
+      return got;
+    };
+    expect(gains(0)).toEqual([0, 0, 0, 0, 0, 0]);
+    expect(gains(1)).toEqual([1, 1, 1, 1, 0, 0]);
+    expect(gains(2)).toEqual([2, 2, 2, 2, 0, 0]);
   });
 
   it('Den Mother: a companion an enemy kills gives 1 Might and brings a Pup (a sacrifice does not)', () => {

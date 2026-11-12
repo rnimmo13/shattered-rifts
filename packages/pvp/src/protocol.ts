@@ -121,7 +121,12 @@ export interface Entry {
 // half past a threshold on Obsidian Blade, Spell Power spent, Gathering Storm, Old Twelve Gauge, Exploit Weakness, Off the Leash, Recall.
 // Also (#764 to #767): Radiant doubles; Rift Surge and Nerve Surge one rarity up; ten Ascendancies brought up; the Beastmaster shares
 // at most 14 Might; Bonelord 2 Marrow; Arena HP 1200 (BASELINE_HP 1000 for tools and ledgers).
-export const RULES_VERSION = 109;
+// 110 (#768): the top builds eased down with more diminishing returns. The Hunter shares a third of the Might, the Beastmaster 5 and half of the rest; Wild Hunt acts without Might; a
+// first-Attack bonus is not carried by replays; Shatter's step and Deepening halve past 10 Shatters and +15; Shatterer 10%; Seer 5% a
+// turn past 20%, 40% at most; Fateweaver 1%; Archmage 1 Spell Power a turn; Gathering Storm +8/+18; Old Twelve Gauge +20/+70; Off the Leash +10.
+// And (#769): Trail of Blood the first 4 summons; Pack Frenzy+ 4 Might and two actions; Hot Temper copies only as the first Attack of a
+// turn; Oath Unbroken 2 Might; Vow Fulfilled half past 5 Reserves.
+export const RULES_VERSION = 110;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

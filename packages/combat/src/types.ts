@@ -254,6 +254,10 @@ export const SHATTER_AT = 10;
 export const SHATTER_BASE = 17;
 /** 3 more each threshold since #726 (Robert: "lower teh shatterer step"; 5 since #713, 10 before) */
 export const SHATTER_STEP = 3;
+/** (DECISIONS #768) the step is in full for this many Shatters on a unit and half after; and what Deepening adds to every Shatter is in
+ * full to SHATTER_BONUS_FULL and half after. Diminishing returns, as on every other stat that grows all fight (#762). */
+export const SHATTER_STEP_FULL = 10;
+export const SHATTER_BONUS_FULL = 15;
 /** (DECISIONS #708, #713) from the Shatter at this much Fracture on, every Shatter also puts SHATTER_SPREAD Fracture on another enemy */
 export const SHATTER_SPREAD_AT = 50;
 export const SHATTER_SPREAD = 10;
@@ -574,7 +578,8 @@ export type CombatDiscipline =
       recoverPct?: number;
       recoverCap?: number;
     }
-  | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number }
+  /** `halfPast`: from this much on, each qualifying turn adds half of `perTurn` (DECISIONS #768) */
+  | { kind: 'pursuit'; perTurn: number; cap: number; exposed: number; halfPast?: number }
   /** Preparation (the Assassin): each Skill adds perSkill%; or (the Predator's Ambush, #693) each card drawn on your turn after the
    * opening hand adds perDraw%. The next Attack spends it. `woundedPct`/`bonus`: more against a wounded enemy. `name`: what it is called */
   | {
@@ -741,7 +746,8 @@ export type Op =
       times?: number;
       scale?: Scale;
     }
-  | { op: 'actAllies' } // every ally of the actor acts now
+  /** every ally of the actor acts now; `bare`: without their Might (Wild Hunt, DECISIONS #768) */
+  | { op: 'actAllies'; bare?: boolean }
   | { op: 'prevent' } // Trap only: cancel the attack that sprang it
   // --- choices and card movement (card effects only; a choice asks the player and the card resumes afterwards)
   | { op: 'discard'; amount: number; random?: boolean; any?: boolean }
@@ -1245,6 +1251,8 @@ export interface HeroTrait {
   shareMightFull?: number;
   /** with `shareMight`: the most Might the companions ever hold from the share (DECISIONS #767) */
   shareMightMax?: number;
+  /** with `shareMightFull`: the part of the Might past it that counts (a half when left out; DECISIONS #768) */
+  shareMightRest?: number;
   /** this hero keeps a stance from turn to turn (the Monk); any other hero leaves Fury or Serene as their next turn begins (DECISIONS #762) */
   stances?: boolean;
   /** HP healed after every fight the hero wins (in a run) */

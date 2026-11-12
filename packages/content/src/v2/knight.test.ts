@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   STATUS_IDS,
   applyAction,
+  cardText,
   chooseAction,
   clone,
   createCombat,
@@ -534,6 +535,54 @@ describe('one card for each of the Ironclad’s', () => {
     const s = play(fight(['hot-temper']), 'hot-temper');
     expect(foeHp(s)).toBe(200 - 6);
     expect(s.sides.a.discard.filter((c) => c.card === 'hot-temper')).toHaveLength(2);
+  });
+
+  it('Hot Temper copies itself only as the first Attack you play in a turn (#769; on every play before)', () => {
+    const copies = (s: CombatState, id = 'hot-temper'): number =>
+      [...s.sides.a.hand, ...s.sides.a.draw, ...s.sides.a.discard, ...s.sides.a.exhausted].filter(
+        (c) => c.card === id,
+      ).length;
+    // (the first Attack of the turn: exactly one copy, in the discard pile)
+    let s = fight(['hot-temper', 'hot-temper', 'strike', 'hot-temper']);
+    expect(copies(s)).toBe(3);
+    s = play(s, 'hot-temper');
+    expect(copies(s)).toBe(4);
+    expect(s.sides.a.discard.filter((c) => c.card === 'hot-temper')).toHaveLength(2);
+    // (a second Hot Temper the same turn: none; nor after another Attack)
+    s = play(s, 'hot-temper');
+    expect(copies(s)).toBe(4);
+    s = play(play(s, 'strike'), 'hot-temper');
+    expect(copies(s)).toBe(4);
+    expect(s.sides.a.hand).toHaveLength(0);
+    // (another Attack played first: none)
+    let t = play(play(fight(['strike', 'hot-temper']), 'strike'), 'hot-temper');
+    expect(copies(t)).toBe(1);
+    expect(foeHp(t)).toBe(200 - 6 - 6);
+    // (the next turn, the first one copies itself again, and only the first)
+    s = applyAction(db, s, { type: 'endTurn' }).state;
+    expect(s.active).toBe('a');
+    expect(copies(s)).toBe(4);
+    s.sides.a.discard.push(...s.sides.a.hand);
+    s.sides.a.hand = [
+      { id: 'N0', card: 'hot-temper' },
+      { id: 'N1', card: 'hot-temper' },
+    ];
+    expect(copies(s)).toBe(6);
+    s = play(s, 'hot-temper');
+    expect(copies(s)).toBe(7);
+    s = play(s, 'hot-temper');
+    expect(copies(s)).toBe(7);
+    // (upgraded: 9 damage, and the copy is upgraded too)
+    t = play(fight(['hot-temper+']), 'hot-temper+');
+    expect(foeHp(t)).toBe(200 - 9);
+    expect(t.sides.a.discard.filter((c) => c.card === 'hot-temper+')).toHaveLength(2);
+    expect(copies(t, 'hot-temper')).toBe(0);
+    expect(cardText(db, db.cards['hot-temper']!)).toBe(
+      'Deal 6 damage. If you played no Attack this turn: Add a copy of this card to your discard pile.',
+    );
+    expect(cardText(db, db.cards['hot-temper+']!)).toBe(
+      'Deal 9 damage. If you played no Attack this turn: Add a copy of this card to your discard pile.',
+    );
   });
 
   it('Pact of Embers consumes a card and draws 2', () => {

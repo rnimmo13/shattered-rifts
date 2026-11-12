@@ -34,7 +34,7 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Blood Plate | 2 | skill | common | Lose 2 HP. Gain 12 Barrier. Gain 3 Plating. |
 | Breach | 1 | attack | common | Lose 1 HP. Deal 9 damage to ALL enemies. |
 | Dawn Smite | 1 | attack | common | Deal 5 damage. Gain 3 Barrier. Gain 2 Plating. |
-| Hot Temper | 0 | attack | common | Deal 6 damage. Add a copy of this card to your discard pile. |
+| Hot Temper | 0 | attack | common | Deal 6 damage. If you played no Attack this turn: Add a copy of this card to your discard pile. |
 | Stand Fast | 1 | skill | common | Gain 5 Barrier. Gain 2 Plating. Max Reserves +2 this turn. |
 | Measured Strike | 1 | attack | common | Deal 7 damage. If your Reserves is 2 or more: Deal 5 damage. |
 | Blood Oath | 0 | skill | common | Once on your turn across all copies: Lose 3 HP and gain 3 Reserves. |
@@ -108,8 +108,8 @@ Starter: Strike, Strike, Strike, Strike, Defend, Defend, Sundering Blow, Brace a
 | Rally | 2 | skill | rare | Heal 10. Consume. |
 | Inner Furnace | 3 | aura | rare | At the start of your turn: Gain 1 Mana. |
 | Patient Wall | 2 | aura | rare | At the end of your turn: Gain Barrier equal to 4 times your Reserves. |
-| Oath Unbroken | 2 | aura | rare | Max Reserves +2 for the rest of the fight. At the end of your turn, if your Reserves is 4 or more: Gain 3 Might. |
-| Vow Fulfilled | 3 | attack | rare | Deal 18 (+7 per Reserve) damage. |
+| Oath Unbroken | 2 | aura | rare | Max Reserves +2 for the rest of the fight. At the end of your turn, if your Reserves is 4 or more: Gain 2 Might. |
+| Vow Fulfilled | 3 | attack | rare | Deal 18 (+7 per Reserve, half as much past +35) damage. |
 | Gilded Bulwark | 2 | aura | rare | Whenever you play an Attack, if Barrier is 10 or more: Deal 6 damage to a random enemy. |
 
 Tokens (made by other cards):
@@ -242,7 +242,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Fren
 | Pack Tactics | 1 | skill | common | Gain 1 Might. Gain 4 Barrier to all friends. |
 | Thick Hide | 1 | skill | common | Gain 5 Barrier to all friends. |
 | Summon Pup | 1 | summon | common | Summon Pup (5 HP; at the end of your turn it will deal 3 damage). |
-| Trail of Blood | 0 | aura | common | Whenever you summon an ally: Gain 1 Might. |
+| Trail of Blood | 0 | aura | common | The next 4 times you summon an ally: Gain 1 Might. |
 | Open a Vein | 0 | skill | common | Lose 3 HP. Gain 2 Might. Consume. |
 | Wounded Wrath | 1 | aura | common | Whenever you lose HP to your own cards or Hangover: Deal 4 damage to a random enemy. |
 | Bared Teeth | 1 | skill | common | Gain 3 (+3 per ally) Barrier. |
@@ -302,7 +302,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Savage Bite, Blood Fren
 | Den Mother | 2 | aura | rare | Whenever one of your allies dies: Deal 15 damage to the attacker, gain 1 Might and summon Pup (5 HP; at the end of your turn it will deal 3 damage). |
 | Dire Wolf | 3 | summon | rare | Summon Dire Wolf (15 HP; at the end of your turn it will deal 7 damage 2 times). |
 | Pack Frenzy | 2 | skill | rare | Gain 3 Might. Command your companions to act now. Command your companions to act now. (When companions act again after the first time in a turn, they deal half damage.) |
-| Wild Hunt | 2 | aura | rare | Opening hand. At the start of your turn: Command your companions to act now and your companions gain 2 max HP. |
+| Wild Hunt | 2 | aura | rare | Opening hand. At the start of your turn: Command your companions to act now, without their Might and your companions gain 2 max HP. |
 | The Hunger Unleashed | 1 | aura | rare | On play: Lose 4 HP. Gain 4 Might. Gain 1 Cadence. These last the rest of the fight. Cadence gives Might in your first 8 turns only. |
 | Apex Frenzy | 2 | attack | rare | Deal 4 (+2 per card played this turn) damage 2 times. Lifesteal 50%. |
 | Blood Pact | 2 | aura | rare | On play: Lose 4 HP. From your next turn, gain 1 more Mana every turn for the rest of the fight. Draw 1 card. |
@@ -533,7 +533,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Hawk's Dive, Spirit Call, Frost
 | Hoarfrost | 1 | skill | common | Frost. Gain 5 Barrier. Apply 1 Faltering to ALL enemies. |
 | Hasty Ward | 0 | skill | common | Frost. Gain 6 Barrier. Add a Void to your discard pile. |
 | Bear Call | 1 | skill | common | Frost. Plant a Bear. Gain 6 Barrier. |
-| Gathering Storm | 0 | attack | common | Storm. Deal 4 damage to 2 different random enemies (25% more when only one enemy stands). Every copy of this card gains 3 damage for the rest of the fight (half as much past +12, at most +24). |
+| Gathering Storm | 0 | attack | common | Storm. Deal 4 damage to 2 different random enemies (25% more when only one enemy stands). Every copy of this card gains 3 damage for the rest of the fight (half as much past +8, at most +18). |
 | Gale Call | 1 | attack | common | Storm. Deal 6 damage to ALL enemies. Draw 1 card. |
 | Wind Wall | 1 | skill | common | Storm. Gain 5 Barrier. Apply 2 Sapped to ALL enemies until the end of their next turn. |
 | Thunderbird Call | 2 | attack | common | Storm. Deal 8 damage to ALL enemies. Plant a Thunderbird. |
@@ -775,8 +775,8 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Cinderfall, Gather Powe
 | Final Shatter | 2 | skill | uncommon | Spell. Apply 8 Fracture. If this caused a Shatter: Gain 12 (+1 per 3 Spell Power) Barrier. |
 | Collapsing Vein | 2 | skill | uncommon | Spell. Apply 6 Fracture to ALL enemies. Apply 3 Fracture. |
 | Carry the Fault | 1 | skill | uncommon | Spell. Apply 3 Fracture, plus half the Fracture on your most-cracked other enemy. With only one enemy, apply 6. |
-| Deep Fault | 2 | skill | uncommon | Spell. Your Shatters deal 6 more for the rest of the fight. Apply 4 Fracture. Consume. |
-| Deepening Fault | 2 | aura | uncommon | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight. |
+| Deep Fault | 2 | skill | uncommon | Spell. Your Shatters deal 6 more for the rest of the fight (past +15 in all, half as much). Apply 4 Fracture. Consume. |
+| Deepening Fault | 2 | aura | uncommon | The first time each turn a card of yours applies Fracture: Your Shatters deal 2 more for the rest of the fight (past +15 in all, half as much). |
 | Hungering Void | 1 | aura | uncommon | At the end of your turn: Apply 3 Fracture to each enemy that has Fracture. |
 | Pillar of Glass | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Gain 4 (+1 per 3 Spell Power) Barrier. |
 | Fault Reader | 1 | aura | uncommon | The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier. |
@@ -925,7 +925,7 @@ Tokens (made by other cards):
 | Card | Cost | Type | Rarity | Text |
 |---|---|---|---|---|
 | Buckshot Shell | 0 | attack | common | Deal 4 damage to ALL enemies. Consume. |
-| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening, half as much past +30, at most +90) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. Opening hand. |
+| Old Twelve Gauge | 1 | attack | common | Deal 5 (+1 per point of sharpening, half as much past +20, at most +70) damage to ALL enemies. Point Blank: 25% more when only one enemy is left. Hold. Opening hand. |
 
 ## Necromancer (gloomfen, 70 HP)
 
@@ -937,7 +937,7 @@ Starter: Strike, Strike, Strike, Defend, Defend, Defend, Raise Thrall, Off the L
 |---|---|---|---|---|
 | Raise Thrall | 1 | skill | basic | Raise Dead 5. |
 | Marked for the Grave | 1 | attack | basic | Deal 6 damage. Curse the target with 4 Fate. |
-| Off the Leash | 1 | attack | basic | Your companions each deal 4 damage, plus half their own HP (half as much past +15). |
+| Off the Leash | 1 | attack | basic | Your companions each deal 4 damage, plus half their own HP (half as much past +10). |
 | After the End | 1 | skill | common | Raise Dead 6. Consume. |
 | Bone Crush | 2 | attack | common | Costs 0 if your companions have struck this turn. Your companions each deal 12 damage. |
 | Call at Dusk | 1 | skill | common | Consume. Next turn: Raise Dead 2 and gain 2 Mana. |
