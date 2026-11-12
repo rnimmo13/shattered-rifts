@@ -1,3 +1,7 @@
+# Release approved 0.256.0 / rules 108 (2026-11-11; decision 758)
+
+Robert explicitly approves pushing ("push when ready"). Website/server and matching Windows updater. Future changes need fresh release approval. Settings is a gear at the top right of the run and battle headers with the larger run clock beside it; the run header has Home alone at the left, Deck/Abandon icons, a small Arena mark, the seed at the map page's foot; reachable map stops send out rings of light; no Omens on the battle screen; the pose pipeline's cloth ripple starts above the knees (every hero repacked). No rules change.
+
 # Release approved 0.255.0 / rules 108 (2026-11-11; decisions 756-757)
 
 Robert explicitly approves pushing ("lets push what we have for now"). Website/server and matching Windows updater. Future changes need fresh release approval. The Spellblade's pose-sheet model casts her spell for Spell cards and cards using Spell Power, Fracture or a Shatter (`strikeVariant`, Swords keep the blade, #756); the fight title is a plaque with a badge for the kind of fight (`fightKind.ts`, campaign badges follow the map node, #757); the campaign ending is centred; the Necromancer's attack skips his flipped wind-up pose. No rules change. Enemy, companion and minion pose-sheet prompts are in assets-src/units-pose-sheets (CHATGPT_START.md; nothing wired into the game yet: only heroes have animated models).

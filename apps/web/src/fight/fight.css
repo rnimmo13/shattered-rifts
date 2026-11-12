@@ -4728,17 +4728,14 @@ button.totem:disabled {
 .fight__runTimer {
   margin-right: 0.35rem;
 }
-.fight__top .fight__opts {
-  margin-left: 0;
-}
-@media (min-width: 84rem) {
+@media (min-width: 88rem) {
   .fight:has(.fight__runTimer) .fight__title {
     position: absolute;
     left: 50%;
     top: 50%;
     translate: -50% -50%;
     margin: 0;
-    max-width: calc(100% - 66rem);
+    max-width: calc(100% - 70rem);
   }
 }
 @media (min-width: 110rem) {

@@ -46,6 +46,41 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.256.0",
+    date: "2026-11-11",
+    title: "A cleaner map and header",
+    summary: "Settings always at the top right, a tidier campaign header, and the stops you can reach glow on the map.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Settings at the top right",
+        text: "Settings is a gear at the top right on the map and in battle, the same place on every screen, with the run clock just left of it, larger.",
+      },
+      {
+        kind: "changed",
+        title: "A tidier campaign header",
+        text: "Home sits on its own at the left, the Deck and Abandon are icons, and whether your deck is in the Arena is a small mark beside the Tier. The run's seed moved to the foot of the map page: select it to copy it. The space above the map is laid out in one row.",
+      },
+      {
+        kind: "new",
+        title: "Where you can move",
+        text: "The stops you can move to on the map glow and send out rings of light; the stops you cannot reach yet step back a little.",
+      },
+      {
+        kind: "changed",
+        text: "The battle screen no longer lists the Omens (they are on the map), and its title is centred.",
+      },
+      {
+        kind: "fixed",
+        text: "The Riftwalkers' back legs no longer wobble while they stand idle.",
+      },
+      {
+        kind: "fixed",
+        text: "How this board works on the leaderboards is centred.",
+      },
+    ],
+  },
+  {
     version: "0.255.0",
     date: "2026-11-11",
     title: "Spells and fight titles",

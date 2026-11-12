@@ -3276,3 +3276,57 @@ button.mapnode--warden {
     transparent 70%
   );
 }
+
+/* (review of #758) the Arena mark's own size and colour (the who line's span rules reached its label), no tall phone sizes; on a
+   phone who and where get a row of their own again under Home and the buttons, so the mark is never cut off; touch screens keep
+   finger-sized buttons; the in-game Reduced effects stills the map's rings too, and a still ring sits out in the halo */
+.runbar__who .runbar__arena span {
+  display: inline;
+  font-size: inherit;
+  color: inherit;
+}
+.runbar .runbar__arena {
+  min-height: 0;
+  font-size: 0.68rem;
+}
+@media (max-width: 40rem) {
+  .runbar {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'home actions'
+      'who who'
+      'stats stats';
+  }
+  .runbar__actions {
+    justify-content: flex-end;
+  }
+  .runbar__who span {
+    flex-wrap: wrap;
+  }
+}
+@media (pointer: coarse) and (max-width: 40rem) {
+  .runbar .btn.iconbtn {
+    width: 38px;
+    height: 38px;
+  }
+}
+:root[data-effects='reduced'] .mapnode__beacon i,
+:root[data-graphics='low'] .mapnode__beacon i {
+  animation: none;
+  opacity: 0.8;
+  scale: 0.85;
+}
+:root[data-effects='reduced'] .mapnode__beacon i + i,
+:root[data-graphics='low'] .mapnode__beacon i + i {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapnode__beacon i {
+    animation: none;
+    opacity: 0.8;
+    scale: 0.85;
+  }
+  .mapnode__beacon i + i {
+    display: none;
+  }
+}

@@ -1,4 +1,4 @@
-## Unreleased
+## 0.256.0 - 2026-11-11
 
 - Settings is always at the top right, as a gear, on the map and in battle, with the run clock beside it, larger (DECISIONS #758).
 - The campaign map's header is tidier: Home on its own at the left, icon buttons for the Deck and Abandon, a small Arena mark instead of a button, and the seed moved to the foot of the page. The space above the map is laid out in one row.
