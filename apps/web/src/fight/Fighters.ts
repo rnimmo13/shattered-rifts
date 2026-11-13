@@ -6,7 +6,7 @@ import { Container, Sprite, Texture } from 'pixi.js';
 import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
-import type { CardDef } from '@sr/combat';
+import type { CardDef, Stance } from '@sr/combat';
 import type { AttackSpec, CardMotion } from './attackStyles';
 import {
   MOTION_KIND,
@@ -36,7 +36,12 @@ import {
   type Pt,
 } from './attackFx';
 import { HeroSprite, loadRig, type Facing } from './heroSprite';
-import { NOVA_RONIN_SKIN, SHEET_PREFIX, UNIT_SHEET_PREFIX } from '../art/heroRigs';
+import {
+  GOTHIC_PUPPETEER_SKIN,
+  NOVA_RONIN_SKIN,
+  SHEET_PREFIX,
+  UNIT_SHEET_PREFIX,
+} from '../art/heroRigs';
 import { releaseUnitSheets } from './heroSheet';
 
 export type FighterSide = 'a' | 'b';
@@ -101,6 +106,7 @@ export interface FighterSpec {
   prop?: { canvas: HTMLCanvasElement; x: number; y: number; on: boolean };
   /** a hero drawn by a 2D rig (heroSprite.ts) once it has loaded; `canvas` is shown until then, and stays if it cannot load */
   rig?: { id: string; facing: Facing };
+  stance?: Stance;
 }
 
 interface Fighter {
@@ -186,6 +192,8 @@ const RANGED_POSE: Partial<Record<WeaponLook['motion'], { from: number; aim: num
 };
 
 export class Fighters {
+  /** told whenever a figure starts or stops drawing its own stance energy (the Tempest Sage): the board then hides its stance glow */
+  onStanceArt?: (id: string, own: boolean) => void;
   private readonly all = new Map<string, Fighter>();
   /** the figure the aiming arrow is locked onto */
   private locked: string | null = null;
@@ -288,6 +296,8 @@ export class Fighters {
           f.flash.texture = tex;
         }
         f.spec = spec;
+        f.rig?.setStance?.(spec.stance);
+        this.tellStanceArt(f);
         if (resized) this.resize(f);
         this.showProp(f, opts.instant === true);
         if (Math.abs(f.x - x) > 1) {
@@ -505,6 +515,8 @@ export class Fighters {
       const rig = HeroSprite.create(id, assets, facing);
       if (!rig) return;
       f.rig = rig;
+      rig.setStance?.(f.spec.stance);
+      this.tellStanceArt(f);
       f.sprite.texture = rig.texture;
       f.flash.texture = rig.texture;
       f.flash.alpha = 0;
@@ -607,7 +619,13 @@ export class Fighters {
     const dir = f.spec.side === 'a' ? 1 : -1;
     // a rigged hero strikes with its own animation: the blow (and the damage after it) lands on the clip's impact. A model with no
     // strike to play (a training dummy, or one whose frames are still coming) moves its picture the old way instead
-    const variant = f.spec.hero ? strikeVariant(f.spec.hero, card) : undefined;
+    const gothic = f.spec.rig?.id === `${SHEET_PREFIX}skins/${GOTHIC_PUPPETEER_SKIN}`;
+    const variant =
+      gothic && (motion?.spell || card?.tags?.includes('spell'))
+        ? 'spell'
+        : f.spec.hero
+          ? strikeVariant(f.spec.hero, card)
+          : undefined;
     if (f.rig && f.rig.ready?.('strike', variant) !== false)
       return this.rigStrike(f, f.rig, t, dir, onHit, spread, variant);
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
@@ -814,7 +832,11 @@ export class Fighters {
               : { ...f.spec.attack, kind: 'stab' };
           // a creature that shoots, throws or casts lets its shot go at the clip's launch, and it flies to the target (DECISIONS #760)
           const kind = f.spec.attack.kind;
-          if (variant === 'spell' && f.spec.rig?.id === `${SHEET_PREFIX}skins/${NOVA_RONIN_SKIN}`) {
+          const gothic = f.spec.rig?.id === `${SHEET_PREFIX}skins/${GOTHIC_PUPPETEER_SKIN}`;
+          if (
+            variant === 'spell' &&
+            (gothic || f.spec.rig?.id === `${SHEET_PREFIX}skins/${NOVA_RONIN_SKIN}`)
+          ) {
             this.rigPlay(
               rig,
               'strike',
@@ -822,12 +844,12 @@ export class Fighters {
                 name: 'launch',
                 within: 0.5,
                 at: () => {
-                  const tint = f.spec.attack.tint;
+                  const tint = gothic ? '#e85b99' : f.spec.attack.tint;
                   const height = f.spec.height;
                   // The launch frame holds the katana across this point relative to the feet.
                   const from = {
                     x: f.root.x + dir * height * 0.44,
-                    y: f.root.y - (f.spec.hover ?? 0) - height * 0.42,
+                    y: f.root.y - (f.spec.hover ?? 0) - height * (gothic ? 0.08 : 0.42),
                   };
                   const to = t ? this.chest(t) : { x: from.x + dir * 220, y: from.y };
                   const land = (): void => {
@@ -844,7 +866,10 @@ export class Fighters {
                     land();
                     return;
                   }
-                  void crescentWave(this.fxCtx(), from, to, tint, height / 520).then(land, land);
+                  const projectile = gothic
+                    ? orb(this.fxCtx(), from, to, tint, 0.3)
+                    : crescentWave(this.fxCtx(), from, to, tint, height / 520);
+                  void projectile.then(land, land);
                 },
               },
               end,
@@ -1323,6 +1348,36 @@ export class Fighters {
           });
         }),
     );
+  }
+
+  /** The new stance's own power-up, if its pages are already in: the fight never waits for a download. */
+  async raiseStanceAura(id: string): Promise<void> {
+    const f = this.all.get(id);
+    if (!f?.rig?.hasStanceArt || f.dying) return;
+    // (the card that entered the stance skipped its own power-up: without this one it still gets the plain flash)
+    if (this.h.profile().still || !f.rig.stanceAuraReady?.()) {
+      this.act(id, color.goldLight);
+      return;
+    }
+    await this.cast(id);
+  }
+
+  private tellStanceArt(f: Fighter): void {
+    this.onStanceArt?.(f.spec.id, f.rig?.hasStanceArt === true);
+  }
+
+  setStance(id: string, stance: FighterSpec['stance']): void {
+    const f = this.all.get(id);
+    if (!f || f.dying) return;
+    if (stance) f.spec.stance = stance;
+    else delete f.spec.stance;
+    f.rig?.setStance?.(stance);
+    this.tellStanceArt(f);
+    if (f.rig) {
+      this.fitRig(f, f.rig);
+      f.rig.render();
+    }
+    this.h.wake?.(200);
   }
 
   /** A soft coloured flash over a figure: buffs, heals, debuffs. */

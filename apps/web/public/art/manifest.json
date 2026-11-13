@@ -166,6 +166,8 @@
                     "unit:whisperer":  "figures/whisperer.png"
                 },
     "skins":  {
+                  "monk-tempest-sage": "figures/skins/monk-tempest-sage.png",
+                  "necromancer-gothic-puppeteer": "figures/skins/necromancer-gothic-puppeteer.png",
                   "knight-demon-knight":  "figures/skins/knight-demon-knight.png",
                   "assassin-gender-female":  "figures/skins/assassin-gender-female.png",
                   "assassin-rogue-tailor":  "figures/skins/assassin-rogue-tailor.png",

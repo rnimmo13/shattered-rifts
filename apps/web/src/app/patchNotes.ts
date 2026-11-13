@@ -46,6 +46,25 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.267.0',
+    date: '2026-11-13',
+    title: 'The Tempest Sage and the Gothic Puppeteer',
+    summary:
+      'Two new free skins: a Monk who changes with every stance, and a Necromancer with a bone scythe.',
+    notes: [
+      {
+        kind: 'new',
+        hero: 'monk',
+        text: 'The Tempest Sage, a storm monk whose markings glow. Each stance is its own look: Serene glows pale blue and strikes with an open palm, Fury burns red-gold and throws a driving hook, Radiant blazes white-gold and lands a long straight punch.',
+      },
+      {
+        kind: 'new',
+        hero: 'necromancer',
+        text: 'The Gothic Puppeteer, with a bone scythe: a one-handed slash, and Spell cards plant the scythe and send a rose-pink curse.',
+      },
+    ],
+  },
+  {
     version: '0.266.0',
     date: '2026-11-12',
     title: 'Arc Welder’s wasp',
@@ -67,7 +86,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.265.0',
     date: '2026-11-12',
     title: 'Rogue Tailor',
-    summary: 'A free animated Rogue skin, larger previews in the Store, and new Arc Welder animations.',
+    summary:
+      'A free animated Rogue skin, larger previews in the Store, and new Arc Welder animations.',
     notes: [
       {
         kind: 'new',
@@ -92,7 +112,8 @@ export const PATCH_NOTES: PatchNote[] = [
     version: '0.264.0',
     date: '2026-11-12',
     title: 'Arc Welder',
-    summary: 'A new animated Engineer skin, visible opponent looks in the Arena, and changes to companion Might.',
+    summary:
+      'A new animated Engineer skin, visible opponent looks in the Arena, and changes to companion Might.',
     notes: [
       {
         kind: 'new',
@@ -110,1336 +131,1391 @@ export const PATCH_NOTES: PatchNote[] = [
         title: 'Hunter',
         hero: 'hunter',
         text: 'Hunter companions inherit less of your Might in Campaign and Arena.',
-        changes: [{ label: 'Companion Might share', before: 'One third', after: 'One quarter', direction: 'nerf' }],
+        changes: [
+          {
+            label: 'Companion Might share',
+            before: 'One third',
+            after: 'One quarter',
+            direction: 'nerf',
+          },
+        ],
       },
       {
         kind: 'balance',
         title: 'Beastmaster',
         hero: 'hunter',
         text: 'Beastmaster companions inherit half of your Might from the first point in Campaign and Arena.',
-        changes: [{ label: 'Companion Might share', before: 'All of the first 5, then half', after: 'Half from the first point', direction: 'nerf' }],
+        changes: [
+          {
+            label: 'Companion Might share',
+            before: 'All of the first 5, then half',
+            after: 'Half from the first point',
+            direction: 'nerf',
+          },
+        ],
       },
     ],
   },
   {
-    version: "0.263.0",
-    date: "2026-11-12",
-    title: "Demon Knight fixes",
-    summary: "The Demon Knight is the Knight’s size everywhere, fills his box, and the Sanctum keeps its rows.",
+    version: '0.263.0',
+    date: '2026-11-12',
+    title: 'Demon Knight fixes',
+    summary:
+      'The Demon Knight is the Knight’s size everywhere, fills his box, and the Sanctum keeps its rows.',
     notes: [
       {
-        kind: "fixed",
-        title: "His size",
-        hero: "knight",
-        text: "The Demon Knight is the same size as the Knight everywhere. He was drawn smaller, and smaller again on Medium graphics."
+        kind: 'fixed',
+        title: 'His size',
+        hero: 'knight',
+        text: 'The Demon Knight is the same size as the Knight everywhere. He was drawn smaller, and smaller again on Medium graphics.',
       },
       {
-        kind: "fixed",
-        text: "In the Store and the Collection he stands at his full height in his box; only the tip of his sword runs past the edge."
+        kind: 'fixed',
+        text: 'In the Store and the Collection he stands at his full height in his box; only the tip of his sword runs past the edge.',
       },
       {
-        kind: "fixed",
-        text: "In the Sanctum, choosing the Knight while he wears the Demon Knight no longer moves the class buttons onto other rows."
+        kind: 'fixed',
+        text: 'In the Sanctum, choosing the Knight while he wears the Demon Knight no longer moves the class buttons onto other rows.',
       },
       {
-        kind: "changed",
-        text: "The Demon Knight is a little sharper in battle."
+        kind: 'changed',
+        text: 'The Demon Knight is a little sharper in battle.',
       },
       {
-        kind: "new",
-        title: "Nova Ronin",
-        hero: "spellblade",
-        text: "A new look for the Spellblade with its own animated model: violet energy runs through his clothes, his katana sweeps from an overhead windup into a low cut, and his spells send a violet crescent from the swing. Get it and wear it from the Store or the Collection, under Looks."
+        kind: 'new',
+        title: 'Nova Ronin',
+        hero: 'spellblade',
+        text: 'A new look for the Spellblade with its own animated model: violet energy runs through his clothes, his katana sweeps from an overhead windup into a low cut, and his spells send a violet crescent from the swing. Get it and wear it from the Store or the Collection, under Looks.',
       },
       {
-        kind: "fixed",
-        text: "On a wide screen a third companion could stand on top of the nearest enemy. Each side’s row now keeps to its own half."
-      }
-    ]
-  },
-  {
-    version: "0.262.0",
-    date: "2026-11-12",
-    title: "Demon Knight",
-    summary: "The Demon Knight stands at his full size, sits properly in his box, holds still, and his red energy comes to life.",
-    notes: [
-      {
-        kind: "changed",
-        title: "Demon Knight",
-        hero: "knight",
-        text: "The Demon Knight was drawn about a fifth too small, because the great sword he holds out to the side was counted as part of his body. He now stands as tall as any Riftwalker and a little more. In the Store and the Collection he stands whole in the middle of his box. He no longer jitters while he stands. Red energy pulses through his veins and travels from the hilt to the tip of his greatsword."
-      }
-    ]
-  },
-  {
-    version: "0.261.0",
-    date: "2026-11-12",
-    title: "Quicker blows, a new look",
-    summary: "The Riftwalkers strike sooner, and the Knight has a new look: the Demon Knight.",
-    notes: [
-      {
-        kind: "changed",
-        title: "Attacks land sooner",
-        text: "The slow start of each Riftwalker’s attack is left out, so the blow lands about a tenth of a second after you play the card (it was over a quarter). The swing itself is unchanged."
+        kind: 'fixed',
+        text: 'On a wide screen a third companion could stand on top of the nearest enemy. Each side’s row now keeps to its own half.',
       },
-      {
-        kind: "new",
-        title: "The Demon Knight",
-        hero: "knight",
-        text: "A new look for the Knight, and the first with its own animated model. Get it and wear it from the Store or the Collection, under Looks. The older still-picture looks stay put away until they are animated too; what you own of them is kept."
-      }
-    ]
-  },
-  {
-    version: "0.260.0",
-    date: "2026-11-12",
-    title: "Closer together",
-    summary: "The strongest builds are eased down, each with a slowdown and never a limit on a turn, so every build now finishes a fight within a few turns of every other.",
-    notes: [
-      {
-        kind: "balance",
-        title: "The pack",
-        hero: "hunter",
-        text: "Companions share less of your Might, and two cards that fed the pack for nothing are slower. The Beastmaster always shares more than the Hunter does.",
-        changes: [
-          {
-            label: "Hunter: companions share",
-            before: "half your Might",
-            after: "a third of your Might",
-            direction: "nerf"
-          },
-          {
-            label: "Beastmaster: companions share",
-            before: "first 6, half the rest, 14 at most",
-            after: "first 5, half the rest, no limit",
-            direction: "neutral"
-          },
-          {
-            label: "Wild Hunt",
-            before: "its action carries Might",
-            after: "its action is without Might",
-            direction: "nerf"
-          },
-          {
-            label: "Trail of Blood",
-            before: "1 Might every summon",
-            after: "1 Might on the first 4 summons",
-            direction: "nerf"
-          },
-          {
-            label: "Pack Frenzy+",
-            before: "3 Might, three actions",
-            after: "4 Might, two actions",
-            direction: "nerf"
-          }
-        ]
-      },
-      {
-        kind: "balance",
-        title: "The Knight’s free Attacks",
-        hero: "knight",
-        text: "Hot Temper no longer doubles in number every time your deck comes round, and the Might behind it builds more slowly.",
-        changes: [
-          {
-            label: "Hot Temper",
-            before: "a copy every play",
-            after: "a copy only as your first Attack of the turn",
-            direction: "nerf"
-          },
-          {
-            label: "Oath Unbroken",
-            before: "3 Might a turn",
-            after: "2 Might a turn",
-            direction: "nerf"
-          },
-          {
-            label: "Vow Fulfilled",
-            before: "every Reserve in full",
-            after: "first 5 Reserves in full, the rest half",
-            direction: "nerf"
-          }
-        ]
-      },
-      {
-        kind: "balance",
-        title: "Replays and the first Attack",
-        text: "A bonus for \"your first Attack each turn\", such as Killing Chill’s, applies to that card’s own play. Playing it again with Reverb, a Replay mark or Echoing Spirit does not carry the bonus."
-      },
-      {
-        kind: "balance",
-        title: "Shatters",
-        hero: "spellblade",
-        text: "Each Shatter still deals more than the last, but the growth halves after the tenth on an enemy, and what Deepening adds halves past +15.",
-        changes: [
-          {
-            label: "Shatter growth",
-            before: "+3 each, no slowdown",
-            after: "+3 each to the tenth, half after",
-            direction: "nerf"
-          },
-          {
-            label: "Shatterer",
-            before: "every Shatter 15% more",
-            after: "10% more",
-            direction: "nerf"
-          },
-          {
-            label: "Archmage",
-            before: "2 Spell Power a turn",
-            after: "1 Spell Power a turn",
-            direction: "nerf"
-          }
-        ]
-      },
-      {
-        kind: "balance",
-        title: "Smaller steps elsewhere",
-        text: "The same idea on five more: full value up to a point, half as much after.",
-        changes: [
-          {
-            label: "Gathering Storm",
-            before: "full to +12, at most +24",
-            after: "full to +8, at most +18",
-            direction: "nerf"
-          },
-          {
-            label: "Old Twelve Gauge",
-            before: "full to +30, at most +90",
-            after: "full to +20, at most +70",
-            direction: "nerf"
-          },
-          {
-            label: "Off the Leash",
-            before: "half a companion’s HP to +15",
-            after: "to +10, a quarter after",
-            direction: "nerf"
-          },
-          {
-            label: "Seer",
-            before: "+10% a turn, up to +50%",
-            after: "+10% to +20%, then +5%, up to +40%",
-            direction: "nerf"
-          },
-          {
-            label: "Fateweaver",
-            before: "2 Fate + 2% of max HP a turn",
-            after: "2 Fate + 1%",
-            direction: "nerf"
-          }
-        ]
-      },
-      {
-        kind: "fixed",
-        text: "Trail of Blood’s text now says how often it answers: a number of summons, not a number of turns."
-      }
     ],
-    heads: "The rules changed again: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play."
   },
   {
-    version: "0.259.0",
-    date: "2026-11-12",
-    title: "A level field",
-    summary: "The builds that grew without limit are reined in, the ones that fell behind are brought up, the Arena starts at 1,200 HP and the Campaign is harder.",
+    version: '0.262.0',
+    date: '2026-11-12',
+    title: 'Demon Knight',
+    summary:
+      'The Demon Knight stands at his full size, sits properly in his box, holds still, and his red energy comes to life.',
     notes: [
       {
-        kind: "changed",
-        title: "Arena: 1,200 HP",
-        text: "Both players start with 1,200 HP (was 1,000). The training dummies in the Sandbox stay at 1,000."
+        kind: 'changed',
+        title: 'Demon Knight',
+        hero: 'knight',
+        text: 'The Demon Knight was drawn about a fifth too small, because the great sword he holds out to the side was counted as part of his body. He now stands as tall as any Riftwalker and a little more. In the Store and the Collection he stands whole in the middle of his box. He no longer jitters while he stands. Red energy pulses through his veins and travels from the hilt to the tip of his greatsword.',
+      },
+    ],
+  },
+  {
+    version: '0.261.0',
+    date: '2026-11-12',
+    title: 'Quicker blows, a new look',
+    summary: 'The Riftwalkers strike sooner, and the Knight has a new look: the Demon Knight.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Attacks land sooner',
+        text: 'The slow start of each Riftwalker’s attack is left out, so the blow lands about a tenth of a second after you play the card (it was over a quarter). The swing itself is unchanged.',
       },
       {
-        kind: "balance",
-        title: "Growth slows instead of running away",
-        text: "Cards that read a number that grows all fight now read it in full up to a point and half as much after. Nothing limits what a turn can deal.",
+        kind: 'new',
+        title: 'The Demon Knight',
+        hero: 'knight',
+        text: 'A new look for the Knight, and the first with its own animated model. Get it and wear it from the Store or the Collection, under Looks. The older still-picture looks stay put away until they are animated too; what you own of them is kept.',
+      },
+    ],
+  },
+  {
+    version: '0.260.0',
+    date: '2026-11-12',
+    title: 'Closer together',
+    summary:
+      'The strongest builds are eased down, each with a slowdown and never a limit on a turn, so every build now finishes a fight within a few turns of every other.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'The pack',
+        hero: 'hunter',
+        text: 'Companions share less of your Might, and two cards that fed the pack for nothing are slower. The Beastmaster always shares more than the Hunter does.',
         changes: [
           {
-            label: "Obsidian Blade",
-            before: "+2 per Spell Power",
-            after: "+2 to 20 Spell Power, +1 after",
-            direction: "nerf"
+            label: 'Hunter: companions share',
+            before: 'half your Might',
+            after: 'a third of your Might',
+            direction: 'nerf',
           },
           {
-            label: "Spell Power spent",
-            before: "every point in full",
-            after: "first 20 in full, the rest half",
-            direction: "nerf"
+            label: 'Beastmaster: companions share',
+            before: 'first 6, half the rest, 14 at most',
+            after: 'first 5, half the rest, no limit',
+            direction: 'neutral',
           },
           {
-            label: "Gathering Storm",
-            before: "all its Gather",
-            after: "full to +12, half after, at most +24",
-            direction: "nerf"
+            label: 'Wild Hunt',
+            before: 'its action carries Might',
+            after: 'its action is without Might',
+            direction: 'nerf',
           },
           {
-            label: "Old Twelve Gauge",
-            before: "all its Precision",
-            after: "full to +30, half after, at most +90",
-            direction: "nerf"
+            label: 'Trail of Blood',
+            before: '1 Might every summon',
+            after: '1 Might on the first 4 summons',
+            direction: 'nerf',
+          },
+          {
+            label: 'Pack Frenzy+',
+            before: '3 Might, three actions',
+            after: '4 Might, two actions',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'The Knight’s free Attacks',
+        hero: 'knight',
+        text: 'Hot Temper no longer doubles in number every time your deck comes round, and the Might behind it builds more slowly.',
+        changes: [
+          {
+            label: 'Hot Temper',
+            before: 'a copy every play',
+            after: 'a copy only as your first Attack of the turn',
+            direction: 'nerf',
+          },
+          {
+            label: 'Oath Unbroken',
+            before: '3 Might a turn',
+            after: '2 Might a turn',
+            direction: 'nerf',
+          },
+          {
+            label: 'Vow Fulfilled',
+            before: 'every Reserve in full',
+            after: 'first 5 Reserves in full, the rest half',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Replays and the first Attack',
+        text: 'A bonus for "your first Attack each turn", such as Killing Chill’s, applies to that card’s own play. Playing it again with Reverb, a Replay mark or Echoing Spirit does not carry the bonus.',
+      },
+      {
+        kind: 'balance',
+        title: 'Shatters',
+        hero: 'spellblade',
+        text: 'Each Shatter still deals more than the last, but the growth halves after the tenth on an enemy, and what Deepening adds halves past +15.',
+        changes: [
+          {
+            label: 'Shatter growth',
+            before: '+3 each, no slowdown',
+            after: '+3 each to the tenth, half after',
+            direction: 'nerf',
+          },
+          {
+            label: 'Shatterer',
+            before: 'every Shatter 15% more',
+            after: '10% more',
+            direction: 'nerf',
+          },
+          {
+            label: 'Archmage',
+            before: '2 Spell Power a turn',
+            after: '1 Spell Power a turn',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Smaller steps elsewhere',
+        text: 'The same idea on five more: full value up to a point, half as much after.',
+        changes: [
+          {
+            label: 'Gathering Storm',
+            before: 'full to +12, at most +24',
+            after: 'full to +8, at most +18',
+            direction: 'nerf',
+          },
+          {
+            label: 'Old Twelve Gauge',
+            before: 'full to +30, at most +90',
+            after: 'full to +20, at most +70',
+            direction: 'nerf',
+          },
+          {
+            label: 'Off the Leash',
+            before: 'half a companion’s HP to +15',
+            after: 'to +10, a quarter after',
+            direction: 'nerf',
+          },
+          {
+            label: 'Seer',
+            before: '+10% a turn, up to +50%',
+            after: '+10% to +20%, then +5%, up to +40%',
+            direction: 'nerf',
+          },
+          {
+            label: 'Fateweaver',
+            before: '2 Fate + 2% of max HP a turn',
+            after: '2 Fate + 1%',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'fixed',
+        text: 'Trail of Blood’s text now says how often it answers: a number of summons, not a number of turns.',
+      },
+    ],
+    heads:
+      'The rules changed again: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play.',
+  },
+  {
+    version: '0.259.0',
+    date: '2026-11-12',
+    title: 'A level field',
+    summary:
+      'The builds that grew without limit are reined in, the ones that fell behind are brought up, the Arena starts at 1,200 HP and the Campaign is harder.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Arena: 1,200 HP',
+        text: 'Both players start with 1,200 HP (was 1,000). The training dummies in the Sandbox stay at 1,000.',
+      },
+      {
+        kind: 'balance',
+        title: 'Growth slows instead of running away',
+        text: 'Cards that read a number that grows all fight now read it in full up to a point and half as much after. Nothing limits what a turn can deal.',
+        changes: [
+          {
+            label: 'Obsidian Blade',
+            before: '+2 per Spell Power',
+            after: '+2 to 20 Spell Power, +1 after',
+            direction: 'nerf',
+          },
+          {
+            label: 'Spell Power spent',
+            before: 'every point in full',
+            after: 'first 20 in full, the rest half',
+            direction: 'nerf',
+          },
+          {
+            label: 'Gathering Storm',
+            before: 'all its Gather',
+            after: 'full to +12, half after, at most +24',
+            direction: 'nerf',
+          },
+          {
+            label: 'Old Twelve Gauge',
+            before: 'all its Precision',
+            after: 'full to +30, half after, at most +90',
+            direction: 'nerf',
           },
           {
             label: "The Trickster's 1-Mana Exposed payoff",
-            before: "+2 per Exposed",
-            after: "full to +16, half after, at most +32",
-            direction: "nerf"
+            before: '+2 per Exposed',
+            after: 'full to +16, half after, at most +32',
+            direction: 'nerf',
           },
           {
-            label: "Off the Leash",
-            before: "half each companion’s HP",
-            after: "half to +15, a quarter after",
-            direction: "nerf"
+            label: 'Off the Leash',
+            before: 'half each companion’s HP',
+            after: 'half to +15, a quarter after',
+            direction: 'nerf',
           },
           {
-            label: "Recall the Blades",
-            before: "every consumed Dagger",
-            after: "the first 20, then every second one",
-            direction: "nerf"
+            label: 'Recall the Blades',
+            before: 'every consumed Dagger',
+            after: 'the first 20, then every second one',
+            direction: 'nerf',
           },
           {
-            label: "Slip the Leash",
-            before: "doubles Might",
-            after: "doubles it, +8 at most (+10 upgraded)",
-            direction: "nerf"
+            label: 'Slip the Leash',
+            before: 'doubles Might',
+            after: 'doubles it, +8 at most (+10 upgraded)',
+            direction: 'nerf',
           },
           {
-            label: "Reaper’s Mantle",
-            before: "Fate equal to HP taken",
-            after: "half of it",
-            direction: "nerf"
-          }
-        ]
+            label: 'Reaper’s Mantle',
+            before: 'Fate equal to HP taken',
+            after: 'half of it',
+            direction: 'nerf',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Companions acting again",
-        text: "When a card or Aura makes your companions act again, the first time each turn is at full damage and every time after at half. Their own action at the end of your turn is not counted."
+        kind: 'balance',
+        title: 'Companions acting again',
+        text: 'When a card or Aura makes your companions act again, the first time each turn is at full damage and every time after at half. Their own action at the end of your turn is not counted.',
       },
       {
-        kind: "balance",
-        title: "Radiant",
-        hero: "monk",
-        text: "Radiant doubles your attack damage. Its Mana and Fervor are unchanged.",
+        kind: 'balance',
+        title: 'Radiant',
+        hero: 'monk',
+        text: 'Radiant doubles your attack damage. Its Mana and Fervor are unchanged.',
         changes: [
           {
-            label: "Radiant",
-            before: "triple damage",
-            after: "double damage",
-            direction: "nerf"
-          }
-        ]
+            label: 'Radiant',
+            before: 'triple damage',
+            after: 'double damage',
+            direction: 'nerf',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "The two fastest",
-        text: "The Beastmaster’s companions share the first 6 of your Might in full and half of the rest, 14 at most. The Bonelord’s companions deal 2 more damage.",
+        kind: 'balance',
+        title: 'The two fastest',
+        text: 'The Beastmaster’s companions share the first 6 of your Might in full and half of the rest, 14 at most. The Bonelord’s companions deal 2 more damage.',
         changes: [
           {
-            label: "Beastmaster",
-            before: "all your Might",
-            after: "first 6, half the rest, 14 at most",
-            direction: "nerf"
+            label: 'Beastmaster',
+            before: 'all your Might',
+            after: 'first 6, half the rest, 14 at most',
+            direction: 'nerf',
           },
           {
-            label: "Bonelord",
-            before: "+3 damage",
-            after: "+2 damage",
-            direction: "nerf"
-          }
-        ]
+            label: 'Bonelord',
+            before: '+3 damage',
+            after: '+2 damage',
+            direction: 'nerf',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Ten Ascendancies brought up",
-        text: "Each of these had nothing that kept growing late in a fight. Now each does.",
+        kind: 'balance',
+        title: 'Ten Ascendancies brought up',
+        text: 'Each of these had nothing that kept growing late in a fight. Now each does.',
         changes: [
           {
-            label: "Blademaster",
-            before: "1 Keen, +1 a turn, up to 5",
-            after: "2 Keen, +2 a turn, up to 14",
-            direction: "buff"
+            label: 'Blademaster',
+            before: '1 Keen, +1 a turn, up to 5',
+            after: '2 Keen, +2 a turn, up to 14',
+            direction: 'buff',
           },
           {
-            label: "Cardsharp",
-            before: "2 Might a Full Trick, up to 12",
-            after: "3 Might, up to 24",
-            direction: "buff"
+            label: 'Cardsharp',
+            before: '2 Might a Full Trick, up to 12',
+            after: '3 Might, up to 24',
+            direction: 'buff',
           },
           {
-            label: "Brewmaster",
-            before: "+4% per Fermentation",
-            after: "+7% per Fermentation",
-            direction: "buff"
+            label: 'Brewmaster',
+            before: '+4% per Fermentation',
+            after: '+7% per Fermentation',
+            direction: 'buff',
           },
           {
-            label: "Predator",
-            before: "first Exposed: draw 1",
-            after: "draw 1 and 1 Might (up to 10)",
-            direction: "buff"
+            label: 'Predator',
+            before: 'first Exposed: draw 1',
+            after: 'draw 1 and 1 Might (up to 10)',
+            direction: 'buff',
           },
           {
-            label: "Soulreaper",
-            before: "3 Harvest a round, Reap 2 each",
-            after: "4 a round, Reap 3 each",
-            direction: "buff"
+            label: 'Soulreaper',
+            before: '3 Harvest a round, Reap 2 each',
+            after: '4 a round, Reap 3 each',
+            direction: 'buff',
           },
           {
-            label: "Elementalist",
-            before: "3 Burn / 3 Barrier / 2 damage, +1 each time",
-            after: "4 / 3 / 4, +2 each time",
-            direction: "buff"
+            label: 'Elementalist',
+            before: '3 Burn / 3 Barrier / 2 damage, +1 each time',
+            after: '4 / 3 / 4, +2 each time',
+            direction: 'buff',
           },
           {
-            label: "Trapmaster",
-            before: "nothing at end of turn",
-            after: "4 damage to ALL per Trap set",
-            direction: "buff"
+            label: 'Trapmaster',
+            before: 'nothing at end of turn',
+            after: '4 damage to ALL per Trap set',
+            direction: 'buff',
           },
           {
-            label: "Paladin",
-            before: "keeps 60% Barrier",
-            after: "also 1 Might a turn (10 turns) and a quarter of its Barrier as damage each turn",
-            direction: "buff"
+            label: 'Paladin',
+            before: 'keeps 60% Barrier',
+            after:
+              'also 1 Might a turn (10 turns) and a quarter of its Barrier as damage each turn',
+            direction: 'buff',
           },
           {
-            label: "Assassin",
-            before: "15% Preparation a Skill, up to 60%",
-            after: "20%, up to 100%",
-            direction: "buff"
+            label: 'Assassin',
+            before: '15% Preparation a Skill, up to 60%',
+            after: '20%, up to 100%',
+            direction: 'buff',
           },
           {
-            label: "Artillerist",
-            before: "3 Might for 5 turns",
-            after: "3 Might for 8 turns",
-            direction: "buff"
-          }
-        ]
+            label: 'Artillerist',
+            before: '3 Might for 5 turns',
+            after: '3 Might for 8 turns',
+            direction: 'buff',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Mana cards are rarer",
-        text: "Rift Surge is Uncommon and Nerve Surge is Rare. Cards already in a deck stay.",
+        kind: 'balance',
+        title: 'Mana cards are rarer',
+        text: 'Rift Surge is Uncommon and Nerve Surge is Rare. Cards already in a deck stay.',
         changes: [
           {
-            label: "Rift Surge",
-            before: "Common",
-            after: "Uncommon",
-            direction: "nerf"
+            label: 'Rift Surge',
+            before: 'Common',
+            after: 'Uncommon',
+            direction: 'nerf',
           },
           {
-            label: "Nerve Surge",
-            before: "Uncommon",
-            after: "Rare",
-            direction: "nerf"
-          }
-        ]
+            label: 'Nerve Surge',
+            before: 'Uncommon',
+            after: 'Rare',
+            direction: 'nerf',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Answers to curses Hold",
-        text: "Shake It Off+, Steady Nerves+ and Purging Light+ also Hold, so an answer to curses such as Fate can wait in your hand."
+        kind: 'balance',
+        title: 'Answers to curses Hold',
+        text: 'Shake It Off+, Steady Nerves+ and Purging Light+ also Hold, so an answer to curses such as Fate can wait in your hand.',
       },
       {
-        kind: "balance",
-        title: "A harder Campaign",
-        text: "Enemies have more HP and hit harder in every Rift Tier, a little at Tier I and more with each tier. Wardens have a bonus of their own, so every Warden is stronger than every Elite.",
+        kind: 'balance',
+        title: 'A harder Campaign',
+        text: 'Enemies have more HP and hit harder in every Rift Tier, a little at Tier I and more with each tier. Wardens have a bonus of their own, so every Warden is stronger than every Elite.',
         changes: [
           {
-            label: "Tier I",
-            before: "100% HP, 93% damage",
-            after: "105% HP, 98% damage",
-            direction: "nerf"
+            label: 'Tier I',
+            before: '100% HP, 93% damage',
+            after: '105% HP, 98% damage',
+            direction: 'nerf',
           },
           {
-            label: "Tier XII",
-            before: "540% HP, 148% damage",
-            after: "655% HP, 197% damage",
-            direction: "nerf"
+            label: 'Tier XII',
+            before: '540% HP, 148% damage',
+            after: '655% HP, 197% damage',
+            direction: 'nerf',
           },
           {
-            label: "Wardens",
-            before: "no bonus of their own",
-            after: "20% more HP, 15% more damage",
-            direction: "nerf"
-          }
-        ]
+            label: 'Wardens',
+            before: 'no bonus of their own',
+            after: '20% more HP, 15% more damage',
+            direction: 'nerf',
+          },
+        ],
       },
       {
-        kind: "changed",
-        text: "Card rewards from Elites, Wardens and the merchant are a little less often Rare and a little more often Uncommon."
+        kind: 'changed',
+        text: 'Card rewards from Elites, Wardens and the merchant are a little less often Rare and a little more often Uncommon.',
       },
       {
-        kind: "fixed",
-        text: "Bone Crush stayed free however many Replay marks Echo of the Dead put on it. Each mark’s extra Mana is now paid."
+        kind: 'fixed',
+        text: 'Bone Crush stayed free however many Replay marks Echo of the Dead put on it. Each mark’s extra Mana is now paid.',
       },
       {
-        kind: "fixed",
-        text: "A Riftwalker other than the Monk who played Swift Step stayed in Fury for the whole fight. Fury now ends as their next turn begins."
+        kind: 'fixed',
+        text: 'A Riftwalker other than the Monk who played Swift Step stayed in Fury for the whole fight. Fury now ends as their next turn begins.',
       },
       {
-        kind: "fixed",
-        title: "Nobody hides behind anybody",
-        text: "Enemies could stand stacked or hidden behind each other (a Warden’s escort, a summoner’s brood, Drago’s court). Each side now stands in one row at one size for the whole fight, with room kept for its summons. Drago is a little smaller, still the tallest of all."
-      }
+        kind: 'fixed',
+        title: 'Nobody hides behind anybody',
+        text: 'Enemies could stand stacked or hidden behind each other (a Warden’s escort, a summoner’s brood, Drago’s court). Each side now stands in one row at one size for the whole fight, with room kept for its summons. Drago is a little smaller, still the tallest of all.',
+      },
     ],
-    heads: "The rules changed: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play."
+    heads:
+      'The rules changed: a fight left unfinished under the old version starts again from its beginning, and older replays no longer play.',
   },
   {
-    version: "0.258.0",
-    date: "2026-11-12",
-    title: "Steadier figures",
-    summary: "The Riftwalkers breathe gently again, creatures keep one size all fight, and Rift-crossed cards survive a reroll.",
+    version: '0.258.0',
+    date: '2026-11-12',
+    title: 'Steadier figures',
+    summary:
+      'The Riftwalkers breathe gently again, creatures keep one size all fight, and Rift-crossed cards survive a reroll.',
     notes: [
       {
-        kind: "fixed",
+        kind: 'fixed',
         text: "The Riftwalkers' breathing while they stand was far too strong after the redraw; it is back to the gentle breathing they had before.",
       },
       {
-        kind: "changed",
-        title: "One size all fight",
-        text: "On a computer screen, creatures keep their size all fight: nothing shrinks when a summon joins (a crowd stands in ranks instead), long creatures such as the Scrapyard Centipede are drawn at full size, and companions are sized by what they are, so the Grave Colossus and the Drowned King stand big from the start. Phones still fit a crowd to the screen.",
+        kind: 'changed',
+        title: 'One size all fight',
+        text: 'On a computer screen, creatures keep their size all fight: nothing shrinks when a summon joins (a crowd stands in ranks instead), long creatures such as the Scrapyard Centipede are drawn at full size, and companions are sized by what they are, so the Grave Colossus and the Drowned King stand big from the start. Phones still fit a crowd to the screen.',
       },
       {
-        kind: "fixed",
-        text: "Animated creatures were drawn smaller than their pictures, wide ones much smaller.",
+        kind: 'fixed',
+        text: 'Animated creatures were drawn smaller than their pictures, wide ones much smaller.',
       },
       {
-        kind: "changed",
-        text: "Rerolling a campaign card reward keeps a Rift-crossed card Rift-crossed: its slot rolls another Rift-crossed card, a second shot at one.",
+        kind: 'changed',
+        text: 'Rerolling a campaign card reward keeps a Rift-crossed card Rift-crossed: its slot rolls another Rift-crossed card, a second shot at one.',
       },
       {
-        kind: "fixed",
+        kind: 'fixed',
         text: "A visiting merchant's Leave the shop button stands in the same place as at every other shop.",
       },
     ],
   },
   {
-    version: "0.257.0",
-    date: "2026-11-12",
-    title: "Everyone comes to life",
-    summary: "Enemies, Wardens and companions are animated in battle, the Riftwalkers are redrawn sharper, and five worlds are redrawn in the game's style.",
+    version: '0.257.0',
+    date: '2026-11-12',
+    title: 'Everyone comes to life',
+    summary:
+      "Enemies, Wardens and companions are animated in battle, the Riftwalkers are redrawn sharper, and five worlds are redrawn in the game's style.",
     notes: [
       {
-        kind: "new",
-        title: "Animated creatures",
-        text: "Enemies, Wardens, companions and summoned minions breathe, strike, flinch and fall with their own animations instead of standing as still pictures. Creatures that shoot, throw or cast send their shot flying to the target. Low graphics keeps the still pictures.",
+        kind: 'new',
+        title: 'Animated creatures',
+        text: 'Enemies, Wardens, companions and summoned minions breathe, strike, flinch and fall with their own animations instead of standing as still pictures. Creatures that shoot, throw or cast send their shot flying to the target. Low graphics keeps the still pictures.',
       },
       {
-        kind: "changed",
-        title: "Sharper Riftwalkers",
+        kind: 'changed',
+        title: 'Sharper Riftwalkers',
         text: "Every Riftwalker is redrawn at a higher resolution with more poses in each animation: a smoother attack, a fuller fall, a power-up that builds, and drawn breathing while they stand. They come to life sooner too: the standing pose loads first. The Necromancer's attack has its wind-up again.",
       },
       {
-        kind: "new",
-        title: "Medium graphics",
-        text: "Graphics quality has a new Medium setting: the same look with lighter models, for less to download and about half the memory. Phones and computers with little memory start on it; anyone can change it in Settings.",
+        kind: 'new',
+        title: 'Medium graphics',
+        text: 'Graphics quality has a new Medium setting: the same look with lighter models, for less to download and about half the memory. Phones and computers with little memory start on it; anyone can change it in Settings.',
       },
       {
-        kind: "changed",
-        title: "Five worlds redrawn",
+        kind: 'changed',
+        title: 'Five worlds redrawn',
         text: "The creatures of Cindervault, Thalassar, Vespera, the Hourglass Expanse and the First Ruin are redrawn in the game's cartoon style, and those that borrowed another creature's picture now have their own.",
       },
       {
-        kind: "changed",
+        kind: 'changed',
         text: "On the campaign map, the Abandon button says Abandon and sits beside Home, and the run's seed is a small chip beside the tier's name.",
       },
     ],
   },
   {
-    version: "0.256.0",
-    date: "2026-11-11",
-    title: "A cleaner map and header",
-    summary: "Settings always at the top right, a tidier campaign header, and the stops you can reach glow on the map.",
+    version: '0.256.0',
+    date: '2026-11-11',
+    title: 'A cleaner map and header',
+    summary:
+      'Settings always at the top right, a tidier campaign header, and the stops you can reach glow on the map.',
     notes: [
       {
-        kind: "changed",
-        title: "Settings at the top right",
-        text: "Settings is a gear at the top right on the map and in battle, the same place on every screen, with the run clock just left of it, larger.",
+        kind: 'changed',
+        title: 'Settings at the top right',
+        text: 'Settings is a gear at the top right on the map and in battle, the same place on every screen, with the run clock just left of it, larger.',
       },
       {
-        kind: "changed",
-        title: "A tidier campaign header",
+        kind: 'changed',
+        title: 'A tidier campaign header',
         text: "Home sits on its own at the left, the Deck and Abandon are icons, and whether your deck is in the Arena is a small mark beside the Tier. The run's seed moved to the foot of the map page: select it to copy it. The space above the map is laid out in one row.",
       },
       {
-        kind: "new",
-        title: "Where you can move",
-        text: "The stops you can move to on the map glow and send out rings of light; the stops you cannot reach yet step back a little.",
+        kind: 'new',
+        title: 'Where you can move',
+        text: 'The stops you can move to on the map glow and send out rings of light; the stops you cannot reach yet step back a little.',
       },
       {
-        kind: "changed",
-        text: "The battle screen no longer lists the Omens (they are on the map), and its title is centred.",
+        kind: 'changed',
+        text: 'The battle screen no longer lists the Omens (they are on the map), and its title is centred.',
       },
       {
-        kind: "fixed",
+        kind: 'fixed',
         text: "The Riftwalkers' back legs no longer wobble while they stand idle.",
       },
       {
-        kind: "fixed",
-        text: "How this board works on the leaderboards is centred.",
+        kind: 'fixed',
+        text: 'How this board works on the leaderboards is centred.',
       },
     ],
   },
   {
-    version: "0.255.0",
-    date: "2026-11-11",
-    title: "Spells and fight titles",
-    summary: "The Spellblade casts her spells, the top of the battle screen says what kind of fight it is, and the campaign's ending is tidied.",
+    version: '0.255.0',
+    date: '2026-11-11',
+    title: 'Spells and fight titles',
+    summary:
+      "The Spellblade casts her spells, the top of the battle screen says what kind of fight it is, and the campaign's ending is tidied.",
     notes: [
       {
-        kind: "new",
-        title: "The Spellblade casts",
-        text: "The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter. Her Swords still swing the blade. Hover her on the home screen to see both.",
+        kind: 'new',
+        title: 'The Spellblade casts',
+        text: 'The Spellblade casts her left-hand spell for her Spell cards and any card that uses Spell Power, Fracture or a Shatter. Her Swords still swing the blade. Hover her on the home screen to see both.',
       },
       {
-        kind: "changed",
-        title: "Fight titles",
+        kind: 'changed',
+        title: 'Fight titles',
         text: "The title at the top of the battle screen now has a badge for the kind of fight (Duel, Elite, Warden, Final battle, Echo, Ghost Warden, Arena or Arena ghost), with the Tier, floor and turn on a small line under the encounter's name.",
       },
       {
-        kind: "fixed",
-        text: "The Necromancer no longer turns his staff through his hands as he winds up an attack.",
+        kind: 'fixed',
+        text: 'The Necromancer no longer turns his staff through his hands as he winds up an attack.',
       },
       {
-        kind: "fixed",
+        kind: 'fixed',
         text: "The campaign's ending had its words off to the left and the Return to the Sanctum button close under them: both are centred now, with room between them.",
       },
     ],
   },
   {
-    version: "0.254.0",
-    date: "2026-11-11",
-    title: "Animated Riftwalkers",
-    summary: "Every Riftwalker moves now: standing ready, attacking, taking a hit, powering up and falling, each with a power-up of their own.",
+    version: '0.254.0',
+    date: '2026-11-11',
+    title: 'Animated Riftwalkers',
+    summary:
+      'Every Riftwalker moves now: standing ready, attacking, taking a hit, powering up and falling, each with a power-up of their own.',
     notes: [
       {
-        kind: "new",
-        title: "Animated Riftwalkers",
-        text: "Every Riftwalker has a new hand-drawn 2D animated look, at home, in the picker and in every fight: they breathe while they wait, swing, stab, shoot or cast with each attack, flinch when hit and fall when beaten. The hit lands at the moment the blow connects.",
+        kind: 'new',
+        title: 'Animated Riftwalkers',
+        text: 'Every Riftwalker has a new hand-drawn 2D animated look, at home, in the picker and in every fight: they breathe while they wait, swing, stab, shoot or cast with each attack, flinch when hit and fall when beaten. The hit lands at the moment the blow connects.',
       },
       {
-        kind: "new",
-        title: "A power-up of their own",
+        kind: 'new',
+        title: 'A power-up of their own',
         text: "Each Riftwalker powers up differently: the Spellblade calls a ring of stars, the Rogue gathers shadows and ghost daggers, the Monk sends a fire shockwave through the ground, the Necromancer draws souls into his lantern, the Shaman's spirit hawk circles him, the Trickster takes a bow as the four suits fly out, the Engineer tunes his drone, the Hunter howls and rakes claw marks, and the Drunkard has a drink.",
       },
       {
-        kind: "changed",
-        text: "The 2D animated models (beta) setting in Settings now switches to the video-clip animations instead. On Low graphics or with reduced motion, Riftwalkers show their painting.",
+        kind: 'changed',
+        text: 'The 2D animated models (beta) setting in Settings now switches to the video-clip animations instead. On Low graphics or with reduced motion, Riftwalkers show their painting.',
       },
       {
-        kind: "changed",
-        title: "Riftwalker looks put away for now",
-        text: "Riftwalker looks (skins) are put away while they get animated versions, so every Riftwalker appears in its own look and the Store and Collection have no looks tab for now. The looks you own and the one you chose are kept, and come back with them.",
-      },
-    ],
-  },
-  {
-    version: "0.253.0",
-    date: "2026-11-11",
-    title: "No monthly wipe",
-    summary: "Saved decks are kept from month to month. The wipe planned for 1 December will not happen.",
-    notes: [
-      {
-        kind: "changed",
-        title: "Saved decks are kept",
-        text: "Saved decks are no longer wiped when the monthly leaderboard rolls over, and the wipe announced for 1 December 2026 will not happen. You keep your decks and everything else from month to month. Only your Arena rank resets each month, part of the way, as before.",
-      },
-      {
-        kind: "changed",
-        text: "The one wipe still planned is when the game is released: everyone starts fresh then. Your cosmetics are never wiped.",
-      },
-      {
-        kind: "new",
-        title: "Decks an update leaves unplayable",
-        text: "If an update ever leaves one of your saved decks unplayable (a card it holds is no longer in the game, say), the Saved decks page now tells you which deck and why, instead of the deck quietly disappearing. Press Got it and the deck is set to inactive: it stays in a short list at the foot of the page and takes none of your deck slots. If a later update makes it playable again it comes back by itself. Only you can remove it.",
+        kind: 'changed',
+        title: 'Riftwalker looks put away for now',
+        text: 'Riftwalker looks (skins) are put away while they get animated versions, so every Riftwalker appears in its own look and the Store and Collection have no looks tab for now. The looks you own and the one you chose are kept, and come back with them.',
       },
     ],
   },
   {
-    version: "0.252.0",
-    date: "2026-11-11",
-    title: "Enemy Traps",
-    summary: "Enemies set Traps now, most of all in the Umbral Veil, and the last tier no longer leaves a Wound.",
+    version: '0.253.0',
+    date: '2026-11-11',
+    title: 'No monthly wipe',
+    summary:
+      'Saved decks are kept from month to month. The wipe planned for 1 December will not happen.',
     notes: [
       {
-        kind: "new",
-        title: "Enemies set Traps",
+        kind: 'changed',
+        title: 'Saved decks are kept',
+        text: 'Saved decks are no longer wiped when the monthly leaderboard rolls over, and the wipe announced for 1 December 2026 will not happen. You keep your decks and everything else from month to month. Only your Arena rank resets each month, part of the way, as before.',
+      },
+      {
+        kind: 'changed',
+        text: 'The one wipe still planned is when the game is released: everyone starts fresh then. Your cosmetics are never wiped.',
+      },
+      {
+        kind: 'new',
+        title: 'Decks an update leaves unplayable',
+        text: 'If an update ever leaves one of your saved decks unplayable (a card it holds is no longer in the game, say), the Saved decks page now tells you which deck and why, instead of the deck quietly disappearing. Press Got it and the deck is set to inactive: it stays in a short list at the foot of the page and takes none of your deck slots. If a later update makes it playable again it comes back by itself. Only you can remove it.',
+      },
+    ],
+  },
+  {
+    version: '0.252.0',
+    date: '2026-11-11',
+    title: 'Enemy Traps',
+    summary:
+      'Enemies set Traps now, most of all in the Umbral Veil, and the last tier no longer leaves a Wound.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Enemies set Traps',
         text: "Nine of the Umbral Veil's fifteen enemies set Traps, and one each in Wyldmaw, Nexus-9, the Gloomfen and the Hollow Crown (Orchid Maw, Clockwork Guillotine, Lantern Angler, Ember Chessman). An enemy's intent says which Trap it sets and what it will do. Their Traps lie face up in front of them under Enemy Traps: hover one to see what sets it off and what it does to you at this tier. They answer your attacks, your Barrier or your summons: damage back, Faltering, Exposed, a Wound in your hand, Fate, a cancelled hit, or a strike at all your units. A Trap breaks if the enemy that set it falls first.",
       },
       {
-        kind: "balance",
-        title: "What the Trap setters gave up",
-        text: "The moves that set a Trap are a little weaker to pay for it: less Barrier (Lock Up, Open Canopy, Ink Cloak, Wear the Mask, Wind the Spring, Castle, Weave the Web), less healing (Drink Deep), 2 Bleed instead of 3 (Mindrot), 4 Fate instead of 6 (The Lure), one junk card instead of two (Stitch In). The Lost Courtier has a new move, Masquerade, that only sets its Trap.",
+        kind: 'balance',
+        title: 'What the Trap setters gave up',
+        text: 'The moves that set a Trap are a little weaker to pay for it: less Barrier (Lock Up, Open Canopy, Ink Cloak, Wear the Mask, Wind the Spring, Castle, Weave the Web), less healing (Drink Deep), 2 Bleed instead of 3 (Mindrot), 4 Fate instead of 6 (The Lure), one junk card instead of two (Stitch In). The Lost Courtier has a new move, Masquerade, that only sets its Trap.',
       },
       {
-        kind: "changed",
-        title: "No Wound at the last tier",
-        text: "Rift Scars no longer adds a Wound to your deck when you reach Tier XII.",
+        kind: 'changed',
+        title: 'No Wound at the last tier',
+        text: 'Rift Scars no longer adds a Wound to your deck when you reach Tier XII.',
       },
     ],
-    heads: "Rules changed: a fight left unfinished on an older version starts again from its checkpoint.",
+    heads:
+      'Rules changed: a fight left unfinished on an older version starts again from its checkpoint.',
   },
   {
-    version: "0.251.0",
-    date: "2026-11-11",
-    title: "On the dais",
-    summary: "On the home page your Riftwalker now stands on the dais on every screen, and the Sanctum has its painted hall too.",
+    version: '0.251.0',
+    date: '2026-11-11',
+    title: 'On the dais',
+    summary:
+      'On the home page your Riftwalker now stands on the dais on every screen, and the Sanctum has its painted hall too.',
     notes: [
       {
-        kind: "fixed",
-        title: "The Riftwalker stands on the dais",
+        kind: 'fixed',
+        title: 'The Riftwalker stands on the dais',
         text: "On the home page the lit dais is now placed under your Riftwalker's feet whatever the size of your window, and stays there when the page scrolls. Before, on most screens they stood beside it.",
       },
       {
-        kind: "fixed",
-        title: "The Sanctum has its background",
-        text: "The Sanctum, where you choose a Riftwalker and begin a run, now has the same painted hall behind it as the home page. It was left plain.",
+        kind: 'fixed',
+        title: 'The Sanctum has its background',
+        text: 'The Sanctum, where you choose a Riftwalker and begin a run, now has the same painted hall behind it as the home page. It was left plain.',
       },
     ],
   },
   {
-    version: "0.250.0",
-    date: "2026-11-11",
-    title: "Painted menus, and battles on the board",
-    summary: "Every menu now has a painted place behind it, and the Arena leaderboard shows battles won as well as matches.",
+    version: '0.250.0',
+    date: '2026-11-11',
+    title: 'Painted menus, and battles on the board',
+    summary:
+      'Every menu now has a painted place behind it, and the Arena leaderboard shows battles won as well as matches.',
     notes: [
       {
-        kind: "new",
-        title: "A place behind every menu",
-        text: "The home page is a great hall, with your Riftwalker standing on its dais. The Store is a market stall, your Collection is a vault, the Arena waits behind its gate, your decks and cards are kept in an archive, and the leaderboards hang in a hall of champions.",
+        kind: 'new',
+        title: 'A place behind every menu',
+        text: 'The home page is a great hall, with your Riftwalker standing on its dais. The Store is a market stall, your Collection is a vault, the Arena waits behind its gate, your decks and cards are kept in an archive, and the leaderboards hang in a hall of champions.',
       },
       {
-        kind: "changed",
-        title: "The Arena leaderboard shows battles as well as matches",
-        text: "A match is a best of three; a battle is one game of it. Places on the board still go by matches won, and a new Battles column shows the battles you won and lost. The ghost leaderboards show the same.",
+        kind: 'changed',
+        title: 'The Arena leaderboard shows battles as well as matches',
+        text: 'A match is a best of three; a battle is one game of it. Places on the board still go by matches won, and a new Battles column shows the battles you won and lost. The ghost leaderboards show the same.',
       },
       {
-        kind: "changed",
+        kind: 'changed',
         title: "Your Riftwalker's snapshot counts battles",
-        text: "On the home screen, Arena and Ghosts now count battles won with that Riftwalker: every game of a best of three counts.",
+        text: 'On the home screen, Arena and Ghosts now count battles won with that Riftwalker: every game of a best of three counts.',
       },
     ],
-    heads: "Battles are counted from this update on, so a match played before it shows none.",
+    heads: 'Battles are counted from this update on, so a match played before it shows none.',
   },
   {
-    version: "0.249.0",
-    date: "2026-11-11",
-    title: "Hero mastery",
-    summary: "Track how far you have got with each Riftwalker, master one by clearing the campaign with it, and earn its card back. Rewards are given the moment you earn them.",
+    version: '0.249.0',
+    date: '2026-11-11',
+    title: 'Hero mastery',
+    summary:
+      'Track how far you have got with each Riftwalker, master one by clearing the campaign with it, and earn its card back. Rewards are given the moment you earn them.',
     notes: [
       {
-        kind: "new",
-        title: "Hero mastery on the home screen",
+        kind: 'new',
+        title: 'Hero mastery on the home screen',
         text: "A Riftwalker's mastery is how many times you have cleared the campaign with it. Each icon on the home screen wears a ring of 12 segments, one for every Rift Tier cleared, and its mastery under it once you have a clear (before that, how far you have got). Under the row is a snapshot of the Riftwalker you picked: Mastery, Furthest, Arena matches won and ghosts beaten. A best of three counts as one win.",
       },
       {
-        kind: "new",
-        title: "A card back for every Riftwalker you master",
-        text: "Mastering a Riftwalker gives you its card back: its class crest on your draw pile and on every card you draw, in place of the S|R crest. Choose your card back in your Collection, under Card backs. Like every cosmetic, it is never wiped.",
+        kind: 'new',
+        title: 'A card back for every Riftwalker you master',
+        text: 'Mastering a Riftwalker gives you its card back: its class crest on your draw pile and on every card you draw, in place of the S|R crest. Choose your card back in your Collection, under Card backs. Like every cosmetic, it is never wiped.',
       },
       {
-        kind: "new",
-        title: "Rewards arrive by themselves",
+        kind: 'new',
+        title: 'Rewards arrive by themselves',
         text: "Nothing needs claiming. When you earn a reward you get it at once, with a note to acknowledge. Everything you have earned is listed under Earned, in the home screen's header.",
       },
       {
-        kind: "new",
-        title: "Completed campaigns stand out, and the ending can be seen again",
-        text: "In Saved decks, a deck whose run cleared the campaign has a gold frame and a Campaign complete banner. Open the ending again from that deck, or from the completed run in Run history.",
+        kind: 'new',
+        title: 'Completed campaigns stand out, and the ending can be seen again',
+        text: 'In Saved decks, a deck whose run cleared the campaign has a gold frame and a Campaign complete banner. Open the ending again from that deck, or from the completed run in Run history.',
       },
       {
-        kind: "changed",
+        kind: 'changed',
         title: "An enemy's Fracture tells you its next Shatter",
-        hero: "spellblade",
-        text: "Point at the Fracture on an enemy: it now starts with how much more Fracture Shatters it and how much damage that Shatter will deal, with your Spell Power and everything else counted.",
+        hero: 'spellblade',
+        text: 'Point at the Fracture on an enemy: it now starts with how much more Fracture Shatters it and how much damage that Shatter will deal, with your Spell Power and everything else counted.',
       },
       {
-        kind: "changed",
-        title: "Reverb has a clearer icon",
-        text: "Reverb (your next Attack is played twice) is now a plain x2 on a red gem, in place of two crossed swords.",
+        kind: 'changed',
+        title: 'Reverb has a clearer icon',
+        text: 'Reverb (your next Attack is played twice) is now a plain x2 on a red gem, in place of two crossed swords.',
       },
       {
-        kind: "changed",
-        title: "The Store and your Collection look different",
-        text: "The Store is gold and violet; your Collection is teal and green, with its own mark. Each says at the top what it is for: the Store is where you get things, the Collection is what is already yours.",
+        kind: 'changed',
+        title: 'The Store and your Collection look different',
+        text: 'The Store is gold and violet; your Collection is teal and green, with its own mark. Each says at the top what it is for: the Store is where you get things, the Collection is what is already yours.',
       },
       {
-        kind: "fixed",
-        title: "Every card that sets off a Shatter says so",
-        hero: "spellblade",
-        text: "With Fault Lines in play, a Sword or Spell with no Fracture of its own (the Obsidian Blade and many others) set off a Shatter without showing it on the card. Those cards now end with \"Shatter now\" and the damage. Crack the Shell, Breaking Point and Carry the Fault show their Shatter too. Nothing about the damage itself has changed.",
-      },
-    ],
-    heads: "Campaigns you cleared before this update count if the run is still in your Run history (it keeps your last 40 ended runs): the mastery and the card back are yours the next time you open the game online. A run you are in the middle of counts from its next stop. Arena wins are counted from now on.",
-  },
-  {
-    version: "0.248.0",
-    date: "2026-11-10",
-    title: "Aiming a card, and seasons",
-    summary: "A card you are aiming waits at the bottom of the screen, clear of the enemies. Saved decks now last one season, and the card back wears the S|R crest.",
-    notes: [
-      {
-        kind: "fixed",
-        title: "A card you aim no longer covers the enemy",
-        text: "On a small laptop screen, a card picked for aiming stayed lifted over the enemies, and clicking the enemy through it let the card go. Now, when a card needs a target, it glides to the bottom centre of the screen and the rest of your hand drops out of the way, so the whole board is clear. Click or drag as before; click the waiting card, right-click or press Esc to put it back.",
-      },
-      {
-        kind: "changed",
-        title: "Saved decks last one season",
-        text: "Saved decks are wiped when the monthly leaderboard rolls over, for the first time on 1 December 2026. The deck of a run you are still playing is saved again as you play on, so it stays. The Saved decks page says when the next wipe is. Your cosmetics are never wiped.",
-      },
-      {
-        kind: "new",
-        title: "The S|R crest on the card back",
-        text: "The card back carries the S|R crest: on your draw pile, and on a card as it flies to or from your hand.",
+        kind: 'fixed',
+        title: 'Every card that sets off a Shatter says so',
+        hero: 'spellblade',
+        text: 'With Fault Lines in play, a Sword or Spell with no Fracture of its own (the Obsidian Blade and many others) set off a Shatter without showing it on the card. Those cards now end with "Shatter now" and the damage. Crack the Shell, Breaking Point and Carry the Fault show their Shatter too. Nothing about the damage itself has changed.',
       },
     ],
-    heads: "Cancelled in 0.253.0: saved decks are not wiped. (This patch had announced a wipe of saved decks on 1 December 2026.)",
+    heads:
+      'Campaigns you cleared before this update count if the run is still in your Run history (it keeps your last 40 ended runs): the mastery and the card back are yours the next time you open the game online. A run you are in the middle of counts from its next stop. Arena wins are counted from now on.',
   },
   {
-    version: "0.247.0",
-    date: "2026-11-10",
-    title: "Every copy grows, and a last Sanctify",
-    summary: "Sanctified and engraved copies are the same card again (Gathering Storm grows on all of them), and Tier XII's Refinement Shrines can sanctify one card.",
+    version: '0.248.0',
+    date: '2026-11-10',
+    title: 'Aiming a card, and seasons',
+    summary:
+      'A card you are aiming waits at the bottom of the screen, clear of the enemies. Saved decks now last one season, and the card back wears the S|R crest.',
     notes: [
       {
-        kind: "fixed",
-        title: "Gathering Storm grows on every copy",
-        text: "A Sanctified or engraved Gathering Storm now grows with all your other copies, and grows itself when you cast it. Before, those copies never grew, and with only Sanctified copies in your deck each cast added a new plain copy to your hand. The same holds for every card that grows itself and every weapon that is Sharpened.",
+        kind: 'fixed',
+        title: 'A card you aim no longer covers the enemy',
+        text: 'On a small laptop screen, a card picked for aiming stayed lifted over the enemies, and clicking the enemy through it let the card go. Now, when a card needs a target, it glides to the bottom centre of the screen and the rest of your hand drops out of the way, so the whole board is clear. Click or drag as before; click the waiting card, right-click or press Esc to put it back.',
       },
       {
-        kind: "fixed",
-        title: "Every copy is the same card",
-        text: "A Sanctified or engraved copy counts as the same card as the plain one: for \"the first time you play this card this turn\" (Bone Toss) and for the Monk's Forms that ask for different cards.",
+        kind: 'changed',
+        title: 'Saved decks last one season',
+        text: 'Saved decks are wiped when the monthly leaderboard rolls over, for the first time on 1 December 2026. The deck of a run you are still playing is saved again as you play on, so it stays. The Saved decks page says when the next wipe is. Your cosmetics are never wiped.',
       },
       {
-        kind: "new",
+        kind: 'new',
+        title: 'The S|R crest on the card back',
+        text: 'The card back carries the S|R crest: on your draw pile, and on a card as it flies to or from your hand.',
+      },
+    ],
+    heads:
+      'Cancelled in 0.253.0: saved decks are not wiped. (This patch had announced a wipe of saved decks on 1 December 2026.)',
+  },
+  {
+    version: '0.247.0',
+    date: '2026-11-10',
+    title: 'Every copy grows, and a last Sanctify',
+    summary:
+      "Sanctified and engraved copies are the same card again (Gathering Storm grows on all of them), and Tier XII's Refinement Shrines can sanctify one card.",
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Gathering Storm grows on every copy',
+        text: 'A Sanctified or engraved Gathering Storm now grows with all your other copies, and grows itself when you cast it. Before, those copies never grew, and with only Sanctified copies in your deck each cast added a new plain copy to your hand. The same holds for every card that grows itself and every weapon that is Sharpened.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Every copy is the same card',
+        text: 'A Sanctified or engraved copy counts as the same card as the plain one: for "the first time you play this card this turn" (Bone Toss) and for the Monk\'s Forms that ask for different cards.',
+      },
+      {
+        kind: 'new',
         title: "Tier XII's Refinement Shrines",
-        text: "A new choice: Sanctify one card for free, 72% it rises 25%, otherwise it falls 25% (a card that is already sanctified cannot be rolled again). Walk away is now a choice beside Upgrade and Let one go.",
+        text: 'A new choice: Sanctify one card for free, 72% it rises 25%, otherwise it falls 25% (a card that is already sanctified cannot be rolled again). Walk away is now a choice beside Upgrade and Let one go.',
       },
     ],
-    heads: "Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept.",
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept.',
   },
   {
-    version: "0.246.0",
-    date: "2026-11-10",
-    title: "A lifted card that stays on screen",
-    summary: "On a phone or tablet, a card you tap to read no longer runs off the top of the screen.",
+    version: '0.246.0',
+    date: '2026-11-10',
+    title: 'A lifted card that stays on screen',
+    summary:
+      'On a phone or tablet, a card you tap to read no longer runs off the top of the screen.',
     notes: [
       {
-        kind: "fixed",
-        title: "Phones: the lifted card fits",
-        text: "In a fight on a phone or tablet, a card you tap to read shows alone, without its keyword notes underneath: a card with long notes was pushed off the top of the screen. The keywords are still marked on the card, and How to play explains each one. Held sideways, \"Tap again to play\" sits at the foot of the lifted card, clear of the big preview. Nothing changes with a mouse.",
+        kind: 'fixed',
+        title: 'Phones: the lifted card fits',
+        text: 'In a fight on a phone or tablet, a card you tap to read shows alone, without its keyword notes underneath: a card with long notes was pushed off the top of the screen. The keywords are still marked on the card, and How to play explains each one. Held sideways, "Tap again to play" sits at the foot of the lifted card, clear of the big preview. Nothing changes with a mouse.',
       },
     ],
   },
   {
-    version: "0.245.0",
-    date: "2026-11-10",
-    title: "A phone pass: tap to read, tap to play",
-    summary: "Phones and tablets get a fight that fits a thumb: tap a card to read it and tap again to play it, bigger controls, tidier boards. The Vault holds 20 decks.",
+    version: '0.245.0',
+    date: '2026-11-10',
+    title: 'A phone pass: tap to read, tap to play',
+    summary:
+      'Phones and tablets get a fight that fits a thumb: tap a card to read it and tap again to play it, bigger controls, tidier boards. The Vault holds 20 decks.',
     notes: [
       {
-        kind: "new",
-        title: "Phones: tap to read, tap again to play",
-        text: "On a phone or tablet, a tap lifts a card and shows it big with its keywords and \"Tap again to play\". Tap the card again (or the big card) to play it; tap anywhere else to put it back. Dragging a card up onto the field still plays it at once, and a card that needs a target still goes straight to choosing one. On the enemy's turn a tap still lifts a card to read it. Nothing changes with a mouse.",
+        kind: 'new',
+        title: 'Phones: tap to read, tap again to play',
+        text: 'On a phone or tablet, a tap lifts a card and shows it big with its keywords and "Tap again to play". Tap the card again (or the big card) to play it; tap anywhere else to put it back. Dragging a card up onto the field still plays it at once, and a card that needs a target still goes straight to choosing one. On the enemy\'s turn a tap still lifts a card to read it. Nothing changes with a mouse.',
       },
       {
-        kind: "changed",
-        title: "Phones: a fight that fits a thumb",
-        text: "End turn, the menu, the potion belt and the Boons button are a finger's size. A teaching tip is a sheet over your hand, so your hero and the enemies stay in view while you read it. No key names on a touch screen (End turn's \"E\", \"press 1-9\"). The build number and \"Saved to account\" no longer lie on your hand. There is no battle log in a fight on a phone: the fight's log is still in its recap.",
+        kind: 'changed',
+        title: 'Phones: a fight that fits a thumb',
+        text: 'End turn, the menu, the potion belt and the Boons button are a finger\'s size. A teaching tip is a sheet over your hand, so your hero and the enemies stay in view while you read it. No key names on a touch screen (End turn\'s "E", "press 1-9"). The build number and "Saved to account" no longer lie on your hand. There is no battle log in a fight on a phone: the fight\'s log is still in its recap.',
       },
       {
-        kind: "changed",
-        title: "Phones: crowded boards",
+        kind: 'changed',
+        title: 'Phones: crowded boards',
         text: "Held upright, a group of more than three enemies (or a Warden's escort) keeps to the right of your hero and never covers it, and two rows of enemies stand further apart so their next moves are readable. With a companion of your own on the board, the enemies close up and show health bars without names (the name shows while you aim at one), and your companion stands clear of them with its next move on its shoulder.",
       },
       {
-        kind: "fixed",
+        kind: 'fixed',
         title: "The Shaman's totems on a small screen",
         text: "Each totem's numbers sit beside it and Spirit sits above the row, so they no longer cover the next totem, his name or his health bar.",
       },
       {
-        kind: "changed",
-        title: "Phones: the pages",
-        text: "Wider page margins. The Arena page keeps its match rules under \"How a match works\", so your rank and decks are on the first screen. The run header's buttons (Deck, Abandon, Settings) are taller. The Sanctum and the leaderboards fit the screen (they were cut off at the right, or zoomed out). How to play and the Card library say \"tap\", not \"press E\" or \"hover\".",
+        kind: 'changed',
+        title: 'Phones: the pages',
+        text: 'Wider page margins. The Arena page keeps its match rules under "How a match works", so your rank and decks are on the first screen. The run header\'s buttons (Deck, Abandon, Settings) are taller. The Sanctum and the leaderboards fit the screen (they were cut off at the right, or zoomed out). How to play and the Card library say "tap", not "press E" or "hover".',
       },
       {
-        kind: "fixed",
+        kind: 'fixed',
         title: "Buttons in the game's font",
         text: "A button with no font of its own (the Sanctum's tiles, the Threshold's choices, the save line) showed the browser's font. They now use the game's, on every screen.",
       },
       {
-        kind: "changed",
-        title: "The Vault holds 20 decks",
-        text: "Saved decks: 20 (was 10), and all of them can come to a match. A Vault already full at 10 simply has room for 10 more.",
+        kind: 'changed',
+        title: 'The Vault holds 20 decks',
+        text: 'Saved decks: 20 (was 10), and all of them can come to a match. A Vault already full at 10 simply has room for 10 more.',
       },
       {
-        kind: "changed",
-        title: "The map and the Arena page",
+        kind: 'changed',
+        title: 'The map and the Arena page',
         text: "The map's header starts with Home, on every screen size. The Arena page's links (Saved decks, Leaderboards, Ghost decks, What the Arena takes) are tiles like the home screen's.",
       },
     ],
   },
   {
-    version: "0.244.0",
-    date: "2026-11-10",
-    title: "Clearer Arena checks, a new menu",
-    summary: "Every reason a deck is not valid for the Arena is shown, status cards come along, and the home screen, Settings and deck views are easier to use.",
+    version: '0.244.0',
+    date: '2026-11-10',
+    title: 'Clearer Arena checks, a new menu',
+    summary:
+      'Every reason a deck is not valid for the Arena is shown, status cards come along, and the home screen, Settings and deck views are easier to use.',
     notes: [
       {
-        kind: "changed",
-        title: "Why a deck is not valid for the Arena",
-        text: "A deck the Arena would not take now says every reason, in plain words with what fixes it: in the map's Arena tip and a notice on the map, on each saved deck, and under each deck the Arena screen leaves out. A new page, What the Arena takes, lists the rules."
+        kind: 'changed',
+        title: 'Why a deck is not valid for the Arena',
+        text: "A deck the Arena would not take now says every reason, in plain words with what fixes it: in the map's Arena tip and a notice on the map, on each saved deck, and under each deck the Arena screen leaves out. A new page, What the Arena takes, lists the rules.",
       },
       {
-        kind: "changed",
-        title: "Status cards come along",
-        text: "Status cards a run picked up (Static, Haze, Scorch, Void Drain, Blight, Smudge) no longer keep a deck out of the Arena: they come with it and count towards the 15. A Wound is still left behind."
+        kind: 'changed',
+        title: 'Status cards come along',
+        text: 'Status cards a run picked up (Static, Haze, Scorch, Void Drain, Blight, Smudge) no longer keep a deck out of the Arena: they come with it and count towards the 15. A Wound is still left behind.',
       },
       {
-        kind: "changed",
-        title: "A new home screen menu",
-        text: "How to play and Patch notes are beside Settings. The tiles below are your Collection (the Cosmetics Vault, renamed), Saved decks, Trophy case, Run history, Card library and Leaderboards; Ghost decks are on the Arena page. Download opens a menu: Windows now, Mac coming soon."
+        kind: 'changed',
+        title: 'A new home screen menu',
+        text: 'How to play and Patch notes are beside Settings. The tiles below are your Collection (the Cosmetics Vault, renamed), Saved decks, Trophy case, Run history, Card library and Leaderboards; Ghost decks are on the Arena page. Download opens a menu: Windows now, Mac coming soon.',
       },
       {
-        kind: "changed",
-        title: "A new look for Settings",
-        text: "On and Off are a switch: green with a tick when on, red with a cross when off, with the word beside it. High/Low and Full/Reduced are a segmented control, and the volume sliders fill in gold."
+        kind: 'changed',
+        title: 'A new look for Settings',
+        text: 'On and Off are a switch: green with a tick when on, red with a cross when off, with the word beside it. High/Low and Full/Reduced are a segmented control, and the volume sliders fill in gold.',
       },
       {
-        kind: "changed",
-        title: "Search your deck",
-        text: "Every deck and pile view has a search box for card names and rules text. The Card library fits the window, with only the book scrolling, and the counts in the page header are bigger."
-      }
-    ]
-  },
-  {
-    version: "0.243.0",
-    date: "2026-11-10",
-    title: "A new Grimoire, faster loading",
-    summary: "The Grimoire gets a new look, the game loads only the art it needs, and the animated models start and end their attacks smoothly.",
-    notes: [
-      {
-        kind: "changed",
-        title: "A new look for the Grimoire",
-        text: "Decks, piles, the Card library and the practice deck builder are an obsidian tome now. The realms are a bar of glowing pills with their counts, the header stays put while you scroll and shows what is on the page (Attacks, Skills, Auras, Summons, Traps, average Mana), and cards rise into place and glow in their realm's colour when you point at them."
+        kind: 'changed',
+        title: 'Search your deck',
+        text: 'Every deck and pile view has a search box for card names and rules text. The Card library fits the window, with only the book scrolling, and the counts in the page header are bigger.',
       },
-      {
-        kind: "changed",
-        title: "Faster first load",
-        text: "The game no longer downloads every enemy painting when it starts (about 64 MB). The home screen fetches only the Riftwalkers; each fight fetches its own enemies and everything its cards can summon while \"Opening the rift\" shows."
-      },
-      {
-        kind: "fixed",
-        title: "Animated models move smoothly",
-        text: "With the beta 2D animated models on, the Drunkard, Shaman, Spellblade, Trickster and Rogue no longer jump when an attack starts or ends: every clip is lined up with the idle pose and fades into the next. Outside battle, hovering no longer slides the whole figure across while its attack is still loading, and switching heroes is quicker."
-      }
-    ]
-  },
-  {
-    version: "0.242.0",
-    date: "2026-11-10",
-    title: "Fights that last longer",
-    summary: "The builds that ended Arena fights in four to seven turns are reined in, slow builds get buffs, and the Spellblade can mix Swords with Fracture.",
-    notes: [
-      {
-        kind: "balance",
-        title: "Many hits share your Might",
-        text: "A card of yours that hits 3 or more times adds half your Might and Primed to each hit, as X cards already do (Thousand Palms, Rip and Tear, Slugfest, Rotary Cannon, the Spellblade's 3- and 4-hit Swords and others). Cards that hit once or twice are unchanged."
-      },
-      {
-        kind: "balance",
-        title: "Bleed and Burn",
-        text: "A tick deals the stack in full up to 30 and half of what is past that. A third or later tick in one turn (Hemorrhage) deals half. Bloodburst now Consumes."
-      },
-      {
-        kind: "balance",
-        title: "Shatters",
-        text: "Each Shatter grows by 3 instead of 5: 20 at 10 Fracture, 23 at 20, up to 47 at 100."
-      },
-      {
-        kind: "balance",
-        title: "Growth limits",
-        text: "Coup de Grace, Culling, Last Rites, Final Reckoning and Rending Fury grow at half the rate past a point and stop at a maximum (the numbers are on each card). Scar Over gives its Might once each turn."
-      },
-      {
-        kind: "balance",
-        title: "Ascendancies",
-        text: "Reaver: Bloodlust gives at most 2 Might a turn (still 12 in all). Sunwalker: Dawn gives 1 Might a Radiant (was 2), and Radiant gives its Mana only the first time each turn, for every Monk. Artillerist: 3 Might on each of your first 5 turns, up to 15 (was 2 for 6, up to 12)."
-      },
-      {
-        kind: "balance",
-        title: "Buffs",
-        text: "Slugfest 7 damage 4 times (9 upgraded). Rotary Cannon 6 damage 4 times (8 upgraded). Showstopper 26 (34 upgraded). Card Fan +4 a suit. Gleeful Trapsmith +1 per 2 Traps sprung, half as much past +8. Metronome Trap 5 to ALL (7 upgraded)."
-      },
-      {
-        kind: "balance",
-        title: "Swords and Spells crack",
-        text: "The Spellblade's Swords that hit 3 or 4 times apply Fracture: Obsidian Flurry and Rift Sweep 3, Tyrant Strike and Obsidian Drill 6, Fault Piercer, Hammer and Anvil and Storm of Glass 8. Spellbolt and Arcane Pulse apply 2, Molten Ruin 4 and Lava Bomb 6, so a Sword or Spell deck can lean into Shatters."
-      }
     ],
-    heads: "Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept."
   },
   {
-    version: "0.241.0",
-    date: "2026-11-10",
-    title: "A Grimoire that scrolls",
-    summary: "The Grimoire is one long page you scroll or swipe through, with cards filling the whole width, and animated heroes swing when you tap them.",
+    version: '0.243.0',
+    date: '2026-11-10',
+    title: 'A new Grimoire, faster loading',
+    summary:
+      'The Grimoire gets a new look, the game loads only the art it needs, and the animated models start and end their attacks smoothly.',
     notes: [
       {
-        kind: "changed",
-        title: "The Grimoire scrolls",
-        text: "Card lists are one long page to scroll, or swipe on a touch screen, instead of pages to turn. As many cards fit across as the window allows, so a wide screen no longer leaves a bare strip on the right."
+        kind: 'changed',
+        title: 'A new look for the Grimoire',
+        text: "Decks, piles, the Card library and the practice deck builder are an obsidian tome now. The realms are a bar of glowing pills with their counts, the header stays put while you scroll and shows what is on the page (Attacks, Skills, Auras, Summons, Traps, average Mana), and cards rise into place and glow in their realm's colour when you point at them.",
       },
       {
-        kind: "changed",
-        title: "Heroes swing on a tap",
-        text: "With the beta animated models on, hovering over, clicking or tapping your hero plays an attack."
-      }
-    ]
-  },
-  {
-    version: "0.240.0",
-    date: "2026-11-09",
-    title: "Fervor payoffs, growth limits, and a smoother hero",
-    summary: "The Monk's Fervor cards count the Fervor you gained, Thunder Memory and Slow Murder grow more slowly late in a fight, and animated heroes no longer flash their painting first.",
-    notes: [
-      {
-        kind: "balance",
-        title: "Burning Litany",
-        text: "Deals damage to ALL enemies equal to half the Fervor you gained this fight, then enters Radiant (was your current Fervor, which never passes 9 as reaching 10 spends it). Upgraded: 4 more."
+        kind: 'changed',
+        title: 'Faster first load',
+        text: 'The game no longer downloads every enemy painting when it starts (about 64 MB). The home screen fetches only the Riftwalkers; each fight fetches its own enemies and everything its cards can summon while "Opening the rift" shows.',
       },
       {
-        kind: "balance",
-        title: "Mantra Engine",
-        text: "At the end of your turn, gain Barrier equal to the Fervor you gained this turn, including Fervor spent entering Radiant (was your current Fervor)."
+        kind: 'fixed',
+        title: 'Animated models move smoothly',
+        text: 'With the beta 2D animated models on, the Drunkard, Shaman, Spellblade, Trickster and Rogue no longer jump when an attack starts or ends: every clip is lined up with the idle pose and fades into the next. Outside battle, hovering no longer slides the whole figure across while its attack is still loading, and switching heroes is quicker.',
       },
-      {
-        kind: "balance",
-        title: "Thunder Memory",
-        text: "Plants a Thunderbird plus one for each Thunderbird planted this fight, at half the rate past 5. Its own Thunderbirds are not counted, and it always Consumes, upgraded too (upgraded: 3 to start). Before, the upgrade could be played again and again, doubling each time."
-      },
-      {
-        kind: "balance",
-        title: "Slow Murder",
-        text: "Deals 8 (+1 per card drawn this fight, half as much past +28, at most +44). Upgraded 16 + the same."
-      },
-      {
-        kind: "changed",
-        title: "Animated heroes load smoothly",
-        text: "With the beta animated models on, the S|R crest turns where the hero will stand while it loads, instead of the painting showing first."
-      },
-      {
-        kind: "changed",
-        title: "Game data is public",
-        text: "Saved decks can be looked up by username, and the game data kept for balancing is public. Settings > Game data says so."
-      }
-    ]
-  },
-  {
-    version: "0.239.0",
-    date: "2026-11-09",
-    title: "Grimoire cards no longer cut off",
-    summary: "The last column of cards on each Grimoire page is fully visible again.",
-    notes: [
-      {
-        kind: "fixed",
-        title: "Grimoire pages",
-        text: "Cards on the right side of each Grimoire page were clipped after the last update. Every card now sits fully inside its page, in the Card Library, your deck and the draw, discard and consumed piles."
-      }
-    ]
-  },
-  {
-    version: "0.238.0",
-    date: "2026-11-09",
-    title: "Extra plays add up, Tide of Peace heals, a tidier Grimoire",
-    summary: "Effects that play a card an extra time now stack, Tide of Peace heals, the Grimoire fills from the top left, and the animated heroes stand centred and the same size.",
-    notes: [
-      {
-        kind: "fixed",
-        title: "Extra plays add up",
-        text: "Every effect that plays a card an extra time now gives its own play. An Aura boosted by Doubled Vow that is also your first card under Echoing Spirit is played three times; before, only one of them counted and the boost was lost. The same goes for Mirrored Skills and Reverb Attacks."
-      },
-      {
-        kind: "balance",
-        title: "Tide of Peace",
-        text: "Now heals 3 HP for each Mana spent (was Barrier 4 per Mana), still draws 2 and enters Serene, and Consumes."
-      },
-      {
-        kind: "changed",
-        title: "Grimoire",
-        text: "Cards fill each page from the top left, row by row, and the next page only starts when one is full. A short pile and a long deck share the same layout and card size."
-      },
-      {
-        kind: "fixed",
-        title: "2D animated models (beta)",
-        text: "Heroes stand centred on their feet and the same size as each other, whatever weapon they hold out."
-      }
     ],
-    heads: "Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept."
   },
   {
-    version: "0.237.0",
-    date: "2026-11-09",
-    title: "2D animated heroes (beta)",
-    summary: "Try the new animated hero models: turn on 2D animated models (beta) in Settings, under Graphics.",
+    version: '0.242.0',
+    date: '2026-11-10',
+    title: 'Fights that last longer',
+    summary:
+      'The builds that ended Arena fights in four to seven turns are reined in, slow builds get buffs, and the Spellblade can mix Swords with Fracture.',
     notes: [
       {
-        kind: "new",
-        title: "2D animated models (beta)",
-        text: "Heroes can now move in animated 2D models instead of their still paintings: an idle stance, an attack when you play an Attack card (the Drunkard swings his hammer or fires his shotgun), and a fall when they are beaten. It is off unless you turn it on in Settings > Graphics while the models are being built; some moves still use stand-in motion."
-      }
-    ]
-  },
-  {
-    version: "0.236.0",
-    date: "2026-11-09",
-    title: "X cards, Mana engines, Shatter and Arena HP costs",
-    summary: "X cards and Mana engines are reined in, Shatters grow more slowly, HP costs bite in the Arena, won runs bank themselves, and the Sandbox has training dummies.",
-    notes: [
-      {
-        kind: "balance",
-        title: "X cards",
-        text: "Every X card spends at most 6 Mana; whatever is left stays for your other cards. An X card that hits X times gets half your Might and Primed on each hit."
+        kind: 'balance',
+        title: 'Many hits share your Might',
+        text: "A card of yours that hits 3 or more times adds half your Might and Primed to each hit, as X cards already do (Thousand Palms, Rip and Tear, Slugfest, Rotary Cannon, the Spellblade's 3- and 4-hit Swords and others). Cards that hit once or twice are unchanged.",
       },
       {
-        kind: "balance",
-        title: "Bloodstorm",
-        text: "Deal 7 damage X times, then draw 2 cards (upgraded: X is 1 higher). It used to draw a card for every Mana spent."
+        kind: 'balance',
+        title: 'Bleed and Burn',
+        text: 'A tick deals the stack in full up to 30 and half of what is past that. A third or later tick in one turn (Hemorrhage) deals half. Bloodburst now Consumes.',
       },
       {
-        kind: "balance",
-        title: "Mana every turn",
-        text: "Auras that give Mana every turn cost 1 more: Attunement, Inner Furnace, Blood Pact, Berserk Tempo, Deep Pockets, Ascendant Form, Phylactery, Bonded Dead, Last Call, Ancient Pact and The Long Memory. Spirit Offering, Burnt Offering, Call at Dusk and Throw Scraps now Consume."
+        kind: 'balance',
+        title: 'Shatters',
+        text: 'Each Shatter grows by 3 instead of 5: 20 at 10 Fracture, 23 at 20, up to 47 at 100.',
       },
       {
-        kind: "balance",
-        title: "Shatter",
-        text: "Shatters grow by 5 each time instead of 10: 20 at 10 Fracture, 25 at 20, 30 at 30, up to 65 at 100. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy."
+        kind: 'balance',
+        title: 'Growth limits',
+        text: 'Coup de Grace, Culling, Last Rites, Final Reckoning and Rending Fury grow at half the rate past a point and stop at a maximum (the numbers are on each card). Scar Over gives its Might once each turn.',
       },
       {
-        kind: "balance",
-        title: "Arena HP costs",
-        text: "In the Arena, HP your own cards cost you is 5 times the number on the card (\"Lose 2 HP\" costs 10), and Arena cards show the real cost. The Reaver's Bloodlust counts 15 HP per Might there. The Campaign is unchanged."
+        kind: 'balance',
+        title: 'Ascendancies',
+        text: 'Reaver: Bloodlust gives at most 2 Might a turn (still 12 in all). Sunwalker: Dawn gives 1 Might a Radiant (was 2), and Radiant gives its Mana only the first time each turn, for every Monk. Artillerist: 3 Might on each of your first 5 turns, up to 15 (was 2 for 6, up to 12).',
       },
       {
-        kind: "changed",
-        title: "Won runs bank themselves",
-        text: "Finishing the Campaign saves your deck for the Arena automatically. Export run and Import a run file are gone: saved runs already follow your account between devices."
+        kind: 'balance',
+        title: 'Buffs',
+        text: 'Slugfest 7 damage 4 times (9 upgraded). Rotary Cannon 6 damage 4 times (8 upgraded). Showstopper 26 (34 upgraded). Card Fan +4 a suit. Gleeful Trapsmith +1 per 2 Traps sprung, half as much past +8. Metronome Trap 5 to ALL (7 upgraded).',
       },
       {
-        kind: "new",
-        title: "Training dummies",
-        text: "The Sandbox has a Training group: a Training Dummy (1000 HP, stands still) and a Sparring Dummy (1000 HP, hits for 6 three times a turn), plus an Arena-size HP option, to try decks and count their damage."
+        kind: 'balance',
+        title: 'Swords and Spells crack',
+        text: "The Spellblade's Swords that hit 3 or 4 times apply Fracture: Obsidian Flurry and Rift Sweep 3, Tyrant Strike and Obsidian Drill 6, Fault Piercer, Hammer and Anvil and Storm of Glass 8. Spellbolt and Arcane Pulse apply 2, Molten Ruin 4 and Lava Bomb 6, so a Sword or Spell deck can lean into Shatters.",
       },
-      {
-        kind: "changed",
-        title: "Smarter ghosts",
-        text: "Arena ghost decks now value their Auras properly and play them earlier."
-      },
-      {
-        kind: "new",
-        title: "Game data",
-        text: "Online games (decks, card choices, Campaign fights and Arena games) are kept for 30 days to help balance the game, tied to an anonymous id. See Settings. Offline desktop play is never sent."
-      }
     ],
-    heads: "Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept."
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint, and Arena replays from before this patch no longer play. Campaign progress and decks are kept.',
   },
   {
-    version: "0.235.0",
-    date: "2026-11-09",
-    title: "Shared seeds, a new Hunter basic and Raise Colossus choices",
-    summary: "Share a run's seed so a friend can play the same run, the Hunter starts with Guard the Den, and Raise Colossus can grow the Colossus you have.",
+    version: '0.241.0',
+    date: '2026-11-10',
+    title: 'A Grimoire that scrolls',
+    summary:
+      'The Grimoire is one long page you scroll or swipe through, with cards filling the whole width, and animated heroes swing when you tap them.',
     notes: [
       {
-        kind: "new",
-        title: "Shared seeds",
-        text: "Every new run has a seed code (like K7QM-2XRP). The Seed button on the run bar copies it, History shows it, and \"Play a shared seed\" in the Sanctum starts a run on a friend's code: the same realms, Wardens, maps and offers at each stop. Runs started before this update are unchanged."
+        kind: 'changed',
+        title: 'The Grimoire scrolls',
+        text: 'Card lists are one long page to scroll, or swipe on a touch screen, instead of pages to turn. As many cards fit across as the window allows, so a wide screen no longer leaves a bare strip on the right.',
       },
       {
-        kind: "new",
-        title: "Guard the Den",
-        text: "A new Hunter basic in one Strike's place: 1 Mana, gain 5 Barrier, and if you have no companion, summon a Pup (upgraded 7 Barrier and a Pup+). New runs only."
+        kind: 'changed',
+        title: 'Heroes swing on a tap',
+        text: 'With the beta animated models on, hovering over, clicking or tapping your hero plays an attack.',
       },
-      {
-        kind: "changed",
-        title: "Raise Colossus",
-        text: "When companions would have to make way for a new Colossus, you can grow the Colossus you already have instead: click it, or press its Grow button. It gains the card's HP and no one is released."
-      }
-    ]
+    ],
   },
   {
-    version: "0.234.0",
-    date: "2026-11-08",
-    title: "Share your Campaign fights",
-    summary: "Your last 10 Campaign fights are kept online, and each can be shared with a link.",
+    version: '0.240.0',
+    date: '2026-11-09',
+    title: 'Fervor payoffs, growth limits, and a smoother hero',
+    summary:
+      "The Monk's Fervor cards count the Fervor you gained, Thunder Memory and Slow Murder grow more slowly late in a fight, and animated heroes no longer flash their painting first.",
     notes: [
       {
-        kind: "new",
-        title: "Share fight",
-        text: "When a Campaign fight ends, the result popup has a Share fight button that copies a link anyone can open to watch the fight or read its battle log, and a Save fight record button for a file."
+        kind: 'balance',
+        title: 'Burning Litany',
+        text: 'Deals damage to ALL enemies equal to half the Fervor you gained this fight, then enters Radiant (was your current Fervor, which never passes 9 as reaching 10 spends it). Upgraded: 4 more.',
       },
       {
-        kind: "new",
-        title: "Campaign fights in History",
-        text: "History has a Campaign fights tab with your 10 most recent fights, each with its link. A fight from older rules can still be shared and saved, but not watched."
-      }
-    ]
+        kind: 'balance',
+        title: 'Mantra Engine',
+        text: 'At the end of your turn, gain Barrier equal to the Fervor you gained this turn, including Fervor spent entering Radiant (was your current Fervor).',
+      },
+      {
+        kind: 'balance',
+        title: 'Thunder Memory',
+        text: 'Plants a Thunderbird plus one for each Thunderbird planted this fight, at half the rate past 5. Its own Thunderbirds are not counted, and it always Consumes, upgraded too (upgraded: 3 to start). Before, the upgrade could be played again and again, doubling each time.',
+      },
+      {
+        kind: 'balance',
+        title: 'Slow Murder',
+        text: 'Deals 8 (+1 per card drawn this fight, half as much past +28, at most +44). Upgraded 16 + the same.',
+      },
+      {
+        kind: 'changed',
+        title: 'Animated heroes load smoothly',
+        text: 'With the beta animated models on, the S|R crest turns where the hero will stand while it loads, instead of the painting showing first.',
+      },
+      {
+        kind: 'changed',
+        title: 'Game data is public',
+        text: 'Saved decks can be looked up by username, and the game data kept for balancing is public. Settings > Game data says so.',
+      },
+    ],
   },
   {
-    version: "0.233.0",
-    date: "2026-11-08",
-    title: "Hunter, Trickster and Drunkard card passes",
-    summary: "Every Hunter, Trickster and Drunkard card priced again, each Ascendancy opening more than one way to win, Bonelord back up and Death Grip a real finisher.",
+    version: '0.239.0',
+    date: '2026-11-09',
+    title: 'Grimoire cards no longer cut off',
+    summary: 'The last column of cards on each Grimoire page is fully visible again.',
     notes: [
       {
-        kind: "changed",
-        title: "Hunter Ascendancies",
-        hero: "hunter",
-        text: "Beastmaster: companions share all your Might and gain 2 max HP each turn (1 Might a turn for your first 10 turns). Reaver: every 3 HP your own cards cost you is 1 Might for the fight (up to 12), and at half HP or less your Attacks heal you. Predator: Ambush, each card you draw on your turn adds 10% to your next Attack (up to 60%), and your first Exposed each turn draws a card."
+        kind: 'fixed',
+        title: 'Grimoire pages',
+        text: 'Cards on the right side of each Grimoire page were clipped after the last update. Every card now sits fully inside its page, in the Card Library, your deck and the draw, discard and consumed piles.',
+      },
+    ],
+  },
+  {
+    version: '0.238.0',
+    date: '2026-11-09',
+    title: 'Extra plays add up, Tide of Peace heals, a tidier Grimoire',
+    summary:
+      'Effects that play a card an extra time now stack, Tide of Peace heals, the Grimoire fills from the top left, and the animated heroes stand centred and the same size.',
+    notes: [
+      {
+        kind: 'fixed',
+        title: 'Extra plays add up',
+        text: 'Every effect that plays a card an extra time now gives its own play. An Aura boosted by Doubled Vow that is also your first card under Echoing Spirit is played three times; before, only one of them counted and the boost was lost. The same goes for Mirrored Skills and Reverb Attacks.',
       },
       {
-        kind: "changed",
-        title: "Trickster Ascendancies",
-        hero: "trickster",
-        text: "Trapmaster: Traps deal 10% more per Trap sprung (up to double) and each spring gives more Barrier as the fight goes on. Cardsharp: a Full Trick gives 1 Mana and 2 Might (up to 12), and three suits draw a card. Seer: when your mark dies, your next mark keeps the bonus."
+        kind: 'balance',
+        title: 'Tide of Peace',
+        text: 'Now heals 3 HP for each Mana spent (was Barrier 4 per Mana), still draws 2 and enters Serene, and Consumes.',
       },
       {
-        kind: "changed",
-        title: "Drunkard Ascendancies",
-        hero: "drunkard",
-        text: "Gunslinger: every Shell also sharpens the gun. Brewmaster: up to 8 Fermentation, each healing 1% and making your Attacks 4% stronger. Deathwish: up to +50% at low HP, and HP your own cards or Hangover cost you strikes a random enemy (twice a turn)."
+        kind: 'changed',
+        title: 'Grimoire',
+        text: 'Cards fill each page from the top left, row by row, and the next page only starts when one is full. A short pile and a long deck share the same layout and card size.',
       },
       {
-        kind: "balance",
-        title: "Rares and upgrades",
-        text: "Most Hunter, Trickster and Drunkard Rares are stronger, the runaway cards (Dire Wolf, Pack Bond, Showstopper) come down, and upgrades now add about a third. Ritual (Cadence) gives a hero Might in its first 8 turns only. Full list in the card library."
+        kind: 'fixed',
+        title: '2D animated models (beta)',
+        text: 'Heroes stand centred on their feet and the same size as each other, whatever weapon they hold out.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept.',
+  },
+  {
+    version: '0.237.0',
+    date: '2026-11-09',
+    title: '2D animated heroes (beta)',
+    summary:
+      'Try the new animated hero models: turn on 2D animated models (beta) in Settings, under Graphics.',
+    notes: [
+      {
+        kind: 'new',
+        title: '2D animated models (beta)',
+        text: 'Heroes can now move in animated 2D models instead of their still paintings: an idle stance, an attack when you play an Attack card (the Drunkard swings his hammer or fires his shotgun), and a fall when they are beaten. It is off unless you turn it on in Settings > Graphics while the models are being built; some moves still use stand-in motion.',
+      },
+    ],
+  },
+  {
+    version: '0.236.0',
+    date: '2026-11-09',
+    title: 'X cards, Mana engines, Shatter and Arena HP costs',
+    summary:
+      'X cards and Mana engines are reined in, Shatters grow more slowly, HP costs bite in the Arena, won runs bank themselves, and the Sandbox has training dummies.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'X cards',
+        text: 'Every X card spends at most 6 Mana; whatever is left stays for your other cards. An X card that hits X times gets half your Might and Primed on each hit.',
       },
       {
-        kind: "balance",
-        title: "Bonelord and Death Grip",
-        hero: "necromancer",
-        text: "Bonelord companions deal 3 more and gain 2 max HP each turn. Death Grip is a finisher: double damage to an enemy at half HP or less.",
+        kind: 'balance',
+        title: 'Bloodstorm',
+        text: 'Deal 7 damage X times, then draw 2 cards (upgraded: X is 1 higher). It used to draw a card for every Mana spent.',
+      },
+      {
+        kind: 'balance',
+        title: 'Mana every turn',
+        text: 'Auras that give Mana every turn cost 1 more: Attunement, Inner Furnace, Blood Pact, Berserk Tempo, Deep Pockets, Ascendant Form, Phylactery, Bonded Dead, Last Call, Ancient Pact and The Long Memory. Spirit Offering, Burnt Offering, Call at Dusk and Throw Scraps now Consume.',
+      },
+      {
+        kind: 'balance',
+        title: 'Shatter',
+        text: 'Shatters grow by 5 each time instead of 10: 20 at 10 Fracture, 25 at 20, 30 at 30, up to 65 at 100. From 50 Fracture on, each Shatter also puts 10 Fracture on another enemy.',
+      },
+      {
+        kind: 'balance',
+        title: 'Arena HP costs',
+        text: 'In the Arena, HP your own cards cost you is 5 times the number on the card ("Lose 2 HP" costs 10), and Arena cards show the real cost. The Reaver\'s Bloodlust counts 15 HP per Might there. The Campaign is unchanged.',
+      },
+      {
+        kind: 'changed',
+        title: 'Won runs bank themselves',
+        text: 'Finishing the Campaign saves your deck for the Arena automatically. Export run and Import a run file are gone: saved runs already follow your account between devices.',
+      },
+      {
+        kind: 'new',
+        title: 'Training dummies',
+        text: 'The Sandbox has a Training group: a Training Dummy (1000 HP, stands still) and a Sparring Dummy (1000 HP, hits for 6 three times a turn), plus an Arena-size HP option, to try decks and count their damage.',
+      },
+      {
+        kind: 'changed',
+        title: 'Smarter ghosts',
+        text: 'Arena ghost decks now value their Auras properly and play them earlier.',
+      },
+      {
+        kind: 'new',
+        title: 'Game data',
+        text: 'Online games (decks, card choices, Campaign fights and Arena games) are kept for 30 days to help balance the game, tied to an anonymous id. See Settings. Offline desktop play is never sent.',
+      },
+    ],
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint. Campaign progress and decks are kept.',
+  },
+  {
+    version: '0.235.0',
+    date: '2026-11-09',
+    title: 'Shared seeds, a new Hunter basic and Raise Colossus choices',
+    summary:
+      "Share a run's seed so a friend can play the same run, the Hunter starts with Guard the Den, and Raise Colossus can grow the Colossus you have.",
+    notes: [
+      {
+        kind: 'new',
+        title: 'Shared seeds',
+        text: 'Every new run has a seed code (like K7QM-2XRP). The Seed button on the run bar copies it, History shows it, and "Play a shared seed" in the Sanctum starts a run on a friend\'s code: the same realms, Wardens, maps and offers at each stop. Runs started before this update are unchanged.',
+      },
+      {
+        kind: 'new',
+        title: 'Guard the Den',
+        text: "A new Hunter basic in one Strike's place: 1 Mana, gain 5 Barrier, and if you have no companion, summon a Pup (upgraded 7 Barrier and a Pup+). New runs only.",
+      },
+      {
+        kind: 'changed',
+        title: 'Raise Colossus',
+        text: "When companions would have to make way for a new Colossus, you can grow the Colossus you already have instead: click it, or press its Grow button. It gains the card's HP and no one is released.",
+      },
+    ],
+  },
+  {
+    version: '0.234.0',
+    date: '2026-11-08',
+    title: 'Share your Campaign fights',
+    summary: 'Your last 10 Campaign fights are kept online, and each can be shared with a link.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Share fight',
+        text: 'When a Campaign fight ends, the result popup has a Share fight button that copies a link anyone can open to watch the fight or read its battle log, and a Save fight record button for a file.',
+      },
+      {
+        kind: 'new',
+        title: 'Campaign fights in History',
+        text: 'History has a Campaign fights tab with your 10 most recent fights, each with its link. A fight from older rules can still be shared and saved, but not watched.',
+      },
+    ],
+  },
+  {
+    version: '0.233.0',
+    date: '2026-11-08',
+    title: 'Hunter, Trickster and Drunkard card passes',
+    summary:
+      'Every Hunter, Trickster and Drunkard card priced again, each Ascendancy opening more than one way to win, Bonelord back up and Death Grip a real finisher.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Hunter Ascendancies',
+        hero: 'hunter',
+        text: 'Beastmaster: companions share all your Might and gain 2 max HP each turn (1 Might a turn for your first 10 turns). Reaver: every 3 HP your own cards cost you is 1 Might for the fight (up to 12), and at half HP or less your Attacks heal you. Predator: Ambush, each card you draw on your turn adds 10% to your next Attack (up to 60%), and your first Exposed each turn draws a card.',
+      },
+      {
+        kind: 'changed',
+        title: 'Trickster Ascendancies',
+        hero: 'trickster',
+        text: 'Trapmaster: Traps deal 10% more per Trap sprung (up to double) and each spring gives more Barrier as the fight goes on. Cardsharp: a Full Trick gives 1 Mana and 2 Might (up to 12), and three suits draw a card. Seer: when your mark dies, your next mark keeps the bonus.',
+      },
+      {
+        kind: 'changed',
+        title: 'Drunkard Ascendancies',
+        hero: 'drunkard',
+        text: 'Gunslinger: every Shell also sharpens the gun. Brewmaster: up to 8 Fermentation, each healing 1% and making your Attacks 4% stronger. Deathwish: up to +50% at low HP, and HP your own cards or Hangover cost you strikes a random enemy (twice a turn).',
+      },
+      {
+        kind: 'balance',
+        title: 'Rares and upgrades',
+        text: 'Most Hunter, Trickster and Drunkard Rares are stronger, the runaway cards (Dire Wolf, Pack Bond, Showstopper) come down, and upgrades now add about a third. Ritual (Cadence) gives a hero Might in its first 8 turns only. Full list in the card library.',
+      },
+      {
+        kind: 'balance',
+        title: 'Bonelord and Death Grip',
+        hero: 'necromancer',
+        text: 'Bonelord companions deal 3 more and gain 2 max HP each turn. Death Grip is a finisher: double damage to an enemy at half HP or less.',
         changes: [
           {
-            label: "Death Grip",
-            before: "10 + 6 per Command",
-            after: "8 + 4 per Command, double at half HP",
-            direction: "neutral"
+            label: 'Death Grip',
+            before: '10 + 6 per Command',
+            after: '8 + 4 per Command, double at half HP',
+            direction: 'neutral',
           },
           {
-            label: "Bonelord",
-            before: "+2 damage",
-            after: "+3 damage, +2 max HP a turn",
-            direction: "buff"
-          }
-        ]
+            label: 'Bonelord',
+            before: '+2 damage',
+            after: '+3 damage, +2 max HP a turn',
+            direction: 'buff',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Last Call",
-        hero: "drunkard",
-        card: "last-call",
-        text: "Now 1 Mana: each turn, gain 1 Mana and 1 Hangover.",
+        kind: 'balance',
+        title: 'Last Call',
+        hero: 'drunkard',
+        card: 'last-call',
+        text: 'Now 1 Mana: each turn, gain 1 Mana and 1 Hangover.',
         changes: [
           {
-            label: "Cost",
-            before: "2",
-            after: "1",
-            direction: "buff"
+            label: 'Cost',
+            before: '2',
+            after: '1',
+            direction: 'buff',
           },
           {
-            label: "Each turn",
-            before: "+1 Mana",
-            after: "+1 Mana and 1 Hangover",
-            direction: "neutral"
-          }
-        ]
-      }
+            label: 'Each turn',
+            before: '+1 Mana',
+            after: '+1 Mana and 1 Hangover',
+            direction: 'neutral',
+          },
+        ],
+      },
     ],
-    heads: "Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge."
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
   },
   {
-    version: "0.232.0",
-    date: "2026-11-08",
-    title: "Necromancer and Rogue card passes",
-    summary: "Every Necromancer and Rogue card was priced again: the runaway cards come down, the weak Rares come up, and each Rogue Ascendancy gets its own free card.",
+    version: '0.232.0',
+    date: '2026-11-08',
+    title: 'Necromancer and Rogue card passes',
+    summary:
+      'Every Necromancer and Rogue card was priced again: the runaway cards come down, the weak Rares come up, and each Rogue Ascendancy gets its own free card.',
     notes: [
       {
-        kind: "changed",
-        title: "Hidden Blades follows your Ascendancy",
-        hero: "assassin",
-        text: "Once you ascend, the Rogue’s free card each turn matches your path: a Bladedancer still gets a Dagger, a Bloodletter a Barbed Dagger (1 damage, 3 Bleed), an Assassin a Shadow Feint (a free Skill: 3 Barrier). Other cards still make Daggers. The Assassin’s description now says plainly how Preparation builds up and is spent."
+        kind: 'changed',
+        title: 'Hidden Blades follows your Ascendancy',
+        hero: 'assassin',
+        text: 'Once you ascend, the Rogue’s free card each turn matches your path: a Bladedancer still gets a Dagger, a Bloodletter a Barbed Dagger (1 damage, 3 Bleed), an Assassin a Shadow Feint (a free Skill: 3 Barrier). Other cards still make Daggers. The Assassin’s description now says plainly how Preparation builds up and is spent.',
       },
       {
-        kind: "balance",
-        title: "Daggers stop multiplying",
-        hero: "assassin",
-        text: "Edge only reaches your first 4 Daggers each turn. Serrated Edges, Final Flourish and Shadow Echo now count only cards that cost 1 or more, so the Bleed and Sleight builds keep them.",
+        kind: 'balance',
+        title: 'Daggers stop multiplying',
+        hero: 'assassin',
+        text: 'Edge only reaches your first 4 Daggers each turn. Serrated Edges, Final Flourish and Shadow Echo now count only cards that cost 1 or more, so the Bleed and Sleight builds keep them.',
         changes: [
           {
-            label: "Whetted Edge",
-            before: "1 Mana, Edge 4",
-            after: "2 Mana, Edge 2 (first 4 Daggers)",
-            direction: "nerf"
+            label: 'Whetted Edge',
+            before: '1 Mana, Edge 4',
+            after: '2 Mana, Edge 2 (first 4 Daggers)',
+            direction: 'nerf',
           },
           {
-            label: "Ghost Knives",
-            before: "1 Mana, +9",
-            after: "2 Mana, +7",
-            direction: "nerf"
+            label: 'Ghost Knives',
+            before: '1 Mana, +9',
+            after: '2 Mana, +7',
+            direction: 'nerf',
           },
           {
             label: "Serpent's Coil",
-            before: "4 per card",
-            after: "5 on the first 5 cards each turn",
-            direction: "nerf"
+            before: '4 per card',
+            after: '5 on the first 5 cards each turn',
+            direction: 'nerf',
           },
           {
-            label: "Serrated Edges",
-            before: "2 Mana, 1 Bleed per hit",
-            after: "1 Mana, 2 Bleed per Attack costing 1+",
-            direction: "neutral"
-          }
-        ]
+            label: 'Serrated Edges',
+            before: '2 Mana, 1 Bleed per hit',
+            after: '1 Mana, 2 Bleed per Attack costing 1+',
+            direction: 'neutral',
+          },
+        ],
       },
       {
-        kind: "balance",
-        title: "Rogue Rares and defence",
-        hero: "assassin",
-        text: "The Bleed and Sleight Rares (Red Tide, Blood Scent, Grand Scheme, Nimble Routine, Patient Hands, Stilled Time, Razor Skin, Double Trick and more) are stronger, and Turn Aside, Roll Away, Sense the Blow, Side Slip and Slip the Blow defend better. Full list in the card library."
+        kind: 'balance',
+        title: 'Rogue Rares and defence',
+        hero: 'assassin',
+        text: 'The Bleed and Sleight Rares (Red Tide, Blood Scent, Grand Scheme, Nimble Routine, Patient Hands, Stilled Time, Razor Skin, Double Trick and more) are stronger, and Turn Aside, Roll Away, Sense the Blow, Side Slip and Slip the Blow defend better. Full list in the card library.',
       },
       {
-        kind: "balance",
-        title: "Necromancer cards evened out",
-        hero: "necromancer",
-        text: "Off the Leash, Fleshcraft, Ossify, Bone Rain and Killing Chill come down; Grave Debt, The Last Toll, Soul Harvest, Spirit Walk, Call the Departed, Phylactery and most Rares come up. Echo of the Dead lets you choose its card, and Bone Rain’s text now says what it does.",
+        kind: 'balance',
+        title: 'Necromancer cards evened out',
+        hero: 'necromancer',
+        text: 'Off the Leash, Fleshcraft, Ossify, Bone Rain and Killing Chill come down; Grave Debt, The Last Toll, Soul Harvest, Spirit Walk, Call the Departed, Phylactery and most Rares come up. Echo of the Dead lets you choose its card, and Bone Rain’s text now says what it does.',
         changes: [
           {
-            label: "Off the Leash",
-            before: "6 + its HP",
-            after: "4 + half its HP",
-            direction: "nerf"
+            label: 'Off the Leash',
+            before: '6 + its HP',
+            after: '4 + half its HP',
+            direction: 'nerf',
           },
           {
-            label: "Fleshcraft",
-            before: "9 per debuff",
-            after: "8, once a turn",
-            direction: "nerf"
+            label: 'Fleshcraft',
+            before: '9 per debuff',
+            after: '8, once a turn',
+            direction: 'nerf',
           },
           {
-            label: "Grave Debt",
-            before: "2 Mana, a quarter",
-            after: "1 Mana, half",
-            direction: "buff"
-          }
-        ]
+            label: 'Grave Debt',
+            before: '2 Mana, a quarter',
+            after: '1 Mana, half',
+            direction: 'buff',
+          },
+        ],
       },
       {
-        kind: "changed",
-        title: "Upgrades",
-        text: "Upgrades on these two classes now add about the same, roughly a third more, so no upgrade doubles a card."
-      }
+        kind: 'changed',
+        title: 'Upgrades',
+        text: 'Upgrades on these two classes now add about the same, roughly a third more, so no upgrade doubles a card.',
+      },
     ],
-    heads: "Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge."
+    heads:
+      'Older unfinished battles restart from their encounter checkpoint under the updated rules, without a Resolve charge.',
   },
   {
     version: '0.231.0',

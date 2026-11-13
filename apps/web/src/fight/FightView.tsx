@@ -122,7 +122,7 @@ import { STATUS_INFO, UI_TIPS } from './info';
 import { loadSeen, loadTipsOn, nextTip, saveSeen, tipText } from './tips';
 import { touchScreen } from '../ui/touch';
 import { AuraList, LumenCounter, ReservesCounter, RuneArc, SnareRow } from './SidePanel';
-import { StanceAura, StanceChip } from './StanceAura';
+import { StanceAura, StanceChip, stanceOf } from './StanceAura';
 import { ShieldBubble } from './ShieldBubble';
 import { BattleLog } from './BattleLog';
 import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
@@ -134,6 +134,7 @@ import {
   DEMON_KNIGHT_SKIN,
   NOVA_RONIN_SKIN,
   ROGUE_TAILOR_SKIN,
+  TEMPEST_SAGE_SKIN,
   UNIT_SHEET_PREFIX,
   heroRigFor,
 } from '../art/heroRigs';
@@ -443,10 +444,17 @@ function specsFrom(
       const novaRonin = skin === NOVA_RONIN_SKIN;
       const arcWelder = skin === ARC_WELDER_SKIN;
       const rogueTailor = skin === ROGUE_TAILOR_SKIN;
+      const tempestSage = skin === TEMPEST_SAGE_SKIN;
+      const stance = tempestSage ? stanceOf(e.u) : undefined;
       if (arcWelder) attack = { kind: 'shoot', tint: '#c477ff' };
       if (novaRonin) attack = { ...attack, tint: '#b46bff' };
       if (demonKnight) attack = { ...attack, tint: '#ff354b' };
       if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };
+      if (tempestSage)
+        attack = {
+          kind: 'stab',
+          tint: stance === 'radiant' ? '#fff1b0' : stance === 'wrath' ? '#ff6a2a' : '#91eaff',
+        };
       const prop = e.hero && !flip && !novaRonin ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
@@ -489,8 +497,11 @@ function specsFrom(
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
         attack,
-        ...(demonKnight || novaRonin || arcWelder || rogueTailor ? { builtInWeapon: true } : {}),
+        ...(demonKnight || novaRonin || arcWelder || rogueTailor || tempestSage
+          ? { builtInWeapon: true }
+          : {}),
         ...(e.hero ? { hero: e.u.def } : {}),
+        ...(stance ? { stance } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
         ...(rigId
           ? {
@@ -644,6 +655,8 @@ export function FightView(props: {
   /** watching: paused, and how fast */
   const pausedRef = useRef(false);
   const [paused, setPaused] = useState(false);
+  /** heroes whose model draws its own stance (the Tempest Sage): the stance glow is not drawn over them */
+  const [stanceArt, setStanceArt] = useState<ReadonlySet<string>>(() => new Set());
   /** choices answered so far: two questions in a row with the same options still open a fresh choice window */
   const [pickCount, setPickCount] = useState(0);
   /** the cards marked so far in a choice made on the hand, and which choice they belong to */
@@ -1112,7 +1125,21 @@ export function FightView(props: {
               castBy.current = null;
               ownFx?.();
               // (a rigged hero raises its aura first: what the card gives shows as the aura flares, DECISIONS #676)
-              const raised = sc.fighters.cast(hero);
+              // (the Tempest Sage plays the new stance's own power-up on the stance event: a card that enters any stance skips
+              // this one, or she would power up twice, first in the stance she is leaving)
+              let stanceEntry = false;
+              const by = unitOf(hero);
+              if (by && skinOf.current(by.def, e.side, e.side === mySide) === TEMPEST_SAGE_SKIN) {
+                for (const event of all.slice(i + 1)) {
+                  if (event.type === 'play' || event.type === 'act' || event.type === 'turnEnd')
+                    break;
+                  if (event.type === 'stance' && event.stance !== 'none' && event.unit === hero) {
+                    stanceEntry = true;
+                    break;
+                  }
+                }
+              }
+              const raised = stanceEntry ? undefined : sc.fighters.cast(hero);
               play(def.kind === 'snare' ? 'trapSet' : 'cast');
               await Promise.all([raised, wait(160)]);
             }
@@ -1224,6 +1251,10 @@ export function FightView(props: {
           return;
         case 'status': {
           reduceEvent(db, d, e);
+          if (e.status === 'radiant' || e.status === 'calm' || e.status === 'wrath') {
+            const unit = unitOf(e.target);
+            if (unit?.def === 'monk') sc.fighters.setStance(e.target, stanceOf(unit));
+          }
           if (e.amount > 0) {
             const bad =
               e.status === 'exposed' ||
@@ -1242,6 +1273,9 @@ export function FightView(props: {
           }
           return;
         }
+        case 'stance':
+          if (e.stance !== 'none') await sc.fighters.raiseStanceAura(e.unit);
+          return;
         case 'summon':
           reduceEvent(db, d, e);
           respec();
@@ -1525,6 +1559,15 @@ export function FightView(props: {
         created = s;
         scene.current = s;
         setSceneObj(s);
+        // (a model that draws its own stance energy hides the drawn-on glow: told by the figures, as the render cannot read the scene)
+        s.fighters.onStanceArt = (id, own) =>
+          setStanceArt((was) => {
+            if (was.has(id) === own) return was;
+            const next = new Set(was);
+            if (own) next.add(id);
+            else next.delete(id);
+            return next;
+          });
         s.onSound = play;
         s.onFit = () => bump((n) => n + 1);
         s.setFrame(frameFor(modeRef.current, undefined, finalBoss), boardReserve(modeRef.current));
@@ -2802,6 +2845,7 @@ export function FightView(props: {
                   h={at.h}
                   w={at.w}
                   banner={!pvp}
+                  embedded={stanceArt.has(at.unit.id)}
                 />
               ) : null;
             })}

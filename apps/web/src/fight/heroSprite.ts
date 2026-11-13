@@ -4,6 +4,7 @@
 // the board's frame loop; this class owns the GL context and frees it on dispose.
 
 import { Texture } from 'pixi.js';
+import type { Stance } from '@sr/combat';
 // (one runtime for every hero: Hero2D runs the knight's rig unchanged; all three are copied from assets-src by
 // scripts/sync-hero-rigs.mjs before every local dev or build)
 import {
@@ -166,6 +167,9 @@ export interface HeroSprite {
   restSpan?(height: number): { left: number; right: number };
   resize(height: number, pixelScale: number): boolean;
   readonly remaining: number;
+  setStance?(stance: Stance | undefined): void;
+  readonly hasStanceArt?: boolean;
+  stanceAuraReady?(): boolean;
   /** `variant`: the weapon a card swings ("shotgun"), for a model with a clip of its own for it (a video model, DECISIONS #715) */
   play(
     clip: KnightClip,

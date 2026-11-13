@@ -1,3 +1,9 @@
+## 0.267.0 - 2026-11-13
+
+- Added the Tempest Sage, a free animated Monk skin: a storm monk whose markings glow. She has her own look for each stance, with its own stance, idle, attack, hit and power-up: Serene glows pale blue and strikes with an open palm, Fury burns red-gold and throws a driving hook, Radiant blazes white-gold and lands a long straight punch. Entering a stance plays that stance's power-up once.
+- Added the Gothic Puppeteer, a free animated Necromancer skin with a bone scythe: a one-handed slash for attacks, and Spell cards plant the scythe and send a rose-pink curse. Her marionette comes later.
+- Both play a small fidget now and then while standing.
+
 ## 0.266.0 - 2026-11-12
 
 - Arc Welder’s brass wasp hovers alongside her as part of her skin. Summoned Drone and Patrol Drone use their standard models.

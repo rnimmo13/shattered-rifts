@@ -29,11 +29,15 @@ export const DEMON_KNIGHT_SKIN = 'knight-demon-knight';
 export const NOVA_RONIN_SKIN = 'spellblade-nova-ronin';
 export const ARC_WELDER_SKIN = 'engineer-arc-welder';
 export const ROGUE_TAILOR_SKIN = 'assassin-rogue-tailor';
+export const TEMPEST_SAGE_SKIN = 'monk-tempest-sage';
+export const GOTHIC_PUPPETEER_SKIN = 'necromancer-gothic-puppeteer';
 export const ANIMATED_SKINS: ReadonlySet<string> = new Set([
   DEMON_KNIGHT_SKIN,
   NOVA_RONIN_SKIN,
   ARC_WELDER_SKIN,
   ROGUE_TAILOR_SKIN,
+  GOTHIC_PUPPETEER_SKIN,
+  TEMPEST_SAGE_SKIN,
 ]);
 export const AVAILABLE_SKINS = SKINS.filter(({ id }) => ANIMATED_SKINS.has(id));
 

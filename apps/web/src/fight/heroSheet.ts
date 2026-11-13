@@ -10,11 +10,13 @@
 // Each frame of the atlas is drawn on a plain 2D canvas, feet on the anchor, mirrored when facing left. The canvas is a Pixi texture
 // exactly as a rig's or a video's is, so Fighters and HeroModel drive it through the same HeroSprite calls.
 
+import type { Stance } from '@sr/combat';
 import { Texture } from 'pixi.js';
 import { loadGraphicsQuality } from '../duel/effects';
 
 type Facing = 'right' | 'left';
 type Clip = 'idle' | 'strike' | 'hit' | 'aura' | 'death';
+const STANCE_SUFFIX: Record<Stance, string> = { calm: 'Serene', wrath: 'Fury', radiant: 'Radiant' };
 
 /** One frame in the manifest: atlas page, x, y, w, h, and the offset of its top-left from the ground origin (feet), in sheet px. */
 type SheetFrame = [number, number, number, number, number, number, number];
@@ -221,6 +223,8 @@ export class SheetHeroSprite {
   private clipName: Clip = 'idle';
   /** the manifest clip playing ("attack2" for the shotgun) */
   private sheetClip = 'idle';
+  private stance: Stance | undefined;
+  private idleSeconds = 0;
   private t = 0;
   private fired = new Set<string>();
   private ended = false;
@@ -263,10 +267,37 @@ export class SheetHeroSprite {
   /** Which manifest clip plays a game clip: the strike is "attack" ("slash" for the Knight), the shotgun the second attack. */
   private sheetFor(clip: Clip, variant?: string): string {
     const c = this.a.man.clips;
+    const alternate = this.stanceClip(clip === 'strike' ? 'attack' : clip);
+    if (alternate && this.has(alternate)) return alternate;
     if (clip !== 'strike') return c[clip] ? clip : 'idle';
     // (the second attack: the Drunkard's shotgun, the Spellblade's spell, DECISIONS #756)
     if ((variant === 'shotgun' || variant === 'spell') && c['attack2']) return 'attack2';
     return c['attack'] ? 'attack' : c['slash'] ? 'slash' : 'idle';
+  }
+
+  private stanceClip(name: string): string | undefined {
+    return this.stance && `${name}${STANCE_SUFFIX[this.stance]}`;
+  }
+
+  /** this model has its own set for the stance it is in (setStance keeps only such a stance): it shows that stance itself, as soon as
+   * its pages are in */
+  get hasStanceArt(): boolean {
+    return this.stance !== undefined;
+  }
+
+  /** the stance's own power-up is here to play now (never waited for: a stance entered before its pages come shows none) */
+  stanceAuraReady(): boolean {
+    const name = this.stanceClip('aura');
+    return !this.disposed && name !== undefined && this.has(name);
+  }
+
+  setStance(stance: Stance | undefined): void {
+    const next = stance && this.a.man.clips[`idle${STANCE_SUFFIX[stance]}`] ? stance : undefined;
+    if (this.stance === next) return;
+    this.stance = next;
+    this.idleSeconds = 0;
+    // Let an action already playing finish. Its return to idle uses the latest stance.
+    if (this.clipName === 'idle') this.play('idle');
   }
 
   /** the part of a clip left out at its start (a Riftwalker's strike: its slow wind-up) */
@@ -353,7 +384,7 @@ export class SheetHeroSprite {
   momentIn(clip: Clip, variant?: string): number {
     if (clip === 'idle') return 0;
     const name = this.sheetFor(clip, variant);
-    if (name === 'idle' || !this.has(name)) return 0;
+    if (name === this.sheetFor('idle') || !this.has(name)) return 0;
     const c = this.a.man.clips[name];
     const ev = c?.events?.find((e) => e.name === MOMENT[clip]);
     return ev ? Math.max(0, ev.frame / c!.fps - this.startOf(clip, name)) : 0;
@@ -362,7 +393,7 @@ export class SheetHeroSprite {
   ready(clip: Clip = 'idle', variant?: string): boolean {
     const name = this.sheetFor(clip, variant);
     // (a clip the model does not have at all, as a creature's power-up, is never ready: the board does without it)
-    return (clip === 'idle' || name !== 'idle') && this.has(name);
+    return (clip === 'idle' || name !== this.sheetFor('idle')) && this.has(name);
   }
 
   play(
@@ -375,13 +406,15 @@ export class SheetHeroSprite {
     this.onEnd = undefined;
     if (this.clipName !== 'idle' && !this.ended) was?.();
     const sheet = this.sheetFor(clip, opts.variant);
-    if (clip !== 'idle' && (sheet === 'idle' || !this.has(sheet))) {
+    const idle = this.sheetFor('idle');
+    if (clip !== 'idle' && (sheet === idle || !this.has(sheet))) {
       // (its pages are still coming: the model stays at rest and the board keeps its own timing. A death cannot be skipped, or the
       // fallen would stand: it plays as soon as its pages are in)
       this.clipName = 'idle';
-      this.sheetClip = 'idle';
+      this.sheetClip = idle;
+      this.t = 0;
       this.onEvent = undefined;
-      if (clip === 'death' && sheet !== 'idle')
+      if (clip === 'death' && sheet !== idle)
         void Promise.all(
           [...new Set(this.a.man.clips[sheet]!.frames.map((f) => f[0]))].map(
             (p) => this.a.pageReady[p] ?? Promise.resolve(false),
@@ -395,6 +428,7 @@ export class SheetHeroSprite {
     }
     this.clipName = clip;
     this.sheetClip = sheet;
+    this.idleSeconds = 0;
     this.t = this.startOf(clip, sheet);
     this.fired = new Set();
     this.ended = false;
@@ -406,7 +440,20 @@ export class SheetHeroSprite {
     if (this.disposed || dt <= 0) return;
     const c = this.cur;
     if (this.clipName === 'idle') {
-      this.t = (this.t + dt) % (c.count / c.fps);
+      const idle = this.sheetFor('idle');
+      const fidget = this.stanceClip('fidget') ?? 'fidget';
+      this.idleSeconds += dt;
+      this.t += dt;
+      if (this.sheetClip === fidget) {
+        if (this.t >= c.count / c.fps) this.play('idle');
+      } else if (this.sheetClip !== idle) {
+        this.play('idle');
+      } else if (this.idleSeconds >= 7 && this.has(fidget)) {
+        this.sheetClip = fidget;
+        this.t = 0;
+      } else {
+        this.t %= c.count / c.fps;
+      }
       return;
     }
     if (this.ended) return;
@@ -424,7 +471,8 @@ export class SheetHeroSprite {
       // (death holds its last frame; every other clip goes back to the idle loop)
       if (this.clipName !== 'death') {
         this.clipName = 'idle';
-        this.sheetClip = 'idle';
+        this.sheetClip = this.sheetFor('idle');
+        this.idleSeconds = 0;
         this.t = 0;
       }
       end?.();

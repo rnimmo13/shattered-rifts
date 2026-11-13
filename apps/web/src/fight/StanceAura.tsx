@@ -6,15 +6,14 @@ import { STATUS_ICONS } from '../art/gameIcons';
 import { GameIcon } from '../ui/GameIcon';
 import { useRef, type CSSProperties } from 'react';
 import { useClearOfBelt } from './clearOfBelt';
-import type { StatusId, UnitView } from '@sr/combat';
+import type { Stance, UnitView } from '@sr/combat';
 import { STATUS_INFO } from './info';
 
-type Stance = 'wrath' | 'calm' | 'radiant';
 const STANCES: readonly Stance[] = ['radiant', 'wrath', 'calm'];
 
 /** The stance this unit is in (at most one), or null. */
-function stanceOf(u: Pick<UnitView, 'statuses'>): Stance | null {
-  return STANCES.find((s) => (u.statuses[s as StatusId] ?? 0) > 0) ?? null;
+export function stanceOf(u: Pick<UnitView, 'statuses'>): Stance | undefined {
+  return STANCES.find((s) => (u.statuses[s] ?? 0) > 0);
 }
 
 const LINE: Record<Stance, string> = {
@@ -39,6 +38,8 @@ export function StanceAura(props: {
   unit: UnitView;
   /** draw the banner over the head (false in PvP, where the name tag carries a chip instead) */
   banner?: boolean;
+  /** the figure draws its own stance energy (the Tempest Sage): no glow over it */
+  embedded?: boolean;
   /** the figure's feet in host px, and its height and width */
   x: number;
   y: number;
@@ -62,17 +63,19 @@ export function StanceAura(props: {
   };
   return (
     <>
-      <div className={`stance stance--${stance}`} style={aura} aria-hidden>
-        <span className="stance__glow" />
-        {stance === 'radiant' && (
-          <>
-            <span className="stance__rays" />
-            {Array.from({ length: 9 }, (_, i) => (
-              <i key={i} className="stance__spark" style={{ '--i': i } as CSSProperties} />
-            ))}
-          </>
-        )}
-      </div>
+      {!props.embedded && (
+        <div className={`stance stance--${stance}`} style={aura} aria-hidden>
+          <span className="stance__glow" />
+          {stance === 'radiant' && (
+            <>
+              <span className="stance__rays" />
+              {Array.from({ length: 9 }, (_, i) => (
+                <i key={i} className="stance__spark" style={{ '--i': i } as CSSProperties} />
+              ))}
+            </>
+          )}
+        </div>
+      )}
       {props.banner !== false && (
         <div
           ref={banner}
