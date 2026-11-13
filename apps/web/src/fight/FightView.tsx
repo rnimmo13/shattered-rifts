@@ -444,12 +444,16 @@ function specsFrom(
       const novaRonin = skin === NOVA_RONIN_SKIN;
       const arcWelder = skin === ARC_WELDER_SKIN;
       const rogueTailor = skin === ROGUE_TAILOR_SKIN;
+      const glacierLancer = skin === 'hunter-glacier-lancer';
+      const ashFalconer = skin === 'shaman-ash-falconer';
       const tempestSage = skin === TEMPEST_SAGE_SKIN;
       const stance = tempestSage ? stanceOf(e.u) : undefined;
       if (arcWelder) attack = { kind: 'shoot', tint: '#4fc3ff' };
       if (novaRonin) attack = { ...attack, tint: '#b46bff' };
       if (demonKnight) attack = { ...attack, tint: '#ff354b' };
       if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };
+      if (glacierLancer) attack = { kind: 'stab', tint: '#91dcff' };
+      if (ashFalconer) attack = { kind: 'cast', tint: '#ff9758' };
       if (tempestSage)
         attack = {
           kind: 'stab',
@@ -497,7 +501,13 @@ function specsFrom(
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
         attack,
-        ...(demonKnight || novaRonin || arcWelder || rogueTailor || tempestSage
+        ...(demonKnight ||
+        novaRonin ||
+        arcWelder ||
+        rogueTailor ||
+        tempestSage ||
+        glacierLancer ||
+        ashFalconer
           ? { builtInWeapon: true }
           : {}),
         ...(e.hero ? { hero: e.u.def } : {}),

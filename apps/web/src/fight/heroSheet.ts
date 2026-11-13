@@ -160,12 +160,13 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
               return r.blob();
             });
             const bitmap = await createImageBitmap(blob);
-            if (man.nativeGothicPalette || hero !== `skins/${GOTHIC_SKIN}`) return bitmap;
+            if (hero !== `skins/${GOTHIC_SKIN}`) return bitmap;
             const recolored = gothicCanvas(
               bitmap,
               bitmap.width,
               bitmap.height,
-              gothicPageMarks(man, man.pages.indexOf(f)),
+              man.nativeGothicPalette ? [] : gothicPageMarks(man, man.pages.indexOf(f)),
+              man.nativeGothicPalette,
             );
             const result = await createImageBitmap(recolored);
             bitmap.close();
@@ -174,12 +175,13 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
           const img = new Image();
           img.src = `${dir}${f}`;
           await img.decode();
-          return !man.nativeGothicPalette && hero === `skins/${GOTHIC_SKIN}`
+          return hero === `skins/${GOTHIC_SKIN}`
             ? gothicCanvas(
                 img,
                 img.naturalWidth,
                 img.naturalHeight,
-                gothicPageMarks(man, man.pages.indexOf(f)),
+                man.nativeGothicPalette ? [] : gothicPageMarks(man, man.pages.indexOf(f)),
+                man.nativeGothicPalette,
               )
             : img;
         };
@@ -567,7 +569,10 @@ export class SheetHeroSprite {
           ctx.translate(-b.x0 * this.k, -b.y0 * this.k);
           const scale = this.a.man.clips['idle']!.frames[0]![4] * this.k;
           ctx.scale(scale, scale);
-          drawSheetEffect(ctx, effect, this.effectTime);
+          const contact = c.events?.find((event) => event.name === 'hit');
+          const sinceContact =
+            this.sheetClip === 'attack' && contact ? this.t - contact.frame / c.fps : undefined;
+          drawSheetEffect(ctx, effect, this.effectTime, sinceContact);
           ctx.restore();
         }
       }

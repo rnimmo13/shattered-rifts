@@ -163,13 +163,18 @@ function tempest(
   }
 }
 
-export type SheetEffect = { kind: 'conduit' | 'grimoire'; points: [number, number][] };
+export type SheetEffect = {
+  kind: 'conduit' | 'grimoire';
+  points: [number, number][];
+  shock?: [number, number];
+};
 
 /** The manifest stores coordinates relative to the feet, in standing body heights. */
 export function drawSheetEffect(
   ctx: CanvasRenderingContext2D,
   effect: SheetEffect,
   clock: number,
+  sinceContact?: number,
 ): void {
   const first = effect.points[0];
   if (!first) return;
@@ -198,6 +203,8 @@ export function drawSheetEffect(
     ctx.strokeStyle = '#b4f5ff';
     ctx.lineWidth = 0.004;
     ctx.stroke();
+    ctx.setLineDash([]);
+    if (effect.shock) welderShock(ctx, effect.shock, clock, sinceContact);
   } else {
     const [x, y] = first;
     const t = clock % 2.2;
@@ -205,9 +212,9 @@ export function drawSheetEffect(
     ctx.globalCompositeOperation = 'screen';
     const r = 0.045 + 0.022 * pulse;
     const light = ctx.createRadialGradient(x, y, 0, x, y, r);
-    light.addColorStop(0, `rgba(188,255,72,${0.14 + 0.51 * pulse})`);
-    light.addColorStop(0.5, `rgba(112,216,36,${0.08 + 0.23 * pulse})`);
-    light.addColorStop(1, 'rgba(88,169,22,0)');
+    light.addColorStop(0, `rgba(88,255,223,${0.14 + 0.51 * pulse})`);
+    light.addColorStop(0.5, `rgba(31,208,177,${0.08 + 0.23 * pulse})`);
+    light.addColorStop(1, 'rgba(12,147,127,0)');
     ctx.fillStyle = light;
     ctx.fillRect(x - r, y - r, r * 2, r * 2);
     for (let i = 0; i < 3; i++) {
@@ -215,7 +222,7 @@ export function drawSheetEffect(
       if (age <= 0 || age >= 1) continue;
       const wx = x + 0.008 * i + Math.sin(age * 6 + i) * 0.008;
       const wy = y - age * 0.062;
-      ctx.strokeStyle = `rgba(159,238,63,${Math.sin(Math.PI * age) * 0.54})`;
+      ctx.strokeStyle = `rgba(83,233,200,${Math.sin(Math.PI * age) * 0.54})`;
       ctx.lineWidth = 0.0025;
       ctx.beginPath();
       ctx.moveTo(wx, wy + 0.01);
@@ -224,4 +231,51 @@ export function drawSheetEffect(
     }
   }
   ctx.restore();
+}
+
+/** Idle sparks jump across the electrodes. The strike throws a short arc from the same muzzle. */
+function welderShock(
+  ctx: CanvasRenderingContext2D,
+  [x, y]: [number, number],
+  clock: number,
+  sinceContact?: number,
+): void {
+  const attacking = sinceContact !== undefined;
+  const phase = sinceContact ?? (clock + 0.3) % 1.35;
+  if (phase < -1 / 30 || phase >= (attacking ? 0.1 : 0.16)) return;
+  const strength = attacking
+    ? Math.max(0.28, 1 - Math.max(phase, 0) * 8)
+    : Math.floor(clock * 30) % 3 === 1
+      ? 0.46
+      : 0.82;
+  const reach = attacking ? 0.21 + Math.max(phase, 0) * 0.8 : 0.075;
+  const turn = attacking ? 0 : -Math.PI / 2;
+  const tick = Math.floor(clock * 30);
+  ctx.translate(x, y);
+  ctx.rotate(turn);
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalAlpha = strength;
+  glow(ctx, reach * 0.15, 0, attacking ? 0.08 : 0.049, 'rgba(48,174,255,.76)');
+
+  ctx.beginPath();
+  ctx.moveTo(0, attacking ? 0 : -0.023);
+  for (let i = 1; i <= 6; i++) {
+    const progress = i / 6;
+    const jitter = Math.sin(i * 7 + tick * 2.5);
+    const along = attacking ? progress * reach : Math.sin(progress * Math.PI) * reach;
+    const across = attacking ? jitter * 0.025 : (progress - 0.5) * 0.046 + jitter * 0.01;
+    ctx.lineTo(along, across);
+    if (attacking && (i === 2 || i === 4)) {
+      const direction = i === 2 ? 1 : -1;
+      ctx.lineTo(along + 0.029, across + direction * 0.036);
+      ctx.lineTo(along + 0.068, across + direction * 0.052);
+      ctx.moveTo(along, across);
+    }
+  }
+  ctx.strokeStyle = 'rgba(33,152,255,.82)';
+  ctx.lineWidth = attacking ? 0.018 : 0.009;
+  ctx.stroke();
+  ctx.strokeStyle = '#c6f6ff';
+  ctx.lineWidth = attacking ? 0.006 : 0.003;
+  ctx.stroke();
 }

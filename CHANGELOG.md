@@ -1,3 +1,9 @@
+## 0.271.0 - 2026-11-13
+
+- Added Ash Falconer and Glacier Lancer to the Store and Collection with High and Medium battle animations.
+- Arc Welder sparks at idle and discharges on attack while the current follows the hose.
+- Gothic Puppeteer uses the base Necromancer’s olive and teal-green palette.
+
 ## 0.270.0 - 2026-11-13
 
 - Refreshed the Necromancer, Drunkard, Rogue Tailor, Arc Welder and Gothic Puppeteer with new inked artwork, blended action clips, matching stills, and High and Medium atlases.

@@ -58,5 +58,25 @@
     "right": 222,
     "fitWidth": 264,
     "displayScale": 1.07
+  },
+  "shaman-ash-falconer": {
+    "width": 276,
+    "height": 401,
+    "x": -124,
+    "y": -400,
+    "left": -128,
+    "right": 156,
+    "fitWidth": 274,
+    "displayScale": 1
+  },
+  "hunter-glacier-lancer": {
+    "width": 290,
+    "height": 401,
+    "x": -128,
+    "y": -400,
+    "left": -132,
+    "right": 166,
+    "fitWidth": 290,
+    "displayScale": 1
   }
 }

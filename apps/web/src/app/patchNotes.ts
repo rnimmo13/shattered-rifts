@@ -46,6 +46,38 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.271.0',
+    date: '2026-11-13',
+    title: 'Ash Falconer and Glacier Lancer',
+    summary: 'Two new animated skins and updated effects for Arc Welder and Gothic Puppeteer.',
+    notes: [
+      {
+        kind: 'new',
+        hero: 'shaman',
+        title: 'Ash Falconer',
+        text: 'A free animated Shaman skin with a phoenix that takes flight from her glove.',
+      },
+      {
+        kind: 'new',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'A free animated Hunter skin with a fur mantle and a quick ice-spear thrust.',
+      },
+      {
+        kind: 'changed',
+        hero: 'engineer',
+        title: 'Arc Welder',
+        text: 'Her gauntlet sparks at idle and throws a blue shock on impact.',
+      },
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'Her olive cloth and teal-green grimoire now share the base Necromancer’s palette.',
+      },
+    ],
+  },
+  {
     version: '0.270.0',
     date: '2026-11-13',
     title: 'Riftwalker art refresh',
