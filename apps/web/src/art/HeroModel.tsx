@@ -19,6 +19,9 @@ const still = (): boolean =>
 // (DECISIONS #755) A pose-sheet model holds its whole atlas, about 100 MB decoded: a page showing every Riftwalker (the Models page,
 // the lore page) animates at most this many at once, the ones nearest the screen; the rest show their picture until one is let go.
 const SHEET_SLOTS = 3;
+/** How far past each side of its box a contained figure may run, as a share of the box's width (DECISIONS #773): fitted to the width
+ * alone, a figure holding a great sword out came out tiny in a narrow box. */
+const CONTAIN_SPILL = 0.18;
 let sheetsLive = 0;
 const slotWaiters = new Set<() => void>();
 function freeSheetSlot(): void {
@@ -34,8 +37,9 @@ export function HeroModel(props: {
   className?: string;
   /** how much of the box's height the body fills, feet on its bottom edge */
   fill?: number;
-  /** the whole resting figure, weapon and all, stays inside the box and stands in its middle (the Store's and the Collection's boxes);
-   * without it the feet stand in the middle and a wide pose may reach past the sides (DECISIONS #772) */
+  /** the whole resting figure, weapon and all, stands in the middle of the box (the Store's and the Collection's boxes), at its full
+   * height: a wide pose may run past each side by up to CONTAIN_SPILL of the box's width (the tip of a sword, not the body), and is
+   * made smaller only past that. Without it the feet stand in the middle (DECISIONS #772, #773) */
   contain?: boolean;
   /** the still picture */
   children: ReactNode;
@@ -118,8 +122,9 @@ export function HeroModel(props: {
       let shift = 0;
       if (contain && sprite.restSpan && size.w > 0) {
         let span = sprite.restSpan(height);
-        if (span.left + span.right > size.w) {
-          height = Math.max(8, (height * size.w) / (span.left + span.right));
+        const room = size.w * (1 + 2 * CONTAIN_SPILL);
+        if (span.left + span.right > room) {
+          height = Math.max(8, (height * room) / (span.left + span.right));
           span = sprite.restSpan(height);
         }
         shift = (span.left - span.right) / 2;

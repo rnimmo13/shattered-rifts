@@ -46,6 +46,32 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.263.0",
+    date: "2026-11-12",
+    title: "Demon Knight fixes",
+    summary: "The Demon Knight is the Knight’s size everywhere, fills his box, and the Sanctum keeps its rows.",
+    notes: [
+      {
+        kind: "fixed",
+        title: "His size",
+        hero: "knight",
+        text: "The Demon Knight is the same size as the Knight everywhere. He was drawn smaller, and smaller again on Medium graphics."
+      },
+      {
+        kind: "fixed",
+        text: "In the Store and the Collection he stands at his full height in his box; only the tip of his sword runs past the edge."
+      },
+      {
+        kind: "fixed",
+        text: "In the Sanctum, choosing the Knight while he wears the Demon Knight no longer moves the class buttons onto other rows."
+      },
+      {
+        kind: "changed",
+        text: "The Demon Knight is a little sharper in battle."
+      }
+    ]
+  },
+  {
     version: "0.262.0",
     date: "2026-11-12",
     title: "Demon Knight",

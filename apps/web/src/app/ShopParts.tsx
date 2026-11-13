@@ -243,6 +243,21 @@ export function SoonPanel(props: { tab: ShopTab; text?: string }) {
 
 function LookPicture(props: { src: string }) {
   const [failed, setFailed] = useState<string | null>(null);
+  const [wide, setWide] = useState<string | null>(null);
   if (!props.src || failed === props.src) return null;
-  return <img src={props.src} alt="" loading="lazy" onError={() => setFailed(props.src)} />;
+  // (a picture wider than it is tall, a figure with its weapon held out: it stands at the box's height and runs past the sides, as its
+  // animated model does, not shrunk to the box's width: DECISIONS #773)
+  return (
+    <img
+      src={props.src}
+      alt=""
+      loading="lazy"
+      className={wide === props.src ? 'is-wide' : undefined}
+      onLoad={(e) => {
+        const img = e.currentTarget;
+        if (img.naturalWidth > img.naturalHeight * 1.05) setWide(props.src);
+      }}
+      onError={() => setFailed(props.src)}
+    />
+  );
 }

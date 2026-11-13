@@ -1,3 +1,10 @@
+## 0.263.0 - 2026-11-12
+
+- The Demon Knight is the same size as the Knight everywhere. He was drawn smaller, and smaller again on Medium graphics.
+- In the Store and the Collection he stands at his full height in his box; only the tip of his sword runs past the edge.
+- Fixed: in the Sanctum, choosing the Knight while he wears the Demon Knight moved the class buttons onto other rows.
+- The Demon Knight is a little sharper in battle (his pictures are no longer scaled twice).
+
 ## 0.262.0 - 2026-11-12
 
 - The Demon Knight stands at his full size: he was drawn about a fifth too small, because the great sword held out to his side was counted as part of his body. He is now fitted by his body, and stands a little taller than the other Riftwalkers. Red energy runs through his veins and along his greatsword.

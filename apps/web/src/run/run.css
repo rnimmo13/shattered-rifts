@@ -1804,11 +1804,17 @@ button.mapnode--warden {
   flex: 1 1 54rem;
   max-width: 56rem;
 }
+/* (one width whoever stands in it, DECISIONS #773: the column took the picture's own width, so a wide figure, the Demon Knight with
+   his sword out, pushed the class buttons onto other rows; a wider picture now runs past the column's sides) */
 .picker__figure {
   flex: none;
   margin: 0;
   display: grid;
   place-items: end center;
+  width: calc(min(24rem, 50vh) * 0.95);
+}
+.picker__figure .hero-model {
+  justify-self: center;
 }
 .picker__figure img {
   height: min(24rem, 50vh);
@@ -1819,6 +1825,10 @@ button.mapnode--warden {
 @media (max-width: 70rem) {
   .picker__stage {
     flex-direction: column;
+  }
+  .picker__figure {
+    width: auto;
+    max-width: 100%;
   }
   .picker__figure img {
     height: 14rem;

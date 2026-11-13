@@ -320,7 +320,8 @@ function specsFrom(
         hero ? heroFigure(u.def, skin) : unitFigure(u.def, u.maxHp),
       );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
-      const k = figureScale(mode, hero) * (skin === DEMON_KNIGHT_SKIN ? 1.09 : 1);
+      // (the Demon Knight's size is his model's own displayScale, the Knight's: no factor here, DECISIONS #773)
+      const k = figureScale(mode, hero);
       const height =
         fitHeight(
           canvas,

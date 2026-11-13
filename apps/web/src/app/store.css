@@ -188,6 +188,12 @@
   object-position: bottom;
   filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.55));
 }
+/* a picture wider than tall (a weapon held out): as tall as the box, running past its sides, which the stage cuts off */
+.look__stage img.is-wide {
+  width: 136%;
+  max-width: none;
+  margin-inline: -18%;
+}
 .look__tag {
   position: absolute;
   top: 0.45rem;
