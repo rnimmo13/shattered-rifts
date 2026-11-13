@@ -2303,3 +2303,11 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 - **The Sanctum:** the figure's column took the picture's own width, so a wide figure pushed the class buttons onto other rows. The column now has one width whoever stands in it (0.95 of the picture's height) and a wider picture runs past its sides.
 - **His sharpness:** his source sheets are 1536 x 1024 with four poses each, about 480 px a pose; the Knight's own are 3264 x 1440. The packer scaled each pose twice (0.94, then 0.96), which softened it further: the full set is now packed at the art's own pixels (one scaling). That is all that packing can give. To be as sharp as the others at battle size his poses need to be made again at about twice the size.
 - **Not seen on screen** (as #772): checked by measurement and tests.
+
+## 774 - A row keeps to its own half: three companions no longer stand on the enemies (2026-11-12)
+
+- **Question:** Robert's screenshot of a Beastmaster fight on a wide screen (Tier 7, The Hourglass Expanse Convergence): the third Dire Wolf stood on top of the Sand Sentinel, their name plates and HP bars run together.
+- **Cause:** the one-row layout of #761's follow-ups spreads every row to `MIN_PITCH` (240 stage px between centres, the room a name plate needs where the camera draws the stage smallest, Drago's fight) whatever room the side has, growing toward the middle of the stage. The allies' side is 470 px wide: three companions at 240 apart reached about 130 px past its near end, onto the enemies' side.
+- **Decision:** a row's nearest edge stays within `NEAR_REACH` (20 px) of its side's near end; to keep to that the row closes up from its far end, down to `TIGHT_PITCH` (130 px) between centres, and only a row that cannot fit even so reaches further (`fixedFormation`, apps/web/src/fight/lineLayout.ts). With both sides held to it the two rows are at least 40 px apart. A row with room to spare is unchanged.
+- **Known, not changed:** in Drago's zoomed-out fight three companions closed up this way are nearer than a name plate's full width. And in the same screenshot the battle log, open, covers the name and HP of the enemy furthest right: for Robert to choose how (see the session's notes).
+- **Not seen on screen:** checked by tests on the positions.

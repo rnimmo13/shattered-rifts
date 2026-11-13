@@ -192,6 +192,26 @@ describe('a wide screen: one size all fight, one row, nobody hidden (Robert, 202
     // (no summoner: a full-size line stays full size)
     expect(rowScale([300, 300], [], room)).toBe(1);
   });
+  it('a row keeps to its own half: three companions never reach the enemies (#774)', () => {
+    // (a Beastmaster's three wolves on the allies' side, 910 down to 440, at the size the side was given)
+    const scale = rowScale([220, 220, 220], [], 470);
+    const allies = fixedFormation([item(220), item(220), item(220)], 910, 440, scale);
+    const w = 220 * scale;
+    // (the nearest wolf's edge within 20 px of the side's near end)
+    expect(allies.xs[0]! + w / 2).toBeLessThanOrEqual(910 + 20 + 0.001);
+    // (and the three still stand apart)
+    for (let i = 1; i < allies.xs.length; i++)
+      expect(allies.xs[i - 1]! - allies.xs[i]!).toBeGreaterThanOrEqual(130 - 0.001);
+    // (three enemies on their side, 990 to 1840: their nearest edge keeps the same distance)
+    const foes = fixedFormation([item(260), item(260), item(260)], 990, 1840, 1);
+    expect(foes.xs[0]! - 130).toBeGreaterThanOrEqual(990 - 20 - 0.001);
+    // (so the two rows are apart)
+    expect(foes.xs[0]! - 130).toBeGreaterThan(allies.xs[0]! + w / 2);
+  });
+  it('a row with room to spare is not closed up', () => {
+    const fit = fixedFormation([item(200), item(200)], 990, 1840, 1);
+    expect(fit.xs[1]! - fit.xs[0]!).toBeGreaterThanOrEqual(240 - 0.001);
+  });
   it('runs from right to left on the allies side', () => {
     const fit = fixedFormation([item(250), item(250)], 910, 440, 0.7);
     expect(fit.xs[0]!).toBeGreaterThan(fit.xs[1]!);

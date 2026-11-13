@@ -83,6 +83,12 @@ const ROW_GAP = 24;
 /** the least distance between neighbours' centres on a wide screen, stage px: a name plate's narrowest width and its gap (126 screen px)
  * even where the camera draws the stage smallest: Drago's fight, about 0.56 */
 export const MIN_PITCH = 240;
+/** How far past its near end, toward the middle of the stage, a row's nearest figure may stand (stage px), and the least distance between
+ * neighbours' centres when a row is closed up to keep to that. Spreading every row to MIN_PITCH whatever its room put a Beastmaster's
+ * third wolf on top of the nearest enemy (Robert's screenshot, 2026-11-12, DECISIONS #774): the two sides' rows each keep to their own
+ * half first, and only a row that cannot fit even at TIGHT_PITCH reaches further. */
+export const NEAR_REACH = 20;
+export const TIGHT_PITCH = 130;
 
 /**
  * The one size a wide screen gives a side's line for a whole fight (Robert, 2026-11-12: "keep a consistent model size", "not
@@ -128,6 +134,20 @@ export function fixedFormation(
   for (let i = xs.length - 2; i >= 0; i--)
     if (dir * ((xs[i + 1] as number) - (xs[i] as number)) < MIN_PITCH)
       xs[i] = (xs[i + 1] as number) - dir * MIN_PITCH;
+  // (but never onto the other side: the row's nearest edge stays within NEAR_REACH of its near end, the row closing up from its
+  // far end to do so, down to TIGHT_PITCH between centres)
+  if (xs.length > 1) {
+    const last = xs[xs.length - 1] as number;
+    const edge = (xs[0] as number) - (dir * (ws[0] as number)) / 2;
+    const over2 = dir * (near - dir * NEAR_REACH - edge);
+    const span = dir * (last - (xs[0] as number));
+    if (over2 > 0 && span > 0) {
+      const kept = Math.max(span - over2, (xs.length - 1) * TIGHT_PITCH);
+      if (kept < span)
+        for (let i = 0; i < xs.length - 1; i++)
+          xs[i] = last - ((last - (xs[i] as number)) * kept) / span;
+    }
+  }
   return { xs, rows: items.map(() => 0), scale };
 }
 
