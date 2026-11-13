@@ -40,7 +40,7 @@ import {
 } from '@sr/pvp';
 import type { Env } from './env';
 import { cleanAction, parse, send } from './wire';
-import { checkPlay, socketPlay, type PlaySocket } from './playAccess';
+import { checkPlay, playLooks, socketPlay, type PlaySocket } from './playAccess';
 
 /** A match counts on the leaderboard only if at least this many moves were made (and, if it ended any way but a win, this many). */
 const MIN_RECORDED_MOVES = 6;
@@ -619,7 +619,10 @@ export class MatchRoom extends DurableObject<Env> {
       // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
       // nothing about the room changes while waiting for it; a browser cannot claim any)
       const badge = first.who ? await this.badgeOf(first.who) : {};
-      if (!at?.play || !(await checkPlay(this.env, at.play.vault, at.play.token))) {
+      const looks = at?.play
+        ? await playLooks(this.env, at.play.vault, at.play.token)
+        : { ok: false, skins: {} as Record<string, string> };
+      if (!looks.ok) {
         send(ws, {
           type: 'error',
           code: 'outdated',
@@ -655,10 +658,14 @@ export class MatchRoom extends DurableObject<Env> {
       // the leaderboard id is taken out of each deck before it is kept (the deck played goes to the opponent)
       const who = first.who;
       const mine = checked.decks.map((e): Entry => {
-        const { who: _w, ...rest } = e;
+        // (the look is the Vault's word, never what the browser sent: DECISIONS #776)
+        const { who: _w, skin: _s, ...rest } = e;
         void _w;
+        void _s;
+        const skin = looks.skins[rest.hero];
         return {
           ...rest,
+          ...(skin ? { skin } : {}),
           ...(badge.trophies ? { trophies: badge.trophies } : {}),
           ...(badge.rank ? { rank: badge.rank } : {}),
         };

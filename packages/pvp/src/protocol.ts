@@ -40,6 +40,9 @@ export interface Entry {
   trophies?: TrophyCount;
   /** the player's Arena rank this season (set by the server, like trophies) */
   rank?: RankBadge;
+  /** the look the Riftwalker wears (DECISIONS #776): set by the server from the player's own Vault, never taken from a browser, so
+   * the opponent sees it, and a ghost keeps the look its deck was saved or last played in */
+  skin?: string;
 }
 
 /**
@@ -126,7 +129,8 @@ export interface Entry {
 // turn past 20%, 40% at most; Fateweaver 1%; Archmage 1 Spell Power a turn; Gathering Storm +8/+18; Old Twelve Gauge +20/+70; Off the Leash +10.
 // And (#769): Trail of Blood the first 4 summons; Pack Frenzy+ 4 Might and two actions; Hot Temper copies only as the first Attack of a
 // turn; Oath Unbroken 2 Might; Vow Fulfilled half past 5 Reserves.
-export const RULES_VERSION = 110;
+// 111 (#777): the Hunter's companions share a quarter of the Might, the Beastmaster's half.
+export const RULES_VERSION = 111;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

@@ -130,6 +130,7 @@ interface GhostSql extends Record<string, SqlStorageValue> {
   boons: string;
   ascendancy: string | null;
   max_hp?: number | null;
+  skin?: string | null;
   tier: number;
   stage: number | null;
   wins: number;
@@ -240,6 +241,12 @@ export class Leaderboard extends DurableObject<Env> {
       .toArray()
       .some((c) => c.name === 'max_hp');
     if (!hasMaxHp) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN max_hp INTEGER');
+    // ... and the look its Riftwalker wore when it was saved or last played (DECISIONS #776)
+    const hasSkin = ctx.storage.sql
+      .exec<{ name: string }>("SELECT name FROM pragma_table_info('ghosts')")
+      .toArray()
+      .some((c) => c.name === 'skin');
+    if (!hasSkin) ctx.storage.sql.exec('ALTER TABLE ghosts ADD COLUMN skin TEXT');
     // a run remembers how it ended (null while it is still going; DECISIONS #292)
     const hasEnded = ctx.storage.sql
       .exec<{ name: string }>("SELECT name FROM pragma_table_info('runs')")
@@ -964,12 +971,13 @@ export class Leaderboard extends DurableObject<Env> {
     const losses = result === 'loss' ? 1 : 0;
     if (this.count('SELECT COUNT(*) AS n FROM ghosts WHERE id = ?', id) > 0) {
       this.ctx.storage.sql.exec(
-        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, ascendancy = ?, max_hp = COALESCE(?, max_hp), run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
+        'UPDATE ghosts SET owner_name = ?, hero = ?, deck = ?, boons = ?, ascendancy = ?, skin = ?, max_hp = COALESCE(?, max_hp), run = ?, tier = ?, stage = ?, wins = wins + ?, losses = losses + ?, last_at = ? WHERE id = ?',
         name,
         e.hero,
         JSON.stringify(e.deck),
         JSON.stringify(e.boons),
         e.ascendancy ?? null,
+        e.skin ?? null,
         e.maxHp ?? null,
         e.run ?? null,
         e.tier,
@@ -982,7 +990,7 @@ export class Leaderboard extends DurableObject<Env> {
       return true;
     }
     this.ctx.storage.sql.exec(
-      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, ascendancy, max_hp, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO ghosts (id, owner, owner_name, hero, deck, boons, ascendancy, skin, max_hp, run, tier, stage, wins, losses, first_at, last_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       id,
       owner,
       name,
@@ -990,6 +998,7 @@ export class Leaderboard extends DurableObject<Env> {
       JSON.stringify(e.deck),
       JSON.stringify(e.boons),
       e.ascendancy ?? null,
+      e.skin ?? null,
       e.maxHp ?? null,
       e.run ?? null,
       e.tier,
@@ -1108,6 +1117,7 @@ export class Leaderboard extends DurableObject<Env> {
           deck: parseList(row.deck),
           boons: parseList(row.boons),
           ...(row.ascendancy ? { ascendancy: row.ascendancy } : {}),
+          ...(row.skin ? { skin: row.skin } : {}),
           tier: row.tier,
           ...(row.stage === null ? {} : { stage: row.stage }),
         },

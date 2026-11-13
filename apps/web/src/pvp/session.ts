@@ -1,6 +1,9 @@
 // The browser's side of a PvP match: it talks to the server over WebSockets (queue, room), keeps the match's state in a
 // small snapshot for the screen, and feeds the accepted moves to the fight screen through a MoveFeed. No React in here.
 
+import { skinDef } from '@sr/content/v2';
+import { ANIMATED_SKINS } from '../art/heroRigs';
+import { loadSkin } from '../art/assets';
 import type { Action, CombatSetup, Side } from '@sr/combat';
 import {
   RULES_VERSION,
@@ -50,6 +53,15 @@ export interface ChooseInfo {
   chooser: boolean;
 }
 
+/** The look a seat's Riftwalker wears, if it has an animated model here; its picture starts loading at once, so it is in before the
+ * fight draws its figures (DECISIONS #776). */
+function lookOf(e: { hero: string; skin?: unknown }): string | undefined {
+  const skin = typeof e.skin === 'string' ? e.skin : undefined;
+  if (!skin || !ANIMATED_SKINS.has(skin) || skinDef(skin)?.hero !== e.hero) return undefined;
+  void loadSkin(skin);
+  return skin;
+}
+
 export interface MatchInfo {
   room: string;
   seat: Side;
@@ -62,6 +74,8 @@ export interface MatchInfo {
   trophies: Record<Side, TrophyCount | undefined>;
   /** each player's Arena rank this season (from the server) */
   ranks: Record<Side, RankBadge | undefined>;
+  /** the look each player's Riftwalker wears, from the server (DECISIONS #776) */
+  skins: Record<Side, string | undefined>;
   setup: CombatSetup;
   /** how many moves arrived as history when this player (re)joined */
   replay: number;
@@ -456,6 +470,7 @@ export class PvpSession {
             progress: { a: progressOf(m.a), b: progressOf(m.b) },
             trophies: { a: cleanTrophies(m.a.trophies), b: cleanTrophies(m.b.trophies) },
             ranks: { a: cleanRank(m.a.rank), b: cleanRank(m.b.rank) },
+            skins: { a: lookOf(m.a), b: lookOf(m.b) },
             setup: setupFor(m.seed, m.a, m.b),
             replay: m.replay,
             deadline: m.deadline,
@@ -580,6 +595,7 @@ export class PvpSession {
       progress: m.progress,
       trophies: m.trophies,
       ranks: m.ranks,
+      skins: m.skins,
       replayId: m.replayId,
       feed: m.feed,
       send: this.sendMove,

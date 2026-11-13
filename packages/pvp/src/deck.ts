@@ -12,6 +12,7 @@ import {
   canonicalHero,
   stripRoll,
   ascendancyOf,
+  skinDef,
 } from '@sr/content/v2';
 import { MAX_MATCH_DECKS, type Entry } from './protocol';
 
@@ -259,6 +260,9 @@ export function checkEntry(raw: unknown): Checked | Rejected {
   const who = typeof e['who'] === 'string' && /^[0-9a-f]{64}$/.test(e['who']) ? e['who'] : null;
   const run = typeof e['run'] === 'string' && /^[0-9a-f]{8,16}$/.test(e['run']) ? e['run'] : null;
   const maxHp = cleanMaxHp(e['maxHp']);
+  // (a look of this Riftwalker's own, or none: DECISIONS #776)
+  const skin =
+    typeof e['skin'] === 'string' && skinDef(e['skin'])?.hero === hero ? e['skin'] : null;
   return {
     ok: true,
     entry: {
@@ -275,6 +279,7 @@ export function checkEntry(raw: unknown): Checked | Rejected {
       ...(maxHp === null ? {} : { maxHp }),
       ...(run === null ? {} : { run }),
       ...(who === null ? {} : { who }),
+      ...(skin === null ? {} : { skin }),
     },
   };
 }

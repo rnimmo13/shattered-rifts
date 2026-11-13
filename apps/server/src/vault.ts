@@ -22,6 +22,7 @@ import {
   cleanListItems,
   cleanRemoved,
   cleanCosmetics,
+  wornSkin,
   cleanRunCopies,
   dropFrom,
   grantCosmetics,
@@ -170,6 +171,17 @@ export class Vault extends DurableObject<Env> {
           removed: cleanRemoved(parseJson(row.removed)),
         }
       : { items: [], removed: [] };
+  }
+
+  /** The looks the player wears, by Riftwalker: only ones they own (wornSkin). */
+  private wornSkins(): Record<string, string> {
+    const c = this.cosmetics();
+    const out: Record<string, string> = {};
+    for (const hero of Object.keys(c.worn)) {
+      const skin = wornSkin(c, hero);
+      if (skin) out[hero] = skin;
+    }
+    return out;
   }
 
   private cosmetics(): Cosmetics {
@@ -470,7 +482,14 @@ export class Vault extends DurableObject<Env> {
         this.setLease(next);
         return json({ ok: true, expires: next.expires, now, revision: next.revision });
       }
-      if (op === 'check') return json({ ok: true, expires: lease.expires, now });
+      // (and the looks the player wears, by Riftwalker: a room shows them to the opponent, DECISIONS #776)
+      if (op === 'check')
+        return json({
+          ok: true,
+          expires: lease.expires,
+          now,
+          ...(body['looks'] === true ? { skins: this.wornSkins() } : {}),
+        });
       return json({ ok: false, error: 'not-found' }, 404);
     }
     if (
@@ -506,7 +525,9 @@ export class Vault extends DurableObject<Env> {
         // (as the list holds it: a run that cleared the campaign stays marked so)
         this.put(result.list.find((x) => x.id === deck.id) ?? deck);
       }
-      return json({ ok: true, decks: this.list(), mastery });
+      // (the look its Riftwalker wears now: a ghost of this deck shows it, DECISIONS #776)
+      const skin = wornSkin(this.cosmetics(), deck.hero);
+      return json({ ok: true, decks: this.list(), mastery, ...(skin ? { skin } : {}) });
     }
 
     if (action === 'listsync') {

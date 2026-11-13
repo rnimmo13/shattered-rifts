@@ -204,7 +204,7 @@ describe('companions acting again', () => {
   });
 });
 
-describe('the Beastmaster shares the first 5 Might in full and half of the rest (#768); the Hunter a third', () => {
+describe('the Beastmaster shares half the Might and the Hunter a quarter, rounded down (#777)', () => {
   it('a tall stack passes on less, and a new companion arrives with the same share', () => {
     let s = fight('hunter', 'hunter:beastmaster');
     hero(s).statuses = {};
@@ -212,33 +212,31 @@ describe('the Beastmaster shares the first 5 Might in full and half of the rest 
     s = playInst(s, { card: 'the-hunger' }).state;
     const might = hero(s).statuses.might ?? 0;
     expect(might).toBeGreaterThan(0);
-    // (no stop since #768)
-    const share = (m: number): number => (m > 5 ? 5 + Math.floor((m - 5) / 2) : m);
+    // (half, rounded down, no stop: #777)
+    const share = (m: number): number => Math.floor(m / 2);
     expect(allies(s)[0]!.statuses.might ?? 0).toBe(share(might));
     hero(s).statuses.might = 20;
     for (const u of allies(s)) u.statuses.might = share(20);
     s = play(s, 'slip-the-leash');
     expect(hero(s).statuses.might).toBe(28);
-    expect(share(28)).toBe(16);
-    expect(allies(s)[0]!.statuses.might).toBe(16);
+    expect(share(28)).toBe(14);
+    expect(allies(s)[0]!.statuses.might).toBe(14);
   });
-  it('the base Hunter’s companions hold a third of the Might, rounded down, and never more than a Beastmaster’s', () => {
+  it('the base Hunter’s companions hold a quarter of the Might, rounded down, and never more than a Beastmaster’s', () => {
     for (const might of [1, 2, 3, 6, 7, 12, 20, 40]) {
       const h = fight('hunter');
       hero(h).statuses = {};
       for (const u of allies(h)) u.statuses = {};
       expect(allies(h).length).toBeGreaterThan(0);
       const hs = giveMight(h, might);
-      expect(allies(hs)[0]!.statuses.might ?? 0, `Hunter at ${might}`).toBe(Math.floor(might / 3));
+      expect(allies(hs)[0]!.statuses.might ?? 0, `Hunter at ${might}`).toBe(Math.floor(might / 4));
       const b = fight('hunter', 'hunter:beastmaster');
       hero(b).statuses = {};
       for (const u of allies(b)) u.statuses = {};
       const bs = giveMight(b, might);
       const beast = allies(bs)[0]!.statuses.might ?? 0;
-      expect(beast, `Beastmaster at ${might}`).toBe(
-        might > 5 ? 5 + Math.floor((might - 5) / 2) : might,
-      );
-      expect(beast).toBeGreaterThanOrEqual(Math.floor(might / 3));
+      expect(beast, `Beastmaster at ${might}`).toBe(Math.floor(might / 2));
+      expect(beast).toBeGreaterThanOrEqual(Math.floor(might / 4));
     }
   });
 });

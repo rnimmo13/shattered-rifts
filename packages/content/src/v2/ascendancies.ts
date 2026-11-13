@@ -165,10 +165,10 @@ export const ASCENDANCIES: readonly Ascendancy[] = [
     'Beastmaster',
     'The pack',
     // (all your Might, and companions that grow every turn, so a pack can win on its own; the Might stops at 10: Robert 2026-11-08, #693)
-    // (all of the first 5 and half of the rest, no stop, since DECISIONS #768: always ahead of the base class's third)
-    'Your companions share your Might: all of the first 5 and half of the rest. At the start of your turn, each of your companions gains 2 max HP, and in your first 10 turns you gain 1 Might.',
+    // (half of it, rounded down, since DECISIONS #777: Robert, "too easy to stack might"; all of the first 5 and half the rest since #768)
+    'Your companions share half your Might (rounded down). At the start of your turn, each of your companions gains 2 max HP, and in your first 10 turns you gain 1 Might.',
     {
-      set: { shareMight: 1, shareMightFull: 5 },
+      set: { shareMight: 0.5 },
       turnStart: [growHp(2, 'allAllies')],
       triggers: [on('turnStart', [status('might', 1)], { times: 10 })],
     },

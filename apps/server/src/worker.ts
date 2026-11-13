@@ -116,9 +116,16 @@ async function vault(request: Request, env: Env, action: string): Promise<Respon
         body: JSON.stringify({ ...body, code: undefined }),
       }),
     );
-    const data = await res.json<{ ok?: boolean }>();
-    // a deck that was just saved can be met as a ghost (the player's Arena name comes with it)
-    if (action === 'bank' && res.ok && data.ok) await registerSavedGhost(request, env, body);
+    const data = await res.json<{ ok?: boolean; skin?: unknown }>();
+    // a deck that was just saved can be met as a ghost (the player's Arena name comes with it, and the look the Vault says its
+    // Riftwalker wears, DECISIONS #776)
+    if (action === 'bank' && res.ok && data.ok)
+      await registerSavedGhost(
+        request,
+        env,
+        body,
+        typeof data.skin === 'string' ? data.skin : undefined,
+      );
     return json(data, res.status);
   } catch {
     return json({ ok: false, error: 'unavailable' }, 503);
@@ -176,6 +183,7 @@ async function registerSavedGhost(
   request: Request,
   env: Env,
   body: Record<string, unknown>,
+  skin: string | undefined,
 ): Promise<void> {
   try {
     const owner = await boardId(request, env, body);
@@ -197,6 +205,7 @@ async function registerSavedGhost(
             tier: d['tier'],
             stage: d['stage'],
             run: typeof d['id'] === 'string' ? runKey(d['id']) : undefined,
+            skin,
           },
         }),
       }),

@@ -24,18 +24,42 @@ export async function playVaultName(
   return clean ? sha256(`shattered-rifts-vault:${clean}`) : null;
 }
 export async function checkPlay(env: Env, name: string, token: string): Promise<boolean> {
+  return (await askPlay(env, name, token, false)).ok;
+}
+
+/** The play check, and the looks the player wears by Riftwalker (DECISIONS #776): the same one request to the Vault. */
+export async function playLooks(
+  env: Env,
+  name: string,
+  token: string,
+): Promise<{ ok: boolean; skins: Record<string, string> }> {
+  return askPlay(env, name, token, true);
+}
+
+async function askPlay(
+  env: Env,
+  name: string,
+  token: string,
+  looks: boolean,
+): Promise<{ ok: boolean; skins: Record<string, string> }> {
+  const none = { ok: false, skins: {} };
   try {
     const response = await env.VAULT.get(env.VAULT.idFromName(name)).fetch(
       new Request('https://vault.invalid/play/check', {
         method: 'POST',
         headers: { [PLAY_HEADER]: token },
-        body: '{}',
+        body: looks ? '{"looks":true}' : '{}',
       }),
     );
-    if (!response.ok) return false;
-    const data = await response.json<{ expires?: unknown }>();
-    return typeof data.expires === 'number' && Date.now() < data.expires;
+    if (!response.ok) return none;
+    const data = await response.json<{ expires?: unknown; skins?: unknown }>();
+    if (!(typeof data.expires === 'number' && Date.now() < data.expires)) return none;
+    const skins: Record<string, string> = {};
+    if (typeof data.skins === 'object' && data.skins !== null)
+      for (const [hero, skin] of Object.entries(data.skins as Record<string, unknown>))
+        if (typeof skin === 'string') skins[hero] = skin;
+    return { ok: true, skins };
   } catch {
-    return false;
+    return none;
   }
 }

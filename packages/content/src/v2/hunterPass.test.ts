@@ -45,7 +45,7 @@ const play = (s: CombatState, id: string, target?: string): CombatState => {
 const endTurn = (s: CombatState): CombatState => applyAction(db, s, { type: 'endTurn' }).state;
 
 describe('the Hunter cost pass (#693)', () => {
-  it('Beastmaster: companions share the first 5 Might and half the rest (#768), gain 2 max HP each turn, and its Might stops at 10', () => {
+  it('Beastmaster: companions share half the Might, rounded down (#777), gain 2 max HP each turn, and its Might stops at 10', () => {
     let s = fight([], 'beastmaster');
     const hound = allies(s)[0]!;
     hound.hp = hound.maxHp = 200;
@@ -56,8 +56,8 @@ describe('the Hunter cost pass (#693)', () => {
       hero(s).hp = hero(s).maxHp;
     }
     expect(hero(s).statuses.might).toBe(10);
-    // (the Hound shares 5 + half of the other 5, rounded down, and grew 2 a turn)
-    expect(allies(s)[0]!.statuses.might).toBe(7);
+    // (the Hound shares half of 10, and grew 2 a turn)
+    expect(allies(s)[0]!.statuses.might).toBe(5);
     expect(allies(s)[0]!.maxHp).toBeGreaterThan(hp0 + 20);
   });
 

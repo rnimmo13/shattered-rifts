@@ -50,6 +50,8 @@ export interface PvpLink {
   trophies?: Record<Side, TrophyCount | undefined>;
   /** each player's Arena rank this season, for their name tags */
   ranks?: Record<Side, RankBadge | undefined>;
+  /** the look each player's Riftwalker wears (DECISIONS #776): the opponent's is drawn on their side */
+  skins?: Record<Side, string | undefined>;
   /** the id the game that just ended can be watched again by (shared as a link) */
   replayId?: string | null;
   feed: MoveFeed;

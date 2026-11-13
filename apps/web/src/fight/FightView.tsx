@@ -295,7 +295,7 @@ function specsFrom(
   db: CombatDb,
   s: CombatState,
   me: Side = 'a',
-  skinOf?: (hero: string) => string | undefined,
+  skinOf?: (hero: string, side: Side, mine: boolean) => string | undefined,
   mode: StageMode = 'wide',
   figures = new FigureSession<HTMLCanvasElement>(),
 ): FighterSpec[] {
@@ -315,7 +315,7 @@ function specsFrom(
       // redraw when it arrives: FIGURE_READY_EVENT)
       const form = hero ? u.def : figureId(u.def, u.maxHp);
       const waiting = !hero && needsFigure(form);
-      const skin = hero && side === me ? skinOf?.(u.def) : undefined;
+      const skin = hero ? skinOf?.(u.def, side, side === me) : undefined;
       const raw = figures.get(u.id, waiting ? `${form}~waiting` : form, () =>
         hero ? heroFigure(u.def, skin) : unitFigure(u.def, u.maxHp),
       );
@@ -611,17 +611,22 @@ export function FightView(props: {
   const hideHand = watch?.hideHand === true;
   // the skin your hero wears, decided once per fight and only if its figure is already in (so the figure never changes size mid-fight);
   // watching someone else's match or a replay draws everyone in their own look (DECISIONS #406)
-  const skinOf = useRef<(hero: string) => string | undefined>(
+  // (an Arena opponent's hero wears the look their Vault says, the server's word, and a ghost the look its deck was saved or last
+  // played in, DECISIONS #776; decided once per side, like your own)
+  const skinOf = useRef<(hero: string, side: Side, mine: boolean) => string | undefined>(
     watch
       ? () => undefined
       : (() => {
           const fixed = new Map<string, string | undefined>();
-          return (hero: string) => {
-            if (!fixed.has(hero)) {
-              const skin = mySkin(hero);
-              fixed.set(hero, skin && realSkinFigure(skin) ? skin : undefined);
+          return (hero: string, side: Side, mine: boolean) => {
+            const key = `${side}:${hero}`;
+            if (!fixed.has(key)) {
+              // (your own look only once its picture is in, as before; the opponent's whatever: its animated model is drawn as soon
+              // as it loads, and a slow picture must not leave them in their own look for the whole game, DECISIONS #776)
+              const skin = mine ? mySkin(hero) : pvp?.skins?.[side];
+              fixed.set(key, skin && (!mine || realSkinFigure(skin)) ? skin : undefined);
             }
-            return fixed.get(hero);
+            return fixed.get(key);
           };
         })(),
   );

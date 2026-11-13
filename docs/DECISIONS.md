@@ -2318,3 +2318,20 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 - **What is in:** `spellblade-nova-ronin` (`NOVA_RONIN_SKIN` in `ANIMATED_SKINS`), with its own pose-sheet model in both sets (idle, attack, attack2 for spells, hit, aura, death), a violet tint, no separate weapon drawn, and a crescent that leaves the swing for the target on a spell (`crescentWave`, apps/web/src/fight/attackFx.ts).
 - **The size:** its two manifests gave `displayScale` 1.15, the Knight's (copied from the Demon Knight's fix of #773); the Spellblade's own is 1. They now give 1: a look is drawn at the size of the Riftwalker who wears it, so each look's `displayScale` is its Riftwalker's.
 - **Checked:** every clip the Spellblade's own model has is there with marked moments inside the clip, every frame on a page that exists, the feet on one line in every resting frame, the art committed (the picture test), and all tests, the typecheck, lint and the build pass. Not seen on screen.
+
+## 776 - An Arena opponent wears their look, ghosts too (2026-11-12)
+
+- **Question:** Robert: "can you make sure that skins work in arena so that other players can see the skin that their opponent has equipped? this should work even for ghost battles"; "i want you to get arena skins working. thats part of the incentive for plyaers to buy skins". Until now only your own hero wore your look (#406).
+- **Decision (not released):**
+  - **The server's word, never the browser's:** an Arena entry carries `skin`, but the room replaces whatever a browser sent with what the player's Vault says they wear on that Riftwalker (`looks.skins[hero]`), and the Vault counts only a look the player owns (`wornSkin`). So nobody can show a look they have not got, which matters once looks are sold.
+  - **No new server requests:** the room already asked the Vault for the play check when a player joins; that reply now includes the looks worn (`play/check` -> `skins`, `playLooks` in apps/server/src/playAccess.ts). A deck saved to the Vault already went there; the `bank` reply now says the look its Riftwalker wears, and the deck's ghost is registered with it (worker.ts).
+  - **Ghosts:** the `ghosts` table has a `skin` column; a ghost wears the look its deck was saved in or last played in the Arena in, each save or game setting it again (none clears it). A ghost saved before this wears its Riftwalker's own look until its owner saves or plays it again.
+  - **The client:** the start message's entries carry the looks; a look is shown only if it has an animated model here and belongs to that seat's Riftwalker, and its picture starts loading as the match starts (`lookOf`, session.ts). The fight draws your side in your look and the other side in theirs (`skinOf(hero, side, mine)`, FightView), decided once per side so a figure never changes mid-fight.
+  - `checkEntry` keeps a look only of the deck's own Riftwalker.
+- **Not yet:** watching someone else's match or a replay still draws everyone in their own look. An older browser that does not know the field simply shows no look.
+
+## 777 - The Hunter's companions share a quarter of the Might, the Beastmaster's half (2026-11-12)
+
+- **Question:** Robert: "feels like beast master has it too easy to stack might, so i think we need to make companions get 25% of might from the base class, and half at all time for beastmaster".
+- **Decision (rules 111, not released):** the Hunter's trait shares a quarter of the hero's Might (a third since #768, half before); the Beastmaster shares half, rounded down, from the first point (all of the first 5 and half the rest since #768). The Beastmaster is always at least the base class's share. Trail of Blood, Wild Hunt and Pack Frenzy keep their #768/#769 numbers.
+- **By hand:** at 10 Might a Beastmaster's companions hold 5 (7 before), at 20 they hold 10 (12), at 30 they hold 15 (17); about 15% less companion damage from Might in a long fight. The Reaver and the Predator, which share the base quarter, lose a little more (5 at 20 Might, was 6).
