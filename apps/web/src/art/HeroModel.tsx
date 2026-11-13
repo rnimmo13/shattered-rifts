@@ -34,6 +34,9 @@ export function HeroModel(props: {
   className?: string;
   /** how much of the box's height the body fills, feet on its bottom edge */
   fill?: number;
+  /** the whole resting figure, weapon and all, stays inside the box and stands in its middle (the Store's and the Collection's boxes);
+   * without it the feet stand in the middle and a wide pose may reach past the sides (DECISIONS #772) */
+  contain?: boolean;
   /** the still picture */
   children: ReactNode;
 }) {
@@ -50,6 +53,7 @@ export function HeroModel(props: {
   );
   const rigId = heroRigFor(props.hero, props.skin);
   const fill = props.fill ?? 0.94;
+  const contain = props.contain === true;
   // (DECISIONS #755) a model is only loaded while it is on screen or near it, and let go when it scrolls well away
   const [near, setNear] = useState(() => typeof IntersectionObserver !== 'function');
   // (no pose-sheet slot free: the picture, until one is; `slot` counts the times one was freed, to try again)
@@ -110,7 +114,16 @@ export function HeroModel(props: {
     const place = (): void => {
       if (!sprite) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const height = Math.max(8, size.h * fill);
+      let height = Math.max(8, size.h * fill);
+      let shift = 0;
+      if (contain && sprite.restSpan && size.w > 0) {
+        let span = sprite.restSpan(height);
+        if (span.left + span.right > size.w) {
+          height = Math.max(8, (height * size.w) / (span.left + span.right));
+          span = sprite.restSpan(height);
+        }
+        shift = (span.left - span.right) / 2;
+      }
       const changed = sprite.resize(height, dpr);
       const c = sprite.canvas;
       const w = c.width * sprite.stageScale;
@@ -118,7 +131,7 @@ export function HeroModel(props: {
       const a = sprite.anchor;
       c.style.width = `${w}px`;
       c.style.height = `${h}px`;
-      c.style.left = `${size.w / 2 - a.x * w}px`;
+      c.style.left = `${size.w / 2 - a.x * w + shift}px`;
       c.style.top = `${size.h - a.y * h}px`;
       if (changed) sprite.render();
     };
@@ -223,7 +236,7 @@ export function HeroModel(props: {
       stop();
       release();
     };
-  }, [rigId, fill, near, slot]);
+  }, [rigId, fill, contain, near, slot]);
 
   return (
     <span

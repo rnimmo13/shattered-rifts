@@ -162,6 +162,8 @@ export interface HeroSprite {
   readonly anchor: { x: number; y: number };
   readonly stageScale: number;
   widthFor(height: number): number;
+  /** how far the resting pose reaches each side of the feet at this height, when the model knows (a pose-sheet model) */
+  restSpan?(height: number): { left: number; right: number };
   resize(height: number, pixelScale: number): boolean;
   readonly remaining: number;
   /** `variant`: the weapon a card swings ("shotgun"), for a model with a clip of its own for it (a video model, DECISIONS #715) */

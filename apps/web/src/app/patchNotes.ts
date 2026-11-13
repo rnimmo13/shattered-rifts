@@ -46,6 +46,20 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.262.0",
+    date: "2026-11-12",
+    title: "Demon Knight",
+    summary: "The Demon Knight stands at his full size, sits properly in his box, holds still, and his red energy comes to life.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Demon Knight",
+        hero: "knight",
+        text: "The Demon Knight was drawn about a fifth too small, because the great sword he holds out to the side was counted as part of his body. He now stands as tall as any Riftwalker and a little more. In the Store and the Collection he stands whole in the middle of his box. He no longer jitters while he stands. Red energy pulses through his veins and travels from the hilt to the tip of his greatsword."
+      }
+    ]
+  },
+  {
     version: "0.261.0",
     date: "2026-11-12",
     title: "Quicker blows, a new look",

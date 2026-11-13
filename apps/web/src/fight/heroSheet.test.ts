@@ -33,3 +33,39 @@ describe('a Riftwalker’s strike leaves out its slow wind-up (DECISIONS #770)',
     }
   });
 });
+
+describe('a look whose resting pose holds a weapon far out is fitted by its body (DECISIONS #772)', () => {
+  const sets = ['heroes-sheets', 'heroes-sheets-lite'];
+  const load = (set: string) =>
+    JSON.parse(
+      readFileSync(
+        join(__dirname, '../../public/art', set, 'skins/knight-demon-knight/sprites.json'),
+        'utf8',
+      ),
+    ) as {
+      displayScale: number;
+      fitWidth?: number;
+      clips: Record<string, { frames: number[][] }>;
+    };
+  it('the Demon Knight\u2019s body fills the same share of the height as any Riftwalker\u2019s, in both sets', () => {
+    for (const set of sets) {
+      const man = load(set);
+      const rest = man.clips['idle']!.frames[0]!;
+      expect(man.fitWidth, set).toBeGreaterThan(0);
+      // (narrower than the whole picture, sword and all)
+      expect(man.fitWidth!, set).toBeLessThan(rest[3]!);
+      // (the fit: the body 0.78 of the height unless its width, at most 0.85 of the height, asks for more room)
+      const bodyH = rest[4]! / man.displayScale;
+      const bodyW = man.fitWidth! / man.displayScale;
+      expect(bodyW / 0.85, set).toBeLessThanOrEqual(bodyH / 0.78);
+    }
+  });
+  it('his feet stand on the same line in every resting frame (the frames are cut from one scaled canvas)', () => {
+    for (const set of sets) {
+      const man = load(set);
+      // (the bottom edge of every idle frame, measured from the feet: the boots never rise or sink)
+      const bottoms = new Set(man.clips['idle']!.frames.map((f) => f[6]! + f[4]!));
+      expect([...bottoms], set).toHaveLength(1);
+    }
+  });
+});

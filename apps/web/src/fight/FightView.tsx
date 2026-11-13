@@ -315,13 +315,12 @@ function specsFrom(
       // redraw when it arrives: FIGURE_READY_EVENT)
       const form = hero ? u.def : figureId(u.def, u.maxHp);
       const waiting = !hero && needsFigure(form);
+      const skin = hero && side === me ? skinOf?.(u.def) : undefined;
       const raw = figures.get(u.id, waiting ? `${form}~waiting` : form, () =>
-        hero
-          ? heroFigure(u.def, side === me ? skinOf?.(u.def) : undefined)
-          : unitFigure(u.def, u.maxHp),
+        hero ? heroFigure(u.def, skin) : unitFigure(u.def, u.maxHp),
       );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
-      const k = figureScale(mode, hero);
+      const k = figureScale(mode, hero) * (skin === DEMON_KNIGHT_SKIN ? 1.09 : 1);
       const height =
         fitHeight(
           canvas,
@@ -337,6 +336,7 @@ function specsFrom(
         u,
         boss: !hero && isWardenFigure(u.def),
         hero,
+        skin,
         form,
         canvas,
         height,
@@ -428,7 +428,7 @@ function specsFrom(
         s.sides[me].units.filter((u) => u.kind === 'ally').length,
       );
     for (const e of sized) {
-      const skin = e.hero && side === me ? skinOf?.(e.u.def) : undefined;
+      const { skin } = e;
       const rigId = e.hero ? heroRigFor(e.u.def, skin) : undefined;
       const attack = attackFor(e.u.def, e.hero);
       const demonKnight = skin === DEMON_KNIGHT_SKIN;

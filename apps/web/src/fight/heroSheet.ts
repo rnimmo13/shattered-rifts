@@ -31,6 +31,9 @@ interface SheetClip {
 interface Manifest {
   name: string;
   displayScale?: number;
+  /** the standing body's own width, in sheet px, when the resting pose holds something far out to the side (the Demon Knight's great
+   * sword): the figure is fitted and spaced by this, not by the whole picture, or the weapon made the body small (DECISIONS #772) */
+  fitWidth?: number;
   pages: string[];
   /** the first this many pages hold every idle frame (pack_for_game --idle-first); without it every page is needed at once */
   idlePages?: number;
@@ -240,7 +243,7 @@ export class SheetHeroSprite {
     const rest = a.man.clips['idle']!.frames[0]!;
     const scale = a.man.displayScale ?? 1;
     this.bodyH = rest[4] / scale;
-    this.bodyW = rest[3] / scale;
+    this.bodyW = (a.man.fitWidth ?? rest[3]) / scale;
     this.texture = Texture.from(this.canvas);
     this.texture.dynamic = true;
   }
@@ -296,6 +299,16 @@ export class SheetHeroSprite {
 
   widthFor(height: number): number {
     return (height * this.bodyW) / this.fitH;
+  }
+
+  /** How far the resting pose reaches to the left and the right of the feet, in the same units as `height`, weapon and all: for a box
+   * that must hold the whole figure (the Store's and the Collection's). */
+  restSpan(height: number): { left: number; right: number } {
+    const b = this.boxes.get('idle')!;
+    const u = height / (this.fitH * (this.a.man.displayScale ?? 1));
+    const left = -b.x0 * u;
+    const right = (b.x0 + b.w) * u;
+    return this.facing === 'right' ? { left, right } : { left: right, right: left };
   }
 
   resize(height: number, pixelScale: number): boolean {

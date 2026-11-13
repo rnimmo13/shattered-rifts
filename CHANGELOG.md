@@ -1,3 +1,9 @@
+## 0.262.0 - 2026-11-12
+
+- The Demon Knight stands at his full size: he was drawn about a fifth too small, because the great sword held out to his side was counted as part of his body. He is now fitted by his body, and stands a little taller than the other Riftwalkers. Red energy runs through his veins and along his greatsword.
+- In the Store and the Collection a look stands whole in the middle of its box, weapon and all.
+- Fixed: the Demon Knight jittered slightly while standing (on the home screen and everywhere else).
+
 ## 0.261.0 - 2026-11-12
 
 - New look for the Knight: the Demon Knight, the first look with its own animated model. Get it and wear it from the Store or the Collection (Looks). The older still-picture looks stay put away until they are animated too; what you own of them is kept.
