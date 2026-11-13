@@ -129,7 +129,7 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { DEMON_KNIGHT_SKIN, UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
+import { DEMON_KNIGHT_SKIN, NOVA_RONIN_SKIN, UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
 import { UNIT_SHEETS } from '../art/unitSheets';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
@@ -433,7 +433,8 @@ function specsFrom(
       const rigId = e.hero ? heroRigFor(e.u.def, skin) : undefined;
       const attack = attackFor(e.u.def, e.hero);
       const demonKnight = skin === DEMON_KNIGHT_SKIN;
-      const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
+      const novaRonin = skin === NOVA_RONIN_SKIN;
+      const prop = e.hero && !flip && !novaRonin ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
       const row = e.hero || e.boss ? 0 : (fit.rows[n] ?? 0);
@@ -474,8 +475,12 @@ function specsFrom(
         canvas: e.canvas,
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
-        attack: demonKnight ? { ...attack, tint: '#ff354b' } : attack,
-        ...(demonKnight ? { builtInWeapon: true } : {}),
+        attack: novaRonin
+          ? { ...attack, tint: '#b46bff' }
+          : demonKnight
+            ? { ...attack, tint: '#ff354b' }
+            : attack,
+        ...(demonKnight || novaRonin ? { builtInWeapon: true } : {}),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
         ...(rigId

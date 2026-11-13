@@ -1,5 +1,7 @@
 ## 0.263.0 - 2026-11-12
 
+- Nova Ronin, a new Spellblade look, channels violet energy through his clothes. His katana sweeps from an overhead windup into a low cut, and his spells send a violet crescent from the swing to the target.
+- Fixed: on a wide screen a third companion could stand on top of the nearest enemy (a Beastmaster with three wolves). Each side’s row now keeps to its own half.
 - The Demon Knight is the same size as the Knight everywhere. He was drawn smaller, and smaller again on Medium graphics.
 - In the Store and the Collection he stands at his full height in his box; only the tip of his sword runs past the edge.
 - Fixed: in the Sanctum, choosing the Knight while he wears the Demon Knight moved the class buttons onto other rows.

@@ -2311,3 +2311,10 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 - **Decision:** a row's nearest edge stays within `NEAR_REACH` (20 px) of its side's near end; to keep to that the row closes up from its far end, down to `TIGHT_PITCH` (130 px) between centres, and only a row that cannot fit even so reaches further (`fixedFormation`, apps/web/src/fight/lineLayout.ts). With both sides held to it the two rows are at least 40 px apart. A row with room to spare is unchanged.
 - **Known, not changed:** in Drago's zoomed-out fight three companions closed up this way are nearer than a name plate's full width. And in the same screenshot the battle log, open, covers the name and HP of the enemy furthest right: for Robert to choose how (see the session's notes).
 - **Not seen on screen:** checked by tests on the positions.
+
+## 775 - Nova Ronin, a Spellblade look; a look is the size of its Riftwalker (2026-11-12)
+
+- **Question:** Robert: "also a nova ronin skin for the spellblade has been added" (made in another session), and, told its model was drawn 15% larger than the Spellblade's own: "id like you to fix the size and push".
+- **What is in:** `spellblade-nova-ronin` (`NOVA_RONIN_SKIN` in `ANIMATED_SKINS`), with its own pose-sheet model in both sets (idle, attack, attack2 for spells, hit, aura, death), a violet tint, no separate weapon drawn, and a crescent that leaves the swing for the target on a spell (`crescentWave`, apps/web/src/fight/attackFx.ts).
+- **The size:** its two manifests gave `displayScale` 1.15, the Knight's (copied from the Demon Knight's fix of #773); the Spellblade's own is 1. They now give 1: a look is drawn at the size of the Riftwalker who wears it, so each look's `displayScale` is its Riftwalker's.
+- **Checked:** every clip the Spellblade's own model has is there with marked moments inside the clip, every frame on a page that exists, the feet on one line in every resting frame, the art committed (the picture test), and all tests, the typecheck, lint and the build pass. Not seen on screen.

@@ -32,6 +32,7 @@ export const SKINS: readonly SkinDef[] = [
   skin('shaman', 'gender-female'),
   skin('monk', 'eclipse-ascetic'),
   skin('monk', 'gender-female'),
+  skin('spellblade', 'nova-ronin'),
   skin('spellblade', 'aurora-empress'),
   skin('spellblade', 'gender-male'),
   skin('necromancer', 'frostbound-warden'),

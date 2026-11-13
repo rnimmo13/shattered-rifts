@@ -68,6 +68,16 @@ export const PATCH_NOTES: PatchNote[] = [
       {
         kind: "changed",
         text: "The Demon Knight is a little sharper in battle."
+      },
+      {
+        kind: "new",
+        title: "Nova Ronin",
+        hero: "spellblade",
+        text: "A new look for the Spellblade with its own animated model: violet energy runs through his clothes, his katana sweeps from an overhead windup into a low cut, and his spells send a violet crescent from the swing. Get it and wear it from the Store or the Collection, under Looks."
+      },
+      {
+        kind: "fixed",
+        text: "On a wide screen a third companion could stand on top of the nearest enemy. Each side’s row now keeps to its own half."
       }
     ]
   },

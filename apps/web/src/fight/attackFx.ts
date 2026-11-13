@@ -165,6 +165,45 @@ export function streak(
   });
 }
 
+/** A sword-shaped wave that separates from the swing and resolves on arrival. */
+export function crescentWave(
+  c: FxCtx,
+  from: Pt,
+  to: Pt,
+  tint: string,
+  size: number,
+): Promise<void> {
+  return new Promise((resolve) => {
+    const dir = to.x >= from.x ? 1 : -1;
+    const wave = spawn(c, from.x, from.y);
+    const violet = hex(tint);
+    wave
+      .moveTo(-46, -95)
+      .bezierCurveTo(52, -63, 74, 43, -61, 95)
+      .bezierCurveTo(18, 32, 21, -34, -46, -95)
+      .fill({ color: violet, alpha: 0.72 })
+      .stroke({ width: 11, color: violet, alpha: 0.22 });
+    wave
+      .moveTo(-37, -89)
+      .bezierCurveTo(46, -55, 61, 36, -50, 88)
+      .bezierCurveTo(36, 26, 25, -37, -37, -89)
+      .fill({ color: 0xf1d0ff, alpha: 0.94 });
+    wave
+      .moveTo(-62, -48)
+      .quadraticCurveTo(-9, -8, -48, 42)
+      .stroke({ width: 3, color: violet, alpha: 0.47, cap: 'round' });
+    wave.scale.set(dir * size, size);
+    wave.rotation = -0.24 * dir;
+    const distance = Math.hypot(to.x - from.x, to.y - from.y);
+    const duration = Math.max(0.14, Math.min(0.3, distance / 3400));
+    const timeline = c.track(gsap.timeline({ onComplete: () => kill(wave) }));
+    timeline.to(wave, { x: to.x, y: to.y, rotation: 0.22 * dir, duration, ease: 'power1.in' }, 0);
+    timeline.to(wave.scale, { x: dir * size * 1.14, y: size * 1.14, duration }, 0);
+    timeline.call(resolve);
+    timeline.to(wave, { alpha: 0, duration: 0.09 });
+  });
+}
+
 /** A knife spinning through the air in a shallow arc. Resolves on arrival. */
 export function thrownBlade(c: FxCtx, a: Pt, b: Pt, tint: string, dur: number): Promise<void> {
   return new Promise((resolve) => {

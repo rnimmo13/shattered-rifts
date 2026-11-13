@@ -54,6 +54,10 @@ describe('every pose-sheet model ships with the game (DECISIONS #755)', () => {
           !!c?.events?.some((e) => e.name === name && e.frame < c.count);
         expect(man.clips['idle']?.count, hero).toBeGreaterThan(0);
         expect(moment(strike, 'hit'), `${hero} strike`).toBe(true);
+        if (hero === 'skins/spellblade-nova-ronin') {
+          expect(moment(man.clips['attack2'], 'launch'), `${hero} spell launch`).toBe(true);
+          expect(moment(man.clips['attack2'], 'hit'), `${hero} spell hit`).toBe(true);
+        }
         expect(moment(man.clips['aura'], 'aura'), `${hero} aura`).toBe(true);
         expect(moment(man.clips['death'], 'land'), `${hero} death`).toBe(true);
         expect(man.clips['hit']?.count, hero).toBeGreaterThan(0);

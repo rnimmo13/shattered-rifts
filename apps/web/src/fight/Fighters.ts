@@ -22,6 +22,7 @@ import {
 import {
   burst,
   clawMarks,
+  crescentWave,
   hammerPound,
   impact,
   orb,
@@ -35,7 +36,7 @@ import {
   type Pt,
 } from './attackFx';
 import { HeroSprite, loadRig, type Facing } from './heroSprite';
-import { SHEET_PREFIX, UNIT_SHEET_PREFIX } from '../art/heroRigs';
+import { NOVA_RONIN_SKIN, SHEET_PREFIX, UNIT_SHEET_PREFIX } from '../art/heroRigs';
 import { releaseUnitSheets } from './heroSheet';
 
 export type FighterSide = 'a' | 'b';
@@ -813,6 +814,45 @@ export class Fighters {
               : { ...f.spec.attack, kind: 'stab' };
           // a creature that shoots, throws or casts lets its shot go at the clip's launch, and it flies to the target (DECISIONS #760)
           const kind = f.spec.attack.kind;
+          if (variant === 'spell' && f.spec.rig?.id === `${SHEET_PREFIX}skins/${NOVA_RONIN_SKIN}`) {
+            this.rigPlay(
+              rig,
+              'strike',
+              {
+                name: 'launch',
+                within: 0.5,
+                at: () => {
+                  const tint = f.spec.attack.tint;
+                  const height = f.spec.height;
+                  // The launch frame holds the katana across this point relative to the feet.
+                  const from = {
+                    x: f.root.x + dir * height * 0.44,
+                    y: f.root.y - (f.spec.hover ?? 0) - height * 0.42,
+                  };
+                  const to = t ? this.chest(t) : { x: from.x + dir * 220, y: from.y };
+                  const land = (): void => {
+                    try {
+                      this.h.sound('attackHit');
+                      if (spread && !f.root.destroyed) this.sweepFx(f, spread, dir, spec, false);
+                      else if (t && !t.root.destroyed) burst(this.fxCtx(), to, tint, 9, 48);
+                    } finally {
+                      resolve();
+                      onHit?.();
+                    }
+                  };
+                  if (f.root.destroyed || this.all.get(f.spec.id) !== f) {
+                    land();
+                    return;
+                  }
+                  void crescentWave(this.fxCtx(), from, to, tint, height / 520).then(land, land);
+                },
+              },
+              end,
+              variant,
+            );
+            this.track(gsap.delayedCall(1.4, end));
+            return;
+          }
           if (
             !f.spec.isHero &&
             !spread &&

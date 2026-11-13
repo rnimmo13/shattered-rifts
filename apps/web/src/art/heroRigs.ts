@@ -26,7 +26,8 @@ export const HERO_SHEETS: ReadonlySet<string> = new Set([
 
 // Older still-only skins remain in saved cosmetics while their animated models are unavailable.
 export const DEMON_KNIGHT_SKIN = 'knight-demon-knight';
-export const ANIMATED_SKINS: ReadonlySet<string> = new Set([DEMON_KNIGHT_SKIN]);
+export const NOVA_RONIN_SKIN = 'spellblade-nova-ronin';
+export const ANIMATED_SKINS: ReadonlySet<string> = new Set([DEMON_KNIGHT_SKIN, NOVA_RONIN_SKIN]);
 export const AVAILABLE_SKINS = SKINS.filter(({ id }) => ANIMATED_SKINS.has(id));
 
 const KEY = 'sr.animatedModels';
