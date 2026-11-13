@@ -46,6 +46,24 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.266.0',
+    date: '2026-11-12',
+    title: 'Arc Welder’s wasp',
+    summary: 'Arc Welder’s wasp follows her, and Rogue Tailor recovers faster after her swipe.',
+    notes: [
+      {
+        kind: 'fixed',
+        hero: 'engineer',
+        text: 'The brass wasp hovers alongside Arc Welder as part of her skin. Summoned Drone and Patrol Drone use their standard models.',
+      },
+      {
+        kind: 'changed',
+        hero: 'assassin',
+        text: 'Rogue Tailor returns to ready sooner after the needle swipe.',
+      },
+    ],
+  },
+  {
     version: '0.265.0',
     date: '2026-11-12',
     title: 'Rogue Tailor',

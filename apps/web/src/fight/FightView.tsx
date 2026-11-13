@@ -130,7 +130,6 @@ import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
 import {
-  ARC_WELDER_HORNET,
   ARC_WELDER_SKIN,
   DEMON_KNIGHT_SKIN,
   NOVA_RONIN_SKIN,
@@ -314,9 +313,6 @@ function specsFrom(
     // the opponent (and their companions) stand on the right and face left
     const flip = pvp && ds === 'b';
     const units = s.sides[side].units;
-    const engineer = units.find((u) => u.kind === 'hero' && u.def === 'engineer');
-    const arcWelderEquipped =
-      !!engineer && skinOf?.(engineer.def, side, side === me) === ARC_WELDER_SKIN;
     // every figure's real size first: each side is then laid out from those widths, so nothing overlaps
     const sized = units.map((u) => {
       const hero = u.kind === 'hero';
@@ -324,17 +320,11 @@ function specsFrom(
       // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
       // (a unit whose figure is still coming is drawn as its stand-in under a form of its own, so the real one replaces it at the
       // redraw when it arrives: FIGURE_READY_EVENT)
-      const baseForm = hero ? u.def : figureId(u.def, u.maxHp);
-      const form =
-        arcWelderEquipped &&
-        u.kind === 'ally' &&
-        (baseForm === 'drone' || baseForm === 'patrol-drone')
-          ? ARC_WELDER_HORNET
-          : baseForm;
+      const form = hero ? u.def : figureId(u.def, u.maxHp);
       const waiting = !hero && needsFigure(form);
       const skin = hero ? skinOf?.(u.def, side, side === me) : undefined;
       const raw = figures.get(u.id, waiting ? `${form}~waiting` : form, () =>
-        hero ? heroFigure(u.def, skin) : unitFigure(waiting ? baseForm : form),
+        hero ? heroFigure(u.def, skin) : unitFigure(form),
       );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       // (animated skin sizes come from their sheet manifests, DECISIONS #773)
@@ -453,9 +443,7 @@ function specsFrom(
       const novaRonin = skin === NOVA_RONIN_SKIN;
       const arcWelder = skin === ARC_WELDER_SKIN;
       const rogueTailor = skin === ROGUE_TAILOR_SKIN;
-      const hornet = e.form === ARC_WELDER_HORNET;
       if (arcWelder) attack = { kind: 'shoot', tint: '#c477ff' };
-      if (hornet) attack = { kind: 'stab', tint: '#c477ff' };
       if (novaRonin) attack = { ...attack, tint: '#b46bff' };
       if (demonKnight) attack = { ...attack, tint: '#ff354b' };
       if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };
@@ -513,7 +501,7 @@ function specsFrom(
             }
           : // (a creature with an animated model plays it, DECISIONS #760: the sheets face right, so an enemy, or the other side's
             // companion in the Arena, plays mirrored, as its picture faces)
-            !e.hero && (hornet || UNIT_SHEETS.has(e.form))
+            !e.hero && UNIT_SHEETS.has(e.form)
             ? {
                 rig: {
                   id: `${UNIT_SHEET_PREFIX}${e.form}`,

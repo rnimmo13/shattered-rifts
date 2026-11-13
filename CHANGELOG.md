@@ -1,3 +1,8 @@
+## 0.266.0 - 2026-11-12
+
+- Arc Welder’s brass wasp hovers alongside her as part of her skin. Summoned Drone and Patrol Drone use their standard models.
+- Rogue Tailor returns to ready sooner after the needle swipe.
+
 ## 0.265.0 - 2026-11-12
 
 - Added Rogue Tailor, a free animated Rogue skin with a rose braid, tall embroidered boots and a gold glint along her dagger.

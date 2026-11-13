@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
 import {
   ANIMATED_SKINS,
-  ARC_WELDER_HORNET,
   DEMON_KNIGHT_SKIN,
   HERO_SHEETS,
   SHEET_PREFIX,
@@ -105,7 +104,7 @@ describe('every animated creature ships in both sets (DECISIONS #760)', () => {
     const { UNIT_SHEETS } = await import('./unitSheets');
     expect(UNIT_SHEETS.size).toBeGreaterThan(100);
     for (const set of ['units-sheets', 'units-sheets-lite'])
-      for (const unit of [...UNIT_SHEETS, ARC_WELDER_HORNET]) {
+      for (const unit of UNIT_SHEETS) {
         const dir = new URL(`../../public/art/${set}/${unit}/`, import.meta.url);
         const man = JSON.parse(readFileSync(new URL('sprites.json', dir), 'utf8')) as {
           pages: string[];
