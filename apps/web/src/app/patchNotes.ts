@@ -46,6 +46,25 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: "0.261.0",
+    date: "2026-11-12",
+    title: "Quicker blows, a new look",
+    summary: "The Riftwalkers strike sooner, and the Knight has a new look: the Demon Knight.",
+    notes: [
+      {
+        kind: "changed",
+        title: "Attacks land sooner",
+        text: "The slow start of each Riftwalker’s attack is left out, so the blow lands about a tenth of a second after you play the card (it was over a quarter). The swing itself is unchanged."
+      },
+      {
+        kind: "new",
+        title: "The Demon Knight",
+        hero: "knight",
+        text: "A new look for the Knight, and the first with its own animated model. Get it and wear it from the Store or the Collection, under Looks. The older still-picture looks stay put away until they are animated too; what you own of them is kept."
+      }
+    ]
+  },
+  {
     version: "0.260.0",
     date: "2026-11-12",
     title: "Closer together",

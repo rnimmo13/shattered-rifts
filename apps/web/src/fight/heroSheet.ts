@@ -65,6 +65,21 @@ const MAX_SIDE = 2048;
 /** the same fit as the video models: the body fills this share of the height it is given, a wide stance at most this share wide */
 const BODY_SHARE = 0.78;
 const MAX_WIDTH = 0.85;
+/** How long before its first marked moment (the hit, or the shot leaving) a Riftwalker's strike begins, in seconds. The clips were
+ * drawn with about 0.27 s of wind-up whose first frames hardly move, which read as a hitch, not a motion (Robert, DECISIONS #770):
+ * a strike starts this far ahead of the moment and the frames before are left out. Creatures keep theirs: an enemy's wind-up is a tell. */
+export const STRIKE_LEAD = 0.1;
+
+/** Where in a strike clip playback starts, in seconds (on a frame): its first moment less STRIKE_LEAD, never before the clip. */
+export function strikeStart(c: {
+  fps: number;
+  events?: { frame: number }[];
+}): number {
+  const first = Math.min(...(c.events ?? []).map((e) => e.frame));
+  if (!Number.isFinite(first) || c.fps <= 0) return 0;
+  return Math.max(0, first - Math.round(STRIKE_LEAD * c.fps)) / c.fps;
+}
+
 /** the moment the board waits for in each clip */
 const MOMENT: Record<Exclude<Clip, 'idle'>, string> = {
   strike: 'hit',
@@ -247,6 +262,13 @@ export class SheetHeroSprite {
     return c['attack'] ? 'attack' : c['slash'] ? 'slash' : 'idle';
   }
 
+  /** the part of a clip left out at its start (a Riftwalker's strike: its slow wind-up) */
+  private startOf(clip: Clip, sheet: string): number {
+    if (clip !== 'strike' || this.a.unit) return 0;
+    const c = this.a.man.clips[sheet];
+    return c ? strikeStart(c) : 0;
+  }
+
   private get cur(): SheetClip {
     return this.a.man.clips[this.sheetClip] ?? this.a.man.clips['idle']!;
   }
@@ -317,7 +339,7 @@ export class SheetHeroSprite {
     if (name === 'idle' || !this.has(name)) return 0;
     const c = this.a.man.clips[name];
     const ev = c?.events?.find((e) => e.name === MOMENT[clip]);
-    return ev ? ev.frame / c!.fps : 0;
+    return ev ? Math.max(0, ev.frame / c!.fps - this.startOf(clip, name)) : 0;
   }
 
   ready(clip: Clip = 'idle', variant?: string): boolean {
@@ -356,7 +378,7 @@ export class SheetHeroSprite {
     }
     this.clipName = clip;
     this.sheetClip = sheet;
-    this.t = 0;
+    this.t = this.startOf(clip, sheet);
     this.fired = new Set();
     this.ended = false;
     this.onEvent = opts.onEvent;

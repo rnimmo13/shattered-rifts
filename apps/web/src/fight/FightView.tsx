@@ -129,7 +129,7 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
+import { DEMON_KNIGHT_SKIN, UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
 import { UNIT_SHEETS } from '../art/unitSheets';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
@@ -372,7 +372,8 @@ function specsFrom(
             // set by the biggest crowd it can reach: an enemy side that summons may reach MAX_ENEMIES, a hero's side fills its
             // companion slots; it is kept, in the fight's figure session, and only ever lowered if a bigger crowd than that comes)
             // (a Warden's escort also starts a little nearer the middle: Drago's wings leave it little room)
-            const near = ds === 'b' ? (bosses.length && !pvp ? FOE_NEAR - 230 : FOE_NEAR) : ALLY_NEAR;
+            const near =
+              ds === 'b' ? (bosses.length && !pvp ? FOE_NEAR - 230 : FOE_NEAR) : ALLY_NEAR;
             const far =
               ds === 'b'
                 ? pvp
@@ -386,11 +387,19 @@ function specsFrom(
             const widest = Math.max(ALLY_SLOT_W, ...widths);
             const reserve: number[] = units.some((u) => u.kind === 'hero')
               ? Array.from(
-                  { length: Math.max(0, MAX_ALLIES - line.reduce((n, e) => n + (db.units[e.u.def]?.slots ?? 1), 0)) },
+                  {
+                    length: Math.max(
+                      0,
+                      MAX_ALLIES - line.reduce((n, e) => n + (db.units[e.u.def]?.slots ?? 1), 0),
+                    ),
+                  },
                   () => ALLY_SLOT_W,
                 )
               : line.some((e) => summons(db, e.u.def)) || bosses.some((e) => summons(db, e.u.def))
-                ? Array.from({ length: Math.max(0, MAX_ENEMIES - bosses.length - line.length) }, () => widest)
+                ? Array.from(
+                    { length: Math.max(0, MAX_ENEMIES - bosses.length - line.length) },
+                    () => widest,
+                  )
                 : [];
             const scale = keptScale(figures, ds, rowScale(widths, reserve, Math.abs(far - near)));
             return fixedFormation(line, near, far, scale);
@@ -419,6 +428,10 @@ function specsFrom(
         s.sides[me].units.filter((u) => u.kind === 'ally').length,
       );
     for (const e of sized) {
+      const skin = e.hero && side === me ? skinOf?.(e.u.def) : undefined;
+      const rigId = e.hero ? heroRigFor(e.u.def, skin) : undefined;
+      const attack = attackFor(e.u.def, e.hero);
+      const demonKnight = skin === DEMON_KNIGHT_SKIN;
       const prop = e.hero && !flip ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
@@ -460,15 +473,14 @@ function specsFrom(
         canvas: e.canvas,
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
-        attack: attackFor(e.u.def, e.hero),
+        attack: demonKnight ? { ...attack, tint: '#ff354b' } : attack,
+        ...(demonKnight ? { builtInWeapon: true } : {}),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
-        // (the default look of a rigged hero animates, or its video model with the beta setting on; a skin you wear is a still
-        // picture, DECISIONS #676, #715)
-        ...(e.hero && heroRigFor(e.u.def) && !(side === me && skinOf?.(e.u.def))
+        ...(rigId
           ? {
               rig: {
-                id: heroRigFor(e.u.def)!,
+                id: rigId,
                 facing: flip ? ('left' as const) : ('right' as const),
               },
             }
@@ -2506,946 +2518,970 @@ export function FightView(props: {
 
   return (
     <HpCostMult.Provider value={hpCostMult}>
-    <div
-      className={`fight fight--${mode}${crowd ? ' fight--crowd' : ''}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
-      style={
-        {
-          '--cw': `${cw}px`,
-          '--hand-band': `${portraitHandBand(window.innerHeight)}px`,
-        } as React.CSSProperties
-      }
-    >
       <div
-        className="fight__stage"
-        ref={host}
-        onPointerDown={onStagePointerDown}
-        onContextMenu={(e) => {
-          if (selected || aimPotion !== null || releasing) {
-            e.preventDefault();
-            setSelected(null);
-            setAimPotion(null);
-            setReleasing(null);
-          }
-        }}
-      />
-      {!ready && !error && <div className="loading">Opening the rift…</div>}
-      {error && (
-        <div className="loading loading--error">
-          <span>The fight hit a problem.</span>
-          {looksLikeNewVersion(error) && (
-            <span className="errdetails__hint">
-              A new version was released while this page was open. Reloading the page gets it.
-            </span>
-          )}
-          <ErrorDetails message={error} />
-          <span className="modal__row">
-            <button className="btn btn--primary" onClick={() => window.location.reload()}>
-              <span>Reload the page</span>
-            </button>
-            <button className="btn" onClick={props.onExit}>
-              <span>{props.exitLabel ?? 'Leave'}</span>
-            </button>
-          </span>
-        </div>
-      )}
-
-      {view && ready && (
-        <>
-          {/* (once, when the browser draws without the graphics card: DECISIONS #573) */}
-          <LowGraphicsHint />
-          <header className="fight__top">
-            {mode === 'portrait' ? (
-              // (DECISIONS #443) held upright there is no room for a row of buttons: they fold into a menu
-              <>
-                <button
-                  className={`btn btn--small btn--ghost fight__menuBtn${menuOpen ? ' is-on' : ''}`}
-                  aria-expanded={menuOpen}
-                  {...(menuOpen ? { 'aria-controls': 'fight-menu' } : {})}
-                  onClick={() => setMenuOpen((o) => !o)}
-                >
-                  <span>
-                    <span aria-hidden>☰</span> Menu
-                  </span>
-                </button>
-                {menuOpen && (
-                  <div
-                    id="fight-menu"
-                    className="fight__menu"
-                    // (any choice in it closes it)
-                    onClick={(e) => {
-                      if ((e.target as HTMLElement).closest('button')) setMenuOpen(false);
-                    }}
-                  >
-                    {fightMenu}
-                    {fightOpts}
-                  </div>
-                )}
-              </>
-            ) : (
-              fightMenu
-            )}
-            <div className={`fight__title${props.kind ? ` fight__title--${props.kind.tone}` : ''}`}>
-              {props.kind && (
-                <span className={`fight__kind fight__kind--${props.kind.tone}`}>
-                  {props.kind.label}
-                </span>
-              )}
-              <b>{props.title}</b>
-              <span className="fight__turn">
-                {props.subtitle && <>{props.subtitle} · </>}Turn{' '}
-                {Math.max(1, Math.ceil(view.turn / 2))}
+        className={`fight fight--${mode}${crowd ? ' fight--crowd' : ''}${sideOpen ? ' is-sideOpen' : ''}${selected || dragTargets || releasing || aimPotion !== null ? ' is-aiming' : ''}`}
+        style={
+          {
+            '--cw': `${cw}px`,
+            '--hand-band': `${portraitHandBand(window.innerHeight)}px`,
+          } as React.CSSProperties
+        }
+      >
+        <div
+          className="fight__stage"
+          ref={host}
+          onPointerDown={onStagePointerDown}
+          onContextMenu={(e) => {
+            if (selected || aimPotion !== null || releasing) {
+              e.preventDefault();
+              setSelected(null);
+              setAimPotion(null);
+              setReleasing(null);
+            }
+          }}
+        />
+        {!ready && !error && <div className="loading">Opening the rift…</div>}
+        {error && (
+          <div className="loading loading--error">
+            <span>The fight hit a problem.</span>
+            {looksLikeNewVersion(error) && (
+              <span className="errdetails__hint">
+                A new version was released while this page was open. Reloading the page gets it.
               </span>
-              {/* (what is at stake and the Warden's rule share one line under the title, clear of the intents: DECISIONS #562) */}
-              {(props.rule || props.stakes) && (
-                <span className="fight__notes">
-                  {props.stakes && (
-                    <span
-                      className={`fight__stakes fight__stakes--${props.stakes.tone}`}
-                      role="note"
-                    >
-                      {props.stakes.text}
+            )}
+            <ErrorDetails message={error} />
+            <span className="modal__row">
+              <button className="btn btn--primary" onClick={() => window.location.reload()}>
+                <span>Reload the page</span>
+              </button>
+              <button className="btn" onClick={props.onExit}>
+                <span>{props.exitLabel ?? 'Leave'}</span>
+              </button>
+            </span>
+          </div>
+        )}
+
+        {view && ready && (
+          <>
+            {/* (once, when the browser draws without the graphics card: DECISIONS #573) */}
+            <LowGraphicsHint />
+            <header className="fight__top">
+              {mode === 'portrait' ? (
+                // (DECISIONS #443) held upright there is no room for a row of buttons: they fold into a menu
+                <>
+                  <button
+                    className={`btn btn--small btn--ghost fight__menuBtn${menuOpen ? ' is-on' : ''}`}
+                    aria-expanded={menuOpen}
+                    {...(menuOpen ? { 'aria-controls': 'fight-menu' } : {})}
+                    onClick={() => setMenuOpen((o) => !o)}
+                  >
+                    <span>
+                      <span aria-hidden>☰</span> Menu
                     </span>
+                  </button>
+                  {menuOpen && (
+                    <div
+                      id="fight-menu"
+                      className="fight__menu"
+                      // (any choice in it closes it)
+                      onClick={(e) => {
+                        if ((e.target as HTMLElement).closest('button')) setMenuOpen(false);
+                      }}
+                    >
+                      {fightMenu}
+                      {fightOpts}
+                    </div>
                   )}
-                  {props.rule && (
-                    <WardenRule key={props.rule} rule={props.rule} portrait={mode === 'portrait'} />
-                  )}
-                </span>
+                </>
+              ) : (
+                fightMenu
               )}
-            </div>
-            {pvp && !watch && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
-            {watch && (
-              <div className="fight__watch" role="group" aria-label="Replay controls">
-                <span className="fight__watchTag">
-                  {watch.total === null ? 'Watching' : 'Replay'}
+              <div
+                className={`fight__title${props.kind ? ` fight__title--${props.kind.tone}` : ''}`}
+              >
+                {props.kind && (
+                  <span className={`fight__kind fight__kind--${props.kind.tone}`}>
+                    {props.kind.label}
+                  </span>
+                )}
+                <b>{props.title}</b>
+                <span className="fight__turn">
+                  {props.subtitle && <>{props.subtitle} · </>}Turn{' '}
+                  {Math.max(1, Math.ceil(view.turn / 2))}
                 </span>
-                <button
-                  className="btn btn--small"
-                  aria-pressed={paused}
-                  onClick={() => setPaused(!paused)}
-                >
-                  <span>{paused ? 'Play' : 'Pause'}</span>
-                </button>
-                {/* for checking a game move by move: one move on, then hold again */}
-                {paused && (watch.total === null || shownMove < watch.total) && (
+                {/* (what is at stake and the Warden's rule share one line under the title, clear of the intents: DECISIONS #562) */}
+                {(props.rule || props.stakes) && (
+                  <span className="fight__notes">
+                    {props.stakes && (
+                      <span
+                        className={`fight__stakes fight__stakes--${props.stakes.tone}`}
+                        role="note"
+                      >
+                        {props.stakes.text}
+                      </span>
+                    )}
+                    {props.rule && (
+                      <WardenRule
+                        key={props.rule}
+                        rule={props.rule}
+                        portrait={mode === 'portrait'}
+                      />
+                    )}
+                  </span>
+                )}
+              </div>
+              {pvp && !watch && <TurnClock link={pvp} mine={myTurn} foe={foeName} />}
+              {watch && (
+                <div className="fight__watch" role="group" aria-label="Replay controls">
+                  <span className="fight__watchTag">
+                    {watch.total === null ? 'Watching' : 'Replay'}
+                  </span>
                   <button
                     className="btn btn--small"
-                    onClick={() => {
-                      stepTo.current = shownMove + 1;
-                    }}
+                    aria-pressed={paused}
+                    onClick={() => setPaused(!paused)}
                   >
-                    <span>Step</span>
+                    <span>{paused ? 'Play' : 'Pause'}</span>
                   </button>
-                )}
-                <span className="fight__watchMove">
-                  Move {shownMove}
-                  {watch.total !== null ? ` / ${watch.total}` : ''}
-                </span>
-                {WATCH_RATES.map((x) => (
-                  <button
-                    key={x}
-                    className={`btn btn--small btn--ghost${rate === x ? ' is-on' : ''}`}
-                    aria-pressed={rate === x}
-                    onClick={() => setRate(x)}
-                  >
-                    <span>{x}×</span>
-                  </button>
-                ))}
-              </div>
-            )}
-            {/* (the clock, then Settings at the far right, as on every screen: Robert 2026-11-11, DECISIONS #758) */}
-            {props.runTimer && <span className="fight__runTimer">{props.runTimer}</span>}
-            {mode !== 'portrait' && (
-              <div className="fight__opts">
-                <SettingsButton iconOnly />
-              </div>
-            )}
-          </header>
+                  {/* for checking a game move by move: one move on, then hold again */}
+                  {paused && (watch.total === null || shownMove < watch.total) && (
+                    <button
+                      className="btn btn--small"
+                      onClick={() => {
+                        stepTo.current = shownMove + 1;
+                      }}
+                    >
+                      <span>Step</span>
+                    </button>
+                  )}
+                  <span className="fight__watchMove">
+                    Move {shownMove}
+                    {watch.total !== null ? ` / ${watch.total}` : ''}
+                  </span>
+                  {WATCH_RATES.map((x) => (
+                    <button
+                      key={x}
+                      className={`btn btn--small btn--ghost${rate === x ? ' is-on' : ''}`}
+                      aria-pressed={rate === x}
+                      onClick={() => setRate(x)}
+                    >
+                      <span>{x}×</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {/* (the clock, then Settings at the far right, as on every screen: Robert 2026-11-11, DECISIONS #758) */}
+              {props.runTimer && <span className="fight__runTimer">{props.runTimer}</span>}
+              {mode !== 'portrait' && (
+                <div className="fight__opts">
+                  <SettingsButton iconOnly />
+                </div>
+              )}
+            </header>
 
-          {mode !== 'wide' && !watch && friendlyTargets.length > 0 && (
-            <div
-              className="fight__friendlyTargets"
-              role="group"
-              aria-label="Choose a friendly target"
-              onPointerDown={(e) => e.stopPropagation()}
-            >
-              <strong>Choose target</strong>
-              <div>
-                {friendlyTargets.map((unit, index) => (
-                  <button
-                    key={unit.id}
-                    type="button"
-                    className="fight__friendlyTarget"
-                    data-friendly-target={unit.id}
-                    aria-label={`Choose ${unit.name} ${index + 1}, ${unit.hp} of ${unit.maxHp} HP`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      chooseAimedUnit(unit.id);
-                    }}
-                  >
-                    <b>
-                      {unit.name} <small>#{index + 1}</small>
-                    </b>
-                    <span>
-                      {unit.hp}/{unit.maxHp} HP
-                    </span>
-                  </button>
-                ))}
+            {mode !== 'wide' && !watch && friendlyTargets.length > 0 && (
+              <div
+                className="fight__friendlyTargets"
+                role="group"
+                aria-label="Choose a friendly target"
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <strong>Choose target</strong>
+                <div>
+                  {friendlyTargets.map((unit, index) => (
+                    <button
+                      key={unit.id}
+                      type="button"
+                      className="fight__friendlyTarget"
+                      data-friendly-target={unit.id}
+                      aria-label={`Choose ${unit.name} ${index + 1}, ${unit.hp} of ${unit.maxHp} HP`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        chooseAimedUnit(unit.id);
+                      }}
+                    >
+                      <b>
+                        {unit.name} <small>#{index + 1}</small>
+                      </b>
+                      <span>
+                        {unit.hp}/{unit.maxHp} HP
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
+            )}
+            <UnitPlates
+              onTarget={chooseAimedUnit}
+              scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
+              // (an intent hangs from this: room for the top bar and the intent itself)
+              intentTop={mode === 'wide' ? '7.8rem' : mode === 'portrait' ? '5.8rem' : '6.6rem'}
+              allyIntentLow={crowd}
+              preview={preview}
+              items={placed}
+              heroId={heroUnit?.id ?? null}
+              {...((setup[mySide] as { ascendancy?: string }).ascendancy
+                ? { ascendancy: (setup[mySide] as { ascendancy?: string }).ascendancy as string }
+                : {})}
+              targetable={aimSet}
+              hover={hoverUnit}
+              names
+              sharp={sharp}
+            />
+            <div className="floats" aria-hidden>
+              {floats.map((f) => {
+                const pos = floatPos(f);
+                return pos ? (
+                  <span key={f.id} className={`float float--${f.tone}`} style={pos}>
+                    {f.text}
+                  </span>
+                ) : null;
+              })}
             </div>
-          )}
-          <UnitPlates
-            onTarget={chooseAimedUnit}
-            scale={mode === 'portrait' ? 0.64 : mode === 'compact' ? 0.8 : 1}
-            // (an intent hangs from this: room for the top bar and the intent itself)
-            intentTop={mode === 'wide' ? '7.8rem' : mode === 'portrait' ? '5.8rem' : '6.6rem'}
-            allyIntentLow={crowd}
-            preview={preview}
-            items={placed}
-            heroId={heroUnit?.id ?? null}
-            {...((setup[mySide] as { ascendancy?: string }).ascendancy
-              ? { ascendancy: (setup[mySide] as { ascendancy?: string }).ascendancy as string }
-              : {})}
-            targetable={aimSet}
-            hover={hoverUnit}
-            names
-            sharp={sharp}
-          />
-          <div className="floats" aria-hidden>
-            {floats.map((f) => {
-              const pos = floatPos(f);
-              return pos ? (
-                <span key={f.id} className={`float float--${f.tone}`} style={pos}>
-                  {f.text}
-                </span>
-              ) : null;
-            })}
-          </div>
 
-          {pvp &&
-            ([mySide, foeSide] as const).map((s) => {
+            {pvp &&
+              ([mySide, foeSide] as const).map((s) => {
+                const at = s === mySide ? heroPlaced : foePlaced;
+                const p = pvp.progress[s];
+                return at ? (
+                  <WhoTag
+                    key={s}
+                    mine={s === mySide}
+                    x={at.x}
+                    y={Math.max(4, at.y - at.h - 10)}
+                    name={pvp.names[s]}
+                    progress={progressLabel(p.tier, p.stage)}
+                    unit={at.unit}
+                    trophies={pvp.trophies?.[s]}
+                    rank={pvp.ranks?.[s]}
+                  />
+                ) : null;
+              })}
+            {/* the Shaman's totems, in an arc beside him (DECISIONS #439) */}
+            {totemPanel(mySide)}
+            {pvp && totemPanel(foeSide)}
+            {/* a yellow bubble around every Shielded unit, gone with its last stack (DECISIONS #346) */}
+            {placed.map((p) => (
+              <ShieldBubble
+                key={`shield-${p.unit.id}`}
+                unit={p.unit}
+                x={p.x}
+                y={p.y}
+                h={p.h}
+                w={p.w}
+              />
+            ))}
+            {([mySide, ...(pvp ? [foeSide] : [])] as const).map((s) => {
               const at = s === mySide ? heroPlaced : foePlaced;
-              const p = pvp.progress[s];
               return at ? (
-                <WhoTag
+                <StanceAura
                   key={s}
-                  mine={s === mySide}
-                  x={at.x}
-                  y={Math.max(4, at.y - at.h - 10)}
-                  name={pvp.names[s]}
-                  progress={progressLabel(p.tier, p.stage)}
                   unit={at.unit}
-                  trophies={pvp.trophies?.[s]}
-                  rank={pvp.ranks?.[s]}
+                  x={at.x}
+                  y={at.y}
+                  h={at.h}
+                  w={at.w}
+                  banner={!pvp}
                 />
               ) : null;
             })}
-          {/* the Shaman's totems, in an arc beside him (DECISIONS #439) */}
-          {totemPanel(mySide)}
-          {pvp && totemPanel(foeSide)}
-          {/* a yellow bubble around every Shielded unit, gone with its last stack (DECISIONS #346) */}
-          {placed.map((p) => (
-            <ShieldBubble
-              key={`shield-${p.unit.id}`}
-              unit={p.unit}
-              x={p.x}
-              y={p.y}
-              h={p.h}
-              w={p.w}
-            />
-          ))}
-          {([mySide, ...(pvp ? [foeSide] : [])] as const).map((s) => {
-            const at = s === mySide ? heroPlaced : foePlaced;
-            return at ? (
-              <StanceAura
-                key={s}
-                unit={at.unit}
-                x={at.x}
-                y={at.y}
-                h={at.h}
-                w={at.w}
-                banner={!pvp}
-              />
-            ) : null;
-          })}
-          {pvp && foePlaced && view.sides[foeSide].runes.length > 0 && (
-            <RuneArc
-              db={db}
-              me={view.sides[foeSide]}
-              x={foePlaced.x - 185}
-              cy={foePlaced.y - 110}
-              mirror
-            />
-          )}
-          {desync &&
-            (watch ? (
-              // a replay that no longer plays out as the match did: say from which move, so a bug hunt does not chase what never happened
-              <div className="fight__desync" role="alert">
-                <b>From move {strayAt ?? '?'} this replay no longer matches the real game.</b>
-                <span>
-                  The cards have changed since it was played, or something went wrong: what you see
-                  from here on is not what happened.
-                </span>
-              </div>
-            ) : (
-              <div className="fight__desync" role="alert">
-                <b>This match has gone out of step with the server.</b>
-                <span>Reload this page: you are put straight back into the match.</span>
-              </div>
-            ))}
-          <BattleLog lines={logLines} db={db} />
-          {releasing && (
-            <div className="fight__banner fight__banner--info" role="status">
-              <span>
-                {releaseCard && raisesColossus(releaseCard.def)
-                  ? releasing.picked.length > 0
-                    ? 'Still not enough room. Choose another to make way.'
-                    : growIds.length > 0
-                      ? 'Choose which companions make way for a new Colossus (it takes half their HP), or grow the one you have.'
-                      : 'Choose which companions make way for the Colossus. It takes half their HP.'
-                  : releasing.picked.length > 0
-                    ? 'Still not enough room. Scrap another companion.'
-                    : 'Not enough room. Scrap a companion to make room.'}{' '}
-                {releaseFit &&
-                  releaseCard &&
-                  playAnywayHelps(releaseCard.def, releaseFit.fit) &&
-                  (releaseFit.fit === 0
-                    ? `Or play it without ${releaseFit.total === 1 ? 'its companion' : 'its companions'}.`
-                    : `Or play it with only ${releaseFit.fit} of its ${releaseFit.total} companions.`)}
-              </span>
-              {scrapButtons.map((c) => (
-                <button
-                  key={c.label}
-                  className="btn btn--small btn--primary"
-                  onClick={() => sendRelease(c.set)}
-                >
-                  <span>{c.label}</span>
-                </button>
-              ))}
-              {growButtons.map((g) => (
-                <button
-                  key={g.id}
-                  className="btn btn--small btn--primary"
-                  onClick={() => sendGrow(g.id)}
-                >
-                  <span>{g.label}</span>
-                </button>
-              ))}
-              {releaseFit && releaseCard && playAnywayHelps(releaseCard.def, releaseFit.fit) && (
-                <button className="btn btn--small" onClick={playAnyway}>
-                  <span>
-                    {releaseFit.fit > 0
-                      ? 'Play anyway'
-                      : releaseFit.total === 1
-                        ? 'Play without it'
-                        : 'Play without them'}
-                  </span>
-                </button>
-              )}
-              <button className="btn btn--small" onClick={() => setReleasing(null)}>
-                <span>Cancel</span>
-              </button>
-            </div>
-          )}
-          {banner && !releasing && (
-            <div className={`fight__banner fight__banner--${bannerTone}`} role="status">
-              <span>{banner}</span>
-            </div>
-          )}
-          {flourishes.map((f, i) => (
-            <FlourishCard
-              key={f.id}
-              db={db}
-              flourish={f}
-              // (a played card shows in the right-hand column by the discard pile, a little smaller when watching)
-              // (and short enough to stay in its column on a short screen: about 40% of the height)
-              width={Math.round(
-                Math.min(cw * (watch ? 0.9 : 1.05), 260, (window.innerHeight * 0.4) / 1.4),
-              )}
-              speed={speed}
-              // (it sits at the right edge of the screen: older cards fan out to the left of the newest)
-              offset={(i - (flourishes.length - 1)) * (watch ? 30 : 40)}
-              onDone={(id) => setFlourishes((list) => list.filter((x) => x.id !== id))}
-            />
-          ))}
-
-          <FightHand
-            db={db}
-            cards={handCards}
-            live={liveDamage}
-            cardWidth={cw}
-            locked={handPickNow ? finished : waiting || finished}
-            swallowPress={menuOpen || sideOpen}
-            picking={
-              pickPool
-                ? {
-                    pool: pickPool,
-                    chosen: pickedNow,
-                    synergy: pickSynergy,
-                    verb: view?.pending ? pickVerb(view.pending) : 'Chosen',
-                    onPick: (c) => chooseInHand(c.inst.id),
-                  }
-                : null
-            }
-            selectedId={selected}
-            unitAt={unitAt}
-            lockAt={lockAt}
-            fill={mode === 'portrait'}
-            onPlay={(c, target) => {
-              commit(c, target);
-              setHoverCard(null);
-            }}
-            onSelect={(c) => {
-              setAimPotion(null);
-              setReleasing(null);
-              setSelected(c ? c.inst.id : null);
-            }}
-            onDragTargets={(ids, c) => {
-              setDragTargets(ids);
-              setDragCard(c ?? null);
-            }}
-            onRefuse={(c) => {
-              play('refuse');
-              shake(document.querySelector(`[data-inst="${CSS.escape(c.inst.id)}"]`));
-              if (
-                (c.cost ?? c.def.cost) >
-                (game.current?.state.sides[mySide].mana ?? 0) +
-                  (game.current?.state.sides[mySide].reserves ?? 0)
-              )
-                shake(document.querySelector('.fight__mana'));
-              setBanner(
-                (c.cost ?? c.def.cost) >
-                  (game.current?.state.sides[mySide].mana ?? 0) +
-                    (game.current?.state.sides[mySide].reserves ?? 0)
-                  ? 'Not enough Mana'
-                  : 'You cannot play that now',
-                'bad',
-              );
-              if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
-              refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
-            }}
-            onHover={(c, r, armed) => {
-              // (the hand lifts the card itself, at once; the rest of the screen, the tooltip and the previews, follows when it
-              // can, so re-drawing it all never holds up the card under the pointer)
-              startTransition(() => {
-                setHoverCard(c);
-                setHoverRect(c && r ? r : null);
-                setHoverArmed(!!c && !!armed);
-              });
-            }}
-          />
-          {hoverCard && hoverRect && !selected && !dragCard && mode === 'portrait' && (
-            // held upright (DECISIONS #443): the card the finger is on is shown big above the hand, as it reads now, with its notes
-            <div
-              className={`fight__peek${hoverArmed ? ' is-armed' : ''}`}
-              {...(hoverArmed ? {} : { 'aria-hidden': true })}
-              // (a card that waits after a tap: the big card plays it, like a second tap on the small one)
-              onClick={() => {
-                if (!hoverArmed || !hoverNow || pickPool || waiting || finished) return;
-                if (!hoverNow.playable || needsAim(hoverNow)) return;
-                commit(hoverNow, hoverNow.targets[0] ?? null);
-                setHoverCard(null);
-              }}
-            >
-              <FightCard
+            {pvp && foePlaced && view.sides[foeSide].runes.length > 0 && (
+              <RuneArc
                 db={db}
-                def={(hoverNow ?? hoverCard).def}
-                width={Math.round(Math.min(260, window.innerWidth * 0.56))}
-                playable={
-                  pickPool ? pickPool.includes((hoverNow ?? hoverCard).inst.id) : (hoverNow ?? hoverCard).playable && !waiting
-                }
-                dimmed={pickPool ? !pickPool.includes((hoverNow ?? hoverCard).inst.id) : !(hoverNow ?? hoverCard).playable}
-                {...((hoverNow ?? hoverCard).inst.bonus ? { bonus: (hoverNow ?? hoverCard).inst.bonus } : {})}
-                {...((hoverNow ?? hoverCard).cost !== undefined && (hoverNow ?? hoverCard).cost !== (hoverNow ?? hoverCard).def.cost
-                  ? { cost: (hoverNow ?? hoverCard).cost }
-                  : {})}
-                {...(liveDamage.has((hoverNow ?? hoverCard).inst.id)
-                  ? { live: liveDamage.get((hoverNow ?? hoverCard).inst.id)! }
-                  : {})}
-              />
-              {hoverArmed && armHint && (
-                <span className={`fight__armHint${armHint.go ? ' is-go' : ''}`}>{armHint.text}</span>
-              )}
-              {keywords.length > 0 && !touchNow && (
-                <ul className="fight__peekKeys">
-                  {keywords.map((k) => (
-                    <li key={k.name}>
-                      <b>{k.name}</b> {k.text}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
-          {hoverCard && hoverArmed && armHint && !selected && !dragCard && mode !== 'portrait' && (
-            // (a phone on its side: the same words at the foot of the lifted card, clear of the big preview beside it)
-            <span
-              className={`fight__armHint fight__armHint--float${armHint.go ? ' is-go' : ''}`}
-              style={
-                hoverRect
-                  ? {
-                      left: Math.max(
-                        96,
-                        Math.min(window.innerWidth - 96, hoverRect.left + hoverRect.width / 2),
-                      ),
-                    }
-                  : undefined
-              }
-            >
-              {armHint.text}
-            </span>
-          )}
-          {hoverCard &&
-            hoverRect &&
-            !selected &&
-            !dragCard &&
-            mode !== 'portrait' &&
-            window.innerHeight < 600 && (
-              // a short screen (a phone on its side): the card is shown big, with its notes beside it, instead of notes alone
-              <CardHover
-                def={hoverCard.def}
-                at={hoverRect}
-                plus={false}
-                noKeys={touchNow}
-                {...(hoverCard.cost !== undefined ? { cost: hoverCard.cost } : {})}
+                me={view.sides[foeSide]}
+                x={foePlaced.x - 185}
+                cy={foePlaced.y - 110}
+                mirror
               />
             )}
-          {hoverCard &&
-            hoverRect &&
-            !selected &&
-            !dragCard &&
-            window.innerHeight >= 600 &&
-            mode !== 'portrait' &&
-            keywords.length > 0 &&
-            !touchNow && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
-
-          {(selectedCard || releasing) && (!touch || touchAimAt) && (
-            <AimArrow
-              className="fight__arrow"
-              // (from the top of the card where it waits at the bottom centre; held upright the card stays in its grid)
-              from={{
-                x: window.innerWidth / 2,
-                y: window.innerHeight - (mode === 'portrait' ? cw * 1.1 : aimDock(cw).top - 8),
-              }}
-              to={touchAimAt ?? pointer}
-              lock={touch ? null : lockAt}
-            />
-          )}
-          {me && showBelt && (
-            <div className="fight__potions" aria-label="Potion belt">
-              <span className="fight__beltLabel">Potions</span>
-              <div className="fight__belt">
-                {Array.from({ length: 3 }, (_, i) => {
-                  const id = me.potions?.[i];
-                  return id ? (
-                    <PotionButton
-                      key={`${id}-${i}`}
-                      id={id}
-                      disabled={
-                        waiting || finished || watch !== null || (view?.pending ?? null) !== null
-                      }
-                      active={aimPotion === id}
-                      onUse={() => {
-                        const needs = legal.some(
-                          (x) => x.type === 'potion' && x.potion === id && x.target,
-                        );
-                        setSelected(null);
-                        if (!needs) act({ type: 'potion', index: i, potion: id });
-                        else setAimPotion(aimPotion === id ? null : id);
-                      }}
-                    />
-                  ) : (
-                    <span
-                      key={`empty-${i}`}
-                      className="potionslot"
-                      {...tipAttrs(UI_TIPS.potionSlot)}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          {aimPotion !== null && me?.potions?.includes(aimPotion) && (
-            <div className="fight__aimbar" role="status">
-              <b>{COMBAT_DB_POTION_NAME(aimPotion)}</b>{' '}
-              <span>{touch ? 'Tap' : 'Click'} a glowing target.</span>
-              <button className="btn btn--small btn--ghost" onClick={() => setAimPotion(null)}>
-                <span>Cancel</span>
-              </button>
-            </div>
-          )}
-          {handPickNow && view.pending && !finished && (
-            <div className="fight__aimbar fight__aimbar--pick" role="status">
-              <b>{pickPrompt(view.pending)}</b>{' '}
-              <span>{touch ? 'Tap' : 'Click'} a card ringed in gold.</span>
-              {view.pending.max > 1 && (
-                <span className="fight__pickCount">
-                  {pickedNow.length} of {view.pending.max} chosen
-                </span>
-              )}
-              {pickSynergy.length > 0 && (
-                <em className="fight__pickSynergy">
-                  Premeditate cards come back next turn at 0 Mana.
-                </em>
-              )}
-              {view.pending.min < view.pending.max && (
-                <button
-                  className="btn btn--small btn--primary"
-                  disabled={pickedNow.length < view.pending.min}
-                  onClick={() => submitPick(pickedNow)}
-                >
-                  <span>{pickedNow.length === 0 ? 'Keep them all' : 'Done'}</span>
-                </button>
-              )}
-            </div>
-          )}
-          {selectedCard && (
-            <div className="fight__aimbar" role="status">
-              <b>{selectedCard.def.name}</b>{' '}
-              <span>{touch ? 'Tap' : 'Click'} a glowing target.</span>
-              <button className="btn btn--small btn--ghost" onClick={() => setSelected(null)}>
-                <span>Cancel</span>
-              </button>
-            </div>
-          )}
-
-          <div
-            className="fight__mana"
-            aria-label={`Mana ${me?.mana ?? 0} of ${me?.maxMana ?? 0}`}
-            {...tipAttrs(UI_TIPS.mana(me?.mana ?? 0, me?.maxMana ?? 0))}
-          >
-            <b>{me?.mana ?? 0}</b>
-            <small>/{me?.maxMana ?? 0}</small>
-          </div>
-          <div className="fight__piles">
-            <button
-              className="pile pile--draw"
-              onClick={() => openPile('draw')}
-              {...tipAttrs(UI_TIPS.draw)}
-            >
-              <PileArt kind="draw" count={me?.drawCount ?? 0} />
-              <span className="pile__label">Draw</span> <b>{me?.drawCount ?? 0}</b>
-            </button>
-            <button
-              className="pile pile--discard"
-              onClick={() => openPile('discard')}
-              {...tipAttrs(UI_TIPS.discard)}
-            >
-              <PileArt kind="discard" count={me?.discardCount ?? 0} />
-              <span className="pile__label">Discard</span> <b>{me?.discardCount ?? 0}</b>
-            </button>
-            {(me?.exhaustedCount ?? 0) > 0 && (
-              <button
-                className="pile pile--exhaust"
-                onClick={() => openPile('exhausted')}
-                {...tipAttrs(UI_TIPS.consumed)}
-              >
-                <PileArt kind="exhaust" count={me?.exhaustedCount ?? 0} />
-                <span className="pile__label">Consumed</span> <b>{me?.exhaustedCount ?? 0}</b>
-              </button>
-            )}
-          </div>
-          {/* (DECISIONS #443) on a small screen the two side columns fold into one drawer, opened by a button with their counts */}
-          {mode === 'portrait' &&
-            sideCount.boons + sideCount.auras + sideCount.foe > 0 &&
-            !sideOpen && (
-              // (your Boons and Auras at a glance in the room at the top left; tapping it opens the drawer with their whole text)
-              <button
-                className="fight__glance"
-                aria-label="Boons and Auras: open the list"
-                onClick={() => setSideOpen(true)}
-              >
-                {traitOf(setup[mySide]) && <b>{traitOf(setup[mySide])?.name}</b>}
-                {(mine.boons?.length ?? 0) > 0 && (
-                  <span className="fight__glanceRow">
-                    ✦ {mine.boons?.length} {mine.boons?.length === 1 ? 'Boon' : 'Boons'}
+            {desync &&
+              (watch ? (
+                // a replay that no longer plays out as the match did: say from which move, so a bug hunt does not chase what never happened
+                <div className="fight__desync" role="alert">
+                  <b>From move {strayAt ?? '?'} this replay no longer matches the real game.</b>
+                  <span>
+                    The cards have changed since it was played, or something went wrong: what you
+                    see from here on is not what happened.
                   </span>
-                )}
-                {[...new Set((me?.powers ?? []).map((p) => p.card))].map((card) => (
-                  <span key={card} className="fight__glanceRow">
-                    ◈ {db.cards[card]?.name ?? 'Aura'}
-                  </span>
-                ))}
-                {sideCount.foe > 0 && (
-                  <span className="fight__glanceRow is-foe">☾ {sideCount.foe} against you</span>
-                )}
-              </button>
-            )}
-          {foldsSide(mode) && sideCount.total > 0 && (
-            <button
-              className={`fight__sideToggle${sideOpen ? ' is-open' : ''}`}
-              aria-expanded={sideOpen}
-              {...(sideOpen ? { 'aria-controls': 'fight-drawer' } : {})}
-              aria-label={`Boons and Auras: ${sideCount.boons} Boons and traits, ${sideCount.auras} Auras, ${sideCount.foe} on the other side`}
-              onClick={() => setSideOpen((o) => !o)}
-            >
-              {sideCount.boons > 0 && (
-                <span>
-                  ✦ <b>{sideCount.boons}</b>
-                </span>
-              )}
-              {sideCount.auras > 0 && (
-                <span>
-                  ◈ <b>{sideCount.auras}</b>
-                </span>
-              )}
-              {sideCount.foe > 0 && (
-                <span className="is-foe">
-                  ☾ <b>{sideCount.foe}</b>
-                </span>
-              )}
-              {sideCount.boons + sideCount.auras + sideCount.foe === 0 && <span>Info</span>}
-            </button>
-          )}
-          {(!foldsSide(mode) || sideOpen) && (
-            <div
-              id="fight-drawer"
-              className={foldsSide(mode) ? 'fight__drawer' : 'fight__sides'}
-              {...(foldsSide(mode) ? { role: 'region', 'aria-label': 'Boons and Auras' } : {})}
-            >
-              {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
-              {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
-              {(traitOf(setup[mySide]) ||
-                (mine.boons?.length ?? 0) > 0 ||
-                view?.sides[mySide].suitsTurn ||
-                (me?.powers.length ?? 0) > 0) && (
-                <div className="fight__side">
-                  <TraitChip setup={setup[mySide]} side={view.sides[mySide]} />
-                  {(mine.boons?.length ?? 0) > 0 && (
-                    <BoonPanel panel="boons-mine" title="Your Boons" boons={mine.boons ?? []} />
-                  )}
-                  {suitsPanel(mySide)}
-                  {enchantPanel(mySide)}
-                  {formPanel(mySide)}
-                  {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
                 </div>
-              )}
-              {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
-              {/* the other side, top right, stacked so nothing covers anything: an opponent's piles and trait first (the Arena, a ghost
-              Warden), then the Rift Tier's Omens, their Boons and their Auras (a long list of Auras scrolls) */}
-              {(pvp ||
-                omens.length > 0 ||
-                foeBoons.length > 0 ||
-                view?.sides[foeSide].suitsTurn ||
-                (them?.powers.length ?? 0) > 0) && (
-                <div className="fight__side fight__side--foe">
-                  {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
-                  {pvp && <TraitChip setup={setup[foeSide]} side={view.sides[foeSide]} />}
-                  {omens.length > 0 && (
-                    <div className="fight__omens" aria-label="Omens">
-                      {omens.map((o) => (
-                        <span
-                          key={o.name}
-                          className="omenchip"
-                          tabIndex={0}
-                          {...tipAttrs({
-                            kicker: 'Omen',
-                            title: o.name,
-                            tone: 'bad',
-                            text: o.text,
-                            hint: 'An Omen of this Rift Tier: it lasts the whole run at this tier.',
-                          })}
-                        >
-                          <span aria-hidden>☾</span> {o.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  {foeBoons.length > 0 && (
-                    <BoonPanel panel="boons-foe" title="Their Boons" boons={foeBoons} />
-                  )}
-                  {suitsPanel(foeSide)}
-                  {enchantPanel(foeSide)}
-                  {formPanel(foeSide)}
-                  {them && (
-                    <AuraList
-                      db={db}
-                      me={them}
-                      panel={pvp ? 'auras-opponent' : 'auras-foe'}
-                      title={pvp ? 'Their Auras' : 'Enemy Auras'}
-                    />
-                  )}
+              ) : (
+                <div className="fight__desync" role="alert">
+                  <b>This match has gone out of step with the server.</b>
+                  <span>Reload this page: you are put straight back into the match.</span>
                 </div>
-              )}
-            </div>
-          )}
-          {me && showStars && <LumenCounter value={me.stars} />}
-          {me && me.maxReserves > 0 && <ReservesCounter value={me.reserves} max={me.maxReserves} />}
-          {me && showRunes && heroPlaced && (
-            <RuneArc db={db} me={me} x={heroPlaced.x + 185} cy={heroPlaced.y - 110} />
-          )}
-          {me && (
-            <SnareRow
-              db={db}
-              // (watching someone's live match: their Traps are face down to you, as to their opponent)
-              me={hideHand ? { ...me, snares: me.snares.map((x) => ({ ...x, card: null })) } : me}
-              cx={heroPlaced?.x ?? 140}
-              top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
-              // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
-              dx={showRunes ? 245 : 118}
-              tip={(sn) => snareTip(db, sn.card, hpCostMult)}
-            />
-          )}
-          {!pvp && foeFront && view.sides[foeSide].snares.length > 0 && (
-            // the enemies' Traps (DECISIONS #751): face up, laid in front of the enemy nearest the middle, toward you
-            <SnareRow
-              db={db}
-              me={view.sides[foeSide]}
-              foe
-              label="Enemy Traps"
-              // (kept on the board on a narrow screen: the row runs left of its anchor, three tiles at most)
-              cx={Math.max(foeFront.x - foeFront.w / 2, 40 + 3 * 66 + 8)}
-              top={Math.max(30, foeFront.y - 44)}
-              dx={40}
-              tip={(sn) => enemySnareTip(db, sn, view.sides[foeSide].units)}
-            />
-          )}
-          {pvp && foePlaced && (
-            // the opponent's Traps: you can see that they are there (face down), never what they do
-            <SnareRow
-              db={db}
-              me={view.sides[foeSide]}
-              foe
-              cx={foePlaced.x}
-              top={Math.max(30, foePlaced.y - 44)}
-              dx={view.sides[foeSide].runes.length > 0 ? 245 : 118}
-              tip={() => ({
-                kicker: "Opponent's Trap",
-                title: 'A face-down Trap',
-                text: 'Your opponent set this face down. You will not know what it does until it is triggered.',
-                hint: 'It triggers on its own when its trigger happens.',
-              })}
-            />
-          )}
-          {!watch && (
-            <button
-              className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
-              disabled={waiting || finished || view.pending !== null}
-              onClick={endTurn}
-            >
-              <span>{waiting ? (pvp ? `${foeName}'s turn…` : 'Enemy turn…') : 'End turn'}</span>
-              <kbd>E</kbd>
-            </button>
-          )}
-
-          {tip && flourishes.length === 0 && (
-            <aside className="fight__tip" role="note" aria-live="polite">
-              <b>{tip.title}</b>
-              <p>{tipText(tip, touchScreen())}</p>
-              <button className="btn btn--small" onClick={() => dismissTip(tip.id)}>
-                <span>Got it</span>
-              </button>
-            </aside>
-          )}
-          {view.pending && !finished && !watch && !handPickNow && (
-            <PickModal
-              key={pickKey}
-              db={db}
-              pending={view.pending}
-              width={Math.min(190, cw)}
-              onSubmit={submitPick}
-            />
-          )}
-          {pile && (
-            <PileModal
-              db={db}
-              title={pile.title}
-              cards={pile.cards}
-              onClose={() => setPile(null)}
-            />
-          )}
-
-          {result && peek && (
-            <button className="btn btn--primary fight__peekBack" onClick={() => setPeek(false)}>
-              <span>Back to the result</span>
-            </button>
-          )}
-          {result && !peek && (
-            <div className="fight__result" role="dialog" aria-label="Fight over">
-              <div className="fight__resultCard">
-                <h2>
-                  {watch && pvp
-                    ? 'Match over'
-                    : result.winner === 'a'
-                      ? 'Victory'
-                      : result.winner === 'draw'
-                        ? 'Draw'
-                        : 'Defeat'}
-                </h2>
-                {pvp?.series && !watch && (
-                  <p className="fight__resultSeries">{seriesLine(pvp.series, mySide, foeName)}</p>
-                )}
-                <p>
-                  {watch && pvp
-                    ? watchLine(result.winner, watch.end?.reason ?? null, pvp.names, mySide)
-                    : pvp
-                      ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
-                      : result.winner === 'a'
-                        ? `${result.hp} HP remaining.`
-                        : 'The rift claims another.'}
-                </p>
-                {deathLine && <p className="fight__resultRecap">{deathLine}</p>}
-                {/* Continue first, on top and full width; the replay options in a row under it, smaller (DECISIONS #290, #331) */}
-                <div className="fight__resultButtons">
+              ))}
+            <BattleLog lines={logLines} db={db} />
+            {releasing && (
+              <div className="fight__banner fight__banner--info" role="status">
+                <span>
+                  {releaseCard && raisesColossus(releaseCard.def)
+                    ? releasing.picked.length > 0
+                      ? 'Still not enough room. Choose another to make way.'
+                      : growIds.length > 0
+                        ? 'Choose which companions make way for a new Colossus (it takes half their HP), or grow the one you have.'
+                        : 'Choose which companions make way for the Colossus. It takes half their HP.'
+                    : releasing.picked.length > 0
+                      ? 'Still not enough room. Scrap another companion.'
+                      : 'Not enough room. Scrap a companion to make room.'}{' '}
+                  {releaseFit &&
+                    releaseCard &&
+                    playAnywayHelps(releaseCard.def, releaseFit.fit) &&
+                    (releaseFit.fit === 0
+                      ? `Or play it without ${releaseFit.total === 1 ? 'its companion' : 'its companions'}.`
+                      : `Or play it with only ${releaseFit.fit} of its ${releaseFit.total} companions.`)}
+                </span>
+                {scrapButtons.map((c) => (
                   <button
-                    className="btn btn--primary fight__resultGo"
-                    onClick={() => props.onDone(result)}
+                    key={c.label}
+                    className="btn btn--small btn--primary"
+                    onClick={() => sendRelease(c.set)}
                   >
+                    <span>{c.label}</span>
+                  </button>
+                ))}
+                {growButtons.map((g) => (
+                  <button
+                    key={g.id}
+                    className="btn btn--small btn--primary"
+                    onClick={() => sendGrow(g.id)}
+                  >
+                    <span>{g.label}</span>
+                  </button>
+                ))}
+                {releaseFit && releaseCard && playAnywayHelps(releaseCard.def, releaseFit.fit) && (
+                  <button className="btn btn--small" onClick={playAnyway}>
                     <span>
-                      {props.doneLabel
-                        ? props.doneLabel
-                        : watch
-                          ? (props.exitLabel ?? 'Close')
-                          : pvp?.series && !pvp.series.over
-                            ? 'Next game'
-                            : 'Continue'}
+                      {releaseFit.fit > 0
+                        ? 'Play anyway'
+                        : releaseFit.total === 1
+                          ? 'Play without it'
+                          : 'Play without them'}
                     </span>
                   </button>
-                  <div className="fight__resultActions">
+                )}
+                <button className="btn btn--small" onClick={() => setReleasing(null)}>
+                  <span>Cancel</span>
+                </button>
+              </div>
+            )}
+            {banner && !releasing && (
+              <div className={`fight__banner fight__banner--${bannerTone}`} role="status">
+                <span>{banner}</span>
+              </div>
+            )}
+            {flourishes.map((f, i) => (
+              <FlourishCard
+                key={f.id}
+                db={db}
+                flourish={f}
+                // (a played card shows in the right-hand column by the discard pile, a little smaller when watching)
+                // (and short enough to stay in its column on a short screen: about 40% of the height)
+                width={Math.round(
+                  Math.min(cw * (watch ? 0.9 : 1.05), 260, (window.innerHeight * 0.4) / 1.4),
+                )}
+                speed={speed}
+                // (it sits at the right edge of the screen: older cards fan out to the left of the newest)
+                offset={(i - (flourishes.length - 1)) * (watch ? 30 : 40)}
+                onDone={(id) => setFlourishes((list) => list.filter((x) => x.id !== id))}
+              />
+            ))}
+
+            <FightHand
+              db={db}
+              cards={handCards}
+              live={liveDamage}
+              cardWidth={cw}
+              locked={handPickNow ? finished : waiting || finished}
+              swallowPress={menuOpen || sideOpen}
+              picking={
+                pickPool
+                  ? {
+                      pool: pickPool,
+                      chosen: pickedNow,
+                      synergy: pickSynergy,
+                      verb: view?.pending ? pickVerb(view.pending) : 'Chosen',
+                      onPick: (c) => chooseInHand(c.inst.id),
+                    }
+                  : null
+              }
+              selectedId={selected}
+              unitAt={unitAt}
+              lockAt={lockAt}
+              fill={mode === 'portrait'}
+              onPlay={(c, target) => {
+                commit(c, target);
+                setHoverCard(null);
+              }}
+              onSelect={(c) => {
+                setAimPotion(null);
+                setReleasing(null);
+                setSelected(c ? c.inst.id : null);
+              }}
+              onDragTargets={(ids, c) => {
+                setDragTargets(ids);
+                setDragCard(c ?? null);
+              }}
+              onRefuse={(c) => {
+                play('refuse');
+                shake(document.querySelector(`[data-inst="${CSS.escape(c.inst.id)}"]`));
+                if (
+                  (c.cost ?? c.def.cost) >
+                  (game.current?.state.sides[mySide].mana ?? 0) +
+                    (game.current?.state.sides[mySide].reserves ?? 0)
+                )
+                  shake(document.querySelector('.fight__mana'));
+                setBanner(
+                  (c.cost ?? c.def.cost) >
+                    (game.current?.state.sides[mySide].mana ?? 0) +
+                      (game.current?.state.sides[mySide].reserves ?? 0)
+                    ? 'Not enough Mana'
+                    : 'You cannot play that now',
+                  'bad',
+                );
+                if (refuseTimer.current) window.clearTimeout(refuseTimer.current);
+                refuseTimer.current = window.setTimeout(() => setBanner(null), 700);
+              }}
+              onHover={(c, r, armed) => {
+                // (the hand lifts the card itself, at once; the rest of the screen, the tooltip and the previews, follows when it
+                // can, so re-drawing it all never holds up the card under the pointer)
+                startTransition(() => {
+                  setHoverCard(c);
+                  setHoverRect(c && r ? r : null);
+                  setHoverArmed(!!c && !!armed);
+                });
+              }}
+            />
+            {hoverCard && hoverRect && !selected && !dragCard && mode === 'portrait' && (
+              // held upright (DECISIONS #443): the card the finger is on is shown big above the hand, as it reads now, with its notes
+              <div
+                className={`fight__peek${hoverArmed ? ' is-armed' : ''}`}
+                {...(hoverArmed ? {} : { 'aria-hidden': true })}
+                // (a card that waits after a tap: the big card plays it, like a second tap on the small one)
+                onClick={() => {
+                  if (!hoverArmed || !hoverNow || pickPool || waiting || finished) return;
+                  if (!hoverNow.playable || needsAim(hoverNow)) return;
+                  commit(hoverNow, hoverNow.targets[0] ?? null);
+                  setHoverCard(null);
+                }}
+              >
+                <FightCard
+                  db={db}
+                  def={(hoverNow ?? hoverCard).def}
+                  width={Math.round(Math.min(260, window.innerWidth * 0.56))}
+                  playable={
+                    pickPool
+                      ? pickPool.includes((hoverNow ?? hoverCard).inst.id)
+                      : (hoverNow ?? hoverCard).playable && !waiting
+                  }
+                  dimmed={
+                    pickPool
+                      ? !pickPool.includes((hoverNow ?? hoverCard).inst.id)
+                      : !(hoverNow ?? hoverCard).playable
+                  }
+                  {...((hoverNow ?? hoverCard).inst.bonus
+                    ? { bonus: (hoverNow ?? hoverCard).inst.bonus }
+                    : {})}
+                  {...((hoverNow ?? hoverCard).cost !== undefined &&
+                  (hoverNow ?? hoverCard).cost !== (hoverNow ?? hoverCard).def.cost
+                    ? { cost: (hoverNow ?? hoverCard).cost }
+                    : {})}
+                  {...(liveDamage.has((hoverNow ?? hoverCard).inst.id)
+                    ? { live: liveDamage.get((hoverNow ?? hoverCard).inst.id)! }
+                    : {})}
+                />
+                {hoverArmed && armHint && (
+                  <span className={`fight__armHint${armHint.go ? ' is-go' : ''}`}>
+                    {armHint.text}
+                  </span>
+                )}
+                {keywords.length > 0 && !touchNow && (
+                  <ul className="fight__peekKeys">
+                    {keywords.map((k) => (
+                      <li key={k.name}>
+                        <b>{k.name}</b> {k.text}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+            {hoverCard &&
+              hoverArmed &&
+              armHint &&
+              !selected &&
+              !dragCard &&
+              mode !== 'portrait' && (
+                // (a phone on its side: the same words at the foot of the lifted card, clear of the big preview beside it)
+                <span
+                  className={`fight__armHint fight__armHint--float${armHint.go ? ' is-go' : ''}`}
+                  style={
+                    hoverRect
+                      ? {
+                          left: Math.max(
+                            96,
+                            Math.min(window.innerWidth - 96, hoverRect.left + hoverRect.width / 2),
+                          ),
+                        }
+                      : undefined
+                  }
+                >
+                  {armHint.text}
+                </span>
+              )}
+            {hoverCard &&
+              hoverRect &&
+              !selected &&
+              !dragCard &&
+              mode !== 'portrait' &&
+              window.innerHeight < 600 && (
+                // a short screen (a phone on its side): the card is shown big, with its notes beside it, instead of notes alone
+                <CardHover
+                  def={hoverCard.def}
+                  at={hoverRect}
+                  plus={false}
+                  noKeys={touchNow}
+                  {...(hoverCard.cost !== undefined ? { cost: hoverCard.cost } : {})}
+                />
+              )}
+            {hoverCard &&
+              hoverRect &&
+              !selected &&
+              !dragCard &&
+              window.innerHeight >= 600 &&
+              mode !== 'portrait' &&
+              keywords.length > 0 &&
+              !touchNow && <CardTips items={keywords} rect={hoverRect} cardWidth={cw} />}
+
+            {(selectedCard || releasing) && (!touch || touchAimAt) && (
+              <AimArrow
+                className="fight__arrow"
+                // (from the top of the card where it waits at the bottom centre; held upright the card stays in its grid)
+                from={{
+                  x: window.innerWidth / 2,
+                  y: window.innerHeight - (mode === 'portrait' ? cw * 1.1 : aimDock(cw).top - 8),
+                }}
+                to={touchAimAt ?? pointer}
+                lock={touch ? null : lockAt}
+              />
+            )}
+            {me && showBelt && (
+              <div className="fight__potions" aria-label="Potion belt">
+                <span className="fight__beltLabel">Potions</span>
+                <div className="fight__belt">
+                  {Array.from({ length: 3 }, (_, i) => {
+                    const id = me.potions?.[i];
+                    return id ? (
+                      <PotionButton
+                        key={`${id}-${i}`}
+                        id={id}
+                        disabled={
+                          waiting || finished || watch !== null || (view?.pending ?? null) !== null
+                        }
+                        active={aimPotion === id}
+                        onUse={() => {
+                          const needs = legal.some(
+                            (x) => x.type === 'potion' && x.potion === id && x.target,
+                          );
+                          setSelected(null);
+                          if (!needs) act({ type: 'potion', index: i, potion: id });
+                          else setAimPotion(aimPotion === id ? null : id);
+                        }}
+                      />
+                    ) : (
+                      <span
+                        key={`empty-${i}`}
+                        className="potionslot"
+                        {...tipAttrs(UI_TIPS.potionSlot)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {aimPotion !== null && me?.potions?.includes(aimPotion) && (
+              <div className="fight__aimbar" role="status">
+                <b>{COMBAT_DB_POTION_NAME(aimPotion)}</b>{' '}
+                <span>{touch ? 'Tap' : 'Click'} a glowing target.</span>
+                <button className="btn btn--small btn--ghost" onClick={() => setAimPotion(null)}>
+                  <span>Cancel</span>
+                </button>
+              </div>
+            )}
+            {handPickNow && view.pending && !finished && (
+              <div className="fight__aimbar fight__aimbar--pick" role="status">
+                <b>{pickPrompt(view.pending)}</b>{' '}
+                <span>{touch ? 'Tap' : 'Click'} a card ringed in gold.</span>
+                {view.pending.max > 1 && (
+                  <span className="fight__pickCount">
+                    {pickedNow.length} of {view.pending.max} chosen
+                  </span>
+                )}
+                {pickSynergy.length > 0 && (
+                  <em className="fight__pickSynergy">
+                    Premeditate cards come back next turn at 0 Mana.
+                  </em>
+                )}
+                {view.pending.min < view.pending.max && (
+                  <button
+                    className="btn btn--small btn--primary"
+                    disabled={pickedNow.length < view.pending.min}
+                    onClick={() => submitPick(pickedNow)}
+                  >
+                    <span>{pickedNow.length === 0 ? 'Keep them all' : 'Done'}</span>
+                  </button>
+                )}
+              </div>
+            )}
+            {selectedCard && (
+              <div className="fight__aimbar" role="status">
+                <b>{selectedCard.def.name}</b>{' '}
+                <span>{touch ? 'Tap' : 'Click'} a glowing target.</span>
+                <button className="btn btn--small btn--ghost" onClick={() => setSelected(null)}>
+                  <span>Cancel</span>
+                </button>
+              </div>
+            )}
+
+            <div
+              className="fight__mana"
+              aria-label={`Mana ${me?.mana ?? 0} of ${me?.maxMana ?? 0}`}
+              {...tipAttrs(UI_TIPS.mana(me?.mana ?? 0, me?.maxMana ?? 0))}
+            >
+              <b>{me?.mana ?? 0}</b>
+              <small>/{me?.maxMana ?? 0}</small>
+            </div>
+            <div className="fight__piles">
+              <button
+                className="pile pile--draw"
+                onClick={() => openPile('draw')}
+                {...tipAttrs(UI_TIPS.draw)}
+              >
+                <PileArt kind="draw" count={me?.drawCount ?? 0} />
+                <span className="pile__label">Draw</span> <b>{me?.drawCount ?? 0}</b>
+              </button>
+              <button
+                className="pile pile--discard"
+                onClick={() => openPile('discard')}
+                {...tipAttrs(UI_TIPS.discard)}
+              >
+                <PileArt kind="discard" count={me?.discardCount ?? 0} />
+                <span className="pile__label">Discard</span> <b>{me?.discardCount ?? 0}</b>
+              </button>
+              {(me?.exhaustedCount ?? 0) > 0 && (
+                <button
+                  className="pile pile--exhaust"
+                  onClick={() => openPile('exhausted')}
+                  {...tipAttrs(UI_TIPS.consumed)}
+                >
+                  <PileArt kind="exhaust" count={me?.exhaustedCount ?? 0} />
+                  <span className="pile__label">Consumed</span> <b>{me?.exhaustedCount ?? 0}</b>
+                </button>
+              )}
+            </div>
+            {/* (DECISIONS #443) on a small screen the two side columns fold into one drawer, opened by a button with their counts */}
+            {mode === 'portrait' &&
+              sideCount.boons + sideCount.auras + sideCount.foe > 0 &&
+              !sideOpen && (
+                // (your Boons and Auras at a glance in the room at the top left; tapping it opens the drawer with their whole text)
+                <button
+                  className="fight__glance"
+                  aria-label="Boons and Auras: open the list"
+                  onClick={() => setSideOpen(true)}
+                >
+                  {traitOf(setup[mySide]) && <b>{traitOf(setup[mySide])?.name}</b>}
+                  {(mine.boons?.length ?? 0) > 0 && (
+                    <span className="fight__glanceRow">
+                      ✦ {mine.boons?.length} {mine.boons?.length === 1 ? 'Boon' : 'Boons'}
+                    </span>
+                  )}
+                  {[...new Set((me?.powers ?? []).map((p) => p.card))].map((card) => (
+                    <span key={card} className="fight__glanceRow">
+                      ◈ {db.cards[card]?.name ?? 'Aura'}
+                    </span>
+                  ))}
+                  {sideCount.foe > 0 && (
+                    <span className="fight__glanceRow is-foe">☾ {sideCount.foe} against you</span>
+                  )}
+                </button>
+              )}
+            {foldsSide(mode) && sideCount.total > 0 && (
+              <button
+                className={`fight__sideToggle${sideOpen ? ' is-open' : ''}`}
+                aria-expanded={sideOpen}
+                {...(sideOpen ? { 'aria-controls': 'fight-drawer' } : {})}
+                aria-label={`Boons and Auras: ${sideCount.boons} Boons and traits, ${sideCount.auras} Auras, ${sideCount.foe} on the other side`}
+                onClick={() => setSideOpen((o) => !o)}
+              >
+                {sideCount.boons > 0 && (
+                  <span>
+                    ✦ <b>{sideCount.boons}</b>
+                  </span>
+                )}
+                {sideCount.auras > 0 && (
+                  <span>
+                    ◈ <b>{sideCount.auras}</b>
+                  </span>
+                )}
+                {sideCount.foe > 0 && (
+                  <span className="is-foe">
+                    ☾ <b>{sideCount.foe}</b>
+                  </span>
+                )}
+                {sideCount.boons + sideCount.auras + sideCount.foe === 0 && <span>Info</span>}
+              </button>
+            )}
+            {(!foldsSide(mode) || sideOpen) && (
+              <div
+                id="fight-drawer"
+                className={foldsSide(mode) ? 'fight__drawer' : 'fight__sides'}
+                {...(foldsSide(mode) ? { role: 'region', 'aria-label': 'Boons and Auras' } : {})}
+              >
+                {/* your side of the screen, top left under the top bar: your Boons, then your Auras (clear of your HP and name) */}
+                {/* (your Riftwalker's innate trait is always shown first, so it can be read in the fight) */}
+                {(traitOf(setup[mySide]) ||
+                  (mine.boons?.length ?? 0) > 0 ||
+                  view?.sides[mySide].suitsTurn ||
+                  (me?.powers.length ?? 0) > 0) && (
+                  <div className="fight__side">
+                    <TraitChip setup={setup[mySide]} side={view.sides[mySide]} />
+                    {(mine.boons?.length ?? 0) > 0 && (
+                      <BoonPanel panel="boons-mine" title="Your Boons" boons={mine.boons ?? []} />
+                    )}
+                    {suitsPanel(mySide)}
+                    {enchantPanel(mySide)}
+                    {formPanel(mySide)}
+                    {me && <AuraList db={db} me={me} panel="auras-mine" title="Your Auras" />}
+                  </div>
+                )}
+                {/* the other side, top right: the Omens of this Rift Tier, then an opponent's Boons and Auras (the Arena, a ghost Warden) */}
+                {/* the other side, top right, stacked so nothing covers anything: an opponent's piles and trait first (the Arena, a ghost
+              Warden), then the Rift Tier's Omens, their Boons and their Auras (a long list of Auras scrolls) */}
+                {(pvp ||
+                  omens.length > 0 ||
+                  foeBoons.length > 0 ||
+                  view?.sides[foeSide].suitsTurn ||
+                  (them?.powers.length ?? 0) > 0) && (
+                  <div className="fight__side fight__side--foe">
+                    {pvp && <FoeBadge side={view.sides[foeSide]} name={foeName} />}
+                    {pvp && <TraitChip setup={setup[foeSide]} side={view.sides[foeSide]} />}
+                    {omens.length > 0 && (
+                      <div className="fight__omens" aria-label="Omens">
+                        {omens.map((o) => (
+                          <span
+                            key={o.name}
+                            className="omenchip"
+                            tabIndex={0}
+                            {...tipAttrs({
+                              kicker: 'Omen',
+                              title: o.name,
+                              tone: 'bad',
+                              text: o.text,
+                              hint: 'An Omen of this Rift Tier: it lasts the whole run at this tier.',
+                            })}
+                          >
+                            <span aria-hidden>☾</span> {o.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {foeBoons.length > 0 && (
+                      <BoonPanel panel="boons-foe" title="Their Boons" boons={foeBoons} />
+                    )}
+                    {suitsPanel(foeSide)}
+                    {enchantPanel(foeSide)}
+                    {formPanel(foeSide)}
+                    {them && (
+                      <AuraList
+                        db={db}
+                        me={them}
+                        panel={pvp ? 'auras-opponent' : 'auras-foe'}
+                        title={pvp ? 'Their Auras' : 'Enemy Auras'}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            {me && showStars && <LumenCounter value={me.stars} />}
+            {me && me.maxReserves > 0 && (
+              <ReservesCounter value={me.reserves} max={me.maxReserves} />
+            )}
+            {me && showRunes && heroPlaced && (
+              <RuneArc db={db} me={me} x={heroPlaced.x + 185} cy={heroPlaced.y - 110} />
+            )}
+            {me && (
+              <SnareRow
+                db={db}
+                // (watching someone's live match: their Traps are face down to you, as to their opponent)
+                me={hideHand ? { ...me, snares: me.snares.map((x) => ({ ...x, card: null })) } : me}
+                cx={heroPlaced?.x ?? 140}
+                top={Math.max(30, (heroPlaced?.y ?? 360) - 44)}
+                // the totem column stands at +185 (its right edge about +230): the Traps start beyond it
+                dx={showRunes ? 245 : 118}
+                tip={(sn) => snareTip(db, sn.card, hpCostMult)}
+              />
+            )}
+            {!pvp && foeFront && view.sides[foeSide].snares.length > 0 && (
+              // the enemies' Traps (DECISIONS #751): face up, laid in front of the enemy nearest the middle, toward you
+              <SnareRow
+                db={db}
+                me={view.sides[foeSide]}
+                foe
+                label="Enemy Traps"
+                // (kept on the board on a narrow screen: the row runs left of its anchor, three tiles at most)
+                cx={Math.max(foeFront.x - foeFront.w / 2, 40 + 3 * 66 + 8)}
+                top={Math.max(30, foeFront.y - 44)}
+                dx={40}
+                tip={(sn) => enemySnareTip(db, sn, view.sides[foeSide].units)}
+              />
+            )}
+            {pvp && foePlaced && (
+              // the opponent's Traps: you can see that they are there (face down), never what they do
+              <SnareRow
+                db={db}
+                me={view.sides[foeSide]}
+                foe
+                cx={foePlaced.x}
+                top={Math.max(30, foePlaced.y - 44)}
+                dx={view.sides[foeSide].runes.length > 0 ? 245 : 118}
+                tip={() => ({
+                  kicker: "Opponent's Trap",
+                  title: 'A face-down Trap',
+                  text: 'Your opponent set this face down. You will not know what it does until it is triggered.',
+                  hint: 'It triggers on its own when its trigger happens.',
+                })}
+              />
+            )}
+            {!watch && (
+              <button
+                className={`btn btn--primary fight__end${!anyPlay && !waiting ? ' is-ready' : ''}`}
+                disabled={waiting || finished || view.pending !== null}
+                onClick={endTurn}
+              >
+                <span>{waiting ? (pvp ? `${foeName}'s turn…` : 'Enemy turn…') : 'End turn'}</span>
+                <kbd>E</kbd>
+              </button>
+            )}
+
+            {tip && flourishes.length === 0 && (
+              <aside className="fight__tip" role="note" aria-live="polite">
+                <b>{tip.title}</b>
+                <p>{tipText(tip, touchScreen())}</p>
+                <button className="btn btn--small" onClick={() => dismissTip(tip.id)}>
+                  <span>Got it</span>
+                </button>
+              </aside>
+            )}
+            {view.pending && !finished && !watch && !handPickNow && (
+              <PickModal
+                key={pickKey}
+                db={db}
+                pending={view.pending}
+                width={Math.min(190, cw)}
+                onSubmit={submitPick}
+              />
+            )}
+            {pile && (
+              <PileModal
+                db={db}
+                title={pile.title}
+                cards={pile.cards}
+                onClose={() => setPile(null)}
+              />
+            )}
+
+            {result && peek && (
+              <button className="btn btn--primary fight__peekBack" onClick={() => setPeek(false)}>
+                <span>Back to the result</span>
+              </button>
+            )}
+            {result && !peek && (
+              <div className="fight__result" role="dialog" aria-label="Fight over">
+                <div className="fight__resultCard">
+                  <h2>
+                    {watch && pvp
+                      ? 'Match over'
+                      : result.winner === 'a'
+                        ? 'Victory'
+                        : result.winner === 'draw'
+                          ? 'Draw'
+                          : 'Defeat'}
+                  </h2>
+                  {pvp?.series && !watch && (
+                    <p className="fight__resultSeries">{seriesLine(pvp.series, mySide, foeName)}</p>
+                  )}
+                  <p>
+                    {watch && pvp
+                      ? watchLine(result.winner, watch.end?.reason ?? null, pvp.names, mySide)
+                      : pvp
+                        ? endLine(result.winner, pvp.end?.reason ?? null, foeName)
+                        : result.winner === 'a'
+                          ? `${result.hp} HP remaining.`
+                          : 'The rift claims another.'}
+                  </p>
+                  {deathLine && <p className="fight__resultRecap">{deathLine}</p>}
+                  {/* Continue first, on top and full width; the replay options in a row under it, smaller (DECISIONS #290, #331) */}
+                  <div className="fight__resultButtons">
                     <button
-                      className="btn btn--small btn--ghost"
-                      onClick={() => setRecapFor(result.replay ?? replayOf())}
+                      className="btn btn--primary fight__resultGo"
+                      onClick={() => props.onDone(result)}
                     >
-                      <span>Recap and battle log</span>
+                      <span>
+                        {props.doneLabel
+                          ? props.doneLabel
+                          : watch
+                            ? (props.exitLabel ?? 'Close')
+                            : pvp?.series && !pvp.series.over
+                              ? 'Next game'
+                              : 'Continue'}
+                      </span>
                     </button>
-                    <button className="btn btn--small btn--ghost" onClick={() => setPeek(true)}>
-                      <span>Look at the board</span>
-                    </button>
-                    {!watch && result.replay && !(pvp?.series && !pvp.series.over) && (
+                    <div className="fight__resultActions">
                       <button
                         className="btn btn--small btn--ghost"
-                        onClick={() => setReplaying(result.replay ?? null)}
+                        onClick={() => setRecapFor(result.replay ?? replayOf())}
                       >
-                        <span>Watch the replay</span>
+                        <span>Recap and battle log</span>
                       </button>
-                    )}
-                    {props.resultExtra?.(result)}
+                      <button className="btn btn--small btn--ghost" onClick={() => setPeek(true)}>
+                        <span>Look at the board</span>
+                      </button>
+                      {!watch && result.replay && !(pvp?.series && !pvp.series.over) && (
+                        <button
+                          className="btn btn--small btn--ghost"
+                          onClick={() => setReplaying(result.replay ?? null)}
+                        >
+                          <span>Watch the replay</span>
+                        </button>
+                      )}
+                      {props.resultExtra?.(result)}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          {recapFor && <FightRecap db={db} replay={recapFor} onClose={() => setRecapFor(null)} />}
-          {replaying &&
-            createPortal(
-              <div className="fight__replayLayer">
-                <Suspense fallback={<div className="loading">Opening the replay…</div>}>
-                  <ReplayPlayer
-                    replay={replaying}
-                    // (an Arena game that ended by a resignation or a clock says so at the end, seen from this seat)
-                    end={
-                      pvp?.end && pvp.end.reason !== 'win'
-                        ? { winner: pvp.end.winner, reason: pvp.end.reason }
-                        : null
-                    }
-                    onClose={() => setReplaying(null)}
-                  />
-                </Suspense>
-              </div>,
-              document.body,
             )}
-        </>
-      )}
-    </div>
+            {recapFor && <FightRecap db={db} replay={recapFor} onClose={() => setRecapFor(null)} />}
+            {replaying &&
+              createPortal(
+                <div className="fight__replayLayer">
+                  <Suspense fallback={<div className="loading">Opening the replay…</div>}>
+                    <ReplayPlayer
+                      replay={replaying}
+                      // (an Arena game that ended by a resignation or a clock says so at the end, seen from this seat)
+                      end={
+                        pvp?.end && pvp.end.reason !== 'win'
+                          ? { winner: pvp.end.winner, reason: pvp.end.reason }
+                          : null
+                      }
+                      onClose={() => setReplaying(null)}
+                    />
+                  </Suspense>
+                </div>,
+                document.body,
+              )}
+          </>
+        )}
+      </div>
     </HpCostMult.Provider>
   );
 }
@@ -3539,7 +3575,10 @@ function tallyDefs(cards: readonly CardDef[]): { def: CardDef; n: number }[] {
 /** The tooltip for a face-down Trap: its name and what it does when it springs. */
 function snareTip(db: CombatDb, card: string | null, hpCostMult = 1): TipContent {
   const def = card ? db.cards[card] : undefined;
-  return UI_TIPS.snare(def?.name ?? null, def ? cardText(db, def, undefined, { hpCostMult }) : undefined);
+  return UI_TIPS.snare(
+    def?.name ?? null,
+    def ? cardText(db, def, undefined, { hpCostMult }) : undefined,
+  );
 }
 
 /** An enemy's Trap (DECISIONS #751): what sets it off and what it does to you, at this tier, and who set it. */

@@ -1,6 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RIFTWALKERS } from '@sr/content/v2';
-import { HERO_SHEETS, SHEET_PREFIX, VIDEO_PREFIX, heroRigFor } from './heroRigs';
+import {
+  ANIMATED_SKINS,
+  DEMON_KNIGHT_SKIN,
+  HERO_SHEETS,
+  SHEET_PREFIX,
+  VIDEO_PREFIX,
+  heroRigFor,
+} from './heroRigs';
 
 function storage(items: Record<string, string>): void {
   vi.stubGlobal('localStorage', {
@@ -31,7 +38,7 @@ describe('every pose-sheet model ships with the game (DECISIONS #755)', () => {
   it('has its manifest, its atlas pages, the five clips and their moments, in both sets (DECISIONS #759)', async () => {
     const { readFileSync, existsSync } = await import('node:fs');
     for (const set of ['heroes-sheets', 'heroes-sheets-lite'])
-      for (const hero of HERO_SHEETS) {
+      for (const hero of [...HERO_SHEETS, ...[...ANIMATED_SKINS].map((id) => 'skins/' + id)]) {
         const dir = new URL(`../../public/art/${set}/`, import.meta.url);
         const man = JSON.parse(readFileSync(new URL(`${hero}/sprites.json`, dir), 'utf8')) as {
           pages: string[];
@@ -61,21 +68,29 @@ describe('every pose-sheet model ships with the game (DECISIONS #755)', () => {
   });
 });
 
-describe('Riftwalker looks are hidden for now (DECISIONS #755)', () => {
-  it('draws the default look whatever was worn, and the Store and Collection have no looks tab', async () => {
+describe('animated Riftwalker looks', () => {
+  it('shows Demon Knight without bringing back the still-only looks', async () => {
     storage({
       'sr-cosmetics': JSON.stringify({
         owned: ['knight-gender-female'],
         worn: { knight: { skin: 'knight-gender-female', at: 1 } },
       }),
     });
-    const { SKINS_SHOWN, mySkin, shownSkin, cosmetics } = await import('../cosmetics/cosmetics');
-    const { SHOP_TABS, FIRST_TAB } = await import('../app/shopTabs');
-    expect(SKINS_SHOWN).toBe(false);
+    const { mySkin, shownSkin, cosmetics } = await import('../cosmetics/cosmetics');
+    const { SHOP_TABS } = await import('../app/shopTabs');
     expect(mySkin('knight')).toBeUndefined();
     expect(shownSkin(cosmetics(), 'knight')).toBeUndefined();
-    expect(SHOP_TABS.some((t) => t.id === 'looks')).toBe(false);
-    expect(FIRST_TAB).toBe('backs');
+    expect(SHOP_TABS.some((t) => t.id === 'looks')).toBe(true);
+    const equipped = {
+      owned: [DEMON_KNIGHT_SKIN],
+      worn: { knight: { skin: DEMON_KNIGHT_SKIN, at: 1 } },
+    };
+    expect(shownSkin(equipped, 'knight')).toBe(DEMON_KNIGHT_SKIN);
+    storage({ 'sr.animatedModels': 'on' });
+    expect(heroRigFor('knight', DEMON_KNIGHT_SKIN)).toBe(
+      `${SHEET_PREFIX}skins/${DEMON_KNIGHT_SKIN}`,
+    );
+    expect(heroRigFor('hunter', DEMON_KNIGHT_SKIN)).toBeUndefined();
   });
 });
 

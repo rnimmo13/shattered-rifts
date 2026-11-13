@@ -92,6 +92,8 @@ export interface FighterSpec {
   hover?: number;
   /** how its attacks look (a slash, a shot, a spell...): presentation only */
   attack: AttackSpec;
+  /** The figure carries its own weapon even when the pose sheet is unavailable. */
+  builtInWeapon?: boolean;
   /** a Riftwalker's id (`HeroDef.id`), so it can swing its own weapon (weaponArt.ts) */
   hero?: string;
   /** something that floats beside the figure while `on` (a blade in her hand): a cut-out and where it hovers, in figure pixels */
@@ -608,7 +610,7 @@ export class Fighters {
     if (f.rig && f.rig.ready?.('strike', variant) !== false)
       return this.rigStrike(f, f.rig, t, dir, onHit, spread, variant);
     // a hero with a weapon picture swings it, and the weapon decides the style (a hammer slams, a shotgun fires)
-    const wid = f.spec.hero ? weaponFor(f.spec.hero, card) : null;
+    const wid = f.spec.hero && !f.spec.builtInWeapon ? weaponFor(f.spec.hero, card) : null;
     const tex = wid ? weaponTexture(wid) : undefined;
     let weapon = wid && tex ? { id: wid, tex, look: WEAPON_LOOK[wid] } : null;
     let spec: AttackSpec = weapon

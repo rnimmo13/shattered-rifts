@@ -190,12 +190,13 @@ export function LookTile(props: {
   openLabel?: string | undefined;
   /** this tile shows a Riftwalker's own look: their animated model, where they have one (DECISIONS #680) */
   hero?: string | undefined;
+  skin?: string | undefined;
 }) {
   const inner = (
     <>
       {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
       {props.hero ? (
-        <HeroModel hero={props.hero} className="look__model">
+        <HeroModel hero={props.hero} skin={props.skin} className="look__model">
           <LookPicture src={props.src} />
         </HeroModel>
       ) : (

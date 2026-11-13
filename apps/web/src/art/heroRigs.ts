@@ -1,5 +1,6 @@
 // Which Riftwalkers' default look (no skin worn) is animated, and how (DECISIONS #676, #680, #715, #755). Kept apart from heroSprite.ts
 // so a screen can ask without loading the animation code (and Pixi) up front.
+import { SKINS, skinDef } from '@sr/content/v2';
 import { HERO_VIDEOS } from './heroVideos';
 
 // (No skeletal rigs for now: the Sun Knight and Rogue rigs went back to their still paintings, Robert 2026-11-08, DECISIONS #690. Their
@@ -22,6 +23,11 @@ export const HERO_SHEETS: ReadonlySet<string> = new Set([
   'spellblade',
   'trickster',
 ]);
+
+// Older still-only skins remain in saved cosmetics while their animated models are unavailable.
+export const DEMON_KNIGHT_SKIN = 'knight-demon-knight';
+export const ANIMATED_SKINS: ReadonlySet<string> = new Set([DEMON_KNIGHT_SKIN]);
+export const AVAILABLE_SKINS = SKINS.filter(({ id }) => ANIMATED_SKINS.has(id));
 
 const KEY = 'sr.animatedModels';
 
@@ -56,7 +62,11 @@ export const UNIT_SHEET_PREFIX = 'unitsheet:';
  * video, else its pose-sheet model, else its skeletal rig, else nothing (the still picture). The id goes to heroSprite's loadRig and
  * HeroSprite.create.
  */
-export function heroRigFor(hero: string): string | undefined {
+export function heroRigFor(hero: string, skin?: string): string | undefined {
+  if (skin)
+    return ANIMATED_SKINS.has(skin) && skinDef(skin)?.hero === hero
+      ? `${SHEET_PREFIX}skins/${skin}`
+      : undefined;
   if (loadAnimatedModels() && HERO_VIDEOS[hero]?.['idle']) return `${VIDEO_PREFIX}${hero}`;
   if (HERO_SHEETS.has(hero)) return `${SHEET_PREFIX}${hero}`;
   return HERO_RIGS[hero];

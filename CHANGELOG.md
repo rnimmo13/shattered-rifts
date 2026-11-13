@@ -1,3 +1,8 @@
+## 0.261.0 - 2026-11-12
+
+- New look for the Knight: the Demon Knight, the first look with its own animated model. Get it and wear it from the Store or the Collection (Looks). The older still-picture looks stay put away until they are animated too; what you own of them is kept.
+- The Riftwalkers attack sooner: the slow start of each attack is left out, so the blow lands about a tenth of a second after the card is played (it was over a quarter). The swing itself is unchanged.
+
 ## 0.260.0 - 2026-11-12
 
 - Balance (rules 110): the strongest builds eased down, each with a slowdown and not a cap on a turn.

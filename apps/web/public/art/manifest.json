@@ -166,6 +166,7 @@
                     "unit:whisperer":  "figures/whisperer.png"
                 },
     "skins":  {
+                  "knight-demon-knight":  "figures/skins/knight-demon-knight.png",
                   "assassin-gender-female":  "figures/skins/assassin-gender-female.png",
                   "assassin-gilded-corsair":  "figures/skins/assassin-gilded-corsair.png",
                   "drunkard-admiral-ale":  "figures/skins/drunkard-admiral-ale.png",

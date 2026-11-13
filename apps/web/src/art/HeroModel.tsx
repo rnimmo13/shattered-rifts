@@ -1,6 +1,6 @@
 // A Riftwalker's model outside battle (the home stage, the character picker, the Vault, the Models page, the lore page): the
 // animated 2D rig when the hero's default look has one (DECISIONS #680), over the still picture it replaces. The picture stays in
-// place underneath, so the layout and anything that reads it are unchanged, and it is what shows with a skin worn, without WebGL2,
+// place underneath and is used for still-only looks, without WebGL2,
 // with reduced motion or on Low graphics, if the browser takes the rig's GL context away, or until the rig has loaded. Hovering
 // the model with a mouse, or clicking or tapping it, plays its attack. The rig code (and the Pixi it brings) is only loaded for a hero that has a rig.
 
@@ -28,7 +28,7 @@ function freeSheetSlot(): void {
 
 export function HeroModel(props: {
   hero: string;
-  /** the skin worn, if any: a skin is a still picture */
+  /** the skin worn, if any */
   skin?: string | undefined;
   /** the wrapper's own classes (it takes the place, and the layout class, of the picture it holds) */
   className?: string;
@@ -48,7 +48,7 @@ export function HeroModel(props: {
       if (kind === 'models') setModels((n) => n + 1);
     }, []),
   );
-  const rigId = !props.skin ? heroRigFor(props.hero) : undefined;
+  const rigId = heroRigFor(props.hero, props.skin);
   const fill = props.fill ?? 0.94;
   // (DECISIONS #755) a model is only loaded while it is on screen or near it, and let go when it scrolls well away
   const [near, setNear] = useState(() => typeof IntersectionObserver !== 'function');

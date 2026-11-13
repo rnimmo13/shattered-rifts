@@ -4,11 +4,11 @@
 // Vault (#/cosmetics). The other kinds are coming soon.
 
 import { useEffect, useState } from 'react';
-import { RIFTWALKERS, SKINS } from '@sr/content/v2';
-import { wornSkin } from '@sr/pvp';
+import { RIFTWALKERS } from '@sr/content/v2';
+import { AVAILABLE_SKINS } from '../art/heroRigs';
 import { preloadArt, realSkins } from '../art/assets';
 import { skinName } from '../art/skins';
-import { getSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
+import { getSkin, shownSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
 import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
 import { FIRST_TAB, HEROES, SHOP_TABS, remember, remembered, type ShopTab } from './shopTabs';
 
@@ -41,7 +41,7 @@ export function StoreScreen() {
   };
 
   // the looks on sale with a figure, in class order, for the class picked
-  const looks = SKINS.filter((s) => art.has(s.id) && (hero === 'all' || s.hero === hero));
+  const looks = AVAILABLE_SKINS.filter((s) => art.has(s.id) && (hero === 'all' || s.hero === hero));
   return (
     <ShopFrame
       page="store"
@@ -58,11 +58,13 @@ export function StoreScreen() {
         <ul className="shop__grid">
           {looks.map((s) => {
             const owned = mine.owned.includes(s.id);
-            const worn = wornSkin(mine, s.hero) === s.id;
+            const worn = shownSkin(mine, s.hero) === s.id;
             const cls = RIFTWALKERS[s.hero].hero.name;
             return (
               <LookTile
                 key={s.id}
+                hero={s.hero}
+                skin={s.id}
                 src={art.get(s.id) ?? ''}
                 name={skinName(s)}
                 sub={cls}

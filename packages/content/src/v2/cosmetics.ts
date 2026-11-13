@@ -17,6 +17,7 @@ const skin = (hero: HeroId, name: string): SkinDef => ({ id: `${hero}-${name}`, 
 
 export const SKINS: readonly SkinDef[] = [
   // (the Knight's own look is a man in sun armour now; the woman who was the Moonlit Regent is the Female Knight: #408)
+  skin('knight', 'demon-knight'),
   skin('knight', 'sunwarden'),
   skin('knight', 'gender-female'),
   skin('engineer', 'aether-forgemaster'),

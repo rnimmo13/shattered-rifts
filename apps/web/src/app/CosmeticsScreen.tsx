@@ -4,11 +4,12 @@
 // fights (never on an opponent's). Presentation only: nothing here changes how a hero plays.
 
 import { useEffect, useMemo, useState } from 'react';
-import { CARD_BACKS, RIFTWALKERS, SKINS, type HeroId } from '@sr/content/v2';
-import { inUse, wornSkin } from '@sr/pvp';
+import { CARD_BACKS, RIFTWALKERS, type HeroId } from '@sr/content/v2';
+import { inUse } from '@sr/pvp';
+import { AVAILABLE_SKINS } from '../art/heroRigs';
 import { preloadArt, realSkins } from '../art/assets';
 import { skinName } from '../art/skins';
-import { choose, useCosmetics, wear } from '../cosmetics/cosmetics';
+import { choose, shownSkin, useCosmetics, wear } from '../cosmetics/cosmetics';
 import { CardBackFace } from '../cosmetics/CardBackFace';
 import { heroFigure } from '../fight/art';
 import { LookTile, ShopFrame, SoonPanel } from './ShopParts';
@@ -47,7 +48,7 @@ export function CosmeticsScreen() {
     setHero(h);
     remember('sr-vault-hero', h);
   };
-  const ownedLooks = SKINS.filter((s) => mine.owned.includes(s.id) && art.has(s.id));
+  const ownedLooks = AVAILABLE_SKINS.filter((s) => mine.owned.includes(s.id) && art.has(s.id));
   const name = (h: HeroId): string => RIFTWALKERS[h].hero.name;
 
   const ownedBacks = CARD_BACKS.filter((b) => mine.owned.includes(b.id));
@@ -119,13 +120,14 @@ export function CosmeticsScreen() {
     body = (
       <ul className="shop__grid">
         {HEROES.map((h) => {
-          const worn = wornSkin(mine, h);
+          const worn = shownSkin(mine, h);
           const count = ownedLooks.filter((s) => s.hero === h).length;
           return (
             <LookTile
               key={h}
               src={(worn ? art.get(worn) : undefined) ?? own.get(h) ?? ''}
-              hero={worn ? undefined : h}
+              hero={h}
+              skin={worn}
               name={name(h)}
               sub={worn ? skinName({ id: worn, hero: h }) : 'Own look'}
               tag={count > 0 ? `${count + 1} looks` : undefined}
@@ -148,14 +150,16 @@ export function CosmeticsScreen() {
     );
   else {
     const h = hero as HeroId;
-    const worn = wornSkin(mine, h) ?? null;
+    const worn = shownSkin(mine, h) ?? null;
     const looks = [
       { id: null, label: 'Own look', src: own.get(h) ?? '' },
       ...ownedLooks
         .filter((s) => s.hero === h)
         .map((s) => ({ id: s.id, label: skinName(s), src: art.get(s.id) ?? '' })),
     ];
-    const forSale = SKINS.filter((s) => s.hero === h && !mine.owned.includes(s.id)).length;
+    const forSale = AVAILABLE_SKINS.filter(
+      (s) => s.hero === h && !mine.owned.includes(s.id),
+    ).length;
     body = (
       <>
         <ul className="shop__grid" role="radiogroup" aria-label={`The ${name(h)}'s look`}>
@@ -165,7 +169,8 @@ export function CosmeticsScreen() {
               <LookTile
                 key={l.id ?? 'own'}
                 src={l.src}
-                hero={l.id === null ? h : undefined}
+                hero={h}
+                skin={l.id ?? undefined}
                 name={l.label}
                 sub={name(h)}
                 tag={on ? 'Wearing' : undefined}
