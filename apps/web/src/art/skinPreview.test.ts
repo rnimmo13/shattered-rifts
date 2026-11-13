@@ -9,13 +9,12 @@ describe('Store still and animated preview scale', () => {
       for (const width of [140, 240, 400]) {
         const height = 280;
         const fitH = Math.max(p.height / p.displayScale / 0.78, p.fitWidth / p.displayScale / 0.85);
-        let modelHeight = height * 0.94;
-        const span = ((p.right - p.left) * modelHeight) / fitH;
-        if (span > width * 1.36) modelHeight *= (width * 1.36) / span;
-        const actual = skinPreviewLayout(id, width, height)!;
-        expect(actual.height, id).toBeCloseTo((p.height * modelHeight) / fitH);
-        expect(actual.width, id).toBeCloseTo((p.width * modelHeight) / fitH);
-        expect(actual.top, id).toBeCloseTo(height + (p.y * modelHeight) / fitH);
+        const actual = skinPreviewLayout(id, width, height, 1.34)!;
+        expect(actual.picture.height, id).toBeCloseTo((p.height * actual.fitHeight) / fitH);
+        expect(actual.picture.width, id).toBeLessThanOrEqual(width);
+        expect(actual.picture.height, id).toBeLessThanOrEqual(height);
+        expect(actual.picture.left, id).toBeGreaterThanOrEqual(0);
+        expect(actual.picture.top, id).toBeCloseTo(height + (p.y * actual.fitHeight) / fitH);
       }
     }
   });

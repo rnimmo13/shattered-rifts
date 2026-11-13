@@ -80,7 +80,7 @@ export function HeroModel(props: {
     const place = () => {
       const layout = skinPreviewLayout(skin, el.clientWidth, el.clientHeight, fill);
       if (!layout) return;
-      for (const [key, value] of Object.entries(layout)) {
+      for (const [key, value] of Object.entries(layout.picture)) {
         el.style.setProperty('--preview-' + key, value + 'px');
       }
     };
@@ -180,7 +180,12 @@ export function HeroModel(props: {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       let height = Math.max(8, size.h * fill);
       let shift = 0;
-      if (contain && sprite.restSpan && size.w > 0) {
+      const layout =
+        contain && props.skin ? skinPreviewLayout(props.skin, size.w, size.h, fill) : undefined;
+      if (layout && sprite.restSpan) {
+        height = Math.max(8, layout.fitHeight);
+        shift = layout.shift;
+      } else if (contain && sprite.restSpan && size.w > 0) {
         let span = sprite.restSpan(height);
         const room = size.w * (1 + 2 * CONTAIN_SPILL);
         if (span.left + span.right > room) {
@@ -303,7 +308,7 @@ export function HeroModel(props: {
       stop();
       release();
     };
-  }, [rigId, fill, contain, wanted, slot]);
+  }, [rigId, fill, contain, wanted, slot, props.skin]);
 
   return (
     <span

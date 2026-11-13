@@ -205,7 +205,7 @@ export function LookTile(props: {
           hero={props.hero}
           skin={props.skin}
           className={demonKnight ? 'look__model look__model--demon-knight' : 'look__model'}
-          fill={demonKnight ? 0.94 : 1.2}
+          fill={demonKnight ? 0.86 : 1.34}
           contain
         >
           <LookPicture

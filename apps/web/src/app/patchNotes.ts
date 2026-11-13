@@ -46,6 +46,43 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.273.0',
+    date: '2026-11-13',
+    title: 'Crystal Cleaver and Marionette',
+    summary: 'Refreshed skin animations and a quicker start from the Sanctum.',
+    notes: [
+      {
+        kind: 'changed',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'The Hunter skin carries a two-handed bone cleaver with pulsing ice crystals. Its attack starts with a quick slash.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'Her marionette stands beside her with strings tied to its hat and wrists.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'drunkard',
+        title: 'Pirate Captain',
+        text: 'Her glass and cigar disappear during attacks and return when she settles back into idle.',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Demon Knight',
+        text: 'The skin is slightly smaller, with the aura and tentacles removed.',
+      },
+      {
+        kind: 'changed',
+        title: 'Sanctum and skin previews',
+        text: 'Begin the Run appears above the character picker. Skins fill more of their space in the Store and Collection.',
+      },
+    ],
+  },
+  {
     version: '0.272.0',
     date: '2026-11-13',
     title: 'High Roller and Pirate Captain',

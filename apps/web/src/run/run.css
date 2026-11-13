@@ -823,12 +823,6 @@ button.mapnode--warden {
   gap: 0.6rem;
   justify-items: center;
 }
-.setup__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
-}
 /* a seed a friend shared (DECISIONS #698) */
 .setup__seed {
   display: grid;
@@ -866,23 +860,16 @@ button.mapnode--warden {
   font-size: 1.02rem;
   color: var(--c-text-dim);
 }
-/* on a phone the Sanctum is long: Begin stays in view at the bottom of the screen, and Import stays below it in the page */
 @media (max-width: 52rem) {
-  .setup__actions {
-    display: contents;
-  }
   .setup__start {
     position: sticky;
-    bottom: 0;
+    top: env(safe-area-inset-top);
     z-index: 20;
     justify-self: stretch;
-    display: grid;
-    /* (above the build label in the corner of the screen) */
-    padding: 1rem 0 calc(1.6rem + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, transparent, var(--c-void) 45%);
+    padding: 0.4rem 0;
+    background: linear-gradient(180deg, var(--c-void) 55%, transparent);
   }
   .setup__start .setup__go {
-    justify-self: stretch;
     width: 100%;
   }
 }

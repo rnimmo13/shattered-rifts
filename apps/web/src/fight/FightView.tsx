@@ -452,7 +452,7 @@ function specsFrom(
       if (novaRonin) attack = { ...attack, tint: '#b46bff' };
       if (demonKnight) attack = { ...attack, tint: '#ff354b' };
       if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };
-      if (glacierLancer) attack = { kind: 'stab', tint: '#91dcff' };
+      if (glacierLancer) attack = { kind: 'slash', tint: '#91dcff' };
       if (ashFalconer) attack = { kind: 'cast', tint: '#ff9758' };
       if (tempestSage)
         attack = {

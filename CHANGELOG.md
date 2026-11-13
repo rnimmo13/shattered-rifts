@@ -1,3 +1,11 @@
+## 0.273.0 - 2026-11-13
+
+- Replaced Glacier Lancer’s spear with a crystal-infused bone cleaver, a quick slash and an idle crystal pulse.
+- Grounded the Gothic Puppeteer’s marionette and attached its strings to pose-specific hat and wrist points.
+- Removed Pirate Captain’s falling props while preserving her stable idle and swig.
+- Reduced Demon Knight’s size and removed his aura and tentacles.
+- Moved Begin the Run above the Riftwalker picker and increased Store and Collection skin preview size.
+
 ## 0.272.0 - 2026-11-13
 
 - Added animated High Roller and Pirate Captain skins to the Store and Collection with High and Medium atlases.

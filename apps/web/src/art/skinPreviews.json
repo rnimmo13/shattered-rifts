@@ -20,14 +20,14 @@
     "displayScale": 1
   },
   "knight-demon-knight": {
-    "width": 642,
-    "height": 492,
-    "x": -253,
-    "y": -464,
-    "left": -275,
-    "right": 393,
+    "width": 540,
+    "height": 415,
+    "x": -178,
+    "y": -415,
+    "left": -182,
+    "right": 366,
     "fitWidth": 353,
-    "displayScale": 1.134
+    "displayScale": 1.055
   },
   "monk-tempest-sage": {
     "width": 257,
@@ -40,12 +40,12 @@
     "displayScale": 1
   },
   "necromancer-gothic-puppeteer": {
-    "width": 239,
+    "width": 296,
     "height": 401,
     "x": -126,
     "y": -400,
     "left": -130,
-    "right": 117,
+    "right": 174,
     "fitWidth": 237,
     "displayScale": 1
   },
@@ -70,13 +70,13 @@
     "displayScale": 1
   },
   "hunter-glacier-lancer": {
-    "width": 290,
-    "height": 401,
-    "x": -128,
-    "y": -400,
-    "left": -132,
-    "right": 166,
-    "fitWidth": 290,
+    "width": 560,
+    "height": 400,
+    "x": -143,
+    "y": -398,
+    "left": -147,
+    "right": 421,
+    "fitWidth": 274,
     "displayScale": 1
   },
   "trickster-high-roller": {
