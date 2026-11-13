@@ -28,11 +28,13 @@ export const HERO_SHEETS: ReadonlySet<string> = new Set([
 export const DEMON_KNIGHT_SKIN = 'knight-demon-knight';
 export const NOVA_RONIN_SKIN = 'spellblade-nova-ronin';
 export const ARC_WELDER_SKIN = 'engineer-arc-welder';
+export const ROGUE_TAILOR_SKIN = 'assassin-rogue-tailor';
 export const ARC_WELDER_HORNET = 'arc-welder-hornet';
 export const ANIMATED_SKINS: ReadonlySet<string> = new Set([
   DEMON_KNIGHT_SKIN,
   NOVA_RONIN_SKIN,
   ARC_WELDER_SKIN,
+  ROGUE_TAILOR_SKIN,
 ]);
 export const AVAILABLE_SKINS = SKINS.filter(({ id }) => ANIMATED_SKINS.has(id));
 

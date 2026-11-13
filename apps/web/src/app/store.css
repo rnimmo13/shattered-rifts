@@ -261,6 +261,13 @@
   color: var(--c-gold-light);
 }
 
+.shop--store .shop__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(14.5rem, 100%), 1fr));
+}
+.shop--store .look__stage {
+  height: 18rem;
+}
+
 /* a phone: the class names go, the icons stay */
 @media (max-width: 640px) {
   .shop__class--icon span {
@@ -274,6 +281,12 @@
   }
   .look__stage {
     height: 11rem;
+  }
+  .shop--store .shop__grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(10.5rem, 100%), 1fr));
+  }
+  .shop--store .look__stage {
+    height: 13.5rem;
   }
 }
 

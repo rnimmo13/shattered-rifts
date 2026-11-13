@@ -28,6 +28,7 @@ export const SKINS: readonly SkinDef[] = [
   skin('trickster', 'crimson-illusionist'),
   skin('trickster', 'gender-male'),
   skin('assassin', 'gilded-corsair'),
+  skin('assassin', 'rogue-tailor'),
   skin('assassin', 'gender-female'),
   skin('shaman', 'autumn-oracle'),
   skin('shaman', 'gender-female'),

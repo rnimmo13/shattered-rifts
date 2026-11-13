@@ -1,3 +1,9 @@
+## 0.265.0 - 2026-11-12
+
+- Added Rogue Tailor, a free animated Rogue skin with a rose braid, tall embroidered boots and a gold glint along her dagger.
+- Demon Knight, Nova Ronin and Arc Welder stand larger in battle. The Store gives all four animated skins larger previews.
+- Arc Welder steps into a quick taser shot and recovers. In her idle, she blinks as violet power pulses through her gear. Her reactions have new poses.
+
 ## 0.264.0 - 2026-11-12
 
 - Added Arc Welder, an animated copper-haired Engineer skin with a violet taser and a brass hornet look for her combat drones.

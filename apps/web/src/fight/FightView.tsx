@@ -134,6 +134,7 @@ import {
   ARC_WELDER_SKIN,
   DEMON_KNIGHT_SKIN,
   NOVA_RONIN_SKIN,
+  ROGUE_TAILOR_SKIN,
   UNIT_SHEET_PREFIX,
   heroRigFor,
 } from '../art/heroRigs';
@@ -336,7 +337,7 @@ function specsFrom(
         hero ? heroFigure(u.def, skin) : unitFigure(waiting ? baseForm : form),
       );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
-      // (the Demon Knight's size is his model's own displayScale, the Knight's: no factor here, DECISIONS #773)
+      // (animated skin sizes come from their sheet manifests, DECISIONS #773)
       const k = figureScale(mode, hero);
       const height =
         fitHeight(
@@ -447,11 +448,17 @@ function specsFrom(
     for (const e of sized) {
       const { skin } = e;
       const rigId = e.hero ? heroRigFor(e.u.def, skin) : undefined;
-      const attack = attackFor(e.u.def, e.hero);
+      let attack = attackFor(e.u.def, e.hero);
       const demonKnight = skin === DEMON_KNIGHT_SKIN;
       const novaRonin = skin === NOVA_RONIN_SKIN;
       const arcWelder = skin === ARC_WELDER_SKIN;
+      const rogueTailor = skin === ROGUE_TAILOR_SKIN;
       const hornet = e.form === ARC_WELDER_HORNET;
+      if (arcWelder) attack = { kind: 'shoot', tint: '#c477ff' };
+      if (hornet) attack = { kind: 'stab', tint: '#c477ff' };
+      if (novaRonin) attack = { ...attack, tint: '#b46bff' };
+      if (demonKnight) attack = { ...attack, tint: '#ff354b' };
+      if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };
       const prop = e.hero && !flip && !novaRonin ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
@@ -493,16 +500,8 @@ function specsFrom(
         canvas: e.canvas,
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
-        attack: arcWelder
-          ? { kind: 'shoot', tint: '#c477ff' }
-          : hornet
-            ? { kind: 'stab', tint: '#c477ff' }
-            : novaRonin
-              ? { ...attack, tint: '#b46bff' }
-              : demonKnight
-                ? { ...attack, tint: '#ff354b' }
-                : attack,
-        ...(demonKnight || novaRonin || arcWelder ? { builtInWeapon: true } : {}),
+        attack,
+        ...(demonKnight || novaRonin || arcWelder || rogueTailor ? { builtInWeapon: true } : {}),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
         ...(rigId

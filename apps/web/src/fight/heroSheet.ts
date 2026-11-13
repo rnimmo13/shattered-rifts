@@ -24,6 +24,8 @@ interface SheetClip {
   loop: boolean;
   count: number;
   holdLast?: boolean;
+  /** Seconds of visible anticipation before impact, when the clip needs more than the default. */
+  strikeLead?: number;
   events?: { name: string; frame: number; time: number }[];
   frames: SheetFrame[];
 }
@@ -76,11 +78,13 @@ export const STRIKE_LEAD = 0.1;
 /** Where in a strike clip playback starts, in seconds (on a frame): its first moment less STRIKE_LEAD, never before the clip. */
 export function strikeStart(c: {
   fps: number;
+  strikeLead?: number;
   events?: { frame: number }[];
 }): number {
   const first = Math.min(...(c.events ?? []).map((e) => e.frame));
   if (!Number.isFinite(first) || c.fps <= 0) return 0;
-  return Math.max(0, first - Math.round(STRIKE_LEAD * c.fps)) / c.fps;
+  const lead = c.strikeLead ?? STRIKE_LEAD;
+  return Math.max(0, first - Math.round(lead * c.fps)) / c.fps;
 }
 
 /** the moment the board waits for in each clip */
@@ -305,7 +309,7 @@ export class SheetHeroSprite {
    * that must hold the whole figure (the Store's and the Collection's). */
   restSpan(height: number): { left: number; right: number } {
     const b = this.boxes.get('idle')!;
-    const u = height / (this.fitH * (this.a.man.displayScale ?? 1));
+    const u = height / this.fitH;
     const left = -b.x0 * u;
     const right = (b.x0 + b.w) * u;
     return this.facing === 'right' ? { left, right } : { left: right, right: left };

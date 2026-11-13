@@ -46,6 +46,31 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.265.0',
+    date: '2026-11-12',
+    title: 'Rogue Tailor',
+    summary: 'A free animated Rogue skin, larger previews in the Store, and new Arc Welder animations.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Rogue Tailor',
+        hero: 'assassin',
+        text: 'Claim this free Rogue skin in the Store. A gold glint runs down her dagger as she waits, and a wine-red trail follows her strike.',
+      },
+      {
+        kind: 'changed',
+        title: 'Arc Welder',
+        hero: 'engineer',
+        text: 'Arc Welder steps into a quick taser shot, then steps back into ready. In her idle, she blinks as violet power pulses through her gear.',
+      },
+      {
+        kind: 'changed',
+        title: 'Skin sizes',
+        text: 'Demon Knight, Nova Ronin and Arc Welder stand larger in battle. The Store gives all four animated skins more room.',
+      },
+    ],
+  },
+  {
     version: '0.264.0',
     date: '2026-11-12',
     title: 'Arc Welder',
