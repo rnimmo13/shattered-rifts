@@ -1,13 +1,12 @@
 // Cosmetic canvas effects, anchored to the drawn poses. No deformation of the character or weapon.
-import { GOTHIC_PUPPETEER_SKIN, TEMPEST_SAGE_SKIN } from '../art/heroRigs';
+import { TEMPEST_SAGE_SKIN } from '../art/heroRigs';
 
 export function hasSkinEffects(hero: string): boolean {
-  return hero === `skins/${GOTHIC_PUPPETEER_SKIN}` || hero === `skins/${TEMPEST_SAGE_SKIN}`;
+  return hero === `skins/${TEMPEST_SAGE_SKIN}`;
 }
 
 /** Whether an effect is moving on this clip right now: only then must the frame be redrawn on the effect clock. */
 export function skinEffectActive(hero: string, clip: string, seconds: number): boolean {
-  if (hero === `skins/${GOTHIC_PUPPETEER_SKIN}`) return clip === 'idle';
   if (hero === `skins/${TEMPEST_SAGE_SKIN}`)
     return clip.startsWith('attack') && seconds >= 2 / 30 && seconds < 7 / 30;
   return false;
@@ -35,129 +34,17 @@ export function drawSkinEffects(
   hero: string,
   clip: string,
   seconds: number,
-  clock: number,
   width: number,
   height: number,
   behind: boolean,
-  source?: { image: CanvasImageSource; x: number; y: number; w: number; h: number },
 ): void {
   ctx.save();
   ctx.scale(height, height);
   const aspect = width / height;
-  if (hero === `skins/${GOTHIC_PUPPETEER_SKIN}` && clip === 'idle') {
-    if (behind && source) scytheAura(ctx, clock, aspect, source);
-  } else if (hero === `skins/${TEMPEST_SAGE_SKIN}` && clip.startsWith('attack')) {
+  if (hero === `skins/${TEMPEST_SAGE_SKIN}` && clip.startsWith('attack')) {
     tempest(ctx, clip, seconds, aspect, behind);
   }
   ctx.restore();
-}
-
-// Like Demon Knight's soft silhouette rim, but restricted to the scythe and without its rising ribbons.
-const SCYTHE_AURAS = new WeakMap<object, { dark: HTMLCanvasElement; edge: HTMLCanvasElement }>();
-function scytheAura(
-  ctx: CanvasRenderingContext2D,
-  t: number,
-  aspect: number,
-  source: { image: CanvasImageSource; x: number; y: number; w: number; h: number },
-): void {
-  const body = 400,
-    pad = 32;
-  let cached = SCYTHE_AURAS.get(source.image);
-  if (!cached) {
-    const width = Math.ceil(body * aspect);
-    const mask = document.createElement('canvas');
-    mask.width = width + pad * 2;
-    mask.height = body + pad * 2;
-    const m = mask.getContext('2d');
-    if (!m) return;
-    m.save();
-    m.translate(pad, pad);
-    // Follow the crown and angled shaft, excluding the hood, body and raised hand.
-    m.beginPath();
-    m.moveTo(0, 0);
-    m.lineTo(width * 0.54, 0);
-    m.lineTo(width * 0.54, body * 0.115);
-    m.lineTo(width * 0.18, body * 0.115);
-    m.lineTo(width * 0.17, body * 0.22);
-    m.lineTo(width * 0.32, body * 0.98);
-    m.lineTo(width * 0.245, body * 0.98);
-    m.lineTo(width * 0.075, body * 0.22);
-    m.lineTo(0, body * 0.18);
-    m.closePath();
-    m.clip();
-    m.drawImage(source.image, source.x, source.y, source.w, source.h, 0, 0, width, body);
-    m.restore();
-    m.globalCompositeOperation = 'source-in';
-    m.fillStyle = '#07050c';
-    m.fillRect(0, 0, mask.width, mask.height);
-    const aura = document.createElement('canvas');
-    aura.width = mask.width;
-    aura.height = mask.height;
-    const c = aura.getContext('2d');
-    if (!c) return;
-    c.shadowColor = '#07050c';
-    c.shadowBlur = 10;
-    c.globalAlpha = 0.32;
-    for (let n = 0; n < 8; n++) {
-      const angle = (n * Math.PI) / 4;
-      c.drawImage(mask, Math.cos(angle) * 4, Math.sin(angle) * 4);
-    }
-    c.shadowBlur = 4;
-    c.globalAlpha = 0.72;
-    c.drawImage(mask, 0, 0);
-    const edge = document.createElement('canvas');
-    edge.width = aura.width;
-    edge.height = aura.height;
-    const e = edge.getContext('2d');
-    if (!e) return;
-    e.drawImage(aura, 0, 0);
-    e.globalCompositeOperation = 'source-in';
-    e.fillStyle = '#49474f';
-    e.fillRect(0, 0, edge.width, edge.height);
-    cached = { dark: aura, edge };
-    SCYTHE_AURAS.set(source.image, cached);
-  }
-  const { dark, edge } = cached;
-  // Broad shadow crests travel upward through the silhouette. Small outward offsets let
-  // the aura breathe off the edges without drawing ribbons, spirals or detached particles.
-  for (let row = 0; row < dark.height; row += 3) {
-    const slice = Math.min(3, dark.height - row);
-    const v = (row - pad) / body;
-    const phase = Math.PI * 2 * (v * 2.5 + t / 3);
-    const crest = Math.pow(0.5 + 0.5 * Math.sin(phase), 3);
-    const spread = 0.002 + 0.012 * crest;
-    const y = (row - pad) / body;
-    ctx.globalAlpha = 0.12 + 0.3 * crest;
-    for (const side of [-1, 1]) {
-      ctx.drawImage(
-        edge,
-        0,
-        row,
-        edge.width,
-        slice,
-        -pad / body + side * (spread + 0.003),
-        y,
-        edge.width / body,
-        slice / body,
-      );
-    }
-    ctx.globalAlpha = 0.48 + 0.46 * crest;
-    for (const side of [-1, 1]) {
-      ctx.drawImage(
-        dark,
-        0,
-        row,
-        dark.width,
-        slice,
-        -pad / body + side * spread,
-        y,
-        dark.width / body,
-        slice / body,
-      );
-    }
-  }
-  ctx.globalAlpha = 0.55;
-  ctx.drawImage(dark, -pad / body, -pad / body, dark.width / body, dark.height / body);
 }
 
 function tempest(
@@ -274,4 +161,67 @@ function tempest(
       ctx.stroke();
     }
   }
+}
+
+export type SheetEffect = { kind: 'conduit' | 'grimoire'; points: [number, number][] };
+
+/** The manifest stores coordinates relative to the feet, in standing body heights. */
+export function drawSheetEffect(
+  ctx: CanvasRenderingContext2D,
+  effect: SheetEffect,
+  clock: number,
+): void {
+  const first = effect.points[0];
+  if (!first) return;
+  ctx.save();
+  if (effect.kind === 'conduit') {
+    ctx.beginPath();
+    ctx.moveTo(...first);
+    let length = 0;
+    for (let i = 1; i < effect.points.length; i++) {
+      const point = effect.points[i]!;
+      const previous = effect.points[i - 1]!;
+      ctx.lineTo(...point);
+      length += Math.hypot(point[0] - previous[0], point[1] - previous[1]);
+    }
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(57,173,227,.62)';
+    ctx.lineWidth = 0.005;
+    ctx.stroke();
+    const pulse = 0.065;
+    ctx.setLineDash([pulse, length + pulse]);
+    ctx.lineDashOffset = pulse - ((clock % 1.48) / 1.48) * (length + 2 * pulse);
+    ctx.strokeStyle = '#12aaff';
+    ctx.lineWidth = 0.013;
+    ctx.stroke();
+    ctx.strokeStyle = '#b4f5ff';
+    ctx.lineWidth = 0.004;
+    ctx.stroke();
+  } else {
+    const [x, y] = first;
+    const t = clock % 2.2;
+    const pulse = Math.exp(-((t - 0.48) ** 2) / 0.13) + 0.33 * Math.exp(-((t - 0.92) ** 2) / 0.055);
+    ctx.globalCompositeOperation = 'screen';
+    const r = 0.045 + 0.022 * pulse;
+    const light = ctx.createRadialGradient(x, y, 0, x, y, r);
+    light.addColorStop(0, `rgba(188,255,72,${0.14 + 0.51 * pulse})`);
+    light.addColorStop(0.5, `rgba(112,216,36,${0.08 + 0.23 * pulse})`);
+    light.addColorStop(1, 'rgba(88,169,22,0)');
+    ctx.fillStyle = light;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    for (let i = 0; i < 3; i++) {
+      const age = (t - 0.2 - i * 0.15) / 1.1;
+      if (age <= 0 || age >= 1) continue;
+      const wx = x + 0.008 * i + Math.sin(age * 6 + i) * 0.008;
+      const wy = y - age * 0.062;
+      ctx.strokeStyle = `rgba(159,238,63,${Math.sin(Math.PI * age) * 0.54})`;
+      ctx.lineWidth = 0.0025;
+      ctx.beginPath();
+      ctx.moveTo(wx, wy + 0.01);
+      ctx.bezierCurveTo(wx + 0.014, wy + 0.003, wx - 0.012, wy - 0.006, wx + 0.003, wy - 0.015);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
 }

@@ -52,27 +52,9 @@ export function gothicCanvas(
   return canvas;
 }
 
-let picture: Promise<string> | undefined;
-/** Shared green fallback for Store, Collection, Low/reduced-motion models and battle stills. */
+/** Shared precolored fallback for the Store, Collection and Low graphics. */
 export function gothicPicture(): Promise<string> {
-  return (picture ??= (async () => {
-    const image = new Image();
-    image.src = `${import.meta.env.BASE_URL}art/skin-previews/${GOTHIC_SKIN}.png`;
-    await image.decode();
-    const point = nose.idle[0]!;
-    const canvas = gothicCanvas(image, image.naturalWidth, image.naturalHeight, [
-      {
-        x: point[0]! * image.naturalWidth,
-        y: point[1]! * image.naturalHeight,
-        angle: point[2]!,
-        scale: (image.naturalHeight / 643) * point[3]!,
-      },
-    ]);
-    return canvas.toDataURL('image/png');
-  })().catch((error: unknown) => {
-    picture = undefined;
-    throw error;
-  }));
+  return Promise.resolve(`${import.meta.env.BASE_URL}art/skin-previews/${GOTHIC_SKIN}.png`);
 }
 
 /** A small silver nostril stud, with a dark rim so it reads against pale skin. */

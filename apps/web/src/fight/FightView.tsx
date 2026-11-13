@@ -446,7 +446,7 @@ function specsFrom(
       const rogueTailor = skin === ROGUE_TAILOR_SKIN;
       const tempestSage = skin === TEMPEST_SAGE_SKIN;
       const stance = tempestSage ? stanceOf(e.u) : undefined;
-      if (arcWelder) attack = { kind: 'shoot', tint: '#c477ff' };
+      if (arcWelder) attack = { kind: 'shoot', tint: '#4fc3ff' };
       if (novaRonin) attack = { ...attack, tint: '#b46bff' };
       if (demonKnight) attack = { ...attack, tint: '#ff354b' };
       if (rogueTailor) attack = { kind: 'stab', tint: '#eab06d' };

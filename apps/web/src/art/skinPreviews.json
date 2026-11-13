@@ -1,23 +1,23 @@
 {
   "assassin-rogue-tailor": {
-    "width": 180,
-    "height": 431,
-    "x": -123,
-    "y": -431,
-    "left": -134,
-    "right": 61,
-    "fitWidth": 108,
-    "displayScale": 1.08
+    "width": 243,
+    "height": 401,
+    "x": -127,
+    "y": -400,
+    "left": -131,
+    "right": 120,
+    "fitWidth": 242,
+    "displayScale": 1
   },
   "engineer-arc-welder": {
-    "width": 273,
-    "height": 458,
-    "x": -107,
-    "y": -452,
-    "left": -111,
-    "right": 176,
-    "fitWidth": 196,
-    "displayScale": 1.1
+    "width": 285,
+    "height": 401,
+    "x": -99,
+    "y": -400,
+    "left": -103,
+    "right": 190,
+    "fitWidth": 198,
+    "displayScale": 1
   },
   "knight-demon-knight": {
     "width": 642,
@@ -40,13 +40,13 @@
     "displayScale": 1
   },
   "necromancer-gothic-puppeteer": {
-    "width": 311,
-    "height": 643,
-    "x": -156,
-    "y": -643,
-    "left": -160,
-    "right": 159,
-    "fitWidth": 311,
+    "width": 239,
+    "height": 401,
+    "x": -126,
+    "y": -400,
+    "left": -130,
+    "right": 117,
+    "fitWidth": 237,
     "displayScale": 1
   },
   "spellblade-nova-ronin": {

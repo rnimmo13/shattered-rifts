@@ -1,3 +1,10 @@
+## 0.270.0 - 2026-11-13
+
+- Refreshed the Necromancer, Drunkard, Rogue Tailor, Arc Welder and Gothic Puppeteer with new inked artwork, blended action clips, matching stills, and High and Medium atlases.
+- The Drunkard has separate hammer and shotgun attacks and a parked glass trolley. The Necromancer power-up uses a quick lantern lift.
+- Arc Welder has an electric-blue current inside her hose. Gothic Puppeteer carries a pulsing green grimoire and a clear steel scythe.
+- All ten base Riftwalkers hold a stable ready pose on High and Medium. Combat rules are unchanged.
+
 ## 0.269.0 - 2026-11-13
 
 - Gothic Puppeteer: approved moss-green accents and a silver nose stud across all seven clips and both atlas qualities, green curse projectile, and matching still fallbacks. The palette and per-frame landmarks are applied once during image loading, preserving source poses, scythe length, frame timing and collision-free alpha.

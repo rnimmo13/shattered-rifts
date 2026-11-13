@@ -46,6 +46,48 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.270.0',
+    date: '2026-11-13',
+    title: 'Riftwalker art refresh',
+    summary: 'Five refreshed looks with quicker actions and steadier ready poses.',
+    notes: [
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Necromancer',
+        text: 'New inked robes, staff and lantern, with a quick lantern lift for the power-up.',
+      },
+      {
+        kind: 'changed',
+        hero: 'drunkard',
+        title: 'Drunkard',
+        text: 'KP returns in bottle-green and rust with his hammer, short shotgun and glass-filled trolley.',
+      },
+      {
+        kind: 'changed',
+        hero: 'assassin',
+        title: 'Rogue Tailor',
+        text: 'Sharper inked features, wine-and-gold tailoring and a quick needle strike.',
+      },
+      {
+        kind: 'changed',
+        hero: 'engineer',
+        title: 'Arc Welder',
+        text: 'Petrol blue and copper outfit with a blue current running through the hose to her gauntlet.',
+      },
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'A steel scythe and a belt-hung grimoire that pulses green as she moves.',
+      },
+      {
+        kind: 'fixed',
+        text: 'All ten base Riftwalkers hold a stable ready pose on High and Medium.',
+      },
+    ],
+  },
+  {
     version: '0.269.0',
     date: '2026-11-13',
     title: 'Necromantic green and stronger skin effects',
