@@ -1,5 +1,6 @@
-## Unreleased
+## 0.264.0 - 2026-11-12
 
+- Added Arc Welder, an animated copper-haired Engineer skin with a violet taser and a brass hornet look for her combat drones.
 - In the Arena your opponent’s Riftwalker wears the look they have equipped, and so does a ghost: the look its deck was saved or last played in. Only looks a player owns are ever shown.
 - Balance (rules 111): the Hunter’s companions share a quarter of your Might (was a third). The Beastmaster’s share half of it, from the first point (was all of the first 5 and half of the rest).
 

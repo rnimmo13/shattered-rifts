@@ -21,6 +21,7 @@ export const SKINS: readonly SkinDef[] = [
   skin('knight', 'sunwarden'),
   skin('knight', 'gender-female'),
   skin('engineer', 'aether-forgemaster'),
+  skin('engineer', 'arc-welder'),
   skin('engineer', 'gender-female'),
   skin('hunter', 'tempest-prowler'),
   skin('hunter', 'gender-male'),

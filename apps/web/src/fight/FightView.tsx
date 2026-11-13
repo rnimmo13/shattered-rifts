@@ -129,7 +129,14 @@ import { LOG_LIMIT, Namer, createDescriber, type LogLine } from './logLines';
 import { FlourishCard, type Flourish } from './FlourishCard';
 import { useClearOfBelt } from './clearOfBelt';
 import type { FighterSpec } from './Fighters';
-import { DEMON_KNIGHT_SKIN, NOVA_RONIN_SKIN, UNIT_SHEET_PREFIX, heroRigFor } from '../art/heroRigs';
+import {
+  ARC_WELDER_HORNET,
+  ARC_WELDER_SKIN,
+  DEMON_KNIGHT_SKIN,
+  NOVA_RONIN_SKIN,
+  UNIT_SHEET_PREFIX,
+  heroRigFor,
+} from '../art/heroRigs';
 import { UNIT_SHEETS } from '../art/unitSheets';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
@@ -306,6 +313,9 @@ function specsFrom(
     // the opponent (and their companions) stand on the right and face left
     const flip = pvp && ds === 'b';
     const units = s.sides[side].units;
+    const engineer = units.find((u) => u.kind === 'hero' && u.def === 'engineer');
+    const arcWelderEquipped =
+      !!engineer && skinOf?.(engineer.def, side, side === me) === ARC_WELDER_SKIN;
     // every figure's real size first: each side is then laid out from those widths, so nothing overlaps
     const sized = units.map((u) => {
       const hero = u.kind === 'hero';
@@ -313,11 +323,17 @@ function specsFrom(
       // (your own hero wears the skin you chose; the other side keeps its own look, DECISIONS #406)
       // (a unit whose figure is still coming is drawn as its stand-in under a form of its own, so the real one replaces it at the
       // redraw when it arrives: FIGURE_READY_EVENT)
-      const form = hero ? u.def : figureId(u.def, u.maxHp);
+      const baseForm = hero ? u.def : figureId(u.def, u.maxHp);
+      const form =
+        arcWelderEquipped &&
+        u.kind === 'ally' &&
+        (baseForm === 'drone' || baseForm === 'patrol-drone')
+          ? ARC_WELDER_HORNET
+          : baseForm;
       const waiting = !hero && needsFigure(form);
       const skin = hero ? skinOf?.(u.def, side, side === me) : undefined;
       const raw = figures.get(u.id, waiting ? `${form}~waiting` : form, () =>
-        hero ? heroFigure(u.def, skin) : unitFigure(u.def, u.maxHp),
+        hero ? heroFigure(u.def, skin) : unitFigure(waiting ? baseForm : form),
       );
       const canvas = flip && u.kind !== 'enemy' ? mirror(raw) : raw;
       // (the Demon Knight's size is his model's own displayScale, the Knight's: no factor here, DECISIONS #773)
@@ -434,6 +450,8 @@ function specsFrom(
       const attack = attackFor(e.u.def, e.hero);
       const demonKnight = skin === DEMON_KNIGHT_SKIN;
       const novaRonin = skin === NOVA_RONIN_SKIN;
+      const arcWelder = skin === ARC_WELDER_SKIN;
+      const hornet = e.form === ARC_WELDER_HORNET;
       const prop = e.hero && !flip && !novaRonin ? heroProp(e.u.def) : undefined;
       // the floating blade shows while a card tagged 'blade' is in her hand
       const holding = s.sides[side].hand.some((c) => db.cards[c.card]?.tags?.includes('blade'));
@@ -475,12 +493,16 @@ function specsFrom(
         canvas: e.canvas,
         height: e.height * (e.hero || e.boss ? 1 : fit.scale),
         ...(e.hover > 0 ? { hover: e.hover * (e.boss ? 1 : fit.scale) } : {}),
-        attack: novaRonin
-          ? { ...attack, tint: '#b46bff' }
-          : demonKnight
-            ? { ...attack, tint: '#ff354b' }
-            : attack,
-        ...(demonKnight || novaRonin ? { builtInWeapon: true } : {}),
+        attack: arcWelder
+          ? { kind: 'shoot', tint: '#c477ff' }
+          : hornet
+            ? { kind: 'stab', tint: '#c477ff' }
+            : novaRonin
+              ? { ...attack, tint: '#b46bff' }
+              : demonKnight
+                ? { ...attack, tint: '#ff354b' }
+                : attack,
+        ...(demonKnight || novaRonin || arcWelder ? { builtInWeapon: true } : {}),
         ...(e.hero ? { hero: e.u.def } : {}),
         ...(prop ? { prop: { ...prop, on: holding } } : {}),
         ...(rigId
@@ -492,7 +514,7 @@ function specsFrom(
             }
           : // (a creature with an animated model plays it, DECISIONS #760: the sheets face right, so an enemy, or the other side's
             // companion in the Arena, plays mirrored, as its picture faces)
-            !e.hero && UNIT_SHEETS.has(e.form)
+            !e.hero && (hornet || UNIT_SHEETS.has(e.form))
             ? {
                 rig: {
                   id: `${UNIT_SHEET_PREFIX}${e.form}`,

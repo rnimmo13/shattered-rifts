@@ -46,6 +46,39 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.264.0',
+    date: '2026-11-12',
+    title: 'Arc Welder',
+    summary: 'A new animated Engineer skin, visible opponent looks in the Arena, and changes to companion Might.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Arc Welder',
+        hero: 'engineer',
+        text: 'A free Engineer look with copper-red hair, a violet taser, and a brass hornet model for her Drone and Patrol Drone. Claim it in the Store under Looks.',
+      },
+      {
+        kind: 'new',
+        title: 'Opponent looks',
+        text: 'Arena opponents wear their equipped look. Ghosts wear the look saved or last played with their deck.',
+      },
+      {
+        kind: 'balance',
+        title: 'Hunter',
+        hero: 'hunter',
+        text: 'Hunter companions inherit less of your Might in Campaign and Arena.',
+        changes: [{ label: 'Companion Might share', before: 'One third', after: 'One quarter', direction: 'nerf' }],
+      },
+      {
+        kind: 'balance',
+        title: 'Beastmaster',
+        hero: 'hunter',
+        text: 'Beastmaster companions inherit half of your Might from the first point in Campaign and Arena.',
+        changes: [{ label: 'Companion Might share', before: 'All of the first 5, then half', after: 'Half from the first point', direction: 'nerf' }],
+      },
+    ],
+  },
+  {
     version: "0.263.0",
     date: "2026-11-12",
     title: "Demon Knight fixes",
