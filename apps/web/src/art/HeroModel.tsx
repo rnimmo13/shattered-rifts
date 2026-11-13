@@ -105,13 +105,40 @@ export function HeroModel(props: {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  // (DECISIONS #780) the Store's and the Collection's boxes (`contain`) all show the still picture alike, and a look comes alive only
+  // while the mouse is over it or after a tap on it: never a few animated and the rest still
+  const [awake, setAwake] = useState(false);
+  useEffect(() => {
+    const el = box.current;
+    if (!el || !contain) return;
+    const enter = (e: PointerEvent): void => {
+      if (e.pointerType === 'mouse') setAwake(true);
+    };
+    const leave = (e: PointerEvent): void => {
+      if (e.pointerType === 'mouse') setAwake(false);
+    };
+    const tap = (): void => setAwake(true);
+    el.addEventListener('pointerenter', enter);
+    el.addEventListener('pointerleave', leave);
+    el.addEventListener('click', tap);
+    return () => {
+      el.removeEventListener('pointerenter', enter);
+      el.removeEventListener('pointerleave', leave);
+      el.removeEventListener('click', tap);
+    };
+  }, [contain]);
+  // (a tapped look goes back to its picture once it is scrolled well away)
+  useEffect(() => {
+    if (!near) queueMicrotask(() => setAwake(false));
+  }, [near]);
+  const wanted = near && (!contain || awake);
   // (DECISIONS #724) while a rig that will be shown is loading, the crest turns in its place, never the still picture first and then a
   // jump to the rig
-  const loading = !!rigId && near && !waiting && !live && !fallback && !still();
+  const loading = !!rigId && wanted && !waiting && !live && !fallback && !still();
 
   useEffect(() => {
     const el = box.current;
-    if (!rigId || !el || still() || !near) return;
+    if (!rigId || !el || still() || !wanted) return;
     const sheet = rigId.startsWith(SHEET_PREFIX);
     if (sheet && sheetsLive >= SHEET_SLOTS) {
       // (the picture meanwhile, not the loading crest; tried again each time a slot is freed)
@@ -265,6 +292,8 @@ export function HeroModel(props: {
         window.clearTimeout(slow);
         setLive(true);
         raf = requestAnimationFrame(frame);
+        // (woken by the mouse over it: it swings at once, as a model already loaded does on hover)
+        if (contain && el.matches(':hover')) attack();
       })
       .catch(fail);
 
@@ -274,7 +303,7 @@ export function HeroModel(props: {
       stop();
       release();
     };
-  }, [rigId, fill, contain, near, slot]);
+  }, [rigId, fill, contain, wanted, slot]);
 
   return (
     <span

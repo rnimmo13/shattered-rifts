@@ -46,6 +46,61 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.272.0',
+    date: '2026-11-13',
+    title: 'High Roller and Pirate Captain',
+    summary: 'Two free animated skins, larger previews, and new effects across the roster.',
+    notes: [
+      {
+        kind: 'new',
+        hero: 'trickster',
+        title: 'High Roller',
+        text: 'A porcelain Trickster with a spinning ace, tumbling dice, and teal rings. She flicks the ace forward on attack.',
+      },
+      {
+        kind: 'new',
+        hero: 'drunkard',
+        title: 'Pirate Captain',
+        text: 'A solo sailor who takes a swig to power up and drops her drink and cigar for two-handed hammer swings and shotgun blasts. Magic rises from her glass and smoke, and salvaged ship windows sit beside her.',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Demon Knight',
+        text: 'His model is smaller in battle and in the skin previews.',
+      },
+      {
+        kind: 'changed',
+        hero: 'monk',
+        title: 'Tempest Sage',
+        text: 'Her hair holds steady in every idle stance.',
+      },
+      {
+        kind: 'changed',
+        hero: 'assassin',
+        title: 'Rogue Tailor',
+        text: 'Her dagger needle catches the light in idle and on the strike.',
+      },
+      {
+        kind: 'changed',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'Cold light and ice flecks rise from the crystal on his spear.',
+      },
+      {
+        kind: 'changed',
+        hero: 'shaman',
+        title: 'Ash Falconer',
+        text: 'Her phoenix sheds embers that swell during the power-up.',
+      },
+      {
+        kind: 'changed',
+        title: 'Store and Collection',
+        text: 'Skins fill more of their preview boxes and animate on hover or tap.',
+      },
+    ],
+  },
+  {
     version: '0.271.0',
     date: '2026-11-13',
     title: 'Ash Falconer and Glacier Lancer',

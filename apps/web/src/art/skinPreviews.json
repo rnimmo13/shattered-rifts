@@ -27,7 +27,7 @@
     "left": -275,
     "right": 393,
     "fitWidth": 353,
-    "displayScale": 1.26
+    "displayScale": 1.134
   },
   "monk-tempest-sage": {
     "width": 257,
@@ -77,6 +77,26 @@
     "left": -132,
     "right": 166,
     "fitWidth": 290,
+    "displayScale": 1
+  },
+  "trickster-high-roller": {
+    "width": 215,
+    "height": 401,
+    "x": -121,
+    "y": -400,
+    "left": -125,
+    "right": 98,
+    "fitWidth": 203,
+    "displayScale": 1
+  },
+  "drunkard-pirate-captain": {
+    "width": 365,
+    "height": 401,
+    "x": -244,
+    "y": -400,
+    "left": -248,
+    "right": 125,
+    "fitWidth": 210,
     "displayScale": 1
   }
 }

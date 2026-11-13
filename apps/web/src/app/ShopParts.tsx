@@ -9,6 +9,7 @@ import { HEROES, SHOP_TABS, type ShopTab } from './shopTabs';
 import { HeroIcon } from '../ui/HeroIcon';
 import { StoreIcon } from './StoreIcon';
 import { HeroModel } from '../art/HeroModel';
+import { DEMON_KNIGHT_SKIN } from '../art/heroRigs';
 import './store.css';
 
 /** The Collection's mark: an open chest with what is yours inside (the Store's is a satchel: StoreIcon). */
@@ -195,11 +196,18 @@ export function LookTile(props: {
   hero?: string | undefined;
   skin?: string | undefined;
 }) {
+  const demonKnight = props.skin === DEMON_KNIGHT_SKIN;
   const inner = (
     <>
       {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
       {props.hero ? (
-        <HeroModel hero={props.hero} skin={props.skin} className="look__model" contain>
+        <HeroModel
+          hero={props.hero}
+          skin={props.skin}
+          className={demonKnight ? 'look__model look__model--demon-knight' : 'look__model'}
+          fill={demonKnight ? 0.94 : 1.2}
+          contain
+        >
           <LookPicture
             src={
               skinPreview(props.skin)

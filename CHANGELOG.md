@@ -1,3 +1,10 @@
+## 0.272.0 - 2026-11-13
+
+- Added animated High Roller and Pirate Captain skins to the Store and Collection with High and Medium atlases.
+- Added High Roller's spinning card and dice, and Pirate Captain's prop drops, two-handed attacks, swig, magic smoke, and salvaged ship windows.
+- Added the Rogue Tailor's needle glint, Glacier Lancer's spear crystal effect, and Ash Falconer's phoenix embers.
+- Reduced Demon Knight model scale, steadied Tempest Sage's idle stances, and updated Store and Collection preview sizing and activation.
+
 ## 0.271.0 - 2026-11-13
 
 - Added Ash Falconer and Glacier Lancer to the Store and Collection with High and Medium battle animations.

@@ -27,6 +27,7 @@ export const SKINS: readonly SkinDef[] = [
   skin('hunter', 'glacier-lancer'),
   skin('hunter', 'gender-male'),
   skin('trickster', 'crimson-illusionist'),
+  skin('trickster', 'high-roller'),
   skin('trickster', 'gender-male'),
   skin('assassin', 'gilded-corsair'),
   skin('assassin', 'rogue-tailor'),
@@ -44,6 +45,7 @@ export const SKINS: readonly SkinDef[] = [
   skin('necromancer', 'gothic-puppeteer'),
   skin('necromancer', 'gender-female'),
   skin('drunkard', 'admiral-ale'),
+  skin('drunkard', 'pirate-captain'),
   skin('drunkard', 'gender-female'),
 ];
 

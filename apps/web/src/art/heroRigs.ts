@@ -38,6 +38,8 @@ export const ANIMATED_SKINS: ReadonlySet<string> = new Set([
   ROGUE_TAILOR_SKIN,
   GOTHIC_PUPPETEER_SKIN,
   TEMPEST_SAGE_SKIN,
+  'drunkard-pirate-captain',
+  'trickster-high-roller',
   'hunter-glacier-lancer',
   'shaman-ash-falconer',
 ]);

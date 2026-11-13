@@ -164,8 +164,9 @@ function tempest(
 }
 
 export type SheetEffect = {
-  kind: 'conduit' | 'grimoire';
+  kind: 'conduit' | 'grimoire' | 'needle' | 'frost' | 'phoenix';
   points: [number, number][];
+  strength?: number;
   shock?: [number, number];
 };
 
@@ -179,7 +180,25 @@ export function drawSheetEffect(
   const first = effect.points[0];
   if (!first) return;
   ctx.save();
-  if (effect.kind === 'conduit') {
+  if (effect.kind === 'needle') {
+    const [x, y] = first;
+    const phase = clock % 2.6;
+    const strength = effect.strength ?? Math.exp(-(((phase - 0.48) / 0.13) ** 2)) * 0.72;
+    if (strength > 0.02) {
+      glow(ctx, x, y, 0.044, `rgba(234,176,109,${strength * 0.55})`, strength);
+      const ray = 0.025 + 0.012 * strength;
+      ctx.beginPath();
+      ctx.moveTo(x - ray, y);
+      ctx.lineTo(x + ray, y);
+      ctx.moveTo(x, y - ray * 0.65);
+      ctx.lineTo(x, y + ray * 0.65);
+      ctx.strokeStyle = `rgba(255,240,200,${strength})`;
+      ctx.lineWidth = 0.004;
+      ctx.stroke();
+    }
+  } else if (effect.kind === 'frost' || effect.kind === 'phoenix') {
+    drawSkinPower(ctx, effect.kind, first, clock, effect.strength ?? 0);
+  } else if (effect.kind === 'conduit') {
     ctx.beginPath();
     ctx.moveTo(...first);
     let length = 0;
@@ -278,4 +297,64 @@ function welderShock(
   ctx.strokeStyle = '#c6f6ff';
   ctx.lineWidth = attacking ? 0.006 : 0.003;
   ctx.stroke();
+}
+
+/** Cold light wells up from the spearhead. The phoenix sheds an upward plume of embers. */
+function drawSkinPower(
+  ctx: CanvasRenderingContext2D,
+  kind: 'frost' | 'phoenix',
+  [x, y]: [number, number],
+  clock: number,
+  surge: number,
+): void {
+  const frost = kind === 'frost';
+  const color = frost ? '115,213,255' : '255,112,25';
+  const highlight = frost ? '#e5faff' : '#fff0a7';
+  const pulse = (1 + Math.sin(clock * (frost ? 4.5 : 7))) * 0.5;
+  const energy = (frost ? 0.27 : 0.34) + pulse * 0.18 + surge * 0.36;
+  const reach = (frost ? 0.063 : 0.098) + surge * 0.045;
+
+  ctx.globalCompositeOperation = 'screen';
+  glow(ctx, x, y, reach * (0.53 + pulse * 0.26), `rgba(${color},${energy})`, energy);
+  for (let i = 0; i < (frost ? 2 : 3); i++) {
+    const age = (clock * (frost ? 0.84 : 1.38) + i / 3) % 1;
+    const direction = i % 2 === 0 ? -1 : 1;
+    const lift = reach * (0.45 + age * 0.93);
+    const sweep = direction * reach * (0.18 + age * 0.57);
+    ctx.globalAlpha = Math.sin(age * Math.PI) * (frost ? 0.39 : 0.63) * (0.72 + surge * 0.28);
+    ctx.strokeStyle = `rgb(${color})`;
+    ctx.lineWidth = (frost ? 0.003 : 0.008) * (1 - age * 0.62);
+    ctx.beginPath();
+    ctx.moveTo(x + sweep * 0.22, y - lift * 0.12);
+    ctx.bezierCurveTo(
+      x + sweep,
+      y - lift * 0.38,
+      x + sweep * 0.5,
+      y - lift * 0.62,
+      x + sweep,
+      y - lift,
+    );
+    ctx.stroke();
+  }
+  for (let i = 0; i < (frost ? 6 : 10); i++) {
+    const age = (clock * (frost ? 1.04 : 1.62) + i * 0.23) % 1;
+    const life = Math.sin(age * Math.PI);
+    const drift = Math.sin(i * 2.4 + age * 2.8);
+    const dx = drift * (0.018 + reach * age * (frost ? 0.58 : 0.74));
+    const dy = -reach * age * (frost ? 0.94 : 1.42);
+    const size = (0.004 + surge * 0.004) * life;
+    ctx.globalAlpha = life * (0.39 + energy * 0.55);
+    ctx.fillStyle = i % 3 ? `rgb(${color})` : highlight;
+    ctx.beginPath();
+    if (frost) {
+      ctx.moveTo(x + dx, y + dy - size);
+      ctx.lineTo(x + dx + size * 0.57, y + dy);
+      ctx.lineTo(x + dx, y + dy + size);
+      ctx.lineTo(x + dx - size * 0.57, y + dy);
+      ctx.closePath();
+    } else {
+      ctx.ellipse(x + dx, y + dy, size * 0.57, size * (1.2 + age), -drift * 0.65, 0, Math.PI * 2);
+    }
+    ctx.fill();
+  }
 }
