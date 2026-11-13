@@ -182,6 +182,24 @@
 .home__play--quiet b {
   font-size: 1.1rem;
 }
+.home__shoplinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.home__shoplinks .home__play {
+  min-width: 0;
+  align-content: start;
+}
+.home__play--shop b {
+  font-size: 1.12rem;
+}
+.home__play--shop small {
+  font-size: 0.9rem;
+}
+.home__play--collection svg {
+  color: #5fe0c8;
+}
 .home__confirm {
   display: flex;
   flex-wrap: wrap;
@@ -196,8 +214,7 @@
 /* the smaller destinations: a grid of icon tiles, quieter than the big buttons above but of the same make */
 .home__links {
   display: grid;
-  /* (six tiles: two rows of three, your collection then the library and boards) */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 0.4rem;
   margin-top: 0.3rem;
 }
@@ -241,6 +258,7 @@
 .home__link {
   position: relative;
   display: grid;
+  grid-column: span 2;
   justify-items: center;
   align-content: center;
   gap: 0.25rem;
@@ -260,6 +278,9 @@
     border-color var(--t-base) var(--ease-out),
     transform var(--t-base) var(--ease-pop),
     box-shadow var(--t-base) var(--ease-out);
+}
+.home__link:nth-last-child(-n + 2) {
+  grid-column: span 3;
 }
 .home__link svg {
   color: var(--c-gold);

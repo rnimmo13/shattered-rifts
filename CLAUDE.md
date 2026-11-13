@@ -1,3 +1,11 @@
+# Current character art direction (2026-11-13)
+
+For future Riftwalker, skin, companion, dragon, and enemy art, use `docs/ART_DIRECTION.md` and its approved image anchors. The target is inked, stylized fantasy with a slightly cartoon feel. Do not use whole-character distortion for idle breathing. Older flat-cartoon enemy prompts are historical where their style conflicts with this direction. No redraw or release is authorized by this note.
+
+# Release approved 0.269.0 (2026-11-13; decision 779)
+
+Robert explicitly approves pushing ChatGPT's pending work ("can you take in all of the recent changes and push them. chatgpt made some changes"). Website/server and matching Windows updater. Future changes need fresh release approval. The Gothic Puppeteer recoloured moss green with a nose stud at load (`gothicPalette.ts`), a black aura and green curse; the Tempest Sage's stance-coloured punch effects (`skinEffects.ts`); the Store and Collection category called Skins (ids unchanged). No rules change.
+
 # Release approved 0.267.0 (2026-11-13; decision 778)
 
 Robert explicitly approves pushing after a review ("can you review the tempest sage skin and the gothic puppeteer and push them if everything checks out"). Website/server and matching Windows updater. Future changes need fresh release approval. The Tempest Sage (`monk-tempest-sage`), a Monk look with its own set for each stance: `<clip><Stance>` clips (`idleFury`, `attackSerene`...) chosen by `SheetHeroSprite.setStance` from the `calm` / `wrath` / `radiant` status, the fall and death shared; entering a stance plays that stance's power-up, and a card that enters one skips its own cast power-up. The Gothic Puppeteer (`necromancer-gothic-puppeteer`; her art folder is still `assets-src\heroes-pose-sheets\necromancer-bone-puppeteer`), her marionette not built yet. The 20 old still skins are still in `SKINS`: Robert chose to drop them for good once new skins are done (docs/ASSETS_SRC_CLEANUP_AUDIT.md). No rules change.

@@ -8,6 +8,7 @@ Started 2026-11-13 (Robert). These are guidelines to "somewhat abide by", not la
 better, and write the exception down in section 11.
 
 Related files:
+- `docs/ART_DIRECTION.md`: approved character style anchors and idle-motion rules; it takes precedence over this document on style.
 - `assets-src\heroes-pose-sheets\<hero>\<hero>_HD_PROMPT.txt`: the base heroes' ChatGPT prompts, the pattern for all others.
 - `assets-src\heroes-pose-sheets\CHATGPT_SKINS_BATCH_2.md`: the six skins written to these guidelines.
 - `docs\animation-guideline-2d-models.md`: the older single-file rig prompt. It predates pose sheets; this document is
@@ -29,10 +30,11 @@ Related files:
 
 ## 2. Art style
 
-- Polished cartoon fantasy: bold clean dark outlines, saturated colours, crisp cel-shaded forms, controlled detail.
-- Somewhat cartoony and stylized. Not realistic, not shiny or metallic, not painterly, not pixel art.
-- A skin matches the base heroes' style. When making a skin's design image, attach the base hero's reference picture
-  for style and size.
+- Inked, stylized fantasy with a slightly cartoon feel. Use the approved images and comparison process in
+  `docs/ART_DIRECTION.md`; the default Rogue is the clearest style anchor.
+- Keep confident contours, selective interior lines, dimensional shading, readable shapes, and consistent finish.
+- A skin matches the approved family. Attach its base hero for style and size, plus at least one approved anchor
+  from `docs/ART_DIRECTION.md`.
 - **Characters do not have to be human** (Robert, 2026-11-13). A skin can be a creature, a construct, an undead thing,
   a spirit or an elemental, and the roster should have a mix. A non-human skin still needs what the animations rely on:
   an upright body with a clear ready stance, a way to hold or be its Riftwalker's weapon (section 6), a readable
@@ -70,7 +72,7 @@ Every character has all of these. "Drawn poses" does not count the ready stance 
 
 | Animation | Game clip | Drawn poses | Images | What it is |
 |---|---|---|---|---|
-| Idle (breathing) | `idle` | 2 | 1 | breathing in, breathing out; feet, hands and weapon do not move |
+| Idle | `idle` | 2 | 1 | stable ready pose; any breathing is restrained and localized, with feet, face, hands, weapon and silhouette stable |
 | Fidget | `fidget` (new) | 4 | 2 | a small in-character movement played every few seconds while standing |
 | Attack | `attack` | 10 | 5 | the character's signature strike |
 | Second attack | `attack2` | 10 | 5 | only for characters with two weapons (Drunkard, Spellblade) |
@@ -90,7 +92,10 @@ A one-attack character is 14 images, a two-attack character 19, plus prop sheets
 
 ### How they play
 
-- The pipeline blends between drawn poses, so the game plays smooth motion: idle is a 2-second loop, and attacks, hits,
+- Do not use whole-character squash, stretch, or scale to fake breathing. Keep idle anatomy and silhouette stable; see
+  `docs/ART_DIRECTION.md`.
+
+- The pipeline blends between drawn poses, so the game plays smooth motion: idle may be a subtle loop, and attacks, hits,
   deaths and power-ups play at up to 60 frames a second.
 - Limited-frame, pose-to-pose playback reads as dated, which is why the pipeline blends.
 

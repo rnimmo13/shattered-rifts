@@ -1,3 +1,11 @@
+## 0.269.0 - 2026-11-13
+
+- Gothic Puppeteer: approved moss-green accents and a silver nose stud across all seven clips and both atlas qualities, green curse projectile, and matching still fallbacks. The palette and per-frame landmarks are applied once during image loading, preserving source poses, scythe length, frame timing and collision-free alpha.
+- Gothic Puppeteer: a soft black silhouette aura courses upward and swells gently off the scythe shaft, crown and charms, following the Demon Knight rim treatment without ribbons, tendrils or particles. Effects are attached to the resting pose and do not deform her body or weapon.
+- Tempest Sage: dense stance-colored punch auras, forward energy plumes, lightning filaments, pressure rings and sparks accompany the existing punch poses. Effect timing follows contact and ends before the hand returns to guard.
+- Store and Collection call the category Skins, with matching empty-state and accessibility labels. Stored category and cosmetic IDs are unchanged.
+- Cosmetic effects use the shared sheet renderer for battle and model previews, in both atlas qualities and facings. Extra effect canvas space does not alter body fitting or Store sizing.
+
 ## 0.268.0 - 2026-11-13
 
 - Store and Collection still previews share the animated model's resting artwork and fitting metrics, so the three-model limit and reduced-motion fallback no longer change character scale. Existing intentional display scales are retained.

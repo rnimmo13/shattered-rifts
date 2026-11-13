@@ -1,3 +1,5 @@
+> **Scope:** This guide covers card illustrations. For Riftwalker, skin, companion, dragon, and enemy character art, use `docs/ART_DIRECTION.md` and its approved image anchors. Card paintings may use a different rendering method while sharing the game's visual world.
+
 # Shattered Rifts: AI Art Pipeline & Style Bible
 
 Card illustrations are **AI-generated**. Frames, UI, icons and effects are code (see `04_…`).

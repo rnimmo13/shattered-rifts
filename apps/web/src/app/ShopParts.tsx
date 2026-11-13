@@ -77,14 +77,16 @@ export function ShopFrame(props: {
         <a className="btn btn--small" href="#/">
           <span>Back</span>
         </a>
-        {page === 'store' ? (
-          <StoreIcon size={44} className="store__mark" />
-        ) : (
-          <CollectionIcon size={44} className="store__mark" />
-        )}
-        <div className="shop__title">
-          <h1>{page === 'store' ? 'Store' : 'Collection'}</h1>
-          <p>{props.lead}</p>
+        <div className="shop__brand">
+          {page === 'store' ? (
+            <StoreIcon size={44} className="store__mark" />
+          ) : (
+            <CollectionIcon size={44} className="store__mark" />
+          )}
+          <div className="shop__title">
+            <h1>{page === 'store' ? 'Store' : 'Collection'}</h1>
+            <p>{props.lead}</p>
+          </div>
         </div>
         <nav className="shop__switch" aria-label="Store or your Collection">
           <a

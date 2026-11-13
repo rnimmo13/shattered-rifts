@@ -6,7 +6,7 @@ import { AVAILABLE_SKINS } from '../art/heroRigs';
 export type ShopTab = 'looks' | 'backs' | 'fields' | 'frames' | 'titles' | 'emotes';
 
 const ALL_TABS: { id: ShopTab; name: string; text: string }[] = [
-  { id: 'looks', name: 'Riftwalker looks', text: 'Other outfits for your Riftwalkers.' },
+  { id: 'looks', name: 'Skins', text: 'Other outfits for your Riftwalkers.' },
   { id: 'backs', name: 'Card backs', text: 'New designs for the back of every card you draw.' },
   {
     id: 'fields',

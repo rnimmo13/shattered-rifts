@@ -1,3 +1,4 @@
+import { GOTHIC_SKIN, gothicPicture } from './gothicPalette';
 import { iconUrl, paintedFiles } from './gameIcons';
 import { WORLD_UNIT_ART } from '@sr/content/v2';
 // Real artwork, when there is some. Drop PNG/WebP files into apps/web/public/art/ and list them in
@@ -131,6 +132,15 @@ function load(): Stages {
       backdrops.set(id, `${base()}art/${path}`);
     // (skins are only listed: the Store shows them as plain images, so nothing is fetched here)
     for (const [id, path] of Object.entries(m.skins ?? {})) skins.set(id, `${base()}art/${path}`);
+    // (not awaited: the recoloured picture must never hold up the start for everyone else)
+    if (m.skins?.[GOTHIC_SKIN]) {
+      gothicPicture().then(
+        (url) => skins.set(GOTHIC_SKIN, url),
+        () => {
+          /* retain the existing fallback if art cannot load */
+        },
+      );
+    }
     for (const [key, path] of Object.entries(m.figures ?? {}))
       figurePaths.set(key, `${base()}art/${path}`);
     const heroKeys = [...figurePaths.keys()].filter((k) => k.startsWith('hero:'));

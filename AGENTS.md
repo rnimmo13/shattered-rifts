@@ -1,3 +1,7 @@
+# Art direction for future character work
+
+Before creating or revising Riftwalker, skin, dragon, companion, or enemy art or animations, read `docs/ART_DIRECTION.md`. Use its approved visual anchors and idle-motion rules; they take precedence over older generated prompt batches where style guidance conflicts. This does not authorize a redraw or release.
+
 # Shattered Rifts project instructions
 
 Read `CLAUDE.md` before working on the game.

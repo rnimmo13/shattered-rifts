@@ -45,7 +45,7 @@ export function StoreScreen() {
   return (
     <ShopFrame
       page="store"
-      lead="Cosmetics only: nothing here ever makes a deck stronger."
+      lead="Get skins and cosmetics for your Riftwalkers."
       tab={tab}
       onTab={pickTab}
       hero={{ value: hero, onPick: pickHero, all: true }}
@@ -53,7 +53,7 @@ export function StoreScreen() {
       {tab !== 'looks' ? (
         <SoonPanel tab={tab} />
       ) : looks.length === 0 ? (
-        <SoonPanel tab="looks" text="No looks for this Riftwalker yet." />
+        <SoonPanel tab="looks" text="No skins for this Riftwalker yet." />
       ) : (
         <ul className="shop__grid">
           {looks.map((s) => {
@@ -84,7 +84,7 @@ export function StoreScreen() {
                     <a
                       className="btn btn--small btn--ghost"
                       href="#/cosmetics"
-                      aria-label={`Wearing ${skinName(s)}: change looks in your Collection`}
+                      aria-label={`Wearing ${skinName(s)}: change skins in your Collection`}
                     >
                       <span>Wearing</span>
                     </a>

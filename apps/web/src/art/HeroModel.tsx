@@ -12,6 +12,7 @@ import { useSettingsChanged, type SettingKind } from '../app/settings';
 import type { HeroSprite } from '../fight/heroSprite';
 import './heroModel.css';
 import { skinPreview, skinPreviewLayout } from './skinPreview';
+import { GOTHIC_SKIN, gothicPicture } from './gothicPalette';
 
 const still = (): boolean =>
   (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) ||
@@ -46,6 +47,19 @@ export function HeroModel(props: {
   children: ReactNode;
 }) {
   const box = useRef<HTMLSpanElement>(null);
+  const [gothicSrc, setGothicSrc] = useState<string>();
+  useEffect(() => {
+    if (props.skin !== GOTHIC_SKIN) return;
+    let active = true;
+    void gothicPicture()
+      .then((src) => {
+        if (active) setGothicSrc(src);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [props.skin]);
   const [live, setLive] = useState(false);
   // (DECISIONS #724) the rig could not be shown, or took too long: the picture after all
   const [fallback, setFallback] = useState(false);
@@ -267,7 +281,7 @@ export function HeroModel(props: {
       ref={box}
       className={`hero-model${contain && skinPreview(props.skin) ? ' has-preview-fit' : ''}${live ? ' is-live' : ''}${loading ? ' is-loading' : ''} ${props.className ?? ''}`}
     >
-      {props.children}
+      {props.skin === GOTHIC_SKIN && gothicSrc ? <img src={gothicSrc} alt="" /> : props.children}
       {loading && (
         <span className="hero-model__loader" aria-hidden="true">
           <img src={`${import.meta.env.BASE_URL}branding/logo-192.png`} alt="" />

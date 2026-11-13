@@ -129,16 +129,16 @@ export function CosmeticsScreen() {
               hero={h}
               skin={worn}
               name={name(h)}
-              sub={worn ? skinName({ id: worn, hero: h }) : 'Own look'}
-              tag={count > 0 ? `${count + 1} looks` : undefined}
+              sub={worn ? skinName({ id: worn, hero: h }) : 'Default skin'}
+              tag={count > 0 ? `${count + 1} skins` : undefined}
               onOpen={() => pickHero(h)}
-              openLabel={`Change the ${name(h)}'s look`}
+              openLabel={`Change the ${name(h)}'s skin`}
               action={
                 <button
                   type="button"
                   className="btn btn--small btn--ghost"
                   onClick={() => pickHero(h)}
-                  aria-label={`Change the ${name(h)}'s look`}
+                  aria-label={`Change the ${name(h)}'s skin`}
                 >
                   <span>Change</span>
                 </button>
@@ -152,7 +152,7 @@ export function CosmeticsScreen() {
     const h = hero as HeroId;
     const worn = shownSkin(mine, h) ?? null;
     const looks = [
-      { id: null, label: 'Own look', src: own.get(h) ?? '' },
+      { id: null, label: 'Default skin', src: own.get(h) ?? '' },
       ...ownedLooks
         .filter((s) => s.hero === h)
         .map((s) => ({ id: s.id, label: skinName(s), src: art.get(s.id) ?? '' })),
@@ -162,7 +162,7 @@ export function CosmeticsScreen() {
     ).length;
     body = (
       <>
-        <ul className="shop__grid" role="radiogroup" aria-label={`The ${name(h)}'s look`}>
+        <ul className="shop__grid" role="radiogroup" aria-label={`The ${name(h)}'s skin`}>
           {looks.map((l) => {
             const on = l.id === worn;
             return (
@@ -195,7 +195,7 @@ export function CosmeticsScreen() {
         </ul>
         {forSale > 0 && (
           <p className="shop__note">
-            {forSale} more {forSale === 1 ? 'look' : 'looks'} for the {name(h)} in{' '}
+            {forSale} more {forSale === 1 ? 'skin' : 'skins'} for the {name(h)} in{' '}
             <a href="#/store">the Store</a>.
           </p>
         )}
@@ -205,7 +205,7 @@ export function CosmeticsScreen() {
   return (
     <ShopFrame
       page="vault"
-      lead="Everything you own, and the look each Riftwalker wears: on the home screen and in every fight, on any device with your account."
+      lead="See what you own and choose what your Riftwalkers wear."
       tab={tab}
       onTab={pickTab}
       hero={{ value: hero, onPick: pickHero, all: true }}

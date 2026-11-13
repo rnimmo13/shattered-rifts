@@ -46,6 +46,26 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.269.0',
+    date: '2026-11-13',
+    title: 'Necromantic green and stronger skin effects',
+    summary:
+      'Gothic Puppeteer gains her green palette and shadow aura; Tempest Sage channels stronger punches.',
+    notes: [
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        text: 'Gothic Puppeteer now wears moss-green accents with a silver nose piercing. Her curse is green, and a close-fitting black aura courses along her resting scythe.',
+      },
+      {
+        kind: 'changed',
+        hero: 'monk',
+        text: 'Tempest Sage punches release a fuller aura and pressure burst, colored for her current stance.',
+      },
+      { kind: 'changed', text: 'The Store and Collection now call Riftwalker looks Skins.' },
+    ],
+  },
+  {
     version: '0.268.0',
     date: '2026-11-13',
     title: 'Gentler breathing and consistent Store previews',

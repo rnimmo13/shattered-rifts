@@ -1,4 +1,4 @@
-// The home page's smaller destinations, as a tidy grid of icon tiles under the big menu buttons: your collection (decks, looks,
+// The home page's smaller destinations, as a tidy grid of icon tiles under the big menu buttons: your collection (decks,
 // trophies, runs), the Card library and the leaderboards (Robert, 2026-11-10). How to play and the patch notes are in the header
 // (HomeHeaderLinks); the ghost decks are the Arena's, linked from its page; Credits is in Settings > About.
 
@@ -119,10 +119,9 @@ export function LineIcon(props: { name: keyof typeof ICON; size?: number }) {
   );
 }
 
-// (two rows of three: what is yours, then the library and the boards)
+// Five shortcuts below the separate Store and Collection links.
 const LINKS: { href: string; label: string; icon: keyof typeof ICON }[] = [
   { href: '#/decks', label: 'Saved decks', icon: 'decks' },
-  { href: '#/cosmetics', label: 'Collection', icon: 'skins' },
   { href: '#/trophies', label: 'Trophy case', icon: 'trophies' },
   { href: '#/history', label: 'Run history', icon: 'history' },
   { href: '#/cards', label: 'Card library', icon: 'cards' },

@@ -18,7 +18,7 @@ import { whoAmI, type Me } from '../pvp/vaultSync';
 import { progressLabel } from '../pvp/deckLayout';
 import { stagesCleared } from '../pvp/vault';
 import { StoreIcon } from './StoreIcon';
-import { HomeHeaderLinks, HomeLinks } from './HomeLinks';
+import { HomeHeaderLinks, HomeLinks, LineIcon } from './HomeLinks';
 import { PlayerChip } from './PlayerChip';
 import { SettingsButton } from '../ui/SettingsButton';
 import { HERO_COLOR } from '../art/emblems';
@@ -270,12 +270,18 @@ export function TitleScreen() {
             <b>Sandbox</b>
             <small>Try any fight as the {hero.hero.name}, no run needed. Elite events too.</small>
           </a>
-          <a className="home__play home__play--store" href="#/store">
-            <StoreIcon size={36} />
-            <b>Store</b>
-            {/* (DECISIONS #755: Riftwalker looks are hidden until they have animated versions) */}
-            <small>Card backs and other cosmetics. The ones you own are in your Collection.</small>
-          </a>
+          <div className="home__shoplinks">
+            <a className="home__play home__play--shop" href="#/store">
+              <StoreIcon size={32} />
+              <b>Store</b>
+              <small>Get skins and cosmetics.</small>
+            </a>
+            <a className="home__play home__play--shop home__play--collection" href="#/cosmetics">
+              <LineIcon name="skins" size={32} />
+              <b>Collection</b>
+              <small>See what you own and wear.</small>
+            </a>
+          </div>
 
           <HomeLinks />
         </section>

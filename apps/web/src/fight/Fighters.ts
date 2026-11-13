@@ -1,3 +1,4 @@
+import { GOTHIC_CURSE } from '../art/gothicPalette';
 // The combatants on the stage: your hero and allies on the left, the enemies on the right, all standing on one line.
 // Presentation only. It animates what the engine already decided (lunges, hits, deaths, summons) and reports where
 // each figure is so the DOM overlay (HP bars, intents, statuses) can sit on top of it.
@@ -844,7 +845,7 @@ export class Fighters {
                 name: 'launch',
                 within: 0.5,
                 at: () => {
-                  const tint = gothic ? '#e85b99' : f.spec.attack.tint;
+                  const tint = gothic ? GOTHIC_CURSE : f.spec.attack.tint;
                   const height = f.spec.height;
                   // The launch frame holds the katana across this point relative to the feet.
                   const from = {

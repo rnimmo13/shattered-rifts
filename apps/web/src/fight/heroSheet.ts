@@ -12,6 +12,8 @@
 
 import type { Stance } from '@sr/combat';
 import { Texture } from 'pixi.js';
+import { gothicCanvas, gothicPageMarks, GOTHIC_SKIN } from '../art/gothicPalette';
+import { drawSkinEffects, hasSkinEffects, skinEffectActive } from './skinEffects';
 import { loadGraphicsQuality } from '../duel/effects';
 
 type Facing = 'right' | 'left';
@@ -52,7 +54,7 @@ export interface SheetAssets {
   man: Manifest;
   /** decoded once and kept decoded (an ImageBitmap; an image element where that is not available); null until fetched (the
    * pages after the idle's come in behind it) */
-  pages: (ImageBitmap | HTMLImageElement | null)[];
+  pages: (ImageBitmap | HTMLImageElement | HTMLCanvasElement | null)[];
   /** per page: resolves once it is in (false if it could not be had: the clips on it are skipped) */
   pageReady: Promise<boolean>[];
   /** resolves once every page has settled, true if all came in */
@@ -141,18 +143,37 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
         const man = (await r.json()) as Manifest;
         if (!man.clips?.['idle']) return null;
         // (an ImageBitmap stays decoded: an image element's pixels may be dropped while it is off the page and decoded again mid-strike)
-        const page = async (f: string): Promise<ImageBitmap | HTMLImageElement> => {
+        const page = async (
+          f: string,
+        ): Promise<ImageBitmap | HTMLImageElement | HTMLCanvasElement> => {
           if (typeof createImageBitmap === 'function') {
             const blob = await fetch(`${dir}${f}`).then((r) => {
               if (!r.ok) throw new Error(`${f}: ${r.status}`);
               return r.blob();
             });
-            return createImageBitmap(blob);
+            const bitmap = await createImageBitmap(blob);
+            if (hero !== `skins/${GOTHIC_SKIN}`) return bitmap;
+            const recolored = gothicCanvas(
+              bitmap,
+              bitmap.width,
+              bitmap.height,
+              gothicPageMarks(man, man.pages.indexOf(f)),
+            );
+            const result = await createImageBitmap(recolored);
+            bitmap.close();
+            return result;
           }
           const img = new Image();
           img.src = `${dir}${f}`;
           await img.decode();
-          return img;
+          return hero === `skins/${GOTHIC_SKIN}`
+            ? gothicCanvas(
+                img,
+                img.naturalWidth,
+                img.naturalHeight,
+                gothicPageMarks(man, man.pages.indexOf(f)),
+              )
+            : img;
         };
         const first = Math.min(man.pages.length, Math.max(1, man.idlePages ?? man.pages.length));
         const pages: SheetAssets['pages'] = man.pages.map(() => null);
@@ -226,6 +247,7 @@ export class SheetHeroSprite {
   private stance: Stance | undefined;
   private idleSeconds = 0;
   private t = 0;
+  private effectTime = 0;
   private fired = new Set<string>();
   private ended = false;
   private onEvent: ((e: { name: string }) => void) | undefined;
@@ -312,7 +334,11 @@ export class SheetHeroSprite {
   }
 
   private get box(): Box {
-    return this.boxes.get(this.sheetClip) ?? this.boxes.get('idle')!;
+    const b = this.boxes.get(this.sheetClip) ?? this.boxes.get('idle')!;
+    if (!hasSkinEffects(this.a.hero)) return b;
+    // Extra texture room for particles; body fitting and resting spans retain the original art bounds.
+    const pad = this.bodyH * 0.3;
+    return { x0: b.x0 - pad, y0: b.y0 - pad, w: b.w + pad * 2, h: b.h + pad * 2 };
   }
 
   get anchor(): { x: number; y: number } {
@@ -438,6 +464,7 @@ export class SheetHeroSprite {
 
   update(dt: number): void {
     if (this.disposed || dt <= 0) return;
+    this.effectTime += dt;
     const c = this.cur;
     if (this.clipName === 'idle') {
       const idle = this.sheetFor('idle');
@@ -486,7 +513,13 @@ export class SheetHeroSprite {
     const fr = c.frames[i];
     const ctx = this.ctx;
     const { width: W, height: H } = this.canvas;
-    const key = `${this.sheetClip}:${i}:${W}x${H}:${this.k}`;
+    const fx = hasSkinEffects(this.a.hero);
+    // (redraw on the effect clock only while an effect is moving, not all through an idle)
+    const tick =
+      fx && skinEffectActive(this.a.hero, this.sheetClip, this.t)
+        ? Math.floor(this.effectTime * 30)
+        : 0;
+    const key = `${this.sheetClip}:${i}:${W}x${H}:${this.k}:${tick}`;
     if (key === this.drawn) return;
     this.drawn = key;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -497,6 +530,21 @@ export class SheetHeroSprite {
       if (img) {
         const b = this.box;
         if (this.facing === 'left') ctx.setTransform(-1, 0, 0, 1, W, 0);
+        const effects = (behind: boolean) => {
+          if (!fx) return;
+          ctx.save();
+          ctx.translate((ox - b.x0) * this.k, (oy - b.y0) * this.k);
+          ctx.scale(this.k, this.k);
+          drawSkinEffects(ctx, this.a.hero, this.sheetClip, this.t, this.effectTime, w, h, behind, {
+            image: img,
+            x,
+            y,
+            w,
+            h,
+          });
+          ctx.restore();
+        };
+        effects(true);
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(
@@ -510,6 +558,7 @@ export class SheetHeroSprite {
           w * this.k,
           h * this.k,
         );
+        effects(false);
       }
     }
     this.texture.source.update();
