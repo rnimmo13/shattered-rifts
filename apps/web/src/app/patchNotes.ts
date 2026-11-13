@@ -46,6 +46,23 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.268.0',
+    date: '2026-11-13',
+    title: 'Gentler breathing and consistent Store previews',
+    summary: 'Subtler Gothic Puppeteer breathing and consistent sizing as Store models load.',
+    notes: [
+      {
+        kind: 'fixed',
+        hero: 'necromancer',
+        text: 'Reduced the Gothic Puppeteer’s idle breathing and removed the exaggerated changes in her chest shape.',
+      },
+      {
+        kind: 'fixed',
+        text: 'Store and Collection still previews now use the same resting artwork and scale as their animated models, preserving intentional character size differences.',
+      },
+    ],
+  },
+  {
     version: '0.267.0',
     date: '2026-11-13',
     title: 'The Tempest Sage and the Gothic Puppeteer',

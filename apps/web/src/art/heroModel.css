@@ -105,3 +105,14 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Store stills use the same resting frame and fit as the animated canvas. */
+.hero-model.look__model.has-preview-fit > img {
+  position: absolute;
+  width: var(--preview-width);
+  height: var(--preview-height);
+  max-width: none;
+  left: var(--preview-left);
+  top: var(--preview-top);
+  margin: 0;
+}

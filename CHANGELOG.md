@@ -1,3 +1,9 @@
+## 0.268.0 - 2026-11-13
+
+- Store and Collection still previews share the animated model's resting artwork and fitting metrics, so the three-model limit and reduced-motion fallback no longer change character scale. Existing intentional display scales are retained.
+
+- Gothic Puppeteer uses a three-second breathing cycle from one resting drawing, with at most 0.15% vertical movement. High and Medium atlases include a dedicated idle page loaded first. The other clips retain their existing frames and timing.
+
 ## 0.267.0 - 2026-11-13
 
 - Added the Tempest Sage, a free animated Monk skin: a storm monk whose markings glow. She has her own look for each stance, with its own stance, idle, attack, hit and power-up: Serene glows pale blue and strikes with an open palm, Fury burns red-gold and throws a driving hook, Radiant blazes white-gold and lands a long straight punch. Entering a stance plays that stance's power-up once.

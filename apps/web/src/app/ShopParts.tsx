@@ -1,3 +1,4 @@
+import { skinPreview } from '../art/skinPreview';
 // The pieces the Store and the Cosmetics Vault share (DECISIONS #409): a compact header with a Store / Vault switch, a bar that stays at
 // the top of the page while it scrolls (the category tabs, and under Riftwalker looks a row of classes), the tile a look is shown on,
 // and the panel a category with nothing in it yet shows.
@@ -197,7 +198,13 @@ export function LookTile(props: {
       {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
       {props.hero ? (
         <HeroModel hero={props.hero} skin={props.skin} className="look__model" contain>
-          <LookPicture src={props.src} />
+          <LookPicture
+            src={
+              skinPreview(props.skin)
+                ? `${import.meta.env.BASE_URL}art/skin-previews/${props.skin}.png`
+                : props.src
+            }
+          />
         </HeroModel>
       ) : (
         <LookPicture src={props.src} />

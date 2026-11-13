@@ -11,6 +11,7 @@ import { useSettingsChanged, type SettingKind } from '../app/settings';
 // (a type only: the rig code itself is loaded on demand below)
 import type { HeroSprite } from '../fight/heroSprite';
 import './heroModel.css';
+import { skinPreview, skinPreviewLayout } from './skinPreview';
 
 const still = (): boolean =>
   (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) ||
@@ -58,6 +59,24 @@ export function HeroModel(props: {
   const rigId = heroRigFor(props.hero, props.skin);
   const fill = props.fill ?? 0.94;
   const contain = props.contain === true;
+  useEffect(() => {
+    const el = box.current;
+    const skin = props.skin;
+    if (!el || !skin || !contain) return;
+    const place = () => {
+      const layout = skinPreviewLayout(skin, el.clientWidth, el.clientHeight, fill);
+      if (!layout) return;
+      for (const [key, value] of Object.entries(layout)) {
+        el.style.setProperty('--preview-' + key, value + 'px');
+      }
+    };
+    const observer = new ResizeObserver(place);
+    observer.observe(el);
+    place();
+    return () => {
+      observer.disconnect();
+    };
+  }, [props.skin, contain, fill]);
   // (DECISIONS #755) a model is only loaded while it is on screen or near it, and let go when it scrolls well away
   const [near, setNear] = useState(() => typeof IntersectionObserver !== 'function');
   // (no pose-sheet slot free: the picture, until one is; `slot` counts the times one was freed, to try again)
@@ -246,7 +265,7 @@ export function HeroModel(props: {
   return (
     <span
       ref={box}
-      className={`hero-model${live ? ' is-live' : ''}${loading ? ' is-loading' : ''} ${props.className ?? ''}`}
+      className={`hero-model${contain && skinPreview(props.skin) ? ' has-preview-fit' : ''}${live ? ' is-live' : ''}${loading ? ' is-loading' : ''} ${props.className ?? ''}`}
     >
       {props.children}
       {loading && (
