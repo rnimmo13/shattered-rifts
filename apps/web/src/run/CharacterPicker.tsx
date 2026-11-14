@@ -35,43 +35,41 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
   return (
     <div className="picker">
       <div className="picker__stage">
-        <div className="picker__realms" role="radiogroup" aria-label="Riftwalker">
-          {heroesByRealm().map((g) => (
-            <section key={g.realm} className="picker__realm-group">
-              <h3 className={`picker__realm-name realm--${g.realm}`}>{g.name}</h3>
-              <div className="picker__row">
-                {g.heroes.map((id) => {
-                  const x = RIFTWALKERS[id];
-                  return (
-                    <button
-                      key={id}
-                      role="radio"
-                      aria-label={x.hero.name}
-                      aria-checked={props.value === id}
-                      className={`picker__char realm--${x.realm}${props.value === id ? ' is-on' : ''}`}
-                      onClick={() => {
-                        setPick(Math.floor(Math.random() * 1000));
-                        props.onChange(id);
-                      }}
-                    >
-                      <HeroIcon hero={id} size={58} />
-                      <span className="picker__name">{x.hero.name}</span>
-                      {/* (the classes they can become, DECISIONS #537; their mechanics are in the detail beside) */}
-                      <span className="picker__realm">
-                        {ascendanciesOf(id)
-                          .map((a) => a.name)
-                          .join(' · ')}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+        <div className="picker__classes" role="radiogroup" aria-label="Riftwalker">
+          {heroesByRealm()
+            .flatMap((g) => g.heroes)
+            .map((id) => {
+              const x = RIFTWALKERS[id];
+              return (
+                <button
+                  key={id}
+                  role="radio"
+                  aria-label={`${x.role}: ${x.hero.name}`}
+                  aria-checked={props.value === id}
+                  className={`picker__class realm--${x.realm}${props.value === id ? ' is-on' : ''}`}
+                  onClick={() => {
+                    setPick(Math.floor(Math.random() * 1000));
+                    props.onChange(id);
+                  }}
+                >
+                  <span className="picker__classIcon">
+                    <HeroIcon hero={id} size={64} />
+                  </span>
+                  <span>{x.role}</span>
+                </button>
+              );
+            })}
         </div>
         <figure className="picker__figure">
           {/* (animated where their own look has a model, DECISIONS #680) */}
-          <HeroModel hero={props.value} skin={skin} className="picker__model" key={props.value}>
+          <HeroModel
+            hero={props.value}
+            skin={skin}
+            className="picker__model"
+            contain
+            fill={1.05}
+            key={props.value}
+          >
             <img src={figureUrl} alt={c.hero.name} />
           </HeroModel>
         </figure>

@@ -242,10 +242,19 @@ export const SPELLBLADE: CardDef[] = [
   ),
 
   // --- Swords ---
-  a('common', 'obsidian-flurry', 'Obsidian Flurry', 'attack', 2, 'foe', [volley(4, 3, 3), fracture(3)], {
-    tags: [SWORD],
-    up: { effects: [volley(6, 3, 3), fracture(3)] },
-  }),
+  a(
+    'common',
+    'obsidian-flurry',
+    'Obsidian Flurry',
+    'attack',
+    2,
+    'foe',
+    [volley(4, 3, 3), fracture(3)],
+    {
+      tags: [SWORD],
+      up: { effects: [volley(6, 3, 3), fracture(3)] },
+    },
+  ),
   a(
     'common',
     'cosmic-lance',
@@ -268,10 +277,19 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SWORD],
     up: { effects: [swing(1, 5, 2), etch] },
   }),
-  a('common', 'rift-sweep', 'Rift Sweep', 'attack', 2, 'none', [volley(3, 3, 3, 'allFoes'), fracture(3, 'allFoes')], {
-    tags: [SWORD],
-    up: { effects: [volley(5, 3, 3, 'allFoes'), fracture(3, 'allFoes')] },
-  }),
+  a(
+    'common',
+    'rift-sweep',
+    'Rift Sweep',
+    'attack',
+    2,
+    'none',
+    [volley(3, 3, 3, 'allFoes'), fracture(3, 'allFoes')],
+    {
+      tags: [SWORD],
+      up: { effects: [volley(5, 3, 3, 'allFoes'), fracture(3, 'allFoes')] },
+    },
+  ),
   a('common', 'glass-needle', 'Glass Needle', 'attack', 0, 'foe', [swing(2, 1, 3)], {
     exhaust: true,
     tags: [SWORD],
@@ -350,10 +368,7 @@ export const SPELLBLADE: CardDef[] = [
     {
       tags: [SWORD],
       up: {
-        effects: [
-          volley(6, 3, 3),
-          fracture(8),
-        ],
+        effects: [volley(6, 3, 3), fracture(8)],
       },
     },
   ),
@@ -370,10 +385,19 @@ export const SPELLBLADE: CardDef[] = [
       up: { effects: [volley(5, 4, 3), fracture(8), scaled(stars(0), per('swordFoes'))] },
     },
   ),
-  a('rare', 'storm-of-glass', 'Storm of Glass', 'attack', 3, 'foe', [volley(5, 4, 2), fracture(8)], {
-    tags: [SWORD],
-    up: { effects: [volley(7, 4, 2), fracture(8)] },
-  }),
+  a(
+    'rare',
+    'storm-of-glass',
+    'Storm of Glass',
+    'attack',
+    3,
+    'foe',
+    [volley(5, 4, 2), fracture(8)],
+    {
+      tags: [SWORD],
+      up: { effects: [volley(7, 4, 2), fracture(8)] },
+    },
+  ),
   a('rare', 'thousand-shards', 'Thousand Shards', 'attack', 2, 'foe', [burst(0, 6)], {
     starX: true,
     exhaust: true,
@@ -521,11 +545,20 @@ export const SPELLBLADE: CardDef[] = [
     tags: [SPELL],
     up: { effects: [burst(11, 4), fracture(2)] },
   }),
-  a('common', 'astral-pulse', 'Arcane Pulse', 'attack', 1, 'none', [burst(7, 3, 'allFoes'), fracture(2, 'allFoes')], {
-    starHalf: true,
-    tags: [SPELL],
-    up: { effects: [burst(9, 3, 'allFoes'), fracture(2, 'allFoes')] },
-  }),
+  a(
+    'common',
+    'astral-pulse',
+    'Arcane Pulse',
+    'attack',
+    1,
+    'none',
+    [burst(7, 3, 'allFoes'), fracture(2, 'allFoes')],
+    {
+      starHalf: true,
+      tags: [SPELL],
+      up: { effects: [burst(9, 3, 'allFoes'), fracture(2, 'allFoes')] },
+    },
+  ),
   a(
     'common',
     'tempered-bolt',
@@ -975,8 +1008,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnEnd', [scaled(barrier(0), { by: 'stars', step: 2 })])],
-    { up: { effects: [on('turnEnd', [scaled(barrier(3), { by: 'stars', step: 2 })])] } },
+    [on('turnEnd', [scaled(barrier(0), { by: 'stars', step: 2, half: 10 })])],
+    { up: { effects: [on('turnEnd', [scaled(barrier(3), { by: 'stars', step: 2, half: 10 })])] } },
   ),
   a(
     'rare',

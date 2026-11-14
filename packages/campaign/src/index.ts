@@ -52,6 +52,8 @@ export {
   potionSellPrice,
   sellPotion,
   buyCard,
+  rerollMerchant,
+  merchantRerollPrice,
   buyRemoval,
   buyUpgrade,
   chooseCard,
@@ -191,10 +193,4 @@ export {
   type OmenEffects,
 } from './omens';
 export { WARDEN_SEQUENCE, gauntletMap } from './mapgen';
-export {
-  ELITE_DAMAGE,
-  ELITE_HP,
-  ELITE_REWARD_FADE_TIER,
-  WARDEN_DAMAGE,
-  WARDEN_HP,
-} from './run';
+export { ELITE_DAMAGE, ELITE_HP, ELITE_REWARD_FADE_TIER, WARDEN_DAMAGE, WARDEN_HP } from './run';

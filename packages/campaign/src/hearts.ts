@@ -4,6 +4,10 @@ import type { RunState } from './types';
 export const heartCrossedChance = (r: RunState): number =>
   (r.heart ? COMBAT_DB.boons[r.heart]?.crossedOfferPct : undefined) ?? 3;
 
+/** Rift Heart favors foreign-card opportunities; other Hearts keep their existing map/event odds. */
+export const heartCrossedMultiplier = (r: Pick<RunState, 'heart'>): number =>
+  r.heart === 'ember-heart' ? 3 : 1;
+
 /** Preserve the unpenalized maximum, so growth and swapping never compound rounding. */
 export function changeMaxHp(r: RunState, amount: number, heal = true, minimum = 1): number {
   const before = r.maxHp;

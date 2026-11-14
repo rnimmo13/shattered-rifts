@@ -248,8 +248,12 @@ export function ambushEnemy(
 }
 
 /** A merchant is now and then a stranger from another world; decided with the map so the map can say so. */
-function crossedFor(rng: RngState, character: string | undefined): string | undefined {
-  if (nextInt(rng, 1000) >= CROSSED_MERCHANT_CHANCE * 10) return undefined;
+function crossedFor(
+  rng: RngState,
+  character: string | undefined,
+  multiplier: number,
+): string | undefined {
+  if (nextInt(rng, 1000) >= CROSSED_MERCHANT_CHANCE * multiplier * 10) return undefined;
   const others = Object.keys(RIFTWALKERS).filter((h) => h !== character);
   return others.length ? pick(rng, others) : undefined;
 }
@@ -282,6 +286,7 @@ export function generateStageMap(
   campaignRoute?: 'twelve',
   wardenOrder: readonly string[] = WARDEN_SEQUENCE,
   themed = false,
+  crossedMerchantMultiplier = 1,
 ): StageMap {
   if (campaignRoute === 'twelve' && tier === 12)
     return themed
@@ -330,7 +335,7 @@ export function generateStageMap(
       if (kind === 'merchant') merchants++;
       const node: MapNode = { id, floor, kind, next: [] };
       if (kind === 'merchant') {
-        const crossed = crossedFor(rng, character);
+        const crossed = crossedFor(rng, character, crossedMerchantMultiplier);
         if (crossed) node.crossed = crossed;
       }
       if (kind === 'duel') node.enemyId = regular();
@@ -434,7 +439,7 @@ export function generateStageMap(
     const spot = pick(rng, apart.length > 0 ? apart : plain.length > 0 ? plain : stops);
     spot.kind = 'merchant';
     delete spot.enemyId;
-    const crossed = crossedFor(rng, character);
+    const crossed = crossedFor(rng, character, crossedMerchantMultiplier);
     if (crossed) spot.crossed = crossed;
   }
 

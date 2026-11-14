@@ -1,0 +1,1040 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "version": "0.270.0",
+  "rules": 112,
+  "assessmentId": "rift-heart-1",
+  "status": "Local implementation",
+  "source": "User request to increase Rift Heart rewards, events and shops; local code and fixture-only report exports.",
+  "basis": "Campaign: Rift Heart ordinary offers 10% -> 20%; eligible foreign-card event weights 1x -> 3x; future map crossed merchants 7.5% -> 22.5%. Fight shards stay -25%. Existing maps/offers persist. No combat rules changed.",
+  "gradeMode": "review-signals",
+  "evaluationScope": "All 30 Ascendancies and freely mixed decks. No real player observations available: .wrangler/report-qa/samples.json is fixture-only; campaign-report-preview/snapshots.json contains dummy IDs. No simulations run. Carried Arena grades are earlier hand estimates, not validation of stronger acquisition.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Typical Arena games of 10 or more own turns and roughly 50% or better Drago clears with optimized decks remain playtest targets.",
+  "progressionBands": [
+    "IV\u2013VII",
+    "VIII\u2013X",
+    "XI\u2013XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "More opportunities to assemble foreign-card synergies after acquiring Rift Heart; paying for them remains constrained by -25% fight shards.",
+      "recovery": "More choice may supply defense or recovery; foreign cards can also be unusable without their supporting mechanics.",
+      "rareReliance": "Rarity rates unchanged; more foreign-card selection can help mixed engines but guarantees no rare.",
+      "scaling": "Fight opening and extended strength depend on the acquired deck. No direct combat multiplier; no new 11+ turn growth engine.",
+      "rationale": "All classes can use Rift Heart. Native engine density competes with foreign utility. Arena combat unchanged, but imported Campaign decks may have more mixing opportunities.",
+      "watch": "Compare single-class and freely mixed damage, defense, resource and Consume engines at equal deck quality across campaign bands and Arena seats.",
+      "confidence": "Low; deterministic checks verify selection rules only.",
+      "pacing": "No measured change to 10+ own-turn Arena pacing or Drago clears.",
+      "evidence": [
+        "packages/campaign/src/riftHeart.test.ts",
+        "packages/campaign/src/hearts.test.ts"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated",
+      "rationale": "No effect before obtaining Rift Heart. Afterward all class starts can access more foreign cards; early engine dilution and shard pressure need player observation."
+    }
+  ],
+  "corrections": [
+    "Previous snapshot preserved. This is acquisition balance, not a direct combat buff or measured grade change.",
+    "Tripling event weight does not triple normalized probability. Eligibility, elite-event interception, ambush rules and promised treasure remain unchanged.",
+    "Existing maps are not rerolled; swapping Hearts affects future generation only. All 30 styles retain previous unmeasured Arena reference grades."
+  ]
+}

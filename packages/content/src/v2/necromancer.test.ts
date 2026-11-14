@@ -280,6 +280,35 @@ describe('Fate (her Doom)', () => {
     expect(foe(s).statuses.doom).toBe(3);
   });
 
+  it('Reaping converts each companion hit at one quarter, rounded up, after Barrier', () => {
+    const probe = {
+      ...db.cards.strike!,
+      id: 'mantle-probe',
+      effects: [
+        {
+          op: 'command' as const,
+          ops: [{ op: 'damage' as const, amount: 6, to: 'target' as const }],
+        },
+      ],
+    };
+    const local = { ...db, cards: { ...db.cards, 'mantle-probe': probe } };
+    for (const barrier of [0, 2, 99]) {
+      let s = fight(['reapers-mantle']);
+      s = play(s, 'T0');
+      const companion = thralls(s)[0]!;
+      s.sides.a.units = s.sides.a.units.filter((u) => u.kind === 'hero' || u.id === companion.id);
+      companion.statuses = { might: 7 };
+      foe(s).barrier = barrier;
+      s.sides.a.hand = [{ id: 'probe', card: 'mantle-probe' }];
+      const action = legalActions(local, s).find((a) => a.type === 'play' && a.card === 'probe')!;
+      const out = applyAction(local, s, action);
+      const hits = out.events.filter((e) => e.type === 'damage' && e.target === foe(s).id);
+      expect(hits.length).toBeGreaterThan(0);
+      const lost = 300 - foe(out.state).hp;
+      expect(foe(out.state).statuses.doom ?? 0).toBe(Math.ceil(lost / 4));
+    }
+  });
+
   it('Burial Shroud (Shroud) and Fleshcraft (Sleight of Flesh) answer curses on enemies', () => {
     let s = fight(['burial-shroud', 'fleshcraft', 'tolling-bell']);
     s = play(s, 'T0');
@@ -528,7 +557,10 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
   const dealtBy = (events: { type: string }[], source: string): number[] =>
     events.flatMap((e) =>
       e.type === 'damage' && (e as { source?: string }).source === source
-        ? [(e as unknown as { lost: number; blocked: number }).lost + (e as unknown as { blocked: number }).blocked]
+        ? [
+            (e as unknown as { lost: number; blocked: number }).lost +
+              (e as unknown as { blocked: number }).blocked,
+          ]
         : [],
     );
   /** play a card, then answer a choice it asks for with the first option */
@@ -549,8 +581,7 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
     thrall.hp = 1;
     const { events } = applyAction(db, s, { type: 'endTurn' });
     const hit = events.find((e) => e.type === 'damage' && e.target === thrall.id) as
-      | { source: string }
-      | undefined;
+      { source: string } | undefined;
     expect(hit, 'an enemy strikes the Thrall').toBeDefined();
     const burst = events.filter(
       (e) => e.type === 'damage' && e.source === hero(s).id && e.target === hit!.source,
@@ -570,7 +601,12 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
   });
 
   it('the Grave Colossus takes 2 slots, has Taunt, strikes for 2 + 1 per 4 max HP and takes half of a Command', () => {
-    expect(db.units['grave-colossus']).toMatchObject({ maxHp: 18, taunt: true, slots: 2, commandPct: 50 });
+    expect(db.units['grave-colossus']).toMatchObject({
+      maxHp: 18,
+      taunt: true,
+      slots: 2,
+      commandPct: 50,
+    });
     expect(db.units['grave-colossus+']?.maxHp).toBe(22);
     let s = fight(['grave-colossus', 'knucklebone']);
     s = play(s, 'T0');
@@ -652,10 +688,12 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
       b: { enemies: ['squire'] },
     });
     let s = clone(state);
-    s.sides.a.hand = ['raise-thrall', 'raise-thrall', 'raise-thrall', 'raise-thrall'].map((card, i) => ({
-      id: `T${i}`,
-      card,
-    }));
+    s.sides.a.hand = ['raise-thrall', 'raise-thrall', 'raise-thrall', 'raise-thrall'].map(
+      (card, i) => ({
+        id: `T${i}`,
+        card,
+      }),
+    );
     s.sides.a.mana = 9;
     for (const id of ['T0', 'T1', 'T2']) s = play(s, id);
     expect(thralls(s)).toHaveLength(4);
@@ -670,8 +708,7 @@ describe('the dead grow and strike back (DECISIONS #684)', () => {
     first.hp = 1;
     const { events } = applyAction(db, s, { type: 'endTurn' });
     const hit = events.find((e) => e.type === 'damage' && e.target === first.id) as
-      | { source: string }
-      | undefined;
+      { source: string } | undefined;
     expect(hit, 'an enemy strikes the Thrall').toBeDefined();
     const burst = events.filter(
       (e) => e.type === 'damage' && e.source === hero(s).id && e.target === hit!.source,
@@ -786,9 +823,9 @@ describe('Raise Colossus (2026-11-07)', () => {
     s.sides.a.units = s.sides.a.units.filter((u) => u.kind !== 'ally');
     s = play(s, 'T0');
     addThrall(s, 4, 'B-a');
-    expect(
-      legalActions(db, s).some((a) => a.type === 'play' && a.card === 'T1' && a.grow),
-    ).toBe(false);
+    expect(legalActions(db, s).some((a) => a.type === 'play' && a.card === 'T1' && a.grow)).toBe(
+      false,
+    );
     // (the Bonelord's board: a Thrall is not a Colossus, and a grow cannot come with a release)
     let t = fight(['grave-colossus', 'raise-colossus'], ['squire'], 'necromancer:bonelord');
     t.sides.a.units = t.sides.a.units.filter((u) => u.kind !== 'ally');
@@ -807,7 +844,11 @@ describe('Raise Colossus, the uncommon (2026-11-07)', () => {
   it('raises a 14 HP Colossus and is consumed; upgraded 18', () => {
     expect(cardText(db, db.cards['raise-colossus']!)).toBe('Raise Colossus 14. Consume.');
     expect(cardText(db, db.cards['raise-colossus+']!)).toBe('Raise Colossus 18. Consume.');
-    expect(db.cards['raise-colossus']).toMatchObject({ rarity: 'uncommon', cost: 2, exhaust: true });
+    expect(db.cards['raise-colossus']).toMatchObject({
+      rarity: 'uncommon',
+      cost: 2,
+      exhaust: true,
+    });
     let s = fight(['raise-colossus']);
     s = play(s, 'T0');
     expect(thralls(s).find((u) => u.def === 'grave-colossus')?.maxHp).toBe(14);
@@ -871,7 +912,11 @@ describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
     const { state, events } = applyAction(db, s, { type: 'endTurn' });
     expect(state.sides.a.mana).toBe(state.sides.a.maxMana + 1);
     const paid = events.some(
-      (e) => e.type === 'damage' && e.kind === 'direct' && e.target === thralls(s)[0]!.id && e.lost === 3,
+      (e) =>
+        e.type === 'damage' &&
+        e.kind === 'direct' &&
+        e.target === thralls(s)[0]!.id &&
+        e.lost === 3,
     );
     expect(paid).toBe(true);
   });
@@ -915,7 +960,9 @@ describe('the Necromancer cost pass (Robert 2026-11-08, #691)', () => {
     const before = new Set(s.sides.a.hand.map((c) => c.id));
     const { state } = applyAction(db, s, { type: 'endTurn' });
     // (the card the turn-start discover made: Fleeting, and new to the hand; draws are not Fleeting from it)
-    const made = state.sides.a.hand.filter((c) => !before.has(c.id) && c.ethereal && c.costMod !== undefined);
+    const made = state.sides.a.hand.filter(
+      (c) => !before.has(c.id) && c.ethereal && c.costMod !== undefined,
+    );
     const cost = (id: string) => db.cards[id]!.cost;
     const found = state.sides.a.hand.find((c) => !before.has(c.id) && c.ethereal);
     expect(found, 'a card was discovered').toBeDefined();

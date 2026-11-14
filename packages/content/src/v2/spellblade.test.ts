@@ -286,7 +286,11 @@ describe('Fracture and Shatter', () => {
     const at = (stars: number) => play(fight(['rupture-script'], { stars }), 'rupture-script');
     expect(lost(at(0))).toBe(20);
     expect(lost(at(8))).toBe(28);
-    expect(lost(at(27))).toBe(47);
+    expect(lost(at(20))).toBe(40);
+    expect(lost(at(21))).toBe(40);
+    expect(lost(at(22))).toBe(41);
+    expect(lost(at(27))).toBe(43);
+    expect(lost(at(100))).toBe(80);
     expect(at(27).sides.a.stars).toBe(27);
   });
 
@@ -1181,4 +1185,25 @@ describe('a card with nothing to count (DECISIONS #507)', () => {
     expect(after - before).toBe(0);
     expect(shown).not.toMatch(/:7\b/);
   });
+});
+
+it('Obsidian Aegis keeps early Barrier and halves further scaling beyond 20 Spell Power', () => {
+  for (const upgraded of [false, true])
+    for (const [stars, bonus] of [
+      [0, 0],
+      [20, 10],
+      [22, 10],
+      [24, 11],
+      [100, 30],
+    ] as const) {
+      const id = 'obsidian-aegis' + (upgraded ? '+' : '');
+      const s = play(fight([id], { stars }), id);
+      const before = hero(s).barrier;
+      const result = applyAction(db, s, { type: 'endTurn' });
+      const barrier = result.events.filter((e) => e.type === 'barrier' && e.target === hero(s).id);
+      expect(
+        barrier.some((e) => e.type === 'barrier' && e.amount === bonus + (upgraded ? 3 : 0)),
+      ).toBe(true);
+      expect(before).toBe(0);
+    }
 });

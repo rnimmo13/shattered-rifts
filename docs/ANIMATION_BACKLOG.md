@@ -1,50 +1,54 @@
 # Animation backlog: premium Wardens and card casts (internal)
 
-**Status:** planned, not started. Written 2026-11-12 at Robert's request: "every boss should have interesting animations that gamers will
-find premium/polished/exceptional and unique", and cast animations "like a fireball that actually flies to the enemy and hits it with a
-burn, or electric shocks that go to enemies and chain", especially for rare cards, special tokens and scaling cards. **Not for the
-current pass.** If nothing here has started by 2026-11-14, remind Robert it is waiting.
+**Status:** the premium Warden moves and travel effects below are planned, not built. The baseline enemy pose sheets are already in
+the game. Written 2026-11-12 at Robert's request for premium, polished and unique boss animations and casts that travel to their
+targets. Updated 2026-11-13 with the approved inked art direction and animation priorities. This document is a production brief,
+not authorization to make every enemy equally elaborate or to release new art.
 
 Two pieces of work, each with its prompts below, ready to paste:
 
-- **A. The Wardens and Drago:** each gets several drawn signature attacks, an entrance, a hit and a death of its own, instead of one
-  generic attack.
+- **A. Enemy animation tiers:** keep ordinary enemies efficient, give Elites only what makes their action readable, and make each
+  Warden's important moves recognizable. The five First Ruin dragon Wardens and Drago receive the strongest treatment.
 - **B. Card casts:** effects that travel from the caster to the target and land, rather than one painted picture playing on a spot.
 
-## Where things stand (2026-11-12)
+## Where things stand (2026-11-13)
 
-- **Enemies, Wardens included:** 157 creatures have pose-sheet animations built (`assets-src/units-pose-sheets`, see
-  `RESUME_UNITS_BUILD.md`), but not wired into the game yet. Only heroes are animated in battle. Each creature has one attack: 8 drawn
-  poses over two 4-pose sheets, plus hit/death. Its effects are generic, picked by attack kind (lunge, claw, slash, smash, shoot, cast).
-  So the dragons all lunge, and the casters all throw the same orb.
+- **Enemies, Wardens included:** 157 creatures have pose-sheet animations built and wired into battle (`assets-src/units-pose-sheets`,
+  `apps/web/public/art/units-sheets`, DECISIONS #760). The baseline set has one attack, hit and death, with effects chosen by attack
+  kind. It does not give a Warden's distinct intents their own matching performances. This is the gap addressed below.
 - **Heroes:** redrawn in HD with 10-pose attacks (`assets-src/heroes-pose-sheets`, `make_hd_recipes.py`, DECISIONS #759). That set-up
   (3 poses per 1536x1024 image, ready stance at the left) is the model for the Warden redraws below.
 - **Card effects:** 287 rare and uncommon cards have a painted 6-frame effect (`public/art/fx/rare|uncommon`, `docs/rare-fx-prompts.md`,
   `uncommon-fx-prompts.md`), played on one spot by `fight/fxPlayer.ts`. The drawn attack effects (arcs, tracers, orbs, rings) live in
   `fight/attackFx.ts`. Nothing travels from caster to target, and nothing chains between targets.
-- Nine of the Wardens, those of worlds 8-12 (Ashbound Colossus, Pearlbound Sovereign, Dreaming Monarch, Sandbound Chronicler, the five First Ruin
-  dragons) are being redrawn in the cartoon style now (`CHATGPT_RESTYLE.md`). Do the Warden work after that lands, from the restyled
-  references.
+- The five First Ruin dragon Wardens are Pyrewing, Nacreth, Morvane, Aethrion and Xalvorr. They immediately precede Drago in the
+  final gauntlet; **Gorrmaw is the Wyldmaw Warden**, not one of these five. Use `docs/ART_DIRECTION.md` and approved design references
+  for future sheets. The old bright flat-cartoon wording in `CHATGPT_RESTYLE.md` is historical where it conflicts.
 
-## A. Wardens and Drago: premium signature animations
+## A. Enemy animation tiers and signature moves
 
 ### The bar
 
-- **Moves:** 3 signature moves per Warden (4 for Drago), each a full drawn sequence of about 8-10 poses (anticipation, wind-up peak,
-  release, contact, follow-through, recovery), plus:
-  - an **entrance** when the fight opens (rises, lands, unfurls);
-  - a **phase or enrage** pose for Wardens with a phase rule;
-  - a **heavy-hit stagger** distinct from small hits;
-  - a **death** that suits the creature: shatters, dissolves, collapses into its element. Not the generic fall.
-- **Each move uses the whole body and the creature's own idea.** A dragon breathes, beats its wings to make a gale, dives from above,
-  sweeps its tail, spits a projectile. It does not just claw again. Read the Warden's rule (`WORLD_RULES`) and build a move around it,
-  so the animation teaches the mechanic.
+- **Regular enemies:** the existing idle, one readable attack, hit and death are enough. Do not add expensive bespoke sequences just
+  for parity with bosses.
+- **Elites:** keep the baseline set; add a distinct cast, wind-up or accent only when a mechanic needs it. They need not be spectacular.
+- **Realm Wardens:** give each Warden a small, individual set of clearly different actions tied to its real intents, usually two or
+  three signature clips plus any phase change that matters. Entrance and death should suit the creature when they add identity.
+- **The five First Ruin dragon Wardens:** each needs its own recognizable motion language and several genuinely different attacks,
+  such as breath, wing, claw, tail, dive or magic as their rules warrant. Their entrance, phase moment and death should make the
+  final gauntlet feel like an escalation, not five palette variants of the same dragon.
+- **Drago:** the peak of the ladder. Distinct moves and transitions for his incarnations, with a memorable entrance and death.
+  Use more poses and effects only where the motion needs them; a fixed pose count is not the quality target.
+- **Each unique enemy gets distinct behavior within its tier.** Read its actual move list and phase rules before drawing. A move
+  should be recognizable by silhouette and timing even before effects are added. Reuse an action clip only for intents that truly
+  share a physical action. Keep anatomy, wings, tails, weapons and scale consistent across the full set.
 - **The telegraph reads:** each move's wind-up is held long enough, and is distinct enough, that a player learns to recognise it. That
   fits the intents.
 - **Effects are part of the move:** breath cones, shockwaves, falling debris, screen shake and hit-stop, a projectile that travels. They
   are drawn by the game, not painted into the sheets (the sheets stay clean, as now).
 - **Which move plays:** the game picks the move by the intent being carried out (attack, multi-hit, debuff, summon, buff). This needs a
   small presentation map, Warden move to intent kind, in the web app. Nothing in the engine (golden rule 2).
+- **Idle stays stable:** no whole-body squash, stretch or breathing distortion. Follow `docs/ART_DIRECTION.md`.
 
 ### First ideas per Warden (to refine with Robert; check each against the Warden's rule)
 
@@ -54,7 +58,7 @@ Two pieces of work, each with its prompts below, ready to paste:
 | The Hollow Benediction | Aurelion | Censer swing trailing hollow light; a hymn that rings bells overhead; an empty-robed lunge that passes through the target |
 | KR-0N "Kron" | Nexus-9 | Piston fist with a steam blast; arm swaps to a rivet gun burst; furnace-chest vent that sprays sparks |
 | Mother of Static | Nexus-9 | Arcing lightning web that chains; a broadcast pulse ring; drones peel off her body and dive |
-| Gorrmaw, the Hunger Below | Wyldmaw | Bursts up from below in a ring of jaws; tongue lash that drags; a swallowing gulp |
+| Gorrmaw, the Hunger Below | Wyldmaw | Bite/Ravenous Bite: a jaw snap with heavier wind-up for the latter; Rend: a deliberate three-hit claw sequence; Birth Maw Spawn/Brood: a distinct brood call; Gorge: seize and swallow his Maw Spawn, or recoil exposed when none remain. Preserve the approved dragon design and its wings. |
 | The Upside-Down Stag | Wyldmaw | Antler sweep along the ceiling line; hooves stamp the sky and thorns rain down; a charge that flips gravity for a beat |
 | Nyxara, the Veiled Matriarch | Umbral Veil | Veil cast that splits her into illusions, one of which strikes; mask-thrown daggers; a curtain-drop ambush |
 | The Applause Below | Umbral Veil | Stage trapdoor snaps open; a bow, then a thrown bouquet of knives; spotlight beam that stuns |
@@ -74,12 +78,13 @@ Two pieces of work, each with its prompts below, ready to paste:
 
 ### Prompt A1: ChatGPT, Warden signature-move pose sheets (one Warden at a time)
 
-Fill in the angle brackets, attach the Warden's current reference picture (after the restyle for worlds 8-12), and use the same image
-format as the hero HD redraw so the existing pipeline takes it (`make_hd_recipes.py` / `build_units.py` can be extended).
+Use this template only after the Warden's design has been approved. Fill in the angle brackets, attach the approved design and
+appropriate anchors from `docs/ART_DIRECTION.md`, and tailor the number and type of moves to that Warden's actual intents. The
+format follows the hero HD redraw so the existing pipeline can be extended (`make_hd_recipes.py` / `build_units.py`).
 
 ```
 I'm making 2D game sprites at high resolution for a boss in my card game. The attached picture is <NAME>, <ONE-LINE LOOK AND REALM>.
-Using this creature EXACTLY as designed (same shape, colours, proportions and bold-outline cartoon style), draw its signature
+Using this creature EXACTLY as designed (same shape, colours, proportions and approved inked stylized fantasy style), draw its signature
 animations as separate images, one after another.
 
 Rules for all images:
@@ -93,11 +98,12 @@ Rules for all images:
 - No text, labels, borders or grid lines.
 
 MOVE 1, <MOVE NAME>: <one sentence: what the move is and what the game will draw with it, e.g. "fire breath: the game draws the flame
-cone from the open jaws">. 10 poses: (1) settling in, (2) anticipation <...>, (3) coiling, (4) wind-up peak <...>, (5) release <...>,
-(6) mid-strike, (7) contact / full extension <...>, (8) follow-through <...>, (9) recovery, (10) settling back.
-Save as <id>_boss_m1_01.png ... <id>_boss_m1_05.png (two poses each).
+cone from the open jaws">. Draw only the key poses needed for this action, usually 6-10: clear anticipation, wind-up peak, release,
+contact or launch, follow-through and recovery. Preserve one continuous path and an unmistakable silhouette.
+Save as <id>_boss_m1_01.png ... <id>_boss_m1_NN.png (two named poses per sheet).
 
-MOVE 2 and MOVE 3: the same, saved as <id>_boss_m2_NN.png and <id>_boss_m3_NN.png.
+MOVE 2 and, where the creature needs it, MOVE 3 or later: different physical actions tied to different real intents, saved as
+<id>_boss_m2_NN.png, <id>_boss_m3_NN.png, etc. Adjust drawn pose counts to the motion rather than filling a quota.
 
 ENTRANCE: 4 poses, from <how it arrives: dropping from the sky / rising from the ground / unfurling> to the ready stance.
 Save as <id>_boss_entrance_01.png and _02.png.

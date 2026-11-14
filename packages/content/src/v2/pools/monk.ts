@@ -39,8 +39,15 @@ export const MONK: CardDef[] = [
   // (a third basic: a hit that builds Fervor, Robert 2026-10-30)
   s('basic', 'mindful-palm', 'Mindful Palm', 'attack', 1, 'foe', [dmg(5), status('mantra', 2)]),
 
+  // Stance bonuses below are binary; explicit text avoids suggesting stackable Serene/Fury.
   // --- Fury ---
-  s('common', 'angry-palm', 'Angry Palm', 'attack', 1, 'foe', [scaled(dmg(7), per('wrath', 6))]),
+  s('common', 'angry-palm', 'Angry Palm', 'attack', 1, 'foe', [scaled(dmg(7), per('wrath', 6))], {
+    text: 'Deal 7 damage, or 13 if you are in Fury.',
+    up: {
+      effects: [scaled(dmg(10), per('wrath', 6))],
+      text: 'Deal 10 damage, or 16 if you are in Fury.',
+    },
+  }),
   s('common', 'ashen-fist', 'Ashen Fist', 'attack', 2, 'foe', [dmg(14), stance('wrath')]),
   s('uncommon', 'temper-flare', 'Temper Flare', 'attack', 1, 'foe', [
     dmg(2, 'target', 3),
@@ -53,9 +60,22 @@ export const MONK: CardDef[] = [
     stance('wrath'),
     status('vigor', 4),
   ]),
-  s('rare', 'final-account', 'Final Account', 'attack', 2, 'foe', [
-    scaled(dmg(14), per('wrath', 10)),
-  ]),
+  s(
+    'rare',
+    'final-account',
+    'Final Account',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(14), per('wrath', 10))],
+    {
+      text: 'Deal 14 damage, or 24 if you are in Fury.',
+      up: {
+        effects: [scaled(dmg(17), per('wrath', 10))],
+        text: 'Deal 17 damage, or 27 if you are in Fury.',
+      },
+    },
+  ),
   // (Fury lets damage in: entering it is when to put a guard up)
   s(
     'rare',
@@ -161,10 +181,22 @@ export const MONK: CardDef[] = [
     stance('wrath'),
     stance('calm'),
   ]),
-  s('uncommon', 'settled-mind', 'Settled Mind', 'skill', 1, 'none', [
-    scaled(draw(0), per('calm', 3)),
-    stance('calm'),
-  ]),
+  s(
+    'uncommon',
+    'settled-mind',
+    'Settled Mind',
+    'skill',
+    1,
+    'none',
+    [scaled(draw(0), per('calm', 3)), stance('calm')],
+    {
+      text: 'If you are already Serene, draw 3 cards. Then enter Serene.',
+      up: {
+        effects: [scaled(draw(1), per('calm', 3)), stance('calm')],
+        text: 'Draw 1 card, or 4 if you are already Serene. Then enter Serene.',
+      },
+    },
+  ),
   s(
     'common',
     'hushed-stillness',
@@ -242,7 +274,13 @@ export const MONK: CardDef[] = [
     1,
     'none',
     [scaled(barrier(4), per('calm', 6)), draw(1)],
-    { up: { effects: [scaled(barrier(7), per('calm', 6)), draw(1)] } },
+    {
+      text: 'Gain 4 Barrier, or 10 if you are Serene. Draw 1 card.',
+      up: {
+        effects: [scaled(barrier(7), per('calm', 6)), draw(1)],
+        text: 'Gain 7 Barrier, or 13 if you are Serene. Draw 1 card.',
+      },
+    },
   ),
   s('uncommon', 'exhale', 'Exhale', 'skill', 0, 'none', [stance('none'), mana(1)], {
     exhaust: true,
@@ -401,7 +439,12 @@ export const MONK: CardDef[] = [
     // (half the Fervor gained this fight since #721: it read your Fervor, never more than 9, as reaching 10 spends it on Radiant;
     // it is Rise Radiant plus 1 Mana, so half keeps that Mana near a rare's rate: about 12 AoE by turn 6; a Skill, so Radiant never triples it)
     [scaled(dmg(0, 'allFoes'), { by: 'fervorGained', step: 2 }), stance('radiant')],
-    { exhaust: true, up: { effects: [scaled(dmg(4, 'allFoes'), { by: 'fervorGained', step: 2 }), stance('radiant')] } },
+    {
+      exhaust: true,
+      up: {
+        effects: [scaled(dmg(4, 'allFoes'), { by: 'fervorGained', step: 2 }), stance('radiant')],
+      },
+    },
   ),
   s(
     'rare',

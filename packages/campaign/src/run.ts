@@ -45,7 +45,7 @@ import {
 
 export { CROSSED_MERCHANT_CHANCE };
 import { enemyScale } from './tierTable';
-import { changeMaxHp, heartCrossedChance, migrateHeart } from './hearts';
+import { changeMaxHp, heartCrossedChance, heartCrossedMultiplier, migrateHeart } from './hearts';
 import { rollEvent, resolveEvent, promisedTreasure } from './events';
 import { applyChoice, applyDeal } from './deals';
 import { GAMBLER_REEL, buildElite, spinReel, takePrize } from './trials';
@@ -559,34 +559,7 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         node.crossed && node.crossed !== r.character && node.crossed in RIFTWALKERS
           ? (node.crossed as HeroId)
           : undefined;
-      // (a visitor's table is only that Riftwalker's own cards: no Neutral cards, no further crossings)
-      let stock: string[];
-      if (crossed) {
-        stock = [];
-        for (let g = 0; g < 40 && stock.length < 4; g++)
-          for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, 0))
-            if (
-              COMBAT_DB.cards[id]?.hero === crossed &&
-              // (not a card that only works in its owner's deck: the Trickster's Suits, DECISIONS #387)
-              !deadElsewhere(id) &&
-              !stock.includes(id) &&
-              stock.length < 4
-            )
-              stock.push(id);
-      } else {
-        stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, heartCrossedChance(r));
-      }
-      const items: MerchantItem[] = stock.map((cardId) => ({
-        cardId,
-        price: priceOf(cardId),
-        sold: false,
-      }));
-      // one card on the table is on sale
-      if (items.length > 0) {
-        const it = items[nextInt(r.rng, items.length)] as MerchantItem;
-        it.price = Math.round(it.price * (1 - SALE_OFF));
-        it.sale = true;
-      }
+      const items = merchantCards(r, crossed);
       // a card you put on hold earlier is waiting for you, at the price you were promised
       if (r.held) {
         const keep = r.held.filter((h) => canAdd(r.deck, h.cardId));
@@ -603,12 +576,6 @@ export function enterNode(run: RunState, nodeId: string): RunState {
         );
         if (keep.length) r.held = keep;
         else delete r.held;
-      }
-      // now and then an ancestral card is on the table, at a price
-      const ancestors = ancestralPool(r.deck);
-      if (!crossed && ancestors.length && nextInt(r.rng, 100) < 28) {
-        const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
-        items.push({ cardId: id, price: PRICE['ancestral'] ?? 240, sold: false });
       }
       const potions = [offerPotion(r.rng), offerPotion(r.rng)].map((id) => ({
         id,
@@ -1772,6 +1739,64 @@ export function releaseHold(run: RunState, index: number): RunState {
 }
 
 // ---- merchant -----------------------------------------------------------------------------------------
+/** Fresh card stock, shared by entry and paid rerolls. Held cards are managed separately. */
+function merchantCards(r: RunState, crossed?: HeroId): MerchantItem[] {
+  // (a visitor's table is only that Riftwalker's own cards: no Neutral cards, no further crossings)
+  let stock: string[];
+  if (crossed) {
+    stock = [];
+    for (let g = 0; g < 40 && stock.length < 4; g++)
+      for (const id of offerCards(r.rng, crossed, r.deck, 'elite', 4, 0))
+        if (
+          COMBAT_DB.cards[id]?.hero === crossed &&
+          // (not a card that only works in its owner's deck: the Trickster's Suits, DECISIONS #387)
+          !deadElsewhere(id) &&
+          !stock.includes(id) &&
+          stock.length < 4
+        )
+          stock.push(id);
+  } else {
+    stock = offerCards(r.rng, r.character, r.deck, 'elite', 4, heartCrossedChance(r));
+  }
+  const items: MerchantItem[] = stock.map((cardId) => ({
+    cardId,
+    price: priceOf(cardId),
+    sold: false,
+  }));
+  // one card on the table is on sale
+  if (items.length > 0) {
+    const it = items[nextInt(r.rng, items.length)] as MerchantItem;
+    it.price = Math.round(it.price * (1 - SALE_OFF));
+    it.sale = true;
+  }
+  // now and then an ancestral card is on the table, at a price
+  const ancestors = ancestralPool(r.deck);
+  if (!crossed && ancestors.length && nextInt(r.rng, 100) < 28) {
+    const id = ancestors[nextInt(r.rng, ancestors.length)] as string;
+    items.push({ cardId: id, price: PRICE['ancestral'] ?? 240, sold: false });
+  }
+  return items;
+}
+
+/** Each shop starts at 50 shards; the fee is not modified by shop price Omens. */
+export const merchantRerollPrice = (run: RunState): number =>
+  50 * (1 + (run.context?.merchant?.rerolls ?? 0));
+
+export function rerollMerchant(run: RunState): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
+  const price = merchantRerollPrice(run);
+  need(run.shards >= price, 'Not enough shards');
+  const r = clone(run);
+  const m = r.context!.merchant!;
+  const fresh = merchantCards(r, m.crossed as HeroId | undefined);
+  need(fresh.length > 0, 'No cards available to reroll');
+  for (const item of fresh) item.price = shopPrice(r, item.price);
+  m.items = [...m.items.filter((item) => item.held || item.onHold), ...fresh];
+  m.rerolls = (m.rerolls ?? 0) + 1;
+  r.shards -= price;
+  return r;
+}
+
 export function buyCard(run: RunState, index: number): RunState {
   need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
   const r = clone(run);
@@ -2105,6 +2130,7 @@ export function continueLoop(run: RunState): RunState {
     r.campaignRoute,
     r.wardenOrder,
     r.realmRoute !== undefined,
+    heartCrossedMultiplier(r),
   );
   r.cleared = [];
   r.at = null;

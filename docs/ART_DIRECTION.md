@@ -18,6 +18,7 @@ Attach the relevant base hero and at least one of these approved style anchors w
 | Main family | `assets-src/heroes-pose-sheets/knight/knight_reference.png` and `assets-src/heroes-pose-sheets/knight-demon-knight/knight-demon-knight_reference.png` | Original Knight and Demon Knight belong together; compare their animated models in game too. |
 | Strong variants | `assets-src/heroes-pose-sheets/spellblade/spellblade_reference.png` and `assets-src/heroes-pose-sheets/spellblade-nova-ronin/spellblade-nova-ronin_reference.png` | Both Spellblades are excellent examples of the range. |
 | Supporting anchors | `assets-src/heroes-pose-sheets/engineer/engineer_reference.png`, `assets-src/heroes-pose-sheets/monk/monk_reference.png`, `assets-src/heroes-pose-sheets/monk-tempest-sage/monk-tempest-sage_reference.png` | Animated Engineer and Monk read well, as does Tempest Sage. |
+| Approved style trials | `docs/art-references/drunkard-style-trial-approved.png` and `docs/art-references/gorrmaw-style-trial-approved.png` | The restored Drunkard concept and the Gorrmaw redraw show how the anchor language carries to a stout hero with a prop and a large dragon. These are design references, not finished animation assets. |
 
 The source and animation must agree. Compare a new still reference with its in-game idle and action frames; a matching reference alone is insufficient.
 
@@ -26,8 +27,8 @@ The source and animation must agree. Compare a new still reference with its in-g
 - **Necromancer:** base, animated model, and current skin have drifted from the anchors. Reconcile the whole family together when revisited; keep their identity and gameplay silhouettes.
 - **Rogue Tailor:** markedly different rendering from default Rogue. Bring its line work, face, shading, and finish toward the default Rogue.
 - **Arc Welder:** broadly fits with the Engineer but needs a modest style pass.
-- **Drunkard (KP):** the current art has moved too far from his original concept. Restore the short, stout dwarf's scrappy Midden identity and his shopping trolley loaded with window panes and glass, as specified in `docs/09_ROSTER.md` and `docs/art-briefs.md`. Use the original concept and approved inked style anchors together; preserve his hammer, short gun, and bottle-green/rust cues. Review a new design before making full pose sheets.
-- **Dragons:** large differences across the group; Gorrmaw (`assets-src/units-pose-sheets/03-wyldmaw/gorrmaw/gorrmaw_reference.png`) is the clearest mismatch. Use the same inked fantasy language without forcing dragons into human proportions.
+- **Drunkard (KP):** the current game art has moved too far from his original concept. His approved design trial restores the short, stout dwarf's scrappy Midden identity and shopping trolley loaded with window panes and glass, as specified in `docs/09_ROSTER.md` and `docs/art-briefs.md`. Preserve his hammer, short gun, and bottle-green/rust cues when making production art.
+- **Dragons:** large differences across the group. The approved Gorrmaw trial is the preferred style direction over his current `assets-src/units-pose-sheets/03-wyldmaw/gorrmaw/gorrmaw_reference.png`. Use the same inked fantasy language without forcing dragons into human proportions. Preserve each dragon's own design and moves.
 - **Enemies generally:** review against the hero anchors. Improve outlines, form shading, shape design, and finish while preserving each enemy's recognizable design, realm cues, size, and threat level.
 
 These are review priorities, not authorization to replace existing assets now. Avoid solving consistency by making every character the same size, palette, outfit, or silhouette.
@@ -37,6 +38,7 @@ These are review priorities, not authorization to replace existing assets now. A
 - Idle should hold a stable, hand-drawn ready pose. Do **not** distort, squash, stretch, or scale the entire body for breathing. If breathing is visible, use restrained, localized changes in shoulders, chest, clothing, hair, or effects; keep the face, feet, hands, weapon length, and silhouette stable. An occasional characterful fidget can carry more motion.
 - Drawn key poses should preserve anatomy, costume, weapon dimensions, and line weight throughout motion. Effects can enrich a move but cannot hide a changing prop or off-model pose.
 - Effects should support the character's material and magic while remaining readable at game size. Follow the specific approved effect direction for each character.
+- Enemy animation effort rises with encounter importance: regular enemies stay simple, Elites need only useful distinctions, Wardens get unique actions tied to their intents, the five First Ruin dragon Wardens get a stronger and varied set, and Drago is the peak. See `docs/ANIMATION_BACKLOG.md` part A for the production brief.
 
 ## Brief and approval checklist
 

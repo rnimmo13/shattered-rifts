@@ -80,7 +80,7 @@ export function HeroModel(props: {
     const place = () => {
       const layout = skinPreviewLayout(skin, el.clientWidth, el.clientHeight, fill);
       if (!layout) return;
-      for (const [key, value] of Object.entries(layout)) {
+      for (const [key, value] of Object.entries(layout.picture)) {
         el.style.setProperty('--preview-' + key, value + 'px');
       }
     };
@@ -100,19 +100,20 @@ export function HeroModel(props: {
     const el = box.current;
     if (!el || typeof IntersectionObserver !== 'function') return;
     const io = new IntersectionObserver(([e]) => setNear(!!e?.isIntersecting), {
-      rootMargin: '200px',
+      rootMargin: contain ? '0px' : '200px',
     });
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [contain]);
+  const wanted = near;
   // (DECISIONS #724) while a rig that will be shown is loading, the crest turns in its place, never the still picture first and then a
   // jump to the rig
-  const loading = !!rigId && near && !waiting && !live && !fallback && !still();
+  const loading = !!rigId && wanted && !waiting && !live && !fallback && !still();
 
   useEffect(() => {
     const el = box.current;
-    if (!rigId || !el || still() || !near) return;
-    const sheet = rigId.startsWith(SHEET_PREFIX);
+    if (!rigId || !el || still() || !wanted) return;
+    const sheet = rigId.startsWith(SHEET_PREFIX) && !contain;
     if (sheet && sheetsLive >= SHEET_SLOTS) {
       // (the picture meanwhile, not the loading crest; tried again each time a slot is freed)
       let on = true;
@@ -153,7 +154,12 @@ export function HeroModel(props: {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       let height = Math.max(8, size.h * fill);
       let shift = 0;
-      if (contain && sprite.restSpan && size.w > 0) {
+      const layout =
+        contain && props.skin ? skinPreviewLayout(props.skin, size.w, size.h, fill) : undefined;
+      if (layout && sprite.restSpan) {
+        height = Math.max(8, layout.fitHeight);
+        shift = layout.shift;
+      } else if (contain && sprite.restSpan && size.w > 0) {
         let span = sprite.restSpan(height);
         const room = size.w * (1 + 2 * CONTAIN_SPILL);
         if (span.left + span.right > room) {
@@ -243,7 +249,7 @@ export function HeroModel(props: {
     };
     void import('../fight/heroSprite')
       .then(async (rigs) => {
-        const assets = await rigs.loadRig(rigId);
+        const assets = await rigs.loadRig(rigId, contain);
         if (gone) return;
         if (!assets || still()) return fail();
         sprite = rigs.HeroSprite.create(rigId, assets, 'right');
@@ -274,7 +280,7 @@ export function HeroModel(props: {
       stop();
       release();
     };
-  }, [rigId, fill, contain, near, slot]);
+  }, [rigId, fill, contain, wanted, slot, props.skin]);
 
   return (
     <span

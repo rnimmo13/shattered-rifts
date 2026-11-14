@@ -109,9 +109,9 @@ const loads = new Map<string, Promise<RigAssets | null>>();
  * Fetch a rig's skeleton and atlas once, or a video model's idle clip ("video:<hero>", heroRigFor). Null when it is missing or WebGL2
  * is not available: the hero keeps its picture.
  */
-export function loadRig(id: string): Promise<LoadedRig | null> {
+export function loadRig(id: string, preview = false): Promise<LoadedRig | null> {
   if (id.startsWith(VIDEO_PREFIX)) return loadHeroVideo(id.slice(VIDEO_PREFIX.length));
-  if (id.startsWith(SHEET_PREFIX)) return loadHeroSheet(id.slice(SHEET_PREFIX.length));
+  if (id.startsWith(SHEET_PREFIX)) return loadHeroSheet(id.slice(SHEET_PREFIX.length), preview);
   if (id.startsWith(UNIT_SHEET_PREFIX)) return loadUnitSheet(id.slice(UNIT_SHEET_PREFIX.length));
   let p = loads.get(id);
   if (!p) {

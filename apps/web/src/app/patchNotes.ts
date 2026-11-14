@@ -46,6 +46,196 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.270.0',
+    date: '2026-11-13',
+    title: 'Radiant Tempest and enemy phase Barrier',
+    summary:
+      'Tempest Sage’s Radiant stance shines brighter and attacks can break through enemy phase Barrier.',
+    heads:
+      'Older unfinished battles restart from their saved encounter checkpoint. Replays recorded under older rules require their original game version.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'The Sanctum',
+        text: 'Class choices form an even grid of circular icons. The selected character is larger, beside the grid on desktop and above it on phones.',
+      },
+      {
+        kind: 'new',
+        title: 'Merchant card rerolls',
+        text: 'Campaign: reroll card stock for 50 shards, then 100, 150 and so on at the same shop. The next merchant starts at 50. Sold ordinary stock is replaced, held cards remain, and potions, Boons and service prices stay as they were. Visiting merchants keep their class. Fresh offers use normal rarity, sale and Rift Heart rules; a card can appear again. The reroll fee itself is unaffected by price Omens. Existing shops start with zero rerolls.',
+      },
+      {
+        kind: 'new',
+        title: 'Grimoire Mana filters',
+        text: 'Filter cards by printed Mana cost throughout the Grimoire and practice deck builder: 0, 1, 2, 3, 4, 5+, X or Unplayable. Combine with search and existing filters. Spell Power costs are separate from Mana.',
+      },
+      {
+        kind: 'balance',
+        title: 'Reaper’s Mantle',
+        card: 'reapers-mantle',
+        hero: 'necromancer',
+        text: 'Campaign and Arena, base and upgraded: when an Attack commands minions to strike, Reaping curses surviving enemies with Fate equal to one-quarter of the HP each hit takes off, rounded up. Barrier damage does not count. Hero Attacks keep the half-rate conversion. Autonomous actions still do not trigger Reaping. Cost 2 and the upgrade’s Opening hand stay unchanged.',
+        changes: [
+          {
+            label: 'Minion Command HP damage converted to Fate',
+            before: '50%',
+            after: '25%',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Trail of Blood',
+        card: 'trail-of-blood',
+        hero: 'hunter',
+        text: 'Campaign and Arena: still grants 1 permanent Might for each of the first four summons per copy. The upgraded version keeps Opening hand.',
+        changes: [
+          {
+            label: 'Mana cost (base / upgraded)',
+            before: '0 / 0',
+            after: '1 / 1',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Bloodsong',
+        card: 'bloodsong',
+        hero: 'hunter',
+        text: 'Campaign and Arena: still costs 2 HP, draws 1 card and gives Ritual for eight turns. The immediate Might and setup cost change.',
+        changes: [
+          {
+            label: 'Mana cost (base / upgraded)',
+            before: '0 / 0',
+            after: '1 / 1',
+            direction: 'nerf',
+          },
+          {
+            label: 'Immediate Might (base / upgraded)',
+            before: '2 / 3',
+            after: '1 / 2',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Pack Frenzy',
+        card: 'pack-frenzy',
+        hero: 'hunter',
+        text: 'Campaign and Arena: still costs 2 Mana and commands two companion actions. Repeated-action damage reduction is unchanged.',
+        changes: [
+          { label: 'Might (base / upgraded)', before: '3 / 4', after: '2 / 3', direction: 'nerf' },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Shatter Spell Power scaling',
+        hero: 'spellblade',
+        text: 'Campaign and Arena: a Shatter still adds the first 20 held Spell Power in full; beyond 20, it adds half the excess, rounded down. Spell Power is not spent. Base Shatter damage, Fracture thresholds, Shatter-count growth and Deepening retain their existing rules.',
+        changes: [
+          {
+            label: 'Spell Power bonus at 100 held',
+            before: '+100 damage',
+            after: '+60 damage',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Obsidian Aegis',
+        card: 'obsidian-aegis',
+        hero: 'spellblade',
+        text: 'Campaign and Arena, base and upgraded: the first +10 Barrier from held Spell Power is unchanged; further scaling gives half as much, rounded down. Base flat Barrier remains 0, upgraded remains 3; cost 1 and the end-turn trigger stay unchanged.',
+        changes: [
+          {
+            label: 'Barrier at 100 Spell Power (base / upgraded)',
+            before: '50 / 53',
+            after: '30 / 33',
+            direction: 'nerf',
+          },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Rift Heart',
+        boon: 'ember-heart',
+        text: 'Campaign: Rift Heart now favors Rift-Crossed events and visiting merchants as well as ordinary card rewards and normal shop stock. Event selection weight is tripled among eligible events; this does not triple their final probability. The 25% fight-shard penalty stays. New event rolls and card offers use the change immediately, including existing runs; merchant odds apply when the next map is generated. Already rolled maps, shops and rewards stay intact. Arena combat is unchanged.',
+        changes: [
+          {
+            label: 'Rift-Crossed chance per ordinary offered card',
+            before: '10%',
+            after: '20%',
+            direction: 'buff',
+          },
+          {
+            label: 'Rift-Crossed event selection weight',
+            before: '1x',
+            after: '3x',
+            direction: 'buff',
+          },
+          {
+            label: 'Rift-Crossed merchant chance on new maps',
+            before: '7.5%',
+            after: '22.5%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'fixed',
+        hero: 'monk',
+        card: 'angry-palm',
+        title: 'Angry Palm',
+        text: 'Campaign and Arena: Base: 7 damage, or 13 in Fury. Upgraded: 10, or 16 in Fury. Fury’s attack multiplier still applies. Wording clarified; costs and effects are unchanged. Serene and Fury do not stack.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'monk',
+        card: 'final-account',
+        title: 'Final Account',
+        text: 'Campaign and Arena: Base: 14 damage, or 24 in Fury. Upgraded: 17, or 27 in Fury. Fury’s attack multiplier still applies. Wording clarified; costs and effects are unchanged. Serene and Fury do not stack.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'monk',
+        card: 'still-water',
+        title: 'Still Water',
+        text: 'Campaign and Arena: Base: 4 Barrier, or 10 while Serene. Upgraded: 7, or 13 while Serene. Both draw 1 card. Wording clarified; costs and effects are unchanged. Serene and Fury do not stack.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'monk',
+        card: 'settled-mind',
+        title: 'Settled Mind',
+        text: 'Campaign and Arena: Base: draw 3 only if already Serene. Upgraded: draw 1, or 4 if already Serene. Then enter Serene; entering it does not grant the bonus on that play. Wording clarified; costs and effects are unchanged. Serene and Fury do not stack.',
+      },
+      {
+        kind: 'balance',
+        title: 'Enemy phase Barrier',
+        text: 'In Campaign, an attack that reaches Second Wind, Rallied Foes, Third Phase, or The Rift Awakens spends its remaining damage on the new Barrier. Any damage that exceeds it continues into HP and can reach the next phase or defeat the enemy. For example, a 40-damage hit that needs 10 damage to reach half HP and meets 20 Barrier deals 10 more HP damage. The phase thresholds, Barrier amounts, and Might are the same.',
+      },
+      {
+        kind: 'changed',
+        hero: 'monk',
+        text: 'Tempest Sage has a gold Radiant aura with tapered, evenly spaced rays, rising embers, and expanding rings. Her Fury glow is softer.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'drunkard',
+        text: 'Pirate Captain holds her glass steady while sparks and cigar smoke animate.',
+      },
+      {
+        kind: 'changed',
+        title: 'Store and Collection',
+        text: 'Visible skin tiles show their animated models. Demon Knight and Glacier Lancer fill the tile vertically, with room for their weapons to extend past the edges.',
+      },
+    ],
+  },
+  {
     version: '0.269.0',
     date: '2026-11-13',
     title: 'Necromantic green and stronger skin effects',

@@ -1,4 +1,4 @@
-import { changeMaxHp, heartCrossedChance } from './hearts';
+import { changeMaxHp, heartCrossedChance, heartCrossedMultiplier } from './hearts';
 // Random events on the map. Each is a small story with a choice: some are generous, some are a gamble, some are a bad deal
 // with an upside, and only a few offer a card. rollEvent picks one by weight among those that make sense right now;
 // resolveEvent carries out the player's choice and says what happened.
@@ -344,6 +344,25 @@ export function promisedTreasure(r: RunState): EventCtx | null {
   return withScene(pinOptions(r, dig.build(r)), dig.id);
 }
 
+/** Authored events with a foreign-card reward or trade. Do not build events just to inspect them: building consumes RNG. */
+export const RIFT_CROSSED_EVENTS: ReadonlySet<string> = new Set([
+  'stranger',
+  'open-rift',
+  'walkers-cairn',
+  'rift-broker',
+  'card-swap',
+  'tithe-stone',
+  'torn-grimoire',
+  'treasure-dig',
+  'old-soldiers',
+  'ash-market',
+  'rift-pilgrim',
+  'pale-dealer',
+  'smugglers-cache',
+]);
+export const eventWeight = (r: RunState, e: EventDef): number =>
+  e.weight * (RIFT_CROSSED_EVENTS.has(e.id) ? heartCrossedMultiplier(r) : 1);
+
 /** Pick a random event, weighted, from those that can happen to this run now. */
 export function rollEvent(r: RunState): EventCtx {
   // now and then the place is an elite one: an optional trial for a choice of better rewards
@@ -351,11 +370,12 @@ export function rollEvent(r: RunState): EventCtx {
   if (elite) return elite;
   const live = EVENTS.filter((e) => e.when(r));
   const pool = live.length ? live : [EVENTS[0] as EventDef];
-  const total = pool.reduce((n, e) => n + e.weight, 0);
+  const total = pool.reduce((n, e) => n + eventWeight(r, e), 0);
   let x = nextInt(r.rng, Math.round(total * 100)) / 100;
   for (const e of pool) {
-    if (x < e.weight) return withScene(pinOptions(r, e.build(r)), e.id);
-    x -= e.weight;
+    const weight = eventWeight(r, e);
+    if (x < weight) return withScene(pinOptions(r, e.build(r)), e.id);
+    x -= weight;
   }
   const last = pool[pool.length - 1] as EventDef;
   return withScene(pinOptions(r, last.build(r)), last.id);

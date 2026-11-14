@@ -1,0 +1,22 @@
+.grim__manaFilter {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.4rem 0.6rem;
+  color: inherit;
+  font-size: 0.85rem;
+}
+.grim__manaFilter select {
+  font: inherit;
+  color: #f4e7c4;
+  background: #141b30;
+  border: 1px solid #80704c;
+  border-radius: 0.4rem;
+  padding: 0.45rem;
+  max-width: 100%;
+}
+.grim__manaFilter select:focus-visible {
+  outline: 2px solid #e7c572;
+  outline-offset: 2px;
+}

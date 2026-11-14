@@ -18,6 +18,7 @@ import {
   availableNodes,
   buyBoon,
   buyCard,
+  rerollMerchant,
   holdCard,
   releaseHold,
   buyPotion,
@@ -931,24 +932,21 @@ function Sanctum(props: {
           fight and you lose Resolve; lose all of it and the run collapses.
         </p>
       </header>
-      <CharacterPicker value={pick} onChange={setPick} />
       {props.notice && <Toast onDismiss={props.onDismiss}>{props.notice}</Toast>}
-      <div className="setup__actions">
-        <div className="setup__start">
-          <button
-            className="btn btn--primary setup__go"
-            disabled={seed === null}
-            onClick={() => props.onStart(pick, difficulty, seed ?? undefined)}
-          >
-            <span>
-              {seed
-                ? `Begin on seed ${showSeed(seed)}`
-                : seed === null
-                  ? 'Finish the seed below'
-                  : 'Begin the run'}
-            </span>
-          </button>
-        </div>
+      <div className="setup__start">
+        <button
+          className="btn btn--primary setup__go"
+          disabled={seed === null}
+          onClick={() => props.onStart(pick, difficulty, seed ?? undefined)}
+        >
+          <span>
+            {seed
+              ? `Begin on seed ${showSeed(seed)}`
+              : seed === null
+                ? 'Finish the seed below'
+                : 'Begin the run'}
+          </span>
+        </button>
       </div>
       <details
         className="setup__seed"
@@ -984,6 +982,7 @@ function Sanctum(props: {
           <small role="alert">That is not a seed: 8 letters and digits, like K7QM-2XRP.</small>
         )}
       </details>
+      <CharacterPicker value={pick} onChange={setPick} />
       <p className="setup__note">
         Early alpha. Easy mode is on by default so the whole game can be tested quickly: enemies are
         weaker and you start with extra Resolve and shards.
@@ -1403,6 +1402,7 @@ function Body(props: {
           <MerchantView
             run={run}
             onBuy={(i) => act((r) => buyCard(r, i))}
+            onReroll={() => act(rerollMerchant)}
             onHold={(i) => act((r) => holdCard(r, i))}
             onRelease={(i) => act((r) => releaseHold(r, i))}
             onBuyBoon={() => act((r) => buyBoon(r))}

@@ -1,3 +1,4 @@
+import { matchesManaCost, type ManaCost } from './ManaCostFilter';
 // The practice-fight deck builder's logic, kept apart from the screen so it can be tested: the card catalogue, filtering it,
 // turning counts into a deck, and a random deck for quick experiments.
 
@@ -60,6 +61,7 @@ export function catalog(db: CombatDb): CatalogCard[] {
 }
 
 export interface CatalogFilter {
+  manaCost?: ManaCost;
   pool: PoolKey;
   rarity: 'all' | 'basic' | 'common' | 'uncommon' | 'rare' | 'legendary' | 'ancestral';
   text: string;
@@ -74,6 +76,7 @@ export function filterCatalog(
 ): CatalogCard[] {
   const q = f.text.trim().toLowerCase();
   return cards.filter((c) => {
+    if (!matchesManaCost(c.def, f.manaCost)) return false;
     // (a card with no "+" version, a token say, is shown either way)
     if (c.upgraded !== f.upgraded && !(f.upgraded && !c.def.upgrade)) return false;
     // a token has no "+" version: show it either way

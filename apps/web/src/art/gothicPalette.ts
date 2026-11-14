@@ -1,7 +1,7 @@
 import nose from './gothicNose.json';
 /** Render-time palette swap: keeps every approved pose, alpha edge and weapon measurement intact. */
 export const GOTHIC_SKIN = 'necromancer-gothic-puppeteer';
-export const GOTHIC_CURSE = '#65db9b';
+export const GOTHIC_CURSE = '#49d7c9';
 
 export function gothicPixels(pixels: Uint8ClampedArray): void {
   for (let i = 0; i < pixels.length; i += 4) {
@@ -19,11 +19,29 @@ export function gothicPixels(pixels: Uint8ClampedArray): void {
   }
 }
 
+// The base Necromancer uses muted olive fabric and a separate emerald light ramp.
+export function paintedGothicPixels(pixels: Uint8ClampedArray): void {
+  for (let i = 0; i < pixels.length; i += 4) {
+    const r = pixels[i]!,
+      g = pixels[i + 1]!,
+      b = pixels[i + 2]!;
+    if (!pixels[i + 3] || g < 26) continue;
+    const strength =
+      Math.min(1, Math.max(0, (g - b - 6) / 26)) * Math.min(1, Math.max(0, (g - r + 6) / 8));
+    if (strength === 0) continue;
+    const olive = g * 0.68;
+    pixels[i] = r + (olive * 0.95 - r) * strength;
+    pixels[i + 1] = g + (olive - g) * strength;
+    pixels[i + 2] = b + (olive * 0.66 - b) * strength;
+  }
+}
+
 export function gothicCanvas(
   image: CanvasImageSource,
   width: number,
   height: number,
   marks: { x: number; y: number; angle: number; scale: number }[] = [],
+  painted = false,
 ): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = width;
@@ -32,7 +50,7 @@ export function gothicCanvas(
   if (!ctx) throw new Error('Gothic palette needs a 2D canvas');
   ctx.drawImage(image, 0, 0);
   const pixels = ctx.getImageData(0, 0, width, height);
-  gothicPixels(pixels.data);
+  (painted ? paintedGothicPixels : gothicPixels)(pixels.data);
   ctx.putImageData(pixels, 0, 0);
   for (const mark of marks) {
     const angle = (mark.angle * Math.PI) / 180;
@@ -52,26 +70,19 @@ export function gothicCanvas(
   return canvas;
 }
 
-let picture: Promise<string> | undefined;
-/** Shared green fallback for Store, Collection, Low/reduced-motion models and battle stills. */
+let gothicStill: Promise<string> | undefined;
+
+/** Shared recolored fallback for the Store, Collection and Low graphics. */
 export function gothicPicture(): Promise<string> {
-  return (picture ??= (async () => {
+  const url = `${import.meta.env.BASE_URL}art/skin-previews/${GOTHIC_SKIN}.png`;
+  return (gothicStill ??= (async () => {
     const image = new Image();
-    image.src = `${import.meta.env.BASE_URL}art/skin-previews/${GOTHIC_SKIN}.png`;
+    image.src = url;
     await image.decode();
-    const point = nose.idle[0]!;
-    const canvas = gothicCanvas(image, image.naturalWidth, image.naturalHeight, [
-      {
-        x: point[0]! * image.naturalWidth,
-        y: point[1]! * image.naturalHeight,
-        angle: point[2]!,
-        scale: (image.naturalHeight / 643) * point[3]!,
-      },
-    ]);
-    return canvas.toDataURL('image/png');
-  })().catch((error: unknown) => {
-    picture = undefined;
-    throw error;
+    return gothicCanvas(image, image.naturalWidth, image.naturalHeight, [], true).toDataURL();
+  })().catch(() => {
+    gothicStill = undefined;
+    return url;
   }));
 }
 

@@ -13,7 +13,13 @@
 import type { Stance } from '@sr/combat';
 import { Texture } from 'pixi.js';
 import { gothicCanvas, gothicPageMarks, GOTHIC_SKIN } from '../art/gothicPalette';
-import { drawSkinEffects, hasSkinEffects, skinEffectActive } from './skinEffects';
+import {
+  drawSheetEffect,
+  drawSkinEffects,
+  hasSkinEffects,
+  skinEffectActive,
+  type SheetEffect,
+} from './skinEffects';
 import { loadGraphicsQuality } from '../duel/effects';
 
 type Facing = 'right' | 'left';
@@ -32,10 +38,12 @@ interface SheetClip {
   strikeLead?: number;
   events?: { name: string; frame: number; time: number }[];
   frames: SheetFrame[];
+  effects?: (SheetEffect | null)[];
 }
 
 interface Manifest {
   name: string;
+  nativeGothicPalette?: boolean;
   displayScale?: number;
   /** the standing body's own width, in sheet px, when the resting pose holds something far out to the side (the Demon Knight's great
    * sword): the figure is fitted and spaced by this, not by the whole picture, or the weapon made the body small (DECISIONS #772) */
@@ -109,8 +117,8 @@ const LOADS = {
 const KEEP = { heroes: 3, units: 8 };
 
 /** Fetch a hero's manifest and atlas pages. Null when they cannot be had: the hero keeps its picture (and is tried again later). */
-export function loadHeroSheet(hero: string): Promise<SheetAssets | null> {
-  return loadSheet('heroes', hero);
+export function loadHeroSheet(hero: string, preview = false): Promise<SheetAssets | null> {
+  return loadSheet('heroes', hero, preview);
 }
 
 /** Forget every loaded creature model (a fight is over): models still drawn keep their own reference until they are disposed. */
@@ -123,10 +131,10 @@ export function loadUnitSheet(unit: string): Promise<SheetAssets | null> {
   return loadSheet('units', unit);
 }
 
-function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets | null> {
+function loadSheet(kind: 'heroes' | 'units', hero: string, preview = false): Promise<SheetAssets | null> {
   // (Medium graphics loads the lighter set; Low never gets here in a fight: its board holds still, DECISIONS #759. Kept apart by set,
   // so a change of setting fetches the other one for the next model shown)
-  const set = `${kind}-sheets${loadGraphicsQuality() === 'medium' ? '-lite' : ''}`;
+  const set = `${kind}-sheets${preview || loadGraphicsQuality() === 'medium' ? '-lite' : ''}`;
   const key = `${set}/${hero}`;
   const loads = LOADS[kind];
   let p = loads.get(key);
@@ -157,7 +165,8 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
               bitmap,
               bitmap.width,
               bitmap.height,
-              gothicPageMarks(man, man.pages.indexOf(f)),
+              man.nativeGothicPalette ? [] : gothicPageMarks(man, man.pages.indexOf(f)),
+              man.nativeGothicPalette,
             );
             const result = await createImageBitmap(recolored);
             bitmap.close();
@@ -171,7 +180,8 @@ function loadSheet(kind: 'heroes' | 'units', hero: string): Promise<SheetAssets 
                 img,
                 img.naturalWidth,
                 img.naturalHeight,
-                gothicPageMarks(man, man.pages.indexOf(f)),
+                man.nativeGothicPalette ? [] : gothicPageMarks(man, man.pages.indexOf(f)),
+                man.nativeGothicPalette,
               )
             : img;
         };
@@ -335,7 +345,7 @@ export class SheetHeroSprite {
 
   private get box(): Box {
     const b = this.boxes.get(this.sheetClip) ?? this.boxes.get('idle')!;
-    if (!hasSkinEffects(this.a.hero)) return b;
+    if (!hasSkinEffects(this.a.hero) && !this.cur.effects) return b;
     // Extra texture room for particles; body fitting and resting spans retain the original art bounds.
     const pad = this.bodyH * 0.3;
     return { x0: b.x0 - pad, y0: b.y0 - pad, w: b.w + pad * 2, h: b.h + pad * 2 };
@@ -514,9 +524,10 @@ export class SheetHeroSprite {
     const ctx = this.ctx;
     const { width: W, height: H } = this.canvas;
     const fx = hasSkinEffects(this.a.hero);
+    const effect = c.effects?.[i];
     // (redraw on the effect clock only while an effect is moving, not all through an idle)
     const tick =
-      fx && skinEffectActive(this.a.hero, this.sheetClip, this.t)
+      effect || (fx && skinEffectActive(this.a.hero, this.sheetClip, this.t))
         ? Math.floor(this.effectTime * 30)
         : 0;
     const key = `${this.sheetClip}:${i}:${W}x${H}:${this.k}:${tick}`;
@@ -535,18 +546,13 @@ export class SheetHeroSprite {
           ctx.save();
           ctx.translate((ox - b.x0) * this.k, (oy - b.y0) * this.k);
           ctx.scale(this.k, this.k);
-          drawSkinEffects(ctx, this.a.hero, this.sheetClip, this.t, this.effectTime, w, h, behind, {
-            image: img,
-            x,
-            y,
-            w,
-            h,
-          });
+          drawSkinEffects(ctx, this.a.hero, this.sheetClip, this.t, w, h, behind);
           ctx.restore();
         };
         effects(true);
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
+        if (this.sheetClip.endsWith('Fury')) ctx.filter = 'brightness(0.88) saturate(0.8)';
         ctx.drawImage(
           img,
           x,
@@ -558,7 +564,19 @@ export class SheetHeroSprite {
           w * this.k,
           h * this.k,
         );
+        ctx.filter = 'none';
         effects(false);
+        if (effect) {
+          ctx.save();
+          ctx.translate(-b.x0 * this.k, -b.y0 * this.k);
+          const scale = this.a.man.clips['idle']!.frames[0]![4] * this.k;
+          ctx.scale(scale, scale);
+          const contact = c.events?.find((event) => event.name === 'hit');
+          const sinceContact =
+            this.sheetClip === 'attack' && contact ? this.t - contact.frame / c.fps : undefined;
+          drawSheetEffect(ctx, effect, this.effectTime, sinceContact);
+          ctx.restore();
+        }
       }
     }
     this.texture.source.update();

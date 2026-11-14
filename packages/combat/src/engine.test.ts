@@ -601,6 +601,47 @@ describe('enemies and intents', () => {
     expect(s2.state.sides.a.discard.some((x) => x.card === 'wound')).toBe(true);
   });
 
+  it.each([
+    { hp: 25, after: 20, blocked: 1, barrier: 3 },
+    { hp: 26, after: 20, blocked: 0, barrier: 4 },
+    { hp: 23, after: 20, blocked: 3, barrier: 1 },
+    { hp: 21, after: 19, blocked: 4, barrier: 0 },
+  ])(
+    'absorbs excess attack damage with phase Barrier at $hp HP',
+    ({ hp, after, blocked, barrier }) => {
+      const state = start(['slime'], ['strike']);
+      const target = foe(state);
+      target.hp = hp;
+      target.maxHp = 40;
+      target.rise = [{ atPct: 50, barrierPct: 10, might: 2 }];
+      const hit = play(state, 't0', target.id);
+      expect(foe(hit.state)).toMatchObject({ hp: after, barrier, statuses: { might: 2 } });
+      expect(foe(hit.state).rise).toBeUndefined();
+      expect(hit.events.filter((event) => event.type === 'damage')).toEqual([
+        expect.objectContaining({ target: target.id, amount: 6, lost: hp - after, blocked }),
+      ]);
+    },
+  );
+
+  it('uses each phase reached by one blow and can defeat the enemy', () => {
+    const state = start(['slime'], ['strike']);
+    const target = foe(state);
+    target.hp = 25;
+    target.maxHp = 40;
+    target.barrier = 3;
+    target.rise = [
+      { atPct: 50, barrierPct: 10, might: 2 },
+      { atPct: 25, barrierPct: 5, might: 1 },
+    ];
+    hero(state).statuses.might = 30;
+    const hit = play(state, 't0', target.id);
+    expect(hit.state.winner).toBe('a');
+    expect(hit.events.filter((event) => event.type === 'phase')).toHaveLength(2);
+    expect(hit.events.filter((event) => event.type === 'damage')).toEqual([
+      expect.objectContaining({ target: target.id, amount: 36, lost: 25, blocked: 9 }),
+    ]);
+  });
+
   it('wins when every enemy is defeated and loses when the hero falls', () => {
     const s0 = start(['slime'], ['strike']);
     const c = clone(s0);

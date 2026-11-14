@@ -12,6 +12,7 @@ import {
   removableCards,
   restHeal,
   shopPrice,
+  merchantRerollPrice,
   upgradable,
   upgradePrice,
   ROLL_COST,
@@ -585,6 +586,7 @@ function useShopCardWidth(): number {
 export function MerchantView(props: {
   run: RunState;
   onBuy: (index: number) => void;
+  onReroll: () => void;
   onHold: (index: number) => void;
   /** let a hold go (no longer wanted) */
   onRelease: (index: number) => void;
@@ -640,7 +642,22 @@ export function MerchantView(props: {
         </p>
       )}
       <div className="shop__block">
-        <h3 className="shop__h">Cards</h3>
+        <div className="shop__cardHead">
+          <h3 className="shop__h">Cards</h3>
+          <button
+            className="btn btn--small"
+            disabled={shards < merchantRerollPrice(props.run)}
+            onClick={() => {
+              setHover(null);
+              props.onReroll();
+            }}
+          >
+            Reroll cards · {merchantRerollPrice(props.run)} shards
+          </button>
+        </div>
+        <p className="shop__rerollHint">
+          Fresh card stock. Held cards stay. Each reroll costs 50 more; the next shop starts at 50.
+        </p>
         <div className="shop__cards">
           {m.items.map((it, i) => (
             <div

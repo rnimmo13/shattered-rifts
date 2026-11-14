@@ -1,3 +1,19 @@
+## Unreleased
+
+- Sanctum: uniform circular class choices, enlarged model, mobile model before class grid; fixed intrinsic image sizing so the model stays within its frame.
+- Merchant card rerolls: 50 + 50 per prior reroll at that shop; persists in saves, resets next shop; same offer generator, held stock preserved, non-card stock/services untouched.
+- All shared Grimoire views and the practice builder filter by printed Mana cost, including X and Unplayable.
+- Rules 113: Reaping on Attack-card Commands converts companion HP damage at 25% rounded up per hit, hero Attacks remain 50%; autonomous actions remain excluded. Hunter Trail of Blood and Bloodsong cost 1 (both upgrades too); Bloodsong immediate Might 2/3 -> 1/2; Pack Frenzy Might 3/4 -> 2/3. Shatter held Spell Power contribution halves past 20. Obsidian Aegis scaling halves past +10 Barrier. Exact player notes and new assessment accompany these changes. Older unfinished battles/replays remain rules-gated.
+
+- Rift Heart: ordinary crossed card offers 10% -> 20%, foreign-card event weights x3, and crossed merchant chance on future maps 7.5% -> 22.5%. Includes normal shop stock. Existing rolled content is preserved; shard penalty remains -25%. Campaign generation only; no combat protocol change.
+
+- Monk: clarified Angry Palm, Final Account, Still Water and Settled Mind as binary stance bonuses, including upgraded text and the pre-entry Serene check. Effects, costs and save/replay rules are unchanged; live damage remains available.
+
+- Enemy phase Barrier now absorbs the remainder of an attack that triggers it. Excess damage reaches HP and can trigger further phases or defeat the enemy. Campaign Omen thresholds and rewards use the same values. Rules 112 invalidates older unfinished combat logs and replays.
+- Tempest Sage’s Radiant stance has tapered gold rays, rising embers, and expanding rings. Fury artwork and punch effects use softer lighting.
+- Pirate Captain holds her glass steady while sparks and cigar smoke animate.
+- Visible Store and Collection skin tiles show their animated models. Demon Knight and Glacier Lancer fit by height, with weapon tips free to extend outside the tile.
+
 ## 0.269.0 - 2026-11-13
 
 - Gothic Puppeteer: approved moss-green accents and a silver nose stud across all seven clips and both atlas qualities, green curse projectile, and matching still fallbacks. The palette and per-frame landmarks are applied once during image loading, preserving source poses, scythe length, frame timing and collision-free alpha.

@@ -2347,3 +2347,8 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 
 - **Question:** Robert asked to take in ChatGPT's follow-up work on the two new looks and push it ("can you take in all of the recent changes and push them. chatgpt made some changes").
 - **Decision (released in 0.269.0, no rules change):** the Gothic Puppeteer's accents are recoloured moss green with a silver nose stud when her pages load (`gothicPalette.ts`, `gothicNose.json`; the source art is unchanged), her curse is green and a close black aura runs along her resting figure. The Tempest Sage's punches carry stance-coloured effects drawn by the shared sheet renderer (`skinEffects.ts`). The Store and Collection call the category Skins; stored category and cosmetic ids are unchanged. Art direction for future character work is in `docs/ART_DIRECTION.md`.
+
+## 780 - Store and Collection looks are still until hovered (2026-11-13)
+
+- **Question:** at most three pose-sheet models animate at once, so the Store and the Collection showed three looks moving and the rest still. Robert: "its just really bad to show only 3 and not all of them, or on hover should work or something. just make it consistent".
+- **Decision (not released yet):** every look in the Store's and the Collection's boxes (`HeroModel` `contain`) shows its still picture. A look loads and plays its model only while the mouse is over it, and swings once as it comes alive; it goes back to the picture when the mouse leaves. On touch a tap wakes it, and it goes back once scrolled well away. The home screen, picker, Models and lore pages are unchanged.

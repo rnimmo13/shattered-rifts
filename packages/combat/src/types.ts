@@ -1436,8 +1436,8 @@ export interface Unit {
   /** attack hits it has taken this turn (Hammer and Anvil) */
   hitsTaken?: number;
   /**
-   * its phases still to come (highest first): the first time its HP would fall below `atPct`% of its max, it stops there and rises
-   * into the next phase (Barrier, Might). Set by a setup's enemy mods (the campaign's Omens), never by a card.
+   * Its remaining phases, highest first. Each grants Barrier and Might when HP reaches its threshold.
+   * An attack crossing an enemy's threshold continues through the new Barrier. Other phase-triggering damage stops at the threshold.
    */
   rise?: Rise[];
 }

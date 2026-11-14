@@ -99,8 +99,8 @@ export const HEARTS: BoonDef[] = [
     id: 'ember-heart',
     name: 'Rift Heart',
     heart: true,
-    text: 'Ordinary card offers have a 10% Rift-Crossed chance per card instead of 3%. Earn 25% fewer shards from fight victories.',
-    crossedOfferPct: 10,
+    text: 'Ordinary card offers have a 20% Rift-Crossed chance per card instead of 3%. Rift-Crossed events have triple selection weight, and new maps have triple the chance of Rift-Crossed merchants. Earn 25% fewer shards from fight victories.',
+    crossedOfferPct: 20,
     fightShardsPct: -25,
   },
   {

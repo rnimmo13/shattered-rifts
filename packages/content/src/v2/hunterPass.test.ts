@@ -95,8 +95,8 @@ describe('the Hunter cost pass (#693)', () => {
       s = endTurn(s);
       hero(s).hp = hero(s).maxHp;
     }
-    // (2 from the card, then 1 at the end of each of its first 8 turns)
-    expect(after()).toBe(2 + 8);
+    // 1 immediately, then 1 at the end of each of its first 8 turns.
+    expect(after()).toBe(1 + 8);
   });
 
   it('Dire Wolf+ arrives with 4 more max HP; Killing Spree draws for the first 2 Attacks a turn', () => {
@@ -111,12 +111,12 @@ describe('the Hunter cost pass (#693)', () => {
     expect(k.sides.a.hand.length).toBe(n - 3 + 2);
   });
 
-  it('Pack Frenzy: 3 Might and the Hound acts twice, and it is not consumed', () => {
+  it('Pack Frenzy: 2 Might and the Hound acts twice, and it is not consumed', () => {
     const s = fight(['pack-frenzy']);
     const hound = allies(s)[0]!.id;
     const act = legalActions(db, s).find((x) => x.type === 'play' && x.card === 'T0')!;
     const out = applyAction(db, s, act);
-    expect(hero(out.state).statuses.might).toBe(3);
+    expect(hero(out.state).statuses.might).toBe(2);
     expect(out.events.filter((e) => e.type === 'damage' && e.source === hound)).toHaveLength(2);
     expect(out.state.sides.a.exhausted.some((c) => c.id === 'T0')).toBe(false);
     expect(cardText(db, db.cards.bloodstorm!)).toBe(
@@ -128,12 +128,12 @@ describe('the Hunter cost pass (#693)', () => {
     expect(cardText(db, db.cards.bloodsong!)).toMatch(/first 8 turns only/);
   });
 
-  it('Pack Frenzy+: 4 Might and still two actions, the second for half damage (#769; 3 Might and three actions before)', () => {
+  it('Pack Frenzy+: 3 Might and still two actions, the second for half damage (#769; 3 Might and three actions before)', () => {
     const s = fight(['pack-frenzy+']);
     const hound = allies(s)[0]!.id;
     const act = legalActions(db, s).find((x) => x.type === 'play' && x.card === 'T0')!;
     const out = applyAction(db, s, act);
-    expect(hero(out.state).statuses.might).toBe(4);
+    expect(hero(out.state).statuses.might).toBe(3);
     expect(out.events.filter((e) => e.type === 'act' && e.unit === hound)).toHaveLength(2);
     expect(out.state.sides.a.extraActs).toBe(2);
     const hits = out.events.flatMap((e) =>
@@ -143,7 +143,7 @@ describe('the Hunter cost pass (#693)', () => {
     expect(hits[0]).toBeGreaterThan(0);
     // (acting again: the first time each turn in full, every time after for half, #762)
     expect(hits[1]).toBe(Math.round(hits[0]! / 2));
-    // (the base card keeps 3 Might and the same two actions)
+    // (the base card keeps 2 Might and the same two actions)
     const plain = fight(['pack-frenzy']);
     const base = applyAction(
       db,
@@ -152,7 +152,7 @@ describe('the Hunter cost pass (#693)', () => {
     );
     expect(base.events.filter((e) => e.type === 'act' && e.unit === hound)).toHaveLength(2);
     expect(cardText(db, db.cards['pack-frenzy+']!)).toBe(
-      'Gain 4 Might. Command your companions to act now. Command your companions to act now. (When companions act again after the first time in a turn, they deal half damage.)',
+      'Gain 3 Might. Command your companions to act now. Command your companions to act now. (When companions act again after the first time in a turn, they deal half damage.)',
     );
   });
 
@@ -208,4 +208,13 @@ describe('the Hunter cost pass (#693)', () => {
     // (one more HP paid: the card's 1 Might, and no Bloodlust yet)
     expect(might()).toBe(m0 + 1);
   });
+});
+
+it('Hunter permanent Might engines require Mana, including upgrades', () => {
+  for (const id of ['trail-of-blood', 'trail-of-blood+', 'bloodsong', 'bloodsong+']) {
+    expect(db.cards[id]!.cost).toBe(1);
+    const s = fight([id]);
+    s.sides.a.mana = 0;
+    expect(legalActions(db, s).some((a) => a.type === 'play')).toBe(false);
+  }
 });

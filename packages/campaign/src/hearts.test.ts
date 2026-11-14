@@ -65,8 +65,8 @@ describe('percentage Hearts and campaign rewards', () => {
       }
     }
   });
-  it('uses 10%, 0% or default 3% in ordinary card offers', () => {
-    expect(heartCrossedChance({ ...fresh(), heart: 'ember-heart' })).toBe(10);
+  it('uses 20%, 0% or default 3% in ordinary card offers', () => {
+    expect(heartCrossedChance({ ...fresh(), heart: 'ember-heart' })).toBe(20);
     expect(heartCrossedChance({ ...fresh(), heart: 'thorned-heart' })).toBe(0);
     expect(heartCrossedChance(fresh())).toBe(3);
     for (let seed = 0; seed < 20; seed++)

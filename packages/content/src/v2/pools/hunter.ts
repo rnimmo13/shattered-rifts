@@ -100,13 +100,31 @@ export const HUNTER: CardDef[] = [
     },
   ),
   // (14 + 2 per Might since #693, 2 a point being the most a payoff may scale (balance.test.ts): 75% before, ~94%; upgraded 18 + 2)
-  k('uncommon', 'crushing-blow', 'Crushing Blow', 'attack', 2, 'foe', [scaled(dmg(14), per('might', 2))], {
-    up: { effects: [scaled(dmg(18), per('might', 2))] },
-  }),
+  k(
+    'uncommon',
+    'crushing-blow',
+    'Crushing Blow',
+    'attack',
+    2,
+    'foe',
+    [scaled(dmg(14), per('might', 2))],
+    {
+      up: { effects: [scaled(dmg(18), per('might', 2))] },
+    },
+  ),
   // (8 x 2 since #693: 89% before; upgraded 11 x 2)
-  k('uncommon', 'run-wild', 'Run Wild', 'attack', 2, 'foe', [dmg(8, 'target', 2), status('might', 1)], {
-    up: { effects: [dmg(11, 'target', 2), status('might', 1)] },
-  }),
+  k(
+    'uncommon',
+    'run-wild',
+    'Run Wild',
+    'attack',
+    2,
+    'foe',
+    [dmg(8, 'target', 2), status('might', 1)],
+    {
+      up: { effects: [dmg(11, 'target', 2), status('might', 1)] },
+    },
+  ),
   k('uncommon', 'ravage', 'Ravage', 'attack', 2, 'none', [dmg(10, 'allFoes', 2), lose(3)]),
   k('uncommon', 'the-hunger', 'The Hunger', 'power', 1, 'none', [lose(4), status('might', 3)]),
 
@@ -142,9 +160,18 @@ export const HUNTER: CardDef[] = [
     { x: true },
   ),
   // (8 x 2 since #693: 89% before; upgraded 10 x 2)
-  k('uncommon', 'reckless-blow', 'Reckless Blow', 'attack', 1, 'foe', [lose(2), dmg(8, 'target', 2)], {
-    up: { effects: [lose(2), dmg(10, 'target', 2)] },
-  }),
+  k(
+    'uncommon',
+    'reckless-blow',
+    'Reckless Blow',
+    'attack',
+    1,
+    'foe',
+    [lose(2), dmg(8, 'target', 2)],
+    {
+      up: { effects: [lose(2), dmg(10, 'target', 2)] },
+    },
+  ),
   k('uncommon', 'hamstring-slam', 'Hamstring Slam', 'attack', 2, 'foe', [
     dmg(11),
     status('faltering', 2, 'target'),
@@ -152,10 +179,19 @@ export const HUNTER: CardDef[] = [
   ]),
   // (Commands, like the Necromancer's and the Engineer's: Robert 2026-11-08, #688)
   // (30, and 1 Might, since #693: 97% before; ~126%; upgraded 34 and the companions act twice)
-  k('rare', 'skullcrusher', 'Skullcrusher', 'attack', 3, 'foe', [dmg(30), ACT, status('might', 1)], {
-    tags: ['command'],
-    up: { effects: [dmg(34), ACT, ACT, status('might', 1)] },
-  }),
+  k(
+    'rare',
+    'skullcrusher',
+    'Skullcrusher',
+    'attack',
+    3,
+    'foe',
+    [dmg(30), ACT, status('might', 1)],
+    {
+      tags: ['command'],
+      up: { effects: [dmg(34), ACT, ACT, status('might', 1)] },
+    },
+  ),
   k(
     'rare',
     'scarred-warrior',
@@ -240,18 +276,18 @@ export const HUNTER: CardDef[] = [
     'trail-of-blood',
     'Trail of Blood',
     'power',
-    // (0 Mana since #693: ~60-120% at 1)
-    0,
+    // Costs 1 Mana: permanent Might from summons requires setup investment.
+    1,
     'none',
     // (the first 4 summons a fight since DECISIONS #769: no limit before, and two copies in the opening hand for nothing)
     [on('summon', [status('might', 1)], { times: 4 })],
     { up: { innate: true } },
   ),
   // (3 Might and the companions act twice, not consumed, since #693: ~67% before; ~143%)
-  k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 3), ACT, ACT], {
+  k('rare', 'pack-frenzy', 'Pack Frenzy', 'skill', 2, 'none', [status('might', 2), ACT, ACT], {
     tags: ['command'],
     // (upgraded: 4 Might and still two actions since DECISIONS #769; a third action before)
-    up: { effects: [status('might', 4), ACT, ACT] },
+    up: { effects: [status('might', 3), ACT, ACT] },
   }),
   // (2 Mana, Opening hand, and the companions grow 2 max HP each turn since #693: ~57% before; ~153%; upgraded it costs 1)
   k(
@@ -467,10 +503,10 @@ export const HUNTER: CardDef[] = [
     'bloodsong',
     'Bloodsong',
     'power',
-    0,
+    1,
     'none',
-    [lose(2), status('might', 2), status('ritual', 1), draw(1)],
-    { up: { effects: [lose(2), status('might', 3), status('ritual', 1), draw(1)] } },
+    [lose(2), status('might', 1), status('ritual', 1), draw(1)],
+    { up: { effects: [lose(2), status('might', 2), status('ritual', 1), draw(1)] } },
   ),
   k(
     'rare',
@@ -533,9 +569,18 @@ export const HUNTER: CardDef[] = [
     { up: { innate: true } },
   ),
   // (and 2 Barrier since #693: 80% before; upgraded draw 4)
-  k('uncommon', 'reckless-abandon', 'Reckless Abandon', 'skill', 1, 'none', [draw(3), discard(1), barrier(2)], {
-    up: { effects: [draw(4), discard(1), barrier(2)] },
-  }),
+  k(
+    'uncommon',
+    'reckless-abandon',
+    'Reckless Abandon',
+    'skill',
+    1,
+    'none',
+    [draw(3), discard(1), barrier(2)],
+    {
+      up: { effects: [draw(4), discard(1), barrier(2)] },
+    },
+  ),
   k(
     'uncommon',
     'burst-of-speed',
@@ -549,9 +594,18 @@ export const HUNTER: CardDef[] = [
     },
   ),
   // (7 x 3 since #693: 89% before; upgraded 9 x 3)
-  k('uncommon', 'rip-and-tear', 'Rip and Tear', 'attack', 2, 'foe', [dmg(7, 'target', 3), draw(1)], {
-    up: { effects: [dmg(9, 'target', 3), draw(1)] },
-  }),
+  k(
+    'uncommon',
+    'rip-and-tear',
+    'Rip and Tear',
+    'attack',
+    2,
+    'foe',
+    [dmg(7, 'target', 3), draw(1)],
+    {
+      up: { effects: [dmg(9, 'target', 3), draw(1)] },
+    },
+  ),
   k(
     'rare',
     'berserk-tempo',
@@ -621,9 +675,18 @@ export const HUNTER: CardDef[] = [
     { up: { effects: [on('play', [barrier(3), barrier(1, 'allAllies')], { filter: 'attack' })] } },
   ),
   // (10 and 5 Primed since #693: 80% before; upgraded 13)
-  k('uncommon', 'tear-loose', 'Tear Loose', 'attack', 1, 'foe', [dmg(10), lose(2), status('vigor', 5)], {
-    up: { effects: [dmg(13), lose(2), status('vigor', 5)] },
-  }),
+  k(
+    'uncommon',
+    'tear-loose',
+    'Tear Loose',
+    'attack',
+    1,
+    'foe',
+    [dmg(10), lose(2), status('vigor', 5)],
+    {
+      up: { effects: [dmg(13), lose(2), status('vigor', 5)] },
+    },
+  ),
   k(
     'rare',
     'ancient-fury',
@@ -691,10 +754,19 @@ export const HUNTER: CardDef[] = [
     up: { effects: [command(dmg(8)), barrier(4)] },
   }),
   // (Opening hand since #693: 87% before; upgraded it costs 0)
-  k('uncommon', 'hunting-grounds', 'Hunting Grounds', 'power', 1, 'none', [on('snare', [status('might', 1)])], {
-    innate: true,
-    up: { cost: 0 },
-  }),
+  k(
+    'uncommon',
+    'hunting-grounds',
+    'Hunting Grounds',
+    'power',
+    1,
+    'none',
+    [on('snare', [status('might', 1)])],
+    {
+      innate: true,
+      up: { cost: 0 },
+    },
+  ),
   k(
     'common',
     'single-out',

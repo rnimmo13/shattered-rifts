@@ -162,11 +162,11 @@ describe('The Applause Below: Slippery', () => {
 });
 
 describe('Seraphine: the Kneeling', () => {
-  it('an Omen\u2019s phase at an odd Max HP stops her low enough to kneel next', () => {
+  it('an Omen\u2019s phase triggers at the same odd-HP threshold as the Kneeling', () => {
     const { state } = createCombat(db, {
       seed: 'odd-rise',
       a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
-      b: { enemies: ['seraphine'], mods: [{ rise: [{ atPct: 50, barrierPct: 0, might: 0 }] }] },
+      b: { enemies: ['seraphine'], mods: [{ rise: [{ atPct: 50, barrierPct: 2, might: 0 }] }] },
     });
     const s = clone(state);
     const h = s.sides.a.units.find((u) => u.kind === 'hero')!;
@@ -176,9 +176,10 @@ describe('Seraphine: the Kneeling', () => {
     const low = clone(s);
     const v = unit(low, 'seraphine')!;
     v.hp = 148;
-    const stopped = strike(low, v);
-    expect(unit(stopped, 'seraphine')!.hp).toBe(146);
-    expect(unit(endTurn(stopped), 'seraphine')!.intent?.move).toBe('kneel');
+    const hit = strike(low, v);
+    expect(unit(hit, 'seraphine')!.hp).toBe(146);
+    expect(unit(hit, 'seraphine')!.rise).toBeUndefined();
+    expect(unit(endTurn(hit), 'seraphine')!.intent?.move).toBe('kneel');
   });
 
   it('at half HP she kneels once: Might gone, Exposed, no blow; and never again', () => {

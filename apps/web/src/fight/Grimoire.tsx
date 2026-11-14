@@ -17,6 +17,7 @@ import {
   type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { ManaCostFilter, matchesManaCost, type ManaCost } from './ManaCostFilter';
 import { cardText, type CardDef } from '@sr/combat';
 import { COMBAT_DB } from '@sr/content/v2';
 import { HeroIcon } from '../ui/HeroIcon';
@@ -132,6 +133,7 @@ export function Grimoire(props: GrimoireProps) {
   const [hover, setHover] = useState<{ def: CardDef; at: Anchor } | null>(null);
 
   const [query, setQuery] = useState('');
+  const [manaCost, setManaCost] = useState<ManaCost>('all');
   const searchable = props.search !== false;
   const q = query.trim().toLowerCase();
   // (a card's words, for the search: its name and rules text, worked out once per deck)
@@ -143,7 +145,18 @@ export function Grimoire(props: GrimoireProps) {
     return m;
   }, [entries]);
   const inTab = tab === 'all' ? entries : entries.filter((e) => tabOf(e.def) === tab);
-  const shown = q ? inTab.filter((e) => words.get(e.def.id)?.includes(q)) : inTab;
+  const shown = inTab.filter(
+    (e) => matchesManaCost(e.def, manaCost) && (!q || words.get(e.def.id)?.includes(q)),
+  );
+  const costFilter = (
+    <ManaCostFilter
+      value={manaCost}
+      onChange={(value) => {
+        setManaCost(value);
+        scrollRef.current?.scrollTo({ top: 0 });
+      }}
+    />
+  );
   // the page's heading: the characters whose cards are on it
   const head = useMemo(() => paginate(shown, Math.max(1, shown.length), true)[0], [shown]);
   const total = entries.length;
@@ -214,16 +227,17 @@ export function Grimoire(props: GrimoireProps) {
     </div>
   );
   // (above the book: the realms, and the search at the end of the same bar)
-  const toolbar = (tabs.length > 1 || searchable) && (
+  const toolbar = (
     <div className="grim__tabs">
       {tabs.length > 1 && realmTabs('grim__tablist')}
       {searchBox}
+      {costFilter}
     </div>
   );
   const cardList = (hoverable: boolean, listClass: string) =>
     shown.length === 0 ? (
       <p className="grim__empty">
-        {q ? `No card here matches “${query.trim()}”.` : (props.emptyText ?? 'Empty.')}
+        {q || manaCost !== 'all' ? 'No cards match these filters.' : (props.emptyText ?? 'Empty.')}
       </p>
     ) : (
       <ul
@@ -271,6 +285,7 @@ export function Grimoire(props: GrimoireProps) {
     return (
       <div className={`grim grim--phone grim--${grow ? 'grow' : 'fill'}`} ref={pageRef}>
         {searchBox}
+        {costFilter}
         {tabs.length > 1 && realmTabs('grim__chips')}
         {cardList(false, 'grim__list')}
       </div>

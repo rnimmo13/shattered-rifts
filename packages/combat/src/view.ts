@@ -1472,7 +1472,7 @@ export function opText(db: CombatDb, o: Op, who: Record<Sel, string> = WHO): str
         if (o.status === 'lethality')
           return `For the rest of the fight, your first Attack each turn deals ${o.amount}% more damage.`;
         if (o.status === 'reaping')
-          return 'For the rest of the fight, whenever your Attacks take HP off an enemy, curse it with half that much Fate.';
+          return 'For the rest of the fight, your Attacks curse enemies with Fate equal to half the HP they take off. When an Attack commands your companions to strike, their hits curse for a quarter instead. Round up per hit.';
         if (o.status === 'freeethereal')
           return o.amount === 1
             ? 'Your next Fleeting card costs 0.'

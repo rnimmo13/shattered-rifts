@@ -86,8 +86,10 @@ export function LearnOdds() {
         has nothing left to offer (you hold every copy), the roll falls to the next rarity down.
         About {CROSSED_OFFER_CHANCE} cards in 100 come from another Riftwalker (a Rift-crossed
         card). A reward offers three cards (an Omen takes one away from Tier III), each rolled like
-        this. Rift Heart changes the ordinary Rift-Crossed chance to 10% per card; Gilded Heart
-        changes it to 0%. Explicit Rift-Crossed events and merchants are unaffected.
+        this. Rift Heart changes the ordinary Rift-Crossed chance to 20% per card, triples the
+        selection weight of Rift-Crossed events, and raises Rift-Crossed merchants from 7.5% to
+        22.5% on newly generated maps. Existing maps and offers stay as rolled. Gilded Heart changes
+        ordinary offers to 0%; explicit Rift-Crossed events and merchants remain available.
       </p>
       <table className="learn__table">
         <thead>

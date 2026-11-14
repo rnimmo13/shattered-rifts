@@ -1,33 +1,33 @@
 {
   "assassin-rogue-tailor": {
-    "width": 180,
-    "height": 431,
-    "x": -123,
-    "y": -431,
-    "left": -134,
-    "right": 61,
-    "fitWidth": 108,
-    "displayScale": 1.08
+    "width": 243,
+    "height": 401,
+    "x": -127,
+    "y": -400,
+    "left": -131,
+    "right": 120,
+    "fitWidth": 242,
+    "displayScale": 1
   },
   "engineer-arc-welder": {
-    "width": 273,
-    "height": 458,
-    "x": -107,
-    "y": -452,
-    "left": -111,
-    "right": 176,
-    "fitWidth": 196,
-    "displayScale": 1.1
+    "width": 285,
+    "height": 401,
+    "x": -99,
+    "y": -400,
+    "left": -103,
+    "right": 190,
+    "fitWidth": 198,
+    "displayScale": 1
   },
   "knight-demon-knight": {
-    "width": 642,
-    "height": 492,
-    "x": -253,
-    "y": -464,
-    "left": -275,
-    "right": 393,
+    "width": 540,
+    "height": 415,
+    "x": -178,
+    "y": -415,
+    "left": -182,
+    "right": 366,
     "fitWidth": 353,
-    "displayScale": 1.26
+    "displayScale": 1.055
   },
   "monk-tempest-sage": {
     "width": 257,
@@ -40,13 +40,13 @@
     "displayScale": 1
   },
   "necromancer-gothic-puppeteer": {
-    "width": 311,
-    "height": 643,
-    "x": -156,
-    "y": -643,
-    "left": -160,
-    "right": 159,
-    "fitWidth": 311,
+    "width": 296,
+    "height": 401,
+    "x": -126,
+    "y": -400,
+    "left": -130,
+    "right": 174,
+    "fitWidth": 237,
     "displayScale": 1
   },
   "spellblade-nova-ronin": {
@@ -58,5 +58,45 @@
     "right": 222,
     "fitWidth": 264,
     "displayScale": 1.07
+  },
+  "shaman-ash-falconer": {
+    "width": 276,
+    "height": 401,
+    "x": -124,
+    "y": -400,
+    "left": -128,
+    "right": 156,
+    "fitWidth": 274,
+    "displayScale": 1
+  },
+  "hunter-glacier-lancer": {
+    "width": 560,
+    "height": 400,
+    "x": -143,
+    "y": -398,
+    "left": -147,
+    "right": 421,
+    "fitWidth": 274,
+    "displayScale": 1
+  },
+  "trickster-high-roller": {
+    "width": 215,
+    "height": 401,
+    "x": -121,
+    "y": -400,
+    "left": -125,
+    "right": 98,
+    "fitWidth": 203,
+    "displayScale": 1
+  },
+  "drunkard-pirate-captain": {
+    "width": 373,
+    "height": 401,
+    "x": -244,
+    "y": -400,
+    "left": -248,
+    "right": 133,
+    "fitWidth": 210,
+    "displayScale": 1
   }
 }

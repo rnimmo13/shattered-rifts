@@ -130,7 +130,7 @@ function buildOmens(T: typeof OMEN_TUNING): Omen[] {
       name: 'Second Wind',
       text: (t) => {
         const r = secondWind(t);
-        return `Elites and Wardens have a second phase: the first time they fall to half HP, they stop there and rise with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+        return `Elites and Wardens have a second phase: the first time they fall to half HP, they gain Barrier (${r.barrierPct}% of their Max HP) and ${r.might} Might. The Barrier absorbs any remaining attack damage.`;
       },
       apply: (e, t) => void e.bossRise.push(secondWind(t)),
     },
@@ -166,7 +166,7 @@ function buildOmens(T: typeof OMEN_TUNING): Omen[] {
       id: 'rallied-foes',
       name: 'Rallied Foes',
       text: (t) =>
-        `In ordinary fights the strongest enemy has a second phase too: at half HP it stops and rises with Barrier (${at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct)}% of its HP).`,
+        `In ordinary fights the strongest enemy has a second phase too: at half HP it gains Barrier (${at(t, T.ralliedFoes.tier, T.ralliedFoes.barrierPct)}% of its Max HP). The Barrier absorbs any remaining attack damage.`,
       apply: (e, t) =>
         void e.leaderRise.push({
           atPct: 50,
@@ -225,7 +225,7 @@ function buildOmens(T: typeof OMEN_TUNING): Omen[] {
       name: 'Third Phase',
       text: (t) => {
         const r = thirdPhase(t);
-        return `Elites and Wardens rise once more at ${r.atPct === 25 ? 'a quarter' : `${r.atPct}%`} of their HP, with Barrier (${r.barrierPct}% of their HP) and ${r.might} Might.`;
+        return `Elites and Wardens rise once more at ${r.atPct === 25 ? 'a quarter' : `${r.atPct}%`} of their HP, with Barrier (${r.barrierPct}% of their Max HP) and ${r.might} Might. The Barrier absorbs any remaining attack damage.`;
       },
       apply: (e, t) => void e.bossRise.push(thirdPhase(t)),
     },
@@ -259,7 +259,7 @@ function buildOmens(T: typeof OMEN_TUNING): Omen[] {
       id: 'rift-awakens',
       name: 'The Rift Awakens',
       text: () =>
-        `Every enemy has a second phase: at ${T.riftAwakens.atPct === 50 ? 'half' : `${T.riftAwakens.atPct}% of its`} HP it stops and rises with Barrier (${T.riftAwakens.barrierPct}% of its HP) and ${T.riftAwakens.might} Might.`,
+        `Every enemy has a second phase: at ${T.riftAwakens.atPct === 50 ? 'half' : `${T.riftAwakens.atPct}% of its`} HP it gains Barrier (${T.riftAwakens.barrierPct}% of its Max HP) and ${T.riftAwakens.might} Might. The Barrier absorbs any remaining attack damage.`,
       apply: (e) =>
         void e.allRise.push({
           atPct: T.riftAwakens.atPct,

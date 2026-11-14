@@ -640,8 +640,8 @@ function applyDamage(
   // (a Shatter was earned with Fracture and never comes again, so Slippery lets it through)
   throughSlippery = false,
   causeSide?: Side,
-): number {
-  if (t.hp <= 0) return 0;
+): { lost: number; blocked: number } {
+  if (t.hp <= 0) return { lost: 0, blocked: 0 };
   // (Nyxara's rule, DECISIONS #546) a hit tears her Veil away, and her intent shows
   if (kind === 'attack' && stacks(t, 'veiled') > 0) addStatus(r, t, 'veiled', -stacks(t, 'veiled'));
   if (kind === 'attack' && amount > 0 && !throughSlippery && stacks(t, 'slippery') > 0) {
@@ -663,16 +663,33 @@ function applyDamage(
       hp: t.hp,
       ...(overflow ? { overflow: true as const } : {}),
     });
-    return 0;
+    return { lost: 0, blocked: 0 };
   }
-  const blocked = kind === 'direct' ? 0 : Math.min(t.barrier, amount);
-  t.barrier -= blocked;
-  let lost = Math.min(t.hp, amount - blocked);
+  let blocked = kind === 'direct' ? 0 : Math.min(t.barrier, amount);
+  let remaining = amount - blocked;
   // Buffer: the next time HP would be lost, none is (Barrier has soaked what it could first)
-  if (lost > 0 && stacks(t, 'buffer') > 0) {
+  if (remaining > 0 && stacks(t, 'buffer') > 0) {
     addStatus(r, t, 'buffer', -1);
-    lost = 0;
+    remaining = 0;
   }
+  // An enemy's phase Barrier absorbs the part of the attack that crosses its threshold.
+  // Walk through each threshold reached by this hit before reporting one damage event.
+  if (t.kind === 'enemy' && kind === 'attack') {
+    let toThreshold = 0;
+    for (let phase = t.rise?.[0]; phase && remaining > 0; phase = t.rise?.[0]) {
+      const distance = Math.max(0, t.hp - toThreshold - riseThreshold(t, phase));
+      if (remaining < distance) break;
+      toThreshold += distance;
+      remaining -= distance;
+      riseUp(r, t, phase);
+      const absorbed = Math.min(t.barrier - blocked, remaining);
+      blocked += absorbed;
+      remaining -= absorbed;
+    }
+    remaining += toThreshold;
+  }
+  t.barrier -= blocked;
+  let lost = Math.min(t.hp, remaining);
   const survival = r.s.sides[t.side].discipline;
   let saved = false;
   if (
@@ -687,12 +704,11 @@ function applyDamage(
     lost = t.hp - 1;
     saved = true;
   }
-  // a unit with a phase to come stops at its threshold (the blow that crosses it goes no further) and rises
-  const rise = t.rise?.[0];
+  // Hero phases and enemy phases triggered by non-attack damage still stop the triggering hit.
+  const rise = t.kind === 'enemy' && kind === 'attack' ? undefined : t.rise?.[0];
   let rises = false;
   if (rise && lost > 0) {
-    // (rounded down: a boss's moves change at or below the same percent, so at an odd Max HP both still come together)
-    const floor = Math.max(1, Math.floor((t.maxHp * rise.atPct) / 100));
+    const floor = riseThreshold(t, rise);
     if (t.hp - lost <= floor) {
       rises = true;
       // (one already at or below it, say after a blow that landed exactly on it, rises without losing more)
@@ -729,7 +745,11 @@ function applyDamage(
   if (rises && rise) riseUp(r, t, rise);
   // (the Necrobinder copy) an Aura that answers a companion losing HP (Necro Mastery)
   if (lost > 0 && t.kind === 'ally') fireTriggers(r, r.s.sides[t.side], 'allyHurt', { lost });
-  return lost;
+  return { lost, blocked };
+}
+
+function riseThreshold(t: Unit, rise: Rise): number {
+  return Math.max(1, Math.floor((t.maxHp * rise.atPct) / 100));
 }
 
 /** A unit rises into its next phase: Barrier and Might, and the phase is used up. */
@@ -900,9 +920,8 @@ function attackHit(
     projection.hits.set(index, list);
   }
   const room = t.hp + t.barrier;
-  const barrierBefore = t.barrier;
   const capped = stacks(t, 'ghostly') > 0 || stacks(t, 'shielded') > 0 || stacks(t, 'slippery') > 0;
-  const lostHere = applyDamage(r, a.actor, t, amount, 'attack');
+  const { lost: lostHere, blocked } = applyDamage(r, a.actor, t, amount, 'attack');
   let lost = lostHere;
   // (assassin) an Aura that answers your Attack getting through to an enemy (Envenom)
   if (
@@ -925,9 +944,8 @@ function attackHit(
   // (hits taken this turn, for Hammer and Anvil; Reflect sends what its Barrier soaked back to the attacker)
   if (t.side !== a.actor.side) {
     t.hitsTaken = (t.hitsTaken ?? 0) + 1;
-    const soaked = Math.max(0, barrierBefore - t.barrier);
-    if (attacked && soaked > 0 && stacks(t, 'reflect') > 0 && a.actor.hp > 0)
-      applyDamage(r, t, a.actor, soaked, 'direct');
+    if (attacked && blocked > 0 && stacks(t, 'reflect') > 0 && a.actor.hp > 0)
+      applyDamage(r, t, a.actor, blocked, 'direct');
   }
   // (a companion killed by an attack remembers by whom: Den Mother strikes back at it)
   if (attacked && t.kind === 'ally' && t.hp <= 0 && t.side !== a.actor.side)
@@ -943,7 +961,7 @@ function attackHit(
       const nextRoom = next.hp + next.barrier;
       const nextCapped =
         stacks(next, 'ghostly') > 0 || stacks(next, 'shielded') > 0 || stacks(next, 'slippery') > 0;
-      lost += applyDamage(r, a.actor, next, carried, 'attack', true);
+      lost += applyDamage(r, a.actor, next, carried, 'attack', true).lost;
       // (a companion the overflow kills, exactly or through Ghostly too, remembers its killer: Den Mother)
       if (next.kind === 'ally' && next.hp <= 0) next.killedBy = a.actor.id;
       if (next.kind !== 'ally' || next.hp > 0 || nextCapped || carried <= nextRoom) break;
@@ -961,7 +979,7 @@ function attackHit(
     t.side !== a.actor.side &&
     amount > 0 &&
     !capped &&
-    (barrierBefore - t.barrier) * 2 >= amount &&
+    blocked * 2 >= amount &&
     a.actor.hp > 0 &&
     traitOf(r, t.side)?.openings
   )
@@ -2303,9 +2321,9 @@ function execOp(r: Run, a: Act, op: Op): void {
             side.swordFoes.push(t.id);
           if (op.hitFracture && t.side !== a.actor.side && a.struck.get(t.id))
             cracked = fractureUnit(r, a, side, t, op.hitFracture) || cracked;
-          // (half the HP taken, rounded up, since DECISIONS #762: all of it doubled every Attack and Command for the kill)
+          // Reaping converts hero Attack HP damage at half, companion Attack HP damage at one quarter; round each hit up.
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
-            addStatus(r, t, 'doom', Math.ceil(lostHere / 2), a.actor.side);
+            addStatus(r, t, 'doom', Math.ceil(lostHere / (a.actor.kind === 'ally' ? 4 : 2)), a.actor.side);
           // Sic 'Em: a companion that hits its quarry raises another like it
           const quarry = stacks(t, 'quarry');
           if (a.actor.kind === 'ally' && quarry > 0 && t.side !== a.actor.side && !r.s.winner)
@@ -2339,7 +2357,7 @@ function execOp(r: Run, a: Act, op: Op): void {
       for (const t of resolve(r, a, op.to)) {
         // (a hero paying HP for their own effect pays five times as much in the Arena, DECISIONS #707, #713)
         const arenaPays = r.s.mode === 'pvp' && t === a.actor && t.kind === 'hero';
-        const lost = applyDamage(
+        const { lost } = applyDamage(
           r,
           a.actor,
           t,
@@ -4033,7 +4051,8 @@ function shatterDeepening(sd: SideState): number {
   return b > SHATTER_BONUS_FULL ? SHATTER_BONUS_FULL + Math.floor((b - SHATTER_BONUS_FULL) / 2) : b;
 }
 function shatterDamage(sd: SideState, k: number): number {
-  const n = SHATTER_BASE + shatterStep(k) + sd.stars + shatterDeepening(sd);
+  const power = sd.stars <= 20 ? sd.stars : 20 + Math.floor((sd.stars - 20) / 2);
+  const n = SHATTER_BASE + shatterStep(k) + power + shatterDeepening(sd);
   // (the Shatterer: a percentage on top, so it grows as the Shatters do, DECISIONS #542)
   return sd.shatterPct ? Math.floor((n * (100 + sd.shatterPct)) / 100) : n;
 }
@@ -5001,7 +5020,7 @@ function startOfTurn(r: Run, side: Side): void {
     addStatus(r, u, 'hangover', -owed);
     const due = Math.min(Math.ceil((owed * u.maxHp) / 100), u.hp - 1);
     if (due <= 0) continue;
-    const lost = applyDamage(r, null, u, due, 'direct');
+    const { lost } = applyDamage(r, null, u, due, 'direct');
     if (lost > 0 && u.kind === 'hero') {
       fireTriggers(r, sd, 'loseHp', { lost });
       fireTriggers(r, sd, 'hangoverPaid', { lost });

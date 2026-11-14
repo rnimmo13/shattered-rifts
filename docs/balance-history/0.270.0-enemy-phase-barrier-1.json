@@ -1,0 +1,1040 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "version": "0.270.0",
+  "rules": 112,
+  "assessmentId": "enemy-phase-barrier-1",
+  "status": "Local implementation",
+  "source": "Robert’s report about enemy Barrier at half HP, Campaign Omen tuning, and deterministic combat scenarios.",
+  "basis": "Campaign enemy phases grant the same Barrier and Might at the same HP thresholds. Previously the triggering attack stopped at the threshold, leaving the full Barrier. Now damage past the threshold spends the Barrier immediately and any excess reduces HP. A strong hit can reach multiple thresholds or finish the fight. Example with 100 max HP, 60 HP, 20 phase Barrier and a 40-damage attack: previously 50 HP and 20 Barrier remained; now 40 HP and 0 Barrier remain.",
+  "gradeMode": "review-signals",
+  "evaluationScope": "No new Campaign grades. The reported 50% phase behavior identifies a rule issue. Available local report previews are fixtures and supply no current human observations. The carried Arena grades are hand estimates from the #768–769 baseline.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Typical Arena games of 10 or more own turns and roughly 50% or better Drago clears with optimized decks remain playtest targets.",
+  "progressionBands": [
+    "IV–VII",
+    "VIII–X",
+    "XI–XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Threshold effect if reached",
+        "extendedFight": "Threshold effect if reached"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Same setup. An attack can spend phase Barrier immediately.",
+      "recovery": "Survival gains depend on whether the new damage prevents an enemy action.",
+      "rareReliance": "Same card pool and rarity requirements.",
+      "scaling": "Large single attacks retain more damage at phase thresholds. Multiple hits spend Barrier hit by hit.",
+      "rationale": "This change applies to enemy phases in Campaign. The Arena estimate is carried from #768–769.",
+      "watch": "Compare hits that cross a threshold and enemy turns survived in IV–VII, VIII–X and XI–XII.",
+      "confidence": "Low for Campaign outcomes. Combat scenarios verify damage and Barrier accounting.",
+      "pacing": "Arena rules, deck setup and recovery are unaffected by the enemy phase change.",
+      "evidence": [
+        "docs/ARENA_SCALING_2026-11-12.md",
+        "packages/combat/src/engine.test.ts"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated",
+      "rationale": "In I–III, check whether attacks that reach the Rallied Foes or Second Wind threshold prevent an extra enemy action."
+    }
+  ],
+  "corrections": [
+    "Campaign builds with concentrated Attack turns may benefit more than builds using smaller repeated hits. Compare burst and mixed decks with different sources of damage at the same threshold.",
+    "Enemy phase triggers from damage outside attacks retain their existing stop. Resurgent Heart still protects the player at half HP. Arena groups, cards, encounters, and phase thresholds use their existing values.",
+    "No Campaign win-rate estimate or new Arena grade was assigned."
+  ]
+}

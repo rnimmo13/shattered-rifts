@@ -823,12 +823,6 @@ button.mapnode--warden {
   gap: 0.6rem;
   justify-items: center;
 }
-.setup__actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.8rem;
-}
 /* a seed a friend shared (DECISIONS #698) */
 .setup__seed {
   display: grid;
@@ -866,23 +860,16 @@ button.mapnode--warden {
   font-size: 1.02rem;
   color: var(--c-text-dim);
 }
-/* on a phone the Sanctum is long: Begin stays in view at the bottom of the screen, and Import stays below it in the page */
 @media (max-width: 52rem) {
-  .setup__actions {
-    display: contents;
-  }
   .setup__start {
     position: sticky;
-    bottom: 0;
+    top: env(safe-area-inset-top);
     z-index: 20;
     justify-self: stretch;
-    display: grid;
-    /* (above the build label in the corner of the screen) */
-    padding: 1rem 0 calc(1.6rem + env(safe-area-inset-bottom));
-    background: linear-gradient(180deg, transparent, var(--c-void) 45%);
+    padding: 0.4rem 0;
+    background: linear-gradient(180deg, var(--c-void) 55%, transparent);
   }
   .setup__start .setup__go {
-    justify-self: stretch;
     width: 100%;
   }
 }
@@ -3378,5 +3365,131 @@ button.mapnode--warden {
   }
   .mapnode__beacon i + i {
     display: none;
+  }
+}
+
+/* Uniform Sanctum class selection; the selected model leads the mobile layout. */
+.picker__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.85fr);
+  gap: 2rem;
+  align-items: center;
+}
+.picker__classes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.4rem 0.75rem;
+  min-width: 0;
+}
+.picker__class {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 0.65rem 0.15rem;
+  border: 0;
+  background: transparent;
+  color: var(--c-text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  min-width: 0;
+}
+.picker__classIcon {
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  border: 2px solid #817252;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #273b56, #090d18);
+  transition:
+    box-shadow 150ms,
+    border-color 150ms;
+}
+.picker__class.is-on .picker__classIcon {
+  border-color: var(--c-gold-light);
+  box-shadow:
+    0 0 0 4px #d4a84b22,
+    0 0 24px #d4a84b44;
+}
+.picker__class:hover .picker__classIcon {
+  border-color: var(--c-gold-light);
+}
+.picker__class:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+.picker__stage .picker__figure {
+  width: 100%;
+  min-width: 0;
+  height: min(36rem, 65vh);
+  overflow: hidden;
+}
+.picker__figure .picker__model {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.picker__stage .picker__figure {
+  grid-template-rows: minmax(0, 1fr);
+}
+.picker__figure .picker__model img {
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.shop__cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.shop__cardHead .shop__h {
+  margin-bottom: 0;
+}
+.shop__rerollHint {
+  font-size: 0.85rem;
+  color: var(--c-muted);
+  margin: 0.6rem 0 1rem;
+}
+@media (max-width: 70rem) {
+  .picker__stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .picker__stage .picker__figure {
+    grid-row: 1;
+    height: clamp(20rem, 46vh, 30rem);
+    width: min(100%, 32rem);
+    justify-self: center;
+  }
+  .picker__classes {
+    width: min(100%, 42rem);
+    justify-self: center;
+  }
+}
+@media (max-width: 32rem) {
+  .picker__classes {
+    gap: 0.75rem 0.25rem;
+  }
+  .picker__class {
+    font-size: 0.7rem;
+    overflow-wrap: anywhere;
+  }
+  .picker__classIcon {
+    width: clamp(2.7rem, 14vw, 4rem);
+    height: clamp(2.7rem, 14vw, 4rem);
+  }
+  .picker__classIcon .heroicon {
+    width: 80%;
+    height: 80%;
+  }
+  .picker__stage .picker__figure {
+    height: clamp(19rem, 43vh, 25rem);
   }
 }

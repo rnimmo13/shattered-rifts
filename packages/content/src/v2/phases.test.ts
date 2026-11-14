@@ -1,4 +1,4 @@
-// Enemy phases and setup mods (DECISIONS #245): a unit stops at its phase threshold, rises (Barrier, Might), and carries on.
+// Enemy phases and setup mods (DECISIONS #245): a unit gains Barrier and Might at its phase threshold.
 
 import { describe, expect, it } from 'vitest';
 import { applyAction, clone, createCombat, legalActions, type CombatState } from '@sr/combat';
@@ -41,22 +41,11 @@ describe('enemy phases', () => {
     expect(s.sides.b.units[1]!.rise).toBeUndefined();
   });
 
-  it('a blow that would cross the threshold stops at it, and the unit rises', () => {
+  it('a blow that exceeds both HP and phase Barrier defeats the unit in one hit', () => {
     const s0 = start();
     const u = s0.sides.b.units[0]!;
     const s = strike(s0, 0, 999);
-    const after = s.sides.b.units.find((x) => x.id === u.id)!;
-    expect(after.hp).toBe(Math.floor(u.maxHp / 2));
-    expect(after.barrier).toBeGreaterThanOrEqual(Math.ceil(u.maxHp * 0.2));
-    expect(after.statuses.might ?? 0).toBeGreaterThanOrEqual(2);
-    expect(after.rise).toBeUndefined();
-    // the next blow goes all the way
-    const s2 = strike(
-      s,
-      s.sides.b.units.findIndex((x) => x.id === u.id),
-      999,
-    );
-    expect(s2.sides.b.units.some((x) => x.id === u.id)).toBe(false);
+    expect(s.sides.b.units.some((x) => x.id === u.id)).toBe(false);
   });
 
   it('a unit without a phase falls as usual', () => {
@@ -79,7 +68,7 @@ describe('enemy phases', () => {
 });
 
 describe('the edges of a phase', () => {
-  it('a blow that lands exactly on the threshold rises there, and the next blow cannot skip the phase', () => {
+  it('a blow that only reaches the threshold leaves the surviving phase Barrier in place', () => {
     const s0 = start();
     const u = s0.sides.b.units[0]!;
     const floor = Math.floor(u.maxHp / 2);

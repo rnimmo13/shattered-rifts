@@ -1,3 +1,4 @@
+import { ManaCostFilter } from './ManaCostFilter';
 // The practice fight's deck builder, drawn as an open grimoire: every card in the game on parchment pages, one ribbon bookmark per
 // realm, click a card to add a copy, − / + under it to take one away; chosen cards glow. Logic lives in deckCatalog.ts.
 
@@ -115,6 +116,10 @@ export function DeckBuilder(props: {
     <div className="grim">
       <div className="grim__main" ref={mainRef}>
         <div className="grim__filters">
+          <ManaCostFilter
+            value={filter.manaCost ?? 'all'}
+            onChange={(manaCost) => refilter({ ...filter, manaCost })}
+          />
           <label className="grim__search">
             <span>Search the whole book</span>
             <input

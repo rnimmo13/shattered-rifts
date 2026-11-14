@@ -38,7 +38,7 @@ export function StanceAura(props: {
   unit: UnitView;
   /** draw the banner over the head (false in PvP, where the name tag carries a chip instead) */
   banner?: boolean;
-  /** the figure draws its own stance energy (the Tempest Sage): no glow over it */
+  /** the figure draws its own stance energy, so only Radiant also gets the shared glow */
   embedded?: boolean;
   /** the figure's feet in host px, and its height and width */
   x: number;
@@ -54,6 +54,7 @@ export function StanceAura(props: {
   useClearOfBelt(banner);
   if (!stance) return null;
   const info = STATUS_INFO[stance];
+  const vividRadiant = stance === 'radiant' && props.embedded;
   const size = Math.max(props.w * 1.5, props.h * 0.9, 200);
   const aura: CSSProperties = {
     left: props.x,
@@ -63,12 +64,22 @@ export function StanceAura(props: {
   };
   return (
     <>
-      {!props.embedded && (
-        <div className={`stance stance--${stance}`} style={aura} aria-hidden>
+      {(stance === 'radiant' || !props.embedded) && (
+        <div
+          className={`stance stance--${stance}${vividRadiant ? ' stance--tempest-radiant' : ''}`}
+          style={aura}
+          aria-hidden
+        >
           <span className="stance__glow" />
           {stance === 'radiant' && (
             <>
               <span className="stance__rays" />
+              {vividRadiant && (
+                <>
+                  <span className="stance__wave" />
+                  <span className="stance__wave stance__wave--delayed" />
+                </>
+              )}
               {Array.from({ length: 9 }, (_, i) => (
                 <i key={i} className="stance__spark" style={{ '--i': i } as CSSProperties} />
               ))}
