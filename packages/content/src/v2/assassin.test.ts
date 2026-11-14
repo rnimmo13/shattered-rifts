@@ -54,14 +54,15 @@ const inHand = (s: CombatState, id: string): number =>
   s.sides.a.hand.filter((c) => c.card === id).length;
 
 describe('Sylas is the Silent shape', () => {
-  it('starts with four Strikes, two Defends, Hobbling Jab (Neutralize), Duck and Weave (Survivor), Fang and Claw and Pocket Blades, at 75 HP (70 until DECISIONS #560)', () => {
+  it('starts with three Strikes, two Defends, Hobbling Jab (Neutralize), Duck and Weave (Survivor), Fang and Claw, Pocket Blades and Cartwheel Cut (DECISIONS #787), at 75 HP (70 until DECISIONS #560)', () => {
     expect(RIFTWALKERS.assassin.starter).toEqual([
-      ...Array<string>(4).fill('strike'),
+      ...Array<string>(3).fill('strike'),
       ...Array<string>(2).fill('defend'),
       'hobbling-jab',
       'duck-and-weave',
       'fang-and-claw',
       'pocket-blades',
+      'cartwheel-cut',
     ]);
     expect(RIFTWALKERS.assassin.hero.maxHp).toBe(75);
     expect(RIFTWALKERS.assassin.trait.name).toBe('Hidden Blades');
@@ -669,7 +670,9 @@ describe('the Rogue cost pass (Robert 2026-11-08, #692)', () => {
     s = play(s, 'hemorrhage');
     // (its own draw comes first and does not count; the next one does)
     for (const u of s.sides.b.units) expect(u.statuses.seared ?? 0).toBe(0);
-    expect(cardText(db, db.cards.hemorrhage!)).toMatch(/^Draw 1 card. This turn, whenever you draw/);
+    expect(cardText(db, db.cards.hemorrhage!)).toMatch(
+      /^Draw 1 card. This turn, whenever you draw/,
+    );
     s = play(s, 'backspring');
     for (const u of s.sides.b.units) expect(u.statuses.seared).toBe(8);
   });

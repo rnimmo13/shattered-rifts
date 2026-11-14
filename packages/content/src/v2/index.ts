@@ -108,12 +108,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     hero: { id: 'knight', name: 'Knight', maxHp: 80, mana: 3, handSize: 5 },
     starter: [
-      ...rep('strike', 4),
+      // (five class cards, one for each way the class grows, DECISIONS #787: Breach for the Blood Knight, in a Strike's place)
+      ...rep('strike', 3),
       ...rep('defend', 2),
       'sundering-blow',
       'brace-and-press',
       'set-your-shield',
       'heavy-swing',
+      'breach',
     ],
     blurb:
       'A knight of the Gilded Order. No companions: Might, Barrier and a deck that burns down to a point.',
@@ -144,12 +146,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       startUnits: [{ unit: 'drone', hp: 8 }],
     },
     starter: [
+      // (Arc Welder for the Golemancer, in a Defend's place: DECISIONS #787)
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'deploy-drone',
       'overclock',
       'spot-weld',
       'pulse-pistol',
+      'welding-arc',
     ],
     blurb:
       'A tinkerer of machines. She starts every fight with a Drone and builds an army of them.',
@@ -185,11 +189,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (Guard the Den in one Strike's place, DECISIONS #699)
     starter: [
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'savage-bite',
       'blood-frenzy',
       'rend',
       'guard-the-den',
+      // (Single Out for the Predator, in a Defend's place: DECISIONS #787)
+      'single-out',
     ],
     blurb: 'A hunter with a Hound. Pays HP to buff the whole pack with Might.',
     mechanics: ['Companions', 'Might', 'Self-damage', 'Mana and draw'],
@@ -216,11 +222,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
     starter: [
       ...rep('strike', 3), // (4 Strikes and 2 Defends until DECISIONS #560)
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'veil-strike',
       'set-the-web',
       'pick-a-card',
       'pinprick-trap',
+      // (a class ♥ card in a Defend's place, DECISIONS #787)
+      'shadow-cloak',
     ],
     blurb:
       'A masked trickster who always sees the next move coming. No companions: Traps, Exposed and a deck of tricks.',
@@ -250,12 +258,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       handSize: 5,
     },
     starter: [
-      ...rep('strike', 4),
+      // (Cartwheel Cut in a Strike's place: a Premeditate card for Duck and Weave to discard, DECISIONS #787)
+      ...rep('strike', 3),
       ...rep('defend', 2),
       'hobbling-jab',
       'duck-and-weave',
       'fang-and-claw',
       'pocket-blades',
+      'cartwheel-cut',
     ],
     blurb:
       'A cutpurse with a sleeve full of blades: a Dagger finds its way into his hand every turn. Daggers, Bleed and sleight of hand.',
@@ -330,14 +340,15 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       sigil: [stance('calm')],
     },
     starter: [
-      // (two of each stance card in place of a Strike and a Defend: through his stances sooner, DECISIONS #677)
+      // (five different class cards, DECISIONS #787: Unafraid and Wrathful Guard in place of the second Kindle Fury and Still Guard
+      // of #677, so one turn can go Serene, Fury, Serene)
       ...rep('strike', 3),
       ...rep('defend', 2),
       'kindle-fury',
-      'kindle-fury',
-      'still-guard',
       'still-guard',
       'mindful-palm',
+      'fearless',
+      'wrathful-guard',
     ],
     blurb:
       'A monk who fights in stances. Starts every fight Serene, and every stance he enters stokes his Fervor towards Radiance.',
@@ -370,11 +381,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     // (the Obsidian Blade is a card of her deck, in her opening hand, removable: DECISIONS #436; Kindled's Sharpen made it before)
     starter: [
+      // (two Obsidian Wards in place of Gather Power, and Faultline Hex for the Shatterer in a Defend's place: DECISIONS #787)
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'meteor-jab',
-      'gather-light',
       'obsidian-ward',
+      'obsidian-ward',
+      'faultline-hex',
       'starforged-blade',
     ],
     blurb:
@@ -407,12 +420,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     // (the Old Twelve Gauge is a card of his deck, in his opening hand, that can be removed like any other: DECISIONS #436; it was
     // given to him at the start of every fight)
     starter: [
+      // (Drunken Swing for the Brewmaster, in a Defend's place: DECISIONS #787)
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'hammer-swing',
       'pane-up',
       'bottle-tripwire',
       'old-twelve-gauge',
+      'drunken-swing',
     ],
     blurb:
       'A short, fat, bald dwarf with a hammer, an Old Twelve Gauge that hits every enemy and gets sharper, and a trolley of window panes. Booby traps, glass and buckshot.',
@@ -466,12 +481,14 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     },
     starter: [
       ...rep('strike', 3),
-      ...rep('defend', 3),
+      ...rep('defend', 2),
       'raise-thrall',
       // (a second Off the Leash in place of a fourth Strike, DECISIONS #675)
       'off-the-leash',
       'off-the-leash',
       'marked-for-the-grave',
+      // (Soul Rend for the Soulreaper, in a Defend's place: DECISIONS #787)
+      'soul-rend',
     ],
     blurb:
       'A warden of the drowned dead who pays in blood and spent cards to grow them. His Bone Thralls and Grave Colossi stand between him and harm, strike on their own and when he commands; his enemies are cursed with Fate.',

@@ -66,13 +66,13 @@ function addThrall(s: CombatState, hp: number, id = `B${s.sides.a.units.length}`
 }
 
 describe('Dorian, the Necrobinder copy', () => {
-  it('starts as hers: 3 Strike, 3 Defend, Raise Thrall, 2 Off the Leash (DECISIONS #675) and Marked for the Grave, 70 HP, and a Bone Thrall that strikes on its own (#684)', () => {
+  it('starts as hers: 3 Strike, 2 Defend, Raise Thrall, 2 Off the Leash (DECISIONS #675), Marked for the Grave and Soul Rend (#787), 70 HP, and a Bone Thrall that strikes on its own (#684)', () => {
     const r = RIFTWALKERS.necromancer;
     expect([...r.starter].sort()).toEqual(
       [
         'defend',
         'defend',
-        'defend',
+        'soul-rend',
         'marked-for-the-grave',
         'off-the-leash',
         'off-the-leash',
@@ -331,14 +331,11 @@ describe('Fate (her Doom)', () => {
     expect(foe(s).hp).toBe(300 - 8);
   });
 
-  it('Wither (Debilitate) doubles Exposed on its target', () => {
-    let s = fight(['wither', 'strike']);
-    foe(s).statuses.exposed = 2;
-    // (its own hit lands before it Debilitates: 10 Exposed is 15; the Strike after it, 6 doubly Exposed, is 12)
-    s = play(s, 'T0', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 15);
-    s = play(s, 'T1', foe(s).id);
-    expect(foe(s).hp).toBe(300 - 15 - 12);
+  it('Wither deals 10 and Saps its target by 4 (DECISIONS #788: it Debilitated before)', () => {
+    const s = play(fight(['wither']), 'T0', foe(fight(['wither'])).id);
+    expect(foe(s).hp).toBe(300 - 10);
+    expect(foe(s).statuses.sapped).toBe(4);
+    expect(foe(s).statuses.debilitated).toBeUndefined();
   });
 
   it('Spreading Rot (Misery) puts the target’s debuffs on every other enemy', () => {

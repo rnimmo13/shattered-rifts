@@ -16,10 +16,12 @@ function compare(shown: CombatState, real: CombatState, where: string): void {
     expect(ids(a.hand), `${where} hand ${side}`).toEqual(ids(b.hand));
     // a card whose effects are waiting on a choice is in limbo in the engine, but already shown as played
     const limbo = real.active === side ? real.pending?.finish?.id : undefined;
+    // a Deferred or Premeditated card shows in the discard pile until it comes back (engine.ts deferCard): the Rogue's starter does
+    // both since DECISIONS #787
     expect(
       ids(a.discard).filter((id) => id !== limbo),
       `${where} discard ${side}`,
-    ).toEqual(ids(b.discard));
+    ).toEqual(ids([...b.discard, ...(b.deferring ?? []), ...(b.premeditating ?? [])]));
     expect(ids(a.exhausted), `${where} exhausted ${side}`).toEqual(ids(b.exhausted));
     expect(a.draw.length, `${where} draw ${side}`).toBe(b.draw.length);
     expect(

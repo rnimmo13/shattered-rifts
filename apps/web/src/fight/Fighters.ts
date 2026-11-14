@@ -44,6 +44,8 @@ import {
   UNIT_SHEET_PREFIX,
 } from '../art/heroRigs';
 import { releaseUnitSheets } from './heroSheet';
+import { wardenEffect } from './wardenFx';
+import type { WardenMotion } from './wardenMotion';
 
 export type FighterSide = 'a' | 'b';
 export type { Facing } from './heroSprite';
@@ -84,6 +86,7 @@ export interface FighterSpec {
   id: string;
   side: FighterSide;
   isHero: boolean;
+  isEnemy?: boolean;
   /** 0 = nearest the centre (allies and enemies); ignored for heroes */
   slot: number;
   /** how many non-hero units stand on this side */
@@ -647,6 +650,130 @@ export class Fighters {
       : this.meleeAttack(f, t, dir, spec, weapon, onHit, spread);
   }
 
+  /** Choreograph a boss move around the atlas contact marker using only rigid body motion. */
+  async wardenAttack(
+    id: string,
+    targetIds: readonly string[],
+    hits: number,
+    motion: WardenMotion,
+    opponentId?: string,
+  ): Promise<void> {
+    const f = this.all.get(id);
+    if (!f || f.dying || this.h.profile().still) return;
+    const rig = f.rig;
+    if (rig) await this.afterClip(rig);
+    if (this.destroyed || f.dying || this.all.get(id) !== f) return;
+
+    const targets = targetIds
+      .map((targetId) => this.all.get(targetId))
+      .filter((target): target is Fighter => !!target && !target.dying);
+    const opponent = opponentId ? this.all.get(opponentId) : undefined;
+    if (!targets.length) targets.push(motion.targetOpponent && opponent ? opponent : f);
+    const primary = targets[0]!;
+    const dir = f.spec.side === 'a' ? 1 : -1;
+    const travel = Math.min(Math.abs(primary.root.x - f.x) * 0.25, Math.abs(motion.travel));
+    const dx = dir * Math.sign(motion.travel) * travel;
+    const bodyY = f.body.y;
+    const bodyRotation = f.body.rotation;
+    const c = this.fxCtx();
+    const feet = (fighter: Fighter): Pt => ({ x: fighter.root.x, y: fighter.root.y });
+    const focus = (): Pt => ({
+      x: f.root.x + f.body.x + dir * f.width * 0.22,
+      y: f.root.y + f.air.y + f.body.y - f.spec.height * 0.7,
+    });
+    const canPlay = rig && rig.ready?.('strike', motion.pose) !== false;
+    const contact = canPlay ? rig.momentIn?.('strike', motion.pose) || 0.27 : 0.19;
+    const total = motion.windup + contact;
+    const aim = motion.travel < 0 ? -1 : 1;
+
+    return new Promise((resolve) => {
+      f.busy++;
+      f.root.zIndex = 5000;
+      let didRelease = false;
+      const release = (): void => {
+        if (didRelease) return;
+        didRelease = true;
+        if (f.root.destroyed || this.all.get(id) !== f) return;
+        if (targetIds.length) this.h.sound('attackHit');
+        const source = focus();
+        for (const target of targets) {
+          if (target.root.destroyed) continue;
+          wardenEffect(c, motion.effect, {
+            source,
+            feet: feet(f),
+            target: this.chest(target),
+            targetFeet: feet(target),
+            dir,
+            tint: motion.tint,
+            hits: Math.max(1, Math.ceil(hits / targets.length)),
+          });
+        }
+      };
+      const tl = this.track(
+        gsap.timeline({
+          onComplete: () => {
+            f.busy--;
+            if (!f.root.destroyed) f.root.zIndex = f.y + (f.spec.hover ? 1 : 0);
+            resolve();
+          },
+          onInterrupt: () => {
+            f.busy--;
+            resolve();
+          },
+        }),
+      );
+      this.h.wake?.(2000);
+      this.h.sound('attackWindup');
+      if (motion.charge) ring(c, focus(), motion.tint, 32, 15);
+      tl.to(
+        f.body,
+        {
+          y: bodyY - motion.rise,
+          rotation: bodyRotation - dir * aim * motion.tilt,
+          duration: motion.windup,
+          ease: 'power2.out',
+        },
+        0,
+      );
+      if (canPlay)
+        tl.call(
+          () =>
+            this.rigPlay(
+              rig,
+              'strike',
+              { name: 'hit', within: contact + 0.12, at: release },
+              undefined,
+              motion.pose,
+            ),
+          [],
+          motion.windup,
+        );
+      tl.to(f.root, { x: f.x + dx, duration: contact, ease: 'power2.in' }, motion.windup);
+      tl.to(
+        f.body,
+        {
+          y: bodyY - motion.rise * motion.releaseHeight,
+          rotation: bodyRotation + dir * aim * motion.tilt * 0.6,
+          duration: contact,
+          ease: 'power2.in',
+        },
+        motion.windup,
+      );
+      tl.call(release, [], canPlay ? total + 0.09 : total);
+      tl.to(f.root, { x: f.x, duration: 0.3, ease: 'power2.out' }, total + 0.06);
+      tl.to(
+        f.body,
+        {
+          y: bodyY,
+          rotation: bodyRotation,
+          duration: 0.3,
+          ease: 'power2.out',
+        },
+        total + 0.06,
+      );
+    });
+  }
+
   /**
    * The weapon for one attack, turning about its grip and mirrored for a hero facing left: in the hero's hand (a gun, a throw, a
    * staff), or `at` a point on the stage (a melee blow lands on its target, as the drawn effects always did).
@@ -772,10 +899,10 @@ export class Fighters {
         wt.to(held.holder, { alpha: 0, duration: 0.2 }, m.wind + m.rush + 0.12);
       }
       tl.to(f.root, { x: f.x - dir * m.back, duration: m.wind, ease: ease.out.gsap });
-      tl.to(f.body.scale, { x: 1.08, y: 0.9, duration: m.wind }, '<');
+      if (!f.spec.isEnemy) tl.to(f.body.scale, { x: 1.08, y: 0.9, duration: m.wind }, '<');
       if (m.tilt) tl.to(f.body, { rotation: -dir * m.tilt, y: m.lift, duration: m.wind }, '<');
       tl.to(f.root, { x: f.x + dx, duration: m.rush, ease: ease.in.gsap });
-      tl.to(f.body.scale, { x: 0.92, y: 1.12, duration: m.rush }, '<');
+      if (!f.spec.isEnemy) tl.to(f.body.scale, { x: 0.92, y: 1.12, duration: m.rush }, '<');
       if (m.tilt) tl.to(f.body, { rotation: dir * m.tilt * 0.9, y: 0, duration: m.rush }, '<');
       tl.call(() => {
         this.h.sound('attackHit');
@@ -790,7 +917,8 @@ export class Fighters {
           resolve(); // the caller carries on at contact; the figure springs home on its own
         }
       });
-      tl.to(f.body.scale, { x: 1.14, y: 0.84, duration: 0.07 });
+      if (!f.spec.isEnemy) tl.to(f.body.scale, { x: 1.14, y: 0.84, duration: 0.07 });
+      else tl.to({}, { duration: 0.07 });
       tl.to({}, { duration: 0.05 });
       tl.to(f.root, { x: f.x, duration: 0.4, ease: ease.pop.gsap });
       tl.to(f.body.scale, { x: 1, y: 1, duration: 0.4, ease: ease.pop.gsap }, '<');
@@ -1107,8 +1235,12 @@ export class Fighters {
       if (kind === 'shoot') {
         tl.to({}, { duration: 0.08 });
       } else {
-        tl.to(f.body.scale, { x: 1.06, y: 0.94, duration: 0.14 });
-        tl.to(f.body, { rotation: -dir * 0.1, duration: 0.14 }, '<');
+        if (!f.spec.isEnemy) {
+          tl.to(f.body.scale, { x: 1.06, y: 0.94, duration: 0.14 });
+          tl.to(f.body, { rotation: -dir * 0.1, duration: 0.14 }, '<');
+        } else {
+          tl.to(f.body, { rotation: -dir * 0.1, duration: 0.14 });
+        }
         if (kind === 'cast') tl.call(() => puff(c, from, tint, 26, 0.2), [], '<');
         if (kind === 'cast') tl.to({}, { duration: 0.12 });
       }
@@ -1540,7 +1672,7 @@ export class Fighters {
 
   tick(t: number, still: boolean): void {
     if (this.destroyed) return;
-    // (on becoming still, every figure settles back to rest once instead of freezing mid-breath)
+    // (on becoming still, hovering figures settle to their resting height)
     if (still && !this.wasStill) this.settle();
     this.wasStill = still;
     const dt = this.lastT === null ? 0 : Math.max(0, Math.min(0.1, t - this.lastT));
@@ -1556,18 +1688,14 @@ export class Fighters {
         f.ring.tint = lit ? 0xffe39a : 0xff4a6e;
       }
       if (still || f.dying || f.busy > 0) continue;
-      const w = Math.sin(t * 1.5 + f.phase);
       const hover = f.spec.hover ?? 0;
-      if (hover && !f.rig) {
-        // a flyer rides on the air: it drifts up and down while its shadow on the floor breathes the other way
-        // (an animated one bobs in its own idle clip)
+      if (hover && (!f.rig || f.rig.clip === 'idle')) {
+        // A flyer can drift as a whole while its drawn proportions stay fixed.
         const b = Math.sin(t * 1.3 + f.phase);
-        f.air.y = -hover + b * 9;
+        f.air.y = -hover + b * Math.min(6, hover * 0.15);
         f.contact.alpha = 0.32 - 0.06 * b;
         f.shadow.alpha = 0.3 - 0.05 * b;
       }
-      // (a rig breathes in its own idle clip)
-      if (!f.rig) f.sprite.scale.y = (f.spec.height / f.spec.canvas.height) * (1 + 0.014 * w);
       f.aura.alpha = (f.spec.isHero ? 0.2 : 0.1) + 0.06 * Math.sin(t * 1.9 + f.phase);
       if (f.prop?.visible && f.spec.prop) {
         const k = f.spec.height / f.spec.canvas.height;
@@ -1600,7 +1728,7 @@ export class Fighters {
     if (moving) rig.render();
   }
 
-  /** Every figure at rest: the idle breathing and a flyer's bob at their middle. */
+  /** Return each hover and floating prop to its rest position. */
   private settle(): void {
     for (const f of this.all.values()) {
       if (f.dying || f.busy > 0) continue;

@@ -103,6 +103,8 @@ describe('every animated creature ships in both sets (DECISIONS #760)', () => {
     const { readFileSync, existsSync } = await import('node:fs');
     const { UNIT_SHEETS } = await import('./unitSheets');
     expect(UNIT_SHEETS.size).toBeGreaterThan(100);
+    for (const id of ['gilded-page', 'cinder-soldier', 'gorrmaw', 'nacreth', 'vorthax'])
+      expect(UNIT_SHEETS.has(id)).toBe(true);
     for (const set of ['units-sheets', 'units-sheets-lite'])
       for (const unit of UNIT_SHEETS) {
         const dir = new URL(`../../public/art/${set}/${unit}/`, import.meta.url);
@@ -118,7 +120,7 @@ describe('every animated creature ships in both sets (DECISIONS #760)', () => {
           expect(existsSync(new URL(p, dir)), `${set} ${unit} ${p}`).toBe(true);
         const has = (clip: string, ev: string): boolean =>
           !!man.clips[clip]?.events?.some((e) => e.name === ev && e.frame < man.clips[clip]!.count);
-        expect(man.clips['idle']?.count, `${set} ${unit}`).toBeGreaterThan(0);
+        expect(man.clips['idle']?.count, `${set} ${unit} ready pose`).toBe(1);
         expect(has('hit', 'hit'), `${set} ${unit} hit`).toBe(true);
         expect(has('death', 'land'), `${set} ${unit} death`).toBe(true);
         if (man.clips['attack']) expect(has('attack', 'hit'), `${set} ${unit} attack`).toBe(true);

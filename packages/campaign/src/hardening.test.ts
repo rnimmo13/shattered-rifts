@@ -29,10 +29,10 @@ const planAt = (tier: number, kind: NodeKind) => {
 describe('linear campaign growth', () => {
   it('uses bounded category premiums at the start and the gauntlet endpoint', () => {
     expect(planAt(1, 'duel')).toMatchObject({ hpPct: 100, dmgPct: 95 });
-    expect(planAt(1, 'elite')).toMatchObject({ hpPct: 130, dmgPct: 106 });
+    expect(planAt(1, 'elite')).toMatchObject({ hpPct: 125, dmgPct: 105 });
     expect(planAt(1, 'warden')).toMatchObject({ hpPct: 135, dmgPct: 112 });
     expect(planAt(12, 'duel')).toMatchObject({ hpPct: 700, dmgPct: 250 });
-    expect(planAt(12, 'elite')).toMatchObject({ hpPct: 910, dmgPct: 280 });
+    expect(planAt(12, 'elite')).toMatchObject({ hpPct: 875, dmgPct: 275 });
     expect(planAt(12, 'warden')).toMatchObject({ hpPct: 945, dmgPct: 295 });
   });
   it('applies the shared curve with the Elite and Warden premiums across all tiers', () => {

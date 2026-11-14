@@ -385,33 +385,32 @@ describe('the Reserves cards', () => {
     expect(hero(s).barrier).toBe(3);
   });
 
-  it('Scarred Hide: every time you lose HP, to your own cards or to an enemy, a random enemy is Sapped for 3', () => {
-    let s = fight('knight', ['scarred-hide', 'blood-oath']);
+  it('Scarred Hide: the first time each turn you lose HP, to your own cards or to an enemy, you gain 3 Thorns (DECISIONS #788)', () => {
+    let s = fight('knight', ['scarred-hide', 'blood-oath', 'draw-blood']);
     s = play(s, 'scarred-hide');
     s = play(s, 'blood-oath');
-    const sapped = (x: CombatState): number =>
-      x.sides.b.units.reduce((n, u) => n + (u.statuses.sapped ?? 0), 0);
-    expect(sapped(s)).toBe(3);
+    expect(hero(s).statuses.thorns).toBe(3);
+    // (once a turn: a second payment adds none)
+    s = play(s, 'draw-blood');
+    expect(hero(s).statuses.thorns).toBe(3);
     // (an enemy hit counts too)
     const t = play(fight('knight', ['scarred-hide']), 'scarred-hide');
     for (const u of t.sides.b.units) u.intent = { move: 'slash', target: hero(t).id };
     const res = applyAction(db, t, { type: 'endTurn' });
     expect(
-      res.events.some((e) => e.type === 'status' && e.status === 'sapped' && e.amount === 3),
+      res.events.some((e) => e.type === 'status' && e.status === 'thorns' && e.amount === 3),
     ).toBe(true);
     // (the hit really cost HP)
     expect(
       res.events.some((e) => e.type === 'damage' && e.target === hero(t).id && e.lost > 0),
     ).toBe(true);
-    // (a hit that Barrier soaks completely costs no HP: nothing is Sapped)
+    // (a hit that Barrier soaks completely costs no HP: no Thorns)
     const soaked = play(fight('knight', ['scarred-hide']), 'scarred-hide');
     hero(soaked).barrier = 500;
     for (const u of soaked.sides.b.units) u.intent = { move: 'slash', target: hero(soaked).id };
     const none = applyAction(db, soaked, { type: 'endTurn' });
-    expect(none.events.some((e) => e.type === 'status' && e.status === 'sapped')).toBe(false);
-    expect(cardText(db, db.cards['scarred-hide']!)).toBe(
-      "Whenever you lose HP: Apply 3 Sapped to a random enemy until the end of the enemy's turn.",
-    );
+    expect(none.events.some((e) => e.type === 'status' && e.status === 'thorns')).toBe(false);
+    expect(cardText(db, db.cards['scarred-hide']!)).toMatch(/lose HP.*3 Thorns/);
   });
 
   it('some Barrier cards split their Barrier with Plating (and have one more Plating on top)', () => {

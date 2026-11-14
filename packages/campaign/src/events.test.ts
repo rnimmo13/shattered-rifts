@@ -399,8 +399,10 @@ describe('Rift-crossed and sacrifice events', () => {
     expect(COMBAT_DB.cards[got]!.rarity).toBe('rare');
     const swapped = run(b, { k: 'exchange' });
     expect(swapped.deck).toHaveLength(b.deck.length);
-    expect(swapped.deck).not.toContain('cold-stare');
-    expect(COMBAT_DB.cards[swapped.deck.at(-1) ?? '']?.hero).not.toBe('knight');
+    // (one non-basic card is traded: Breach, a common in the Knight's starter since DECISIONS #787, can be the one)
+    const traded = swapped.deck.filter((c, i) => c !== b.deck[i]);
+    expect(traded).toHaveLength(1);
+    expect(COMBAT_DB.cards[traded[0] ?? '']?.hero).not.toBe('knight');
   });
 
   it('giving up a Boon, a potion or a flag works, and refuses when there is nothing to give', () => {

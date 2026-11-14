@@ -138,6 +138,7 @@ import {
   UNIT_SHEET_PREFIX,
   heroRigFor,
 } from '../art/heroRigs';
+import { wardenMotion } from './wardenMotion';
 import { UNIT_SHEETS } from '../art/unitSheets';
 import { attackFor, cardMotion } from './attackStyles';
 import { loadWeaponArt } from './weaponArt';
@@ -467,6 +468,7 @@ function specsFrom(
         id: e.u.id,
         side: ds,
         isHero: e.hero,
+        isEnemy: e.u.kind === 'enemy',
         slot: e.hero ? 0 : n,
         count: line.length,
         ...(e.hero
@@ -1163,17 +1165,31 @@ export function FightView(props: {
           castBy.current = null;
           // (its intent shakes as it goes)
           shake(document.querySelector(`[data-intent="${CSS.escape(e.unit)}"]`));
-          // look ahead for what this unit hits, so the lunge goes the right way
-          let target: string | null = null;
+          const targets = new Set<string>();
+          let hits = 0;
+          const actorSide = unitOf(e.unit)?.side;
           for (let j = i + 1; j < all.length; j++) {
             const n = all[j];
             if (!n || n.type === 'act' || n.type === 'turnEnd' || n.type === 'play') break;
             if (n.type === 'damage' && n.source === e.unit && n.kind === 'attack') {
-              target = n.target;
-              break;
+              targets.add(n.target);
+              hits++;
             }
           }
-          if (target) await sc.fighters.attack(e.unit, target);
+          const actorDef = unitOf(e.unit)?.def;
+          const target = targets.values().next().value ?? null;
+          const warden = actorDef && wardenMotion(actorDef, e.move);
+          if (warden) {
+            await sc.fighters.wardenAttack(
+              e.unit,
+              [...targets],
+              Math.max(hits, e.hits ?? 0),
+              warden,
+              d.sides[actorSide === 'a' ? 'b' : 'a'].units.find(
+                (u) => u.kind === 'hero' && u.hp > 0,
+              )?.id,
+            );
+          } else if (target) await sc.fighters.attack(e.unit, target);
           else {
             sc.fighters.act(e.unit);
             await wait(240);

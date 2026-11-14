@@ -91,13 +91,15 @@ describe('the pool', () => {
     }
   });
 
-  it('a starting deck of ten holds the Blade, generators and a spell, and no Fracture', () => {
+  it('a starting deck of ten holds the Blade, two Obsidian Wards, a spell and one Fracture card, Faultline Hex (DECISIONS #787)', () => {
     const s = RIFTWALKERS.spellblade.starter;
     expect(s).toHaveLength(10);
-    for (const id of [BLADE, 'gather-light', 'meteor-jab', 'obsidian-ward'])
-      expect(s).toContain(id);
-    // (Fracture is found in rewards: no basic has it, DECISIONS #483)
-    for (const id of s) expect(JSON.stringify(db.cards[id]!.effects), id).not.toContain('fracture');
+    for (const id of [BLADE, 'meteor-jab', 'obsidian-ward']) expect(s).toContain(id);
+    expect(s.filter((id) => id === 'obsidian-ward')).toHaveLength(2);
+    // (Fracture was left to rewards, DECISIONS #483, until each Ascendancy got a starting card, #787)
+    expect(s.filter((id) => JSON.stringify(db.cards[id]!.effects).includes('fracture'))).toEqual([
+      'faultline-hex',
+    ]);
   });
 });
 

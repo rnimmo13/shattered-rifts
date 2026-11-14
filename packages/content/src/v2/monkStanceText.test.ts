@@ -39,7 +39,11 @@ describe('Monk stance bonuses are binary and described accurately', () => {
                 (stance === 'wrath' || stance === 'radiant' ? 2 : 1),
             );
           } else if (id === 'still-water') {
-            expect(after.barrier).toBe(4 + (upgraded ? 3 : 0) + (stance === 'calm' ? 6 : 0));
+            // (Sapped on the enemy since DECISIONS #788: 5, or 9 if Serene; upgraded 7, or 12)
+            expect(after.barrier).toBe(0);
+            expect(target.statuses.sapped).toBe(
+              (upgraded ? 7 : 5) + (stance === 'calm' ? (upgraded ? 5 : 4) : 0),
+            );
             expect(result.sides.a.hand).toHaveLength(1);
           } else {
             expect(result.sides.a.hand).toHaveLength(

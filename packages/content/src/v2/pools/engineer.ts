@@ -239,7 +239,17 @@ export const ENGINEER: CardDef[] = [
   r('common', 'tandem-strike', 'Tandem Strike', 'attack', 1, 'foe', [
     scaled(dmg(4), per('played', 3)),
   ]),
-  r('uncommon', 'arc-relay', 'Arc Relay', 'attack', 2, 'none', [dmg(9, 'allFoes'), primeAll(4)]),
+  // (Shocks a random enemy in place of 4 Primed to all friends: Shocked is the Engineer's, with the Shaman's Storm, DECISIONS #788)
+  r(
+    'uncommon',
+    'arc-relay',
+    'Arc Relay',
+    'attack',
+    2,
+    'none',
+    [dmg(9, 'allFoes'), status('stunned', 1, 'randomFoe')],
+    { up: { effects: [dmg(12, 'allFoes'), status('stunned', 1, 'randomFoe')] } },
+  ),
   r('uncommon', 'clockwork-snare', 'Clockwork Trap', 'snare', 1, 'none', [prime(3), barrier(8)], {
     trigger: { on: 'hpLost', min: 5 },
   }),
@@ -460,8 +470,9 @@ export const ENGINEER: CardDef[] = [
     'attack',
     1,
     'none',
-    [dmg(3, 'allFoes'), status('faltering', 1, 'allFoes')],
-    { up: { effects: [dmg(6, 'allFoes'), status('faltering', 1, 'allFoes')] } },
+    // (Shocks a random enemy in place of 1 Faltering to all, DECISIONS #788)
+    [dmg(3, 'allFoes'), status('stunned', 1, 'randomFoe')],
+    { up: { effects: [dmg(6, 'allFoes'), status('stunned', 1, 'randomFoe')] } },
   ),
   r('common', 'plating', 'Plating', 'skill', 1, 'none', [barrier(5, 'allFriends')]),
   r(

@@ -11,6 +11,7 @@
 import type { CardDef } from '@sr/combat';
 import {
   barrier,
+  statusTheirs,
   dmg,
   draw,
   mana,
@@ -32,7 +33,8 @@ const s = pool('monk', 'aurelion');
 
 export const MONK: CardDef[] = [
   // --- basics ---
-  s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 2, 'foe', [dmg(9), stance('wrath')]),
+  // (11, was 9, DECISIONS #787: the 2-Mana card of his opening hands was his weakest)
+  s('basic', 'kindle-fury', 'Kindle Fury', 'attack', 2, 'foe', [dmg(11), stance('wrath')]),
   // (7 Barrier and Serene for 1 Mana was the Watcher's 2-cost Vigilance at half price: DECISIONS #390)
   // (5 Barrier, DECISIONS #677: a class basic does more than a Defend)
   s('basic', 'still-guard', 'Still Guard', 'skill', 1, 'none', [barrier(5), stance('calm')]),
@@ -216,8 +218,13 @@ export const MONK: CardDef[] = [
     'power',
     2,
     'none',
-    [on('stance', [barrier(2), dmg(2, 'randomFoe')])],
-    { up: { effects: [on('stance', [barrier(3), dmg(3, 'randomFoe')])] } },
+    // (Sapped in place of the Barrier: Sapped is the Monk's, DECISIONS #788)
+    [on('stance', [statusTheirs('sapped', 2, 'randomFoe'), dmg(2, 'randomFoe')])],
+    {
+      up: {
+        effects: [on('stance', [statusTheirs('sapped', 3, 'randomFoe'), dmg(3, 'randomFoe')])],
+      },
+    },
   ),
   // (1 more Mana since #710: an Aura that gives Mana every turn, Robert: "cards that give mana ever turn need to probably be a bit costlier")
   s('rare', 'ascendant-form', 'Ascendant Form', 'power', 3, 'none', [on('turnStart', [mana(1)])]),
@@ -232,9 +239,10 @@ export const MONK: CardDef[] = [
     'Watchful Calm',
     'skill',
     1,
-    'none',
-    [barrier(2), stance('calm'), scry(2)],
-    { up: { effects: [barrier(5), stance('calm'), scry(2)] } },
+    'foe',
+    // (4 Sapped on the enemy you choose in place of 2 Barrier, DECISIONS #788)
+    [statusTheirs('sapped', 4, 'target'), stance('calm'), scry(2)],
+    { up: { effects: [statusTheirs('sapped', 6, 'target'), stance('calm'), scry(2)] } },
   ),
   s('common', 'empty-fist', 'Settling Fist', 'attack', 1, 'foe', [dmg(7), stance('none')]),
   s(
@@ -272,13 +280,14 @@ export const MONK: CardDef[] = [
     'Still Water',
     'skill',
     1,
-    'none',
-    [scaled(barrier(4), per('calm', 6)), draw(1)],
+    'foe',
+    // (Sapped in place of Barrier, DECISIONS #788)
+    [scaled(statusTheirs('sapped', 5, 'target'), per('calm', 4)), draw(1)],
     {
-      text: 'Gain 4 Barrier, or 10 if you are Serene. Draw 1 card.',
+      text: 'Apply 5 Sapped, or 9 if you are Serene, until the end of its next turn. Draw 1 card.',
       up: {
-        effects: [scaled(barrier(7), per('calm', 6)), draw(1)],
-        text: 'Gain 7 Barrier, or 13 if you are Serene. Draw 1 card.',
+        effects: [scaled(statusTheirs('sapped', 7, 'target'), per('calm', 5)), draw(1)],
+        text: 'Apply 7 Sapped, or 12 if you are Serene, until the end of its next turn. Draw 1 card.',
       },
     },
   ),

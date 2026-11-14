@@ -21,6 +21,7 @@ import {
   type SheetEffect,
 } from './skinEffects';
 import { loadGraphicsQuality } from '../duel/effects';
+import { WARDEN_POSES, type WardenPose } from './wardenMotion';
 
 type Facing = 'right' | 'left';
 type Clip = 'idle' | 'strike' | 'hit' | 'aura' | 'death';
@@ -252,6 +253,7 @@ export class SheetHeroSprite {
   readonly texture: Texture;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly boxes = new Map<string, Box>();
+  private readonly wardenClips = new Map<string, SheetClip>();
   /** the standing body at rest, in sheet px (the idle's first frame) */
   private readonly bodyH: number;
   private readonly bodyW: number;
@@ -306,6 +308,38 @@ export class SheetHeroSprite {
     const alternate = this.stanceClip(clip === 'strike' ? 'attack' : clip);
     if (alternate && this.has(alternate)) return alternate;
     if (clip !== 'strike') return c[clip] ? clip : 'idle';
+    if (this.a.unit && variant && Object.hasOwn(WARDEN_POSES, variant)) {
+      const recipe = WARDEN_POSES[variant as WardenPose];
+      const strike = c['attack'];
+      const ready = c['idle']?.frames[0];
+      const impact = strike?.events?.find((event) => event.name === 'hit')?.frame;
+      if (strike && ready && impact && !this.wardenClips.has(variant)) {
+        const end = strike.count - 1;
+        // The source attack marks contact. Its adjacent drawn poses are used for the
+        // alternate choreography, and the cast clips skip the baked generic hit flash.
+        const drawing = {
+          ready,
+          antic: strike.frames[Math.round(impact * 0.38)]!,
+          windup: strike.frames[Math.round(impact * 0.75)]!,
+          release: strike.frames[impact - 1]!,
+          contact: strike.frames[impact]!,
+          follow: strike.frames[Math.round(impact + (end - impact) * 0.55)]!,
+          recover: strike.frames[Math.round(impact + (end - impact) * 0.8)]!,
+        };
+        const frames = recipe.frames.map((pose) => drawing[pose]);
+        const fps = 15;
+        const action = {
+          fps,
+          frames,
+          count: frames.length,
+          loop: false,
+          events: [{ name: 'hit', frame: recipe.hit, time: recipe.hit / fps }],
+        };
+        this.wardenClips.set(variant, action);
+        this.boxes.set(variant, boxOf(action));
+      }
+      if (this.wardenClips.has(variant)) return variant;
+    }
     // (the second attack: the Drunkard's shotgun, the Spellblade's spell, DECISIONS #756)
     if ((variant === 'shotgun' || variant === 'spell') && c['attack2']) return 'attack2';
     return c['attack'] ? 'attack' : c['slash'] ? 'slash' : 'idle';
@@ -344,7 +378,7 @@ export class SheetHeroSprite {
   }
 
   private get cur(): SheetClip {
-    return this.a.man.clips[this.sheetClip] ?? this.a.man.clips['idle']!;
+    return this.clipData(this.sheetClip) ?? this.a.man.clips['idle']!;
   }
 
   private get box(): Box {
@@ -424,9 +458,13 @@ export class SheetHeroSprite {
     return Math.max(0, c.count / c.fps - this.t);
   }
 
+  private clipData(name: string): SheetClip | undefined {
+    return this.wardenClips.get(name) ?? this.a.man.clips[name];
+  }
+
   /** every frame of a manifest clip is on a page already fetched */
   private has(name: string): boolean {
-    const c = this.a.man.clips[name];
+    const c = this.clipData(name);
     return !!c && c.frames.every((f) => !!this.a.pages[f[0]]);
   }
 
@@ -434,7 +472,7 @@ export class SheetHeroSprite {
     if (clip === 'idle') return 0;
     const name = this.sheetFor(clip, variant);
     if (name === this.sheetFor('idle') || !this.has(name)) return 0;
-    const c = this.a.man.clips[name];
+    const c = this.clipData(name);
     const ev = c?.events?.find((e) => e.name === MOMENT[clip]);
     return ev ? Math.max(0, ev.frame / c!.fps - this.startOf(clip, name)) : 0;
   }

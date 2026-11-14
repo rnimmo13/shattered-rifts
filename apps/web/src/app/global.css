@@ -1101,8 +1101,11 @@ html:has(.fight) body {
   display: grid;
   place-items: center;
   border-radius: 999px;
-  font-family: var(--font-numeric, inherit);
-  font-size: 0.72rem;
+  /* (the body font, heavy, not Bebas Neue: its thin condensed digits were hard to read at this size, Robert 2026-11-13) */
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
   line-height: 1;
   letter-spacing: 0;
   color: #1a1206;

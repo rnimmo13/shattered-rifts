@@ -3341,11 +3341,11 @@ button.mapnode--warden {
 }
 .runbar__deck .iconbtn__count {
   position: static;
-  min-width: 1.5rem;
-  height: 1.5rem;
-  padding: 0 0.3rem;
-  font-size: 0.95rem;
-  font-weight: 700;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 :root[data-effects='reduced'] .mapnode__beacon i,
 :root[data-graphics='low'] .mapnode__beacon i {

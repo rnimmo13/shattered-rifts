@@ -306,7 +306,9 @@ export const NECROMANCER: CardDef[] = [
     {
       retain: true,
       // (one op, so the preview shows no number until a companion is aimed at)
-      up: { effects: [scaled(barrier(4), per('maxHp', 2, 'target')), { op: 'sacrifice' }, draw(1)] },
+      up: {
+        effects: [scaled(barrier(4), per('maxHp', 2, 'target')), { op: 'sacrifice' }, draw(1)],
+      },
     },
   ),
   // (Sentry Mode)
@@ -532,19 +534,10 @@ export const NECROMANCER: CardDef[] = [
   ),
   // (Borrowed Time; 5 Mana, not 4: with every card 1 dearer, 4 came to about nothing, DECISIONS #397. Since #691 the debt is paid next
   // turn instead: +4 Mana now, 2 less next turn, Consume: ~11.6, 104%; upgraded 1 less next turn, +34%. A turn never starts below 0)
-  g(
-    'uncommon',
-    'toll-in-advance',
-    'Toll in Advance',
-    'skill',
-    1,
-    'none',
-    [mana(4), manaNext(-2)],
-    {
-      exhaust: true,
-      up: { effects: [mana(4), manaNext(-1)] },
-    },
-  ),
+  g('uncommon', 'toll-in-advance', 'Toll in Advance', 'skill', 1, 'none', [mana(4), manaNext(-2)], {
+    exhaust: true,
+    up: { effects: [mana(4), manaNext(-1)] },
+  }),
   // (Debilitate)
   g(
     'uncommon',
@@ -553,9 +546,10 @@ export const NECROMANCER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [dmg(10), status('debilitated', 2, 'target')],
+    // (4 Sapped in place of 2 Debilitated: Sapped is the Necromancer's, Debilitated the Trickster's, DECISIONS #788)
+    [dmg(10), statusTheirs('sapped', 4, 'target')],
     {
-      up: { effects: [dmg(12), status('debilitated', 3, 'target')] },
+      up: { effects: [dmg(12), statusTheirs('sapped', 6, 'target')] },
     },
   ),
   // (Putrefy)
@@ -609,7 +603,10 @@ export const NECROMANCER: CardDef[] = [
     2,
     'foe',
     [scaled(dmg(5), { ...per('doom', 1, 'target'), half: 60, max: 120 })],
-    { exhaust: true, up: { effects: [scaled(dmg(15), { ...per('doom', 1, 'target'), half: 60, max: 120 })] } },
+    {
+      exhaust: true,
+      up: { effects: [scaled(dmg(15), { ...per('doom', 1, 'target'), half: 60, max: 120 })] },
+    },
   ),
   // (Misery; upgraded 8 and Hold since #691: 9 and Hold was +40%)
   g('rare', 'spreading-rot', 'Spreading Rot', 'attack', 0, 'foe', [dmg(7), spreadDebuffs], {
@@ -706,8 +703,9 @@ export const NECROMANCER: CardDef[] = [
     'skill',
     1,
     'foe',
-    [barrier(6), status('faltering', 1, 'target')],
-    { ethereal: true, up: { effects: [barrier(9), status('faltering', 1, 'target')] } },
+    // (4 Sapped in place of 1 Faltering, DECISIONS #788)
+    [barrier(5), statusTheirs('sapped', 4, 'target')],
+    { ethereal: true, up: { effects: [barrier(7), statusTheirs('sapped', 6, 'target')] } },
   ),
   // (Fear)
   g(

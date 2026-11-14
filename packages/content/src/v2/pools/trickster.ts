@@ -178,9 +178,18 @@ export const TRICKSTER: CardDef[] = [
     { suit: 'clubs', up: { effects: [on('snare', [draw(1), barrier(7)])] } },
   ),
   // (8 + 6 a Trap since #694: B 108%; ~136%; upgraded 10 + 8)
-  v('rare', 'spring-the-trap', 'Spring the Trap', 'attack', 1, 'foe', [scaled(dmg(8), per('snares', 6))], {
-    up: { effects: [scaled(dmg(10), per('snares', 8))] },
-  }),
+  v(
+    'rare',
+    'spring-the-trap',
+    'Spring the Trap',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(8), per('snares', 6))],
+    {
+      up: { effects: [scaled(dmg(10), per('snares', 8))] },
+    },
+  ),
 
   // --- Exposed ---
   v('common', 'mark-prey', 'Mark Prey', 'skill', 0, 'foe', [status('exposed', 2, 'target')]),
@@ -199,10 +208,21 @@ export const TRICKSTER: CardDef[] = [
     [status('faltering', 1, 'allFoes'), barrier(5)],
     { up: { effects: [status('faltering', 1, 'allFoes'), barrier(8)] } },
   ),
-  v('uncommon', 'death-mark', 'Death Mark', 'attack', 2, 'foe', [
-    dmg(12),
-    status('exposed', 3, 'target'),
-  ]),
+  // (2 Exposed and 1 Debilitated in place of 3 Exposed: Debilitated is the Trickster's, DECISIONS #788)
+  v(
+    'uncommon',
+    'death-mark',
+    'Death Mark',
+    'attack',
+    2,
+    'foe',
+    [dmg(12), status('exposed', 2, 'target'), status('debilitated', 1, 'target')],
+    {
+      up: {
+        effects: [dmg(15), status('exposed', 3, 'target'), status('debilitated', 1, 'target')],
+      },
+    },
+  ),
   v('uncommon', 'shadow-volley', 'Shadow Volley', 'attack', 1, 'none', [dmg(4, 'randomFoe', 3)]),
   v(
     'rare',
@@ -227,7 +247,12 @@ export const TRICKSTER: CardDef[] = [
     [on('turnStart', [status('exposed', 1, 'allFoes')])],
     {
       innate: true,
-      up: { effects: [on('turnStart', [status('exposed', 1, 'allFoes')]), status('faltering', 1, 'allFoes')] },
+      up: {
+        effects: [
+          on('turnStart', [status('exposed', 1, 'allFoes')]),
+          status('faltering', 1, 'allFoes'),
+        ],
+      },
     },
   ),
 
@@ -259,10 +284,17 @@ export const TRICKSTER: CardDef[] = [
     dmg(16),
     when('exposed', { atLeast: 1, of: 'target' }, [drawNext(2)]),
   ]),
-  v('uncommon', 'strip-the-guard', 'Strip the Guard', 'skill', 1, 'foe', [
-    status('exposed', 3, 'target'),
-    status('brittle', 2, 'target'),
-  ]),
+  // (2 Debilitated in place of 2 Brittle: Debilitated is the Trickster's, Brittle the Drunkard's, DECISIONS #788)
+  v(
+    'uncommon',
+    'strip-the-guard',
+    'Strip the Guard',
+    'skill',
+    1,
+    'foe',
+    [status('exposed', 2, 'target'), status('debilitated', 2, 'target')],
+    { up: { effects: [status('exposed', 3, 'target'), status('debilitated', 2, 'target')] } },
+  ),
   v(
     'uncommon',
     'smoke-bomb',
@@ -302,9 +334,18 @@ export const TRICKSTER: CardDef[] = [
     { innate: true, up: { cost: 0 } },
   ),
   // (not consumed since #694: B 104%; ~131%; upgraded 30)
-  v('rare', 'blindside', 'Blindside', 'attack', 2, 'foe', [dmg(22), status('exposed', 3, 'target')], {
-    up: { effects: [dmg(30), status('exposed', 3, 'target')] },
-  }),
+  v(
+    'rare',
+    'blindside',
+    'Blindside',
+    'attack',
+    2,
+    'foe',
+    [dmg(22), status('exposed', 3, 'target')],
+    {
+      up: { effects: [dmg(30), status('exposed', 3, 'target')] },
+    },
+  ),
 
   // --- Suits ---
   // (DECISIONS #387) every card shows a suit: ♠ Attacks, ♥ protection, ♦ cards and Mana, ♣ Traps and debuffs (the rule is in
@@ -437,7 +478,9 @@ export const TRICKSTER: CardDef[] = [
     [{ op: 'discover', count: 1, free: true, upgraded: true }],
     {
       suit: 'wild',
-      up: { effects: [{ op: 'discover', count: 1, free: true, upgraded: true }, draw(1), barrier(2)] },
+      up: {
+        effects: [{ op: 'discover', count: 1, free: true, upgraded: true }, draw(1), barrier(2)],
+      },
     },
   ),
   v(
@@ -487,10 +530,19 @@ export const TRICKSTER: CardDef[] = [
     up: { innate: true },
   }),
   // (draw 1 first since #694: D 54%; ~96%; upgraded draw 2)
-  v('uncommon', 'frozen-moment', 'Frozen Moment', 'skill', 1, 'none', [draw(1), cheapen(1, 'hand')], {
-    exhaust: true,
-    up: { effects: [draw(2), cheapen(1, 'hand')] },
-  }),
+  v(
+    'uncommon',
+    'frozen-moment',
+    'Frozen Moment',
+    'skill',
+    1,
+    'none',
+    [draw(1), cheapen(1, 'hand')],
+    {
+      exhaust: true,
+      up: { effects: [draw(2), cheapen(1, 'hand')] },
+    },
+  ),
   // (one more Mana every turn is huge: it starts next turn, and the upgrade only makes it easier to find; DECISIONS #302)
   // (2 Mana, the cost of the Knight's Inner Furnace, which does the same: Robert, 2026-10-28)
   // (still 2 Mana, the shared price of a +1 Mana Aura (#410), so Opening hand in the base card since #694: ~92%, B, the one Rare kept
@@ -574,9 +626,18 @@ export const TRICKSTER: CardDef[] = [
     },
   ),
   // (5 + 4 a Trap since #694: C 89%; upgraded 7 + 5)
-  v('uncommon', 'trapline-rider', 'Trapline Rider', 'attack', 1, 'foe', [scaled(dmg(5), per('snares', 4, 'self'))], {
-    up: { effects: [scaled(dmg(7), per('snares', 5, 'self'))] },
-  }),
+  v(
+    'uncommon',
+    'trapline-rider',
+    'Trapline Rider',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(5), per('snares', 4, 'self'))],
+    {
+      up: { effects: [scaled(dmg(7), per('snares', 5, 'self'))] },
+    },
+  ),
   v('uncommon', 'grim-collection', 'Grim Collection', 'attack', 2, 'foe', [
     dmg(12),
     scaled(barrier(0), per('snares', 4)),
@@ -607,9 +668,20 @@ export const TRICKSTER: CardDef[] = [
     { up: { effects: [dmg(8), barrier(3), status('exposed', 1, 'target')] } },
   ),
   // (14 + 5 an Exposed since #694: C 77%; ~131%; upgraded 18 + 6)
-  v('rare', 'culling', 'Culling', 'attack', 2, 'none', [scaled(dmg(14, 'allFoes'), { ...per('exposed', 5, 'each'), half: 15, max: 30 })], {
-    up: { effects: [scaled(dmg(18, 'allFoes'), { ...per('exposed', 6, 'each'), half: 18, max: 36 })] },
-  }),
+  v(
+    'rare',
+    'culling',
+    'Culling',
+    'attack',
+    2,
+    'none',
+    [scaled(dmg(14, 'allFoes'), { ...per('exposed', 5, 'each'), half: 15, max: 30 })],
+    {
+      up: {
+        effects: [scaled(dmg(18, 'allFoes'), { ...per('exposed', 6, 'each'), half: 18, max: 36 })],
+      },
+    },
+  ),
   v(
     'uncommon',
     'cripple',

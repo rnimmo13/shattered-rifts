@@ -146,8 +146,8 @@ export const DIFFICULTY: Record<
 };
 /** Shards a won fight pays, by the kind of fight. */
 export const FIGHT_SHARDS = { duel: 25, elite: 50, warden: 100 } as const;
-/** The chance (percent) that a won fight drops a potion (when the belt has room). */
-export const POTION_DROP_CHANCE = { duel: 40, elite: 75 } as const;
+/** The chance (percent) that a won fight drops a potion (when the belt has room; 50 and 85 since DECISIONS #787, 40 and 75 before). */
+export const POTION_DROP_CHANCE = { duel: 50, elite: 85 } as const;
 /** Percent of max HP an Elite fight heals when it is won. */
 export const ELITE_HEAL_PCT = 10;
 /** An Elite heals up to and including this Rift Tier, and not after (DECISIONS #526). */
@@ -881,8 +881,8 @@ export function echoOffers(r: RunState, ghost: GhostBoss): string[] {
 }
 
 /** An Elite's and a Warden's HP and damage over a common fight of the same tier (DECISIONS #651, #763). */
-export const ELITE_HP = 1.3;
-export const ELITE_DAMAGE = 1.12;
+export const ELITE_HP = 1.25;
+export const ELITE_DAMAGE = 1.1;
 export const WARDEN_HP = 1.35;
 export const WARDEN_DAMAGE = 1.18;
 

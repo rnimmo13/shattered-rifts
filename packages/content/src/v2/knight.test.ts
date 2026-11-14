@@ -91,14 +91,15 @@ describe('the knight is the Ironclad shape', () => {
     expect(s.sides.a.discard.some((c) => c.card === id)).toBe(true);
     expect(s.sides.b.units.reduce((n, unit) => n + 200 - unit.hp, 0)).toBeGreaterThan(9);
   });
-  it('starts with four Strikes, two Defends and four class basics; Devotion is gone', () => {
+  it('starts with three Strikes, two Defends and five class cards (DECISIONS #787); Devotion is gone', () => {
     expect(RIFTWALKERS.knight.starter).toEqual([
-      ...Array<string>(4).fill('strike'),
+      ...Array<string>(3).fill('strike'),
       ...Array<string>(2).fill('defend'),
       'sundering-blow',
       'brace-and-press',
       'set-your-shield',
       'heavy-swing',
+      'breach',
     ]);
     expect(RIFTWALKERS.knight.hero.maxHp).toBe(80);
     expect(STATUS_IDS).not.toContain('devotion');
@@ -439,14 +440,19 @@ describe('the rest of the Ironclad list', () => {
     expect(s.sides.a.hand.map((c) => c.card)).toContain('strike+');
   });
 
-  it('Crippling Blow saps the enemy for its next turn only', () => {
-    const without = lostHp(endTurn(fight([])));
-    expect(without).toBeGreaterThan(0);
-    const sapped = lostHp(endTurn(play(fight(['crippling-blow']), 'crippling-blow')));
-    expect(sapped).toBeLessThan(without);
+  it('Crippling Blow gives 8 Thorns until the enemy turn is over (DECISIONS #788: it Sapped before)', () => {
+    const s = play(fight(['crippling-blow']), 'crippling-blow');
+    expect(hero(s).statuses.thorns).toBe(8);
+    expect(s.sides.b.units[0]!.statuses.sapped).toBeUndefined();
     // it is gone again by the next turn
-    const after = endTurn(play(fight(['crippling-blow']), 'crippling-blow'));
-    expect(after.sides.b.units[0]!.statuses.sapped).toBeUndefined();
+    expect(hero(endTurn(s)).statuses.thorns).toBeUndefined();
+  });
+
+  it('Iron Spines: 5 Barrier and 3 Thorns until the enemy turn is over (DECISIONS #788)', () => {
+    const s = play(fight(['iron-spines']), 'iron-spines');
+    expect(hero(s).barrier).toBe(5);
+    expect(hero(s).statuses.thorns).toBe(3);
+    expect(hero(endTurn(s)).statuses.thorns).toBeUndefined();
   });
 
   it('Bloodfeast raises your max HP when it kills', () => {
@@ -521,7 +527,7 @@ describe('one card for each of the Ironclad’s', () => {
     const own = Object.values(db.cards).filter(
       (c) => c.hero === 'knight' && !c.id.endsWith('+') && c.source !== 'token',
     );
-    expect(own).toHaveLength(82 + 12 + 3 + 1 + 3); // Measured Conviction; three Strike rewards.
+    expect(own).toHaveLength(82 + 12 + 3 + 1 + 3 + 1); // Measured Conviction; three Strike rewards; Iron Spines (#788).
     // no Thorns and no Traps
     expect(own.filter((c) => c.kind === 'snare')).toEqual([]);
     expect(

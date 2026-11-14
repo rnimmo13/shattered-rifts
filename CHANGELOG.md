@@ -1,3 +1,11 @@
+## 0.276.0 - 2026-11-13
+
+- Rules 115. Every starting deck is 3 Strikes, 2 Defends and 5 class cards, one per way the class grows (#787): Knight Breach, Engineer Arc Welder, Hunter Single Out, Trickster Shadow Cloak, Rogue Cartwheel Cut (Premeditate, for Duck and Weave), Monk Unafraid and Wrathful Guard (one Kindle Fury and one Still Guard, Kindle Fury 9 -> 11), Spellblade two Obsidian Wards and Faultline Hex (Gather Power out), Drunkard Drunken Swing, Necromancer Soul Rend; Shaman unchanged. New runs only.
+- Signature debuffs (#788): Shocked for the Shaman's Storm (Wind Wall, Static Veil, Calm Before the Storm) and the Engineer (Static Field, Arc Relay); Sapped for the Monk (Watchful Calm, Still Water, Unmoved Mind) and the Necromancer (Grave Defiance, Wither); Thorns for the Knight (Scarred Hide once a turn, Crippling Blow, new common Iron Spines); Debilitated for the Trickster (Strip the Guard, Death Mark); Brittle stays the Drunkard's.
+- Campaign: Elite premium x1.30/x1.12 -> x1.25/x1.10 HP/damage (#786); potion drop 40/75% -> 50/85% after a normal/Elite or Warden fight, an Elite's still fading to a normal fight's by Tier XIX.
+- Wardens attack with their own choreographed moves and effects (wardenMotion, wardenFx); creature figures and sheets redrawn and repacked, idle as one ready pose; Pirate Captain skin preview updated (ChatGPT).
+- The map's Deck count uses the body font, heavier and larger (Bebas Neue was hard to read at that size).
+
 ## 0.275.0 - 2026-11-13
 
 - Sanctum starter Grimoire prefers five readable columns on desktop (ten cards, two rows); preserves narrow fitting and filters. Pirate Captain preview reserves a stable union of non-death action bounds, scoped to her Sanctum model. Default Knight Shop/Collection wrapper scales to 82%, including its fallback picture; other contexts/skins unchanged.

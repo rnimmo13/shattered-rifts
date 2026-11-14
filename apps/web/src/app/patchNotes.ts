@@ -46,6 +46,100 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.276.0',
+    date: '2026-11-13',
+    title: 'Class starters, signature debuffs and Warden moves',
+    summary:
+      'Every class starts with five class cards, each class owns its debuffs, Wardens attack with their own moves, and potions drop more often.',
+    heads:
+      'Rules version 115: Arena replays and shared fights from earlier versions no longer play. Runs in progress keep their decks.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Starting decks',
+        text: 'Every class starts with 3 Strikes, 2 Defends and 5 class cards, one for each way the class can grow. New in the starters: Breach (Knight), Arc Welder (Engineer), Single Out (Hunter), Shadow Cloak (Trickster), Cartwheel Cut (Rogue), Unafraid and Wrathful Guard (Monk), a second Obsidian Ward and Faultline Hex (Spellblade), Drunken Swing (Drunkard) and Soul Rend (Necromancer). The Shaman is unchanged. New runs only.',
+      },
+      {
+        kind: 'balance',
+        card: 'kindle-fury',
+        text: 'Kindle Fury hits harder.',
+        changes: [{ label: 'Damage', before: '9 (12)', after: '11 (14)', direction: 'buff' }],
+      },
+      {
+        kind: 'changed',
+        title: 'Signature debuffs',
+        text: 'Each class is now known for its own: Shocked for the Shaman’s Storm and the Engineer, Sapped for the Monk and the Necromancer, Thorns for the Knight, Debilitated for the Trickster, Brittle for the Drunkard.',
+      },
+      {
+        kind: 'changed',
+        hero: 'shaman',
+        title: 'Shocked: Shaman',
+        text: 'Wind Wall: 4 Barrier and Shock a random enemy. Static Veil: 6 Barrier and Shock the enemy you choose. Calm Before the Storm: Shock a random enemy at the start of each turn (upgraded: in your opening hand). They Sapped every enemy before.',
+      },
+      {
+        kind: 'changed',
+        hero: 'engineer',
+        title: 'Shocked: Engineer',
+        text: 'Static Field: 3 to every enemy and Shock a random enemy (was 1 Faltering to all). Arc Relay: 9 to every enemy and Shock a random enemy (was 4 Primed to all friends).',
+      },
+      {
+        kind: 'changed',
+        hero: 'monk',
+        title: 'Sapped: Monk',
+        text: 'Watchful Calm: 4 Sapped on an enemy, Serene, Foresee 2 (was 2 Barrier). Still Water: 5 Sapped, or 9 if you are Serene, and draw 1 (was Barrier). Unmoved Mind: entering a stance Saps a random enemy by 2 and deals 2 (was 2 Barrier).',
+      },
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Sapped: Necromancer',
+        text: 'Grave Defiance: 5 Barrier and 4 Sapped (was 6 Barrier and 1 Faltering). Wither: 10 damage and 4 Sapped (was 2 Debilitated).',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Thorns: Knight',
+        text: 'New common, Iron Spines: 5 Barrier and 3 Thorns until the enemy turn is over. Scarred Hide: the first time each turn you lose HP, gain 3 Thorns (it Sapped a random enemy before). Crippling Blow: 15 damage and 8 Thorns (was 10 Sapped).',
+      },
+      {
+        kind: 'changed',
+        hero: 'trickster',
+        title: 'Debilitated: Trickster',
+        text: 'Strip the Guard: 2 Exposed and 2 Debilitated (was 3 Exposed and 2 Brittle). Death Mark: 12 damage, 2 Exposed and 1 Debilitated (was 3 Exposed).',
+      },
+      {
+        kind: 'balance',
+        title: 'Elites and potions',
+        text: 'Elites are a little softer, and potions drop more often after a won fight.',
+        changes: [
+          { label: 'Elite HP', before: 'x1.30', after: 'x1.25', direction: 'buff' },
+          { label: 'Elite damage', before: 'x1.12', after: 'x1.10', direction: 'buff' },
+          { label: 'Potion after a fight', before: '40%', after: '50%', direction: 'buff' },
+          {
+            label: 'Potion after an Elite or Warden',
+            before: '75%',
+            after: '85%',
+            direction: 'buff',
+          },
+        ],
+      },
+      {
+        kind: 'new',
+        title: 'Warden moves',
+        text: 'Wardens attack with their own moves and effects: blades, lightning, tides, roots, gravity, breath and more.',
+      },
+      {
+        kind: 'changed',
+        title: 'Creature art',
+        text: 'Many creatures and Wardens are redrawn, and creatures stand in a steady ready pose between moves.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Deck count',
+        text: 'The number on the map’s Deck button is larger and easier to read.',
+      },
+    ],
+  },
+  {
     version: '0.275.0',
     date: '2026-11-13',
     title: 'Campaign pacing and cleaner character previews',

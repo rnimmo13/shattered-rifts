@@ -238,7 +238,7 @@ describe('what an Elite pays by Rift Tier', () => {
       boonPct: 100,
       healPct: ELITE_HEAL_PCT,
     });
-    expect(eliteRewards(10)).toMatchObject({ shards: 38, potionPct: 58, boonPct: 55 });
+    expect(eliteRewards(10)).toMatchObject({ shards: 38, potionPct: 68, boonPct: 55 });
     for (const t of [ELITE_REWARD_FADE_TIER, ALL_WARDEN_TIER])
       expect(eliteRewards(t)).toEqual({
         shards: FIGHT_SHARDS.duel,

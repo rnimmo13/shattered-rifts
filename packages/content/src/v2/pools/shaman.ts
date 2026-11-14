@@ -45,7 +45,6 @@ import {
   reshuffle,
   scry,
   status,
-  statusTheirs,
   STATUS_TAG,
   STORM,
   totemSlot,
@@ -127,8 +126,8 @@ export const TOTEMS: TotemDef[] = [
 ];
 
 const i = pool('shaman', 'nexus');
-/** Sapped on every enemy until the end of their next turn (a Storm ward) */
-const sapAll = (n: number): Op => statusTheirs('sapped', n, 'allFoes');
+/** a random enemy Shocked for 1 turn (the Storm's debuff, DECISIONS #788; Storm wards gave Sapped to all before) */
+const shockRandom: Op = status('stunned', 1, 'randomFoe');
 /** Flashpoint spends half the Burn it reads, so burst and ticking are a trade (DECISIONS #501) */
 const halveBurn: Op = { op: 'scaleStatus', status: 'burn', mult: 0.5, to: 'target' };
 const gatheringStorm = (n: number, grow: number): Op[] => [
@@ -402,9 +401,10 @@ export const SHAMAN: CardDef[] = [
     ...STORM,
     up: { effects: [dmg(9, 'allFoes'), draw(1)] },
   }),
-  i('common', 'wind-wall', 'Wind Wall', 'skill', 1, 'none', [barrier(5), sapAll(2)], {
+  // (Shocked, the Storm's own debuff, in place of 2 Sapped to all: DECISIONS #788)
+  i('common', 'wind-wall', 'Wind Wall', 'skill', 1, 'none', [barrier(4), shockRandom], {
     ...STORM,
-    up: { effects: [barrier(8), sapAll(2)] },
+    up: { effects: [barrier(7), shockRandom] },
   }),
   // (a Storm attack that brings a Thunderbird)
   i(
@@ -427,10 +427,20 @@ export const SHAMAN: CardDef[] = [
     [dmg(10, 'allFoes'), status('exposed', 2, 'allFoes')],
     { ...STORM, up: { effects: [dmg(13, 'allFoes'), status('exposed', 2, 'allFoes')] } },
   ),
-  i('uncommon', 'static-veil', 'Static Veil', 'skill', 1, 'none', [barrier(6), sapAll(3)], {
-    ...STORM,
-    up: { effects: [barrier(9), sapAll(3)] },
-  }),
+  // (Shock the enemy you choose, in place of 3 Sapped to all: DECISIONS #788)
+  i(
+    'uncommon',
+    'static-veil',
+    'Static Veil',
+    'skill',
+    1,
+    'foe',
+    [barrier(6), status('stunned', 1, 'target')],
+    {
+      ...STORM,
+      up: { effects: [barrier(9), status('stunned', 1, 'target')] },
+    },
+  ),
   i(
     'uncommon',
     'lightning-rod',
@@ -448,8 +458,9 @@ export const SHAMAN: CardDef[] = [
     'power',
     1,
     'none',
-    [on('turnStart', [sapAll(3)])],
-    { up: { effects: [on('turnStart', [sapAll(4)])] } },
+    // (a Shock each turn in place of 3 Sapped to all, DECISIONS #788; upgraded it is in your opening hand)
+    [on('turnStart', [shockRandom])],
+    { up: { innate: true } },
   ),
   // (two big hits, not four: Primed adds to every hit on every enemy)
 

@@ -7,7 +7,7 @@
 //   (#727: the Swords that hit 3 or 4 times apply 2 Fracture a hit, and Spellbolt, Arcane Pulse, Molten Ruin and Lava Bomb a little,
 //   so a Sword or Spell deck can lean into Shatters; the two commons, Obsidian Flurry and Rift Sweep, 1 a hit, so they stay behind the
 //   Fracture commons)
-//   Fracture - marks on an enemy that only add up: every 10 Shatters it, 3 harder each time (20, 23, 26... 47 at 100, + the Spell Power held; #713, #726); from 50 each Shatter cracks another enemy for 10, found in rewards, not the starter
+//   Fracture - marks on an enemy that only add up: every 10 Shatters it, 3 harder each time (20, 23, 26... 47 at 100, + the Spell Power held; #713, #726); from 50 each Shatter cracks another enemy for 10; Faultline Hex is in the starter since DECISIONS #787 (rewards only before, #483)
 // No caps on spending, by Robert's call. No Sword adds hits: Might and Primed pay off on the fixed hits of the bigger ones (DECISIONS #507, #509).
 
 import type { CardDef, Op, Scale, Sel } from '@sr/combat';

@@ -163,6 +163,17 @@ export const KNIGHT: CardDef[] = [
     status('plating', 3),
     statusTheirs('thorns', 4, 'self'),
   ]),
+  // (a common Thorns card: Thorns is the Knight's, DECISIONS #788; 6 Barrier + 4.5 for 3 Thorns over ~1.5 hits = 10.5 on a 10 budget)
+  m(
+    'common',
+    'iron-spines',
+    'Iron Spines',
+    'skill',
+    1,
+    'none',
+    [barrier(5), statusTheirs('thorns', 3, 'self')],
+    { up: { effects: [barrier(7), statusTheirs('thorns', 4, 'self')] } },
+  ),
 
   // --- Might ---
   // (Twin Strike)
@@ -295,10 +306,19 @@ export const KNIGHT: CardDef[] = [
   // (Cruelty)
   m('rare', 'cruel-streak', 'Cruel Streak', 'power', 1, 'none', [status('cruelty', 1)]),
   // (Mangle: the enemy hits 10 softer through its next turn)
-  m('rare', 'crippling-blow', 'Crippling Blow', 'attack', 3, 'foe', [
-    dmg(15),
-    statusTheirs('sapped', 10, 'target'),
-  ]),
+  // (8 Thorns in place of 10 Sapped: Thorns is the Knight's, Sapped the Monk's and Necromancer's, DECISIONS #788)
+  m(
+    'rare',
+    'crippling-blow',
+    'Crippling Blow',
+    'attack',
+    3,
+    'foe',
+    [dmg(15), statusTheirs('thorns', 8, 'self')],
+    {
+      up: { effects: [dmg(18), statusTheirs('thorns', 10, 'self')] },
+    },
+  ),
   // (Feed: if it kills, your max HP grows for good)
   m('rare', 'bloodfeast', 'Bloodfeast', 'attack', 1, 'foe', [onKill(dmg(10), [maxHpUp(3)])], {
     exhaust: true,
@@ -630,7 +650,7 @@ export const KNIGHT: CardDef[] = [
       up: { effects: [on('loseHp', [barrier(4)])] },
     },
   ),
-  // (every time you lose HP, from an enemy or from your own cards, a random enemy is Sapped: its attacks deal less)
+  // (the first time each turn you lose HP, from an enemy or from your own cards, you gain Thorns until the enemy's turn is over)
   m(
     'uncommon',
     'scarred-hide',
@@ -638,9 +658,11 @@ export const KNIGHT: CardDef[] = [
     'power',
     1,
     'none',
-    [on('hurt', [statusTheirs('sapped', 3, 'randomFoe')])],
+    // (the first time each turn, Thorns in place of Sapped on a random enemy: Thorns is the Knight's, DECISIONS #788; once, as one
+    // enemy's flurry of hits would stack it every hit)
+    [on('hurt', [statusTheirs('thorns', 3, 'self')], { once: true })],
     {
-      up: { effects: [on('hurt', [statusTheirs('sapped', 4, 'randomFoe')])] },
+      up: { effects: [on('hurt', [statusTheirs('thorns', 4, 'self')], { once: true })] },
     },
   ),
   m(

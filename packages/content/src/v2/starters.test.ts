@@ -37,40 +37,42 @@ const lost = (s: CombatState): number => 500 - s.sides.b.units[0]!.hp;
 const hero = (s: CombatState) => s.sides.a.units[s.sides.a.units.length - 1]!;
 
 describe('starting decks', () => {
-  it('have ten cards, and 3 or 4 different class basics (5 for Shaman)', () => {
+  it('are 3 Strikes, 2 Defends and 5 class cards for every class (DECISIONS #787)', () => {
     for (const [id, r] of Object.entries(RIFTWALKERS)) {
       expect(r.starter, id).toHaveLength(10);
-      const basics = [...new Set(r.starter.filter((c) => c !== 'strike' && c !== 'defend'))];
-      expect(basics.length, id).toBeGreaterThanOrEqual(3);
-      expect(basics.length, id).toBeLessThanOrEqual(id === 'shaman' ? 5 : 4);
+      expect(
+        r.starter.filter((c) => c === 'strike'),
+        id,
+      ).toHaveLength(3);
+      expect(
+        r.starter.filter((c) => c === 'defend'),
+        id,
+      ).toHaveLength(2);
+      for (const c of r.starter) expect(db.cards[c], `${id} ${c}`).toBeDefined();
     }
   });
 
-  it('the Knight, Trickster, Assassin, Shaman, Monk and Drunkard have distinct class basics in their expected counts', () => {
-    // (the Monk carries two of each stance card, DECISIONS #677: his are checked below)
-    const want: Record<string, number> = {
-      knight: 4,
-      trickster: 4,
-      assassin: 4,
-      shaman: 5,
-      drunkard: 4,
-    };
-    for (const [id, n] of Object.entries(want)) {
-      const basics = RIFTWALKERS[id as keyof typeof RIFTWALKERS].starter.filter(
-        (c) => c !== 'strike' && c !== 'defend',
-      );
-      expect(new Set(basics).size, id).toBe(basics.length);
-      expect(basics.length, id).toBe(n);
+  it('class cards are all different, except the Necromancer’s two Off the Leash and the Spellblade’s two Obsidian Wards', () => {
+    const dupes: Record<string, number> = { necromancer: 4, spellblade: 4 };
+    for (const [id, r] of Object.entries(RIFTWALKERS)) {
+      const own = r.starter.filter((c) => c !== 'strike' && c !== 'defend');
+      expect(new Set(own).size, id).toBe(dupes[id] ?? 5);
     }
   });
 
-  it('the Monk starts with two Kindle Fury and two Still Guard, to change stances sooner (DECISIONS #677)', () => {
+  it('the Monk starts with every stance card once, so one turn can go Serene, Fury, Serene (DECISIONS #787)', () => {
     const deck = RIFTWALKERS.monk.starter;
-    expect(deck).toHaveLength(10);
-    expect(deck.filter((c) => c === 'kindle-fury')).toHaveLength(2);
-    expect(deck.filter((c) => c === 'still-guard')).toHaveLength(2);
-    expect(deck.filter((c) => c === 'strike')).toHaveLength(3);
-    expect(deck.filter((c) => c === 'defend')).toHaveLength(2);
+    for (const c of ['kindle-fury', 'still-guard', 'mindful-palm', 'fearless', 'wrathful-guard'])
+      expect(
+        deck.filter((x) => x === c),
+        c,
+      ).toHaveLength(1);
+  });
+
+  it('the Rogue starts with a Premeditate card for Duck and Weave to discard', () => {
+    const deck = RIFTWALKERS.assassin.starter;
+    expect(deck).toContain('duck-and-weave');
+    expect(deck).toContain('cartwheel-cut');
   });
 });
 

@@ -131,7 +131,8 @@ export interface Entry {
 // turn; Oath Unbroken 2 Might; Vow Fulfilled half past 5 Reserves.
 // 111 (#777): the Hunter's companions share a quarter of the Might, the Beastmaster's half.
 // Companion Reaping converts one quarter of HP damage; Trail of Blood and Bloodsong cost 1.
-export const RULES_VERSION = 114;
+// 115 (#787): Kindle Fury deals 11 (was 9); every starting deck is 3 Strikes, 2 Defends and 5 class cards.
+export const RULES_VERSION = 115;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

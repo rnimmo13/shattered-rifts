@@ -2387,3 +2387,39 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 ## 785 - Release 0.275.0 approved (2026-11-13)
 
 - Robert explicitly says 'push' for the completed pending changes: fifteen-floor tiers, rules114 campaign curve/premiums, stable home selector, five-column Sanctum Grimoire, Pirate idle/clipping fixes, and smaller default Knight cosmetic tiles. Authorizes website/server and matching Windows updater after final checks. Earlier local assessment statuses are historical; no new simulation results implied.
+
+## 786 - Elite premium eased (2026-11-13)
+
+- Robert: "lets bring elite to 1.25 hp and 1.1 damage". `ELITE_HP` 1.30 -> 1.25, `ELITE_DAMAGE` 1.12 -> 1.10 (packages/campaign/src/run.ts), over a common fight of the same tier. Wardens unchanged (1.35 / 1.18). Campaign only; Arena untouched. Not released; fresh release approval required.
+
+## 787 - Five class cards in every starting deck, Kindle Fury 11, more potions (2026-11-13)
+
+- Robert: every class starts with 5 class cards that tie the class together and start each Ascendancy's build path, with a mix of damage, defence and the class's own mechanics; the Rogue gets a card that pays off being discarded (Premeditate); the Monk felt weak; the Spellblade's two Barrier cards were near copies; potions drop a little more often. Shaman felt fine and is unchanged.
+- Every starting deck is 3 Strikes, 2 Defends and 5 class cards (10 cards). Additions, all existing pool cards:
+  - Knight: Breach (Blood Knight), in a Strike's place.
+  - Engineer: Arc Welder (Golemancer), in a Defend's place.
+  - Hunter: Single Out (Predator), in a Defend's place.
+  - Trickster: Shadow Cloak (a class ♥ card), in a Defend's place.
+  - Rogue: Cartwheel Cut (Premeditate, for Duck and Weave to discard), in a Strike's place.
+  - Monk: Unafraid and Wrathful Guard in place of the second Kindle Fury and Still Guard (#677), so one turn can go Serene, Fury, Serene; Kindle Fury deals 11 (was 9; upgraded 14).
+  - Spellblade: a second Obsidian Ward in place of Gather Power, and Faultline Hex (Shatterer) in a Defend's place: Fracture in the starter, superseding #483.
+  - Drunkard: Drunken Swing (Brewmaster), in a Defend's place.
+  - Necromancer: Soul Rend (Soulreaper), in a Defend's place.
+- `POTION_DROP_CHANCE` 40/75 -> 50/85 (normal fight / Elite and Warden); an Elite's chance still fades to a normal fight's by Tier XIX.
+- Side effects: starters now hold commons, so the exchange event and the reel's Twin can take or copy one. Existing runs and saved decks keep their decks; new runs only. Not released; fresh release approval required.
+- Next, agreed with Robert: mechanic owners (Shocked: Shaman Storm and Engineer; Sapped: Monk and Necromancer; Thorns: Knight; Debilitated: Trickster; Brittle: Drunkard), card list to be shown before building.
+- `RULES_VERSION` 114 -> 115 (Kindle Fury, and the cards of #788).
+
+## 788 - Each class known for its debuffs (2026-11-13)
+
+- Robert: some classes should have more Sapped cards and others more Shocked; each class known for its own mechanics, as the Hunter is for Might and the Trickster for Exposed. Approved the card list below ("sounds good"). Priced with docs/14_CARD_COSTING.md (Shocked ~7 a turn, Sapped 1.2 a point a hit, Thorns ~1.5 a stack, Debilitated ~1.5 a stack).
+- **Shocked** (`stunned`): the Shaman's Storm and the Engineer, always on one enemy (never all). Wind Wall 4 Barrier + Shock a random enemy (was 5 Barrier, 2 Sapped to all); Static Veil 6 Barrier + Shock the enemy you choose (was 3 Sapped to all; no "biggest attack" selector exists, and a choice is better); Calm Before the Storm Shocks a random enemy each turn (was 3 Sapped to all), upgraded it is in the opening hand; Static Field 3 to all + Shock a random enemy (was 1 Faltering to all); Arc Relay 9 to all + Shock a random enemy (was 4 Primed to all friends; Overwatch was proposed but with a Shock it would beat the rare EMP).
+- **Sapped**: the Monk and the Necromancer. Watchful Calm 4 Sapped on the target (was 2 Barrier); Still Water 5 Sapped, 9 if Serene (was Barrier 4/10); Unmoved Mind Saps a random enemy by 2 on entering a stance (was 2 Barrier); Grave Defiance 5 Barrier + 4 Sapped (was 6 + 1 Faltering); Wither 10 + 4 Sapped (was 2 Debilitated).
+- **Thorns**: the Knight. Scarred Hide: the first time each turn you lose HP, gain 3 Thorns until the enemy turn is over (was Sapped on a random enemy every time); Crippling Blow 15 + 8 Thorns (was 10 Sapped); new common Iron Spines (`iron-spines`, 1: 5 Barrier, 3 Thorns; `spiked-pauldron` is a retired id).
+- **Debilitated**: the Trickster. Strip the Guard 2 Exposed + 2 Debilitated (was 3 Exposed + 2 Brittle); Death Mark 12 + 2 Exposed + 1 Debilitated (was 3 Exposed).
+- **Brittle** stays the Drunkard's (5 cards, unchanged); Robert wonders whether it should last more turns: wait and see. Left alone: the Rogue's Chilling Shriek and Sapping Wound, the Spellblade's Weight of the Crown, the Trickster's Poison Pantry.
+- Saved decks and runs keep the cards by id; their text and effects change. Covered by RULES_VERSION 115. Not released; fresh release approval required.
+
+## 789 - Release 0.276.0 approved (2026-11-13)
+
+- Robert: "lets get everything pushed and deployed includign the art changes from chatgpt". Website/server and matching Windows updater for 0.276.0 / rules 115: #786-#788, the readable Deck count, and ChatGPT's pending work in the tree (Warden moves in wardenMotion.ts/wardenFx.ts, redrawn and repacked creature figures and sheets, Pirate Captain preview). Future changes need fresh release approval.

@@ -90,13 +90,13 @@
     "displayScale": 1
   },
   "drunkard-pirate-captain": {
-    "width": 365,
-    "height": 401,
-    "x": -244,
-    "y": -400,
-    "left": -248,
-    "right": 125,
-    "fitWidth": 210,
+    "width": 461,
+    "height": 501,
+    "x": -306,
+    "y": -500,
+    "left": -310,
+    "right": 159,
+    "fitWidth": 262,
     "displayScale": 1
   }
 }

@@ -2,6 +2,10 @@
 
 For future Riftwalker, skin, companion, dragon, and enemy art, use `docs/ART_DIRECTION.md` and its approved image anchors. The target is inked, stylized fantasy with a slightly cartoon feel. Do not use whole-character distortion for idle breathing. Older flat-cartoon enemy prompts are historical where their style conflicts with this direction. No redraw or release is authorized by this note.
 
+# Release approved 0.276.0 / rules 115 (2026-11-13; decisions 786-788)
+
+Robert explicitly approves pushing and deploying everything, ChatGPT's art changes included ("lets get everything pushed and deployed includign the art changes from chatgpt"). Website/server and matching Windows updater. Future changes need fresh release approval. Every starting deck is 3 Strikes, 2 Defends and 5 class cards (#787; Shaman unchanged; Kindle Fury 11); each class owns its debuffs (#788: Shocked the Shaman's Storm and the Engineer, Sapped the Monk and the Necromancer, Thorns the Knight, Debilitated the Trickster, Brittle the Drunkard); Elite x1.25/x1.10 (#786); potions 50/85%; Warden moves and redrawn creatures (ChatGPT); a readable Deck count.
+
 # Release approved 0.269.0 (2026-11-13; decision 779)
 
 Robert explicitly approves pushing ChatGPT's pending work ("can you take in all of the recent changes and push them. chatgpt made some changes"). Website/server and matching Windows updater. Future changes need fresh release approval. The Gothic Puppeteer recoloured moss green with a nose stud at load (`gothicPalette.ts`), a black aura and green curse; the Tempest Sage's stance-coloured punch effects (`skinEffects.ts`); the Store and Collection category called Skins (ids unchanged). No rules change.

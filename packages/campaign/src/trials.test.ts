@@ -178,7 +178,7 @@ describe('elite events', () => {
       expect(() => claimTrialPrize(spun, 'p' + other)).toThrow(/did not stop/);
       expect(() => claimTrialPrize(spun, 'nope')).toThrow();
       const prize = t.prizes[lane]!;
-      if (prize.choices) continue; // (a choice of cards: see below)
+      if (prize.choices || prize.twin) continue; // (a choice of cards, or the Twin's card to copy, now that starters hold commons: DECISIONS #787)
       const done = claimTrialPrize(spun, 'p' + lane);
       expect(done.phase).toBe('map');
       // the spin was paid for and the prize costs nothing more; an elite event never tosses the coin
