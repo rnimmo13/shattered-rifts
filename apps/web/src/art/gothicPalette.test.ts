@@ -29,7 +29,10 @@ describe('Gothic Puppeteer palette', () => {
           ),
           'utf8',
         ),
-      );
+      ) as {
+        nativeGothicPalette?: boolean;
+        clips: { idle: { effects: { kind: string }[] } };
+      };
       expect(man.nativeGothicPalette).toBe(true);
       expect(man.clips.idle.effects[0]).toMatchObject({ kind: 'grimoire' });
     }

@@ -1,4 +1,4 @@
-import { matchesManaCost, type ManaCost } from './ManaCostFilter';
+import { matchesManaCost, type ManaCost } from './manaCost';
 // The practice-fight deck builder's logic, kept apart from the screen so it can be tested: the card catalogue, filtering it,
 // turning counts into a deck, and a random deck for quick experiments.
 

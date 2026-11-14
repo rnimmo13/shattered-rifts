@@ -1,4 +1,4 @@
-## Unreleased
+## 0.274.0 - 2026-11-13
 
 - Sanctum: uniform circular class choices, enlarged model, mobile model before class grid; fixed intrinsic image sizing so the model stays within its frame.
 - Merchant card rerolls: 50 + 50 per prior reroll at that shop; persists in saves, resets next shop; same offer generator, held stock preserved, non-card stock/services untouched.
@@ -9,10 +9,38 @@
 
 - Monk: clarified Angry Palm, Final Account, Still Water and Settled Mind as binary stance bonuses, including upgraded text and the pre-entry Serene check. Effects, costs and save/replay rules are unchanged; live damage remains available.
 
-- Enemy phase Barrier now absorbs the remainder of an attack that triggers it. Excess damage reaches HP and can trigger further phases or defeat the enemy. Campaign Omen thresholds and rewards use the same values. Rules 112 invalidates older unfinished combat logs and replays.
+- Enemy phase Barrier now absorbs the remainder of an attack that triggers it. Excess damage reaches HP and can trigger further phases or defeat the enemy. Campaign Omen thresholds and rewards use the same values. Rules 113 invalidates older unfinished combat logs and replays.
 - Tempest Sage’s Radiant stance has tapered gold rays, rising embers, and expanding rings. Fury artwork and punch effects use softer lighting.
 - Pirate Captain holds her glass steady while sparks and cigar smoke animate.
 - Visible Store and Collection skin tiles show their animated models. Demon Knight and Glacier Lancer fit by height, with weapon tips free to extend outside the tile.
+
+## 0.273.0 - 2026-11-13
+
+- Replaced Glacier Lancer’s spear with a crystal-infused bone cleaver, a quick slash and an idle crystal pulse.
+- Grounded the Gothic Puppeteer’s marionette and attached its strings to pose-specific hat and wrist points.
+- Removed Pirate Captain’s falling props while preserving her stable idle and swig.
+- Reduced Demon Knight’s size and removed his aura and tentacles.
+- Moved Begin the Run above the Riftwalker picker and increased Store and Collection skin preview size.
+
+## 0.272.0 - 2026-11-13
+
+- Added animated High Roller and Pirate Captain skins to the Store and Collection with High and Medium atlases.
+- Added High Roller's spinning card and dice, and Pirate Captain's prop drops, two-handed attacks, swig, magic smoke, and salvaged ship windows.
+- Added the Rogue Tailor's needle glint, Glacier Lancer's spear crystal effect, and Ash Falconer's phoenix embers.
+- Reduced Demon Knight model scale, steadied Tempest Sage's idle stances, and updated Store and Collection preview sizing and activation.
+
+## 0.271.0 - 2026-11-13
+
+- Added Ash Falconer and Glacier Lancer to the Store and Collection with High and Medium battle animations.
+- Arc Welder sparks at idle and discharges on attack while the current follows the hose.
+- Gothic Puppeteer uses the base Necromancer’s olive and teal-green palette.
+
+## 0.270.0 - 2026-11-13
+
+- Refreshed the Necromancer, Drunkard, Rogue Tailor, Arc Welder and Gothic Puppeteer with new inked artwork, blended action clips, matching stills, and High and Medium atlases.
+- The Drunkard has separate hammer and shotgun attacks and a parked glass trolley. The Necromancer power-up uses a quick lantern lift.
+- Arc Welder has an electric-blue current inside her hose. Gothic Puppeteer carries a pulsing green grimoire and a clear steel scythe.
+- All ten base Riftwalkers hold a stable ready pose on High and Medium. Combat rules are unchanged.
 
 ## 0.269.0 - 2026-11-13
 

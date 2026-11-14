@@ -2352,3 +2352,12 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 
 - **Question:** at most three pose-sheet models animate at once, so the Store and the Collection showed three looks moving and the rest still. Robert: "its just really bad to show only 3 and not all of them, or on hover should work or something. just make it consistent".
 - **Decision (not released yet):** every look in the Store's and the Collection's boxes (`HeroModel` `contain`) shows its still picture. A look loads and plays its model only while the mouse is over it, and swings once as it comes alive; it goes back to the picture when the mouse leaves. On touch a tap wakes it, and it goes back once scrolled well away. The home screen, picker, Models and lore pages are unchanged.
+
+## 781 - Sanctum, merchant rerolls, filters and targeted scaling; release 0.274.0 (2026-11-13)
+
+- Robert requested and approved the Sanctum icon grid and larger mobile-first model; merchant card rerolls at 50 shards, increasing by 50 each time at that shop; and Mana-cost filters in every Grimoire.
+- Rift Heart ordinary offers become 20%, foreign-card event weight triples and future crossed merchants become 22.5%. Hunter Might setup and amounts are toned down; Reaping companion Command conversion is one quarter; Shatter/Aegis held Spell Power growth diminishes beyond 20. Exact base/upgraded values appear in the player notes and append-only balance assessment.
+- Enemy phase Barrier absorbs incoming attack damage rather than discarding the rest of the hit. Serene/Fury card wording expresses binary stance checks. Approved Tempest Radiant aura and subtler Fury remain.
+- Supersedes decision 780: visible Store/Collection tiles animate without hover, using lightweight preview sheets; Knight/Hunter preview bodies fit by height with weapon clipping allowed.
+- Robert explicitly approved pushing when ready and including all pending work. Origin had already published the art through 0.273.0; those commits and newest Pirate Captain artwork are preserved in 0.274.0, rules 113. Website/server and matching Windows updater are authorized after validation.
+- Live exports now supply historical player evidence: all 65 Spellblade fights were rules108. Anonymous exports do not establish sacacweeda's identity. No simulations or new competitive grades are claimed.

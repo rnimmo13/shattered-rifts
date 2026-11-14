@@ -271,6 +271,8 @@ export function HeroModel(props: {
         window.clearTimeout(slow);
         setLive(true);
         raf = requestAnimationFrame(frame);
+        // (woken by the mouse over it: it swings at once, as a model already loaded does on hover)
+        if (contain && el.matches(':hover')) attack();
       })
       .catch(fail);
 

@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { COMBAT_DB as db } from '@sr/content/v2';
-import { matchesManaCost } from './ManaCostFilter';
+import { matchesManaCost } from './manaCost';
 import { catalog, filterCatalog } from './deckCatalog';
 it('separates Mana X from fixed costs and Spell Power spending', () => {
   const card = db.cards.strike!;

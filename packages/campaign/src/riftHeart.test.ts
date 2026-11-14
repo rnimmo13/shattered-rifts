@@ -8,7 +8,7 @@ import { newRun } from './run';
 describe('Rift Heart opportunities', () => {
   it('triples only eligible foreign-card event weights without consuming RNG', () => {
     const r = newRun('monk', 'rift-heart-events');
-    const rng = { ...r.rng };
+    const rng = [...r.rng];
     for (const id of RIFT_CROSSED_EVENTS) expect(EVENTS.some((e) => e.id === id)).toBe(true);
     for (const e of EVENTS) {
       expect(eventWeight(r, e)).toBe(e.weight);

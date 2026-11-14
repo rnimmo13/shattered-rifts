@@ -25,6 +25,11 @@
   width: 100%;
   height: 100%;
 }
+/* Apply after fitting so the greatsword's width cap also scales by ten percent. */
+.look__model--demon-knight {
+  scale: 0.9;
+  transform-origin: bottom center;
+}
 /* (the picker's picture keeps its own size: the box is as big as the picture) */
 .picker__model {
   line-height: 0;

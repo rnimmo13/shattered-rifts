@@ -46,11 +46,11 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
-    version: '0.270.0',
+    version: '0.274.0',
     date: '2026-11-13',
-    title: 'Radiant Tempest and enemy phase Barrier',
+    title: 'Sanctum, merchant rerolls and scaling refinements',
     summary:
-      'Tempest Sage’s Radiant stance shines brighter and attacks can break through enemy phase Barrier.',
+      'A clearer Sanctum, merchant card rerolls, Mana filters, stronger Rift Heart and focused balance changes.',
     heads:
       'Older unfinished battles restart from their saved encounter checkpoint. Replays recorded under older rules require their original game version.',
     notes: [
@@ -232,6 +232,172 @@ export const PATCH_NOTES: PatchNote[] = [
         kind: 'changed',
         title: 'Store and Collection',
         text: 'Visible skin tiles show their animated models. Demon Knight and Glacier Lancer fill the tile vertically, with room for their weapons to extend past the edges.',
+      },
+    ],
+  },
+  {
+    version: '0.273.0',
+    date: '2026-11-13',
+    title: 'Crystal Cleaver and Marionette',
+    summary: 'Refreshed skin animations and a quicker start from the Sanctum.',
+    notes: [
+      {
+        kind: 'changed',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'The Hunter skin carries a two-handed bone cleaver with pulsing ice crystals. Its attack starts with a quick slash.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'Her marionette stands beside her with strings tied to its hat and wrists.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'drunkard',
+        title: 'Pirate Captain',
+        text: 'Her glass and cigar disappear during attacks and return when she settles back into idle.',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Demon Knight',
+        text: 'The skin is slightly smaller, with the aura and tentacles removed.',
+      },
+      {
+        kind: 'changed',
+        title: 'Sanctum and skin previews',
+        text: 'Begin the Run appears above the character picker. Skins fill more of their space in the Store and Collection.',
+      },
+    ],
+  },
+  {
+    version: '0.272.0',
+    date: '2026-11-13',
+    title: 'High Roller and Pirate Captain',
+    summary: 'Two free animated skins, larger previews, and new effects across the roster.',
+    notes: [
+      {
+        kind: 'new',
+        hero: 'trickster',
+        title: 'High Roller',
+        text: 'A porcelain Trickster with a spinning ace, tumbling dice, and teal rings. She flicks the ace forward on attack.',
+      },
+      {
+        kind: 'new',
+        hero: 'drunkard',
+        title: 'Pirate Captain',
+        text: 'A solo sailor who takes a swig to power up and drops her drink and cigar for two-handed hammer swings and shotgun blasts. Magic rises from her glass and smoke, and salvaged ship windows sit beside her.',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Demon Knight',
+        text: 'His model is smaller in battle and in the skin previews.',
+      },
+      {
+        kind: 'changed',
+        hero: 'monk',
+        title: 'Tempest Sage',
+        text: 'Her hair holds steady in every idle stance.',
+      },
+      {
+        kind: 'changed',
+        hero: 'assassin',
+        title: 'Rogue Tailor',
+        text: 'Her dagger needle catches the light in idle and on the strike.',
+      },
+      {
+        kind: 'changed',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'Cold light and ice flecks rise from the crystal on his spear.',
+      },
+      {
+        kind: 'changed',
+        hero: 'shaman',
+        title: 'Ash Falconer',
+        text: 'Her phoenix sheds embers that swell during the power-up.',
+      },
+      {
+        kind: 'changed',
+        title: 'Store and Collection',
+        text: 'Skins fill more of their preview boxes and animate on hover or tap.',
+      },
+    ],
+  },
+  {
+    version: '0.271.0',
+    date: '2026-11-13',
+    title: 'Ash Falconer and Glacier Lancer',
+    summary: 'Two new animated skins and updated effects for Arc Welder and Gothic Puppeteer.',
+    notes: [
+      {
+        kind: 'new',
+        hero: 'shaman',
+        title: 'Ash Falconer',
+        text: 'A free animated Shaman skin with a phoenix that takes flight from her glove.',
+      },
+      {
+        kind: 'new',
+        hero: 'hunter',
+        title: 'Glacier Lancer',
+        text: 'A free animated Hunter skin with a fur mantle and a quick ice-spear thrust.',
+      },
+      {
+        kind: 'changed',
+        hero: 'engineer',
+        title: 'Arc Welder',
+        text: 'Her gauntlet sparks at idle and throws a blue shock on impact.',
+      },
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'Her olive cloth and teal-green grimoire now share the base Necromancer’s palette.',
+      },
+    ],
+  },
+  {
+    version: '0.270.0',
+    date: '2026-11-13',
+    title: 'Riftwalker art refresh',
+    summary: 'Five refreshed looks with quicker actions and steadier ready poses.',
+    notes: [
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Necromancer',
+        text: 'New inked robes, staff and lantern, with a quick lantern lift for the power-up.',
+      },
+      {
+        kind: 'changed',
+        hero: 'drunkard',
+        title: 'Drunkard',
+        text: 'KP returns in bottle-green and rust with his hammer, short shotgun and glass-filled trolley.',
+      },
+      {
+        kind: 'changed',
+        hero: 'assassin',
+        title: 'Rogue Tailor',
+        text: 'Sharper inked features, wine-and-gold tailoring and a quick needle strike.',
+      },
+      {
+        kind: 'changed',
+        hero: 'engineer',
+        title: 'Arc Welder',
+        text: 'Petrol blue and copper outfit with a blue current running through the hose to her gauntlet.',
+      },
+      {
+        kind: 'changed',
+        hero: 'necromancer',
+        title: 'Gothic Puppeteer',
+        text: 'A steel scythe and a belt-hung grimoire that pulses green as she moves.',
+      },
+      {
+        kind: 'fixed',
+        text: 'All ten base Riftwalkers hold a stable ready pose on High and Medium.',
       },
     ],
   },

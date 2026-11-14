@@ -1,0 +1,1132 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "version": "0.274.0",
+  "rules": 113,
+  "assessmentId": "release-1",
+  "status": "Release approved; validation in progress",
+  "source": "User reports and live export fetched 2026-11-13: 667 Campaign fights, 6964 Campaign positions, 11 Arena games. Raw files in .wrangler/testing-balance/2026-11-13/.",
+  "basis": "Merchant card stock rerolls 50 +50 each time per shop. Hunter: Trail of Blood and Bloodsong cost 0->1 both upgrades; Bloodsong immediate Might 2/3->1/2; Pack Frenzy Might 3/4->2/3. Reaping Attack-card Command companion HP conversion 1/2->1/4 rounded up; hero half unchanged. Shatter held Spell Power halves above 20; Obsidian Aegis scaling halves above +10 Barrier. No HP changes.",
+  "gradeMode": "review-signals",
+  "evaluationScope": "Historical observed evidence, not new measured parity: 65 Spellblade fights all rules108, before rules109 diminishing returns. WJKHm6jFwn (Drago Tier12) recorded a 2158-damage turn8 attributed to lo~starforged-blade+; nGS3r3KxdN recorded 1823 on turn5 including 1376 Blade and 447 meteor-jab+. Anonymous player hashes cannot confirm sacacweeda attribution. These observations establish historical high ceilings, not a current exploit. No replay resimulation or balance simulations run.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Typical Arena games of 10 or more own turns and roughly 50% or better Drago clears with optimized decks remain playtest targets.",
+  "progressionBands": [
+    "IV\u2013VII",
+    "VIII\u2013X",
+    "XI\u2013XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Directly affected class; magnitude of competitive change unmeasured.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Hunter pays 1 Mana for two previously free Might engines; immediate Bloodsong Might reduced. Other native starts unchanged. Merchant rerolls trade shards for consistency.",
+      "recovery": "Held shop cards and non-card services survive rerolls; each reroll consumes funds needed for purchases. Spellblade Aegis recovery at high held Power grows more slowly; early Barrier unchanged.",
+      "rareReliance": "Hunter common Trail of Blood becomes paid setup, rare Bloodsong and Pack Frenzy reduced. Aegis is rare; base Shatter change affects all Fracture decks. Free mixing can import these effects.",
+      "scaling": "Hunter permanent Might remains uncapped from repeated ordinary sources. Reaping Command conversion halves, rounded per hit. Spellblade Shatter held-Power contribution and Aegis recurring Barrier keep growing at half rate past their thresholds. Existing Blade/spending diminishing returns remain.",
+      "rationale": "Native cards unchanged; freely mixed builds can acquire changed cards. Shop rerolls affect every Campaign class.",
+      "watch": "Compare native and mixed burst, defense, companion-command and resource engines in IV\u2013VII, VIII\u2013X, XI\u2013XII and Arena both seats. Track setup cost, recovery, 11+ own-turn growth and shard opportunity cost.",
+      "confidence": "Low for current balance; historical observations predate current scaling rules. Deterministic tests establish implementation only.",
+      "pacing": "Slower setup and extreme scaling may extend fights, but no 10+ own-turn parity is claimed.",
+      "evidence": [
+        ".wrangler/testing-balance/2026-11-13/fights.json",
+        "packages/content/src/v2/necromancer.test.ts",
+        "packages/content/src/v2/hunterPass.test.ts",
+        "packages/content/src/v2/spellblade.test.ts",
+        "packages/campaign/src/merchantReroll.test.ts"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated",
+      "rationale": "I\u2013III: starter card values unchanged. Hunter reward engines require more setup; later merchant rerolls can improve consistency at a shard cost. Unmeasured outcomes."
+    }
+  ],
+  "corrections": [
+    "Previous snapshots preserved. Carried Arena grades are historical hand estimates, not reassessed grades after these changes.",
+    "Real server observations are now available; previous local-only fixture inspections missed the public export documented in tools/src/adminAccess.ts. Player identity cannot be established from anonymized exports.",
+    "Reaping currently affects Attack-card Commands, not autonomous companion actions. This scope is preserved while the companion conversion rate changes.",
+    "No Spell Power cap or broad generator nerf; the first20 held Spell Power retains its Shatter/Aegis value. Older rules108 burst is not presented as evidence that rules112 still has the same strength.",
+    "The earlier local 0.270.0 candidate snapshots describe this work before discovering releases 0.270\u20130.273 on origin. Those snapshots are preserved; 0.274.0/rules113 is the actual combined release candidate, including the earlier Rift Heart and enemy phase assessments."
+  ]
+}
