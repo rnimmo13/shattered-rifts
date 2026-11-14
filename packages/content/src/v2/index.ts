@@ -211,12 +211,13 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     role: 'Trickster',
     trait: {
       name: 'Lying in Wait',
-      text: 'Start every fight with 6 Barrier and 1 extra card in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 3 damage to a random enemy, plus 2 for every Full Trick earlier in the fight, and draw 1 card.',
+      text: 'Start every fight with 6 Barrier and 1 extra card in hand. The first time each turn you have played all four suits (♠ ♥ ♦ ♣), a Full Trick: deal 5 damage to a random enemy, plus 5 for every Full Trick earlier in the fight, and draw 1 card.',
       fightStart: [barrier(6), draw(1)],
       // Suits (DECISIONS #387): the first time in a turn all four suits are showing, a Full Trick
       // (no 4 Barrier a turn now; the Full Trick grows instead: 5, 8, 11... DECISIONS #398)
       // (3 to start, not 5, DECISIONS #404; a random enemy, #411; 2 more a Full Trick and 1 card at the start, #412: 3, 5, 7...)
-      suits: { fullTrick: [scaled(dmg(3, 'randomFoe'), per('fullTricks', 2)), draw(1)] },
+      // (5 and 5 more a Full Trick since DECISIONS #794: 5, 10, 15...)
+      suits: { fullTrick: [scaled(dmg(5, 'randomFoe'), per('fullTricks', 5)), draw(1)] },
     },
     hero: { id: 'trickster', name: 'Trickster', maxHp: 80, mana: 3, handSize: 5 },
     // (one Defend is Pick a Card, a ♦, so the starting deck holds all four suits: DECISIONS #387)
@@ -237,7 +238,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
       'A Trap is played face down and springs on its own when its trigger happens.',
       'Read the icon above each enemy and set the Trap that answers what it is about to do.',
       'Exposed enemies take 50% more damage: mark them, then spend the mark.',
-      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 3 damage to a random enemy and a card, and every Full Trick after it in a fight deals 2 more.',
+      'Suits: every card is a ♠ (Attacks), ♥ (Barrier), ♦ (cards and Mana) or ♣ (Traps and debuffs). Play all four in one turn for a Full Trick: 5 damage to a random enemy and a card, and every Full Trick after it in a fight deals 5 more.',
     ],
   },
   assassin: {
@@ -356,7 +357,7 @@ export const RIFTWALKERS: Record<HeroId, Riftwalker> = {
     howTo: [
       'You start Serene. You are in at most one stance at a time, and every stance you enter gives 1 Fervor (Inner Fire), and the first on your turn gives 1 Might; the first time each turn you leave Fury, you gain 3 Primed for your next attack.',
       'Fury doubles the damage you deal, but you take 50% more. Leaving Serene gives you 2 Mana (once a turn).',
-      'Fervor builds to 10, then you enter Radiant: double damage until your turn ends.',
+      'Fervor builds to 10, then you enter Radiant: your first hit 2.5 times the damage, double after that, until your turn ends.',
       'Burst in Fury, dance between stances, or build Fervor towards Radiant.',
     ],
   },

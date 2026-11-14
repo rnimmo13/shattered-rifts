@@ -24,7 +24,7 @@ export type StatusId =
   | 'resonance' // runes: +1 to the damage/Barrier of every rune effect per stack (permanent)
   | 'calm' // stance: leaving it grants Mana
   | 'wrath' // stance: you deal double attack damage and take 50% more
-  | 'radiant' // stance: you deal double attack damage (triple until #764); it ends with your turn
+  | 'radiant' // stance: your first attack hit deals 2.5x, the rest double (triple until #764; #792); it ends with your turn
   | 'mantra' // builds towards Radiant: at MANTRA_GOAL you enter it
   | 'edge' // +1 damage per stack to the first EDGE_LIMIT (4) attacks tagged "knife" you play each turn (permanent; #692)
   | 'bracing' // +1 Barrier from every Barrier you gain, per stack (permanent)
@@ -273,6 +273,8 @@ export const CALM_EXIT_MANA = 2;
 export const RADIANT_ENTER_MANA = 1;
 /** What Radiant multiplies attack damage by (3 until DECISIONS #764: a Sunwalker reaches it every turn from turn 3). */
 export const RADIANT_DAMAGE = 2;
+/** Radiant's first attack hit on an enemy, once a turn, rounded down (DECISIONS #792): above Fury's x2 without Fury's cost. */
+export const RADIANT_FIRST_HIT = 2.5;
 /** A hero's card that hits this many times or more carries half the Might and Primed on each hit, as an X card does (#711, #726). */
 export const MANY_HITS = 3;
 /** A Bleed or Burn tick deals the stack in full up to this much, and half of what is past it (#726). */
@@ -593,7 +595,14 @@ export type CombatDiscipline =
     }
   /** (the Reaver, #693) every perHp HP your own effects cost you gives 1 Might for the fight, up to cap; at lowPct% HP or less your
    * Attacks heal healPct% of the HP they take off */
-  | { kind: 'bloodlust'; perHp: number; cap: number; healPct: number; lowPct: number; /** Might it gives a turn at most; the rest waits for a later payment */ perTurn?: number }
+  | {
+      kind: 'bloodlust';
+      perHp: number;
+      cap: number;
+      healPct: number;
+      lowPct: number;
+      /** Might it gives a turn at most; the rest waits for a later payment */ perTurn?: number;
+    }
   /** `cap`: the most Spirit cultivation gives in a fight (progress counts it) */
   | { kind: 'cultivation'; minimum: number; spirit: number; cap?: number }
   /** (the Trapmaster) Trap damage +perSprung% for each of your Traps already sprung this fight, up to cap% */
@@ -603,7 +612,14 @@ export type CombatDiscipline =
   /** the hero's card damage (Attacks and spells, not totems) +perSpirit% for each Spirit, up to cap% */
   | { kind: 'attunement'; perSpirit: number; cap: number }
   /** `grow`: what each element's bonus gains every time it triggers (1 when left out; DECISIONS #766) */
-  | { kind: 'elements'; flame: number; frost: number; storm: number; sequence: number; grow?: number }
+  | {
+      kind: 'elements';
+      flame: number;
+      frost: number;
+      storm: number;
+      sequence: number;
+      grow?: number;
+    }
   | { kind: 'fury'; perEntry: number; cap: number; barrier: number; perExit: number }
   | { kind: 'radiance'; first: number; step: number; cap: number }
   | { kind: 'spellCycle'; perSpent: number; refundDivisor: number }
@@ -1421,6 +1437,8 @@ export interface Unit {
   intent: ChosenMove | null;
   /** moves this unit has used (drives patterns) */
   moveCount: number;
+  /** Radiant's first attack hit is still to come (x2.5 not x2, DECISIONS #792): set on entering Radiant once a turn, spent by a hit */
+  radiantEdge?: boolean;
   /** which pattern/phase it is in, and how many moves it has made in it (cycles restart on a phase change) */
   pat: string;
   patCount: number;

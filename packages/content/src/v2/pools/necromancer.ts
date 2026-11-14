@@ -106,10 +106,20 @@ export const NECROMANCER: CardDef[] = [
 
   // --- Thralls ---
   // (Afterlife)
-  g('common', 'after-the-end', 'After the End', 'skill', 1, 'none', [raise(6)], {
-    exhaust: true,
-    up: { effects: [raise(9)] },
-  }),
+  // (and Fate on a random enemy since DECISIONS #796: it was Raise Thrall with 1 more and Consume; the dead come back cursing)
+  g(
+    'common',
+    'after-the-end',
+    'After the End',
+    'skill',
+    1,
+    'none',
+    [raise(5), status('doom', 4, 'randomFoe')],
+    {
+      exhaust: true,
+      up: { effects: [raise(7), status('doom', 6, 'randomFoe')] },
+    },
+  ),
   // (Flatten)
   g('common', 'bone-crush', 'Bone Crush', 'attack', 2, 'foe', [command(dmg(12))], {
     ...CMD,

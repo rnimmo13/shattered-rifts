@@ -68,25 +68,25 @@ describe('the tier table', () => {
 describe('the current twelve-tier campaign curve', () => {
   it('reaches the requested endpoints with evenly rounded increases throughout', () => {
     const expected = [
-      [100, 95],
-      [155, 109],
-      [209, 123],
-      [264, 137],
-      [318, 151],
-      [373, 165],
-      [427, 180],
-      [482, 194],
-      [536, 208],
-      [591, 222],
-      [645, 236],
-      [700, 250],
+      [100, 93],
+      [155, 103],
+      [209, 112],
+      [264, 122],
+      [318, 132],
+      [373, 142],
+      [427, 151],
+      [482, 161],
+      [536, 171],
+      [591, 181],
+      [645, 190],
+      [700, 200],
     ];
     expected.forEach(([hp, dmg], i) => expect(enemyScale(i + 1, 1)).toEqual({ hp, dmg }));
     for (let t = 1; t < 12; t++) {
       const a = enemyScale(t, 1),
         b = enemyScale(t + 1, 1);
       expect([54, 55]).toContain(b.hp - a.hp);
-      expect([14, 15]).toContain(b.dmg - a.dmg);
+      expect([9, 10]).toContain(b.dmg - a.dmg);
     }
   });
 });

@@ -166,6 +166,7 @@ Tuned events:
 93. **pickpockets.png**: A narrow crowded alley, small cloaked figures scattering into the shadows, a coin falling through the air. Accent: dusk orange, deep shadow.
 94. **cave-in.png**: A mine tunnel collapsing, timber supports snapping, rocks falling, dust everywhere. Accent: dusty brown, one lantern.
 95. **cursed-coin.png**: A single old coin floating in the air in a dark room, whispering wisps curling off it. Accent: tarnished gold, green whispers.
+95b. **pouchmaker.png** (added 2026-11-14, DECISIONS #799; the game shows a copy of `potion-trade` until it is made): A cramped leatherworker's nook under a rocky overhang in the Rift, strips of hide hanging to dry, belts and small potion pouches pinned along a board, a hunched old woman with a bone needle stitching a pouch to a belt, a few empty glass flasks glinting. Accent: warm tan leather, one violet rift glow.
 
 Map stops (StS2 gives these their own scene too):
 

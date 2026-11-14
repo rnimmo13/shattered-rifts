@@ -1,4 +1,4 @@
-// Normal campaign scaling: 100% HP / 95% damage at Tier I, reaching 700% / 250% at XII.
+// Normal campaign scaling: 100% HP / 93% damage at Tier I, reaching 700% / 200% at XII (DECISIONS #790; 95% / 250% before).
 // Interpolate evenly and round each result to a whole percentage. Current runs use stage 1.
 // Stage offsets and rows XIII–XX remain for legacy data; those rows extrapolate the same slope.
 
@@ -17,9 +17,9 @@ export const HP_PER_TIER = (700 - HP_START) / 11;
 export const HP_PER_STAGE = 5;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
-export const DMG_START = 95;
+export const DMG_START = 93;
 /** added to enemy damage for every Rift Tier up (percentage points; 12 until DECISIONS #555) */
-export const DMG_PER_TIER = (250 - DMG_START) / 11;
+export const DMG_PER_TIER = (200 - DMG_START) / 11;
 /** added to enemy damage for each stage inside a tier (percentage points) */
 export const DMG_PER_STAGE = 1;
 

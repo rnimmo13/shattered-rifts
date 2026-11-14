@@ -1,5 +1,5 @@
-// The Gambler's Shrine (DECISIONS #234): Tier VI and up, two different blessings of seven, the Brass Reel beside them, and you
-// can walk away at any time.
+// The Gambler's Shrine (DECISIONS #234): Tier VI and up, one blessing of seven and one paid prize of the reel beside it (#798), and
+// you can walk away at any time.
 
 import { describe, expect, it } from 'vitest';
 import { COMBAT_DB, markOf, rolledId, rollOf } from '@sr/content/v2';
@@ -54,22 +54,27 @@ describe('a quiet shrine (below Tier VI)', () => {
 });
 
 describe("the Gambler's Shrine", () => {
-  it('gives one blessing, then closes (DECISIONS #538)', () => {
+  it('gives one blessing, and stays open for the reel until walked away from (DECISIONS #798)', () => {
     const r = shrineAt(GAMBLER_TIER);
     const g = r.context!.gambler!;
     expect(g.altar).toHaveLength(3);
     expect(parseRun(serializeRun(r))?.context?.gambler?.altar).toEqual(g.altar);
     const one = takeShrine(r, { kind: 'rest' });
-    expect(one.phase).toBe('map');
+    expect(one.phase).toBe('shrine');
     expect(one.hp).toBeGreaterThan(r.hp);
-    expect(() => takeShrine(one, { kind: 'upgrade', card: 'strike' })).toThrow(/shrine/);
+    expect(() => takeShrine(one, { kind: 'upgrade', card: 'strike' })).toThrow(/blessing/);
+    expect(leaveShrine(one).phase).toBe('map');
   });
 
-  it("the reel is the visit's one choice instead: once spun, no blessing (DECISIONS #538)", () => {
-    const spun = rollTrial(shrineAt(GAMBLER_TIER));
+  it('a spin is paid, the first too, and a blessing can still be taken beside it (DECISIONS #798)', () => {
+    const r = shrineAt(GAMBLER_TIER);
+    const spun = rollTrial(r);
+    expect(spun.shards).toBe(r.shards - 25);
     expect(spun.context?.event?.trial?.state).toBe('won');
-    expect(() => takeShrine(spun, { kind: 'ledger' })).toThrow(/prize/);
-    expect(leaveShrine(spun).phase).toBe('map');
+    const blessed = takeShrine(spun, { kind: 'ledger' });
+    expect(blessed.phase).toBe('shrine');
+    expect(blessed.maxHp).toBe(r.maxHp + 4);
+    expect(leaveShrine(blessed).phase).toBe('map');
   });
 
   it('can be walked away from', () => {
@@ -104,8 +109,8 @@ describe("the Gambler's Shrine", () => {
     const rolled = done.deck.filter((c) => rollOf(c) !== 0);
     expect(rolled).toHaveLength(1);
     expect(rolled[0]).toMatch(/^(hi|lo)~strike$/);
-    // (the shrine closes with it, so what the dice did is the stop's news)
-    expect(done.eventResult).toMatch(/roll comes up/);
+    // (the shrine stays open for the reel, so what the dice did is said on it, DECISIONS #798)
+    expect(done.context?.gambler?.note).toMatch(/roll comes up/);
     // a card already rolled cannot be rolled again
     const again = {
       ...done,
@@ -134,7 +139,7 @@ describe("the Gambler's Shrine", () => {
     expect(parseRun(serializeRun(once))?.ledger).toBe(1);
   });
 
-  it('the Brass Reel spins here, gives one prize, and the shrine closes with it (DECISIONS #538)', () => {
+  it('the reel gives one prize here; the shrine closes once a blessing is taken too (DECISIONS #798)', () => {
     let claimed = 0;
     for (let i = 0; i < 12; i++) {
       const r = shrineAt(GAMBLER_TIER, `reel-${i}`);
@@ -148,7 +153,10 @@ describe("the Gambler's Shrine", () => {
       // (a choice of cards or of cards to give up: covered by trials.test.ts)
       if (prize.choices || prize.deal.some((d) => d.k === 'remove')) continue;
       const after = claimTrialPrize(spun, 'p' + lane);
-      expect(after.phase).toBe('map');
+      expect(after.phase).toBe('shrine');
+      expect(after.context?.gambler?.prized).toBe(true);
+      expect(() => rollTrial(after)).toThrow();
+      expect(takeShrine(after, { kind: 'ledger' }).phase).toBe('map');
       claimed++;
     }
     expect(claimed).toBeGreaterThan(0);

@@ -9,6 +9,9 @@
   height: 100%;
   object-fit: contain;
   object-position: bottom center;
+  /* (no larger than the model it stands for, DECISIONS #793) */
+  scale: var(--model-shrink, 1);
+  transform-origin: bottom center;
 }
 /* (kept in place for the layout, unseen while the rig draws) */
 .hero-model.is-live > :not(.hero-model__rig) {

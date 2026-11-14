@@ -15,7 +15,7 @@ import {
   V2_DECK_RULES,
   type HeroId,
 } from '@sr/content/v2';
-import { MAX_POTIONS, ancestralPool, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
+import { ancestralPool, beltSize, canAdd, offerBoon, offerCards, offerPotion } from './rewards';
 import { offerShows } from './eventBoxes';
 import { applyDeal, basics, healBy, nonBasic, upgradable, type EventCtx } from './deals';
 import { DEAL_EVENTS } from './eventDeals';
@@ -319,7 +319,7 @@ export const EVENTS: EventDef[] = [
   {
     id: 'alchemist',
     weight: 1.2,
-    when: (r) => r.potions.length < MAX_POTIONS,
+    when: (r) => r.potions.length < beltSize(r),
     build: () => ({
       title: "The alchemist's bench",
       text: 'A bench of cracked glass and steaming dishes. A note: "Help yourself. Mind the green one."',
@@ -549,7 +549,7 @@ export function resolveEvent(
     case 'help': {
       if (r.hp <= 8) fail('You are too hurt for that');
       r.hp -= 8;
-      if (r.potions.length < MAX_POTIONS) {
+      if (r.potions.length < beltSize(r)) {
         const p = offerPotion(r.rng);
         r.potions.push(p);
         return `They press ${COMBAT_DB.potions[p]?.name ?? 'a potion'} into your hand.`;
@@ -671,7 +671,7 @@ export function resolveEvent(
     }
     case 'lab': {
       let n = 0;
-      while (r.potions.length < MAX_POTIONS && n < 2) {
+      while (r.potions.length < beltSize(r) && n < 2) {
         r.potions.push(offerPotion(r.rng));
         n++;
       }

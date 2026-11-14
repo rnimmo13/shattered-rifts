@@ -1,3 +1,5 @@
+> **Local rules116 (2026-11-14, #790):** Damage curve 93% at I to 200% at XII (even steps, about 10 points a tier); HP curve unchanged (100% to 700%). Elites x1.20 HP / x1.07 damage; Wardens x1.30 / x1.14. Elite card odds back to Rare 23%. Supersedes the damage and premium figures in the next note. Not released.
+
 > **Local 0.275.0 / rules114 (2026-11-13):** Normal base curve goes from 100% HP / 95% damage at I to 700% / 250% at XII, evenly interpolated and rounded. Elites multiply by 1.30 HP / 1.12 damage; Wardens by 1.35 / 1.18. Current tiers I–XI have 15 floors, XII remains the nine-stop gauntlet. Earlier figures and simulations below are historical. Not released.
 
 > **Local 0.275.0 (2026-11-13):** Tiers I–XI now generate 15 floors each, including the Warden; the preceding floor offers Shrines. Tier XII remains nine floors (five dragons, three refinement Shrines, Drago). Fresh campaign total: 174. Existing generated maps retain their saved layout; future maps use the new length. Earlier length descriptions below are historical. Not released.

@@ -70,9 +70,9 @@ const SETUP: Record<string, Partial<RunState>> = {
 };
 
 describe('events', () => {
-  it('there are ninety-three of them, each with its own id', () => {
-    expect(EVENTS.length).toBe(93);
-    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(93);
+  it('there are ninety-four (the pouchmaker, #799) of them, each with its own id', () => {
+    expect(EVENTS.length).toBe(94);
+    expect(new Set(EVENTS.map((e) => e.id)).size).toBe(94);
   });
 
   it('are varied and random, and a card is on offer only now and then', () => {

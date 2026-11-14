@@ -1,14 +1,14 @@
 {
   "name": "@sr/web",
-  "version": "0.276.0",
+  "version": "0.277.0",
   "private": true,
   "type": "module",
   "scripts": {
     "replay:smoke": "node scripts/replay-ui-smoke.mjs",
     "balance:smoke": "node scripts/balance-ui-smoke.mjs",
-    "dev": "node scripts/sync-hero-rigs.mjs && vite",
+    "dev": "node scripts/sync-hero-rigs.mjs && node scripts/model-pixels.mjs && vite",
     "lore:smoke": "node scripts/lore-smoke.mjs",
-    "build": "node scripts/sync-hero-rigs.mjs && tsc -p tsconfig.json && vite build",
+    "build": "node scripts/sync-hero-rigs.mjs && node scripts/model-pixels.mjs && tsc -p tsconfig.json && vite build",
     "rigs:sync": "node scripts/sync-hero-rigs.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json"

@@ -88,10 +88,11 @@ export const NEUTRAL: CardDef[] = [
     'steady-nerves',
     'Steady Nerves',
     'skill',
+    // (and a card since DECISIONS #796: it was Shake It Off with bigger numbers; the uncommon answer keeps the hand going too)
     1,
     'none',
-    [cleanse(2, 'self', 50), barrier(6)],
-    { up: { retain: true, effects: [cleanse(3, 'self', 50), barrier(9)] } },
+    [cleanse(2, 'self', 50), barrier(6), draw(1)],
+    { up: { retain: true, effects: [cleanse(3, 'self', 50), barrier(9), draw(1)] } },
   ),
   n('rare', 'purging-light', 'Purging Light', 'skill', 2, 'none', [dispel(), barrier(8)], {
     exhaust: true,

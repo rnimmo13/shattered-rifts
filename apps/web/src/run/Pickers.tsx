@@ -15,7 +15,11 @@ import {
   merchantRerollPrice,
   upgradable,
   upgradePrice,
+  GAMBLER_BLESSINGS,
+  MAX_BELT,
   ROLL_COST,
+  beltSize,
+  pouchPrice,
   spinCost,
   twinnable,
   type EventOption,
@@ -308,13 +312,13 @@ export function ShrineView(props: {
     [run.deck, chisel],
   );
   const heal = Math.min(run.maxHp - run.hp, restHeal(run));
-  // a spun reel is the visit's one choice (DECISIONS #538): no blessing while its prize is on the table
-  const prizeWaiting = !!g && run.context?.event?.trial?.state === 'won';
+  // one blessing a visit, and beside it one prize of the reel (DECISIONS #798): once a blessing is taken the others are closed
+  const prizeWaiting = !!g && taken.size >= GAMBLER_BLESSINGS;
   const tag = (k: ShrineKind, why: string | false) =>
     taken.has(k) ? (
       <i>Taken</i>
     ) : prizeWaiting ? (
-      <i>You spun the reel: take its prize</i>
+      <i>One blessing a visit</i>
     ) : why ? (
       <i>{why}</i>
     ) : null;
@@ -364,7 +368,7 @@ export function ShrineView(props: {
         {refinement
           ? 'One last refinement, for free: upgrade one card, remove one (a Wound too), or sanctify one. Choose one, or walk away.'
           : g
-            ? 'Deep in the Rift the shrines deal in wagers. Take one blessing, or spin the reel and take its prize, or walk away. Only one: the shrine closes after it.'
+            ? `Deep in the Rift the shrines deal in wagers. Take one blessing, and spin the reel for one prize too (${ROLL_COST} shards a spin). Walk away whenever you like.`
             : 'The rift is thin here. Take one blessing, or walk away.'}
       </p>
       {g?.note && <p className="gshrine__note">{g.note}</p>}
@@ -592,6 +596,8 @@ export function MerchantView(props: {
   /** let a hold go (no longer wanted) */
   onRelease: (index: number) => void;
   onBuyBoon: () => void;
+  /** a pouch: one more potion place for the run (DECISIONS #799) */
+  onBuyPouch: () => void;
   onBuyPotion: (index: number) => void;
   onSellPotion: (index: number) => void;
   onRemove: (card: string) => void;
@@ -605,7 +611,10 @@ export function MerchantView(props: {
   if (!m) return null;
   const shards = props.run.shards;
   const heldCount = props.run.held?.length ?? 0;
-  const beltFull = props.run.potions.length >= 3;
+  // (the belt holds 3, more with pouches, DECISIONS #799)
+  const belt = beltSize(props.run);
+  const beltFull = props.run.potions.length >= belt;
+  const pouch = pouchPrice(props.run);
   // (every card can be removed, a sanctified one too)
   const removable = new Set(removableCards(props.run.deck));
   const roomToRemove = props.run.deck.length > V2_DECK_RULES.minSize && removable.size > 0;
@@ -810,7 +819,27 @@ export function MerchantView(props: {
               })}
             </ul>
           )}
-          <p className="shop__note">Your belt holds {props.run.potions.length} of 3 potions.</p>
+          <p className="shop__note">
+            Your belt holds {props.run.potions.length} of {belt} potions.
+          </p>
+          {pouch !== null && (
+            <div className="shop__rows">
+              <ShopRow
+                icon={
+                  <b className="shop__pouch" aria-hidden>
+                    +1
+                  </b>
+                }
+                name="A potion pouch"
+                kind="Belt"
+                text={`Your belt holds one more potion for the rest of the run (${belt + 1} in all, at most ${MAX_BELT}). One a visit.`}
+                price={pouch}
+                button={shards < pouch ? 'Too expensive' : 'Buy'}
+                disabled={shards < pouch}
+                onBuy={props.onBuyPouch}
+              />
+            </div>
+          )}
         </div>
         <div className="shop__block">
           <h3 className="shop__h">Boon</h3>
@@ -1043,8 +1072,9 @@ export function EventView(props: {
     setFrom(settledTarget.current);
     props.onRoll();
   };
-  // (the first spin at a reel is free)
-  const canRoll = props.run.shards >= spinCost(trial);
+  // (the first spin at a reel is free, except at a Gambler's Shrine, DECISIONS #798)
+  const paid = !!props.run.context?.gambler;
+  const canRoll = props.run.shards >= spinCost(trial, paid);
   const reelPrizes =
     trial?.prizes.map((p) => ({
       icon: p.icon ?? 'shards',
@@ -1098,7 +1128,7 @@ export function EventView(props: {
           />
           <p className="reel__purse">
             Every prize on the reel is shown below.{' '}
-            {rolls === 0
+            {rolls === 0 && !paid
               ? `The first spin is free; after that a spin costs ${ROLL_COST} shards.`
               : `A spin costs ${ROLL_COST} shards; you have ${props.run.shards}.`}
           </p>

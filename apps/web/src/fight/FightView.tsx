@@ -3157,8 +3157,11 @@ export function FightView(props: {
             {me && showBelt && (
               <div className="fight__potions" aria-label="Potion belt">
                 <span className="fight__beltLabel">Potions</span>
-                <div className="fight__belt">
-                  {Array.from({ length: 3 }, (_, i) => {
+                {/* (3 places, more on a belt with pouches: every potion carried has its place, DECISIONS #799) */}
+                <div
+                  className={`fight__belt${(me.potions?.length ?? 0) > 3 ? ' fight__belt--pouches' : ''}`}
+                >
+                  {Array.from({ length: Math.max(3, me.potions?.length ?? 0) }, (_, i) => {
                     const id = me.potions?.[i];
                     return id ? (
                       <PotionButton

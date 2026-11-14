@@ -17,6 +17,7 @@ import {
   RunError,
   availableNodes,
   buyBoon,
+  buyPouch,
   buyCard,
   rerollMerchant,
   holdCard,
@@ -1406,6 +1407,7 @@ function Body(props: {
             onHold={(i) => act((r) => holdCard(r, i))}
             onRelease={(i) => act((r) => releaseHold(r, i))}
             onBuyBoon={() => act((r) => buyBoon(r))}
+            onBuyPouch={() => act((r) => buyPouch(r))}
             onBuyPotion={(i) => act((r) => buyPotion(r, i))}
             onSellPotion={(i) => act((r) => sellPotion(r, i))}
             onRemove={(card) => act((r) => buyRemoval(r, card))}

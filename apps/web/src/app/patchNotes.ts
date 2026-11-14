@@ -46,6 +46,84 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.277.0',
+    date: '2026-11-14',
+    title: 'Steadier campaign, distinct cards, potion pouches',
+    summary:
+      'Enemy damage climbs more gently, Radiant and the Full Trick hit harder, nineteen look-alike cards get their own jobs, the Gambler’s Shrine gives a blessing and a prize, the belt can carry more potions, and character models stay sharp.',
+    heads:
+      'Rules version 116: Arena replays and shared fights from earlier versions no longer play. Runs in progress keep their decks; a fight in progress starts again from its beginning.',
+    notes: [
+      {
+        kind: 'balance',
+        title: 'Campaign difficulty',
+        text: 'Enemy damage now rises evenly from Tier I to Tier XII, a noticeable step each tier, and Elites and Wardens are a little softer over a common fight.',
+        changes: [
+          { label: 'Enemy damage, Tier I', before: '95%', after: '93%', direction: 'buff' },
+          { label: 'Enemy damage, Tier XII', before: '250%', after: '200%', direction: 'buff' },
+          {
+            label: 'Elite HP / damage',
+            before: 'x1.25 / x1.10',
+            after: 'x1.20 / x1.07',
+            direction: 'buff',
+          },
+          {
+            label: 'Warden HP / damage',
+            before: 'x1.35 / x1.18',
+            after: 'x1.30 / x1.14',
+            direction: 'buff',
+          },
+          { label: 'Rare card from an Elite', before: '20%', after: '23%', direction: 'buff' },
+        ],
+      },
+      {
+        kind: 'balance',
+        title: 'Radiant',
+        text: 'Your first attack hit each turn in Radiant deals 2.5 times the damage; the rest still double. Radiant now outdoes Fury, with none of Fury’s cost.',
+        changes: [{ label: 'First hit', before: 'x2', after: 'x2.5', direction: 'buff' }],
+      },
+      {
+        kind: 'balance',
+        hero: 'trickster',
+        title: 'Full Trick',
+        text: 'A Full Trick deals 5 damage, and 5 more for every Full Trick before it in the fight (5, 10, 15...).',
+        changes: [
+          { label: 'Damage', before: '3, 5, 7...', after: '5, 10, 15...', direction: 'buff' },
+        ],
+      },
+      {
+        kind: 'changed',
+        card: 'fault-reader',
+        text: 'Fault Reader: the first time each turn you Shatter an enemy, gain 2 Spell Power and draw a card (3 Spell Power upgraded). It gave Barrier like Pillar of Glass before.',
+      },
+      {
+        kind: 'changed',
+        title: 'Look-alike cards made distinct',
+        text: 'Cards that only differed by a number now each do their own thing: Frenzied Gulp (Primed), Reckless Blow (Primed), Blur of Claws (three hits), Tripwire Garrote (Debilitated), Trip Line (every enemy), Hamstring (Faltering), Card Fan and Spring the Trap (every enemy), Provoke (Exposed on every enemy), Ashen Fist (Fervor), Hushed Stillness (held Serene), Pale Ward (a card), Fault Piercer (1 Mana), After the End (Fate), Aim (Primed), Window Pane (a card), Liquid Dinner (Mana and Hangover) and Steady Nerves (a card).',
+      },
+      {
+        kind: 'changed',
+        title: "Gambler's Shrine",
+        text: 'Take one blessing and one Spin To Win prize at each visit, in either order. Every spin there costs shards, the first too.',
+      },
+      {
+        kind: 'new',
+        title: 'Potion pouches',
+        text: 'Your belt can grow from 3 to 5 potions: merchants sell a pouch, and a new event, the pouchmaker, sews one on for shards or blood.',
+      },
+      {
+        kind: 'changed',
+        title: 'Campaign board',
+        text: 'Completed runs are ranked by the fastest clear, and every run shows its play time, cleared or not.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Sharp character models',
+        text: 'Models are no longer stretched: the Sanctum uses the full model, the battle draws at your screen’s own resolution, and a model is shown no larger than its own pixels. The size is the same on every graphics setting. The Arc Welder’s wasp no longer jitters.',
+      },
+    ],
+  },
+  {
     version: '0.276.0',
     date: '2026-11-13',
     title: 'Class starters, signature debuffs and Warden moves',

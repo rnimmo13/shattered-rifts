@@ -2423,3 +2423,100 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 ## 789 - Release 0.276.0 approved (2026-11-13)
 
 - Robert: "lets get everything pushed and deployed includign the art changes from chatgpt". Website/server and matching Windows updater for 0.276.0 / rules 115: #786-#788, the readable Deck count, and ChatGPT's pending work in the tree (Warden moves in wardenMotion.ts/wardenFx.ts, redrawn and repacked creature figures and sheets, Pirate Captain preview). Future changes need fresh release approval.
+
+## 790 - Gentler damage curve, smaller Elite and Warden premiums, Elite Rares back to 23% (2026-11-14)
+
+- **Question (Robert):** after a review showing the Campaign had grown much harder in two days (#763, #783): "lets change rare card chance back to what it was. lets also have enemy damage scale up to 200 instead of 250 and have them scale up evenly from the tier 1 percentage. lets have tier 1 damage start at 93% like before. i want tier one to be a slight challenge but each tier beyond to feel noticeably more difficult than the last. and lets bring down the indidual increases for elites and wardens a little bit".
+- **Decisions (not released):**
+  - **Damage curve** (`tierTable.ts`): Tier I 93% (95), Tier XII 200% (250), even steps of about 9.7 points a tier (were about 14), rounded per tier: 93, 103, 112, 122, 132, 142, 151, 161, 171, 181, 190, 200. Legacy rows XIII-XX extrapolate the same slope (Tier XX 278%). HP curve unchanged (100% to 700%, about 55 points a tier).
+  - **Premiums** (`run.ts`): Elite x1.25 / x1.10 -> **x1.20 / x1.07** HP / damage; Warden x1.35 / x1.18 -> **x1.30 / x1.14**. Common < Elite < Warden still holds, and the smallest Warden still has more HP than the largest Elite formation (test).
+  - **Elite card odds** (`CARD_ODDS.elite`, also the merchant's stock and a Warden's reward): Rare 23%, Uncommon 42%, Common 35%, as before #763.
+- **Calls made:** "a little bit" read as 5 points off each HP premium and 3-4 points off each damage premium. Tier I's rise into Tier II stays the step the curve gives (no larger jump after Tier I); with HP growing about 55% of the written numbers a tier and damage about 10%, each tier is still clearly harder than the last.
+- **Effective numbers now (HP / damage %):** Tier I common 100/93, Elite 120/100, Warden 130/106; Tier IV Elite 317/131, Warden 343/139; Tier VIII common 482/161, Warden 627/184; Tier XII common 700/200, Elite 840/214, Warden 910/228 (were 945/295 in 0.276.0, 540/148 before 0.259.0).
+- `RULES_VERSION` 115 -> 116: unfinished fight logs restart at their checkpoint. Not measured; no simulations. Fresh release approval required.
+
+## 791 - Sharper models: the Sanctum on the full set, the battle board at screen resolution, the Arc Welder's wasp steady (2026-11-14)
+
+- **Question (Robert):** "ive seen the characters look blurry or less quality defnition on the sanctum page and in battles. the homescreen they all look good quality. also it looks like arc welder has a jitter on the sanctum page and maybe others? i want to make sure all cahracter models (even enemies) stay in high definition quality and with no image stretching at all".
+- **Found:**
+  - The Sanctum's figure is a contained `HeroModel`, and a contained model always loaded the light set (`heroes-sheets-lite`, a 300 px body) made for the Store's small tiles. The Sanctum draws the body at up to about 470 CSS px: the 300 px set stretched about 1.6 times. The home screen uses the full set (400 px), at about its own size.
+  - The battle board rendered at most 2.4 million pixels (`PIXEL_BUDGET.full`), a 1080p budget: on a 1440p window, or 1080p at 150% scaling, Pixi drew below the screen's pixels and the browser stretched the whole board, every model with it.
+  - The Arc Welder's wasp has four drawn wing poses, each placed by the bottom of its whole drawing: the wasp's body jumped up to 5.9 px (of a 400 px body) at every wing change, 7.5 times a second. No other model jumps (every idle measured: the others move under 1 px a frame; every creature's idle is one frame).
+- **Decisions:**
+  - `HeroModel`: a contained box loads the light set only while the body it draws is at most 300 screen pixels (box height x fill x 0.78 x device pixel ratio); the Sanctum gets the full set. The canvas is placed on whole screen pixels.
+  - `BattlefieldScene`: full-effects budget 8.3 million pixels (4K), still capped at 2x and at the device ratio; the existing frame-rate watch still steps the resolution down on a slow GPU. Pixi `roundPixels` on, so model canvases (drawn one texel to a screen pixel) are not resampled.
+  - Arc Welder rebuilt with `pack-refresh.py arc` (both sets): each wing pose drawn so the wasp's orange body sits where the first pose's does (`body_offset`). Clips, timings, events and the resting frame unchanged.
+- **Not fixed by this (sources):** a hero's full set is a 400 px body packed from about 700 px drawings, so it is still stretched where the body is drawn larger than 400 screen pixels (in a fight about 1.3x at 1440p, 1.45x at 1080p with 150% scaling). 33 of the 157 creature models are drawn smaller than the height they stand on stage (some about 0.6 of it), so they stretch on any screen. Robert to choose whether to pack larger hero sets (memory and download cost) and whether to redraw or upscale the small creatures.
+
+## 792 - Radiant deals 2.5 times the attack damage (2026-11-14)
+
+- **Question (Robert):** "lest update radiant to do 2.5x damage so its better than fury".
+- **Decision (not released):** `RADIANT_DAMAGE` 2 -> 2.5 (`packages/combat/src/types.ts`), rounded down after the multiply (`modifiedDamage`). Fury stays x2 and still makes you take 50% more; Radiant has no such cost and ends with your turn, so it is now the stronger stance, as a payoff you build Fervor to reach should be. Tooltips, tips and the Monk's class text say 2.5 times.
+- **Why 2.5, not 3:** Radiant tripled until #764, when the Sunwalker reached it every turn from turn 3. Watch the Sunwalker in the Arena: its Radiant turns now deal 25% more than in 0.276.0. Not priced again or measured; no simulations.
+- Covered by `RULES_VERSION` 116 (#790, not yet released). Fresh release approval required.
+
+## 793 - High graphics never stretches a model: it is drawn smaller instead (2026-11-14)
+
+- **Question (Robert):** "do we really need bigger images or would it be fine to just display smaller character models on the screen so they arent blurry? i want no blurriness unless the graphics setting is set to low or medium. i dont think we need an ultra ... i dont want to risk crashing browsers"; "and yes i want prompts for characters if we need ot make updates".
+- **Decisions:**
+  - On High, a pose-sheet model stands no taller than its own pixels allow at the screen's density (`nativeHeight` in heroSheet.ts: the height at which one sheet pixel is one screen pixel). In a fight `Fighters.shownSpec` caps the figure's height (shadows, rings, hits and plates follow, as they read the shown height), and follows the density when the window or the board's resolution changes (`refit`); `Fighter.want` keeps the size the board asked for. Outside a fight `HeroModel` caps the same way, at the screen's full pixel ratio. Medium and Low keep the board's sizes and may be soft. No larger sets and no Ultra setting.
+  - `crispModels()` (duel/effects.ts) reads the quality from the page's `data-graphics` mark each frame.
+- **What it does to sizes** (estimated from each model's sheet and stage height; a 1080p screen draws about one model pixel per stage pixel whatever its scaling, 1440p about 1.33, 4K 2): heroes 86-100% of their size at 1080p (the Knight 86%), about 74% at 1440p, about half at 4K; creatures median 100% at 1080p, 75% at 1440p, 50% at 4K. 36 creatures are under 85% even at 1080p, Drago (61%) and most Wardens among them: drawn 400-500 px tall to stand 600-640, because four poses share one image.
+- **Prompts:** `docs/creature-hd-prompts.md` redraws those 36 at about 1.33 times their stage height (two poses an image, one for the seven wide creatures; 294 images; `_hd_` file names, nothing overwritten; the inked style of docs/ART_DIRECTION.md). `build_units.py` must learn to read the split sheets when they arrive. Heroes have 700 px drawings already: packing them larger is the way to make them full size above 1080p, at the memory cost Robert declined for now.
+- A figure shows its still picture at the board's size until its model loads, then takes its capped size once.
+- **Revised the same day (Robert):** "i dont think the sizes should change so drastically between the graphics settings, that is just confusing for the players". The size cap now comes from the High set's own pixels on every setting: `MODEL_PIXELS` (src/art/modelPixels.ts, written by `scripts/model-pixels.mjs` before dev and build, held to the sheets by a test) at the screen's pixel ratio (in a fight the board's scale times the ratio, at most 2, as the board draws; not its render resolution, which a slow GPU steps down). High draws a model one to one; Medium's lighter set and Low's still picture stand at the same size and are only softer. The size is known before the model loads, so nothing changes size when it comes in; the still pictures outside a fight shrink with it (`--model-shrink`). `nativeHeight` on the models is gone.
+
+## 792b - Radiant: one hit at 2.5x, then double (2026-11-14)
+
+- **Robert:** "ok lets have radiant have one hit of 2.5x damage then down to 2x". Supersedes #792's flat 2.5x.
+- **Decision (not released):** `RADIANT_DAMAGE` back to 2; new `RADIANT_FIRST_HIT` 2.5 (rounded down). Entering Radiant sets `Unit.radiantEdge`, once a turn with Radiant's Mana (re-entering the same turn gives no second one); the first attack hit on an enemy spends it (`modifiedDamage` reads it, the per-hit damage step clears it), and leaving Radiant clears it. Non-attack damage neither uses nor spends it. Previews show the next hit's multiplier. Tooltips and tips: "your first attack hit deals 2.5 times the damage, the rest double". A multi-hit card's first hit gets x2.5, the rest x2. Rules 116 (not released).
+
+## 794 - The Trickster's Full Trick: 5 damage, 5 more for each earlier one (2026-11-14)
+
+- **Robert:** "lets also increase trickster trait to scale by 5 for each full trick starting with 5 damage and counting up from there".
+- **Decision (not released):** Lying in Wait's Full Trick deals 5 to a random enemy plus 5 for every Full Trick earlier in the fight (5, 10, 15, 20...; was 3 plus 2: 3, 5, 7...), still drawing 1. Trait text, the Suits mechanic text and docs/09_ROSTER.md updated; the suit track's tip reads the numbers from the trait. Context: the starter-deck dummy run (2026-11-14) had the Trickster last at about 20 damage a turn, her trait about 1% of it. Not priced again or measured. Rules 116 (not released).
+- Also (#792b review): a hit that Shielded cancels no longer spends Radiant's x2.5 first hit.
+
+## 795 - Fault Reader feeds Spell Power; Pillar of Glass keeps the Barrier (2026-11-14)
+
+- **Robert:** "pillar of glass and fault reader are near duplicates". Both were uncommon 1-Mana Spellblade Auras answering the first Shatter each turn with Barrier (Pillar 4/6; Fault Reader draw 1 and 2/4 Barrier). Robert chose the Spell Power option.
+- **Decision (not released):** Pillar of Glass (`pillar-of-light`) unchanged, the defensive one. Fault Reader (`fault-reader`): the first time each turn you Shatter an enemy, gain 2 Spell Power and draw 1 card (upgraded 3 Spell Power and draw 1); no Barrier. A Shatter now feeds her Swords and Spells: Fracture, Shatter, Spell Power, the loop closed. Same cost and rarity; saved decks keep the card by id. Spell Power held past 20 already diminishes (#781). Priced by eye against the old card (2 Barrier for 2 Spell Power at the same draw), not measured. Card list regenerated. Rules 116 (not released).
+
+## 796 - Near-duplicate cards made distinct (2026-11-14)
+
+- **Robert:** after a scan for near duplicates (cards whose effects differed only in a number): "can you please do a pass on these to make them feel different ... id like higher rarity cards to have something better about them which can be status effects, mana cost, numbers on the card".
+- **Decisions (not released), one card of each pair changed; ids, costs and rarities kept unless said:**
+  - Hunter: **Frenzied Gulp** (unc) draw 2, lose 2, 4 Primed, Consume (upgraded lose 1, 6 Primed); was Feral Instinct to the letter. **Reckless Blow** (unc) lose 3, 8 x2, 1 Might (upgraded 10 x2). **Blur of Claws** (unc) 2 (+1 per card played) damage 3 times (upgraded 3); was Wild Swings +2.
+  - Trickster: **Tripwire Garrote** (unc Trap) adds 1 Debilitated. **Trip Line** (common Trap, also from Trap Kit) 5 to ALL enemies; was Pinprick Trap +2. **Hamstring** (unc) 7, 1 Exposed, 2 Faltering. **Card Fan** (unc) 2 (+3 per suit) to ALL enemies; Royal Flourish stays the single-target rare. **Spring the Trap** (rare) 6 (+5 per Trap) to ALL enemies (upgraded 8 + 6); Trapline Rider stays single-target.
+  - Knight: **Provoke** (unc) 6 Barrier, 2 Exposed, draw 1, no Plating (upgraded 9 Barrier). Thorns were tried and dropped: it made Provoke a twin of Iron Spines.
+  - Monk: **Ashen Fist** (common) 9 to ALL enemies and enter Fury (upgraded 12). **Hushed Stillness** (common) 0 Mana: enter Serene, 3 Barrier, Hold, no longer Consume or draw (upgraded 5 Barrier).
+  - Spellblade: **Pale Ward** (common) Spell, 6 Barrier and 3 Fracture to ALL enemies, no Spell Power (upgraded 8 and 4). **Fault Piercer** (unc) 1 Mana, 4 (+1 per 3 Spell Power) x2, 8 Fracture (upgraded 6 x2); was Obsidian Flurry with more Fracture.
+  - Necromancer: **After the End** (common) Raise Dead 5 and 4 Fate on a random enemy, Consume (upgraded 7 and 6).
+  - Drunkard: **Rack the Slide** Precision 3 and draw 1 (upgraded Precision 4); **Aim** Precision 1 and 4 Primed, Hold (upgraded 6 Primed); Powder Load unchanged. **Window Pane** (unc) 5 (+1 per 8% missing) Barrier and draw 1 (upgraded 8). **Liquid Dinner** (unc) heal as before, 1 Mana and 2 Hangover instead of a card.
+  - Shared: **Steady Nerves** (unc) adds draw 1.
+- **Left alone:** the close-but-distinct pairs from the scan (four Trickster Exposed skills, the Rogue's Barrier-and-Defer trio, several Drunkard and Monk Auras); the starter cards themselves, pending the question of retiring basic cards.
+- Priced by eye against the card each replaced, not with the costing guide; no simulations. Saved decks keep the cards by id; their effects change. Card list regenerated. Rules 116 (not released).
+- **Revised after review, same day:** Rack the Slide back to Precision 4 (Precision 3 and a card made it Reload exactly). Hushed Stillness keeps Consume (a free, held Serene that came back every shuffle made Mana every shuffle through Inner Fire). Fault Piercer 3 (+1 per 3 Spell Power) x2 and 6 Fracture at 1 Mana (upgraded 4 x2 and 8; 4 x2 and 8 was about 180% of an uncommon and made a Fault Lines Shatter cheap). Reckless Blow 3 Primed, not Might (Might made it Run Wild for 1 less Mana). Pale Ward 5 Barrier, 1 Spell Power and a card (Fracture on ALL made it a better Glass Prison). Ashen Fist single-target 12, Fury and 2 Fervor (upgraded 15; to ALL made it Burning Breath at 2 Mana). Provoke 4 Barrier and 2 Exposed to ALL enemies (upgraded 7; a card made it Oath of Iron, Thorns Iron Spines). Hamstring 6, 1 Exposed, 1 Faltering (upgraded 8, 1, 2; it was about 143% of an uncommon).
+
+## 797 - The campaign board ranks a completed run by its clear time, and shows every run's play time (2026-11-14)
+
+- **Robert:** "leaderboard campaign ranking should be sorted by time cleared"; "also even uncleared campaign leaderboard should show time playyed".
+- **Decision (not released):** `compareCampaignRuns` (packages/pvp/src/board.ts): Tier, then status as before; between completed runs the fastest clear first, a completed run without a valid time after the timed ones; then shards and arrival as before. Every run's play time is on the board (`playTime`), not only a completed one's, held to the same pace limit for how far it got (one stage a minute). The Time column shows it for every row ("Play time so far on this run" for one still going). Live runs already reported their clock to the server.
+
+## 798 - The Gambler's Shrine: one blessing and one reel prize, every spin paid (2026-11-14)
+
+- **Robert:** "the gambler shrine should allow a spin to win plus one option from the other set of options (it always costs shards though)". Supersedes #538's one-or-the-other.
+- **Decision (not released):** a visit gives one blessing (of the seven) and one prize of the Spin To Win reel, in either order. Every spin there costs ROLL_COST (25), the first too (`spinCost(trial, paid)`; the elite events' first spin is still free). Taking the prize puts the reel away (`GamblerShrine.prized`); the shrine closes once both are taken, or when the player walks away (a blessing taken while the reel is still there leaves it open). A second blessing is refused. The shrine's words, the Learn page and the odds page say so. Saved shrines carry on under the new rule.
+
+## 799 - More potion places: pouches from merchants and the pouchmaker (2026-11-14)
+
+- **Robert:** "i want some kind of events or ways for players to get additional potion slots".
+- **Decision (not released):** the belt holds 3 (`MAX_POTIONS`), one more for every pouch gained (`RunState.beltSlots`), at most 5 (`MAX_BELT`; `beltSize(run)` everywhere the cap was 3, the save check included). Two ways to a pouch:
+  - **The merchant** sells one a visit while the belt can grow (`pouchPrice`/`buyPouch`): 80 shards before the shop's tier pricing, 120 for the second.
+  - **The pouchmaker** (a new event, offered only while the belt can grow): a pouch for 60 shards, or for 10 HP; or a potion for 30 shards. A new deal step `belt` does it. Its scene is a copy of `potion-trade` until `pouchmaker.png` is painted (prompt 95b in docs/scene-prompts.md).
+- Campaign only; the Arena and the practice builder keep 3. Saved runs without pouches load as before. The potion tooltip says so.
+- **Why these prices:** a lasting place for a potion is worth more than one potion (30-80 shards) and about a removal or a Boon (50-70 at Tier I); the HP price matches the other blood options. Not measured.
+
+## 800 - Release 0.277.0 approved (2026-11-14)
+
+- Robert: "ok lets get this stuff shipped. chatgpt has been working on image updates so you can get those if you want if they are ready". Website/server and matching Windows updater for 0.277.0 / rules 116: #790-#799 (campaign damage curve and premiums, Elite Rare odds, Radiant's first hit, the Full Trick, Fault Reader, the near-duplicate card pass, sharp models at one size on every setting, the Arc Welder's wasp, the campaign board's clear time and play time, the Gambler's Shrine's blessing and prize, potion pouches). ChatGPT's HD creature redraws (`_hd_` sheets in assets-src/units-pose-sheets) were only partly made and need the split-sheet build first: not in this release. Future changes need fresh release approval.

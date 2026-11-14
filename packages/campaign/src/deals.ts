@@ -16,7 +16,8 @@ import {
   type CardMark,
 } from '@sr/content/v2';
 import {
-  MAX_POTIONS,
+  MAX_BELT,
+  beltSize,
   canAdd,
   cardOfRarity,
   crossedOffers,
@@ -99,12 +100,19 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       return;
     case 'potion': {
       let n = 0;
-      while (r.potions.length < MAX_POTIONS && n < s.n) {
+      while (r.potions.length < beltSize(r) && n < s.n) {
         r.potions.push(offerPotion(r.rng));
         n++;
       }
       if (!n) fail('Your belt is full');
       out.push(`You take ${plural(n, 'potion')}.`);
+      return;
+    }
+    case 'belt': {
+      // (one more place on the potion belt, DECISIONS #799)
+      if (beltSize(r) >= MAX_BELT) fail('Your belt has no room for another pouch');
+      r.beltSlots = (r.beltSlots ?? 0) + 1;
+      out.push(`A new pouch: your belt holds ${beltSize(r)} potions now.`);
       return;
     }
     case 'boon':
@@ -267,7 +275,7 @@ function step(r: RunState, s: DealStep, ev: EventCtx, h: DealHelpers, out: strin
       out.push(`You gain ${COMBAT_DB.boons[s.id]?.name ?? 'a Boon'}.`);
       return;
     case 'potionOf':
-      if (r.potions.length >= MAX_POTIONS) fail('Your belt is full');
+      if (r.potions.length >= beltSize(r)) fail('Your belt is full');
       r.potions.push(s.id);
       out.push(`You take ${COMBAT_DB.potions[s.id]?.name ?? 'a potion'}.`);
       return;

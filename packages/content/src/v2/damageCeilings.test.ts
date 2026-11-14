@@ -141,7 +141,9 @@ describe('ceilings on counting cards', () => {
     });
 
   it('they say their limits', () => {
-    expect(cardText(db, db.cards['coup-de-grace']!)).toContain('half as much past +20, at most +40');
+    expect(cardText(db, db.cards['coup-de-grace']!)).toContain(
+      'half as much past +20, at most +40',
+    );
     expect(cardText(db, db.cards['culling']!)).toContain('half as much past +15, at most +30');
     expect(cardText(db, db.cards['last-rites+']!)).toContain('half as much past +15, at most +30');
     expect(cardText(db, db.cards['final-reckoning']!)).toContain(
@@ -232,7 +234,9 @@ describe('the buffs and the hybrid Fracture (#727)', () => {
   it('Showstopper 26 (34 upgraded), Card Fan +4 a suit, Metronome Trap 5 (7 upgraded), Gleeful Trapsmith +1 per 2 Traps sprung', () => {
     expect(cardText(db, db.cards['showstopper']!)).toContain('Deal 26 damage');
     expect(cardText(db, db.cards['showstopper+']!)).toContain('Deal 34 damage');
-    expect(cardText(db, db.cards['card-fan']!)).toContain('+4 per suit');
+    // (to ALL enemies, 2 + 3 a suit, since DECISIONS #796)
+    expect(cardText(db, db.cards['card-fan']!)).toContain('+3 per suit');
+    expect(cardText(db, db.cards['card-fan']!)).toContain('ALL enemies');
     expect(cardText(db, db.cards['metronome-trap']!)).toContain('Deal 5 damage to ALL enemies');
     expect(cardText(db, db.cards['metronome-trap+']!)).toContain('Deal 7 damage to ALL enemies');
     expect(cardText(db, db.cards['gleeful-trapsmith']!)).toContain('+1 per 2 Trap');
@@ -277,21 +281,27 @@ describe('the buffs and the hybrid Fracture (#727)', () => {
       const s = fight('spellblade');
       expect(foe(play(s, card)).statuses.fracture).toBe(cracks);
     });
-  it('Fault Piercer applies 8, cracked before or not; Rift Sweep and Arcane Pulse crack ALL enemies', () => {
-    expect(foe(play(fight('spellblade'), 'fault-piercer')).statuses.fracture).toBe(8);
+  it('Fault Piercer applies 6 (8 upgraded, #796), cracked before or not; Rift Sweep and Arcane Pulse crack ALL enemies', () => {
+    expect(foe(play(fight('spellblade'), 'fault-piercer')).statuses.fracture).toBe(6);
     const s = fight('spellblade');
     foe(s).statuses.fracture = 1;
-    expect(foe(play(s, 'fault-piercer')).statuses.fracture).toBe(9);
+    expect(foe(play(s, 'fault-piercer')).statuses.fracture).toBe(7);
     expect(cardText(db, db.cards['rift-sweep']!)).toContain('Apply 3 Fracture to ALL enemies');
     expect(cardText(db, db.cards['astral-pulse']!)).toContain('Apply 2 Fracture to ALL enemies');
   });
   it('Showstopper deals 26 and Metronome Trap is 5 to ALL; a Sword whose hits kill applies its Fracture to nobody', () => {
     expect(dealt(fight('trickster'), 'showstopper')).toBe(26);
-    expect(db.cards['metronome-trap']!.effects[0]).toMatchObject({ op: 'damage', amount: 5, to: 'allFoes' });
+    expect(db.cards['metronome-trap']!.effects[0]).toMatchObject({
+      op: 'damage',
+      amount: 5,
+      to: 'allFoes',
+    });
     const s = fight('spellblade');
     foe(s).hp = 1;
     const after = play(s, 'storm-of-glass');
-    expect(after.sides.b.units.every((u) => (u.statuses.fracture ?? 0) === 0 || u.hp <= 0)).toBe(true);
+    expect(after.sides.b.units.every((u) => (u.statuses.fracture ?? 0) === 0 || u.hp <= 0)).toBe(
+      true,
+    );
   });
 });
 

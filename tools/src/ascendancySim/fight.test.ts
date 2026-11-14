@@ -29,7 +29,7 @@ it('uses Arena HP (1200, #767; 1000 before) and distinguishes censored results f
 });
 it('uses the actual Tier XX Normal Valerion plan and campaign Boon HP', () => {
   const r = fight({ id: 1, mode: 'boss', a: deck, seed: 'harness-boss', budget: 30 });
-  expect(r.maxHp).toEqual({ a: 88, b: 4602 }); // 300 base HP × current 1136% Tier XX × a Warden’s 1.35, rounded to 1534% (rules 114).
+  expect(r.maxHp).toEqual({ a: 88, b: 4431 }); // 300 base HP × current 1136% Tier XX × a Warden’s 1.30, rounded to 1477% (rules 116).
   expect(r.tier).toBe(20);
   expect(r.bossFraction).toBeGreaterThanOrEqual(0);
   expect(r.bossFraction).toBeLessThanOrEqual(1);
@@ -60,6 +60,6 @@ it('loads historical boss definitions with the current Campaign scaling', () => 
       ),
     ),
   });
-  expect(r.maxHp).toEqual({ a: 88, b: 5522 }); // Archived 360 base HP × current 1136% × a Warden’s 1.35, rounded to 1534% (rules 114).
+  expect(r.maxHp).toEqual({ a: 88, b: 5317 }); // Archived 360 base HP × current 1136% × a Warden’s 1.30, rounded to 1477% (rules 116).
   expect(COMBAT_DB.units.vorthax!.maxHp).toBe(300);
 });

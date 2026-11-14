@@ -7,6 +7,7 @@ import { Container, Sprite, Texture } from 'pixi.js';
 import { gsap } from 'gsap';
 import { color, ease, hex } from '../design/tokens';
 import type { EffectsProfile } from '../duel/effects';
+import { MODEL_PIXELS } from '../art/modelPixels';
 import type { CardDef, Stance } from '@sr/combat';
 import type { AttackSpec, CardMotion } from './attackStyles';
 import {
@@ -114,7 +115,10 @@ export interface FighterSpec {
 }
 
 interface Fighter {
+  /** as shown: the board's spec, its height capped so a model is never stretched past its own pixels on High (`shownSpec`) */
   spec: FighterSpec;
+  /** the height the board asked for, before that cap */
+  want: number;
   root: Container;
   /** carries the body up to the figure's hover height and bobs it; the shadow stays on the floor */
   air: Container;
@@ -151,6 +155,10 @@ export interface FighterHost {
   wake?: (ms: number) => void;
   /** canvas pixels per stage pixel (the board's scale times its resolution): a rig draws at this density, at most 2 per CSS px */
   pixelScale?: () => number;
+  /** a figure's shown height changed outside a sync (the screen's density moved, #793) */
+  figureResized?: () => void;
+  /** screen pixels per stage px at the board's best: its scale times the screen's pixel ratio, at most 2 (sizes figures, #793) */
+  screenScale?: () => number;
 }
 
 /**
@@ -275,7 +283,8 @@ export class Fighters {
     const keep = new Set(list.map((s) => s.id));
     for (const f of [...this.all.values()])
       if (!keep.has(f.spec.id) && !f.dying) this.remove(f.spec.id);
-    for (const spec of list) {
+    for (const asked of list) {
+      let spec = asked;
       const x =
         spec.x ?? slotX(spec.side, spec.slot, spec.isHero, spec.count, (spec.hover ?? 0) > 0);
       let f = this.all.get(spec.id);
@@ -289,6 +298,8 @@ export class Fighters {
       } else if (!f.dying) {
         // (a Thrall grown big enough changes figure, DECISIONS #445)
         const restyled = f.spec.canvas !== spec.canvas;
+        f.want = spec.height;
+        spec = this.shownSpec(spec);
         const resized =
           restyled ||
           Math.abs(f.spec.height - spec.height) > 0.5 ||
@@ -323,7 +334,9 @@ export class Fighters {
     }
   }
 
-  private add(spec: FighterSpec, x: number, animate: boolean): void {
+  private add(asked: FighterSpec, x: number, animate: boolean): void {
+    // (at its shown size from the start, the still picture too: the model coming in does not change it, #793)
+    const spec = this.shownSpec(asked);
     const k = spec.height / spec.canvas.height;
     const tex = Texture.from(spec.canvas);
     const root = new Container();
@@ -393,6 +406,7 @@ export class Fighters {
     this.h.container.sortableChildren = true;
     const f: Fighter = {
       spec,
+      want: asked.height,
       root,
       air,
       body,
@@ -437,6 +451,39 @@ export class Fighters {
       this.track(gsap.fromTo(body, { y: -40 }, { y: 0, duration: 0.45, ease: ease.pop.gsap }));
       this.h.sound('summon');
     }
+  }
+
+  /**
+   * The spec as shown: a pose-sheet figure stands no taller than its High set's own pixels allow at the screen's density, so on High it
+   * is drawn one to one rather than stretched soft (Robert, DECISIONS #793). The size is the same on every graphics setting (Medium's
+   * lighter set and Low's still picture are only softer), known before the model loads, and does not follow the board's render
+   * resolution (a slow GPU stepping it down changes sharpness, not size).
+   */
+  private shownSpec(spec: FighterSpec): FighterSpec {
+    const px = spec.rig ? MODEL_PIXELS[spec.rig.id] : undefined;
+    if (!px) return spec;
+    const cap = px / this.screenDensity();
+    return spec.height > cap ? { ...spec, height: cap } : spec;
+  }
+
+  /** screen pixels per stage px at the board's best (its scale times the screen's ratio, at most 2 as the board draws) */
+  private screenDensity(): number {
+    return Math.max(0.25, this.h.screenScale?.() ?? this.rigDensity());
+  }
+
+  /** the density each figure was last fitted for, so `refit` does nothing on an unchanged frame */
+  private readonly fitFor = new WeakMap<Fighter, string>();
+
+  /** The cap follows the screen's density (a resized window): resize when the shown height moves. */
+  private refit(f: Fighter): void {
+    const key = `${this.screenDensity()}|${f.want}`;
+    if (this.fitFor.get(f) === key) return;
+    this.fitFor.set(f, key);
+    const shown = this.shownSpec({ ...f.spec, height: f.want });
+    if (Math.abs(shown.height - f.spec.height) <= 0.5) return;
+    f.spec = shown;
+    this.resize(f);
+    this.h.figureResized?.();
   }
 
   /** The side's line was measured again (a figure joined or left and the rest were shrunk or let grow): resize to match. */
@@ -1724,6 +1771,7 @@ export class Fighters {
     const moving = !still || (rig.clip !== 'idle' && !rig.finished) || !!rig.fading;
     if (moving) rig.update(dt * gsap.globalTimeline.timeScale());
     // (after the update: a clip that just began or ended gets its own frame before it is drawn; a new canvas is drawn by fitRig)
+    if (!f.dying) this.refit(f);
     this.fitRig(f, rig);
     if (moving) rig.render();
   }

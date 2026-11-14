@@ -278,10 +278,11 @@ export function LearnOdds() {
 
       <h3>Elite Event: Spin To Win</h3>
       <p>
-        A reel of {REEL_PRIZES} prizes, all in plain sight. The first spin is free, and each spin
-        after it costs {ROLL_COST} shards: the reel scrolls past a pointer and slows to a stop on
-        one prize. You may take it, which ends the spinning, or pay {ROLL_COST} more shards to let
-        it go and spin again, or walk away (the shards you spent are gone).
+        A reel of {REEL_PRIZES} prizes, all in plain sight. The first spin is free (at a
+        Gambler&apos;s Shrine it costs {ROLL_COST} too), and each spin after it costs {ROLL_COST}{' '}
+        shards: the reel scrolls past a pointer and slows to a stop on one prize. You may take it,
+        which ends the spinning, or pay {ROLL_COST} more shards to let it go and spin again, or walk
+        away (the shards you spent are gone).
       </p>
       <p>
         <b>Fair by design.</b> What the reel stops on is drawn by the rules before the reel moves,

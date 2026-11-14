@@ -134,7 +134,7 @@ it('records and repairs completed runs without letting late death reports overwr
   expect((await ask({ ended: 'completed', stage: 0 })).status).toBe(400);
 });
 
-it('keeps the play time a run took to beat the campaign and shows it only once completed', async () => {
+it('keeps the play time a run took to beat the campaign, and shows a live run its time so far (#797)', async () => {
   const db = (database = new DatabaseSync(':memory:'));
   const kv = new Map<string, unknown>();
   const board = new Leaderboard(
@@ -179,10 +179,11 @@ it('keeps the play time a run took to beat the campaign and shows it only once c
         )
       ).json<{ board: { playMs?: number }[] }>()
     ).board[0]!.playMs;
-  const stored = () => (db.prepare('SELECT play_ms FROM runs').get() as { play_ms: number }).play_ms;
+  const stored = () =>
+    (db.prepare('SELECT play_ms FROM runs').get() as { play_ms: number }).play_ms;
   await ask({ playMs: 3_000_000 });
-  // (a live run's clock is kept but not shown; it never runs backwards, and nonsense is ignored)
-  expect(await shown()).toBeUndefined();
+  // (a live run's clock is kept and shown since #797; it never runs backwards, and nonsense is ignored)
+  expect(await shown()).toBe(3_000_000);
   await ask({ playMs: 1_000 });
   await ask({ playMs: -5 });
   await ask({ playMs: 'soon' });

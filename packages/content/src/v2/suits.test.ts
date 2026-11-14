@@ -56,7 +56,7 @@ describe('Suits', () => {
     expect(suit('wild-card')).toBe('wild');
   });
 
-  it('shows each suit once, and the fourth makes a Full Trick: 3 to an enemy and a card', () => {
+  it('shows each suit once, and the fourth makes a Full Trick: 5 to an enemy and a card', () => {
     const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey', 'strike']);
     const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
     expect(three.sides.a.suitsTurn).toEqual(['spades', 'hearts', 'clubs']);
@@ -69,7 +69,7 @@ describe('Suits', () => {
     expect(foe(r.state).hp).toBe(hp);
     const pending = r.state.pending!;
     const done = applyAction(db, r.state, { type: 'pick', cards: [pending.pool[0]!] }).state;
-    expect(foe(done).hp).toBe(hp - 3);
+    expect(foe(done).hp).toBe(hp - 5);
     // (Pick a Card left the hand, Foresee drew one, the Full Trick drew one)
     expect(done.sides.a.hand.length).toBe(hand + 1);
     expect(done.sides.a.fullTrickTurn).toBe(true);
@@ -149,12 +149,12 @@ describe('Suits', () => {
   });
 
   it('per-suit payoffs count the card being played; Showstopper costs 1 less a suit', () => {
-    // Card Fan: 4 + 4 per suit (#727; was 3); after ♥ and ♣ it is the third suit: 16
+    // Card Fan: 2 + 3 per suit to ALL enemies (#796; 4 + 4 to one since #727); after ♥ and ♣ it is the third suit: 11
     const s = playAll(fight(['defend', 'mark-prey', 'card-fan']), ['defend', 'mark-prey']).state;
     const before = foe(s).hp;
     const exposed = foe(s).statuses.exposed ?? 0;
     const after = foe(play(s, 'card-fan').state).hp;
-    expect(before - after).toBe(Math.floor(16 * (exposed > 0 ? 1.5 : 1)));
+    expect(before - after).toBe(Math.floor(11 * (exposed > 0 ? 1.5 : 1)));
     const show = playAll(fight(['defend', 'mark-prey', 'showstopper']), ['defend', 'mark-prey']);
     const stopper = show.state.sides.a.hand.find((c) => c.card === 'showstopper')!;
     const mana = show.state.sides.a.mana;
@@ -168,14 +168,14 @@ describe('Suits', () => {
 });
 
 describe('the Full Trick grows (DECISIONS #398, #412)', () => {
-  it('deals 2 more for every Full Trick before it this fight, and counts itself', () => {
+  it('deals 5 more for every Full Trick before it this fight, and counts itself', () => {
     const s0 = fight(['strike', 'defend', 'pick-a-card', 'mark-prey']);
     s0.sides.a.fullTricks = 2;
     const three = playAll(s0, ['strike', 'defend', 'mark-prey']).state;
     const hp = foe(three).hp;
     const r = play(three, 'pick-a-card').state;
     const done = applyAction(db, r, { type: 'pick', cards: [r.pending!.pool[0]!] }).state;
-    expect(hp - foe(done).hp).toBe(3 + 2 * 2);
+    expect(hp - foe(done).hp).toBe(5 + 5 * 2);
     expect(done.sides.a.fullTricks).toBe(3);
   });
 
@@ -203,7 +203,7 @@ describe('the Full Trick grows (DECISIONS #398, #412)', () => {
       : r.state;
     expect(s.sides.a.fullTrickTurn).toBe(true);
     const lost = s.sides.b.units.map((u, i) => before[i]! - u.hp);
-    expect(lost.filter((n) => n > 0)).toEqual([3]);
+    expect(lost.filter((n) => n > 0)).toEqual([5]);
   });
 
   it('Lying in Wait gives no Barrier a turn now', () => {

@@ -156,8 +156,8 @@ export function crossedOffers(
 export const CARD_ODDS: Record<OfferQuality, Record<string, number>> = {
   // (no Legendary cards for now, DECISIONS #363: their 1% and 3% went to Rare; put them back when Legendary does)
   duel: { common: 55, uncommon: 35, rare: 10, legendary: 0 },
-  // (Rare 20 and Uncommon 45 since DECISIONS #763, 23 and 42 before: most late fights are Elites, so a finished deck came too easily)
-  elite: { common: 35, uncommon: 45, rare: 20, legendary: 0 },
+  // (Rare 23 and Uncommon 42, as before DECISIONS #763: Robert put them back in #790)
+  elite: { common: 35, uncommon: 42, rare: 23, legendary: 0 },
 };
 
 function rollRarity(rng: RngState, quality: OfferQuality): string {
@@ -293,7 +293,18 @@ export function offerPotion(rng: RngState, rarity?: keyof typeof POTION_WEIGHTS)
 }
 
 export const POTION_PRICE: Record<string, number> = { common: 30, uncommon: 50, rare: 80 };
+/** the potion belt every run starts with */
 export const MAX_POTIONS = 3;
+/** the most a belt can hold with every extra pouch (DECISIONS #799) */
+export const MAX_BELT = 5;
+/** A merchant's price for the next pouch (before the shop's own tier pricing): 80, then 120. */
+export function beltSlotPrice(run: { beltSlots?: number | undefined }): number {
+  return 80 + 40 * (run.beltSlots ?? 0);
+}
+/** How many potions this run's belt holds: 3, and one more for every pouch it has gained (merchants, the pouchmaker), at most 5. */
+export function beltSize(run: { beltSlots?: number | undefined }): number {
+  return Math.min(MAX_BELT, MAX_POTIONS + Math.max(0, run.beltSlots ?? 0));
+}
 /** The deepest Rift Tier for now: clearing this one ends the climb (Bank is the only choice left). */
 export const MAX_TIER = 12;
 

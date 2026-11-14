@@ -140,10 +140,12 @@ export const SPELLBLADE: CardDef[] = [
     ...GROWN,
     up: { effects: [gain(1), starsNext(4)] },
   }),
-  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [ward(8), gain(1)], {
+  // (and a card since DECISIONS #796: it was Obsidian Ward with 1 more Barrier. Fracture on ALL enemies was tried and dropped: it made
+  // it a better Glass Prison)
+  a('common', 'pale-beacon', 'Pale Ward', 'skill', 1, 'none', [ward(5), gain(1), draw(1)], {
     tags: [SPELL, GENERATOR],
     ...GROWN,
-    up: { effects: [ward(11), gain(1)] },
+    up: { effects: [ward(8), gain(1), draw(1)] },
   }),
   a(
     'common',
@@ -358,17 +360,18 @@ export const SPELLBLADE: CardDef[] = [
     'fault-piercer',
     'Fault Piercer',
     'attack',
-    2,
+    // (1 Mana and 2 hits since DECISIONS #796: it was Obsidian Flurry with more Fracture; the cheap Sword that cracks deep)
+    1,
     'foe',
     [
-      volley(4, 3, 3),
-      // (8 flat since #727: 2 a hit like the other Swords, and the 2 it gave a cracked target, which its own 6 would always meet)
-      fracture(8),
+      // (3 x2 and 6 since #796's review: 4 x2 and 8 at 1 Mana was about 180% of an uncommon, and made a Fault Lines Shatter cheap)
+      volley(3, 2, 3),
+      fracture(6),
     ],
     {
       tags: [SWORD],
       up: {
-        effects: [volley(6, 3, 3), fracture(8)],
+        effects: [volley(4, 2, 3), fracture(8)],
       },
     },
   ),
@@ -834,6 +837,7 @@ export const SPELLBLADE: CardDef[] = [
     [on('shatter', [ward(4)], { once: true })],
     { up: { effects: [on('shatter', [ward(6)], { once: true })] } },
   ),
+  // (Spell Power, not Barrier, since DECISIONS #795: it was Pillar of Glass with a card; a Shatter now feeds her Swords and Spells)
   a(
     'uncommon',
     'fault-reader',
@@ -841,8 +845,8 @@ export const SPELLBLADE: CardDef[] = [
     'power',
     1,
     'none',
-    [on('shatter', [draw(1), ward(2)], { once: true })],
-    { up: { effects: [on('shatter', [draw(1), ward(4)], { once: true })] } },
+    [on('shatter', [stars(2), draw(1)], { once: true })],
+    { up: { effects: [on('shatter', [stars(3), draw(1)], { once: true })] } },
   ),
   // (Fracture that builds from her other cards: every Sword and Spell cracks, DECISIONS #564)
   a(

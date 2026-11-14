@@ -50,7 +50,20 @@ export const MONK: CardDef[] = [
       text: 'Deal 10 damage, or 16 if you are in Fury.',
     },
   }),
-  s('common', 'ashen-fist', 'Ashen Fist', 'attack', 2, 'foe', [dmg(14), stance('wrath')]),
+  // (and 2 Fervor since DECISIONS #796: it was Kindle Fury with 3 more damage; the Fury that also builds to Radiant. To ALL enemies was
+  // tried and dropped: it made it Burning Breath at 2 Mana)
+  s(
+    'common',
+    'ashen-fist',
+    'Ashen Fist',
+    'attack',
+    2,
+    'foe',
+    [dmg(12), stance('wrath'), status('mantra', 2)],
+    {
+      up: { effects: [dmg(15), stance('wrath'), status('mantra', 2)] },
+    },
+  ),
   s('uncommon', 'temper-flare', 'Temper Flare', 'attack', 1, 'foe', [
     dmg(2, 'target', 3),
     stance('wrath'),
@@ -206,9 +219,14 @@ export const MONK: CardDef[] = [
     'skill',
     0,
     'none',
-    [stance('calm'), draw(1)],
+    // (held, with Barrier, not drawn and consumed, since DECISIONS #796: it was Centre Yourself for 0 with Consume; now a Serene kept
+    // for the turn it is wanted)
+    [stance('calm'), barrier(3)],
     {
+      // (still Consume: leaving Serene pays Mana, so a free Serene that came back every shuffle made Mana every shuffle)
       exhaust: true,
+      retain: true,
+      up: { effects: [stance('calm'), barrier(5)] },
     },
   ),
   s(

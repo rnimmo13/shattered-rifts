@@ -118,7 +118,8 @@ describe('every card plays', () => {
       const hero = heroOf(c);
       const s0 = setup(c, hero);
       // (a sweep of the draw pile needs a Status card in it to move)
-      if (c.effects.some((o) => o.op === 'sweep')) s0.sides.a.draw.unshift({ id: 'SW0', card: 'wound' });
+      if (c.effects.some((o) => o.op === 'sweep'))
+        s0.sides.a.draw.unshift({ id: 'SW0', card: 'wound' });
       let s = s0;
       // a Trap needs room; a card that only works with a rune or Seared on board still resolves without error
       const { s: after, events } = playOut(s, 'T0');
@@ -138,7 +139,8 @@ describe('every card plays', () => {
         after.sides.a.runeSlots !== s0.sides.a.runeSlots ||
         after.sides.a.nextMana !== s0.sides.a.nextMana ||
         after.sides.a.nextDraw !== s0.sides.a.nextDraw ||
-        (c.effects.some((o) => o.op === 'sweep') && after.sides.a.discard.some((x) => x.id === 'SW0')) ||
+        (c.effects.some((o) => o.op === 'sweep') &&
+          after.sides.a.discard.some((x) => x.id === 'SW0')) ||
         Object.keys(after.sides.a.totemBoost ?? {}).length > 0 ||
         // (damage that is only a count, with nothing counted, lands no hit: DECISIONS #507)
         c.effects.some((o) => o.op === 'damage' && o.amount === 0 && o.scale !== undefined);
@@ -169,15 +171,30 @@ describe('every card plays', () => {
 describe('a status that is on or off has no number on a card (DECISIONS #492)', () => {
   it('says "Gain Fanned", not "Gain 1 Fanned"', () => {
     const all = Object.values(db.cards).map((c) => cardText(db, c));
-    for (const name of ['Fanned', 'Poised', 'Sturdy', 'Unmovable', 'Cruelty', 'Tracking', 'Unbound', 'Planner', 'Meld', 'Fortified'])
-      expect(all.filter((t) => new RegExp(`\\b\\d+ ${name}\\b`).test(t)), name).toEqual([]);
+    for (const name of [
+      'Fanned',
+      'Poised',
+      'Sturdy',
+      'Unmovable',
+      'Cruelty',
+      'Tracking',
+      'Unbound',
+      'Planner',
+      'Meld',
+      'Fortified',
+    ])
+      expect(
+        all.filter((t) => new RegExp(`\\b\\d+ ${name}\\b`).test(t)),
+        name,
+      ).toEqual([]);
     expect(cardText(db, db.cards['wide-arc']!)).toContain('Gain Fanned.');
     expect(cardText(db, db.cards['into-the-shadows']!)).toContain('Gain Poised.');
   });
 });
 
 describe('card text says where a condition stops (DECISIONS #485)', () => {
-  const CLAUSE = /^(If|When|Whenever|The first|The next|At the (start|end)|For the next|This turn, whenever|Next turn:)\b[^.]*: /;
+  const CLAUSE =
+    /^(If|When|Whenever|The first|The next|At the (start|end)|For the next|This turn, whenever|Next turn:)\b[^.]*: /;
   it('no plain sentence follows a condition or a trigger, on any card, upgraded or not', () => {
     const bad: string[] = [];
     for (const c of Object.values(db.cards)) {
@@ -195,9 +212,11 @@ describe('card text says where a condition stops (DECISIONS #485)', () => {
 
   it('what one trigger does is one sentence', () => {
     expect(cardText(db, db.cards['fault-reader']!)).toBe(
-      'The first time each turn you Shatter an enemy: Draw 1 card and gain 2 (+1 per 3 Spell Power) Barrier.',
+      'The first time each turn you Shatter an enemy: Gain 2 Spell Power and draw 1 card.',
     );
-    expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(/^When you or an ally is attacked: Cancel that hit, deal 18 damage to the attacker and apply 2 Exposed to the attacker\.$/);
+    expect(cardText(db, db.cards['bait-and-switch']!)).toMatch(
+      /^When you or an ally is attacked: Cancel that hit, deal 18 damage to the attacker and apply 2 Exposed to the attacker\.$/,
+    );
   });
 
   it('what always happens comes first, then the keywords, then the condition', () => {
@@ -424,7 +443,9 @@ describe('only an X card scales its number of hits (DECISIONS #507, #509)', () =
   });
 
   it('more of anything else means more damage on each hit, not more hits', () => {
-    const bad = Object.values(db.cards).filter((c) => scalesHits(c.effects)).map((c) => c.id);
+    const bad = Object.values(db.cards)
+      .filter((c) => scalesHits(c.effects))
+      .map((c) => c.id);
     expect(bad).toEqual([]);
   });
 });
@@ -507,11 +528,20 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
     foe.hp = foe.maxHp = 500;
     return { s0, foe };
   };
-  const lostBy = (hero: HeroId, card: string, mana = 3, prep?: (s: CombatState) => void): number => {
+  const lostBy = (
+    hero: HeroId,
+    card: string,
+    mana = 3,
+    prep?: (s: CombatState) => void,
+  ): number => {
     const { s0, foe } = playIt(hero, card, mana);
     prep?.(s0);
     const target = db.cards[card]!.target === 'foe' ? foe.id : undefined;
-    const { state } = applyAction(db, s0, { type: 'play', card: 'T0', ...(target ? { target } : {}) });
+    const { state } = applyAction(db, s0, {
+      type: 'play',
+      card: 'T0',
+      ...(target ? { target } : {}),
+    });
     return 500 - state.sides.b.units[0]!.hp;
   };
 
@@ -535,7 +565,9 @@ describe('cards whose damage scales, by id (DECISIONS #507, #509)', () => {
 
   it('fixed hits with damage that grows: Apex Frenzy, Wild Swings, Trapline Rider, Flak Burst', () => {
     expect(lostBy('hunter', 'apex-maw')).toBe(2 * 4);
-    expect(lostBy('hunter', 'apex-maw', 3, (s) => void (s.sides.a.played = 2))).toBe(2 * (4 + 2 * 2));
+    expect(lostBy('hunter', 'apex-maw', 3, (s) => void (s.sides.a.played = 2))).toBe(
+      2 * (4 + 2 * 2),
+    );
     expect(lostBy('hunter', 'wild-swings', 3, (s) => void (s.sides.a.played = 2))).toBe(3 + 3 * 2);
     expect(lostBy('trickster', 'trapline-rider')).toBe(5);
     expect(

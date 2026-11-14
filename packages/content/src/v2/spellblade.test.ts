@@ -706,9 +706,12 @@ describe('Fracture and Shatter', () => {
       'fault-reader',
     );
     const hand = s.sides.a.hand.length;
+    const stars = s.sides.a.stars ?? 0;
     const r = play(s, 'rupture-script');
-    expect(hero(r).barrier).toBe(6 + 4);
+    // (Pillar of Glass the Barrier; Fault Reader 2 Spell Power and a card since DECISIONS #795, no Barrier)
+    expect(hero(r).barrier).toBe(6);
     expect(r.sides.a.hand.length).toBe(hand - 1 + 1);
+    expect((r.sides.a.stars ?? 0) - stars).toBeGreaterThanOrEqual(2);
   });
 
   it("Carry the Fault adds half the most-cracked other enemy's Fracture to the target", () => {
@@ -1038,7 +1041,7 @@ const CASES: {
   { id: 'whetstone', sp: 10 },
   { id: 'faint-glow', sp: 10, drew: 1 },
   { id: 'ember-cache', sp: 9 },
-  { id: 'pale-beacon', barrier: 10, sp: 9 },
+  { id: 'pale-beacon', barrier: 7, sp: 9, drew: 1 }, // (5 Barrier, 1 Spell Power and a card since #796)
   { id: 'sunstrike', dmg: 6, sp: 9 },
   { id: 'empty-crucible', sp: 11 },
   { id: 'empty-crucible', stars: 0, sp: 5 },
@@ -1061,7 +1064,7 @@ const CASES: {
   { id: 'shard-strike', stars: 9, dmg: 8, barrier: 7, sp: 10 },
   { id: 'sovereign-strike', dmg: 18 },
   { id: 'crosscut', dmg: 8 },
-  { id: 'fault-piercer', dmg: 18 },
+  { id: 'fault-piercer', dmg: 10 }, // (1 Mana, 3 x2 since #796)
   { id: 'hammer-and-anvil', dmg: 20, sp: 9 },
   { id: 'storm-of-glass', dmg: 36 },
   { id: 'thousand-shards', stars: 3, dmg: 18, sp: 0 },

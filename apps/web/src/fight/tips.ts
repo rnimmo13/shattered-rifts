@@ -74,7 +74,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'stance',
     title: 'Stances',
-    text: 'You are in at most one stance. Fury doubles the damage you deal but you take 50% more. Leaving Serene gives the Monk 2 Mana (once a turn, his Inner Fire). Radiant doubles your damage until your turn ends, with no such cost. Only the Monk keeps Fury or Serene from turn to turn.',
+    text: 'You are in at most one stance. Fury doubles the damage you deal but you take 50% more. Leaving Serene gives the Monk 2 Mana (once a turn, his Inner Fire). Radiant doubles your damage until your turn ends, its first hit 2.5 times, with no such cost. Only the Monk keeps Fury or Serene from turn to turn.',
     when: (v) => {
       const h = hero(v);
       return !!h && (!!h.statuses.calm || !!h.statuses.wrath || !!h.statuses.radiant);
@@ -83,7 +83,7 @@ export const TIP_RULES: TipRule[] = [
   {
     id: 'fervor',
     title: 'Fervor',
-    text: 'Fervor builds up as you play cards that give it. At 10 you spend it and enter Radiant: double damage until your turn ends, and 1 extra Mana the first time each turn.',
+    text: 'Fervor builds up as you play cards that give it. At 10 you spend it and enter Radiant: your first hit 2.5 times the damage and double after that until your turn ends, and 1 extra Mana the first time each turn.',
     when: (v) => !!hero(v)?.statuses.mantra,
   },
   {

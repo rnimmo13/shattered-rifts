@@ -4,6 +4,7 @@
 import { boxNamedCard } from './eventBoxes';
 import { migrateHeart } from './hearts';
 import type { EventCtx } from './deals';
+import { MAX_BELT, MAX_POTIONS, beltSize } from './rewards';
 import {
   COMBAT_DB,
   CAMPAIGN_REALMS,
@@ -314,6 +315,7 @@ const DEAL_KINDS = new Set([
   'shards',
   'wound',
   'potion',
+  'belt',
   'boon',
   'upgrade',
   'remove',
@@ -523,6 +525,9 @@ export function parseRun(text: string): RunState | null {
     delete (r as { heart?: unknown }).heart;
   if (r.heartMaxHpLoss !== undefined && !isInt(r.heartMaxHpLoss, 0, 9999)) return null;
   migrateHeart(r as RunState);
+  // (extra potion pouches: a count, or nothing, DECISIONS #799; never more than the belt can take)
+  const pouches = (r as { beltSlots?: unknown }).beltSlots;
+  if (pouches !== undefined && !isInt(pouches, 0, MAX_BELT - MAX_POTIONS)) return null;
   // (merchant removals bought: a count, or nothing)
   const removals = (r as { removals?: unknown }).removals;
   if (removals !== undefined && !isInt(removals, 0, 10000)) return null;
@@ -577,7 +582,7 @@ export function parseRun(text: string): RunState | null {
   if (r.potions === undefined) r.potions = [];
   if (
     !isStrArray(r.potions) ||
-    r.potions.length > 3 ||
+    r.potions.length > beltSize(r) ||
     r.potions.some((id) => !Object.hasOwn(COMBAT_DB.potions, id))
   )
     return null;

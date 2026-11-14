@@ -409,7 +409,6 @@ export class SheetHeroSprite {
   widthFor(height: number): number {
     return (height * this.bodyW) / this.fitH;
   }
-
   /** How far the resting pose reaches to the left and the right of the feet, in the same units as `height`, weapon and all: for a box
    * that must hold the whole figure (the Store's and the Collection's). */
   restSpan(height: number): { left: number; right: number } {

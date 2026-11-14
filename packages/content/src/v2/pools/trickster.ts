@@ -65,7 +65,8 @@ export const TRICKSTER: CardDef[] = [
   }),
 
   // --- Traps ---
-  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(8, 'attacker')], {
+  // (5 to ALL enemies since DECISIONS #796: it was Pinprick Trap with 2 more; the line trips the whole row. Trap Kit makes two)
+  v('common', 'trip-line', 'Trip Line', 'snare', 0, 'none', [dmg(5, 'allFoes')], {
     trigger: { on: 'attacked' },
   }),
   v(
@@ -148,7 +149,8 @@ export const TRICKSTER: CardDef[] = [
     'snare',
     1,
     'none',
-    [dmg(7, 'attacker'), status('exposed', 2, 'attacker')],
+    // (and 1 Debilitated since DECISIONS #796: it was Set the Web with one more Exposed; the Trickster's own debuff, #788)
+    [dmg(7, 'attacker'), status('exposed', 2, 'attacker'), status('debilitated', 1, 'attacker')],
     {
       trigger: { on: 'attacked' },
     },
@@ -184,10 +186,11 @@ export const TRICKSTER: CardDef[] = [
     'Spring the Trap',
     'attack',
     1,
-    'foe',
-    [scaled(dmg(8), per('snares', 6))],
+    'none',
+    // (to ALL enemies since DECISIONS #796: it was Trapline Rider with bigger numbers; the rare springs on the whole row)
+    [scaled(dmg(6, 'allFoes'), per('snares', 5))],
     {
-      up: { effects: [scaled(dmg(10), per('snares', 8))] },
+      up: { effects: [scaled(dmg(8, 'allFoes'), per('snares', 6))] },
     },
   ),
 
@@ -391,7 +394,10 @@ export const TRICKSTER: CardDef[] = [
       up: { effects: [dmg(21), status('exposed', 1, 'target')] },
     },
   ),
-  v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'foe', [scaled(dmg(4), per('suits', 4))]),
+  // (to ALL enemies since DECISIONS #796: it was Royal Flourish's single target with other numbers; a fan of cards sprays the row)
+  v('uncommon', 'card-fan', 'Card Fan', 'attack', 1, 'none', [
+    scaled(dmg(2, 'allFoes'), per('suits', 3)),
+  ]),
   v('uncommon', 'card-sharp', 'Card Sharp', 'attack', 1, 'foe', [
     dmg(8),
     when('suits', { atLeast: 4 }, [dmg(8)]),
@@ -781,10 +787,17 @@ export const TRICKSTER: CardDef[] = [
       up: { effects: [status('exposed', 2, 'target'), doubleSt('exposed', 'target', 2, 6)] },
     },
   ),
-  v('uncommon', 'hamstring', 'Hamstring', 'attack', 1, 'foe', [
-    dmg(6),
-    status('exposed', 2, 'target'),
-  ]),
+  // (Faltering since DECISIONS #796: it was Veil Strike with one more Exposed; a hamstrung enemy hits softer)
+  v(
+    'uncommon',
+    'hamstring',
+    'Hamstring',
+    'attack',
+    1,
+    'foe',
+    [dmg(6), status('exposed', 1, 'target'), status('faltering', 1, 'target')],
+    { up: { effects: [dmg(8), status('exposed', 1, 'target'), status('faltering', 2, 'target')] } },
+  ),
   v(
     'uncommon',
     'trick-of-the-light',

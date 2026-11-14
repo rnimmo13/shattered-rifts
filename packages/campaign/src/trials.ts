@@ -45,8 +45,9 @@ export const twinnable = (deck: readonly string[]): string[] =>
   );
 
 /** What the next spin costs: the first spin at a reel is free (Robert, 2026-10-26; DECISIONS #283), every one after it ROLL_COST. */
-export function spinCost(trial: { rolls?: number } | undefined): number {
-  return (trial?.rolls ?? 0) === 0 ? 0 : ROLL_COST;
+/** `paid`: every spin costs shards, the first too (the Gambler's Shrine, DECISIONS #798) */
+export function spinCost(trial: { rolls?: number } | undefined, paid = false): number {
+  return !paid && (trial?.rolls ?? 0) === 0 ? 0 : ROLL_COST;
 }
 
 export interface EliteSpec {
@@ -302,7 +303,8 @@ export function rollElite(r: RunState): EventCtx | null {
 export function spinReel(r: RunState, ev: EventCtx, fail: (msg: string) => never): number {
   const t = ev.trial;
   if (!t || (t.state !== 'open' && t.state !== 'won')) return fail('There is no reel to spin');
-  const cost = spinCost(t);
+  // (at a Gambler's Shrine the first spin is paid too, DECISIONS #798)
+  const cost = spinCost(t, !!r.context?.gambler);
   if (r.shards < cost) return fail(`A spin costs ${cost} shards`);
   const here = t.earned?.[0];
   const from = t.prizes.map((_, i) => i).filter((i) => i !== here);

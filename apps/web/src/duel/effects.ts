@@ -63,6 +63,14 @@ export function loadGraphicsQuality(): GraphicsQuality {
   return lightDevice() ? 'medium' : 'high';
 }
 
+/** High graphics: a model is never drawn larger than its own pixels, smaller instead (DECISIONS #793). Read every frame, so from the
+ * mark on the page, not storage. */
+export function crispModels(): boolean {
+  const q =
+    typeof document !== 'undefined' ? document.documentElement.dataset['graphics'] : undefined;
+  return (q ?? loadGraphicsQuality()) === 'high';
+}
+
 /** Lets the style sheets see it: Low stops the looping decorations. */
 export function markGraphicsQuality(q: GraphicsQuality = loadGraphicsQuality()): void {
   if (typeof document !== 'undefined') document.documentElement.dataset['graphics'] = q;

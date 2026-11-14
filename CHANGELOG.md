@@ -1,3 +1,16 @@
+## 0.277.0 - 2026-11-14
+
+- Potion pouches (#799): the belt can grow from 3 to 5 potions; a merchant sells one pouch a visit (80, then 120 shards) and the new pouchmaker event sews one for 60 shards or 10 HP.
+- Campaign board: completed runs ranked by fastest clear time, and every run shows its play time, cleared or not (#797).
+- Gambler's Shrine: one blessing and one Spin To Win prize a visit, every spin there paid (25 shards, the first too) (#798).
+- Rules 116: near-duplicate cards made distinct (#796): Frenzied Gulp, Reckless Blow, Blur of Claws, Tripwire Garrote, Trip Line, Hamstring, Card Fan, Spring the Trap, Provoke, Ashen Fist, Hushed Stillness, Pale Ward, Fault Piercer, After the End, Rack the Slide, Aim, Window Pane, Liquid Dinner, Steady Nerves.
+- Rules 116: Fault Reader (Spellblade) gains 2 Spell Power and draws 1 on the first Shatter each turn (3 upgraded), instead of drawing and gaining Barrier like Pillar of Glass (#795).
+- Rules 116: the Trickster's Full Trick deals 5 damage plus 5 for every earlier Full Trick in the fight (5, 10, 15...; was 3, 5, 7...) (#794).
+- Character models are never stretched past their own pixels (#793): a model drawn smaller than the size it would be shown at is shown smaller instead of blurred, on every graphics setting alike (High draws it one to one; Medium and Low are only softer), in fights and on the home, Sanctum and Store screens. Prompts to redraw 36 small creatures (Drago and most Wardens) larger: docs/creature-hd-prompts.md.
+- Rules 116: Radiant's first attack hit each turn deals 2.5 times the damage, the rest double as before (#792).
+- Sharper models (#791): the Sanctum's figure loads the full model set (it drew the 300 px light set at about 470 px); the battle board renders at the screen's own resolution up to 4K (was capped at a 1080p budget, which blurred 1440p and high-DPI screens), stepping down only if the frame rate drops; models placed on whole pixels. The Arc Welder's wasp no longer jumps when its wings change pose.
+- Rules 116, Campaign (#790): enemy damage now climbs evenly from 93% at Tier I to 200% at Tier XII (was 95% to 250%), about 10 points a tier; HP curve unchanged. Elite premium x1.25/x1.10 -> x1.20/x1.07 HP/damage, Warden x1.35/x1.18 -> x1.30/x1.14. Elite (and merchant and Warden) card odds back to Rare 23%, Uncommon 42%, Common 35%. Tier XII Warden 945/295% -> 910/228%.
+
 ## 0.276.0 - 2026-11-13
 
 - Rules 115. Every starting deck is 3 Strikes, 2 Defends and 5 class cards, one per way the class grows (#787): Knight Breach, Engineer Arc Welder, Hunter Single Out, Trickster Shadow Cloak, Rogue Cartwheel Cut (Premeditate, for Duck and Weave), Monk Unafraid and Wrathful Guard (one Kindle Fury and one Still Guard, Kindle Fury 9 -> 11), Spellblade two Obsidian Wards and Faultline Hex (Gather Power out), Drunkard Drunken Swing, Necromancer Soul Rend; Shaman unchanged. New runs only.

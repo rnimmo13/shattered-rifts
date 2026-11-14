@@ -356,7 +356,20 @@ export const DRUNKARD: CardDef[] = [
     },
   ),
   // (more Gun)
-  p('common', 'aim', 'Aim', 'skill', 0, 'none', [forge('old-twelve-gauge', 2)], { retain: true }),
+  // (Precision 1 and 4 Primed since DECISIONS #796: held, it lines up one big shot rather than a little for every one)
+  p(
+    'common',
+    'aim',
+    'Aim',
+    'skill',
+    0,
+    'none',
+    [forge('old-twelve-gauge', 1), status('vigor', 4)],
+    {
+      retain: true,
+      up: { effects: [forge('old-twelve-gauge', 1), status('vigor', 6)] },
+    },
+  ),
   p(
     'uncommon',
     'scope',
@@ -593,9 +606,17 @@ export const DRUNKARD: CardDef[] = [
     barrier(5),
     status('vigor', 6),
   ]),
-  p('uncommon', 'window-pane', 'Window Pane', 'skill', 1, 'none', [
-    scaled(barrier(7), per('missingPct', 1 / 8)),
-  ]),
+  // (and a card since DECISIONS #796: it was Pane Up a little bigger)
+  p(
+    'uncommon',
+    'window-pane',
+    'Window Pane',
+    'skill',
+    1,
+    'none',
+    [scaled(barrier(5), per('missingPct', 1 / 8)), draw(1)],
+    { up: { effects: [scaled(barrier(8), per('missingPct', 1 / 8)), draw(1)] } },
+  ),
 
   // --- brought back for the 20/30/25 rarity target (DECISIONS #341) ---
   p(
@@ -805,8 +826,12 @@ export const DRUNKARD: CardDef[] = [
     'skill',
     1,
     'none',
-    [scaled(heal(2), per('missingPct', 1 / 5)), draw(1)],
-    { exhaust: true, up: { effects: [scaled(heal(5), per('missingPct', 1 / 5)), draw(1)] } },
+    // (Mana and Hangover, not a card, since DECISIONS #796: it was Sob Story with other numbers; a drink, as his drinks are)
+    [scaled(heal(2), per('missingPct', 1 / 5)), mana(1), hangover(2)],
+    {
+      exhaust: true,
+      up: { effects: [scaled(heal(5), per('missingPct', 1 / 5)), mana(1), hangover(2)] },
+    },
   ),
   p(
     'uncommon',

@@ -67,7 +67,9 @@ import type { EnemyMod, StatusId } from '@sr/combat';
 import {
   BOON_PRICE,
   LOOP_BOON_CHANCE,
-  MAX_POTIONS,
+  MAX_BELT,
+  beltSize,
+  beltSlotPrice,
   MAX_TIER,
   POTION_PRICE,
   PRICE,
@@ -322,7 +324,7 @@ function openPrelude(run: RunState, kind: 'threshold' | 'stage'): void {
         basics: run.deck.filter(isPlainBasic).length,
         deckRoom: run.deck.length - V2_DECK_RULES.minSize,
         upgradable: run.deck.filter((id) => COMBAT_DB.cards[id]?.upgrade).length,
-        beltRoom: MAX_POTIONS - run.potions.length,
+        beltRoom: beltSize(run) - run.potions.length,
         canPick: (rarity, kind) => {
           const key = `${rarity}:${kind ?? ''}`;
           if (!picks.has(key)) picks.set(key, pickPool(run, rarity, kind).length > 0);
@@ -880,11 +882,11 @@ export function echoOffers(r: RunState, ghost: GhostBoss): string[] {
     .slice(0, ECHO_OFFERS);
 }
 
-/** An Elite's and a Warden's HP and damage over a common fight of the same tier (DECISIONS #651, #763). */
-export const ELITE_HP = 1.25;
-export const ELITE_DAMAGE = 1.1;
-export const WARDEN_HP = 1.35;
-export const WARDEN_DAMAGE = 1.18;
+/** An Elite's and a Warden's HP and damage over a common fight of the same tier (DECISIONS #651, #763, #790). */
+export const ELITE_HP = 1.2;
+export const ELITE_DAMAGE = 1.07;
+export const WARDEN_HP = 1.3;
+export const WARDEN_DAMAGE = 1.14;
 
 /** What the fight at the current node is. */
 export function duelPlan(run: RunState): FightPlan | null {
@@ -1053,7 +1055,7 @@ export function finishDuel(
       : asElite
         ? elitePays.potionPct
         : POTION_DROP_CHANCE.elite;
-  if (r.potions.length < MAX_POTIONS && nextInt(r.rng, 100) < dropChance) {
+  if (r.potions.length < beltSize(r) && nextInt(r.rng, 100) < dropChance) {
     potionGained = offerPotion(r.rng);
     r.potions.push(potionGained);
   }
@@ -1512,7 +1514,7 @@ function applyEffect(r: RunState, e: PreludeEffect): string | null {
       return `You gain the Boon ${COMBAT_DB.boons[id]?.name ?? id}.`;
     }
     case 'potion': {
-      if (r.potions.length >= MAX_POTIONS)
+      if (r.potions.length >= beltSize(r))
         return 'Your belt is full, so the potion is left behind.';
       const id = offerPotion(r.rng, e.rarity);
       r.potions.push(id);
@@ -1577,16 +1579,13 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   );
   const g = run.context.gambler;
   need(!g || !g.taken.includes(choice.kind), 'You have taken that blessing here already');
+  need(!g || g.taken.length < GAMBLER_BLESSINGS, 'One blessing a visit: you have taken yours');
   const wager: ShrineKind[] = ['sacrifice', 'dice', 'engrave', 'ledger'];
   need(
     !!g || (refinement && choice.kind === 'dice') || !wager.includes(choice.kind),
     "Only a Gambler's Shrine takes wagers",
   );
-  // (one thing a visit, DECISIONS #538: a reel that was spun is the visit's choice, so its prize is taken or walked away from)
-  need(
-    !g || g.taken.length < GAMBLER_BLESSINGS - 1 || run.context.event?.trial?.state !== 'won',
-    'You spun the reel here: take its prize, or walk away',
-  );
+  // (a blessing and a reel prize a visit since DECISIONS #798; one or the other from #538)
   const r = clone(run);
   const gs = (r.context as NonNullable<RunState['context']>).gambler;
   if (gs) delete gs.note;
@@ -1619,6 +1618,8 @@ export function takeShrine(run: RunState, choice: ShrineChoice): RunState {
   if (gs) {
     gs.taken.push(choice.kind);
     if (gs.taken.length < GAMBLER_BLESSINGS) return r;
+    // (the reel is still there, its prize untaken: the shrine stays open for it, DECISIONS #798)
+    if (!gs.prized && ctx.event?.trial) return r;
     // (the shrine closes: what the last wager did is told as the stop's news)
     if (gs.note) r.eventResult = gs.note;
   }
@@ -1823,7 +1824,7 @@ export function buyPotion(run: RunState, index: number): RunState {
   >;
   const item = m.potions?.[index];
   need(item && !item.sold, 'That is not for sale');
-  need(r.potions.length < MAX_POTIONS, `You can only carry ${MAX_POTIONS} potions`);
+  need(r.potions.length < beltSize(r), `You can only carry ${beltSize(r)} potions`);
   need(r.shards >= item.price, 'Not enough shards');
   r.shards -= item.price;
   item.sold = true;
@@ -1859,6 +1860,29 @@ export function buyBoon(run: RunState): RunState {
   r.shards -= b.price;
   b.sold = true;
   gainBoon(r, b.id);
+  return r;
+}
+
+/** The merchant's price for a pouch here (one more potion place), or null when none is for sale (one a visit, the belt at its most). */
+export function pouchPrice(run: RunState): number | null {
+  const m = run.context?.merchant;
+  if (!m || m.pouchBought || beltSize(run) >= MAX_BELT) return null;
+  return shopPrice(run, beltSlotPrice(run));
+}
+
+/** Buy a pouch from the merchant: the belt holds one more potion for the rest of the run (DECISIONS #799). */
+export function buyPouch(run: RunState): RunState {
+  need(run.phase === 'merchant' && run.context?.merchant, 'You are not at a merchant');
+  const price = pouchPrice(run);
+  need(price !== null, 'There is no pouch for sale here');
+  need(run.shards >= price, 'Not enough shards');
+  const r = clone(run);
+  const m = (r.context as NonNullable<RunState['context']>).merchant as NonNullable<
+    NonNullable<RunState['context']>['merchant']
+  >;
+  r.shards -= price;
+  r.beltSlots = (r.beltSlots ?? 0) + 1;
+  m.pouchBought = true;
   return r;
 }
 
@@ -2027,6 +2051,7 @@ export function rollTrial(run: RunState): RunState {
       (run.context?.event?.trial?.state === 'open' || run.context?.event?.trial?.state === 'won'),
     'There is no reel here',
   );
+  need(!run.context?.gambler?.prized, "You have taken the reel's prize here");
   const r = clone(run);
   const ctx = r.context as NonNullable<RunState['context']>;
   spinReel(r, ctx.event as NonNullable<typeof ctx.event>, (msg) => {
@@ -2077,7 +2102,14 @@ export function claimTrialPrize(
     pick,
     cards,
   );
-  // (a Gambler's Shrine's reel prize is the visit's one choice: the shrine closes with it, DECISIONS #538)
+  // (at a Gambler's Shrine the prize is taken beside a blessing, DECISIONS #798: the reel is put away, and the shrine stays open until
+  // a blessing is taken too or the player walks away)
+  const gs = ctx.gambler;
+  if (gs) {
+    gs.prized = true;
+    if (ctx.event) delete ctx.event.trial;
+    if (gs.taken.length < GAMBLER_BLESSINGS) return r;
+  }
   clearNode(r, ctx.nodeId);
   r.phase = 'map';
   return r;

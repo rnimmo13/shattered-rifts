@@ -172,6 +172,8 @@ export type DealStep =
   | { k: 'shards'; n: number }
   | { k: 'wound'; n: number }
   | { k: 'potion'; n: number }
+  /** one more place on the potion belt (DECISIONS #799) */
+  | { k: 'belt' }
   /** the event's Boon */
   | { k: 'boon' }
   | { k: 'upgrade'; n: number }
@@ -329,6 +331,8 @@ export interface NodeContext {
     rerolls?: number;
     boon?: { id: string; price: number; sold: boolean };
     potions?: { id: string; price: number; sold: boolean }[];
+    /** a pouch (one more potion place) was bought at this merchant (one a visit, DECISIONS #799) */
+    pouchBought?: boolean;
   };
   event?: {
     /** the painted scene behind it: the event's id (missing on an elite event, and on one saved by an older build) */
@@ -437,8 +441,10 @@ export interface RunState {
   shards: number;
   /** Run passives (Boons) are part of the design but not built yet. */
   boons: string[];
-  /** Potions carried (up to MAX_POTIONS); a lost fight does not use them up */
+  /** Potions carried (up to beltSize: 3, more with pouches, DECISIONS #799); a lost fight does not use them up */
   potions: string[];
+  /** extra potion pouches gained this run (each one more place on the belt, at most MAX_BELT in all; DECISIONS #799) */
+  beltSlots?: number;
   /** The run's four realms, shuffled: stages 1 and 2 are the first two, the Rift (stage 3) draws on the last two. */
   stageRealms: StageRealm[];
   map: StageMap;

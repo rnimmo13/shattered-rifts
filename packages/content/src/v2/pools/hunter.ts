@@ -167,9 +167,11 @@ export const HUNTER: CardDef[] = [
     'attack',
     1,
     'foe',
-    [lose(2), dmg(8, 'target', 2)],
+    // (3 HP and 3 Primed since DECISIONS #796: Twin Fang with a point more a hit; now the reckless one, paying more to load the next
+    // blow. Might was tried and dropped: it made it Run Wild for 1 less Mana)
+    [lose(3), dmg(8, 'target', 2), status('vigor', 3)],
     {
-      up: { effects: [lose(2), dmg(10, 'target', 2)] },
+      up: { effects: [lose(3), dmg(10, 'target', 2), status('vigor', 3)] },
     },
   ),
   k('uncommon', 'hamstring-slam', 'Hamstring Slam', 'attack', 2, 'foe', [
@@ -536,10 +538,20 @@ export const HUNTER: CardDef[] = [
     up: { effects: [draw(2), barrier(6)] },
   }),
   // (lose 2 since #693: ~60% before; upgraded lose 1)
-  k('uncommon', 'frenzied-gulp', 'Frenzied Gulp', 'skill', 0, 'none', [draw(3), lose(2)], {
-    exhaust: true,
-    up: { effects: [draw(3), lose(1)] },
-  }),
+  // (draw 2 and 4 Primed since DECISIONS #796: it was Feral Instinct to the letter; the draw that loads the next blow)
+  k(
+    'uncommon',
+    'frenzied-gulp',
+    'Frenzied Gulp',
+    'skill',
+    0,
+    'none',
+    [draw(2), lose(2), status('vigor', 4)],
+    {
+      exhaust: true,
+      up: { effects: [draw(2), lose(1), status('vigor', 6)] },
+    },
+  ),
   k(
     'uncommon',
     'adrenal-surge',
@@ -554,9 +566,17 @@ export const HUNTER: CardDef[] = [
       up: { effects: [mana(1), manaNext(1), draw(1), lose(1)] },
     },
   ),
-  k('uncommon', 'blur-of-claws', 'Blur of Claws', 'attack', 1, 'foe', [
-    scaled(dmg(5), per('played', 3)),
-  ]),
+  // (three hits of 2 + 1 a card since DECISIONS #796: it was Wild Swings with 2 more; a blur strikes often, and Might counts on each)
+  k(
+    'uncommon',
+    'blur-of-claws',
+    'Blur of Claws',
+    'attack',
+    1,
+    'foe',
+    [scaled(dmg(2, 'target', 3), per('played', 1))],
+    { up: { effects: [scaled(dmg(3, 'target', 3), per('played', 1))] } },
+  ),
   k(
     'uncommon',
     'battle-rhythm',

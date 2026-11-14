@@ -13,6 +13,8 @@ import type { HeroSprite } from '../fight/heroSprite';
 import './heroModel.css';
 import { skinPreview, skinPreviewLayout } from './skinPreview';
 import { GOTHIC_SKIN, gothicPicture } from './gothicPalette';
+import { crispModels } from '../duel/effects';
+import { MODEL_PIXELS } from './modelPixels';
 
 const still = (): boolean =>
   (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) ||
@@ -24,6 +26,22 @@ const SHEET_SLOTS = 3;
 /** How far past each side of its box a contained figure may run, as a share of the box's width (DECISIONS #773): fitted to the width
  * alone, a figure holding a great sword out came out tiny in a narrow box. */
 const CONTAIN_SPILL = 0.18;
+/** The light set's standing body, in pixels (heroes-sheets-lite, heroSheet.ts), and the share of a model's height the body fills. A
+ * contained box (the Store's and the Collection's small tiles) loads the light set only while that is enough for its screen pixels:
+ * the Sanctum's large figure drew the 300 px set at about 470 px and came out soft (DECISIONS #791). */
+const LITE_BODY = 300;
+const BODY_SHARE = 0.78;
+/** Screen pixels per CSS pixel the canvas is drawn at: the screen's own on High (the canvas is never larger than the model's own
+ * pixels there, #793), at most 2 otherwise. */
+const modelDpr = (): number =>
+  crispModels() ? window.devicePixelRatio || 1 : Math.min(2, window.devicePixelRatio || 1);
+/** The tallest a model's picture box stands, in CSS px: its High set's fitted height at the screen's pixel ratio (MODEL_PIXELS). */
+const modelCap = (rigId: string | undefined): number => {
+  const px = rigId ? MODEL_PIXELS[rigId] : undefined;
+  return px ? px / (window.devicePixelRatio || 1) : Infinity;
+};
+/** a CSS length on whole screen pixels, so the browser draws the canvas one to one instead of resampling it */
+const snap = (v: number, dpr: number): number => Math.round(v * dpr) / dpr;
 let sheetsLive = 0;
 const slotWaiters = new Set<() => void>();
 function freeSheetSlot(): void {
@@ -93,6 +111,23 @@ export function HeroModel(props: {
       observer.disconnect();
     };
   }, [props.skin, contain, fill]);
+  // (DECISIONS #793) the still picture (Low graphics, or while the model loads) shrinks with the model's cap, so no setting shows another
+  // size
+  useEffect(() => {
+    const el = box.current;
+    if (!el || !rigId) return;
+    const set = (): void => {
+      const k = Math.min(1, modelCap(rigId) / Math.max(1, el.clientHeight * fill));
+      el.style.setProperty('--model-shrink', String(k));
+    };
+    const observer = new ResizeObserver(set);
+    observer.observe(el);
+    set();
+    return () => {
+      observer.disconnect();
+      el.style.removeProperty('--model-shrink');
+    };
+  }, [rigId, fill]);
   // (DECISIONS #755) a model is only loaded while it is on screen or near it, and let go when it scrolls well away
   const [near, setNear] = useState(() => typeof IntersectionObserver !== 'function');
   // (no pose-sheet slot free: the picture, until one is; `slot` counts the times one was freed, to try again)
@@ -151,9 +186,22 @@ export function HeroModel(props: {
     const slow = window.setTimeout(() => setFallback(true), 8000);
 
     // (the canvas: the body `fill` of the box tall, feet on the bottom edge in the middle; a wider stance may reach past the sides)
+    // (where the box sits on the page, for the pixel snap)
+    let at = { x: 0, y: 0 };
+    const measure = (): void => {
+      const r = el.getBoundingClientRect();
+      at = { x: r.left, y: r.top };
+    };
+    const onScroll = (): void => {
+      measure();
+      place();
+    };
     const place = (): void => {
       if (!sprite) return;
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      // (the screen's own ratio only for a pose-sheet model, which the cap below keeps to its own pixels)
+      const dpr = rigId.startsWith(SHEET_PREFIX)
+        ? modelDpr()
+        : Math.min(2, window.devicePixelRatio || 1);
       let height = Math.max(8, size.h * fill);
       let shift = 0;
       const layout =
@@ -179,6 +227,13 @@ export function HeroModel(props: {
         }
         shift = (span.left - span.right) / 2;
       }
+      // (no taller than the High set's own pixels at the screen's ratio, on every setting alike: High is drawn one to one, Medium's
+      // lighter set is only softer, never another size, DECISIONS #793)
+      const cap = modelCap(rigId);
+      if (height > cap) {
+        shift *= cap / height;
+        height = cap;
+      }
       const changed = sprite.resize(height, dpr);
       const c = sprite.canvas;
       const w = c.width * sprite.stageScale;
@@ -186,8 +241,9 @@ export function HeroModel(props: {
       const a = sprite.anchor;
       c.style.width = `${w}px`;
       c.style.height = `${h}px`;
-      c.style.left = `${size.w / 2 - a.x * w + shift}px`;
-      c.style.top = `${size.h - a.y * h}px`;
+      // (on the screen's own pixel grid: the box itself may sit on half a pixel; measured on resize and scroll, not every frame)
+      c.style.left = `${snap(at.x + size.w / 2 - a.x * w + shift, dpr) - at.x}px`;
+      c.style.top = `${snap(at.y + size.h - a.y * h, dpr) - at.y}px`;
       if (changed) sprite.render();
     };
     const frame = (now: number): void => {
@@ -209,6 +265,7 @@ export function HeroModel(props: {
     const resize = new ResizeObserver(([e]) => {
       if (!e) return;
       size = { w: e.contentRect.width, h: e.contentRect.height };
+      measure();
       place();
     });
     // (a mouse over the model, or a click or a tap on it, plays its attack: each weapon's clip in turn for a model with more than one.
@@ -240,6 +297,7 @@ export function HeroModel(props: {
     const stop = (): void => {
       cancelAnimationFrame(raf);
       resize.disconnect();
+      window.removeEventListener('scroll', onScroll, true);
       el.removeEventListener('pointerenter', hover);
       el.removeEventListener('click', attack);
       const s = sprite;
@@ -260,7 +318,9 @@ export function HeroModel(props: {
     };
     void import('../fight/heroSprite')
       .then(async (rigs) => {
-        const assets = await rigs.loadRig(rigId, contain);
+        // (the light set for a small contained box; the full set where the body is drawn larger than the light set holds)
+        const body = el.clientHeight * fill * BODY_SHARE * modelDpr();
+        const assets = await rigs.loadRig(rigId, contain && body <= LITE_BODY);
         if (gone) return;
         if (!assets || still()) return fail();
         sprite = rigs.HeroSprite.create(rigId, assets, 'right');
@@ -274,9 +334,12 @@ export function HeroModel(props: {
         el.appendChild(sprite.canvas);
         const r = el.getBoundingClientRect();
         size = { w: r.width, h: r.height };
+        at = { x: r.left, y: r.top };
         place();
         sprite.render();
         resize.observe(el);
+        // (capture: a scrolling panel inside the page moves the box too)
+        window.addEventListener('scroll', onScroll, { passive: true, capture: true });
         el.addEventListener('pointerenter', hover);
         el.addEventListener('click', attack);
         window.clearTimeout(slow);

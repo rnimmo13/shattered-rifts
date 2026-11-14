@@ -3493,3 +3493,15 @@ button.mapnode--warden {
     height: clamp(19rem, 43vh, 25rem);
   }
 }
+
+/* the merchant's potion pouch (DECISIONS #799): a plain badge in the row's icon place */
+.shop__pouch {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  border: 2px solid var(--c-gold-light);
+  color: var(--c-gold-light);
+  font-size: 1.1rem;
+}

@@ -332,7 +332,7 @@ export function LeaderboardScreen() {
               <Table<RunStanding>
                 caption={`Furthest campaign runs this ${period}`}
                 // (the class and the Ascendancy it took, each in its own column; no Tiers cleared, DECISIONS #566)
-                // (Time: how long a completed run took to beat the campaign, by its own play clock)
+                // (Time: each run's own play clock; for a completed run, how long it took to beat the campaign, fastest first)
                 head={['Player', 'Class', 'Ascendancy', 'Tier', 'Shards', 'Status', 'Time']}
                 numeric={[3, 4, 6]}
                 rows={view.board as RunStanding[]}
@@ -371,16 +371,20 @@ export function LeaderboardScreen() {
                           ? 'Abandoned'
                           : 'Live'}
                   </span>,
-                  s.status === 'completed' && s.playMs ? (
-                    <span key="time" title="Play time to beat the campaign">
+                  // (every run's play time, cleared or not; a completed run's is its clear time and ranks it, DECISIONS #797)
+                  s.playMs ? (
+                    <span
+                      key="time"
+                      title={
+                        s.status === 'completed'
+                          ? 'Play time to beat the campaign'
+                          : 'Play time so far on this run'
+                      }
+                    >
                       {formatRunTime(s.playMs)}
                     </span>
                   ) : (
-                    <span
-                      key="time"
-                      className="board__none"
-                      title="Shown once a run beats the campaign"
-                    >
+                    <span key="time" className="board__none" title="No play time reported">
                       <span aria-hidden>&mdash;</span>
                       <span className="sr-only">No time</span>
                     </span>

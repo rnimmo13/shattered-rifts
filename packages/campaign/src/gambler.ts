@@ -1,6 +1,6 @@
-// The Gambler's Shrine (DECISIONS #234): from Rift Tier VI a Shrine offers more, and asks you to wager for some of it. One
-// thing a visit (#538): a blessing from seven (the three quiet ones, and four wagers that grow with the run), with the Brass Reel in an
-// alcove for anyone with shards to spend. You can walk away at any time.
+// The Gambler's Shrine (DECISIONS #234): from Rift Tier VI a Shrine offers more, and asks you to wager for some of it. A visit
+// gives one blessing from seven (the three quiet ones, and four wagers that grow with the run) and, beside it, one prize of the Spin To
+// Win reel, every spin paid in shards (#798; one or the other from #538). You can walk away at any time.
 
 import { nextInt } from '@sr/combat';
 import {
@@ -42,6 +42,8 @@ export interface GamblerShrine {
   chisel: CardMark;
   /** what the last wager did, said on the shrine */
   note?: string;
+  /** the reel's prize was taken here: one prize and one blessing a visit (DECISIONS #798) */
+  prized?: boolean;
 }
 
 /** The chance (percent) that Loaded Dice roll a card up: 60% at Tier VI, 2 points better each tier after, to 80%. */

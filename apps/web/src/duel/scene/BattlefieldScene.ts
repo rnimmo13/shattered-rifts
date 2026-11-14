@@ -54,8 +54,12 @@ interface Mote {
   peak: number;
 }
 
-/** Internal pixels we're willing to shade per frame: a 1080p-ish budget, lower in reduced mode. */
-const PIXEL_BUDGET = { full: 2_400_000, reduced: 1_000_000 } as const;
+/** Internal pixels we're willing to shade per frame, lower in reduced mode. Full is a 4K budget (DECISIONS #791): at 1080p's budget a
+ * 1440p or high-DPI screen drew the board below its own pixels and stretched every model; a slow GPU still steps down by itself
+ * (watchFrameRate). */
+const PIXEL_BUDGET = { full: 8_300_000, reduced: 1_000_000 } as const;
+/** How far the frame-rate watch has stepped the resolution down this visit: the next fight starts there, not at full again (#791). */
+let learnedResScale = 1;
 
 function pickResolution(w: number, h: number, profile: EffectsProfile): number {
   const dpr = window.devicePixelRatio || 1;
@@ -143,7 +147,7 @@ export class BattlefieldScene {
   private hitStopCooldownUntil = 0;
   private time = 0;
   /** Adaptive quality: if frames run slow the render resolution steps down (never back up, so it can't flicker). */
-  private resScale = 1;
+  private resScale = learnedResScale;
   private frameAcc = 0;
   private frameN = 0;
   private warmup = 3;
@@ -174,8 +178,13 @@ export class BattlefieldScene {
       background: hex(color.void),
       resizeTo: host,
       antialias: true,
+      // (each model's canvas is drawn one texel to a screen pixel: placed on whole pixels it is not resampled into a blur, #791)
+      roundPixels: true,
       autoDensity: true,
-      resolution: pickResolution(host.clientWidth, host.clientHeight, profile),
+      resolution: Math.max(
+        0.5,
+        pickResolution(host.clientWidth, host.clientHeight, profile) * learnedResScale,
+      ),
       powerPreference: 'high-performance',
     });
     return new BattlefieldScene(app, host, profile, art, arena, venue);
@@ -291,6 +300,10 @@ export class BattlefieldScene {
       wake: (ms) => this.wake(ms),
       // (a rigged hero draws at the board's density: its scale times its resolution, at most 2 device px a CSS px)
       pixelScale: () => this.world.scale.x * Math.min(this.app.renderer.resolution, 2),
+      // (a figure's shown height changed on its own, #793: the plates over it are placed again)
+      figureResized: () => this.onFit(),
+      // (figures are sized by the screen, not the render resolution, which a slow GPU steps down: same size on every setting, #793)
+      screenScale: () => this.world.scale.x * Math.min(window.devicePixelRatio || 1, 2),
     });
 
     // --- atmosphere over the board ---
@@ -542,6 +555,7 @@ export class BattlefieldScene {
       this.warmup--; // shader compilation and texture upload make the first seconds slow
     } else if (avgMs > 24 && this.resScale > 0.5) {
       this.resScale = Math.max(0.5, this.resScale * 0.8);
+      learnedResScale = this.resScale;
       this.applyResolution();
     }
     this.frameAcc = 0;

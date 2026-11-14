@@ -56,6 +56,7 @@ import {
   STRIKING_TAG,
   RADIANT_DAMAGE,
   RADIANT_ENTER_MANA,
+  RADIANT_FIRST_HIT,
   MANY_HITS,
   TICK_FULL,
   TICK_EXTRA_FROM,
@@ -434,6 +435,7 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
   const sd = r.s.sides[u.side];
   if (cur) {
     delete u.statuses[cur];
+    if (cur === 'radiant') delete u.radiantEdge;
     r.ev.push({ type: 'status', target: u.id, status: cur, amount: -1, total: 0 });
     // (leaving Serene pays its Mana through the Monk's trait, a 'stanceLeft' trigger: DECISIONS #413)
   }
@@ -444,6 +446,8 @@ function enterStance(r: Run, u: Unit, to: Stance | 'none'): void {
     if (to === 'radiant' && sd.radiantManaTurn !== r.s.turn) {
       sd.radiantManaTurn = r.s.turn;
       gainMana(r, sd, RADIANT_ENTER_MANA);
+      // (its first hit at x2.5, also once a turn: re-entering it does not give another, DECISIONS #792)
+      u.radiantEdge = true;
     }
   }
   r.ev.push({ type: 'stance', unit: u.id, stance: to });
@@ -467,7 +471,7 @@ function scaledByDifficulty(actor: Unit, target: Unit, amount: number): number {
 
 /**
  * attack damage after the attacker's Might / Faltering / stance and the target's Wrath / Exposed
- * (Radiant and Wrath double what you deal; Wrath makes you take 50% more).
+ * (Radiant's first hit deals 2.5 times then double, Wrath doubles what you deal; Wrath makes you take 50% more).
  * `attack` false: damage that is no attack (an Aura, a totem, a Trap, a potion, a Skill) is the number printed, as every one of those
  * statuses says "attacks" (DECISIONS #376); only the difficulty's damage percent still applies.
  */
@@ -509,8 +513,10 @@ export function modifiedDamage(
     note(`Faltering −${deb ? 50 : 25}%`);
   }
   if (attacker && stacks(attacker, 'radiant') > 0) {
-    n *= RADIANT_DAMAGE;
-    note(`Radiant ×${RADIANT_DAMAGE}`);
+    // (its first attack hit x2.5, the rest x2: DECISIONS #792; previews show the next hit's)
+    const x = attacker.radiantEdge ? RADIANT_FIRST_HIT : RADIANT_DAMAGE;
+    n = Math.floor(n * x);
+    note(`Radiant ×${x}`);
   } else if (attacker && stacks(attacker, 'wrath') > 0) {
     n *= 2;
     note('Fury ×2');
@@ -872,6 +878,14 @@ function attackHit(
     if (steps && a.disciplineBonus + extra)
       steps.push(`Ascendancy +${a.disciplineBonus + extra}% = ${amount}`);
   }
+  // (Radiant's first hit is spent: the next is x2, DECISIONS #792; not by a hit Shielded cancels, which never lands)
+  if (
+    attacked &&
+    t.side !== a.actor.side &&
+    a.actor.radiantEdge &&
+    !(amount > 0 && stacks(t, 'shielded') > 0)
+  )
+    delete a.actor.radiantEdge;
   // (a companion that takes only part of a Command: the Grave Colossus strikes at half)
   if (a.commandPct !== undefined && t.side !== a.actor.side && amount > 0) {
     amount = Math.floor((amount * a.commandPct) / 100);
@@ -2292,24 +2306,24 @@ function execOp(r: Run, a: Act, op: Op): void {
             t,
             halved(
               Math.round(
-              (scaledAmount +
-                edge +
-                honed +
-                hitVigor -
-                halfMight +
-                keen +
-                deft +
-                (ripostes.has(t.id) ? riposte : 0) +
-                ember +
-                resonanceOf(a) +
-                (a.spellBonus ?? 0) +
-                marrow +
-                attackAuraBonus(side, a.actor, isAttackAct(a))) *
-                lone *
-                leth *
-                noose *
-                fin *
-                allyPct,
+                (scaledAmount +
+                  edge +
+                  honed +
+                  hitVigor -
+                  halfMight +
+                  keen +
+                  deft +
+                  (ripostes.has(t.id) ? riposte : 0) +
+                  ember +
+                  resonanceOf(a) +
+                  (a.spellBonus ?? 0) +
+                  marrow +
+                  attackAuraBonus(side, a.actor, isAttackAct(a))) *
+                  lone *
+                  leth *
+                  noose *
+                  fin *
+                  allyPct,
               ),
             ),
             to === 'target' || to === 'front',
@@ -2323,7 +2337,13 @@ function execOp(r: Run, a: Act, op: Op): void {
             cracked = fractureUnit(r, a, side, t, op.hitFracture) || cracked;
           // Reaping converts hero Attack HP damage at half, companion Attack HP damage at one quarter; round each hit up.
           if (reaping && lostHere > 0 && t.side !== a.actor.side && t.hp > 0)
-            addStatus(r, t, 'doom', Math.ceil(lostHere / (a.actor.kind === 'ally' ? 4 : 2)), a.actor.side);
+            addStatus(
+              r,
+              t,
+              'doom',
+              Math.ceil(lostHere / (a.actor.kind === 'ally' ? 4 : 2)),
+              a.actor.side,
+            );
           // Sic 'Em: a companion that hits its quarry raises another like it
           const quarry = stacks(t, 'quarry');
           if (a.actor.kind === 'ally' && quarry > 0 && t.side !== a.actor.side && !r.s.winner)
@@ -6750,7 +6770,9 @@ export function previewAllyDamage(db: CombatDb, s: CombatState, id: string): Liv
   const def = db.units[unit.def];
   if (def?.brain.kind !== 'ally' || !def.brain.act.some(containsDamage)) return null;
   // (face-down Traps are hidden; an enemy's face-up ones count, DECISIONS #751)
-  copy.sides[other(unit.side)].snares = copy.sides[other(unit.side)].snares.filter((sn) => sn.owner);
+  copy.sides[other(unit.side)].snares = copy.sides[other(unit.side)].snares.filter(
+    (sn) => sn.owner,
+  );
   const front = copy.sides[other(unit.side)].units.find((u) => u.hp > 0) ?? null;
   const act = mkAct(unit, { target: front });
   const projection: DamageProjection = {

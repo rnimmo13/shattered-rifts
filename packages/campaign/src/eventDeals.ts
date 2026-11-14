@@ -3,7 +3,7 @@
 
 import { clone } from '@sr/combat';
 import { dealFeasible, nameRemovals, pinRemovals, type EventCtx } from './deals';
-import { offerBoon } from './rewards';
+import { MAX_BELT, beltSize, offerBoon } from './rewards';
 import type { EventDef } from './events';
 import type { DealStep, EventOption, RunState } from './types';
 
@@ -33,6 +33,8 @@ export const maxHp = (n: number): DealStep => ({ k: 'maxHp', n });
 export const shards = (n: number): DealStep => ({ k: 'shards', n });
 export const wound = (n = 1): DealStep => ({ k: 'wound', n });
 export const potion = (n = 1): DealStep => ({ k: 'potion', n });
+/** one more place on the potion belt (DECISIONS #799) */
+export const belt: DealStep = { k: 'belt' };
 export const boon: DealStep = { k: 'boon' };
 export const upgrade = (n = 1): DealStep => ({ k: 'upgrade', n });
 export const remove = (of: 'wound' | 'basic' | 'any', n = 1): DealStep => ({ k: 'remove', of, n });
@@ -99,6 +101,32 @@ export function def(spec: DealSpec): EventDef {
 
 export const DEAL_EVENTS: EventDef[] = (
   [
+    // (more potion places: Robert, 2026-11-14, DECISIONS #799. Only while the belt can grow)
+    {
+      id: 'pouchmaker',
+      weight: 1,
+      title: 'The pouchmaker',
+      text: 'A hunched leatherworker sits among strips of hide, stitching pouches to belts with a bone needle. She eyes the empty loops at your hip.',
+      needs: (r) => beltSize(r) < MAX_BELT,
+      opts: [
+        [
+          'Buy a pouch (60 shards): your belt holds one more potion',
+          [shards(-60), belt],
+          'She stitches it on while you wait. It fits as if it had always been there.',
+        ],
+        [
+          'Pay in blood (lose 10 HP): your belt holds one more potion',
+          [hurt(10), belt],
+          'The leather she wants is fresh, and some of it is yours.',
+        ],
+        [
+          'Buy what she has in stock instead (30 shards): take a potion',
+          [shards(-30), potion(1)],
+          'She hands over a stoppered flask from under the bench.',
+          'optional',
+        ],
+      ],
+    },
     {
       id: 'ferry',
       weight: 1.2,

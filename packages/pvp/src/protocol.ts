@@ -132,7 +132,9 @@ export interface Entry {
 // 111 (#777): the Hunter's companions share a quarter of the Might, the Beastmaster's half.
 // Companion Reaping converts one quarter of HP damage; Trail of Blood and Bloodsong cost 1.
 // 115 (#787): Kindle Fury deals 11 (was 9); every starting deck is 3 Strikes, 2 Defends and 5 class cards.
-export const RULES_VERSION = 115;
+// 116 (#790-#796): campaign damage curve 93% to 200%; Radiant's first hit x2.5 then x2; the Full Trick 5 + 5 a trick; Fault Reader
+// Spell Power; nineteen near-duplicate cards made distinct.
+export const RULES_VERSION = 116;
 
 /** Who you are playing, before a game starts: their name and badges, not their deck or Riftwalker. */
 export type FoeCard = Pick<Entry, 'name' | 'trophies' | 'rank'>;

@@ -99,12 +99,12 @@ function TierTable() {
   return (
     <>
       <p className="learn__note">
-        Every Rift Tier adds {HP_PER_TIER} percentage points of enemy HP and {DMG_PER_TIER} of enemy
-        damage, at the same rate through the final gauntlet, up to {enemyScale(MAX_TIER, 1).hp}% HP
-        and {enemyScale(MAX_TIER, 1).dmg}% damage at Tier {MAX_TIER}. An Elite has{' '}
-        {Math.round((ELITE_HP - 1) * 100)}% more HP and deals {Math.round((ELITE_DAMAGE - 1) * 100)}%
-        more damage than these numbers; a Warden {Math.round((WARDEN_HP - 1) * 100)}% and{' '}
-        {Math.round((WARDEN_DAMAGE - 1) * 100)}%.
+        Every Rift Tier adds about {Math.round(HP_PER_TIER)} percentage points of enemy HP and about{' '}
+        {Math.round(DMG_PER_TIER)} of enemy damage, at the same rate through the final gauntlet, up
+        to {enemyScale(MAX_TIER, 1).hp}% HP and {enemyScale(MAX_TIER, 1).dmg}% damage at Tier{' '}
+        {MAX_TIER}. An Elite has {Math.round((ELITE_HP - 1) * 100)}% more HP and deals{' '}
+        {Math.round((ELITE_DAMAGE - 1) * 100)}% more damage than these numbers; a Warden{' '}
+        {Math.round((WARDEN_HP - 1) * 100)}% and {Math.round((WARDEN_DAMAGE - 1) * 100)}%.
       </p>
       <table className="learn__table learn__table--tiers">
         <thead>
@@ -418,7 +418,7 @@ export function LearnScreen() {
               ],
               [
                 'Shrine',
-                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take one blessing from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, or a free spin of the Spin To Win reel instead. Only one: the shrine closes after it.",
+                "Rest to heal, upgrade a card, or remove one for good (or walk away). From Tier VI it is a Gambler's Shrine: take one blessing from seven, including wagers like a Sacrifice for a Rift-crossed card, Loaded Dice, the Chisel and the Ledger, and beside it one prize of the Spin To Win reel (every spin there costs shards, the first too).",
               ],
               ['Merchant', 'Spend shards on cards, potions and Boons. You can also sell potions.'],
               [

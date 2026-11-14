@@ -34,6 +34,7 @@ describe('Monk stance bonuses are binary and described accurately', () => {
             const base = (id === 'angry-palm' ? 7 : 14) + (upgraded ? 3 : 0);
             const bonus = id === 'angry-palm' ? 6 : 10;
             expect(text).toContain(`${base} damage, or ${base + bonus}`);
+            // (Fury doubles; Radiant set here as a plain status was not entered, so it has no first-hit x2.5 and doubles: #792)
             expect(1000 - target.hp).toBe(
               (base + (stance === 'wrath' ? bonus : 0)) *
                 (stance === 'wrath' || stance === 'radiant' ? 2 : 1),

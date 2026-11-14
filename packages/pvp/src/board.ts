@@ -331,11 +331,29 @@ const RUN_STATUS_PRIORITY: Record<RunStatus, number> = {
   fell: 2,
   abandoned: 1,
 };
-/** Displayed Tier first, then completion/liveness, unspent shards, and earlier progress. */
+/** a run's play time, when it was reported and is not faster than the board's pace limit for how far it got (the time shown) */
+function playTime(r: RunRow): number | null {
+  const stages = r.ended === 'completed' ? stagesInAll(12, 3) : stagesInAll(r.tier, r.stage);
+  return typeof r.playMs === 'number' && r.playMs > 0 && r.playMs >= stages * RUN_MIN_STAGE_MS
+    ? r.playMs
+    : null;
+}
+/** a completed run's clear time (its play time), else none */
+function clearTime(r: RunRow): number | null {
+  return r.ended === 'completed' ? playTime(r) : null;
+}
+
+/**
+ * Displayed Tier first, then completion/liveness; completed runs by the fastest clear (Robert, DECISIONS #797: a run without a clear
+ * time after those with one); then unspent shards and earlier progress.
+ */
 function compareCampaignRuns(x: RunRow, y: RunRow): number {
+  const tx = clearTime(x);
+  const ty = clearTime(y);
   return (
     y.tier - x.tier ||
     RUN_STATUS_PRIORITY[y.ended ?? 'live'] - RUN_STATUS_PRIORITY[x.ended ?? 'live'] ||
+    (tx !== null && ty !== null ? tx - ty : tx !== null ? -1 : ty !== null ? 1 : 0) ||
     (y.shards ?? 0) - (x.shards ?? 0) ||
     x.at - y.at ||
     x.name.localeCompare(y.name)
@@ -364,12 +382,9 @@ export function standingsRuns(rows: readonly RunRow[]): (RunStanding & { player:
     total: r.total,
     shards: r.shards ?? null,
     status: r.ended ?? 'live',
-    // (a time faster than the board's own pace limit allows, one stage a minute through all twelve Tiers, is not shown)
-    ...(r.ended === 'completed' &&
-    typeof r.playMs === 'number' &&
-    r.playMs >= stagesInAll(12, 3) * RUN_MIN_STAGE_MS
-      ? { playMs: r.playMs }
-      : {}),
+    // (every run's play time, cleared or not, DECISIONS #797; a time faster than the board's own pace limit allows for how far it got,
+    // one stage a minute, is not shown)
+    ...(playTime(r) !== null ? { playMs: playTime(r)! } : {}),
   }));
 }
 

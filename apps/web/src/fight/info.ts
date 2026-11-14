@@ -88,7 +88,7 @@ export const STATUS_INFO: Record<
     name: 'Radiant',
     glyph: '☀',
     tone: 'good',
-    text: 'A stance. You deal double attack damage. Entering it gives 1 Mana, the first time each turn. It ends when your turn ends.',
+    text: 'A stance. Your first attack hit deals 2.5 times the damage, the rest double. Entering it gives 1 Mana, the first time each turn. It ends when your turn ends.',
   },
   mantra: {
     name: 'Fervor',
@@ -1071,7 +1071,7 @@ export const UI_TIPS = {
   potionSlot: {
     kicker: 'Potion belt',
     title: 'Empty potion slot',
-    text: 'You can carry up to 3 potions. Fights and shops give them.',
+    text: 'You can carry 3 potions, up to 5 with pouches from merchants and the pouchmaker. Fights and shops give them.',
   } as TipContent,
 };
 

@@ -128,11 +128,18 @@ export const KNIGHT: CardDef[] = [
     when('exhaustedTurn', { atLeast: 1 }, [barrier(8)]),
   ]),
   // (Taunt)
-  m('uncommon', 'provoke', 'Provoke', 'skill', 1, 'foe', [
-    barrier(5),
-    status('plating', 2),
-    status('exposed', 1, 'target'),
-  ]),
+  // (2 Exposed to ALL enemies since DECISIONS #796: it was Brace and Press with 2 more Barrier; now it dares the whole row. Thorns made
+  // it Iron Spines, a card made it Oath of Iron)
+  m(
+    'uncommon',
+    'provoke',
+    'Provoke',
+    'skill',
+    1,
+    'none',
+    [barrier(4), status('exposed', 2, 'allFoes')],
+    { up: { effects: [barrier(7), status('exposed', 2, 'allFoes')] } },
+  ),
   // (Stone Armor)
   m('uncommon', 'stoneskin', 'Stoneskin', 'power', 1, 'none', [status('plating', 5)], {
     up: { effects: [status('plating', 6)] },

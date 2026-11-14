@@ -540,6 +540,27 @@ it('prefers confirmed completion over equal-progress deaths across account/Vault
   expect(board[0]!.shards).toBeNull();
 });
 
+it('ranks completed runs by the fastest clear, a run without a clear time after them; every run shows its play time (#797)', () => {
+  const base = {
+    hero: 'engineer',
+    tier: 12,
+    stage: 3,
+    at: 100,
+    ended: 'completed' as const,
+    shards: 0,
+  };
+  const hour = 3_600_000;
+  const board = rankRuns([
+    { ...base, player: 'slow', name: 'Slow', playMs: 9 * hour, shards: 999 },
+    { ...base, player: 'fast', name: 'Fast', playMs: 5 * hour },
+    { ...base, player: 'untimed', name: 'Untimed', shards: 9999 },
+    { ...base, player: 'live', name: 'Live', tier: 4, stage: 1, ended: null, playMs: 2 * hour },
+  ]);
+  expect(board.map((r) => r.name)).toEqual(['Fast', 'Slow', 'Untimed', 'Live']);
+  expect(board.find((r) => r.name === 'Live')!.playMs).toBe(2 * hour);
+  expect(board.find((r) => r.name === 'Untimed')!.playMs).toBeUndefined();
+});
+
 it('orders Campaign rows by Tier, Completed/Live/Dead/Abandoned, shards, then earlier arrival', () => {
   const base = { hero: 'engineer', tier: 12, stage: 3, at: 100 };
   const board = rankRuns([

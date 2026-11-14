@@ -56,7 +56,13 @@ const DB: CombatDb = {
     }),
     c('sw', { cost: 0, kind: 'attack', target: 'foe', tags: ['sword'], effects: foeAtk }),
     c('sp', { cost: 0, tags: ['spell'], effects: [] }),
-    c('both', { cost: 0, kind: 'attack', target: 'foe', tags: ['sword', 'spell'], effects: foeAtk }),
+    c('both', {
+      cost: 0,
+      kind: 'attack',
+      target: 'foe',
+      tags: ['sword', 'spell'],
+      effects: foeAtk,
+    }),
     c('untagged', { cost: 0, kind: 'attack', target: 'foe', effects: foeAtk }),
     c('slay', {
       cost: 0,
@@ -868,8 +874,8 @@ describe('stances', () => {
     expect(s.sides.a.mana).toBe(6 - 2 + 2);
   });
 
-  it('Mantra builds to Radiant: double damage (#764), Mana on entry, gone at end of turn', () => {
-    let s = start(['chant', 'chant', 'chant', 'chant', 'strike'], { mana: 6 });
+  it('Mantra builds to Radiant: first hit 2.5x then 2x (#792), Mana on entry, gone at end of turn', () => {
+    let s = start(['chant', 'chant', 'chant', 'chant', 'strike', 'strike'], { mana: 6 });
     s = play(s, 'h0').state;
     expect(hero(s).statuses.mantra).toBe(3);
     s = play(s, 'h1').state;
@@ -882,7 +888,11 @@ describe('stances', () => {
     expect(s.sides.a.mana).toBe(6 - 4 + RADIANT_ENTER_MANA);
     const hp = foe(s).hp;
     s = play(s, 'h4', foe(s).id).state;
-    expect(hp - foe(s).hp).toBe(12);
+    expect(hp - foe(s).hp).toBe(15);
+    // (the second hit of the same Radiant: double)
+    const hp2 = foe(s).hp;
+    s = play(s, 'h5', foe(s).id).state;
+    expect(hp2 - foe(s).hp).toBe(12);
     s = end(s).state;
     expect(hero(s).statuses.radiant).toBeUndefined();
   });
@@ -1242,7 +1252,9 @@ describe('tier 3: statuses and tricks', () => {
     s = play(s, 'h0').state;
     hero(s).statuses.plating = 4;
     hero(s).statuses.brittle = 1;
-    const gained = end(s).events.flatMap((e) => (e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : []));
+    const gained = end(s).events.flatMap((e) =>
+      e.type === 'barrier' && e.target === hero(s).id ? [e.amount] : [],
+    );
     expect(gained).toEqual([3]);
   });
 
