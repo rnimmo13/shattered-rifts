@@ -27,7 +27,14 @@ import { authRoute, sessionOf, sha256 } from './auth';
 import { ROOM_CODE } from './wire';
 import { allowedOrigin } from './origins';
 import { desktopPage } from './authPage';
-import { checkPlay, playVaultName, PLAY_HEADER, PLAY_VAULT_HEADER } from './playAccess';
+import {
+  checkPlay,
+  playBoardId,
+  playVaultName,
+  PLAY_HEADER,
+  PLAY_VAULT_HEADER,
+  PLAY_WHO_HEADER,
+} from './playAccess';
 
 export { Matchmaker } from './matchmaker';
 export { MatchRoom } from './room';
@@ -491,6 +498,7 @@ async function playSocketRequest(
   const headers = new Headers(request.headers);
   headers.delete(PLAY_VAULT_HEADER);
   headers.delete(PLAY_HEADER);
+  headers.delete(PLAY_WHO_HEADER);
   if (!watch) {
     const name = await playVaultName(request, env, url.searchParams.get('code'));
     const token = url.searchParams.get('play') ?? '';
@@ -498,6 +506,9 @@ async function playSocketRequest(
       return json({ ok: false, error: 'play-required' }, 409);
     headers.set(PLAY_VAULT_HEADER, name);
     headers.set(PLAY_HEADER, token);
+    // (the player's leaderboard id, worked out here: a deck's own `who` from the browser could name anyone, DECISIONS #804)
+    const who = await playBoardId(request, env, url.searchParams.get('code'));
+    if (who) headers.set(PLAY_WHO_HEADER, who);
   }
   url.search = '';
   return new Request(url.toString(), { method: request.method, headers });

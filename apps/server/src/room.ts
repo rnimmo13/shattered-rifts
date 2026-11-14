@@ -615,10 +615,12 @@ export class MatchRoom extends DurableObject<Env> {
         ws.close(1008, 'bad deck');
         return;
       }
-      const first = checked.decks[0] as Entry;
       // the trophies they hold go on their card for the opponent to see (the board is asked, briefly, before a seat is taken, so
       // nothing about the room changes while waiting for it; a browser cannot claim any)
-      const badge = first.who ? await this.badgeOf(first.who) : {};
+      // (the player's leaderboard id is the Worker's word for this socket, never the deck's own `who`: a browser could put anyone's
+      // there, and play under their badges and rating, DECISIONS #804)
+      const serverWho = at?.play?.who;
+      const badge = serverWho ? await this.badgeOf(serverWho) : {};
       const looks = at?.play
         ? await playLooks(this.env, at.play.vault, at.play.token)
         : { ok: false, skins: {} as Record<string, string> };
@@ -656,7 +658,7 @@ export class MatchRoom extends DurableObject<Env> {
       }
       d.ids[free] = msg.playerId;
       // the leaderboard id is taken out of each deck before it is kept (the deck played goes to the opponent)
-      const who = first.who;
+      const who = serverWho;
       const mine = checked.decks.map((e): Entry => {
         // (the look is the Vault's word, never what the browser sent: DECISIONS #776)
         const { who: _w, skin: _s, ...rest } = e;

@@ -1,2 +1,11 @@
 /version.json
   Cache-Control: no-store, max-age=0
+
+# (security headers for every page, DECISIONS #804: no other site may frame the game (clickjacking), browsers keep to the declared
+# file types, and other sites are told only the origin a link came from. A full Content-Security-Policy is still to come: Pixi needs
+# testing against it first)
+/*
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

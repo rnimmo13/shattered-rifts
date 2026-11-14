@@ -86,7 +86,9 @@ it('keeps every fight for the balance review, past the player’s own ten, with 
   expect(page.more).toBe(false);
   expect(page.retentionDays).toBe(30);
   const f = page.fights[0]!;
-  expect(f['player']).toBe(player);
+  // (an id of its own in the public export, never the player's leaderboard id, DECISIONS #804; the same player keeps the same one)
+  expect(f['player']).toMatch(/^[0-9a-f]{64}$/);
+  expect(f['player']).not.toBe(player);
   expect(f['encounter']).toBe('squire-pair');
   expect(f['node']).toBe('duel');
   expect(f['floor']).toBe(3);

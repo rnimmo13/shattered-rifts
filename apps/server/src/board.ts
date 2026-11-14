@@ -1862,10 +1862,22 @@ export class Leaderboard extends DurableObject<Env> {
           .toArray();
         // (20 a page: a fight with its replay can be a few hundred kilobytes, and the board must not hold too much at once)
         const page = rows.slice(0, 20);
+        // (one player's fights can still be told apart, but by an id of their own, never their leaderboard id: this export is public,
+        // and a leaderboard id let a modified client play the Arena as that player, DECISIONS #804)
+        const exportId = async (owner: string): Promise<string> => {
+          const bytes = new TextEncoder().encode(`shattered-rifts-export:${owner}`);
+          const hash = await crypto.subtle.digest('SHA-256', bytes);
+          return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('');
+        };
+        const fights = await Promise.all(
+          page.map(async (r) => ({
+            player: await exportId(r.owner),
+            ...(JSON.parse(r.data) as object),
+          })),
+        );
         return json({
           schema: 1,
-          // (the owner id is already a one-way hash of the account: kept so one player's fights can be told apart, never who they are)
-          fights: page.map((r) => ({ player: r.owner, ...(JSON.parse(r.data) as object) })),
+          fights,
           next: page.at(-1)?.seq ?? after,
           more: rows.length > 20,
           retentionDays: BALANCE_DAYS,

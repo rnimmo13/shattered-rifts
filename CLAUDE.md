@@ -2,6 +2,10 @@
 
 For future Riftwalker, skin, companion, dragon, and enemy art, use `docs/ART_DIRECTION.md` and its approved image anchors. The target is inked, stylized fantasy with a slightly cartoon feel. Do not use whole-character distortion for idle breathing. Older flat-cartoon enemy prompts are historical where their style conflicts with this direction. No redraw or release is authorized by this note.
 
+# Release approved 0.279.0 / rules 116 (2026-11-14; decisions 802-805)
+
+Robert explicitly approves shipping ("ok lets ship"). Website/server and the Windows updater. Future changes need fresh release approval. A Support page linking to his Ko-fi during the alpha (`SUPPORT_OPEN`; credits say "made by Chief Sharkbait", his public name); a Roadmap page that shows ROADMAP.md (Early Access aimed at early 2027; the whole file ships in the site's code, so nothing private goes in it); a security pass (#804: the Arena's leaderboard id from the server, `x-sr-play-who`; reserved and cleaned names; framing blocked); Windows installers and updates now in the public `rnimmo13/shattered-rifts-releases` (#805), 0.279.0 also published to the game's repo as the bridge. Next: once most players have updated, Robert makes `rnimmo13/shattered-rifts` private and `BRIDGE` in apps/desktop/scripts/release.mjs is emptied.
+
 # Release approved 0.278.0 / rules 116 (2026-11-14; decision 801)
 
 Robert explicitly approves shipping ("lets ship it"). Website/server and matching Windows updater. Future changes need fresh release approval. The Gambler's Shrine laid out tighter (compact tiles, Spin To Win beside them on a wide screen, Leave at the top in purple, a reminder before leaving the reel unspun or its prize untaken); Spin To Win's take buttons green; no shadows under figures in battle or drop shadows under the Riftwalker models (the home stage's floor glow stays). No rules change.
@@ -259,7 +263,9 @@ free during testing and later becomes a cut-down demo; never promise it stays fr
 (#736): ranked soft resets each month and nothing else is taken. **No monthly wipe (#753, 2026-11-11):** saved decks and all progress
 are kept; the only wipe is at release, when everyone starts fresh (not built, no date). Players never lose a cosmetic, to any wipe.
 Built (#737): card backs and name plates as cosmetics, server-only grants, season records and the claim; no season has rewards yet. No pay-to-win, ever. The old free, Ko-fi-funded
-plan is superseded; do not build Ko-fi, supporter codes or donation prompts.
+plan is superseded; do not build Ko-fi, supporter codes or donation prompts. **Exception (Robert, 2026-11-14, #802):** during the alpha only, a
+plain `#/support` page links to his Ko-fi (https://ko-fi.com/chiefsharkbait) for donations that unlock nothing; turn `SUPPORT_OPEN` off at
+the Steam Early Access launch. No supporter perks, codes or in-play prompts.
 
 ## Two AI assistants share this repo (Robert, 2026-11-06)
 

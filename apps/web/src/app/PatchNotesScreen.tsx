@@ -44,7 +44,8 @@ export default function PatchNotesScreen() {
         <h1>Patch notes</h1>
         <p>
           What changed from patch to patch, newest first. You are playing{' '}
-          <b>v{BUILD.version === '0.0.0' ? PATCH_NOTES[0]?.version : BUILD.version}</b>.
+          <b>v{BUILD.version === '0.0.0' ? PATCH_NOTES[0]?.version : BUILD.version}</b>. For what is
+          coming, see the <a href="#/roadmap">roadmap</a>.
         </p>
       </header>
 

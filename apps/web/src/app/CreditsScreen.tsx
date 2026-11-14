@@ -20,11 +20,7 @@ const CREDITS: Credit[] = [
           CC-BY 3.0
         </a>
         , from OpenGameArt (
-        <a
-          href="https://opengameart.org/content/woodland-fantasy"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://opengameart.org/content/woodland-fantasy" target="_blank" rel="noreferrer">
           Woodland Fantasy
         </a>
         ,{' '}
@@ -58,7 +54,8 @@ export function CreditsScreen() {
       </a>
       <h1 className="learn__title">Credits</h1>
       <p className="learn__note">
-        Shattered Rifts is made by Robert.{' '}
+        {/* (his public name, Robert 2026-11-14: Chief Sharkbait, as on Ko-fi) */}
+        Shattered Rifts is made by Chief Sharkbait.{' '}
         {CREDITS.length > 0
           ? 'Thank you to the artists and composers whose work is in the game:'
           : 'No third-party art is used in the game.'}

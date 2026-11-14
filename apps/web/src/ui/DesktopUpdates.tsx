@@ -4,7 +4,7 @@ import { desktopBridge, restartDesktopUpdate, type DesktopUpdateStatus } from '.
 import './desktopUpdates.css';
 
 const DESKTOP_DOWNLOAD =
-  'https://github.com/rnimmo13/shattered-rifts/releases/latest/download/Shattered-Rifts-Setup.exe';
+  'https://github.com/rnimmo13/shattered-rifts-releases/releases/latest/download/Shattered-Rifts-Setup.exe';
 
 /**
  * "Download" in the home page's header: a small menu of the desktop apps. Windows downloads at once; Mac is listed as not ready yet

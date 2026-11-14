@@ -28,6 +28,8 @@ const PLACES: Readonly<Record<string, Place>> = {
   '#/learn': 'chronicle',
   '#/patch-notes': 'chronicle',
   '#/credits': 'chronicle',
+  '#/support': 'chronicle',
+  '#/roadmap': 'chronicle',
 };
 
 /** The place a page is in, if it has one (a fight, a run, a replay and the lore have their own pictures). */

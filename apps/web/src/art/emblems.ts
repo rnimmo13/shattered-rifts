@@ -255,7 +255,7 @@ export const EMBLEMS: Record<string, Emblem> = {
 
 /** SVG markup for an emblem in one colour. */
 export function emblemSvg(name: string, color: string): string {
-  const e = EMBLEMS[name] ?? EMBLEMS['shield']!;
+  const e = (Object.hasOwn(EMBLEMS, name) ? EMBLEMS[name] : undefined) ?? EMBLEMS['shield']!;
   const fills = e.f.map((d) => `<path d="${d}" fill-rule="evenodd"/>`).join('');
   const strokes = (e.s ?? [])
     .map(
@@ -277,7 +277,7 @@ export function paintEmblem(
   size: number,
   color: string,
 ): void {
-  const e = EMBLEMS[name] ?? EMBLEMS['shield']!;
+  const e = (Object.hasOwn(EMBLEMS, name) ? EMBLEMS[name] : undefined) ?? EMBLEMS['shield']!;
   g.save();
   g.translate(cx - size / 2, cy - size / 2);
   g.scale(size / 64, size / 64);

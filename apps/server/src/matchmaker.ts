@@ -99,7 +99,8 @@ export class Matchmaker extends DurableObject<Env> {
       ws.close(1008, 'bad deck');
       return;
     }
-    const rating = await this.ratingOf(checked.decks[0]?.who);
+    // (the rating of the player the Worker says this is, never a deck's own `who`, DECISIONS #804)
+    const rating = await this.ratingOf(access.who);
     if (!(await checkPlay(this.env, access.vault, access.token))) {
       ws.close(1008, 'play-required');
       return;
@@ -148,7 +149,7 @@ export class Matchmaker extends DurableObject<Env> {
     const deepest = checked.decks.reduce((best: Entry, d) => (d.tier > best.tier ? d : best));
     try {
       // (someone whose id is not known still gets a ghost, only possibly one of their own decks)
-      const requester = deepest.who ?? '0'.repeat(64);
+      const requester = (ws.deserializeAttachment() as Place | null)?.play?.who ?? '0'.repeat(64);
       const res = await this.env.BOARD.get(this.env.BOARD.idFromName('main')).fetch(
         new Request('https://board.invalid/ghost/pick', {
           method: 'POST',

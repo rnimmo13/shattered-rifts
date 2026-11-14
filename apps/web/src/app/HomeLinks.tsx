@@ -5,6 +5,7 @@
 import type { ReactNode } from 'react';
 import { unseenEarned } from '@sr/pvp';
 import { useEarned } from '../cosmetics/mastery';
+import { SUPPORT_OPEN } from './SupportScreen';
 
 /** Line icons on a 24-unit grid, drawn in the tile's colour. */
 const ICON: Record<string, ReactNode> = {
@@ -96,6 +97,10 @@ const ICON: Record<string, ReactNode> = {
       <path d="M20 4 10 14M10 14l-2.5 2.5M6.5 19.5l-2-2M9 17l-2.5-2.5" />
     </>
   ),
+  // (the alpha's support page, DECISIONS #802)
+  heart: (
+    <path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10C19.5 15.4 12 20 12 20z" />
+  ),
 };
 
 /** One of the line icons above, at a size. */
@@ -164,6 +169,18 @@ export function HomeHeaderLinks(props: { unreadNotes: boolean }) {
         </span>
         {props.unreadNotes && <i className="home__dot" aria-hidden />}
       </a>
+      {SUPPORT_OPEN && (
+        <a
+          className="btn btn--small btn--ghost home__headlink"
+          href="#/support"
+          title="Support the game"
+        >
+          <span>
+            <LineIcon name="heart" size={18} />
+            <span className="home__headlabel">Support</span>
+          </span>
+        </a>
+      )}
     </>
   );
 }

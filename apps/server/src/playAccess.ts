@@ -4,15 +4,33 @@ import type { Env } from './env';
 
 export const PLAY_HEADER = 'x-sr-play-token';
 export const PLAY_VAULT_HEADER = 'x-sr-play-vault';
+/** the player's leaderboard id, worked out by the Worker from their account or Vault code (never what a browser sent, DECISIONS #804) */
+export const PLAY_WHO_HEADER = 'x-sr-play-who';
 export interface PlaySocket {
   vault: string;
   token: string;
+  /** the leaderboard id the Worker worked out for this socket (a Room and the Matchmaker use it, never a deck's own `who`) */
+  who?: string;
 }
 export const socketPlay = (request: Request): PlaySocket | undefined => {
   const vault = request.headers.get(PLAY_VAULT_HEADER);
   const token = request.headers.get(PLAY_HEADER);
-  return vault && token ? { vault, token } : undefined;
+  const who = request.headers.get(PLAY_WHO_HEADER);
+  return vault && token
+    ? { vault, token, ...(who && /^[0-9a-f]{64}$/.test(who) ? { who } : {}) }
+    : undefined;
 };
+/** The leaderboard id of a socket's player: the same one the board gives them (/pvp/board/id), from their account or Vault code. */
+export async function playBoardId(
+  request: Request,
+  env: Env,
+  code: unknown,
+): Promise<string | null> {
+  const session = await sessionOf(request, env);
+  if (session) return sha256(`shattered-rifts-board-account:${session.account}`);
+  const clean = typeof code === 'string' ? normaliseCode(code) : null;
+  return clean ? sha256(`shattered-rifts-board:${clean}`) : null;
+}
 export async function playVaultName(
   request: Request,
   env: Env,

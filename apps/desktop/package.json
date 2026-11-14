@@ -1,6 +1,6 @@
 {
   "name": "@sr/desktop",
-  "version": "0.278.0",
+  "version": "0.279.0",
   "private": true,
   "description": "Shattered Rifts desktop playtest build",
   "author": "Shattered Rifts",
@@ -27,7 +27,7 @@
       {
         "provider": "github",
         "owner": "rnimmo13",
-        "repo": "shattered-rifts",
+        "repo": "shattered-rifts-releases",
         "releaseType": "release"
       }
     ],

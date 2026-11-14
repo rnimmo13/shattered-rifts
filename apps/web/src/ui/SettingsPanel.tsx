@@ -26,6 +26,7 @@ import { PerformanceReportShare } from './PerformanceReportShare';
 import { downloadBalanceReport } from '../app/balanceJournal';
 import { localOnly, releasePlayAccess } from '../playAccess';
 import { battleActive, subscribeBattle } from '../battleActivity';
+import { SUPPORT_OPEN } from '../app/SupportScreen';
 import {
   desktopBridge,
   desktopSaveError,
@@ -581,9 +582,17 @@ export function SettingsPanel() {
               <a href="#/patch-notes" onClick={() => setOpen(false)}>
                 Patch notes
               </a>
+              <a href="#/roadmap" onClick={() => setOpen(false)}>
+                Roadmap
+              </a>
               <a href="#/credits" onClick={() => setOpen(false)}>
                 Credits
               </a>
+              {SUPPORT_OPEN && (
+                <a href="#/support" onClick={() => setOpen(false)}>
+                  Support the game
+                </a>
+              )}
             </nav>
             {desktopBridge() ? <DesktopUpdates /> : <WebUpdateControls />}
             <details className="settings__build">

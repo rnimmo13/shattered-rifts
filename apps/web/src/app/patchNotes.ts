@@ -46,6 +46,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.279.0',
+    date: '2026-11-14',
+    title: 'A roadmap, a support page and security fixes',
+    summary:
+      'See where the game is going on the new Roadmap page, support it on Ko-fi if you would like to, and play safer with several security fixes.',
+    notes: [
+      {
+        kind: 'new',
+        title: 'Roadmap',
+        text: 'A Roadmap page shows what is playable, what is being worked on and what is planned, including Steam Early Access, aimed at early 2027. Find it in Settings, on the patch notes and on the support page.',
+      },
+      {
+        kind: 'new',
+        title: 'Support the game',
+        text: 'Shattered Rifts is made by one person, Chief Sharkbait. If you enjoy it, a Support page (the heart at the top of the home screen) links to Ko-fi. Support is a thank-you: it unlocks nothing, and everyone plays the same game.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Security',
+        text: 'Several security fixes protect players’ accounts, names and Arena records. Names can no longer pass for the team or the game’s maker, and other sites can no longer show the game inside their own pages.',
+      },
+      {
+        kind: 'changed',
+        title: 'Windows downloads',
+        text: 'The Windows app now downloads its updates from a new place. Update as usual; nothing else changes, and you can keep playing on the website or the app, whichever you like.',
+      },
+    ],
+  },
+  {
     version: '0.278.0',
     date: '2026-11-14',
     title: 'A tidier Gambler’s Shrine, no shadows',

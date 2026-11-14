@@ -154,18 +154,43 @@ export function isProfane(name: string): boolean {
   return words.some((w) => WORDS.has(w) || WORDS.has(w.replace(LONG_RUNS, '$1$1')));
 }
 
-/** Strip anything odd out of a display name (and replace an abusive one). */
+/** Words a name may not use, so no one passes for the game's team or its maker (DECISIONS #804). */
+const RESERVED_WORDS = new Set([
+  'admin',
+  'administrator',
+  'mod',
+  'moderator',
+  'official',
+  'staff',
+  'support',
+  'dev',
+  'developer',
+  'gm',
+]);
+/** ...nor these, however they are spaced or punctuated */
+const RESERVED_SQUASHED = ['shatteredrifts', 'chiefsharkbait'];
+
+/** A name that would pass for the team, the game or its maker. */
+export function isReservedName(name: string): boolean {
+  const folded = name.toLowerCase();
+  const squashed = folded.replace(/[^a-z]/g, '');
+  if (RESERVED_SQUASHED.some((s) => squashed.includes(s))) return true;
+  return folded.split(/[^a-z]+/).some((w) => RESERVED_WORDS.has(w));
+}
+
+/** Strip anything odd out of a display name (and replace an abusive or official-sounding one). */
 export function cleanName(raw: unknown): string {
   const s = typeof raw === 'string' ? raw : '';
-  // keep printable characters only (no control characters, no angle brackets)
+  // keep printable characters only (no control characters, no angle brackets, and no invisible format characters: zero-width
+  // spaces and text-direction overrides let a name pass for another, DECISIONS #804)
   const kept = Array.from(s)
     .filter((ch) => {
       const c = ch.codePointAt(0) ?? 0;
-      return c >= 0x20 && c !== 0x7f && ch !== '<' && ch !== '>';
+      return c >= 0x20 && c !== 0x7f && ch !== '<' && ch !== '>' && !/\p{Cf}/u.test(ch);
     })
     .join('');
   const name = kept.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME);
-  return name === '' || isProfane(name) ? 'Riftwalker' : name;
+  return name === '' || isProfane(name) || isReservedName(name) ? 'Riftwalker' : name;
 }
 
 /** A run's Max HP as it arrives from outside: a whole number from 1 to MAX_RUN_HP, else none (DECISIONS #538). */

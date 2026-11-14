@@ -16,7 +16,12 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
-const repo = 'rnimmo13/shattered-rifts';
+/** where installed copies look for updates, and the website's download comes from: a public repo of installers only, so the game's
+ * own repo can be private (DECISIONS #805) */
+const repo = 'rnimmo13/shattered-rifts-releases';
+/** also published here while copies from before the move still look there (0.278.0 and older read the game's repo): the release
+ * that moves them over. Empty this once the game's repo is private */
+const BRIDGE = ['rnimmo13/shattered-rifts'];
 const pkg = JSON.parse(readFileSync(resolve(root, 'apps/desktop/package.json'), 'utf8'));
 const web = JSON.parse(readFileSync(resolve(root, 'apps/web/package.json'), 'utf8'));
 const dist = resolve(root, 'apps/desktop/dist');
@@ -85,49 +90,55 @@ const gh = (...args) =>
     stdio: ['ignore', 'pipe', 'pipe'],
   }).trim();
 const tag = `v${pkg.version}`;
-let existing = null;
-try {
-  existing = JSON.parse(
-    gh('release', 'view', tag, '--repo', repo, '--json', 'isDraft,targetCommitish,url'),
-  );
-} catch {
-  /* create below also verifies authentication/repository access */
-}
-if (existing && (!existing.isDraft || existing.targetCommitish !== commit))
-  throw new Error('Release already exists; bump the version rather than replacing it');
-if (!existing) {
-  mkdirSync(resolve(root, '.wrangler'), { recursive: true });
-  const notes = resolve(root, '.wrangler/desktop-release-notes.txt');
-  writeFileSync(
-    notes,
-    `Windows 64-bit desktop playtest v${pkg.version}.\n\nDownload Shattered-Rifts-Setup.exe, install it, and launch Shattered Rifts. Updates download automatically. Once ready, the game saves and restarts automatically outside an active battle; a failed save keeps the game open for retry.\n\nExisting versions 0.182.0 and earlier require this installer once to enable future automatic updates. Your saved profile is preserved.\n\nThis playtest is unsigned, so Windows may show an unrecognized-app warning. Steam editions receive updates through Steam.\n\nWebsite and patch notes: https://shatteredrifts.app/#/patch-notes\nSource commit: ${commit}\n`,
-  );
-  console.log(
-    gh(
-      'release',
-      'create',
-      tag,
-      '--repo',
-      repo,
-      '--draft',
-      '--target',
-      commit,
-      '--title',
-      `Shattered Rifts ${tag}`,
-      '--notes-file',
-      notes,
-    ),
-  );
-}
-console.log('Uploading installer and metadata to the draft release…');
-gh(
-  'release',
-  'upload',
-  tag,
-  ...files.map((file) => resolve(dist, file)),
-  '--repo',
-  repo,
-  '--clobber',
+mkdirSync(resolve(root, '.wrangler'), { recursive: true });
+const notes = resolve(root, '.wrangler/desktop-release-notes.txt');
+writeFileSync(
+  notes,
+  `Windows 64-bit desktop playtest v${pkg.version}.\n\nDownload Shattered-Rifts-Setup.exe, install it, and launch Shattered Rifts. Updates download automatically. Once ready, the game saves and restarts automatically outside an active battle; a failed save keeps the game open for retry.\n\nExisting versions 0.182.0 and earlier require this installer once to enable future automatic updates. Your saved profile is preserved.\n\nThis playtest is unsigned, so Windows may show an unrecognized-app warning. Steam editions receive updates through Steam.\n\nWebsite and patch notes: https://shatteredrifts.app/#/patch-notes\n`,
 );
-gh('release', 'edit', tag, '--repo', repo, '--draft=false', '--latest');
-console.log(`Published https://github.com/${repo}/releases/tag/${tag}`);
+/** One repo's release: drafted, filled, then made the latest at once (a draft is never seen by installed copies). The releases repo
+ * holds no source, so its tag goes on its own default branch; the game's repo tags the commit the build came from. */
+function publish(target, onCommit) {
+  let existing = null;
+  try {
+    existing = JSON.parse(
+      gh('release', 'view', tag, '--repo', target, '--json', 'isDraft,targetCommitish,url'),
+    );
+  } catch {
+    /* create below also verifies authentication/repository access */
+  }
+  if (existing && (!existing.isDraft || (onCommit && existing.targetCommitish !== commit)))
+    throw new Error(
+      `Release already exists in ${target}; bump the version rather than replacing it`,
+    );
+  if (!existing)
+    console.log(
+      gh(
+        'release',
+        'create',
+        tag,
+        '--repo',
+        target,
+        '--draft',
+        ...(onCommit ? ['--target', commit] : []),
+        '--title',
+        `Shattered Rifts ${tag}`,
+        '--notes-file',
+        notes,
+      ),
+    );
+  console.log(`Uploading installer and metadata to the draft release in ${target}…`);
+  gh(
+    'release',
+    'upload',
+    tag,
+    ...files.map((file) => resolve(dist, file)),
+    '--repo',
+    target,
+    '--clobber',
+  );
+  gh('release', 'edit', tag, '--repo', target, '--draft=false', '--latest');
+  console.log(`Published https://github.com/${target}/releases/tag/${tag}`);
+}
+publish(repo, false);
+for (const old of BRIDGE) publish(old, true);

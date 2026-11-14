@@ -9,6 +9,8 @@ import { Bestiary } from '../fight/Bestiary';
 import { CardLibrary } from '../fight/CardLibrary';
 import { DeckLookup } from './DeckLookup';
 import { CreditsScreen } from './CreditsScreen';
+import { SUPPORT_OPEN, SupportScreen } from './SupportScreen';
+import { RoadmapScreen } from './RoadmapScreen';
 import { StoreScreen } from './StoreScreen';
 import { CosmeticsScreen } from './CosmeticsScreen';
 import { NameGate } from '../pvp/NameClaim';
@@ -109,6 +111,10 @@ function Screens({ hash }: { hash: string }) {
   }
   if (hash === '#/learn') return <LearnScreen />;
   if (hash === '#/credits') return <CreditsScreen />;
+  // (the alpha's support page, DECISIONS #802; gone when SUPPORT_OPEN is turned off)
+  if (hash === '#/support' && SUPPORT_OPEN) return <SupportScreen />;
+  // (the public roadmap, from ROADMAP.md, DECISIONS #803)
+  if (hash === '#/roadmap') return <RoadmapScreen />;
   if (hash === '#/store') return <StoreScreen />;
   if (hash === '#/cosmetics') return <CosmeticsScreen />;
   if (hash === '#/cards') return <CardLibrary />;

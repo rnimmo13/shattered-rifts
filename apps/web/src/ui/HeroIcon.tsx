@@ -40,9 +40,14 @@ function EmblemIcon(props: {
   tone?: 'bright' | 'dark';
 }) {
   const { hero, size = 40, plate = true, tone = 'bright' } = props;
-  const color = HERO_COLOR[hero] ?? '#d4a84b';
+  // (own keys only: a hero id such as "constructor" from outside would otherwise find Object's own, DECISIONS #804)
+  const known = Object.hasOwn(HERO_COLOR, hero);
+  const color = (known ? HERO_COLOR[hero] : undefined) ?? '#d4a84b';
   const dark = tone === 'dark';
-  const markup = emblemSvg(HERO_EMBLEM[hero] ?? 'shield', plate && !dark ? '#10142a' : color);
+  const markup = emblemSvg(
+    (Object.hasOwn(HERO_EMBLEM, hero) ? HERO_EMBLEM[hero] : undefined) ?? 'shield',
+    plate && !dark ? '#10142a' : color,
+  );
   const id = `hi-${useId().replace(/:/g, '')}`;
   return (
     <svg

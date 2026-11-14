@@ -1,3 +1,10 @@
+## 0.279.0 - 2026-11-14
+
+- A Roadmap page (`#/roadmap`) shows ROADMAP.md, brought up to date; Steam Early Access aimed at early 2027 (#803).
+- A Support page (`#/support`) links to Ko-fi during the alpha; Credits say the game is made by Chief Sharkbait (#802).
+- Security (#804): the Arena takes a player's leaderboard id from the server, never the client; the public balance export no longer lists leaderboard ids; names lose invisible characters and cannot pass for staff or the game's maker; every page refuses to be framed and sends nosniff and a referrer policy; hero and emblem lookups read own keys only.
+- Windows installers and updates move to the public `rnimmo13/shattered-rifts-releases`; 0.279.0 is also published to the game's repo so older copies move over (#805).
+
 ## 0.278.0 - 2026-11-14
 
 - Gambler's Shrine laid out tighter: compact blessing and wager tiles, Spin To Win beside them on a wide screen, Leave (purple) at the top, and a reminder before leaving with the reel unspun or its prize untaken; the reel no longer says its first spin is free (#801).
