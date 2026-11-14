@@ -295,6 +295,8 @@ export function ShrineView(props: {
     'upgrade' | 'remove' | 'dice' | 'engrave' | { take: string } | null
   >(null);
   const [altarOpen, setAltarOpen] = useState(false);
+  // (leaving a Gambler's Shrine with the reel unspun, or its prize still on the table, asks first: Robert 2026-11-14)
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const [hover, setHover] = useState<CardDef | null>(null);
   // a Gambler's Shrine (Tier VI and up): one blessing of seven, or the Brass Reel's prize in its place (DECISIONS #538)
   const refinement = run.map.nodes.find((n) => n.id === run.context?.nodeId)?.refinement === true;
@@ -314,6 +316,12 @@ export function ShrineView(props: {
   const heal = Math.min(run.maxHp - run.hp, restHeal(run));
   // one blessing a visit, and beside it one prize of the reel (DECISIONS #798): once a blessing is taken the others are closed
   const prizeWaiting = !!g && taken.size >= GAMBLER_BLESSINGS;
+  // the reel still has something for you: a prize on the table, or no spin yet and the shards for one
+  const reelTrial = g && !g.prized ? run.context?.event?.trial : undefined;
+  const reelPrize = reelTrial?.state === 'won';
+  const reelUnspun =
+    !!reelTrial && (reelTrial.rolls ?? 0) === 0 && run.shards >= spinCost(reelTrial, true);
+  const reelReminder = reelPrize || reelUnspun;
   const tag = (k: ShrineKind, why: string | false) =>
     taken.has(k) ? (
       <i>Taken</i>
@@ -371,125 +379,173 @@ export function ShrineView(props: {
             ? `Deep in the Rift the shrines deal in wagers. Take one blessing, and spin the reel for one prize too (${ROLL_COST} shards a spin). Walk away whenever you like.`
             : 'The rift is thin here. Take one blessing, or walk away.'}
       </p>
+      {/* (at the top, not between the blessings and the reel, Robert 2026-11-14; a Gambler's Shrine stays open for both) */}
+      {!refinement && (
+        <div className="shrine__leave">
+          {/* (purple, as the merchant's Leave and the other stops' leave buttons) */}
+          <button
+            className="btn btn--primary"
+            onClick={() => (reelReminder ? setConfirmLeave(true) : props.onLeave())}
+          >
+            <span>{taken.size > 0 || g?.prized ? 'Leave the shrine' : 'Walk away'}</span>
+          </button>
+        </div>
+      )}
       {g?.note && <p className="gshrine__note">{g.note}</p>}
-      {g && <h3 className="gshrine__head">Blessings</h3>}
-      <div className="choices-row">
-        {!refinement && (
-          <button
-            className="bigchoice"
-            disabled={prizeWaiting || !canRest || taken.has('rest')}
-            onClick={() => props.onTake({ kind: 'rest' })}
-          >
-            <b>Rest</b>
-            <span>
-              Heal {heal} HP ({run.hp}/{run.maxHp})
-            </span>
-            {tag('rest', !canRest && 'You are at full health')}
-          </button>
-        )}
-        <button
-          className="bigchoice"
-          disabled={prizeWaiting || ups.size === 0 || taken.has('upgrade')}
-          onClick={() => setPicking('upgrade')}
-        >
-          <b>Upgrade</b>
-          <span>Upgrade a card in your deck</span>
-          {tag('upgrade', ups.size === 0 && 'Nothing left to upgrade')}
-        </button>
-        <button
-          className="bigchoice"
-          disabled={prizeWaiting || !canRemove || taken.has('remove')}
-          onClick={() => setPicking('remove')}
-        >
-          <b>Let one go</b>
-          <span>Remove a card from your deck</span>
-          {tag('remove', !canRemove && `A deck cannot go below ${V2_DECK_RULES.minSize} cards`)}
-        </button>
-        {refinement && (
-          <button
-            className="bigchoice"
-            disabled={dice.size === 0}
-            onClick={() => setPicking('dice')}
-          >
-            <b>Sanctify</b>
-            <span>
-              Sanctify one card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
-            </span>
-            {tag('dice', dice.size === 0 && 'No card left to sanctify')}
-          </button>
-        )}
-        {refinement && (
-          <button className="bigchoice bigchoice--leave" onClick={props.onLeave}>
-            <b>Walk away</b>
-            <span>Leave your deck as it is and go on</span>
-          </button>
+      {/* (a Gambler's Shrine: its blessings and wagers in one column, the reel beside them on a wide screen, so it is not missed
+          below the fold, Robert 2026-11-14) */}
+      <div className={g ? 'gshrine__layout' : 'shrine__body'}>
+        <div className={g ? 'gshrine__choices' : 'shrine__body'}>
+          {g && <h3 className="gshrine__head">Blessings</h3>}
+          <div className="choices-row">
+            {!refinement && (
+              <button
+                className="bigchoice"
+                disabled={prizeWaiting || !canRest || taken.has('rest')}
+                onClick={() => props.onTake({ kind: 'rest' })}
+              >
+                <b>Rest</b>
+                <span>
+                  Heal {heal} HP ({run.hp}/{run.maxHp})
+                </span>
+                {tag('rest', !canRest && 'You are at full health')}
+              </button>
+            )}
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || ups.size === 0 || taken.has('upgrade')}
+              onClick={() => setPicking('upgrade')}
+            >
+              <b>Upgrade</b>
+              <span>Upgrade a card in your deck</span>
+              {tag('upgrade', ups.size === 0 && 'Nothing left to upgrade')}
+            </button>
+            <button
+              className="bigchoice"
+              disabled={prizeWaiting || !canRemove || taken.has('remove')}
+              onClick={() => setPicking('remove')}
+            >
+              <b>Let one go</b>
+              <span>Remove a card from your deck</span>
+              {tag('remove', !canRemove && `A deck cannot go below ${V2_DECK_RULES.minSize} cards`)}
+            </button>
+            {refinement && (
+              <button
+                className="bigchoice"
+                disabled={dice.size === 0}
+                onClick={() => setPicking('dice')}
+              >
+                <b>Sanctify</b>
+                <span>
+                  Sanctify one card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
+                </span>
+                {tag('dice', dice.size === 0 && 'No card left to sanctify')}
+              </button>
+            )}
+            {refinement && (
+              <button className="bigchoice bigchoice--leave" onClick={props.onLeave}>
+                <b>Walk away</b>
+                <span>Leave your deck as it is and go on</span>
+              </button>
+            )}
+          </div>
+          {g && (
+            <>
+              <h3 className="gshrine__head">Wagers</h3>
+              <div className="choices-row">
+                <button
+                  className="bigchoice"
+                  disabled={prizeWaiting || !g.altar.length || taken.has('sacrifice')}
+                  onClick={() => setAltarOpen(true)}
+                >
+                  <b>Sacrifice</b>
+                  <span>
+                    Give up a card of yours for one of {g.altar.length} Rift-crossed cards on the
+                    altar
+                  </span>
+                  {tag('sacrifice', !g.altar.length && 'The altar is bare')}
+                </button>
+                <button
+                  className="bigchoice"
+                  disabled={prizeWaiting || dice.size === 0 || taken.has('dice')}
+                  onClick={() => setPicking('dice')}
+                >
+                  <b>Loaded Dice</b>
+                  <span>
+                    Sanctify a card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
+                  </span>
+                  {tag('dice', dice.size === 0 && 'No card left to roll')}
+                </button>
+                <button
+                  className="bigchoice"
+                  disabled={prizeWaiting || cuts.size === 0 || taken.has('engrave')}
+                  onClick={() => setPicking('engrave')}
+                >
+                  <b>The Chisel: {MARK_INFO[g.chisel].name}</b>
+                  <span>Engrave a card: it {MARK_INFO[g.chisel].text}</span>
+                  {tag('engrave', cuts.size === 0 && 'No card can take it')}
+                </button>
+                <button
+                  className="bigchoice"
+                  disabled={prizeWaiting || taken.has('ledger')}
+                  onClick={() => props.onTake({ kind: 'ledger' })}
+                >
+                  <b>The Ledger</b>
+                  <span>
+                    Sign for +{ledgerGain(run)} Max HP. Each signature this run gives 2 more than
+                    the last{run.ledger ? ` (signed ${run.ledger}×)` : ''}
+                  </span>
+                  {tag('ledger', false)}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+        {g && run.context?.event?.trial && (
+          <div className="gshrine__reel" role="group" aria-label="Spin To Win">
+            <EventView
+              run={run}
+              onChoose={() => undefined}
+              onRoll={props.onRoll}
+              onPrize={props.onPrize}
+              onPickCard={() => undefined}
+              onPickDeck={() => undefined}
+            />
+          </div>
         )}
       </div>
-      {g && (
-        <>
-          <h3 className="gshrine__head">Wagers</h3>
-          <div className="choices-row">
-            <button
-              className="bigchoice"
-              disabled={prizeWaiting || !g.altar.length || taken.has('sacrifice')}
-              onClick={() => setAltarOpen(true)}
-            >
-              <b>Sacrifice</b>
-              <span>
-                Give up a card of yours for one of {g.altar.length} Rift-crossed cards on the altar
-              </span>
-              {tag('sacrifice', !g.altar.length && 'The altar is bare')}
-            </button>
-            <button
-              className="bigchoice"
-              disabled={prizeWaiting || dice.size === 0 || taken.has('dice')}
-              onClick={() => setPicking('dice')}
-            >
-              <b>Loaded Dice</b>
-              <span>
-                Sanctify a card: {diceOdds(run.tier)}% it rises 25%, otherwise it falls 25%
-              </span>
-              {tag('dice', dice.size === 0 && 'No card left to roll')}
-            </button>
-            <button
-              className="bigchoice"
-              disabled={prizeWaiting || cuts.size === 0 || taken.has('engrave')}
-              onClick={() => setPicking('engrave')}
-            >
-              <b>The Chisel: {MARK_INFO[g.chisel].name}</b>
-              <span>Engrave a card: it {MARK_INFO[g.chisel].text}</span>
-              {tag('engrave', cuts.size === 0 && 'No card can take it')}
-            </button>
-            <button
-              className="bigchoice"
-              disabled={prizeWaiting || taken.has('ledger')}
-              onClick={() => props.onTake({ kind: 'ledger' })}
-            >
-              <b>The Ledger</b>
-              <span>
-                Sign for +{ledgerGain(run)} Max HP. Each signature this run gives 2 more than the
-                last{run.ledger ? ` (signed ${run.ledger}×)` : ''}
-              </span>
-              {tag('ledger', false)}
-            </button>
+      {confirmLeave && (
+        <div className="modal" role="dialog" aria-modal="true" aria-label="Leave the shrine?">
+          <div className="modal__panel">
+            <h2 className="modal__title">Leave the shrine?</h2>
+            <p className="modal__hint">
+              {reelPrize
+                ? "The reel's prize is still on the table. Leave it behind?"
+                : `You have not spun Spin To Win yet: a spin is ${ROLL_COST} shards, and its prize is yours beside your blessing.`}
+            </p>
+            <div className="choices-row">
+              <button
+                className="btn btn--primary"
+                onClick={() => {
+                  setConfirmLeave(false);
+                  document
+                    .querySelector('.gshrine__reel')
+                    ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+              >
+                <span>{reelPrize ? 'Back to my prize' : 'Go to the reel'}</span>
+              </button>
+              <button
+                className="btn"
+                onClick={() => {
+                  setConfirmLeave(false);
+                  props.onLeave();
+                }}
+              >
+                <span>Leave anyway</span>
+              </button>
+            </div>
           </div>
-        </>
-      )}
-      {!refinement && (
-        <button className="btn" onClick={props.onLeave}>
-          <span>{taken.size > 0 ? 'Leave the shrine' : 'Walk away'}</span>
-        </button>
-      )}
-      {g && run.context?.event?.trial && (
-        <div className="gshrine__reel" role="group" aria-label="Spin To Win">
-          <EventView
-            run={run}
-            onChoose={() => undefined}
-            onRoll={props.onRoll}
-            onPrize={props.onPrize}
-            onPickCard={() => undefined}
-            onPickDeck={() => undefined}
-          />
         </div>
       )}
       {altarOpen && g && (
@@ -962,7 +1018,7 @@ function LighterLoad(props: {
       <b className="eventopt__name">{props.label}</b>
       <p>Taking this prize ends this stop.</p>
       <div className="choices-row">
-        <button className="btn btn--primary" onClick={() => setPicking(true)}>
+        <button className="btn btn--primary reel-take" onClick={() => setPicking(true)}>
           <span>Choose cards to remove</span>
         </button>
         <button className="btn" onClick={() => props.onTake([])}>
@@ -1023,7 +1079,7 @@ function TwinPrize(props: {
       <p>Taking this prize ends this stop.</p>
       <div className="choices-row">
         <button
-          className="btn btn--primary"
+          className="btn btn--primary reel-take"
           disabled={pickable.size === 0}
           onClick={() => setPicking(true)}
         >
@@ -1238,8 +1294,9 @@ export function EventView(props: {
                 {p.boon && <BoonCard id={p.boon} />}
                 {p.potion && <PotionCard id={p.potion} />}
                 {!p.choices && !p.removeUpTo && !p.twin && (
-                  <button className="eventopt" onClick={() => props.onPrize(p.id)}>
-                    <b className="eventopt__name">{p.label}</b>
+                  // (green: it is the prize to take, not one more option; Robert 2026-11-14)
+                  <button className="eventopt reel-take" onClick={() => props.onPrize(p.id)}>
+                    <b className="eventopt__name">Take it: {p.label}</b>
                   </button>
                 )}
               </div>

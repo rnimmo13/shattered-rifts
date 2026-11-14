@@ -88,7 +88,8 @@ export const ELITE_EVENTS: EliteSpec[] = [
 export const GAMBLER_REEL: EliteSpec = {
   id: 'gambler-shrine',
   title: 'Spin To Win',
-  text: 'In an alcove of the shrine a brass reel turns slowly, its prizes catching the candlelight. The first spin is free, then 25 shards a spin; take what it stops on, or pay to spin again. One prize to a visit.',
+  // (every spin paid here, and its prize taken beside a blessing, DECISIONS #798)
+  text: 'In an alcove of the shrine a brass reel turns slowly, its prizes catching the candlelight. Every spin costs 25 shards; take what it stops on, or pay to spin again. One prize a visit, beside your blessing.',
 };
 
 const name = (id: string): string => COMBAT_DB.cards[id]?.name ?? 'a card';

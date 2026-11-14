@@ -2,6 +2,10 @@
 
 For future Riftwalker, skin, companion, dragon, and enemy art, use `docs/ART_DIRECTION.md` and its approved image anchors. The target is inked, stylized fantasy with a slightly cartoon feel. Do not use whole-character distortion for idle breathing. Older flat-cartoon enemy prompts are historical where their style conflicts with this direction. No redraw or release is authorized by this note.
 
+# Release approved 0.278.0 / rules 116 (2026-11-14; decision 801)
+
+Robert explicitly approves shipping ("lets ship it"). Website/server and matching Windows updater. Future changes need fresh release approval. The Gambler's Shrine laid out tighter (compact tiles, Spin To Win beside them on a wide screen, Leave at the top in purple, a reminder before leaving the reel unspun or its prize untaken); Spin To Win's take buttons green; no shadows under figures in battle or drop shadows under the Riftwalker models (the home stage's floor glow stays). No rules change.
+
 # Release approved 0.277.0 / rules 116 (2026-11-14; decisions 790-800)
 
 Robert explicitly approves shipping ("ok lets get this stuff shipped"). Website/server and matching Windows updater. Future changes need fresh release approval. Campaign enemy damage 93% at Tier I to 200% at XII, Elites x1.20/x1.07, Wardens x1.30/x1.14, Elite Rare 23% (#790); Radiant's first attack hit x2.5 then x2 (#792b); the Full Trick 5 + 5 a trick (#794); Fault Reader Spell Power (#795); nineteen near-duplicate cards made distinct (#796); character models never stretched past their own pixels, the same size on every graphics setting (`MODEL_PIXELS`, written by apps/web/scripts/model-pixels.mjs before dev and build), the battle board at screen resolution, the Arc Welder's wasp steady (#791, #793); the campaign board ranks clears by time and shows every run's play time (#797); the Gambler's Shrine gives a blessing and a paid reel prize (#798); potion pouches to a 5-place belt (#799). Not in it: ChatGPT's partly made HD creature redraws (docs/creature-hd-prompts.md; build_units.py must read the split sheets first).

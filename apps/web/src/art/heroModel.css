@@ -20,7 +20,7 @@
 .hero-model__rig {
   position: absolute;
   pointer-events: none;
-  filter: drop-shadow(0 10px 16px rgb(0 0 0 / 0.55));
+  /* (no shadow under a model since 2026-11-14, Robert: the shadows made no sense under the Riftwalkers) */
 }
 
 /* where each screen puts one: the box the picture filled */

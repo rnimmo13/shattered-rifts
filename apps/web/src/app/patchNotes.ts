@@ -46,6 +46,35 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.278.0',
+    date: '2026-11-14',
+    title: 'A tidier Gambler’s Shrine, no shadows',
+    summary:
+      'The Gambler’s Shrine fits Spin To Win beside its blessings and reminds you before you leave it unspun, the prize button is green, and figures no longer cast shadows.',
+    notes: [
+      {
+        kind: 'changed',
+        title: "Gambler's Shrine",
+        text: 'Blessings and wagers are compact tiles, with Spin To Win beside them on a wide screen. Leave sits at the top. Leaving with the reel unspun, or its prize still on the table, asks first.',
+      },
+      {
+        kind: 'changed',
+        title: 'Spin To Win prize',
+        text: 'The button that takes the prize is green and says so, so it is not mistaken for another option.',
+      },
+      {
+        kind: 'changed',
+        title: 'No shadows',
+        text: 'Figures in battle, and the Riftwalkers on the home screen, Sanctum and Store, no longer cast shadows: some sat off to one side of the figure.',
+      },
+      {
+        kind: 'fixed',
+        title: "A Warden's escort",
+        text: "On a wide screen a Warden's escort no longer stands past the middle of the battlefield on your side.",
+      },
+    ],
+  },
+  {
     version: '0.277.0',
     date: '2026-11-14',
     title: 'Steadier campaign, distinct cards, potion pouches',

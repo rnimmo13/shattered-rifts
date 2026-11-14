@@ -1,3 +1,10 @@
+## 0.278.0 - 2026-11-14
+
+- Gambler's Shrine laid out tighter: compact blessing and wager tiles, Spin To Win beside them on a wide screen, Leave (purple) at the top, and a reminder before leaving with the reel unspun or its prize untaken; the reel no longer says its first spin is free (#801).
+- Spin To Win's take-the-prize buttons are green, and the main one reads "Take it: ..." (#801).
+- No shadows under figures in battle, nor drop shadows under the Riftwalker models elsewhere (#801).
+- A Warden's escort keeps to the enemies' half of the battlefield on a wide screen (it reached past the middle), standing a little further in front of its Warden instead (#801).
+
 ## 0.277.0 - 2026-11-14
 
 - Potion pouches (#799): the belt can grow from 3 to 5 potions; a merchant sells one pouch a visit (80, then 120 shards) and the new pouchmaker event sews one for 60 shards or 10 HP.

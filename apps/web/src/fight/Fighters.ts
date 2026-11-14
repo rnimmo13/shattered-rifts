@@ -359,6 +359,10 @@ export class Fighters {
     contact.alpha = hover ? 0.32 : 1;
     contact.scale.set((w * 0.8) / 128, (w * 0.8 * 0.2) / 128);
     contact.position.y = 6;
+    // (no shadows under figures since 2026-11-14, Robert: "they just arent really doing what they should do", some sat off the feet,
+    // as under the Hound, and under the Riftwalkers they made no sense. Kept, hidden, so the code that sizes and fades them is unchanged)
+    shadow.visible = false;
+    contact.visible = false;
 
     const tint = spec.side === 'a' ? color.cyan : '#ff5a86';
     const aura = new Sprite(this.h.glowTex);

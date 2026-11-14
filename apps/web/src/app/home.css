@@ -336,7 +336,7 @@
   height: 100%;
   min-height: 0;
   object-fit: contain;
-  filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.55));
+  /* (no drop shadow since 2026-11-14) */
   animation: home-breathe 5s var(--ease-breathe) infinite alternate;
 }
 @keyframes home-breathe {

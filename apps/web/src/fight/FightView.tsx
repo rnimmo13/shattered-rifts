@@ -381,16 +381,18 @@ function specsFrom(
             // (a wide screen, Robert 2026-11-12: one size for the whole fight and one row, never a rank behind. The side's size is
             // set by the biggest crowd it can reach: an enemy side that summons may reach MAX_ENEMIES, a hero's side fills its
             // companion slots; it is kept, in the fight's figure session, and only ever lowered if a bigger crowd than that comes)
-            // (a Warden's escort also starts a little nearer the middle: Drago's wings leave it little room)
-            const near =
-              ds === 'b' ? (bosses.length && !pvp ? FOE_NEAR - 230 : FOE_NEAR) : ALLY_NEAR;
+            // (a Warden's escort keeps to its own half like any enemy line: it started 230 nearer the middle for Drago's wings, and stood
+            // on the player's side, Robert's screenshot 2026-11-14. With less room it is sized down to fit, never moved across)
+            const near = ds === 'b' ? FOE_NEAR : ALLY_NEAR;
             const far =
               ds === 'b'
                 ? pvp
                   ? FOE_FAR_PVP
                   : bosses.length
-                    ? // (a Warden's escort may stand in front of the Warden's near half, short of its name under its feet)
-                      Math.max(FOE_NEAR + 200, bossX - 230)
+                    ? // (a Warden's escort may stand in front of the Warden's near half, short of its name under its feet: the nearest
+                      // escort's centre about a name plate's pitch (MIN_PITCH) from the Warden's. 230 until 2026-11-14, when the
+                      // escort stopped reaching over the middle and needed the room this side instead)
+                      Math.max(FOE_NEAR + 200, bossX - 110)
                     : FOE_FAR
                 : ALLY_FAR;
             const widths = line.map((e) => e.fw);
