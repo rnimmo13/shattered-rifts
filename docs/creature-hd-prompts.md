@@ -1193,7 +1193,7 @@ The attached sheet walking-kiln_hitdeath.png is one row of 4 poses of Walking Ki
 
 Now drawn 484 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] cinder-marshal_hd_reference.png, cinder-marshal_hd_attack1_a.png, cinder-marshal_hd_attack1_b.png, cinder-marshal_hd_attack2_a.png, cinder-marshal_hd_attack2_b.png, cinder-marshal_hd_hitdeath_a.png, cinder-marshal_hd_hitdeath_b.png
+- [x] cinder-marshal_hd_reference.png, cinder-marshal_hd_attack1_a.png, cinder-marshal_hd_attack1_b.png, cinder-marshal_hd_attack2_a.png, cinder-marshal_hd_attack2_b.png, cinder-marshal_hd_hitdeath_a.png, cinder-marshal_hd_hitdeath_b.png
 
 **cinder-marshal_hd_reference.png**
 
@@ -1291,7 +1291,7 @@ The attached sheet sparring-dummy_hitdeath.png is one row of 4 poses of Sparring
 
 Now drawn 495 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] hourglass-giant_hd_reference.png, hourglass-giant_hd_attack1_a.png, hourglass-giant_hd_attack1_b.png, hourglass-giant_hd_attack2_a.png, hourglass-giant_hd_attack2_b.png, hourglass-giant_hd_hitdeath_a.png, hourglass-giant_hd_hitdeath_b.png
+- [x] hourglass-giant_hd_reference.png, hourglass-giant_hd_attack1_a.png, hourglass-giant_hd_attack1_b.png, hourglass-giant_hd_attack2_a.png, hourglass-giant_hd_attack2_b.png, hourglass-giant_hd_hitdeath_a.png, hourglass-giant_hd_hitdeath_b.png
 
 **hourglass-giant_hd_reference.png**
 
@@ -1340,7 +1340,7 @@ The attached sheet hourglass-giant_hitdeath.png is one row of 4 poses of Hourgla
 
 Now drawn 496 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] kron_hd_reference.png, kron_hd_attack1_a.png, kron_hd_attack1_b.png, kron_hd_attack2_a.png, kron_hd_attack2_b.png, kron_hd_hitdeath_a.png, kron_hd_hitdeath_b.png
+- [x] kron_hd_reference.png, kron_hd_attack1_a.png, kron_hd_attack1_b.png, kron_hd_attack2_a.png, kron_hd_attack2_b.png, kron_hd_hitdeath_a.png, kron_hd_hitdeath_b.png
 
 **kron_hd_reference.png**
 
@@ -1487,7 +1487,7 @@ The attached sheet dreaming-monarch_hitdeath.png is one row of 4 poses of The Dr
 
 Now drawn 222 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Wide creature: **one pose per image**.
 
-- [ ] scrapyard-centipede_hd_reference.png, scrapyard-centipede_hd_attack1_1.png, scrapyard-centipede_hd_attack1_2.png, scrapyard-centipede_hd_attack1_3.png, scrapyard-centipede_hd_attack1_4.png, scrapyard-centipede_hd_attack2_1.png, scrapyard-centipede_hd_attack2_2.png, scrapyard-centipede_hd_attack2_3.png, scrapyard-centipede_hd_attack2_4.png, scrapyard-centipede_hd_hitdeath_1.png, scrapyard-centipede_hd_hitdeath_2.png, scrapyard-centipede_hd_hitdeath_3.png, scrapyard-centipede_hd_hitdeath_4.png
+- [x] scrapyard-centipede_hd_reference.png, scrapyard-centipede_hd_attack1_1.png, scrapyard-centipede_hd_attack1_2.png, scrapyard-centipede_hd_attack1_3.png, scrapyard-centipede_hd_attack1_4.png, scrapyard-centipede_hd_attack2_1.png, scrapyard-centipede_hd_attack2_2.png, scrapyard-centipede_hd_attack2_3.png, scrapyard-centipede_hd_attack2_4.png, scrapyard-centipede_hd_hitdeath_1.png, scrapyard-centipede_hd_hitdeath_2.png, scrapyard-centipede_hd_hitdeath_3.png, scrapyard-centipede_hd_hitdeath_4.png
 
 **scrapyard-centipede_hd_reference.png**
 
@@ -1572,7 +1572,7 @@ The attached sheet scrapyard-centipede_hitdeath.png is one row of 4 poses of Scr
 
 Now drawn 256 px tall, stands 390 on stage: ready stance **520 px** tall (at least 390). Wide creature: **one pose per image**.
 
-- [ ] glass-scorpion_hd_reference.png, glass-scorpion_hd_attack1_1.png, glass-scorpion_hd_attack1_2.png, glass-scorpion_hd_attack1_3.png, glass-scorpion_hd_attack1_4.png, glass-scorpion_hd_attack2_1.png, glass-scorpion_hd_attack2_2.png, glass-scorpion_hd_attack2_3.png, glass-scorpion_hd_attack2_4.png, glass-scorpion_hd_hitdeath_1.png, glass-scorpion_hd_hitdeath_2.png, glass-scorpion_hd_hitdeath_3.png, glass-scorpion_hd_hitdeath_4.png
+- [x] glass-scorpion_hd_reference.png, glass-scorpion_hd_attack1_1.png, glass-scorpion_hd_attack1_2.png, glass-scorpion_hd_attack1_3.png, glass-scorpion_hd_attack1_4.png, glass-scorpion_hd_attack2_1.png, glass-scorpion_hd_attack2_2.png, glass-scorpion_hd_attack2_3.png, glass-scorpion_hd_attack2_4.png, glass-scorpion_hd_hitdeath_1.png, glass-scorpion_hd_hitdeath_2.png, glass-scorpion_hd_hitdeath_3.png, glass-scorpion_hd_hitdeath_4.png
 
 **glass-scorpion_hd_reference.png**
 
@@ -1657,7 +1657,7 @@ The attached sheet glass-scorpion_hitdeath.png is one row of 4 poses of Glass Sc
 
 Now drawn 318 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Two poses per image.
 
-- [ ] scrap-collector_hd_reference.png, scrap-collector_hd_attack1_a.png, scrap-collector_hd_attack1_b.png, scrap-collector_hd_attack2_a.png, scrap-collector_hd_attack2_b.png, scrap-collector_hd_hitdeath_a.png, scrap-collector_hd_hitdeath_b.png
+- [x] scrap-collector_hd_reference.png, scrap-collector_hd_attack1_a.png, scrap-collector_hd_attack1_b.png, scrap-collector_hd_attack2_a.png, scrap-collector_hd_attack2_b.png, scrap-collector_hd_hitdeath_a.png, scrap-collector_hd_hitdeath_b.png
 
 **scrap-collector_hd_reference.png**
 
@@ -1706,7 +1706,7 @@ The attached sheet scrap-collector_hitdeath.png is one row of 4 poses of Scrap C
 
 Now drawn 328 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Wide creature: **one pose per image**.
 
-- [ ] mirror-ray_hd_reference.png, mirror-ray_hd_attack1_1.png, mirror-ray_hd_attack1_2.png, mirror-ray_hd_attack1_3.png, mirror-ray_hd_attack1_4.png, mirror-ray_hd_attack2_1.png, mirror-ray_hd_attack2_2.png, mirror-ray_hd_attack2_3.png, mirror-ray_hd_attack2_4.png, mirror-ray_hd_hitdeath_1.png, mirror-ray_hd_hitdeath_2.png, mirror-ray_hd_hitdeath_3.png, mirror-ray_hd_hitdeath_4.png
+- [x] mirror-ray_hd_reference.png, mirror-ray_hd_attack1_1.png, mirror-ray_hd_attack1_2.png, mirror-ray_hd_attack1_3.png, mirror-ray_hd_attack1_4.png, mirror-ray_hd_attack2_1.png, mirror-ray_hd_attack2_2.png, mirror-ray_hd_attack2_3.png, mirror-ray_hd_attack2_4.png, mirror-ray_hd_hitdeath_1.png, mirror-ray_hd_hitdeath_2.png, mirror-ray_hd_hitdeath_3.png, mirror-ray_hd_hitdeath_4.png
 
 **mirror-ray_hd_reference.png**
 
@@ -1974,7 +1974,7 @@ The attached sheet marble-mantis_hitdeath.png is one row of 4 poses of Marble Ma
 
 Now drawn 285 px tall, stands 380 on stage: ready stance **510 px** tall (at least 380). Wide creature: **one pose per image**.
 
-- [ ] war-engine_hd_reference.png, war-engine_hd_attack1_1.png, war-engine_hd_attack1_2.png, war-engine_hd_attack1_3.png, war-engine_hd_attack1_4.png, war-engine_hd_attack2_1.png, war-engine_hd_attack2_2.png, war-engine_hd_attack2_3.png, war-engine_hd_attack2_4.png, war-engine_hd_hitdeath_1.png, war-engine_hd_hitdeath_2.png, war-engine_hd_hitdeath_3.png, war-engine_hd_hitdeath_4.png
+- [x] war-engine_hd_reference.png, war-engine_hd_attack1_1.png, war-engine_hd_attack1_2.png, war-engine_hd_attack1_3.png, war-engine_hd_attack1_4.png, war-engine_hd_attack2_1.png, war-engine_hd_attack2_2.png, war-engine_hd_attack2_3.png, war-engine_hd_attack2_4.png, war-engine_hd_hitdeath_1.png, war-engine_hd_hitdeath_2.png, war-engine_hd_hitdeath_3.png, war-engine_hd_hitdeath_4.png
 
 **war-engine_hd_reference.png**
 
@@ -2059,7 +2059,7 @@ The attached sheet war-engine_hitdeath.png is one row of 4 poses of War Engine, 
 
 Now drawn 356 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Two poses per image.
 
-- [ ] hooded-acolyte_hd_reference.png, hooded-acolyte_hd_attack1_a.png, hooded-acolyte_hd_attack1_b.png, hooded-acolyte_hd_attack2_a.png, hooded-acolyte_hd_attack2_b.png, hooded-acolyte_hd_hitdeath_a.png, hooded-acolyte_hd_hitdeath_b.png
+- [x] hooded-acolyte_hd_reference.png, hooded-acolyte_hd_attack1_a.png, hooded-acolyte_hd_attack1_b.png, hooded-acolyte_hd_attack2_a.png, hooded-acolyte_hd_attack2_b.png, hooded-acolyte_hd_hitdeath_a.png, hooded-acolyte_hd_hitdeath_b.png
 
 **hooded-acolyte_hd_reference.png**
 
