@@ -374,7 +374,7 @@ The attached sheet xalvorr_hitdeath.png is one row of 4 poses of Xalvorr, the La
 
 Now drawn 439 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] seraphine_hd_reference.png, seraphine_hd_attack1_1.png, seraphine_hd_attack1_2.png, seraphine_hd_attack1_3.png, seraphine_hd_attack1_4.png, seraphine_hd_attack2_1.png, seraphine_hd_attack2_2.png, seraphine_hd_attack2_3.png, seraphine_hd_attack2_4.png, seraphine_hd_hitdeath_1.png, seraphine_hd_hitdeath_2.png, seraphine_hd_hitdeath_3.png, seraphine_hd_hitdeath_4.png
+- [x] seraphine_hd_reference.png, seraphine_hd_attack1_1.png, seraphine_hd_attack1_2.png, seraphine_hd_attack1_3.png, seraphine_hd_attack1_4.png, seraphine_hd_attack2_1.png, seraphine_hd_attack2_2.png, seraphine_hd_attack2_3.png, seraphine_hd_attack2_4.png, seraphine_hd_hitdeath_1.png, seraphine_hd_hitdeath_2.png, seraphine_hd_hitdeath_3.png, seraphine_hd_hitdeath_4.png
 
 **seraphine_hd_reference.png**
 
@@ -458,7 +458,7 @@ The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, th
 
 Now drawn 442 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] pearlbound-sovereign_hd_reference.png, pearlbound-sovereign_hd_attack1_1.png, pearlbound-sovereign_hd_attack1_2.png, pearlbound-sovereign_hd_attack1_3.png, pearlbound-sovereign_hd_attack1_4.png, pearlbound-sovereign_hd_attack2_1.png, pearlbound-sovereign_hd_attack2_2.png, pearlbound-sovereign_hd_attack2_3.png, pearlbound-sovereign_hd_attack2_4.png, pearlbound-sovereign_hd_hitdeath_1.png, pearlbound-sovereign_hd_hitdeath_2.png, pearlbound-sovereign_hd_hitdeath_3.png, pearlbound-sovereign_hd_hitdeath_4.png
+- [x] pearlbound-sovereign_hd_reference.png, pearlbound-sovereign_hd_attack1_1.png, pearlbound-sovereign_hd_attack1_2.png, pearlbound-sovereign_hd_attack1_3.png, pearlbound-sovereign_hd_attack1_4.png, pearlbound-sovereign_hd_attack2_1.png, pearlbound-sovereign_hd_attack2_2.png, pearlbound-sovereign_hd_attack2_3.png, pearlbound-sovereign_hd_attack2_4.png, pearlbound-sovereign_hd_hitdeath_1.png, pearlbound-sovereign_hd_hitdeath_2.png, pearlbound-sovereign_hd_hitdeath_3.png, pearlbound-sovereign_hd_hitdeath_4.png
 
 **pearlbound-sovereign_hd_reference.png**
 
@@ -710,7 +710,7 @@ The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the 
 
 Now drawn 453 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] pyrewing_hd_reference.png, pyrewing_hd_attack1_1.png, pyrewing_hd_attack1_2.png, pyrewing_hd_attack1_3.png, pyrewing_hd_attack1_4.png, pyrewing_hd_attack2_1.png, pyrewing_hd_attack2_2.png, pyrewing_hd_attack2_3.png, pyrewing_hd_attack2_4.png, pyrewing_hd_hitdeath_1.png, pyrewing_hd_hitdeath_2.png, pyrewing_hd_hitdeath_3.png, pyrewing_hd_hitdeath_4.png
+- [x] pyrewing_hd_reference.png, pyrewing_hd_attack1_1.png, pyrewing_hd_attack1_2.png, pyrewing_hd_attack1_3.png, pyrewing_hd_attack1_4.png, pyrewing_hd_attack2_1.png, pyrewing_hd_attack2_2.png, pyrewing_hd_attack2_3.png, pyrewing_hd_attack2_4.png, pyrewing_hd_hitdeath_1.png, pyrewing_hd_hitdeath_2.png, pyrewing_hd_hitdeath_3.png, pyrewing_hd_hitdeath_4.png
 
 **pyrewing_hd_reference.png**
 
@@ -794,7 +794,7 @@ The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the 
 
 Now drawn 454 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] bronze-sphinx_hd_reference.png, bronze-sphinx_hd_attack1_1.png, bronze-sphinx_hd_attack1_2.png, bronze-sphinx_hd_attack1_3.png, bronze-sphinx_hd_attack1_4.png, bronze-sphinx_hd_attack2_1.png, bronze-sphinx_hd_attack2_2.png, bronze-sphinx_hd_attack2_3.png, bronze-sphinx_hd_attack2_4.png, bronze-sphinx_hd_hitdeath_1.png, bronze-sphinx_hd_hitdeath_2.png, bronze-sphinx_hd_hitdeath_3.png, bronze-sphinx_hd_hitdeath_4.png
+- [x] bronze-sphinx_hd_reference.png, bronze-sphinx_hd_attack1_1.png, bronze-sphinx_hd_attack1_2.png, bronze-sphinx_hd_attack1_3.png, bronze-sphinx_hd_attack1_4.png, bronze-sphinx_hd_attack2_1.png, bronze-sphinx_hd_attack2_2.png, bronze-sphinx_hd_attack2_3.png, bronze-sphinx_hd_attack2_4.png, bronze-sphinx_hd_hitdeath_1.png, bronze-sphinx_hd_hitdeath_2.png, bronze-sphinx_hd_hitdeath_3.png, bronze-sphinx_hd_hitdeath_4.png
 
 **bronze-sphinx_hd_reference.png**
 
@@ -878,7 +878,7 @@ The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sp
 
 Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] dream-custodian_hd_reference.png, dream-custodian_hd_attack1_1.png, dream-custodian_hd_attack1_2.png, dream-custodian_hd_attack1_3.png, dream-custodian_hd_attack1_4.png, dream-custodian_hd_attack2_1.png, dream-custodian_hd_attack2_2.png, dream-custodian_hd_attack2_3.png, dream-custodian_hd_attack2_4.png, dream-custodian_hd_hitdeath_1.png, dream-custodian_hd_hitdeath_2.png, dream-custodian_hd_hitdeath_3.png, dream-custodian_hd_hitdeath_4.png
+- [x] dream-custodian_hd_reference.png, dream-custodian_hd_attack1_1.png, dream-custodian_hd_attack1_2.png, dream-custodian_hd_attack1_3.png, dream-custodian_hd_attack1_4.png, dream-custodian_hd_attack2_1.png, dream-custodian_hd_attack2_2.png, dream-custodian_hd_attack2_3.png, dream-custodian_hd_attack2_4.png, dream-custodian_hd_hitdeath_1.png, dream-custodian_hd_hitdeath_2.png, dream-custodian_hd_hitdeath_3.png, dream-custodian_hd_hitdeath_4.png
 
 **dream-custodian_hd_reference.png**
 
@@ -962,7 +962,7 @@ The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream C
 
 Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] nacreth_hd_reference.png, nacreth_hd_attack1_1.png, nacreth_hd_attack1_2.png, nacreth_hd_attack1_3.png, nacreth_hd_attack1_4.png, nacreth_hd_attack2_1.png, nacreth_hd_attack2_2.png, nacreth_hd_attack2_3.png, nacreth_hd_attack2_4.png, nacreth_hd_hitdeath_1.png, nacreth_hd_hitdeath_2.png, nacreth_hd_hitdeath_3.png, nacreth_hd_hitdeath_4.png
+- [x] nacreth_hd_reference.png, nacreth_hd_attack1_1.png, nacreth_hd_attack1_2.png, nacreth_hd_attack1_3.png, nacreth_hd_attack1_4.png, nacreth_hd_attack2_1.png, nacreth_hd_attack2_2.png, nacreth_hd_attack2_3.png, nacreth_hd_attack2_4.png, nacreth_hd_hitdeath_1.png, nacreth_hd_hitdeath_2.png, nacreth_hd_hitdeath_3.png, nacreth_hd_hitdeath_4.png
 
 **nacreth_hd_reference.png**
 
@@ -1046,7 +1046,7 @@ The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Gl
 
 Now drawn 461 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] ashbound-colossus_hd_reference.png, ashbound-colossus_hd_attack1_a.png, ashbound-colossus_hd_attack1_b.png, ashbound-colossus_hd_attack2_a.png, ashbound-colossus_hd_attack2_b.png, ashbound-colossus_hd_hitdeath_a.png, ashbound-colossus_hd_hitdeath_b.png
+- [x] ashbound-colossus_hd_reference.png, ashbound-colossus_hd_attack1_a.png, ashbound-colossus_hd_attack1_b.png, ashbound-colossus_hd_attack2_a.png, ashbound-colossus_hd_attack2_b.png, ashbound-colossus_hd_hitdeath_a.png, ashbound-colossus_hd_hitdeath_b.png
 
 **ashbound-colossus_hd_reference.png**
 
@@ -1095,7 +1095,7 @@ The attached sheet ashbound-colossus_hitdeath.png is one row of 4 poses of The A
 
 Now drawn 472 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] sandbound-chronicler_hd_reference.png, sandbound-chronicler_hd_attack1_a.png, sandbound-chronicler_hd_attack1_b.png, sandbound-chronicler_hd_attack2_a.png, sandbound-chronicler_hd_attack2_b.png, sandbound-chronicler_hd_hitdeath_a.png, sandbound-chronicler_hd_hitdeath_b.png
+- [x] sandbound-chronicler_hd_reference.png, sandbound-chronicler_hd_attack1_a.png, sandbound-chronicler_hd_attack1_b.png, sandbound-chronicler_hd_attack2_a.png, sandbound-chronicler_hd_attack2_b.png, sandbound-chronicler_hd_hitdeath_a.png, sandbound-chronicler_hd_hitdeath_b.png
 
 **sandbound-chronicler_hd_reference.png**
 
@@ -1144,7 +1144,7 @@ The attached sheet sandbound-chronicler_hitdeath.png is one row of 4 poses of Th
 
 Now drawn 473 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] walking-kiln_hd_reference.png, walking-kiln_hd_attack1_a.png, walking-kiln_hd_attack1_b.png, walking-kiln_hd_attack2_a.png, walking-kiln_hd_attack2_b.png, walking-kiln_hd_hitdeath_a.png, walking-kiln_hd_hitdeath_b.png
+- [x] walking-kiln_hd_reference.png, walking-kiln_hd_attack1_a.png, walking-kiln_hd_attack1_b.png, walking-kiln_hd_attack2_a.png, walking-kiln_hd_attack2_b.png, walking-kiln_hd_hitdeath_a.png, walking-kiln_hd_hitdeath_b.png
 
 **walking-kiln_hd_reference.png**
 
@@ -1389,7 +1389,7 @@ The attached sheet kron_hitdeath.png is one row of 4 poses of KR-0N "Kron", Foun
 
 Now drawn 502 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] nyxara_hd_reference.png, nyxara_hd_attack1_a.png, nyxara_hd_attack1_b.png, nyxara_hd_attack2_a.png, nyxara_hd_attack2_b.png, nyxara_hd_hitdeath_a.png, nyxara_hd_hitdeath_b.png
+- [x] nyxara_hd_reference.png, nyxara_hd_attack1_a.png, nyxara_hd_attack1_b.png, nyxara_hd_attack2_a.png, nyxara_hd_attack2_b.png, nyxara_hd_hitdeath_a.png, nyxara_hd_hitdeath_b.png
 
 **nyxara_hd_reference.png**
 
@@ -1438,7 +1438,7 @@ The attached sheet nyxara_hitdeath.png is one row of 4 poses of Nyxara, the Veil
 
 Now drawn 509 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] dreaming-monarch_hd_reference.png, dreaming-monarch_hd_attack1_a.png, dreaming-monarch_hd_attack1_b.png, dreaming-monarch_hd_attack2_a.png, dreaming-monarch_hd_attack2_b.png, dreaming-monarch_hd_hitdeath_a.png, dreaming-monarch_hd_hitdeath_b.png
+- [x] dreaming-monarch_hd_reference.png, dreaming-monarch_hd_attack1_a.png, dreaming-monarch_hd_attack1_b.png, dreaming-monarch_hd_attack2_a.png, dreaming-monarch_hd_attack2_b.png, dreaming-monarch_hd_hitdeath_a.png, dreaming-monarch_hd_hitdeath_b.png
 
 **dreaming-monarch_hd_reference.png**
 
@@ -1791,7 +1791,7 @@ The attached sheet mirror-ray_hitdeath.png is one row of 4 poses of Mirror Ray, 
 
 Now drawn 280 px tall, stands 390 on stage: ready stance **520 px** tall (at least 390). Two poses per image.
 
-- [ ] puppet-of-knots_hd_reference.png, puppet-of-knots_hd_attack1_a.png, puppet-of-knots_hd_attack1_b.png, puppet-of-knots_hd_attack2_a.png, puppet-of-knots_hd_attack2_b.png, puppet-of-knots_hd_hitdeath_a.png, puppet-of-knots_hd_hitdeath_b.png
+- [x] puppet-of-knots_hd_reference.png, puppet-of-knots_hd_attack1_a.png, puppet-of-knots_hd_attack1_b.png, puppet-of-knots_hd_attack2_a.png, puppet-of-knots_hd_attack2_b.png, puppet-of-knots_hd_hitdeath_a.png, puppet-of-knots_hd_hitdeath_b.png
 
 **puppet-of-knots_hd_reference.png**
 
@@ -2193,7 +2193,7 @@ The attached sheet acid-spitter_hitdeath.png is one row of 4 poses of Acid Spitt
 
 Now drawn 301 px tall, stands 390 on stage: ready stance **520 px** tall (at least 390). Wide creature: **one pose per image**.
 
-- [ ] pearl-crab_hd_reference.png, pearl-crab_hd_attack1_1.png, pearl-crab_hd_attack1_2.png, pearl-crab_hd_attack1_3.png, pearl-crab_hd_attack1_4.png, pearl-crab_hd_attack2_1.png, pearl-crab_hd_attack2_2.png, pearl-crab_hd_attack2_3.png, pearl-crab_hd_attack2_4.png, pearl-crab_hd_hitdeath_1.png, pearl-crab_hd_hitdeath_2.png, pearl-crab_hd_hitdeath_3.png, pearl-crab_hd_hitdeath_4.png
+- [x] pearl-crab_hd_reference.png, pearl-crab_hd_attack1_1.png, pearl-crab_hd_attack1_2.png, pearl-crab_hd_attack1_3.png, pearl-crab_hd_attack1_4.png, pearl-crab_hd_attack2_1.png, pearl-crab_hd_attack2_2.png, pearl-crab_hd_attack2_3.png, pearl-crab_hd_attack2_4.png, pearl-crab_hd_hitdeath_1.png, pearl-crab_hd_hitdeath_2.png, pearl-crab_hd_hitdeath_3.png, pearl-crab_hd_hitdeath_4.png
 
 **pearl-crab_hd_reference.png**
 
