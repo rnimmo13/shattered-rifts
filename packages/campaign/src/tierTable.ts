@@ -1,18 +1,6 @@
-// The Rift Tier table: THE place to tune how hard each tier is. Edit the numbers; nothing else needs to change.
-//
-// (Since DECISIONS #531 a run has no acts: fights use a row's first column, and the other two only keep old rows readable.)
-// Each row is one Rift Tier (row 1 = Tier I) and gives enemy HP and attack damage for each of the run's three stages, as a percent
-// of the numbers written on the enemies (packages/content/src/v2/units.ts, the base). Tier I starts at 105% base HP and 98% base damage (100 and 93 until DECISIONS #763, when the step of every tier rose too: HP 40 to 50, damage 5 to 9).
-//
-// HP and damage are three numbers each, not typed row by row (DECISIONS #262): Tier I stage 1 starts at HP_START, every Tier up adds a flat
-// HP_PER_TIER, and every stage inside a tier adds HP_PER_STAGE. Keep HP_PER_TIER above twice HP_PER_STAGE, so stage 1 of a tier is
-// still harder than stage 3 of the one below. Enemy attack damage works the same way with the DMG_ numbers.
-//
-// Why it looks like this (docs/BALANCE.md; DECISIONS #223, #228-#230): the whole table is one rising ladder. Tier 1 stage 1, 2 and 3,
-// then Tier 2 stage 1 and so on: every step is harder than the one before it, and stage 1 of a tier is always harder than stage 3 of
-// the tier below (Robert: it must never take a step back; the table test checks it). HP and damage climb the same amount every tier
-// through Tier XX, with no late switch in slope (DECISIONS #576). Endgame pressure comes from
-// developed encounters, high HP and phases, while damage remains within a predictable budget.
+// Normal campaign scaling: 100% HP / 95% damage at Tier I, reaching 700% / 250% at XII.
+// Interpolate evenly and round each result to a whole percentage. Current runs use stage 1.
+// Stage offsets and rows XIII–XX remain for legacy data; those rows extrapolate the same slope.
 
 export interface TierRow {
   /** enemy HP at stages 1, 2 and 3, percent of the written numbers */
@@ -22,16 +10,16 @@ export interface TierRow {
 }
 
 /** enemy HP at Tier I stage 1, percent of the written numbers */
-export const HP_START = 105;
+export const HP_START = 100;
 /** added to enemy HP for every Rift Tier up (percentage points; 20 until DECISIONS #536, 30 until #555) */
-export const HP_PER_TIER = 50;
+export const HP_PER_TIER = (700 - HP_START) / 11;
 /** added to enemy HP for each stage inside a tier (percentage points) */
 export const HP_PER_STAGE = 5;
 
 /** enemy attack damage at Tier I stage 1, percent of the written numbers */
-export const DMG_START = 98;
+export const DMG_START = 95;
 /** added to enemy damage for every Rift Tier up (percentage points; 12 until DECISIONS #555) */
-export const DMG_PER_TIER = 9;
+export const DMG_PER_TIER = (250 - DMG_START) / 11;
 /** added to enemy damage for each stage inside a tier (percentage points) */
 export const DMG_PER_STAGE = 1;
 
@@ -44,7 +32,7 @@ const at = (
   perStage: number,
   tier: number,
   stage: number,
-): number => start + (tier - 1) * perTier + (stage - 1) * perStage;
+): number => Math.round(start + (tier - 1) * perTier + (stage - 1) * perStage);
 const stages = (start: number, perTier: number, perStage: number, tier: number) =>
   [1, 2, 3].map((st) => at(start, perTier, perStage, tier, st)) as [number, number, number];
 

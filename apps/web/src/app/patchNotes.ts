@@ -46,6 +46,52 @@ export const KIND_LABEL: Record<NoteKind, string> = {
 
 export const PATCH_NOTES: PatchNote[] = [
   {
+    version: '0.275.0',
+    date: '2026-11-13',
+    title: 'Campaign pacing and cleaner character previews',
+    summary:
+      'Fifteen-floor campaign tiers, a gentler starting curve, stronger late-tier pressure and a steady class selector.',
+    notes: [
+      {
+        kind: 'changed',
+        title: 'Sanctum Grimoire',
+        text: 'The ten starter cards form two rows of five on desktop. Narrow screens keep a responsive layout, and Mana filters remain available.',
+      },
+      {
+        kind: 'fixed',
+        hero: 'drunkard',
+        title: 'Pirate Captain',
+        text: 'Her idle drink hand stays steady while sparks and smoke move. The Sanctum reserves room for her full action animation so it is not clipped at the right edge.',
+      },
+      {
+        kind: 'changed',
+        hero: 'knight',
+        title: 'Default Knight preview',
+        text: 'The default Knight is 18% smaller in Shop and Collection cards. Battle and Sanctum sizes are unchanged.',
+      },
+      {
+        kind: 'balance',
+        title: 'Campaign enemy scaling',
+        text: 'Campaign only. Tier I starts at 100% HP / 95% damage (was 105% / 98%). The base curve rises evenly to 700% HP / 250% damage at Tier XII (was 655% / 197%), rounded per tier; average increases become about 54.55 HP and 14.09 damage percentage points per tier (was 50 and 9). These are base values before Elite and Warden premiums. Existing runs use the new scaling; unfinished battles restart at their saved encounter checkpoint. Arena combat values are unchanged.',
+      },
+      {
+        kind: 'balance',
+        title: 'Elite and Warden pressure',
+        text: 'Campaign only. Multipliers apply to the tier’s base curve, not to one another. Elites: HP ×1.25 → ×1.30; damage ×1.08 → ×1.12. Wardens, including the Tier XII gauntlet: HP ×1.20 → ×1.35; damage ×1.15 → ×1.18. On Normal, Tier I Elites use 130% HP / 106% damage and Wardens 135% / 112%; Tier XII Wardens use 945% / 295%. Authored enemy attacks and phase mechanics are unchanged.',
+      },
+      {
+        kind: 'changed',
+        title: 'Campaign tier length',
+        text: 'Campaign only: Tiers I–XI change from 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 and 21 floors to 15 floors each, including the Warden. The final pre-Warden floor still offers Shrines. Tier XII remains nine floors: five dragons, three refinement Shrines and Drago. A fresh campaign has 174 floors instead of 185. Existing generated maps are preserved; new runs and future tiers use the new length. The floor-length change preserves individual node odds and rewards, but changes the number of opportunities per tier. Enemy scaling is updated separately above.',
+      },
+      {
+        kind: 'fixed',
+        title: 'Class selector',
+        text: 'Home and Sandbox class circles stay in one row above the details, scrolling sideways on narrow screens. Changing class no longer shifts the selector as descriptions wrap.',
+      },
+    ],
+  },
+  {
     version: '0.274.0',
     date: '2026-11-13',
     title: 'Sanctum, merchant rerolls and scaling refinements',

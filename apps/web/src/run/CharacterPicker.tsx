@@ -68,6 +68,7 @@ export function CharacterPicker(props: { value: HeroId; onChange: (id: HeroId) =
             className="picker__model"
             contain
             fill={1.05}
+            fitMotion={skin === 'drunkard-pirate-captain'}
             key={props.value}
           >
             <img src={figureUrl} alt={c.hero.name} />

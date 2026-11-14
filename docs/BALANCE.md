@@ -1,3 +1,5 @@
+> **Local 0.275.0 / rules114 (2026-11-13):** Normal base curve goes from 100% HP / 95% damage at I to 700% / 250% at XII, evenly interpolated and rounded. Elites multiply by 1.30 HP / 1.12 damage; Wardens by 1.35 / 1.18. Current tiers I–XI have 15 floors, XII remains the nine-stop gauntlet. Earlier figures and simulations below are historical. Not released.
+
 > **Local0.210.0/rules88 (2026-11-06):** Campaign starts100%HP/93%damage, +40/+5pp per tier; Elites additionally x1.25HP/x1.08damage. Three Knight Strike rewards support unchanged Raised Hell. Exact base/upgraded ledger and evidence limits: [Campaign and arenas](CAMPAIGN_AND_ARENAS_2026-11-06.md). Earlier numbers below are historical. No simulations or release approval.
 
 # Balance Notes

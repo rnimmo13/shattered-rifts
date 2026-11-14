@@ -27,6 +27,14 @@ const planAt = (tier: number, kind: NodeKind) => {
 };
 
 describe('linear campaign growth', () => {
+  it('uses bounded category premiums at the start and the gauntlet endpoint', () => {
+    expect(planAt(1, 'duel')).toMatchObject({ hpPct: 100, dmgPct: 95 });
+    expect(planAt(1, 'elite')).toMatchObject({ hpPct: 130, dmgPct: 106 });
+    expect(planAt(1, 'warden')).toMatchObject({ hpPct: 135, dmgPct: 112 });
+    expect(planAt(12, 'duel')).toMatchObject({ hpPct: 700, dmgPct: 250 });
+    expect(planAt(12, 'elite')).toMatchObject({ hpPct: 910, dmgPct: 280 });
+    expect(planAt(12, 'warden')).toMatchObject({ hpPct: 945, dmgPct: 295 });
+  });
   it('applies the shared curve with the Elite and Warden premiums across all tiers', () => {
     const hp = { duel: 1, elite: ELITE_HP, warden: WARDEN_HP };
     const dmg = { duel: 1, elite: ELITE_DAMAGE, warden: WARDEN_DAMAGE };
@@ -112,8 +120,11 @@ describe('linear campaign growth', () => {
     },
   );
 
-  it('keeps a large Tier XX Warden hit within its base damage budget', () => {
-    const plan = planAt(20, 'warden');
+  it.each([
+    [12, 100],
+    [20, 145],
+  ])('scales a large Warden hit at tier %i to %i damage', (tier, damage) => {
+    const plan = planAt(tier, 'warden');
     const { state } = createCombat(COMBAT_DB, {
       seed: 'warden-hit-budget',
       a: { hero: 'knight', deck: RIFTWALKERS.knight.starter },
@@ -125,8 +136,8 @@ describe('linear campaign growth', () => {
     state.sides.a.reserves = 0;
     state.sides.b.units[0]!.intent = { move: 'bell2', target: hero.id };
     const result = applyAction(COMBAT_DB, state, { type: 'endTurn' });
-    // (63 before DECISIONS #763: steeper tiers, and a Warden's own 15% damage premium)
-    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(105);
+    // Bell2 is 34 base damage: current finale 295%, legacy Tier XX 428%.
+    expect(10000 - heroOf(result.state.sides.a)!.hp).toBe(damage);
   });
 });
 describe('campaign ghost scaling', () => {

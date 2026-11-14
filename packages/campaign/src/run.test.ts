@@ -107,8 +107,8 @@ describe('stage maps', () => {
       expect(encounter(n.enemyId as string).realm, n.id).toBe('nexus');
   });
 
-  it('Tier I is 11 floors and a Warden, each tier 2 floors more, Tier XX 50 in all and ending with Drago (DECISIONS #531, #536)', () => {
-    expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([11, 12, 13, 30]);
+  it('current tiers have 15 floors including the Warden; legacy Tier XX keeps its length', () => {
+    expect([1, 2, 3, 20].map((t) => floorsOf(t) + 1)).toEqual([15, 15, 15, 30]);
     expect(FINAL_STAGE).toBe(3);
     const first = generateStageMap(seedRng('x'), 1, 'nexus');
     expect(first.floors).toBe(floorsOf(1) + 1);
@@ -165,7 +165,23 @@ describe('stage maps', () => {
     for (const r of realms) expect(['umbral', 'wyldmaw', ...FAR_REALMS]).toContain(r);
   });
 
-  it('follows each shuffled Warden realm, then enters the final gauntlet', () => {
+  it('preserves an already generated shorter map on load, then uses 15 floors next tier', () => {
+    const run = fresh('knight', 'saved-short-map');
+    const nodes = Array.from({ length: 10 }, (_, i) => ({
+      ...run.map.nodes.find((n) => n.floor === i + 1)!,
+    }));
+    nodes.push({ ...run.map.nodes.find((n) => n.kind === 'warden')!, floor: 11 });
+    nodes.forEach((n, i) => {
+      n.next = nodes[i + 1] ? [nodes[i + 1]!.id] : [];
+    });
+    run.map = { ...run.map, floors: 11, nodes };
+    const restored = parseRun(serializeRun(run))!;
+    expect(restored.map).toEqual(run.map);
+    const next = continueLoop({ ...restored, phase: 'loopCleared', context: null });
+    expect(next.map.floors).toBe(15);
+  });
+
+  it('follows each shuffled Warden realm through 15-floor tiers, then the unchanged 9-floor gauntlet', () => {
     let run: RunState = { ...newRun('knight', 'realms'), phase: 'loopCleared', context: null };
     for (let t = 2; t <= 12; t++) {
       const next = continueLoop(run);
@@ -177,7 +193,11 @@ describe('stage maps', () => {
         expect(realmOfRun(next)).toBe('ruin');
         if (t === 12) expect(next.map.nodes.at(-1)?.enemyId).toBe('vorthax');
       }
-      expect(next.map.floors).toBe(t === 12 ? 9 : floorsOf(t) + 1);
+      expect(next.map.floors).toBe(t === 12 ? 9 : 15);
+      if (t < 12)
+        expect(next.map.nodes.filter((n) => n.floor === 14).every((n) => n.kind === 'shrine')).toBe(
+          true,
+        );
       expect(parseRun(serializeRun(next))?.map.floors).toBe(next.map.floors);
       run = { ...next, phase: 'loopCleared', context: null };
     }
@@ -804,17 +824,17 @@ describe('a tier of its own length (DECISIONS #531)', () => {
     );
     for (const m of t1) {
       expect(m.floors).toBe(floorsOf(1) + 1);
-      expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(5);
+      expect(m.nodes.filter((n) => n.kind === 'elite').length).toBeLessThanOrEqual(6);
     }
   });
 
-  it('never has two Merchants, Shrines or Elites in a row', () => {
-    for (const m of maps) {
+  it('never has consecutive Merchants or Shrines; Tier I also prevents consecutive Elites', () => {
+    for (const [index, m] of maps.entries()) {
       for (const n of m.nodes) {
         if (
           n.kind !== 'merchant' &&
           n.kind !== 'shrine' &&
-          (n.kind !== 'elite' || m.floors !== floorsOf(1) + 1)
+          (n.kind !== 'elite' || tiers[index % 19] !== 1)
         )
           continue;
         for (const id of n.next) {

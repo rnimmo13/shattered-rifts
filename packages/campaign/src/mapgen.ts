@@ -83,8 +83,8 @@ export function withGauntletShrines(map: StageMap): StageMap {
 /** Which enemies a tier can bring: the trios from Tier III, the far realms from Tier VI. (Its difficulty is the tier table's.) */
 export const depthOf = (tier: number): number => (tier >= 6 ? 3 : tier >= 3 ? 2 : 1);
 
-/** Floors before the Warden: 10 at Tier I and 1 more each tier, 29 at Tier XX (DECISIONS #531, #556). */
-export const floorsOf = (tier: number): number => 9 + Math.max(1, tier);
+/** Current Tiers I–XI have 14 stops before the Warden (15 total). Legacy deeper maps retain their old length; XII uses its gauntlet. */
+export const floorsOf = (tier: number): number => (tier <= 11 ? 14 : 9 + Math.max(1, tier));
 /** The most stops on one floor; the first floor always has this many. */
 export const MAP_LANES = 5;
 /** The chance (percent) that a middle floor is a meeting point where every route joins. */

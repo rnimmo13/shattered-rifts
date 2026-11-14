@@ -936,3 +936,36 @@
 .home__runrow--run .home__confirm {
   margin: 0 0.6rem 0.6rem;
 }
+
+/* Keep the class selector anchored, with descriptions below it and stable space for every class. */
+.home__stage {
+  align-self: start;
+  width: 100%;
+}
+.home__infoPanel {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+  min-width: 0;
+}
+.home__infoPanel[aria-hidden='true'] {
+  visibility: hidden;
+}
+.home__roster {
+  box-sizing: border-box;
+  width: 100%;
+  flex-wrap: nowrap;
+  justify-content: safe center;
+  overflow-x: auto;
+  padding: 0.6rem 0.6rem 1.3rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-gold-dark) transparent;
+}
+.home__roster > li {
+  flex: 0 0 auto;
+}
+.home__pick:hover,
+.home__pick:focus-visible {
+  transform: none;
+}

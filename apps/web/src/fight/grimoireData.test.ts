@@ -56,6 +56,19 @@ describe('fitBook', () => {
 });
 
 describe('fitScroll (DECISIONS #725)', () => {
+  it('fits a starter deck in five desktop columns while preserving readable narrow layouts', () => {
+    for (const width of [600, 900, 1400]) {
+      const fit = fitScroll(width, Infinity, 'small', false, 5);
+      expect(fit.cols).toBe(5);
+      expect(fit.cols * fit.cardWidth + 4 * COL_GAP).toBeLessThanOrEqual(width);
+    }
+    expect(fitScroll(320, Infinity, 'small', true, 5)).toEqual(
+      fitScroll(320, Infinity, 'small', true),
+    );
+    expect(fitScroll(450, Infinity, 'small', false, 5)).toEqual(
+      fitScroll(450, Infinity, 'small', false),
+    );
+  });
   const span = (w: number, f: { cols: number; cardWidth: number }): number =>
     (f.cols * f.cardWidth + (f.cols - 1) * COL_GAP) / w;
 

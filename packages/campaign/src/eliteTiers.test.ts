@@ -80,7 +80,7 @@ describe('Elites by Rift Tier', () => {
     expect(rng).toEqual(before);
     const m = generateStageMap(seedRng('pinned-map'), 1, 'nexus', 'knight');
     expect(m.nodes.map((n) => n.kind[0]).join('')).toMatchInlineSnapshot(
-      `"dddddeddddmmedeeedeescdedeededsddedededssw"`,
+      `"dddddeddddmmedeeedeescdedeededsddemededdddseesdddeddededssw"`,
     );
   });
 

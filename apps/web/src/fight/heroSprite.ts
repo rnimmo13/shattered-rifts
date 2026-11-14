@@ -165,6 +165,7 @@ export interface HeroSprite {
   widthFor(height: number): number;
   /** how far the resting pose reaches each side of the feet at this height, when the model knows (a pose-sheet model) */
   restSpan?(height: number): { left: number; right: number };
+  motionSpan?(height: number): { left: number; right: number };
   resize(height: number, pixelScale: number): boolean;
   readonly remaining: number;
   setStance?(stance: Stance | undefined): void;

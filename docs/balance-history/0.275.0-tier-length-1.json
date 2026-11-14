@@ -1,0 +1,1068 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "version": "0.275.0",
+  "rules": 113,
+  "assessmentId": "tier-length-1",
+  "status": "Local implementation; not released",
+  "source": "User request; map generator review; previously inspected player exports and 500 baseline bot runs on 0.274.0.",
+  "basis": "Campaign I\u2013XI change from 11\u201321 floors to 15 each including Warden. XII remains nine. Total 185 -> 174. Existing generated maps preserved; future maps adopt length. Per-node odds/rewards and combat coefficients unchanged.",
+  "gradeMode": "review-signals",
+  "evaluationScope": "All 30 Ascendancies and representative mixed builds retain prior combat review signals. 0.274.0 Tier I simulations (500 attempts, 4,129 fights) used 11 floors and cannot establish the new 15-floor clear rates. Historical player sample has 44 Tier I fights under rules102/107/108/111, none under113. No simulations of this candidate or new measured grades.",
+  "measuredMatches": 0,
+  "simulatedMatches": 0,
+  "target": "Typical Arena games of 10 or more own turns and roughly 50% or better Drago clears with optimized decks remain playtest targets.",
+  "progressionBands": [
+    "IV\u2013VII",
+    "VIII\u2013X",
+    "XI\u2013XII"
+  ],
+  "longFightBand": "11+ own turns",
+  "ratings": [
+    {
+      "id": "knight:paladin",
+      "hero": "knight",
+      "name": "Paladin",
+      "build": "Barrier banking / defensive finishers",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "knight:marshal",
+      "hero": "knight",
+      "name": "Marshal",
+      "build": "Reserves / heavy Attack turns",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "knight:blood-knight",
+      "hero": "knight",
+      "name": "Blood Knight",
+      "build": "HP payments / Retaliation burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "engineer:swarmwright",
+      "hero": "engineer",
+      "name": "Swarmwright",
+      "build": "Many small summons / continuous attack bonuses",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "engineer:golemancer",
+      "hero": "engineer",
+      "name": "Golemancer",
+      "build": "Heavy or Colossal machine investment",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "engineer:artillerist",
+      "hero": "engineer",
+      "name": "Artillerist",
+      "build": "Personal weapons / multi-hit attacks",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "hunter:beastmaster",
+      "hero": "hunter",
+      "name": "Beastmaster",
+      "build": "Pack / shared Might attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "hunter:reaver",
+      "hero": "hunter",
+      "name": "Reaver",
+      "build": "Blood payments / efficient burst",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "hunter:predator",
+      "hero": "hunter",
+      "name": "Predator",
+      "build": "Extra draws / Primed burst",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "trickster:trapmaster",
+      "hero": "trickster",
+      "name": "Trapmaster",
+      "build": "Trap control / reactive cycling",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "trickster:cardsharp",
+      "hero": "trickster",
+      "name": "Cardsharp",
+      "build": "Suit sequencing / Full Trick tempo",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "trickster:seer",
+      "hero": "trickster",
+      "name": "Seer",
+      "build": "Marked-target Attack pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "assassin:bladedancer",
+      "hero": "assassin",
+      "name": "Bladedancer",
+      "build": "Daggers / repeated hit payoffs",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "assassin:bloodletter",
+      "hero": "assassin",
+      "name": "Bloodletter",
+      "build": "Bleed / sustained pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "assassin:assassin",
+      "hero": "assassin",
+      "name": "Assassin",
+      "build": "Skills into prepared Attack / execution",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "shaman:totemist",
+      "hero": "shaman",
+      "name": "Totemist",
+      "build": "Standing totems / Spirit cultivation",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "shaman:spiritwalker",
+      "hero": "shaman",
+      "name": "Spiritwalker",
+      "build": "Commands / row cycling",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "shaman:elementalist",
+      "hero": "shaman",
+      "name": "Elementalist",
+      "build": "Alternating elements / growing bursts",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "monk:sage",
+      "hero": "monk",
+      "name": "Sage",
+      "build": "Serene exit / Mana sequencing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "monk:zealot",
+      "hero": "monk",
+      "name": "Zealot",
+      "build": "Controlled Fury / entry and exit growth",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "monk:sunwalker",
+      "hero": "monk",
+      "name": "Sunwalker",
+      "build": "Fervor / recurring Radiant windows",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "spellblade:blademaster",
+      "hero": "spellblade",
+      "name": "Blademaster",
+      "build": "Multi-hit Swords / Keen",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "spellblade:archmage",
+      "hero": "spellblade",
+      "name": "Archmage",
+      "build": "Spell Power expenditure / refund cycles",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "spellblade:shatterer",
+      "hero": "spellblade",
+      "name": "Shatterer",
+      "build": "Fracture buildup / Shatter finishers",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "necromancer:bonelord",
+      "hero": "necromancer",
+      "name": "Bonelord",
+      "build": "Thrall growth / commanded attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "necromancer:fateweaver",
+      "hero": "necromancer",
+      "name": "Fateweaver",
+      "build": "Fate threshold / execution racing",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "necromancer:soulreaper",
+      "hero": "necromancer",
+      "name": "Soulreaper",
+      "build": "Consume generation / growing Reap",
+      "previousArena": "B",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "drunkard:brewmaster",
+      "hero": "drunkard",
+      "name": "Brewmaster",
+      "build": "Hangover payments / Fermentation sustain",
+      "previousArena": "B-",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B-",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "drunkard:gunslinger",
+      "hero": "drunkard",
+      "name": "Gunslinger",
+      "build": "Precision / repeated shotgun attacks",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    },
+    {
+      "id": "drunkard:deathwish",
+      "hero": "drunkard",
+      "name": "Deathwish",
+      "build": "Clutch / controlled low-HP pressure",
+      "previousArena": "B+",
+      "campaign": {
+        "developing": "Unrated",
+        "deep": "Unrated",
+        "endgame": "Unrated",
+        "openingFight": "Deck-dependent; unmeasured",
+        "extendedFight": "Deck-dependent; unmeasured"
+      },
+      "arena": {
+        "overall": "B+",
+        "opening": "Unrated",
+        "extended": "Unrated",
+        "long": "Unrated"
+      },
+      "setup": "Combat setup unchanged. Longer I\u2013IV offer more preparation opportunities before Ascendancy and midgame; shorter VI\u2013XI offer fewer.",
+      "recovery": "More early stops can mean more damage and more healing opportunities; fewer late stops reduce both. Final Shrine choice remains.",
+      "rareReliance": "Per-offer rarity unchanged; fewer late rewards and shops may constrain rare-dependent and freely mixed engines.",
+      "scaling": "Combat growth unchanged. Deck progression opportunity shifts: I\u2013IV +4/+3/+2/+1 floors, V unchanged, VI\u2013XI -1/-2/-3/-4/-5/-6.",
+      "rationale": "No direct class/passive change. Native and mixed builds face altered acquisition and attrition. Prior Arena signal carried forward, not remeasured.",
+      "watch": "Review unascended I\u2013III survival and drafting; IV\u2013VII setup, VIII\u2013X maturation, XI\u2013XII recovery and finale readiness. Compare opening, extended and 11+ turn fights separately.",
+      "confidence": "Low; no current-length outcomes.",
+      "pacing": "Map traversal changes; no claim about combat turns.",
+      "evidence": [
+        "packages/campaign/src/mapgen.ts",
+        "packages/campaign/src/run.test.ts",
+        "0.274.0 baseline simulation: .wrangler/tier1-0.274.0/metadata.json"
+      ]
+    }
+  ],
+  "starters": [
+    {
+      "hero": "knight",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "engineer",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "hunter",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "trickster",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "assassin",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "shaman",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "monk",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "spellblade",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "necromancer",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    },
+    {
+      "hero": "drunkard",
+      "grade": "Unrated",
+      "rationale": "Earlier 11-floor simulation ranking is historical. New 15-floor starts have more attrition and reward opportunities; no measured regrade."
+    }
+  ],
+  "corrections": [
+    "Prior 0.274.0 Tier I class ranking is an old-length baseline only. Early tiers gain attrition and acquisition opportunities; later tiers lose both. Net strength is unmeasured."
+  ]
+}

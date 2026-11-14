@@ -118,7 +118,6 @@ export function HeroShowcase(props: {
 }) {
   const { picked } = props;
   const hero = RIFTWALKERS[picked];
-  const realm = useMemo(() => REALMS.find((r) => r.id === hero.realm)?.name ?? '', [hero.realm]);
   const heroes = useMemo(() => heroesByRealm().flatMap((g) => g.heroes), []);
   const all = useMastery();
   const { owned } = useCosmetics();
@@ -133,36 +132,6 @@ export function HeroShowcase(props: {
       <div className="home__show">
         <HeroStage hero={picked} />
         <div className="home__floor" aria-hidden />
-      </div>
-      <div className="home__info">
-        <h2 className="home__hero">{hero.hero.name}</h2>
-        <p className="home__role">{realm}</p>
-        <p className="home__paths">
-          {hero.mechanics.map((l) => (
-            <span key={l}>{l}</span>
-          ))}
-        </p>
-        <p className="home__trait">
-          <b>{hero.trait.name}.</b> {hero.trait.text}
-        </p>
-        {/* the classes they can become after Tier III (hover one for what it does) */}
-        <div className="home__ascend">
-          <span className="home__ascendKicker">Ascendancies</span>
-          <ul>
-            {ascendanciesOf(picked).map((x) => (
-              <li
-                key={x.id}
-                tabIndex={0}
-                {...tipAttrs({ kicker: `Ascendancy · ${x.leans}`, title: x.name, text: x.text })}
-              >
-                <Picture id={crestPic(x.id)} className="home__ascendCrest">
-                  {null}
-                </Picture>
-                {x.name}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
       <ul
         className={`home__roster${props.mastery ? ' home__roster--mastery' : ''}`}
@@ -201,6 +170,54 @@ export function HeroShowcase(props: {
           );
         })}
       </ul>
+      {/* All descriptions share a grid cell, reserving the tallest at this width without clipping text. */}
+      <div className="home__info">
+        {heroes.map((h) => {
+          const hero = RIFTWALKERS[h];
+          const realm = REALMS.find((r) => r.id === hero.realm)?.name ?? '';
+          return (
+            <div
+              className="home__infoPanel"
+              key={h}
+              aria-hidden={h !== picked}
+              inert={h !== picked}
+            >
+              <h2 className="home__hero">{hero.hero.name}</h2>
+              <p className="home__role">{realm}</p>
+              <p className="home__paths">
+                {hero.mechanics.map((l) => (
+                  <span key={l}>{l}</span>
+                ))}
+              </p>
+              <p className="home__trait">
+                <b>{hero.trait.name}.</b> {hero.trait.text}
+              </p>
+              {/* the classes they can become after Tier III (hover one for what it does) */}
+              <div className="home__ascend">
+                <span className="home__ascendKicker">Ascendancies</span>
+                <ul>
+                  {ascendanciesOf(h).map((x) => (
+                    <li
+                      key={x.id}
+                      tabIndex={0}
+                      {...tipAttrs({
+                        kicker: `Ascendancy · ${x.leans}`,
+                        title: x.name,
+                        text: x.text,
+                      })}
+                    >
+                      <Picture id={crestPic(x.id)} className="home__ascendCrest">
+                        {null}
+                      </Picture>
+                      {x.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       {props.mastery && (
         <div className="home__mastery">
           {/* a snapshot of the player's time with the picked Riftwalker: its mastery first, then the plain numbers */}

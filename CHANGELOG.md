@@ -1,3 +1,14 @@
+## 0.275.0 - 2026-11-13
+
+- Sanctum starter Grimoire prefers five readable columns on desktop (ten cards, two rows); preserves narrow fitting and filters. Pirate Captain preview reserves a stable union of non-death action bounds, scoped to her Sanctum model. Default Knight Shop/Collection wrapper scales to 82%, including its fallback picture; other contexts/skins unchanged.
+- Pirate Captain idle rebuilt from the existing held pose through the lossless pipeline, at both qualities, with fixed frame bounds. Dedicated v2 idle page paths avoid stale cached jitter; existing action atlases/timings retained. Pixel comparison checks the grip and lower body across all48frames; smoke/sparks still animate. Added an asset regression for both qualities.
+
+- Campaign scaling, rules 114: Tier I 105/98 -> 100/95 HP/damage; Tier XII 655/197 -> 700/250 before category premiums. Linear slopes 50/9 -> 600/11 and 155/11 pp, rounded per row; legacy stage offsets/rows retained. Elites x1.25/x1.08 -> x1.30/x1.12; Wardens x1.20/x1.15 -> x1.35/x1.18. Normal effective Tier I: Elite130/106, Warden135/112; Tier XII: Elite910/280, Warden945/295. Saved maps remain; existing runs adopt scaling and unfinished battle logs restart through existing rules migration. Arena values unchanged. Earlier rules113/11-floor simulations do not evaluate this candidate.
+
+- Current campaign Tiers I–XI: 11–21 floors -> 15 each, including the Warden (14 generated pre-Warden floors). Tier XII remains nine; total fresh route 185 -> 174. Saved maps are not rebuilt; subsequent maps adopt the new length. Tier-based enemy scaling, node roll percentages, individual payouts and Arena rules unchanged. Legacy generator calls above Tier XI retain their historical lengths. The floor-length change alone did not change combat rules; the subsequent scaling pass below uses rules 114. Earlier 11-floor Tier I simulation results are historical and do not measure this candidate.
+
+- Home/Sandbox class selector: one horizontally scrollable line before the class details; descriptions reserve the tallest class at the current width, keeping the selector stable when changing class. Hidden descriptions are inert and excluded from accessibility.
+
 ## 0.274.0 - 2026-11-13
 
 - Sanctum: uniform circular class choices, enlarged model, mobile model before class grid; fixed intrinsic image sizing so the model stays within its frame.

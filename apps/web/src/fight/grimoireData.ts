@@ -186,6 +186,7 @@ export function fitScroll(
   h: number,
   size: CardSize,
   narrow = false,
+  preferredCols?: number,
 ): { cols: number; cardWidth: number } {
   const min = narrow ? Math.min(CARD_SIZES[size].min, 110) : CARD_SIZES[size].min;
   // (a card a little shorter than the room, so a row is never cut at the top and bottom at once)
@@ -193,6 +194,12 @@ export function fitScroll(
   const max = Math.max(min, Math.min(CARD_SIZES[size].max, byH));
   if (w <= 0) return { cols: 3, cardWidth: min };
   const across = (cols: number): number => Math.floor((w - (cols - 1) * COL_GAP) / cols);
+  if (!narrow && preferredCols && preferredCols > 0 && across(preferredCols) >= min) {
+    return {
+      cols: preferredCols,
+      cardWidth: Math.floor(Math.min(max, across(preferredCols)) / 5) * 5,
+    };
+  }
   // the fewest columns that keep the cards at most `max`, then fewer while they would be under `min`
   let cols = Math.max(1, Math.ceil((w + COL_GAP) / (max + COL_GAP)));
   while (cols > 1 && across(cols) < min) cols--;

@@ -121,3 +121,9 @@
   top: var(--preview-top);
   margin: 0;
 }
+
+/* Only the default Knight's Shop/Collection tile: leave other skins and game views at their own scale. */
+.look__model--default-knight {
+  scale: 0.82;
+  transform-origin: bottom center;
+}

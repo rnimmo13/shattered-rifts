@@ -2361,3 +2361,29 @@ Robert, after #753 (decks now live long enough for an update to break one): "we 
 - Supersedes decision 780: visible Store/Collection tiles animate without hover, using lightweight preview sheets; Knight/Hunter preview bodies fit by height with weapon clipping allowed.
 - Robert explicitly approved pushing when ready and including all pending work. Origin had already published the art through 0.273.0; those commits and newest Pirate Captain artwork are preserved in 0.274.0, rules 113. Website/server and matching Windows updater are authorized after validation.
 - Live exports now supply historical player evidence: all 65 Spellblade fights were rules108. Anonymous exports do not establish sacacweeda's identity. No simulations or new competitive grades are claimed.
+
+
+## 782 - Fifteen-floor tiers and stable home class selection (2026-11-13)
+
+- Robert requests every tier to have 15 floors except the Tier XII gauntlet. Floors include the Warden, consistent with the preceding count discussion. I–XI become 15 each, XII stays nine; total 174. Preserve generated saved maps, apply to new runs and subsequent tiers; preserve legacy deeper-tier generator lengths. No node odds, per-node rewards, enemy scaling or combat rules changes.
+- Home/Sandbox selection becomes one scrollable row above details, with overlapping inert hidden detail panels reserving the tallest content. Verified zero selector movement across all classes at 1440, 1366, 390 and 320px.
+- The requested 500 Tier I bot attempts measured the old 11-floor 0.274.0 baseline, not this candidate. No new simulation outcomes or measured grades claimed. Implementation authorized; no release approval for 0.275.0.
+
+
+## 783 - Campaign scaling endpoints and category pressure (2026-11-13)
+
+- Robert requests Tier I 100% HP/95% damage and increases to 700% HP/250% damage, with reasonable Elite/Warden premiums. Interpret the upper endpoint as Tier XII, communicated before implementation. Use even interpolation over eleven intervals, integer rounding per tier, retaining legacy stage offsets and extrapolated XIII–XX rows.
+- Elite premiums 1.25/1.08 -> 1.30/1.12; Warden 1.20/1.15 -> 1.35/1.18. These multiply the base independently. Early Elite pressure stays close to the prior values; Wardens gain durability, later fights gain damage. No authored attack/phase, Arena, player HP or reward edits.
+- Rules114 invalidates unfinished old combat logs through the existing checkpoint migration. Generated map topology remains intact. Earlier rules113 simulation ranking is not evidence for this candidate. No new simulations requested/run for this pass. No release approval.
+
+
+## 784 - Sanctum card rows and cosmetic preview corrections (2026-11-13)
+
+- Robert requests two rows of five starting cards on desktop, a steady Pirate Captain drink hand, no right-edge Sanctum clipping, and a smaller default Knight in Shop/Collection. Five preferred columns apply only to the starter Grimoire when readable widths fit; narrow layout/filter behavior remains.
+- Rebuild Pirate idle only using the existing source pose and lossless idle pipeline. Keep action clips. Use versioned idle page paths and an asset regression for pixel-stable hand regions at both qualities. The Sanctum Pirate preview fits stable bounds of all non-death clips, keeping the body anchored across attacks. No redraw.
+- Default Knight cosmetic tile scale is82%; other skins, combat and Sanctum Knight unchanged. No new rules/version beyond the pending0.275.0/rules114 candidate. No release approval.
+
+
+## 785 - Release 0.275.0 approved (2026-11-13)
+
+- Robert explicitly says 'push' for the completed pending changes: fifteen-floor tiers, rules114 campaign curve/premiums, stable home selector, five-column Sanctum Grimoire, Pirate idle/clipping fixes, and smaller default Knight cosmetic tiles. Authorizes website/server and matching Windows updater after final checks. Earlier local assessment statuses are historical; no new simulation results implied.

@@ -65,17 +65,28 @@ describe('the tier table', () => {
   });
 });
 
-describe('a linear climb through every tier (DECISIONS #576)', () => {
-  it('adds the same HP and damage through Tier XX without a late slope change', () => {
-    const step = (t: number, k: 'hp' | 'dmg') => enemyScale(t + 1, 1)[k] - enemyScale(t, 1)[k];
-    for (let t = 1; t < 20; t++) {
-      // (50 and 9 since DECISIONS #763; 40 and 5 before)
-      expect(step(t, 'hp')).toBe(50);
-      expect(step(t, 'dmg')).toBe(9);
+describe('the current twelve-tier campaign curve', () => {
+  it('reaches the requested endpoints with evenly rounded increases throughout', () => {
+    const expected = [
+      [100, 95],
+      [155, 109],
+      [209, 123],
+      [264, 137],
+      [318, 151],
+      [373, 165],
+      [427, 180],
+      [482, 194],
+      [536, 208],
+      [591, 222],
+      [645, 236],
+      [700, 250],
+    ];
+    expected.forEach(([hp, dmg], i) => expect(enemyScale(i + 1, 1)).toEqual({ hp, dmg }));
+    for (let t = 1; t < 12; t++) {
+      const a = enemyScale(t, 1),
+        b = enemyScale(t + 1, 1);
+      expect([54, 55]).toContain(b.hp - a.hp);
+      expect([14, 15]).toContain(b.dmg - a.dmg);
     }
-    expect(enemyScale(1, 1)).toEqual({ hp: 105, dmg: 98 });
-    expect(enemyScale(10, 1)).toEqual({ hp: 555, dmg: 179 });
-    expect(enemyScale(17, 1)).toEqual({ hp: 905, dmg: 242 });
-    expect(enemyScale(20, 1)).toEqual({ hp: 1055, dmg: 269 });
   });
 });

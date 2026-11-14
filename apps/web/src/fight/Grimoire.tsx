@@ -42,6 +42,8 @@ export interface GrimoireProps {
   /** only these ids can be picked; the rest are dimmed */
   pickable?: ReadonlySet<string>;
   cols?: number;
+  /** Prefer this many columns when the desktop page has room for readable cards. */
+  desktopCols?: number;
   /** (unused since the book scrolls, DECISIONS #725) */
   rows?: number;
   /** (unused since the book scrolls, DECISIONS #725: it is always one page) */
@@ -123,6 +125,7 @@ export function Grimoire(props: GrimoireProps) {
     grow || narrow ? Infinity : page.h - PAGE_ENDS,
     props.size ?? 'read',
     narrow,
+    props.desktopCols,
   );
   const cols = props.cols ?? fit.cols;
   const cardWidth = fit.cardWidth;

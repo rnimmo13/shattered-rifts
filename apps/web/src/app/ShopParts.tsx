@@ -199,7 +199,13 @@ export function LookTile(props: {
     <>
       {/* (no picture yet, or one that will not load: nothing, never a browser's broken-image mark) */}
       {props.hero ? (
-        <HeroModel hero={props.hero} skin={props.skin} className="look__model" fill={1.34} contain>
+        <HeroModel
+          hero={props.hero}
+          skin={props.skin}
+          className={`look__model${props.hero === 'knight' && !props.skin ? ' look__model--default-knight' : ''}`}
+          fill={1.34}
+          contain
+        >
           <LookPicture
             src={
               skinPreview(props.skin)

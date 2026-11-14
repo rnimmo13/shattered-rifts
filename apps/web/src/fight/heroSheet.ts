@@ -131,7 +131,11 @@ export function loadUnitSheet(unit: string): Promise<SheetAssets | null> {
   return loadSheet('units', unit);
 }
 
-function loadSheet(kind: 'heroes' | 'units', hero: string, preview = false): Promise<SheetAssets | null> {
+function loadSheet(
+  kind: 'heroes' | 'units',
+  hero: string,
+  preview = false,
+): Promise<SheetAssets | null> {
   // (Medium graphics loads the lighter set; Low never gets here in a fight: its board holds still, DECISIONS #759. Kept apart by set,
   // so a change of setting fetches the other one for the next model shown)
   const set = `${kind}-sheets${preview || loadGraphicsQuality() === 'medium' ? '-lite' : ''}`;
@@ -379,6 +383,15 @@ export class SheetHeroSprite {
     const u = height / this.fitH;
     const left = -b.x0 * u;
     const right = (b.x0 + b.w) * u;
+    return this.facing === 'right' ? { left, right } : { left: right, right: left };
+  }
+
+  /** Stable bounds for preview actions: reserve their full reach before an animation starts. */
+  motionSpan(height: number): { left: number; right: number } {
+    const boxes = [...this.boxes.entries()].filter(([name]) => name !== 'death').map(([, b]) => b);
+    const scale = height / this.fitH;
+    const left = -Math.min(...boxes.map((b) => b.x0)) * scale;
+    const right = Math.max(...boxes.map((b) => b.x0 + b.w)) * scale;
     return this.facing === 'right' ? { left, right } : { left: right, right: left };
   }
 

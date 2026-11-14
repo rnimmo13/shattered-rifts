@@ -43,6 +43,8 @@ export function HeroModel(props: {
    * height: a wide pose may run past each side by up to CONTAIN_SPILL of the box's width (the tip of a sword, not the body), and is
    * made smaller only past that. Without it the feet stand in the middle (DECISIONS #772, #773) */
   contain?: boolean;
+  /** Reserve the full action width, rather than clipping a preview to its resting pose. */
+  fitMotion?: boolean;
   /** the still picture */
   children: ReactNode;
 }) {
@@ -168,6 +170,15 @@ export function HeroModel(props: {
         }
         shift = (span.left - span.right) / 2;
       }
+      if (props.fitMotion && sprite.motionSpan && size.w > 0) {
+        let span = sprite.motionSpan(height);
+        const room = size.w * 0.96;
+        if (span.left + span.right > room) {
+          height *= room / (span.left + span.right);
+          span = sprite.motionSpan(height);
+        }
+        shift = (span.left - span.right) / 2;
+      }
       const changed = sprite.resize(height, dpr);
       const c = sprite.canvas;
       const w = c.width * sprite.stageScale;
@@ -282,7 +293,7 @@ export function HeroModel(props: {
       stop();
       release();
     };
-  }, [rigId, fill, contain, wanted, slot, props.skin]);
+  }, [rigId, fill, contain, wanted, slot, props.skin, props.fitMotion]);
 
   return (
     <span
