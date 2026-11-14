@@ -372,9 +372,9 @@ The attached sheet xalvorr_hitdeath.png is one row of 4 poses of Xalvorr, the La
 
 ### Seraphine, the Gilded Warden (`seraphine`, 01-aurelion/seraphine)
 
-Now drawn 439 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 439 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] seraphine_hd_reference.png, seraphine_hd_attack1_a.png, seraphine_hd_attack1_b.png, seraphine_hd_attack2_a.png, seraphine_hd_attack2_b.png, seraphine_hd_hitdeath_a.png, seraphine_hd_hitdeath_b.png
+- [ ] seraphine_hd_reference.png, seraphine_hd_attack1_1.png, seraphine_hd_attack1_2.png, seraphine_hd_attack1_3.png, seraphine_hd_attack1_4.png, seraphine_hd_attack2_1.png, seraphine_hd_attack2_2.png, seraphine_hd_attack2_3.png, seraphine_hd_attack2_4.png, seraphine_hd_hitdeath_1.png, seraphine_hd_hitdeath_2.png, seraphine_hd_hitdeath_3.png, seraphine_hd_hitdeath_4.png
 
 **seraphine_hd_reference.png**
 
@@ -382,48 +382,83 @@ Now drawn 439 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Seraphine, the Gilded Warden, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_attack1_a.png**
+**seraphine_hd_attack1_1.png**
 
 ```
-The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_attack1_b.png**
+**seraphine_hd_attack1_2.png**
 
 ```
-The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_attack2_a.png**
+**seraphine_hd_attack1_3.png**
 
 ```
-The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_attack2_b.png**
+**seraphine_hd_attack1_4.png**
 
 ```
-The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack1.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_hitdeath_a.png**
+**seraphine_hd_attack2_1.png**
 
 ```
-The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**seraphine_hd_hitdeath_b.png**
+**seraphine_hd_attack2_2.png**
 
 ```
-The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**seraphine_hd_attack2_3.png**
+
+```
+The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**seraphine_hd_attack2_4.png**
+
+```
+The attached sheet seraphine_attack2.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**seraphine_hd_hitdeath_1.png**
+
+```
+The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**seraphine_hd_hitdeath_2.png**
+
+```
+The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**seraphine_hd_hitdeath_3.png**
+
+```
+The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**seraphine_hd_hitdeath_4.png**
+
+```
+The attached sheet seraphine_hitdeath.png is one row of 4 poses of Seraphine, the Gilded Warden, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### The Pearlbound Sovereign (`pearlbound-sovereign`, 09-tides/pearlbound-sovereign)
 
-Now drawn 442 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 442 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] pearlbound-sovereign_hd_reference.png, pearlbound-sovereign_hd_attack1_a.png, pearlbound-sovereign_hd_attack1_b.png, pearlbound-sovereign_hd_attack2_a.png, pearlbound-sovereign_hd_attack2_b.png, pearlbound-sovereign_hd_hitdeath_a.png, pearlbound-sovereign_hd_hitdeath_b.png
+- [ ] pearlbound-sovereign_hd_reference.png, pearlbound-sovereign_hd_attack1_1.png, pearlbound-sovereign_hd_attack1_2.png, pearlbound-sovereign_hd_attack1_3.png, pearlbound-sovereign_hd_attack1_4.png, pearlbound-sovereign_hd_attack2_1.png, pearlbound-sovereign_hd_attack2_2.png, pearlbound-sovereign_hd_attack2_3.png, pearlbound-sovereign_hd_attack2_4.png, pearlbound-sovereign_hd_hitdeath_1.png, pearlbound-sovereign_hd_hitdeath_2.png, pearlbound-sovereign_hd_hitdeath_3.png, pearlbound-sovereign_hd_hitdeath_4.png
 
 **pearlbound-sovereign_hd_reference.png**
 
@@ -431,48 +466,83 @@ Now drawn 442 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, The Pearlbound Sovereign, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_attack1_a.png**
+**pearlbound-sovereign_hd_attack1_1.png**
 
 ```
-The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_attack1_b.png**
+**pearlbound-sovereign_hd_attack1_2.png**
 
 ```
-The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_attack2_a.png**
+**pearlbound-sovereign_hd_attack1_3.png**
 
 ```
-The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_attack2_b.png**
+**pearlbound-sovereign_hd_attack1_4.png**
 
 ```
-The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack1.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_hitdeath_a.png**
+**pearlbound-sovereign_hd_attack2_1.png**
 
 ```
-The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pearlbound-sovereign_hd_hitdeath_b.png**
+**pearlbound-sovereign_hd_attack2_2.png**
 
 ```
-The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**pearlbound-sovereign_hd_attack2_3.png**
+
+```
+The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pearlbound-sovereign_hd_attack2_4.png**
+
+```
+The attached sheet pearlbound-sovereign_attack2.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pearlbound-sovereign_hd_hitdeath_1.png**
+
+```
+The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pearlbound-sovereign_hd_hitdeath_2.png**
+
+```
+The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pearlbound-sovereign_hd_hitdeath_3.png**
+
+```
+The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pearlbound-sovereign_hd_hitdeath_4.png**
+
+```
+The attached sheet pearlbound-sovereign_hitdeath.png is one row of 4 poses of The Pearlbound Sovereign, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Morvane, the Hollow Maw (`morvane`, 12-ruin/morvane)
 
-Now drawn 443 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 443 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] morvane_hd_reference.png, morvane_hd_attack1_a.png, morvane_hd_attack1_b.png, morvane_hd_attack2_a.png, morvane_hd_attack2_b.png, morvane_hd_hitdeath_a.png, morvane_hd_hitdeath_b.png
+- [x] morvane_hd_reference.png, morvane_hd_attack1_1.png, morvane_hd_attack1_2.png, morvane_hd_attack1_3.png, morvane_hd_attack1_4.png, morvane_hd_attack2_1.png, morvane_hd_attack2_2.png, morvane_hd_attack2_3.png, morvane_hd_attack2_4.png, morvane_hd_hitdeath_1.png, morvane_hd_hitdeath_2.png, morvane_hd_hitdeath_3.png, morvane_hd_hitdeath_4.png
 
 **morvane_hd_reference.png**
 
@@ -480,48 +550,83 @@ Now drawn 443 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Morvane, the Hollow Maw, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_attack1_a.png**
+**morvane_hd_attack1_1.png**
 
 ```
-The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_attack1_b.png**
+**morvane_hd_attack1_2.png**
 
 ```
-The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_attack2_a.png**
+**morvane_hd_attack1_3.png**
 
 ```
-The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_attack2_b.png**
+**morvane_hd_attack1_4.png**
 
 ```
-The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack1.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_hitdeath_a.png**
+**morvane_hd_attack2_1.png**
 
 ```
-The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**morvane_hd_hitdeath_b.png**
+**morvane_hd_attack2_2.png**
 
 ```
-The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**morvane_hd_attack2_3.png**
+
+```
+The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**morvane_hd_attack2_4.png**
+
+```
+The attached sheet morvane_attack2.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**morvane_hd_hitdeath_1.png**
+
+```
+The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**morvane_hd_hitdeath_2.png**
+
+```
+The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**morvane_hd_hitdeath_3.png**
+
+```
+The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**morvane_hd_hitdeath_4.png**
+
+```
+The attached sheet morvane_hitdeath.png is one row of 4 poses of Morvane, the Hollow Maw, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Aethrion, the Storm-Crowned (`aethrion`, 12-ruin/aethrion)
 
-Now drawn 452 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 452 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] aethrion_hd_reference.png, aethrion_hd_attack1_a.png, aethrion_hd_attack1_b.png, aethrion_hd_attack2_a.png, aethrion_hd_attack2_b.png, aethrion_hd_hitdeath_a.png, aethrion_hd_hitdeath_b.png
+- [x] aethrion_hd_reference.png, aethrion_hd_attack1_1.png, aethrion_hd_attack1_2.png, aethrion_hd_attack1_3.png, aethrion_hd_attack1_4.png, aethrion_hd_attack2_1.png, aethrion_hd_attack2_2.png, aethrion_hd_attack2_3.png, aethrion_hd_attack2_4.png, aethrion_hd_hitdeath_1.png, aethrion_hd_hitdeath_2.png, aethrion_hd_hitdeath_3.png, aethrion_hd_hitdeath_4.png
 
 **aethrion_hd_reference.png**
 
@@ -529,48 +634,83 @@ Now drawn 452 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Aethrion, the Storm-Crowned, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_attack1_a.png**
+**aethrion_hd_attack1_1.png**
 
 ```
-The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_attack1_b.png**
+**aethrion_hd_attack1_2.png**
 
 ```
-The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_attack2_a.png**
+**aethrion_hd_attack1_3.png**
 
 ```
-The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_attack2_b.png**
+**aethrion_hd_attack1_4.png**
 
 ```
-The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack1.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_hitdeath_a.png**
+**aethrion_hd_attack2_1.png**
 
 ```
-The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**aethrion_hd_hitdeath_b.png**
+**aethrion_hd_attack2_2.png**
 
 ```
-The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**aethrion_hd_attack2_3.png**
+
+```
+The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**aethrion_hd_attack2_4.png**
+
+```
+The attached sheet aethrion_attack2.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**aethrion_hd_hitdeath_1.png**
+
+```
+The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**aethrion_hd_hitdeath_2.png**
+
+```
+The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**aethrion_hd_hitdeath_3.png**
+
+```
+The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**aethrion_hd_hitdeath_4.png**
+
+```
+The attached sheet aethrion_hitdeath.png is one row of 4 poses of Aethrion, the Storm-Crowned, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Pyrewing, the Cinder Tyrant (`pyrewing`, 12-ruin/pyrewing)
 
-Now drawn 453 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 453 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] pyrewing_hd_reference.png, pyrewing_hd_attack1_a.png, pyrewing_hd_attack1_b.png, pyrewing_hd_attack2_a.png, pyrewing_hd_attack2_b.png, pyrewing_hd_hitdeath_a.png, pyrewing_hd_hitdeath_b.png
+- [ ] pyrewing_hd_reference.png, pyrewing_hd_attack1_1.png, pyrewing_hd_attack1_2.png, pyrewing_hd_attack1_3.png, pyrewing_hd_attack1_4.png, pyrewing_hd_attack2_1.png, pyrewing_hd_attack2_2.png, pyrewing_hd_attack2_3.png, pyrewing_hd_attack2_4.png, pyrewing_hd_hitdeath_1.png, pyrewing_hd_hitdeath_2.png, pyrewing_hd_hitdeath_3.png, pyrewing_hd_hitdeath_4.png
 
 **pyrewing_hd_reference.png**
 
@@ -578,48 +718,83 @@ Now drawn 453 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Pyrewing, the Cinder Tyrant, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_attack1_a.png**
+**pyrewing_hd_attack1_1.png**
 
 ```
-The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_attack1_b.png**
+**pyrewing_hd_attack1_2.png**
 
 ```
-The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_attack2_a.png**
+**pyrewing_hd_attack1_3.png**
 
 ```
-The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_attack2_b.png**
+**pyrewing_hd_attack1_4.png**
 
 ```
-The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack1.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_hitdeath_a.png**
+**pyrewing_hd_attack2_1.png**
 
 ```
-The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**pyrewing_hd_hitdeath_b.png**
+**pyrewing_hd_attack2_2.png**
 
 ```
-The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**pyrewing_hd_attack2_3.png**
+
+```
+The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pyrewing_hd_attack2_4.png**
+
+```
+The attached sheet pyrewing_attack2.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pyrewing_hd_hitdeath_1.png**
+
+```
+The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pyrewing_hd_hitdeath_2.png**
+
+```
+The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pyrewing_hd_hitdeath_3.png**
+
+```
+The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**pyrewing_hd_hitdeath_4.png**
+
+```
+The attached sheet pyrewing_hitdeath.png is one row of 4 poses of Pyrewing, the Cinder Tyrant, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Bronze Sphinx (`bronze-sphinx`, 11-sands/bronze-sphinx)
 
-Now drawn 454 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 454 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] bronze-sphinx_hd_reference.png, bronze-sphinx_hd_attack1_a.png, bronze-sphinx_hd_attack1_b.png, bronze-sphinx_hd_attack2_a.png, bronze-sphinx_hd_attack2_b.png, bronze-sphinx_hd_hitdeath_a.png, bronze-sphinx_hd_hitdeath_b.png
+- [ ] bronze-sphinx_hd_reference.png, bronze-sphinx_hd_attack1_1.png, bronze-sphinx_hd_attack1_2.png, bronze-sphinx_hd_attack1_3.png, bronze-sphinx_hd_attack1_4.png, bronze-sphinx_hd_attack2_1.png, bronze-sphinx_hd_attack2_2.png, bronze-sphinx_hd_attack2_3.png, bronze-sphinx_hd_attack2_4.png, bronze-sphinx_hd_hitdeath_1.png, bronze-sphinx_hd_hitdeath_2.png, bronze-sphinx_hd_hitdeath_3.png, bronze-sphinx_hd_hitdeath_4.png
 
 **bronze-sphinx_hd_reference.png**
 
@@ -627,48 +802,83 @@ Now drawn 454 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Bronze Sphinx, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_attack1_a.png**
+**bronze-sphinx_hd_attack1_1.png**
 
 ```
-The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_attack1_b.png**
+**bronze-sphinx_hd_attack1_2.png**
 
 ```
-The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_attack2_a.png**
+**bronze-sphinx_hd_attack1_3.png**
 
 ```
-The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_attack2_b.png**
+**bronze-sphinx_hd_attack1_4.png**
 
 ```
-The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack1.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_hitdeath_a.png**
+**bronze-sphinx_hd_attack2_1.png**
 
 ```
-The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**bronze-sphinx_hd_hitdeath_b.png**
+**bronze-sphinx_hd_attack2_2.png**
 
 ```
-The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**bronze-sphinx_hd_attack2_3.png**
+
+```
+The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**bronze-sphinx_hd_attack2_4.png**
+
+```
+The attached sheet bronze-sphinx_attack2.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**bronze-sphinx_hd_hitdeath_1.png**
+
+```
+The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**bronze-sphinx_hd_hitdeath_2.png**
+
+```
+The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**bronze-sphinx_hd_hitdeath_3.png**
+
+```
+The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**bronze-sphinx_hd_hitdeath_4.png**
+
+```
+The attached sheet bronze-sphinx_hitdeath.png is one row of 4 poses of Bronze Sphinx, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Dream Custodian (`dream-custodian`, 10-vespera/dream-custodian)
 
-Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] dream-custodian_hd_reference.png, dream-custodian_hd_attack1_a.png, dream-custodian_hd_attack1_b.png, dream-custodian_hd_attack2_a.png, dream-custodian_hd_attack2_b.png, dream-custodian_hd_hitdeath_a.png, dream-custodian_hd_hitdeath_b.png
+- [ ] dream-custodian_hd_reference.png, dream-custodian_hd_attack1_1.png, dream-custodian_hd_attack1_2.png, dream-custodian_hd_attack1_3.png, dream-custodian_hd_attack1_4.png, dream-custodian_hd_attack2_1.png, dream-custodian_hd_attack2_2.png, dream-custodian_hd_attack2_3.png, dream-custodian_hd_attack2_4.png, dream-custodian_hd_hitdeath_1.png, dream-custodian_hd_hitdeath_2.png, dream-custodian_hd_hitdeath_3.png, dream-custodian_hd_hitdeath_4.png
 
 **dream-custodian_hd_reference.png**
 
@@ -676,48 +886,83 @@ Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Dream Custodian, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_attack1_a.png**
+**dream-custodian_hd_attack1_1.png**
 
 ```
-The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_attack1_b.png**
+**dream-custodian_hd_attack1_2.png**
 
 ```
-The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_attack2_a.png**
+**dream-custodian_hd_attack1_3.png**
 
 ```
-The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_attack2_b.png**
+**dream-custodian_hd_attack1_4.png**
 
 ```
-The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack1.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_hitdeath_a.png**
+**dream-custodian_hd_attack2_1.png**
 
 ```
-The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**dream-custodian_hd_hitdeath_b.png**
+**dream-custodian_hd_attack2_2.png**
 
 ```
-The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**dream-custodian_hd_attack2_3.png**
+
+```
+The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**dream-custodian_hd_attack2_4.png**
+
+```
+The attached sheet dream-custodian_attack2.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**dream-custodian_hd_hitdeath_1.png**
+
+```
+The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**dream-custodian_hd_hitdeath_2.png**
+
+```
+The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**dream-custodian_hd_hitdeath_3.png**
+
+```
+The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**dream-custodian_hd_hitdeath_4.png**
+
+```
+The attached sheet dream-custodian_hitdeath.png is one row of 4 poses of Dream Custodian, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### Nacreth, the Glassscale (`nacreth`, 12-ruin/nacreth)
 
-Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
+Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). One pose per image so each pose fits at the target scale with clear margins.
 
-- [ ] nacreth_hd_reference.png, nacreth_hd_attack1_a.png, nacreth_hd_attack1_b.png, nacreth_hd_attack2_a.png, nacreth_hd_attack2_b.png, nacreth_hd_hitdeath_a.png, nacreth_hd_hitdeath_b.png
+- [ ] nacreth_hd_reference.png, nacreth_hd_attack1_1.png, nacreth_hd_attack1_2.png, nacreth_hd_attack1_3.png, nacreth_hd_attack1_4.png, nacreth_hd_attack2_1.png, nacreth_hd_attack2_2.png, nacreth_hd_attack2_3.png, nacreth_hd_attack2_4.png, nacreth_hd_hitdeath_1.png, nacreth_hd_hitdeath_2.png, nacreth_hd_hitdeath_3.png, nacreth_hd_hitdeath_4.png
 
 **nacreth_hd_reference.png**
 
@@ -725,42 +970,77 @@ Now drawn 459 px tall, stands 600 on stage: ready stance **800 px** tall (at lea
 Redraw the creature in the attached reference picture, Nacreth, the Glassscale, larger and sharper, for a game model. The same design, pose, colours and proportions, facing right, in its ready stance, alone. Make it 800 px tall (never under 600 px), centred, in a 1024 x 1536 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_attack1_a.png**
+**nacreth_hd_attack1_1.png**
 
 ```
-The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_attack1_b.png**
+**nacreth_hd_attack1_2.png**
 
 ```
-The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_attack2_a.png**
+**nacreth_hd_attack1_3.png**
 
 ```
-The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_attack2_b.png**
+**nacreth_hd_attack1_4.png**
 
 ```
-The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack1.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_hitdeath_a.png**
+**nacreth_hd_attack2_1.png**
 
 ```
-The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 1 and 2 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
-**nacreth_hd_hitdeath_b.png**
+**nacreth_hd_attack2_2.png**
 
 ```
-The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw poses 3 and 4 only, side by side in the same order, as one row of 2 poses, each exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. 1536 x 1024 image. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
 ```
 
+**nacreth_hd_attack2_3.png**
+
+```
+The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**nacreth_hd_attack2_4.png**
+
+```
+The attached sheet nacreth_attack2.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**nacreth_hd_hitdeath_1.png**
+
+```
+The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 1 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**nacreth_hd_hitdeath_2.png**
+
+```
+The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 2 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**nacreth_hd_hitdeath_3.png**
+
+```
+The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 3 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
+
+**nacreth_hd_hitdeath_4.png**
+
+```
+The attached sheet nacreth_hitdeath.png is one row of 4 poses of Nacreth, the Glassscale, facing right. Redraw only pose 4 from the left, alone, in exactly the same pose, design, proportions, weapon and facing as in the sheet, but larger and sharper: draw the creature at the scale where its ready stance (pose 1 of the sheet) would be 800 px tall, the same scale as in its other images. Use a canvas large enough to fit the full-scale pose with its margins. Style: inked, stylized fantasy with a slightly cartoon feel, as in the attached style anchor (confident dark outline, selective interior ink lines, shaded colour that gives volume); keep this creature's own design, colours and details exactly. Plain solid background in the same colour as the attached sheet, nothing else on it. No effects at all: no glows, beams, sparks, slash arcs, motion lines, dust or shadows. At least 40 px of background around every pose; nothing touching or cut off.
+```
 
 ### The Ashbound Colossus (`ashbound-colossus`, 08-cinder/ashbound-colossus)
 
@@ -962,7 +1242,7 @@ The attached sheet cinder-marshal_hitdeath.png is one row of 4 poses of Cinder M
 
 Now drawn 493 px tall, stands 600 on stage: ready stance **800 px** tall (at least 600). Two poses per image.
 
-- [ ] sparring-dummy_hd_reference.png, sparring-dummy_hd_attack1_a.png, sparring-dummy_hd_attack1_b.png, sparring-dummy_hd_attack2_a.png, sparring-dummy_hd_attack2_b.png, sparring-dummy_hd_hitdeath_a.png, sparring-dummy_hd_hitdeath_b.png
+- [x] sparring-dummy_hd_reference.png, sparring-dummy_hd_attack1_a.png, sparring-dummy_hd_attack1_b.png, sparring-dummy_hd_attack2_a.png, sparring-dummy_hd_attack2_b.png, sparring-dummy_hd_hitdeath_a.png, sparring-dummy_hd_hitdeath_b.png
 
 **sparring-dummy_hd_reference.png**
 
@@ -1560,7 +1840,7 @@ The attached sheet puppet-of-knots_hitdeath.png is one row of 4 poses of Puppet 
 
 Now drawn 281 px tall, stands 380 on stage: ready stance **510 px** tall (at least 380). Wide creature: **one pose per image**.
 
-- [ ] dreadnought_hd_reference.png, dreadnought_hd_attack1_1.png, dreadnought_hd_attack1_2.png, dreadnought_hd_attack1_3.png, dreadnought_hd_attack1_4.png, dreadnought_hd_attack2_1.png, dreadnought_hd_attack2_2.png, dreadnought_hd_attack2_3.png, dreadnought_hd_attack2_4.png, dreadnought_hd_hitdeath_1.png, dreadnought_hd_hitdeath_2.png, dreadnought_hd_hitdeath_3.png, dreadnought_hd_hitdeath_4.png
+- [x] dreadnought_hd_reference.png, dreadnought_hd_attack1_1.png, dreadnought_hd_attack1_2.png, dreadnought_hd_attack1_3.png, dreadnought_hd_attack1_4.png, dreadnought_hd_attack2_1.png, dreadnought_hd_attack2_2.png, dreadnought_hd_attack2_3.png, dreadnought_hd_attack2_4.png, dreadnought_hd_hitdeath_1.png, dreadnought_hd_hitdeath_2.png, dreadnought_hd_hitdeath_3.png, dreadnought_hd_hitdeath_4.png
 
 **dreadnought_hd_reference.png**
 
@@ -1645,7 +1925,7 @@ The attached sheet dreadnought_hitdeath.png is one row of 4 poses of Dreadnought
 
 Now drawn 349 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Two poses per image.
 
-- [ ] marble-mantis_hd_reference.png, marble-mantis_hd_attack1_a.png, marble-mantis_hd_attack1_b.png, marble-mantis_hd_attack2_a.png, marble-mantis_hd_attack2_b.png, marble-mantis_hd_hitdeath_a.png, marble-mantis_hd_hitdeath_b.png
+- [x] marble-mantis_hd_reference.png, marble-mantis_hd_attack1_a.png, marble-mantis_hd_attack1_b.png, marble-mantis_hd_attack2_a.png, marble-mantis_hd_attack2_b.png, marble-mantis_hd_hitdeath_a.png, marble-mantis_hd_hitdeath_b.png
 
 **marble-mantis_hd_reference.png**
 
@@ -1998,7 +2278,7 @@ The attached sheet pearl-crab_hitdeath.png is one row of 4 poses of Pearl Crab, 
 
 Now drawn 366 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Two poses per image.
 
-- [ ] mossjaw-turtle_hd_reference.png, mossjaw-turtle_hd_attack1_a.png, mossjaw-turtle_hd_attack1_b.png, mossjaw-turtle_hd_attack2_a.png, mossjaw-turtle_hd_attack2_b.png, mossjaw-turtle_hd_hitdeath_a.png, mossjaw-turtle_hd_hitdeath_b.png
+- [x] mossjaw-turtle_hd_reference.png, mossjaw-turtle_hd_attack1_a.png, mossjaw-turtle_hd_attack1_b.png, mossjaw-turtle_hd_attack2_a.png, mossjaw-turtle_hd_attack2_b.png, mossjaw-turtle_hd_hitdeath_a.png, mossjaw-turtle_hd_hitdeath_b.png
 
 **mossjaw-turtle_hd_reference.png**
 
@@ -2096,7 +2376,7 @@ The attached sheet bell-cleric_hitdeath.png is one row of 4 poses of Cleric of t
 
 Now drawn 379 px tall, stands 470 on stage: ready stance **630 px** tall (at least 470). Two poses per image.
 
-- [ ] nightmare-loom_hd_reference.png, nightmare-loom_hd_attack1_a.png, nightmare-loom_hd_attack1_b.png, nightmare-loom_hd_attack2_a.png, nightmare-loom_hd_attack2_b.png, nightmare-loom_hd_hitdeath_a.png, nightmare-loom_hd_hitdeath_b.png
+- [x] nightmare-loom_hd_reference.png, nightmare-loom_hd_attack1_a.png, nightmare-loom_hd_attack1_b.png, nightmare-loom_hd_attack2_a.png, nightmare-loom_hd_attack2_b.png, nightmare-loom_hd_hitdeath_a.png, nightmare-loom_hd_hitdeath_b.png
 
 **nightmare-loom_hd_reference.png**
 
